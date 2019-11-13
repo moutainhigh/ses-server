@@ -1,0 +1,10 @@
+/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-job/ses-job-executor/ses-instance-one/src/main/java/com/redescooter/ses/instance/one/SeSInstanceOneApplication.java
+/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-job/ses-job-executor/ses-instance-one/src/main/java/com/redescooter/ses/instance/one/example/CommandJobHandler.java
+/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-job/ses-job-executor/ses-instance-one/src/main/java/com/redescooter/ses/instance/one/run/foundation/SendMailTaskExecutor.java
+/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-job/ses-job-executor/ses-instance-one/src/main/java/com/redescooter/ses/instance/one/config/JtaTransactionConfiguration.java
+/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-job/ses-job-executor/ses-instance-one/src/main/java/com/redescooter/ses/instance/one/example/DemoJobHandler.java
+/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-job/ses-job-executor/ses-instance-one/src/main/java/com/redescooter/ses/instance/one/example/HttpJobHandler.java
+/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-job/ses-job-executor/ses-instance-one/src/main/java/com/redescooter/ses/instance/one/config/XxlJobConfig.java
+/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-job/ses-job-executor/ses-instance-one/src/main/java/com/redescooter/ses/instance/one/config/MybatisPlusConfig.java
+/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-job/ses-job-executor/ses-instance-one/src/main/java/com/redescooter/ses/instance/one/config/AtomikosJtaConfiguration.java
+/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-job/ses-job-executor/ses-instance-one/src/main/java/com/redescooter/ses/instance/one/example/ShardingJobHandler.java
