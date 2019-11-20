@@ -1,11 +1,11 @@
-* 
+
 >>         
 >>              (♥)(♥)(♥)     (♥)(♥)(♥)  
 >>            (♥)       (♥)(♥)      (♥)  
 >>           (♥)          (♥)      (♥)   
->>           (♥)                  (♥)          RedE Scooter 2019
+>>           (♥)                  (♥)           <font color=gren>RedE Scooter 2019
 >>            (♥)                (♥)     
->>              (♥)            (♥)               1.2.0 version
+>>              (♥)            (♥)               <font color=gren>1.2.0 version
 >>                (♥)        (♥)         
 >>                 (♥)     (♥)           
 >>                   (♥)  (♥)            
@@ -13,9 +13,9 @@
 >>                                      
                              
                              
-# [ses-server 后台服务1.2.0版](https://gitee.com/rede-group/ses-server)
+# <div align=center>[ses-server 后台服务1.2.0版](https://gitee.com/rede-group/ses-server) :confused:	
  
-      
+
 ### 技术选型
 
 - 语言框架
