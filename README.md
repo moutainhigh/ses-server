@@ -1,11 +1,12 @@
-
+####### <font color=gren>RedE Scooter 2019
+######## <font color=gren>1.2.0 version
 >>         
 >>              (♥)(♥)(♥)     (♥)(♥)(♥)  
 >>            (♥)       (♥)(♥)      (♥)  
 >>           (♥)          (♥)      (♥)   
->>           (♥)                  (♥)           <font color=gren>RedE Scooter 2019
+>>           (♥)                  (♥)           
 >>            (♥)                (♥)     
->>              (♥)            (♥)               <font color=gren>1.2.0 version
+>>              (♥)            (♥)               
 >>                (♥)        (♥)         
 >>                 (♥)     (♥)           
 >>                   (♥)  (♥)            
@@ -13,7 +14,7 @@
 >>                                      
                              
                              
-# <div align=center>[ses-server 后台服务1.2.0版](https://gitee.com/rede-group/ses-server) :confused:	
+# <div align=center>[ses-server 中台服务1.2.0.v](https://gitee.com/rede-group/ses-server) :confused:	
  
 
 ### 技术选型
