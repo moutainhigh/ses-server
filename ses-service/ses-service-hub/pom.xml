@@ -12,7 +12,7 @@
     <artifactId>ses-service-hub</artifactId>
     <version>1.2.0</version>
     <name>ses-service-hub</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Multi-Data Source Application Service</description>
 
     <properties>
         <java.version>1.8</java.version>

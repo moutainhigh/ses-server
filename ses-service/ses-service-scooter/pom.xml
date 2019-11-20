@@ -12,7 +12,7 @@
 	<artifactId>ses-service-scooter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ses-service-scooter</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Base Scooter Application Service</description>
 
 	<properties>
 		<java.version>1.8</java.version>
