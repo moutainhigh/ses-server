@@ -1,12 +1,19 @@
-# [ses-server 后台服务1.2.0版](https://gitee.com/rede-group/ses-server)
 
->         
->            __o      __o      o         __o        ,__o      o__,   
->       __ -_     _ \<_     -\<,    _/\_>     _`\<,_     _-\_<,      ,>_/-_ 
->      (_)T(_)   (_)/(_)   O / O   O,> / O   (*)/ (*)   (*)/'(*)    (*)`\(*)
->      
->                             RedE Scooter 2019
->                               1.2.0 version
+     (♥)(♥)(♥)     (♥)(♥)(♥)  
+   (♥)       (♥)(♥)      (♥)  
+  (♥)          (♥)      (♥)   
+  (♥)                  (♥)          RedE Scooter 2019
+   (♥)                (♥)     
+     (♥)            (♥)               1.2.0 version
+       (♥)        (♥)         
+        (♥)     (♥)           
+          (♥)  (♥)            
+             (♥)                 
+                             
+                             
+                             
+# [ses-server 后台服务1.2.0版](https://gitee.com/rede-group/ses-server)
+ 
       
 ### 技术选型
 
