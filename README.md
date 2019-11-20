@@ -13,7 +13,7 @@
                                                                             
                              
 ###### <div align=right>RedE Scooter 2019
-# <div align=center>[ses-server 分布式服务架构1.2.0.v](https://gitee.com/rede-group/ses-server) :confused:	
+# <div align=center>[ses-server 分布式服务架构1.2.0.v](https://github.com/mrjerryli/ses-server) :confused:	
  
 
 ### 技术选型
