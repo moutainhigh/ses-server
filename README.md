@@ -1,19 +1,18 @@
-###### <font color=gren>RedE Scooter 2019
-###### <font color=gren>1.2.0 version
->>         
->>              (♥)(♥)(♥)     (♥)(♥)(♥)  
->>            (♥)       (♥)(♥)      (♥)  
->>           (♥)          (♥)      (♥)   
->>           (♥)                  (♥)           
->>            (♥)                (♥)     
->>              (♥)            (♥)               
->>                (♥)        (♥)         
->>                 (♥)     (♥)           
->>                   (♥)  (♥)            
->>                      (♥)                 
->>                                      
+
+      
+                                                      (♥)(♥)(♥)     (♥)(♥)(♥)  
+                                                    (♥)       (♥)(♥)      (♥)  
+                                                   (♥)          (♥)      (♥)   
+                                                   (♥)                  (♥)           
+                                                    (♥)                (♥)     
+                                                      (♥)            (♥)               
+                                                        (♥)        (♥)         
+                                                         (♥)     (♥)           
+                                                           (♥)  (♥)            
+                                                              (♥)                 
+                                                                                   
                              
-                             
+###### <div align=right>RedE Scooter 2019
 # <div align=center>[ses-server 分布式服务架构1.2.0.v](https://gitee.com/rede-group/ses-server) :confused:	
  
 
