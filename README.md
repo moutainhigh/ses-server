@@ -13,7 +13,7 @@
                                                                             
                              
 ###### <div align=right>RedE Scooter 2019
-# <div align=center>[ses-server 分布式服务架构1.2.0.v](https://github.com/mrjerryli/ses-server) :confused:	
+# <div align=center>[ses-server 多租户分布式服务架构1.2.0.v](https://github.com/mrjerryli/ses-server) :confused:	
  
 
 ### 技术选型
@@ -29,6 +29,7 @@
 	- Mybatis Plus
 	- Swagger
 	- Xxl job 
+	- TX-LCN分布式事务框架
 - 构建工具
 	- Intellij IDEA Ultimate 2019.2
 	- Maven
@@ -38,23 +39,25 @@
 
 #### 框架搭建
 
-- [x] 基础框架搭建
+- [x] 基础框架
     - [x] 父模块、通用模块创建
     - [x] 公共starter
     - [x] 公共工具类
-    - [ ] 搭建微服务网关
-    - [ ] 搭建微服务提供者（资源服务器）
+    - [x] lcn分布式事务监控平台
+    - [x] xxl-job分布式任务集成
+    - [ ] 整合Swagger
+    - [ ] 搭建微服务网关 （考虑中......）
+    - [ ] 搭建微服务生产者
+    - [ ] 搭建微服务消费者
 - [ ] 架构完善
     - [ ] 参数配置化
     - [ ] 异常处理
-    - [ ] Feign的使用
     - [ ] 微服务防护
     - [ ] 跨域处理
-- [ ] 完善登录流程
-- [ ] 整合Swagger
-- [ ] 整合第三方服务
-- [ ] 微服务部署
-- [ ] 页面管理服务
-- [ ] 商品管理服务
-- [ ] 搜索服务
-- [ ] 语音搜索服务
+    - [ ] 分布式事务处
+- [ ] 业务完善
+    - [ ] BUOOB整合各服务
+    - [ ] 完善登录流程
+    - [ ] 整合第三方服务
+    - [ ] 页面管理服务
+    - [ ] 搜索服务
