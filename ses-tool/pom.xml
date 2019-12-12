@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.redescooter.ses</groupId>
     <artifactId>ses-tool</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.2.0</version>
     <name>ses-tool</name>
     <description>Demo project for Spring Boot</description>
 

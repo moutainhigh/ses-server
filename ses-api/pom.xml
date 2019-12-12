@@ -14,6 +14,16 @@
     <name>ses-api</name>
     <description>Demo project for Spring Boot</description>
 
+    <modules>
+        <module>ses-api-common</module>
+        <module>ses-api-foundation</module>
+        <module>ses-api-hub</module>
+        <module>ses-api-mobile-b</module>
+        <module>ses-api-mobile-c</module>
+        <module>ses-api-proxy</module>
+        <module>ses-api-scooter</module>
+    </modules>
+
     <build>
         <plugins>
             <plugin>

@@ -19,7 +19,12 @@
     </properties>
 
     <modules>
+        <module>ses-service-base</module>
         <module>ses-service-common</module>
+        <module>ses-service-hub</module>
+        <module>ses-service-mobile-b</module>
+        <module>ses-service-mobile-c</module>
+        <module>ses-service-security</module>
     </modules>
     <dependencies>
         <dependency>

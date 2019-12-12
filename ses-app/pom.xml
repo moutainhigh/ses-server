@@ -20,8 +20,11 @@
 
     <modules>
         <module>ses-app-common</module>
-        <module>ses-web-delivery</module>
+        <module>ses-admin-dev</module>
         <module>ses-mobile-client</module>
+        <module>ses-web-delivery</module>
+        <module>ses-web-repair</module>
+        <module>ses-web-ros</module>
     </modules>
 
     <dependencies>
