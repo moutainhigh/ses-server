@@ -1,7 +1,0 @@
-com/redescooter/ses/instance/one/example/DemoJobHandler.class
-com/redescooter/ses/instance/one/example/ShardingJobHandler.class
-com/redescooter/ses/instance/one/example/HttpJobHandler.class
-com/redescooter/ses/instance/one/example/CommandJobHandler.class
-com/redescooter/ses/instance/one/config/XxlJobConfig.class
-com/redescooter/ses/instance/one/SeSInstanceOneApplication.class
-com/redescooter/ses/instance/one/run/foundation/SendMailTaskExecutor.class

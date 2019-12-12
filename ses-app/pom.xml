@@ -11,6 +11,7 @@
     <groupId>com.redescooter.ses</groupId>
     <artifactId>ses-app</artifactId>
     <version>1.2.0</version>
+    <packaging>pom</packaging>
     <name>ses-app</name>
     <description>Demo project for Spring Boot</description>
 

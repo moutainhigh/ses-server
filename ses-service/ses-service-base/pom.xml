@@ -10,6 +10,7 @@
     <groupId>com.redescooter.ses</groupId>
     <artifactId>ses-service-base</artifactId>
     <version>1.2.0</version>
+    <packaging>pom</packaging>
     <name>ses-service-base</name>
     <description>Demo project for Spring Boot</description>
 
