@@ -1,0 +1,13 @@
+#日志路径
+log:
+  file:
+    path: logs/${spring.profiles.active}
+    max-history: 180
+    max-size: 128MB
+
+
+spring:
+  application:
+    name: @project.artifactId@
+  profiles:
+    active: dev
