@@ -27,22 +27,11 @@
         <module>ses-service-mobile-c</module>
         <module>ses-service-security</module>
     </modules>
+
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-logs</artifactId>
         </dependency>
     </dependencies>
 

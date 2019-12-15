@@ -1,9 +1,9 @@
 #Springboot 基础配置
 spring:
   application:
-    name: @project.artifactId@
+    name: ses-admin-dev
   profiles:
-    active: @profile-active@
+    active: local
   messages:
     basename: i18n/messages
     fallback-to-system-locale: false
@@ -94,11 +94,11 @@ mybatis-plus:
 # DUBBO 配置
 dubbo:
   application:
-    id: @project.artifactId@
-    name: @project.artifactId@
+    id: ses-admin-dev
+    name: ses-admin-dev
     qos-enable: false
     qos-accept-foreign-ip: true
-    version: 1.2.0
+    version: 1.0.0
   scan:
     base-packages: com.redescooter.ses  #服务暴露与发现消费所在的package
   registry:
@@ -113,6 +113,7 @@ dubbo:
     port: 20888
     threads: 300
   provider:
+    .
     validation: true
     timeout: 30000
     group: ses
