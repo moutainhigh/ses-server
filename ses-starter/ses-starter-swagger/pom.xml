@@ -13,14 +13,6 @@
     <name>ses-starter-swagger</name>
     <description>Demo project for Spring Boot</description>
 
-    <properties>
-        <springfox.version>2.8.0</springfox.version>
-        <swagger.version>2.8.0</swagger.version>
-        <swagger-annotations.version>1.5.21</swagger-annotations.version>
-        <swagger.bootstrap.ui.version>1.9.5</swagger.bootstrap.ui.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -55,7 +47,6 @@
             <artifactId>swagger-bootstrap-ui</artifactId>
             <version>${swagger.bootstrap.ui.version}</version>
         </dependency>
-
     </dependencies>
 
 

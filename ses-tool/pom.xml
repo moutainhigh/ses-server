@@ -14,4 +14,10 @@
     <name>ses-tool</name>
     <description>Demo project for Spring Boot</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-common</artifactId>
+        </dependency>
+    </dependencies>
 </project>

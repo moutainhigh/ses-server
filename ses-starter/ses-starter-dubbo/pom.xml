@@ -13,9 +13,6 @@
     <name>ses-starter-dubbo</name>
     <description>Demo project for Spring Boot</description>
 
-    <properties>
-        <dubbo.version>2.7.3</dubbo.version>
-    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -31,16 +28,28 @@
     </dependencyManagement>
 
     <dependencies>
+        <!--集成dubbo-->
+        <!--⚠️排除Spring依赖时必须排除spring-context，而非官方文件中的spring，否则和Spring-Boot存在冲突，无法启动应用-->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
             <version>${dubbo.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <!-- dubbo-springboot-starter -->
+        <!-- dubbo-springboot-starter 引入-->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version> 2.7.3</version>
+            <version>${dubbo.version}</version>
         </dependency>
         <!-- dubbo 序列化 -->
         <dependency>
@@ -61,28 +70,14 @@
             <version>${dubbo.version}</version>
             <type>pom</type>
         </dependency>
-        <!--        &lt;!&ndash; Zookeeper &ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.zookeeper</groupId>-->
-        <!--            <artifactId>zookeeper</artifactId>-->
-        <!--            <version>3.5.4-beta</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.curator</groupId>-->
-        <!--            <artifactId>curator-framework</artifactId>-->
-        <!--            <version>4.2.0</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.curator</groupId>-->
-        <!--            <artifactId>curator-recipes</artifactId>-->
-        <!--            <version>4.2.0</version>-->
-        <!--            <exclusions>-->
-        <!--                <exclusion>-->
-        <!--                    <artifactId>curator-framework</artifactId>-->
-        <!--                    <groupId>org.apache.curator</groupId>-->
-        <!--                </exclusion>-->
-        <!--            </exclusions>-->
-        <!--        </dependency>-->
+        <!-- Dubbo REST dependency start -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>${resteasy-jaxrs.version}</version>
+        </dependency>
+        <!-- Dubbo REST dependency end -->
+
     </dependencies>
 
 

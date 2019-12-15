@@ -26,7 +26,47 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <application.version>${project.version}</application.version>
+        <dubbo.version>2.7.3</dubbo.version>
+        <resteasy-jaxrs.version>3.0.19.Final</resteasy-jaxrs.version>
+        <fastjson.version>1.2.62</fastjson.version>
+        <!--阿里云OSS-->
+        <aliyun-sdk-oss.version>2.8.3</aliyun-sdk-oss.version>
+        <!--引入开源hutool工具包-->
+        <hutool.version>4.6.2</hutool.version>
+        <!--表格操作组件-->
+        <easypoi.version>4.1.0</easypoi.version>
+        <!--swagger start-->
+        <springfox.version>2.8.0</springfox.version>
+        <swagger.version>2.8.0</swagger.version>
+        <swagger-annotations.version>1.5.21</swagger-annotations.version>
+        <swagger.bootstrap.ui.version>1.9.5</swagger.bootstrap.ui.version>
+        <!--swagger end-->
+        <commons-lang3.version>3.8.1</commons-lang3.version>
+        <commons-codec.version>1.12</commons-codec.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
+        <commons-collections4.version>4.3</commons-collections4.version>
+        <commons-validator.version>1.6</commons-validator.version>
+        <hsr-geohash.version>1.0.10</hsr-geohash.version>
+        <dynamic-datasource.version>2.5.6</dynamic-datasource.version>
+        <spring-boot-starter-data-redis.version>2.0.5.RELEASE</spring-boot-starter-data-redis.version>
+        <druid-spring-boot-starter.version>1.1.17</druid-spring-boot-starter.version>
+        <mybatis-spring-boot-starter.version>2.0.1</mybatis-spring-boot-starter.version>
+        <mybatisplus.version>3.1.2</mybatisplus.version>
+        <mybatis-plus-boot-starter.version>3.1.2</mybatis-plus-boot-starter.version>
+        <jedis.version>2.9.0</jedis.version>
+        <freemarker.version>2.3.23</freemarker.version>
+        <velocity.version>1.7</velocity.version>
+        <!--build-plugin相关版本控制-->
+        <lombok-maven-plugin.version>1.16.8.0</lombok-maven-plugin.version>
+        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+        <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
     </properties>
+
     <modules>
         <module>ses-starter</module>
         <module>ses-tool</module>
@@ -40,6 +80,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--ses-server公共部分-->
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-starter-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-logs</artifactId>
@@ -65,19 +111,58 @@
                 <artifactId>ses-starter-poi</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-api-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-app-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-service-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-tool</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--三方公共部分-->
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons-collections.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <!-- fastjson -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                    <groupId>org.springframework.boot</groupId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,6 +175,15 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- freemarke引擎依赖引入 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -97,13 +191,5 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

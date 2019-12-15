@@ -20,11 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-starter-db</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-starter-dubbo</artifactId>
+            <artifactId>ses-app-common</artifactId>
         </dependency>
     </dependencies>
 
