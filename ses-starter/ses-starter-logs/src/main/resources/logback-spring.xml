@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="PATTERN" value="%date [%-5p] [%F:%L] - %m%n"></property>
-    <property name="PATTERN-INF" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n"></property>
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <!-- 彩色日志格式 -->
+    <property name="PATTERN"
+              value="${PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+
+<!--    <property name="PATTERN" value="%date [%-5p] [%F:%L] - %m%n"></property>-->
+<!--    <property name="PATTERN-INF" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n"></property>-->
 
     <springProperty scope="context" name="project-name" source="spring.application.name"/>
     <springProperty scope="context" name="filePath" source="log.file.path"/>
-    <springProperty scope="context" name="fileMaxHistory" source="log.file.max-history" defaultValue="180"/>
+    <springProperty scope="context" name="fileMaxHistory" source="log.file.max-history" defaultValue="60"/>
     <springProperty scope="context" name="fileMaxSize" source="log.file.max-size" defaultValue="64MB"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${PATTERN}</pattern>
+            <charset>utf8</charset>
         </encoder>
     </appender>
 

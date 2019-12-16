@@ -16,7 +16,7 @@ spring:
     encoding: UTF-8
   #数据库连接
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       time-between-eviction-runsMillis: 60000
@@ -40,6 +40,8 @@ spring:
       force: true
       charset: UTF-8
       enabled: true
+  freemarker:
+    check-template-location: false
 
 # Spring boot actuator 配置
 management:
@@ -61,26 +63,23 @@ dubbo:
   application:
     id: ses-admin-dev
     name: ses-admin-dev
-    # 是否启动QoS
-    qos-enable: false
-    # 是否允许远程访问
-    qos-accept-foreign-ip: false
-  #服务暴露与发现消费所在的package
+    qos-enable: false # 是否启动QoS
+    qos-accept-foreign-ip: false #是否允许远程访问
+  registry:
+    check: false # 注册中心不存在时，是否报错
   scan:
-    base-packages: com.redescooter.ses
-  #服务提供者缺省值配置
-  provider:
-    validation: true
+    base-packages: com.redescooter.ses #服务暴露与发现消费所在的package
+  provider: #服务提供者缺省值配置
     timeout: 30000
-  #服务消费者缺省值配置
-  consumer:
-    # 启动时检查提供者是否存在，true报错，false忽略
-    check: false
+    threads: 300
+  consumer: #服务消费者缺省值配置
+    check: false # 启动时检查提供者是否存在，true报错，false忽略
     timeout: 20000
     filter: dubboAccessLogFilter
   protocol:
     port: -1
     threads: 300
+
 
 #REDIS配置
 redis:

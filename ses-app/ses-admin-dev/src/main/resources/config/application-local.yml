@@ -15,7 +15,7 @@ spring:
       enabled: true
   #数据库连接
   datasource:
-    url: jdbc:mysql://192.168.2.200:3306/operation_test
+    url: jdbc:mysql://39.108.92.232:3306/operation_test?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
     username: root
     password: 1qaz2wsx
     druid:
@@ -35,7 +35,7 @@ spring:
     group:
       crm-api:                                          # 用户组api，可以配置多个组
         group-name: Admin Dev RESTful API                            # api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: CRM Online Documentation                             # api组的标题，会在swagger-ui的标题处显示
+        title: Admin Dev Online Documentation                             # api组的标题，会在swagger-ui的标题处显示
         description: CRM Management System       # api组的描述，会在swagger-ui的描述中显示
         exclude-path: /error, /ops/**                   # TODO 尚未实现 过滤错误路径
         authorization:                                  # TODO 尚未实现 请求头鉴权
@@ -59,17 +59,10 @@ redis:
 
 ## DUBBO 配置
 dubbo:
-  #注册中心配置，用于配置连接注册中心相关信息
-  registries:
-    ses:
-      group: ses
-      address: zookeeper://192.168.2.200:12181
-  metadata-report:
+  registry: #注册中心
+    address: zookeeper://192.168.2.200:32181
+  metadata-report: #元数据中心
     address: zookeeper://192.168.2.200:32181
     timeout: 30000
-# DUBBO 配置
-#dubbo:
-#  registries:
-#    ses:
-#      group: ses
-#      address: zookeeper://192.168.2.200:12181
+  config-center: #配置中心
+    address: zookeeper://192.168.2.200:32181
