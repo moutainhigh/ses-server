@@ -30,10 +30,10 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-dubbo</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-starter-swagger</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.redescooter.ses</groupId>-->
+<!--            <artifactId>ses-starter-swagger</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-poi</artifactId>

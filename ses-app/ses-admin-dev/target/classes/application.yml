@@ -40,6 +40,7 @@ spring:
       force: true
       charset: UTF-8
       enabled: true
+
 # Spring boot actuator 配置
 management:
   server:
@@ -58,13 +59,12 @@ management:
 # DUBBO 配置
 dubbo:
   application:
+    id: ses-admin-dev
     name: ses-admin-dev
     # 是否启动QoS
     qos-enable: false
     # 是否允许远程访问
     qos-accept-foreign-ip: false
-    # 当前应用版本
-    version: 1.2.0
   #服务暴露与发现消费所在的package
   scan:
     base-packages: com.redescooter.ses
@@ -72,14 +72,15 @@ dubbo:
   provider:
     validation: true
     timeout: 30000
-    #服务分组，当一个接口有多个实现，可以用分组区分
-    group: ses
   #服务消费者缺省值配置
   consumer:
     # 启动时检查提供者是否存在，true报错，false忽略
     check: false
     timeout: 20000
-    filter: DubboAccessLogFilter
+    filter: dubboAccessLogFilter
+  protocol:
+    port: -1
+    threads: 300
 
 #REDIS配置
 redis:
@@ -88,12 +89,14 @@ redis:
   min-Idle: 50
   timeout: 3000
   max-attempts: 5
+
 #MYBATIS配置
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
     #打印sql
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 #mybaits-plus配置，此配置 不影响原始的mybatis
 mybatis-plus:
   mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml

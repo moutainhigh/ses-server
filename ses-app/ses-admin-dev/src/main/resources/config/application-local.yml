@@ -15,7 +15,7 @@ spring:
       enabled: true
   #数据库连接
   datasource:
-    url: jdbc:mysql://39.108.92.232:3306/operation_test?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://192.168.2.200:3306/operation_test
     username: root
     password: 1qaz2wsx
     druid:
@@ -34,7 +34,7 @@ spring:
     enabled: true                                       # 是否启用swagger
     group:
       crm-api:                                          # 用户组api，可以配置多个组
-        group-name: CRM RESTful API                            # api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: Admin Dev RESTful API                            # api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: CRM Online Documentation                             # api组的标题，会在swagger-ui的标题处显示
         description: CRM Management System       # api组的描述，会在swagger-ui的描述中显示
         exclude-path: /error, /ops/**                   # TODO 尚未实现 过滤错误路径
@@ -57,38 +57,19 @@ spring:
 redis:
   redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
 
-# DUBBO 配置
+## DUBBO 配置
 dubbo:
   #注册中心配置，用于配置连接注册中心相关信息
-  registry:
-    client: curator
-    address: zookeeper://39.108.92.232:22181
-    check: false
-    timeout: 30000
+  registries:
+    ses:
+      group: ses
+      address: zookeeper://192.168.2.200:12181
   metadata-report:
-    address: zookeeper://39.108.92.232:22181
+    address: zookeeper://192.168.2.200:32181
     timeout: 30000
-  #暴露服务方式
-  protocol:
-    #默认名称，勿修改
-    name: dubbo
-    #暴露服务端口 （默认是20880，修改端口，不同的服务提供者端口不能重复）
-    port: 20888
-    threads: 300
-
-
-
-#######################################################################################
-# secuity-component config
-# rede.security.appName: rede_@project.artifactId@
-# dubbo.security.register: zookeeper://192.168.2.200:22181
+# DUBBO 配置
 #dubbo:
 #  registries:
 #    ses:
 #      group: ses
-#      address: zookeeper://192.168.2.200:22181
-# 多注册中心配置
-#    reg2:
-#      group: hdg2
-#      address: zookeeper://zk1.d.xqcx.com:2181?backup=zk2.d.xqcx.com:2181,zk3.d.xqcx.com:2181
-#######################################################################################
+#      address: zookeeper://192.168.2.200:12181

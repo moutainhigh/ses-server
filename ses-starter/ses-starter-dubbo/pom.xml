@@ -29,21 +29,31 @@
 
     <dependencies>
         <!--集成dubbo-->
-        <!--⚠️排除Spring依赖时必须排除spring-context，而非官方文件中的spring，否则和Spring-Boot存在冲突，无法启动应用-->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
             <version>${dubbo.version}</version>
             <exclusions>
+                <!--排除这个slf4j-log4j12-->
                 <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- Zookeeper -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-dependencies-zookeeper</artifactId>
+            <version>${dubbo.version}</version>
+            <exclusions>
+                <!--排除这个slf4j-log4j12-->
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+            <type>pom</type>
         </dependency>
         <!-- dubbo-springboot-starter 引入-->
         <dependency>
@@ -63,23 +73,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Zookeeper -->
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-dependencies-zookeeper</artifactId>
-            <version>${dubbo.version}</version>
-            <type>pom</type>
-        </dependency>
-        <!-- Dubbo REST dependency start -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-            <version>${resteasy-jaxrs.version}</version>
-        </dependency>
-        <!-- Dubbo REST dependency end -->
-
     </dependencies>
-
 
     <repositories>
         <repository>

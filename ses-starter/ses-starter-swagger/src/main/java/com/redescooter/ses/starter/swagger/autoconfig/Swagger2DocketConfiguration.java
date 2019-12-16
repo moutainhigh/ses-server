@@ -161,9 +161,9 @@ public class Swagger2DocketConfiguration implements BeanFactoryPostProcessor, En
         otherSwagger.setGroupName("OTHER-API");
         otherSwagger.setDescription("以上API中未被包含进来得接口");
         otherSwagger.setPathMapping("/*");
-        otherSwagger.setVersion("v1.0.0");
+        otherSwagger.setVersion("v1.2.0");
         otherSwagger.setPathRegex("/ ");
-        otherSwagger.setTitle(" RedE Other RestFull API");
+        otherSwagger.setTitle("RedE Other RestFull API");
         return otherSwagger;
     }
 

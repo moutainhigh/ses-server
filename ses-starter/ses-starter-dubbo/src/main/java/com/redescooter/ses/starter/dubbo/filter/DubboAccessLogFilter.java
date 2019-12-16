@@ -3,6 +3,7 @@ package com.redescooter.ses.starter.dubbo.filter;
 import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.starter.dubbo.InterfaceLog;
 import com.redescooter.ses.starter.dubbo.annotation.RecordDubboLog;
+import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Activate
 public class DubboAccessLogFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(DubboAccessLogFilter.class);
     public static final String LINE_SEPARATOR = System.getProperty("line.separator", "\r\n");
