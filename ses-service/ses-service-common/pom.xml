@@ -16,6 +16,10 @@
     <dependencies>
         <dependency>
             <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-tool</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-logs</artifactId>
         </dependency>
         <dependency>
@@ -24,15 +28,15 @@
         </dependency>
         <dependency>
             <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-dubbo</artifactId>
         </dependency>
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-poi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-tool</artifactId>
         </dependency>
         <dependency>
             <groupId>com.redescooter.ses</groupId>

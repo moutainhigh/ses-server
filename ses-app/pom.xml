@@ -28,13 +28,6 @@
         <module>ses-web-ros</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-api-common</artifactId>
-        </dependency>
-    </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>

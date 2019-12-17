@@ -1,15 +1,11 @@
 #Springboot 基础配置
 server:
-  port: 18090
-  servlet:
-    context-path: /ses/admin/dev/api
-  tomcat:
-    uri-encoding: UTF-8
+  port: ${random.int[10000,19999]}
 spring:
   application:
-    name: ses-admin-dev
+    name: @project.artifactId@
   profiles:
-    active: local
+    active: @profile-active@
   messages:
     basename: i18n/messages
     fallback-to-system-locale: false
@@ -31,38 +27,29 @@ spring:
       filters: stat
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
       use-global-data-source-stat: true
+      # 监控页面的用户名和密码 以及页面地址
+      stat-view-servlet:
+        login-username: admin
+        login-password: admin@RedE2019
+        enabled: false
+        url-pattern: /druid/*
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
-  #编码格式
+  # swagger配置
+  swagger:
+    enabled: false                                       # 是否启用swagger
   http:
     encoding:
       force: true
       charset: UTF-8
       enabled: true
-  freemarker:
-    check-template-location: false
-
-# Spring boot actuator 配置
-management:
-  server:
-    servlet:
-      context-path: "/management"
-    port: 28088
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-      base-path: "/monitor"
-  endpoint:
-    shutdown:
-      enabled: true
 
 # DUBBO 配置
 dubbo:
   application:
-    id: ses-admin-dev
-    name: ses-admin-dev
+    id: @project.artifactId@
+    name: @project.artifactId@
     qos-enable: false # 是否启动QoS
     qos-accept-foreign-ip: false #是否允许远程访问
   registry:
@@ -92,10 +79,13 @@ redis:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl    #打印sql
-mybatis-plus: #mybaits-plus配置，此配置 不影响原始的mybatis
+    #打印sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#mybaits-plus配置，此配置 不影响原始的mybatis
+mybatis-plus:
   mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml
-  typeAliasesPackage: com.redescooter.ses.admin.dev.vo,com.redescooter.ses.admin.dev.vo.base
+  typeAliasesPackage: com.redescooter.ses.service.foundation.dm.base
   global-config:
     #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
     id-type: 3
@@ -114,12 +104,3 @@ mybatis-plus: #mybaits-plus配置，此配置 不影响原始的mybatis
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
-
-# 阿里oss上传
-oss:
-  internalEndpoint: oss-cn-shanghai.aliyuncs.com
-  accessKeyId: LTAIDUpZRjkFVCze
-  secretAccesskey: lVM6XOqSdrdgJ3brHRcdSUOAVdxcS5
-  defaultBucketName: rede
-  publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
-  maxFileSize: 5242880

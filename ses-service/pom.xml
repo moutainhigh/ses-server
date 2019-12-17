@@ -28,13 +28,6 @@
         <module>ses-service-security</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-starter-logs</artifactId>
-        </dependency>
-    </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>
