@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.exception.BaseException;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.app.common.exception.HttpHeaderException;
-import com.redescooter.ses.app.common.utils.AccessLogUtils;
+import com.redescooter.ses.tool.utils.AccessLogUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.*;

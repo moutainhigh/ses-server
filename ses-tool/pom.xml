@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-starter-common</artifactId>
+            <artifactId>ses-api-common</artifactId>
         </dependency>
     </dependencies>
 </project>

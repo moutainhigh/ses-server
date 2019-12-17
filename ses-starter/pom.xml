@@ -17,6 +17,7 @@
 
     <modules>
         <module>ses-starter-db</module>
+        <module>ses-starter-redis</module>
         <module>ses-starter-dubbo</module>
         <module>ses-starter-logs</module>
         <module>ses-starter-poi</module>

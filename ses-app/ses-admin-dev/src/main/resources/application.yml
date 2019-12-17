@@ -80,7 +80,6 @@ dubbo:
     port: -1
     threads: 300
 
-
 #REDIS配置
 redis:
   max-total: 10000
@@ -93,11 +92,8 @@ redis:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-    #打印sql
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-#mybaits-plus配置，此配置 不影响原始的mybatis
-mybatis-plus:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl    #打印sql
+mybatis-plus: #mybaits-plus配置，此配置 不影响原始的mybatis
   mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml
   typeAliasesPackage: com.redescooter.ses.admin.dev.vo,com.redescooter.ses.admin.dev.vo.base
   global-config:
@@ -119,3 +115,11 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     cache-enabled: true
 
+# 阿里oss上传
+oss:
+  internalEndpoint: oss-cn-shanghai.aliyuncs.com
+  accessKeyId: LTAIDUpZRjkFVCze
+  secretAccesskey: lVM6XOqSdrdgJ3brHRcdSUOAVdxcS5
+  defaultBucketName: rede
+  publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
+  maxFileSize: 5242880

@@ -18,7 +18,8 @@
     <properties>
         <encoding>UTF-8</encoding>
         <java.version>1.8</java.version>
-        <api.version>1.1.0</api.version>
+        <ses.version>1.2.0</ses.version>
+        <springboot.version>2.0.2.RELEASE</springboot.version>
         <!-- 编译跳过单元测试 -->
         <skipTests>true</skipTests>
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
@@ -26,6 +27,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <application.version>${project.version}</application.version>
+        <spring-boot-starter-data-redis.version>${springboot.version}</spring-boot-starter-data-redis.version>
         <dubbo.version>2.7.3</dubbo.version>
         <zookeeper.version>3.4.9</zookeeper.version>
         <curator.framework.version>4.2.0</curator.framework.version>
@@ -50,7 +52,6 @@
         <commons-validator.version>1.6</commons-validator.version>
         <hsr-geohash.version>1.0.10</hsr-geohash.version>
         <dynamic-datasource.version>2.5.6</dynamic-datasource.version>
-        <spring-boot-starter-data-redis.version>2.0.5.RELEASE</spring-boot-starter-data-redis.version>
         <druid-spring-boot-starter.version>1.1.17</druid-spring-boot-starter.version>
         <mybatis-spring-boot-starter.version>2.0.1</mybatis-spring-boot-starter.version>
         <mybatisplus.version>3.1.2</mybatisplus.version>
@@ -86,52 +87,79 @@
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-common</artifactId>
-                <version>${project.version}</version>
+                <version>${ses.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-logs</artifactId>
-                <version>${project.version}</version>
+                <version>${ses.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-db</artifactId>
-                <version>${project.version}</version>
+                <version>${ses.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-starter-redis</artifactId>
+                <version>${ses.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-dubbo</artifactId>
-                <version>${project.version}</version>
+                <version>${ses.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-swagger</artifactId>
-                <version>${project.version}</version>
+                <version>${ses.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-poi</artifactId>
-                <version>${project.version}</version>
+                <version>${ses.version}</version>
             </dependency>
+            <!--ses-api start引入-->
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-api-common</artifactId>
-                <version>${project.version}</version>
+                <version>${ses.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-api-foundation</artifactId>
+                <version>${ses.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-api-proxy</artifactId>
+                <version>${ses.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-api-scooter</artifactId>
+                <version>${ses.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-api-hub</artifactId>
+                <version>${ses.version}</version>
+            </dependency>
+            <!--ses-api end引入-->
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-app-common</artifactId>
-                <version>${project.version}</version>
+                <version>${ses.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-service-common</artifactId>
-                <version>${project.version}</version>
+                <version>${ses.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-tool</artifactId>
-                <version>${project.version}</version>
+                <version>${ses.version}</version>
             </dependency>
             <!--三方公共部分-->
             <dependency>

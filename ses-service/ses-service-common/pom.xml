@@ -13,4 +13,43 @@
     <name>ses-service-common</name>
     <description>Common Foundation Package</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-logs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-db</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-tool</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-foundation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-proxy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-scooter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-hub</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
