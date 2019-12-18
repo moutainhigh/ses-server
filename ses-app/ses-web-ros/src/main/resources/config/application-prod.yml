@@ -1,0 +1,76 @@
+#日志路径
+log:
+  file:
+    path: /data/java_service/logs2/@profile-active@
+    max-size: 128MB
+    max-history: 180
+
+# secuity-component config
+rede.security.appName: rede_@project.artifactId@
+dubbo.security.register: zookeeper://127.0.0.1:2181
+# secuity-component config
+
+# swagger配置
+spring:
+  #上传配置
+  http:
+  servlet:
+    multipart:
+      max-request-size: 1000MB
+      max-file-size: 20MB
+      enabled: true
+  #数据库连接
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/consumer_prod924?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    username: rede
+    password: RedE2019!!
+    druid:
+      initial-size: 8
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+      # 监控页面的用户名和密码 以及页面地址
+      stat-view-servlet:
+        login-username: rede
+        login-password: admin
+        enabled: true
+        url-pattern: /druid/*
+  # swagger在线文档配置
+  swagger:
+    enabled: true                                       # 是否启用swagger
+    group:
+      crm-api:                                          # 用户组api，可以配置多个组
+        group-name: CRM RESTful API                            # api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: CRM Online Documentation                             # api组的标题，会在swagger-ui的标题处显示
+        description: CRM Management System       # api组的描述，会在swagger-ui的描述中显示
+        exclude-path: /error, /ops/**                   # TODO 尚未实现 过滤错误路径
+        authorization:                                  # TODO 尚未实现 请求头鉴权
+          key-name: Header头                            # 鉴权传递的Header参数
+          name: CHP                                     # 鉴权策略ID，对应 SecurityReferences ID
+          auth-regex: ^.*$                              # 需要开启鉴权URL的正则, 默认^.*$匹配所有URL
+        path-regex: /.*                                # 匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                 # 匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.0.0                                 # api版本
+        license: RedE 公司内部传阅                           # 授权协议
+        license-url: '#'                                # 授权协议地址
+        terms-of-service-url:                           # 服务条款地址
+        contact:                                        # 文档联系人
+          name: 李加廷                                   # 联系人名字
+          email: jerry@redescooter.com                     # 联系人邮箱
+          url: https://github.com/mrjerryli             # 联系地址
+
+#REDIS配置
+redis:
+  redis-address: 127.0.0.1:7000;127.0.0.1:7001;127.0.0.1:7002;127.0.0.1:7003;127.0.0.1:7004;127.0.0.1:7005
+
+# DUBBO 配置
+dubbo:
+  registries:
+    ses:
+      group: ses
+      address: zookeeper://127.0.0.1:2181
+# 多注册中心配置
+#    reg2:
+#      group: hdg2
+#      address: zookeeper://zk1.d.xqcx.com:2181?backup=zk2.d.xqcx.com:2181,zk3.d.xqcx.com:2181
+

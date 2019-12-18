@@ -1,0 +1,81 @@
+#Springboot 基础配置
+server:
+  port: ${random.int[10000,19999]}
+spring:
+  application:
+    name: @project.artifactId@
+  profiles:
+    active: @profile-active@
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false
+    encoding: UTF-8
+  #数据库连接
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      time-between-eviction-runsMillis: 60000
+      min-evictable-idle-timeMillis: 300000
+      validation-query: select 'x' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 20
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      use-global-data-source-stat: true
+      # 监控页面的用户名和密码 以及页面地址
+      stat-view-servlet:
+        login-username: admin
+        login-password: admin
+        enabled: false
+        url-pattern: /druid/*
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
+  # swagger配置
+  swagger:
+    enabled: false                                       # 是否启用swagger
+
+# DUBBO 配置
+dubbo:
+  # dubbo 升级至2.7.0后作废
+  # check: false
+  scan:
+    basePackages: com.redescooter.ses
+  application:
+    name: @project.artifactId@
+  provider:
+    timeout: 2000
+    filter: dubboAccessLogFilter
+  protocol:
+    port: -1
+    threads: 300
+  #    serialization: kryo
+  #    optimizer: com.xqcx.hdg.optimizer.SerializationOptimizerImpl
+  #    accesslog: /usr/local/project/logs/@project.artifactId@/access.log
+  consumer:
+    # 启动时检查提供者是否存在，true报错，false忽略
+    check: false
+
+#REDIS配置
+redis:
+  max-total: 10000
+  max-idle: 200
+  min-Idle: 50
+  timeout: 3000
+  max-attempts: 5
+
+#MYBATIS配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    #打印sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.redescooter.ses.dm
+  mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml
+
+

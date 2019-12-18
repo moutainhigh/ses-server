@@ -59,6 +59,9 @@
         <jedis.version>2.9.0</jedis.version>
         <freemarker.version>2.3.23</freemarker.version>
         <velocity.version>1.7</velocity.version>
+        <httpclient.version>4.5.10</httpclient.version>
+        <jasypt.version>2.1.1</jasypt.version>
+        <jpush.client.version>3.3.10</jpush.client.version>
         <!--build-plugin相关版本控制-->
         <lombok-maven-plugin.version>1.16.8.0</lombok-maven-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
@@ -197,6 +200,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
