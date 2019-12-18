@@ -21,6 +21,6 @@ public class SendMailEnter extends GeneralEnter {
     @ApiModelProperty(value = "邮箱账户")
     private String mail;
     @ApiModelProperty(value = "发送验证码事件")
-    private String sendCodeEvent;
+    private String event;
 
 }
