@@ -20,7 +20,7 @@ public class YearCompleteUtil {
         return (year - birthday.getYear());
     }
     public static void main(String[] args){
-      Integer test= YearCompleteUtil.yearComplete(new Date(1970,2,15));
+      Integer test=YearCompleteUtil.yearComplete(new Date(1970,2,15));
         log.info(test.toString());
     }
 }
