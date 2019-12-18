@@ -253,23 +253,3 @@ local.properties
 target/
 .DS_Store
 .gitattributes
-
-## 过滤 target 下的文件
-*/*/target/*
-*/*/*.iml
-*/*/*/target/*
-*/*.iml
-*/*/target
-.gitignore
-ses-app/ses-admin-dev/src/main/resources/mapper/
-ses-app/ses-admin-dev/src/main/resources/templates/
-ses-app/ses-mobile-client/src/main/java/com/redescooter/ses/mobile/client/dao/
-ses-app/ses-mobile-client/src/main/java/com/redescooter/ses/mobile/client/vo/
-ses-app/ses-web-delivery/src/main/java/com/redescooter/ses/web/delivery/dao/
-ses-app/ses-web-delivery/src/main/resources/mapper/
-ses-app/ses-web-delivery/src/main/resources/templates/
-ses-app/ses-web-repair/src/main/resources/templates/
-ses-app/ses-web-ros/src/main/java/com/redescooter/ses/web/ros/vo/base/
-ses-app/ses-web-ros/src/main/resources/templates/
-ses-service/ses-service-base/ses-service-proxy/src/main/java/com/redescooter/ses/service/proxy/dao/
-ses-service/ses-service-base/ses-service-scooter/src/main/java/com/redescooter/ses/service/scooter/dao/
