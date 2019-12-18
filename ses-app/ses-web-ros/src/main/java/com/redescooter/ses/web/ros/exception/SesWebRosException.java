@@ -10,7 +10,7 @@ import com.redescooter.ses.api.common.exception.BusinessException;
  */
 public class SesWebRosException extends BusinessException {
 
-    private static final String ROOT_CODE = "A000";
+    private static final String ROOT_CODE = "R000";
 
     private static final int DEFAULT_ERROR_CODE = 1;
 

@@ -4,7 +4,7 @@ package com.redescooter.ses.api.foundation.service;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
-import com.redescooter.ses.api.foundation.vo.login.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 
 /**
  * @author Mr.lijiating

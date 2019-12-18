@@ -14,8 +14,8 @@ import java.util.Properties;
  * create: 2019-05-27 12:56
  */
 @Configuration
-@MapperScan({"com.redescooter.ses.mobile.client.dao",
-             "com.redescooter.ses.mobile.client.dao.base"})
+@MapperScan({"com.redescooter.ses.web.ros.dao",
+             "com.redescooter.ses.web.ros.dao.base"})
 public class MybatisPlusConfig {
     /**
      * 分页插件

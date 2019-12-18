@@ -10,13 +10,13 @@ import lombok.EqualsAndHashCode;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 25/11/2019 7:12 上午
- * @ClassName: AccountSelectionListResult
+ * @ClassName: SelectAccountResult
  * @Function: TODO
  */
 @ApiModel(value = "账户选择列表", description = "账户选择列表")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class AccountSelectionListResult extends GeneralResult {
+public class SelectAccountResult extends GeneralResult {
 
     @ApiModelProperty(value = "userId")
     private Long userId;

@@ -5,9 +5,9 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.foundation.service.UserTokenService;
-import com.redescooter.ses.api.foundation.vo.login.UserLoginConfirmEnter;
-import com.redescooter.ses.api.foundation.vo.login.UserLoginEnter;
-import com.redescooter.ses.api.foundation.vo.login.UserLoginResult;
+import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
+import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class UserTokenController {
     @IgnoreLoginCheck
     @ApiOperation(value = "登入确认")
     @RequestMapping(value = "/login/confirm/{confirmRequestId}")
-    public Response<UserLoginResult> loginConfirm(@PathVariable("confirmRequestId") String confirmRequestId, UserLoginConfirmEnter enter) {
+    public Response<LoginResult> loginConfirm(@PathVariable("confirmRequestId") String confirmRequestId, LoginConfirmEnter enter) {
         log.info("多用户登录RequestId==={}",confirmRequestId);
         return new Response<>(userTokenService.loginConfirm(enter));
     }
@@ -42,7 +42,7 @@ public class UserTokenController {
     @IgnoreLoginCheck
     @ApiOperation(value = "登入接口")
     @RequestMapping(value = "/login")
-    public Response<UserLoginResult> login(@ModelAttribute UserLoginEnter enter) {
+    public Response<LoginResult> login(@ModelAttribute LoginEnter enter) {
         return new Response<>(userTokenService.login(enter));
     }
 

@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.foundation.vo.login;
+package com.redescooter.ses.api.foundation.vo.user;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.*;

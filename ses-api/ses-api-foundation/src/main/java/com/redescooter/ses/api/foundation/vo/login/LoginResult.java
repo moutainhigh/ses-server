@@ -7,13 +7,13 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 /**
- * @description: UserLoginResult
+ * @description: LoginResult
  * @author: Darren
  * @create: 2019/01/16 09:57
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class UserLoginResult extends GeneralResult {
+public class LoginResult extends GeneralResult {
 
     private String token;
 
@@ -21,5 +21,5 @@ public class UserLoginResult extends GeneralResult {
 
     private Integer accountType;
 
-    List<AccountSelectionListResult> accountSelectionList;
+    List<SelectAccountResult> accountSelectionList;
 }

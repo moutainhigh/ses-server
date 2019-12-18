@@ -26,7 +26,7 @@ public enum AccountTypeEnums {
 
     APP_PERSONAL(SystemIDEnums.REDE_SAAS.getSystemId(), AppIDEnums.SAAS_APP.getAppId(), BusinessIDEnums.PERSONAL.getCode(), 6),
 
-    WEB_ROS(SystemIDEnums.REDE_SES.getSystemId(), AppIDEnums.SES.getAppId(), BusinessIDEnums.NORMAL.getCode(), 7),
+    WEB_ROS(SystemIDEnums.REDE_SES.getSystemId(), AppIDEnums.SES_ROS.getAppId(), BusinessIDEnums.NORMAL.getCode(), 7),
     ;
 
     //系统id

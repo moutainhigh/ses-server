@@ -4,6 +4,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import com.redescooter.ses.api.foundation.vo.login.*;
+import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
+import com.redescooter.ses.api.foundation.vo.user.UserToken;
 
 import java.util.List;
 
@@ -23,7 +25,7 @@ public interface UserTokenService {
      * @param enter
      * @return
      */
-    UserLoginResult login(UserLoginEnter enter);
+    LoginResult login(LoginEnter enter);
 
     /**
      * 确认登录
@@ -31,7 +33,7 @@ public interface UserTokenService {
      * @param enter
      * @return
      */
-    UserLoginResult loginConfirm(UserLoginConfirmEnter enter);
+    LoginResult loginConfirm(LoginConfirmEnter enter);
 
     /**
      * 用户注销

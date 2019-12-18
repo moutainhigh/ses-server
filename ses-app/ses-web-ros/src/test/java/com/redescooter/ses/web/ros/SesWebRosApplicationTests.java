@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
