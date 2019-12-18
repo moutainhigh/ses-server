@@ -2,8 +2,10 @@ package com.redescooter.ses.web.ros.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.ros.account.AccountStatus;
+import com.redescooter.ses.api.common.enums.ros.account.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
@@ -33,6 +35,7 @@ import redis.clients.jedis.JedisCluster;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -58,7 +61,50 @@ public class TokenRosServiceImpl implements TokenRosService {
     @Override
     public TokenResult login(LoginEnter enter) {
 
-        return null;
+        QueryWrapper<OpeSysUser> wrapper = new QueryWrapper<>();
+        wrapper.eq(OpeSysUser.COL_LOGIN_NAME,enter.getLoginName());
+        wrapper.eq(OpeSysUser.COL_DR,0);
+        wrapper.eq(OpeSysUser.COL_APP_ID, enter.getAppId());
+        wrapper.eq(OpeSysUser.COL_SYSTEM_ID, enter.getSystemId());
+
+        OpeSysUser sysUser = sysUserMapper.selectOne(wrapper);
+        //用户名验证，及根据用户名未查到改用户，则该用户不存在
+        if (sysUser == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        //状态验证
+        if (StringUtils.equals(sysUser.getStatus(), UserStatusEnum.LOCK.getCode())) {
+            throw new SesWebRosException(ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getCode(),ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getMessage());
+        }
+        if (StringUtils.equals(sysUser.getStatus(), UserStatusEnum.CANCEL.getCode())) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_CANCELLED.getCode(),ExceptionCodeEnums.ACCOUNT_CANCELLED.getMessage());
+        }
+        if (StringUtils.equals(sysUser.getStatus(), UserStatusEnum.EXPIRED.getCode())) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_EXPIRED.getCode(), ExceptionCodeEnums.ACCOUNT_EXPIRED.getMessage());
+        }
+        String password = DigestUtils.md5Hex(enter.getPassword() + sysUser.getSalt());
+
+        if (!password.equals(sysUser.getPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(),ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+
+        //将token及用户相关信息 放到Redis中
+        UserToken userToken = setToken(enter, sysUser);
+
+        sysUser.setLastLoginToken(userToken.getToken());
+        sysUser.setLastLoginTime(new Date(enter.getTimestamp()));
+        sysUser.setLastLoginIp(enter.getClientIp());
+        sysUser.setUpdatedBy(enter.getUserId());
+        sysUser.setUpdatedTime(new Date());
+
+        UpdateWrapper<OpeSysUser> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", sysUser.getId());
+        sysUserMapper.update(sysUser, updateWrapper);
+
+        TokenResult result = new TokenResult();
+        result.setToken(userToken.getToken());
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**
@@ -69,7 +115,9 @@ public class TokenRosServiceImpl implements TokenRosService {
      */
     @Override
     public GeneralResult logout(GeneralEnter enter) {
-        return null;
+        String token = enter.getToken();
+        jedisCluster.del(token);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -158,6 +206,9 @@ public class TokenRosServiceImpl implements TokenRosService {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
 
+        UpdateWrapper<OpeSysUserProfile> delete = new UpdateWrapper<>();
+        delete.eq(OpeSysUserProfile.COL_SYS_USER_ID,opeSysUser.getId());
+        sysUserProfileMapper.delete(delete);
         sysUserMapper.deleteById(enter.getId());
 
         return new GeneralResult(enter.getRequestId());
@@ -222,6 +273,37 @@ public class TokenRosServiceImpl implements TokenRosService {
             log.error("checkToken IllegalAccessException sessionMap:" + map, e);
         } catch (InvocationTargetException e) {
             log.error("checkToken IllegalAccessException sessionMap:" + map, e);
+        }
+        return userToken;
+    }
+
+    private UserToken setToken(LoginEnter enter, OpeSysUser user) {
+        String token = UUID.randomUUID().toString().replaceAll("-", "");
+        UserToken userToken = new UserToken();
+        userToken.setToken(token);
+        userToken.setUserId(user.getId());
+        userToken.setTenantId(new Long("0"));
+        userToken.setSystemId(enter.getSystemId());
+        userToken.setAppId(enter.getAppId());
+        userToken.setClientIp(enter.getClientIp());
+        userToken.setClientType(enter.getClientType());
+        userToken.setCountry(enter.getCountry());
+        userToken.setLanguage(enter.getLanguage());
+        userToken.setTimestamp(enter.getTimestamp());
+        userToken.setTimeZone(enter.getTimeZone());
+        userToken.setVersion(enter.getVersion());
+
+        try {
+            Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
+            map.remove("requestId");
+            jedisCluster.hmset(token, map);
+            jedisCluster.expire(token, 60 * 60 * 24 * 30);
+        } catch (IllegalAccessException e) {
+            log.error("setToken IllegalAccessException userSession:" + userToken, e);
+        } catch (InvocationTargetException e) {
+            log.error("setToken InvocationTargetException userSession:" + userToken, e);
+        } catch (NoSuchMethodException e) {
+            log.error("setToken NoSuchMethodException userSession:" + userToken, e);
         }
         return userToken;
     }
