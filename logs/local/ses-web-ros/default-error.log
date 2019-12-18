@@ -1,0 +1,5 @@
+2019-12-19 02:17:18,373 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider
+2019-12-19 02:17:21,551 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider
+2019-12-19 02:19:25,910 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider
+2019-12-19 02:19:32,194 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider
+2019-12-19 02:19:33,482 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider

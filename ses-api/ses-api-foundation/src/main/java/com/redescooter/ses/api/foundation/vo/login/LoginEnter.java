@@ -20,13 +20,13 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class LoginEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "账户类型", hidden = true)
+    @ApiModelProperty(value = "账户类型",hidden = true)
     private int loginType = 1;
 
-    @ApiModelProperty(value = "登录名", hidden = true)
+    @ApiModelProperty(value = "登录名")
     private String loginName;
 
-    @ApiModelProperty(value = "密码", hidden = true)
+    @ApiModelProperty(value = "密码")
     private String password;
 
 }

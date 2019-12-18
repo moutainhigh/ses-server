@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
+    <!--@mbg.generated-->
+    <!--@Table ope_customer_inquiry-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="customer_id" property="customerId" />
+    <result column="country" property="country" />
+    <result column="city" property="city" />
+    <result column="district" property="district" />
+    <result column="customer_source" property="customerSource" />
+    <result column="sales_id" property="salesId" />
+    <result column="status" property="status" />
+    <result column="industry" property="industry" />
+    <result column="customer_type" property="customerType" />
+    <result column="name" property="name" />
+    <result column="telephone" property="telephone" />
+    <result column="email" property="email" />
+    <result column="address" property="address" />
+    <result column="contact" property="contact" />
+    <result column="scooter_quantity" property="scooterQuantity" />
+    <result column="remarks" property="remarks" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, customer_id, country, city, district, customer_source, sales_id, `status`, 
+    industry, customer_type, `name`, telephone, email, address, contact, scooter_quantity, 
+    remarks, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
+    def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_customer_inquiry
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="customer_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.customerId}
+        </foreach>
+      </trim>
+      <trim prefix="country = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.country}
+        </foreach>
+      </trim>
+      <trim prefix="city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.city}
+        </foreach>
+      </trim>
+      <trim prefix="district = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.district}
+        </foreach>
+      </trim>
+      <trim prefix="customer_source = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.customerSource}
+        </foreach>
+      </trim>
+      <trim prefix="sales_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.salesId}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="industry = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.industry}
+        </foreach>
+      </trim>
+      <trim prefix="customer_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.customerType}
+        </foreach>
+      </trim>
+      <trim prefix="`name` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.name}
+        </foreach>
+      </trim>
+      <trim prefix="telephone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.telephone}
+        </foreach>
+      </trim>
+      <trim prefix="email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.email}
+        </foreach>
+      </trim>
+      <trim prefix="address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.address}
+        </foreach>
+      </trim>
+      <trim prefix="contact = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.contact}
+        </foreach>
+      </trim>
+      <trim prefix="scooter_quantity = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.scooterQuantity}
+        </foreach>
+      </trim>
+      <trim prefix="remarks = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.remarks}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_customer_inquiry
+    (id, dr, customer_id, country, city, district, customer_source, sales_id, `status`, 
+      industry, customer_type, `name`, telephone, email, address, contact, scooter_quantity, 
+      remarks, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.customerId}, #{item.country}, #{item.city}, #{item.district}, 
+        #{item.customerSource}, #{item.salesId}, #{item.status}, #{item.industry}, #{item.customerType}, 
+        #{item.name}, #{item.telephone}, #{item.email}, #{item.address}, #{item.contact}, 
+        #{item.scooterQuantity}, #{item.remarks}, #{item.createdBy}, #{item.createdTime}, 
+        #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, 
+        #{item.def5}, #{item.def6})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
+    <!--@mbg.generated-->
+    insert into ope_customer_inquiry
+    (id, dr, customer_id, country, city, district, customer_source, sales_id, `status`, 
+      industry, customer_type, `name`, telephone, email, address, contact, scooter_quantity, 
+      remarks, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
+    values
+    (#{id}, #{dr}, #{customerId}, #{country}, #{city}, #{district}, #{customerSource}, 
+      #{salesId}, #{status}, #{industry}, #{customerType}, #{name}, #{telephone}, #{email}, 
+      #{address}, #{contact}, #{scooterQuantity}, #{remarks}, #{createdBy}, #{createdTime}, 
+      #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    customer_id = #{customerId}, 
+    country = #{country}, 
+    city = #{city}, 
+    district = #{district}, 
+    customer_source = #{customerSource}, 
+    sales_id = #{salesId}, 
+    `status` = #{status}, 
+    industry = #{industry}, 
+    customer_type = #{customerType}, 
+    `name` = #{name}, 
+    telephone = #{telephone}, 
+    email = #{email}, 
+    address = #{address}, 
+    contact = #{contact}, 
+    scooter_quantity = #{scooterQuantity}, 
+    remarks = #{remarks}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
+    <!--@mbg.generated-->
+    insert into ope_customer_inquiry
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="country != null">
+        country,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="district != null">
+        district,
+      </if>
+      <if test="customerSource != null">
+        customer_source,
+      </if>
+      <if test="salesId != null">
+        sales_id,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="industry != null">
+        industry,
+      </if>
+      <if test="customerType != null">
+        customer_type,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="contact != null">
+        contact,
+      </if>
+      <if test="scooterQuantity != null">
+        scooter_quantity,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="customerId != null">
+        #{customerId},
+      </if>
+      <if test="country != null">
+        #{country},
+      </if>
+      <if test="city != null">
+        #{city},
+      </if>
+      <if test="district != null">
+        #{district},
+      </if>
+      <if test="customerSource != null">
+        #{customerSource},
+      </if>
+      <if test="salesId != null">
+        #{salesId},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="industry != null">
+        #{industry},
+      </if>
+      <if test="customerType != null">
+        #{customerType},
+      </if>
+      <if test="name != null">
+        #{name},
+      </if>
+      <if test="telephone != null">
+        #{telephone},
+      </if>
+      <if test="email != null">
+        #{email},
+      </if>
+      <if test="address != null">
+        #{address},
+      </if>
+      <if test="contact != null">
+        #{contact},
+      </if>
+      <if test="scooterQuantity != null">
+        #{scooterQuantity},
+      </if>
+      <if test="remarks != null">
+        #{remarks},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="customerId != null">
+        customer_id = #{customerId},
+      </if>
+      <if test="country != null">
+        country = #{country},
+      </if>
+      <if test="city != null">
+        city = #{city},
+      </if>
+      <if test="district != null">
+        district = #{district},
+      </if>
+      <if test="customerSource != null">
+        customer_source = #{customerSource},
+      </if>
+      <if test="salesId != null">
+        sales_id = #{salesId},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="industry != null">
+        industry = #{industry},
+      </if>
+      <if test="customerType != null">
+        customer_type = #{customerType},
+      </if>
+      <if test="name != null">
+        `name` = #{name},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone},
+      </if>
+      <if test="email != null">
+        email = #{email},
+      </if>
+      <if test="address != null">
+        address = #{address},
+      </if>
+      <if test="contact != null">
+        contact = #{contact},
+      </if>
+      <if test="scooterQuantity != null">
+        scooter_quantity = #{scooterQuantity},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  * @date: 2019-05-28 13:57
  */
 
-@Api(tags = {"Sign-In"})
+@Api(tags = {"Sign"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/sign/token")
@@ -33,25 +33,25 @@ public class TokenController {
     private TokenRosService tokenRosService;
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "登录接口", response = LoginEnter.class)
+    @ApiOperation(value = "登录", response = TokenResult.class)
     @PostMapping(value = "/login")
     public Response<TokenResult> login(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
         return new Response<>(tokenRosService.login(enter));
     }
 
-    @ApiOperation(value = "登出接口", response = GeneralResult.class)
+    @ApiOperation(value = "登出", response = GeneralResult.class)
     @PostMapping(value = "/logout")
     public Response<GeneralResult> logout(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(tokenRosService.logout(enter));
     }
 
-    @ApiOperation(value = "修改密码接口", response = GeneralResult.class)
+    @ApiOperation(value = "修改密码", response = GeneralResult.class)
     @PostMapping(value = "/chanage/{code}")
     public Response<GeneralResult> chanagePassword(@PathVariable("code") String code, @ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
         return new Response<>(tokenRosService.modifyPassword(enter));
     }
 
-    @ApiOperation(value = "发送验证邮件接口", response = GeneralResult.class)
+    @ApiOperation(value = "发送验证码", response = GeneralResult.class)
     @PostMapping(value = "/sendCode")
     public Response<GeneralResult> sendCode(@ModelAttribute @ApiParam("请求参数") SendMailEnter enter) {
         return new Response<>(tokenRosService.sendCode(enter));

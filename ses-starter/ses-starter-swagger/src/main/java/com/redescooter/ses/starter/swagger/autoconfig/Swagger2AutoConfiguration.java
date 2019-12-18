@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author jerry
  * @version 1.0.0
  */
-
 public class Swagger2AutoConfiguration {
 
 	private static final Logger log = LoggerFactory.getLogger(Swagger2AutoConfiguration.class);

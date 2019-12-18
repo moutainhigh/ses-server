@@ -1,5 +1,4 @@
 package com.redescooter.ses.web.ros.service.impl;
-import com.google.common.collect.Maps;
 
 import com.redescooter.ses.api.common.enums.customer.CustomerStatus;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -35,6 +34,7 @@ public class CustomerProServiceImpl implements CustomerProService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+
     /**
      * @param enter
      * @desc: 客户状态分类
@@ -48,7 +48,7 @@ public class CustomerProServiceImpl implements CustomerProService {
     public Map<String, Integer> countByCustomerStatus(GeneralEnter enter) {
         // 查询 客户状态
         //todo 补完整mapper
-        List<CountByStatusResult> countByCustomerStatus= customerProServiceMapper.countByCustomerStatus();
+        List<CountByStatusResult> countByCustomerStatus = customerProServiceMapper.countByCustomerStatus();
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByCustomerStatus) {
             map.put(item.getStatus(), item.getTotalCount());
@@ -73,12 +73,12 @@ public class CustomerProServiceImpl implements CustomerProService {
     @Override
     public PageResult<CustomerListByPageResult> customerListByPage(CustomerListByPageEnter enter) {
         // todo 补mapper
-        int count=customerProServiceMapper.queryCustomerListCount(enter);
-        if (count==0){
+        int count = customerProServiceMapper.queryCustomerListCount(enter);
+        if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<CustomerListByPageResult> customerList=customerProServiceMapper.queryCustomerList(enter);
-        return PageResult.create(enter,count,customerList);
+        List<CustomerListByPageResult> customerList = customerProServiceMapper.queryCustomerList(enter);
+        return PageResult.create(enter, count, customerList);
     }
 
     /**
@@ -107,7 +107,7 @@ public class CustomerProServiceImpl implements CustomerProService {
     @Override
     public GeneralResult convertCustomer(IdEnter enter) {
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
-        if (customer==null){
+        if (customer == null) {
             //todo 异常
         }
         customer.setStatus(CustomerStatus.OFFICIAL_CUSTOMER.getCode());
@@ -129,7 +129,7 @@ public class CustomerProServiceImpl implements CustomerProService {
     @Override
     public GeneralResult deleteCustomer(DeleteCustomerEnter enter) {
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
-        if (customer==null){
+        if (customer == null) {
             // 异常
         }
         customer.setStatus(CustomerStatus.TRASH.getCode());
@@ -153,7 +153,7 @@ public class CustomerProServiceImpl implements CustomerProService {
     @Override
     public CustomerDetailResult customerDetail(IdEnter enter) {
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
-        if (customer==null){
+        if (customer == null) {
             // 异常
         }
         //todo 封装 返回
@@ -173,6 +173,7 @@ public class CustomerProServiceImpl implements CustomerProService {
     @Override
     public GeneralResult createCustomerAccount(CreateCustomerAccountEnter enter) {
 
+        return null;
     }
 
     /**
@@ -188,7 +189,7 @@ public class CustomerProServiceImpl implements CustomerProService {
     public Map<String, Integer> countByCustomerAccountStatus(GeneralEnter enter) {
         // 查询 客户状态
         //todo 补mapper 有需要可以掉 platform 注意
-        List<CountByStatusResult> countByCustomerAccountStatus= customerProServiceMapper.countByCustomerAccountStatus();
+        List<CountByStatusResult> countByCustomerAccountStatus = customerProServiceMapper.countByCustomerAccountStatus();
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByCustomerAccountStatus) {
             map.put(item.getStatus(), item.getTotalCount());

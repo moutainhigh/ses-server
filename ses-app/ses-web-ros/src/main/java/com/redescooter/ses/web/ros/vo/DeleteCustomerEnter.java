@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.vo;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 
 import io.swagger.annotations.*;
+import lombok.*;
 
 /**
  * @ClassName:DeleteCustomerEnter
@@ -11,7 +12,12 @@ import io.swagger.annotations.*;
  * @Version：1.3
  * @create: 2019/12/18 17:49
  */
-@ApiModel(value = "删除客户入参", description = "删除客户出参")
+@ApiModel(value = "客户删除", description = "客户删除")
+@Data //生成getter,setter等函数
+@AllArgsConstructor //生成全参数构造函数
+@NoArgsConstructor//生成无参构造函数
+@Builder
+@EqualsAndHashCode(callSuper = false)
 public class DeleteCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id")
