@@ -3,6 +3,7 @@ package com.redescooter.ses.app.common.controller;
 
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.app.common.service.FileAppService;
+import com.redescooter.ses.tool.utils.IpUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,11 @@ public class FileController {
                                        HttpServletResponse response,
                                        @PathVariable(required = false) String bucket,
                                        MultipartFile file) {
+
+        String ipAddr = IpUtils.getIpAddr(request);
+
+        log.info("====ip地址为==={}",ipAddr);
+
         return new Response(true, fileAppService.uplaod(bucket, file));
     }
 }
