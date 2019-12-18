@@ -16,7 +16,7 @@ spring:
     encoding: UTF-8
   #数据库连接
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       time-between-eviction-runsMillis: 60000
@@ -65,8 +65,10 @@ dubbo:
     name: @project.artifactId@
     qos-enable: false # 是否启动QoS
     qos-accept-foreign-ip: false #是否允许远程访问
+    logger: log4j
   registry:
     check: false # 注册中心不存在时，是否报错
+    protocol: zookeeper #注册中心地址协议
   scan:
     base-packages: com.redescooter.ses #服务暴露与发现消费所在的package
   provider: #服务提供者缺省值配置
@@ -79,6 +81,7 @@ dubbo:
   protocol:
     port: -1
     threads: 300
+    name: dubbo
 
 #REDIS配置
 redis:

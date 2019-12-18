@@ -5,7 +5,7 @@ import com.redescooter.ses.api.foundation.service.SequenceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.stereotype.Service;
+import org.apache.dubbo.config.annotation.Service;
 
 /**
  * @description: IdAppServiceImpl
