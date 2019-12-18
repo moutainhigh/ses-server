@@ -17,8 +17,9 @@ import lombok.NoArgsConstructor;
 public enum ExceptionCodeEnums {
 
     //  10000   系统公用异常
-
     TOKEN_NOT_EXIST(10001, "token不存在"),
+
+    TOKEN_MESSAGE_IS_FALSE(10002, "token失效"),
 
     USER_NOT_EXIST(10002, "用户不存在"),
 
@@ -32,23 +33,21 @@ public enum ExceptionCodeEnums {
 
     ACCOUNT_CANCELLED(10007, "账户被注销了"),
 
-    TOKEN_MESSAGE_IS_FALSE(10008, "token中的信息不正确"),
-
     ACCOUNT_EXPIRED(10009, "账号过期"),
 
     INCONSISTENT_PASSWORD(10010, "密码不一致"),
 
     ACCOUNT_ALREADY_EXIST(10011, "账户已经存在了"),
 
-    SYSTEMID_IS_NOT_MATCH(10012, "systemid 不匹配"),
+    SYSTEMID_IS_NOT_MATCH(10012, "SYSTEMID不匹配"),
 
-    APPID_IS_NOT_MATCH(10013, "appid 不匹配"),
+    APPID_IS_NOT_MATCH(10013, "APPID不匹配"),
 
     LANGUAGE_CANNOT_EMPTY(10014, "语言为空"),
 
     CLIENTTYPE_CANNOT_EMPTY(10015, "客户端类型为空"),
 
-    CLIENTIP_CANNOT_EMPTY(10016, "客户端IP 为空"),
+    CLIENTIP_CANNOT_EMPTY(10016, "客户端IP为空"),
 
     TIMEZONE_CANNOT_EMPTY(10017, "时区为空"),
 

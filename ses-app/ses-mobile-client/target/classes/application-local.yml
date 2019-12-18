@@ -4,8 +4,7 @@ log:
     path: logs/local
     max-size: 128MB
     max-history: 180
-#spring config
-spring:
+spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
     multipart:
@@ -13,7 +12,7 @@ spring:
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://192.168.2.200:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://192.168.2.200:3306/corporate_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
     username: root
     password: 1qaz2wsx
     druid:
@@ -30,9 +29,9 @@ spring:
     enabled: true                                                                                                       #是否启用swagger
     group:
       all-api:                                                                                                          #用户组api，可以配置多个组
-        group-name: Admin Dev RESTful API                                                                               #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: Admin Dev Online Documentation                                                                           #api组的标题，会在swagger-ui的标题处显示
-        description: Admin Dev Management System                                                                        #api组的描述，会在swagger-ui的描述中显示
+        group-name: Mobile Client RESTful API                                                                           #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: Mobile Client Online Documentation                                                                       #api组的标题，会在swagger-ui的标题处显示
+        description: Mobile Client Management System                                                                    #api组的描述，会在swagger-ui的描述中显示
         path-regex: /.*                                                                                                 #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.2.0                                                                                                 #Api版本
@@ -46,7 +45,6 @@ spring:
 
 redis:                                                                                                                  #REDIS配置
   redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
-
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心

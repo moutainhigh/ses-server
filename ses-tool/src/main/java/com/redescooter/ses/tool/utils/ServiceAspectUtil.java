@@ -4,7 +4,6 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.exception.BaseException;
 import com.redescooter.ses.api.common.exception.ValidationException;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.tool.atnutils.ValidationUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.context.MessageSource;

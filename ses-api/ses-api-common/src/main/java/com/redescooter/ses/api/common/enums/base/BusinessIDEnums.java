@@ -14,10 +14,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum BusinessIDEnums {
 
-    NORMAL("Normal", 1, "单一"),
+    NORMAL("NORMAL", 1, "游离端"),
     PERSONAL("PERSONAL", 2, "个人端"),
-    RESTAURANT("RESTAURANT", 3, "餐厅"),
-    EXPRESS("EXPRESS", 4, "快递"),
+    RESTAURANT("RESTAURANT", 3, "餐厅端"),
+    EXPRESS("EXPRESS", 4, "快递端"),
     ;
 
     //业务编码

@@ -14,8 +14,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SystemIDEnums {
 
-    REDE_DELIVERY("REDE_DELIVERY", 1, "SaaS配送系统"),
-    REDE_SES("REDE_SES", 1, "SaaS内部系统"),
+    REDE_SAAS("REDE_SAAS", 1, "SaaS配送系统"),
+    REDE_SES("REDE_SES", 1, "RedE办公系统"),
+    REDE_DEV("REDE_DEV", 1, "RedE开发系统"),
+
     ;
 
     //系统编码

@@ -14,10 +14,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AppIDEnums {
 
-    DELIVERY_WEB("DELIVERY_WEB", SystemIDEnums.REDE_DELIVERY.getSystemId(), 1, "SaaS配送"),
-    DELIVERY_APP("DELIVERY_APP", SystemIDEnums.REDE_DELIVERY.getSystemId(), 2, "SaaS移动"),
-    REPAIR_WEB("REPAIR_WEB", SystemIDEnums.REDE_DELIVERY.getSystemId(), 3, "SaaS维修"),
-    CRM_WEB("CRM_WEB", SystemIDEnums.REDE_SES.getSystemId(), 4, "内部管理"),
+    SAAS_WEB("SAAS_WEB", SystemIDEnums.REDE_SAAS.getSystemId(), 1, "SaaS配送"),
+    SAAS_APP("SAAS_APP", SystemIDEnums.REDE_SAAS.getSystemId(), 2, "SaaS移动"),
+    SAAS_REPAIR_WEB("SAAS_REPAIR_WEB", SystemIDEnums.REDE_SAAS.getSystemId(), 3, "SaaS维修"),
+    SES("SES", SystemIDEnums.REDE_SES.getSystemId(), 4, "RedE办公系统"),
+    DEV("DEV", SystemIDEnums.REDE_DEV.getSystemId(), 5, "RedE开发系统"),
     ;
 
     //应用ID

@@ -12,6 +12,6 @@ import com.redescooter.ses.app.common.filter.AbstractRequestFilter;
 public class RequestFilter extends AbstractRequestFilter {
     @Override
     protected AppIDEnums getAppId() {
-        return AppIDEnums.CRM_WEB;
+        return AppIDEnums.ROS_WEB;
     }
 }
