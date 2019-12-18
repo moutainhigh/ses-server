@@ -7,9 +7,9 @@ server:
     uri-encoding: UTF-8
 spring:
   application:
-    name: @project.artifactId@
+    name: ses-admin-dev
   profiles:
-    active: @profile-active@
+    active: local
   messages:
     basename: i18n/messages
     fallback-to-system-locale: false
@@ -61,8 +61,8 @@ management:
 # DUBBO 配置
 dubbo:
   application:
-    id: @project.artifactId@
-    name: @project.artifactId@
+    id: ses-admin-dev
+    name: ses-admin-dev
     qos-enable: false # 是否启动QoS
     qos-accept-foreign-ip: false #是否允许远程访问
   registry:

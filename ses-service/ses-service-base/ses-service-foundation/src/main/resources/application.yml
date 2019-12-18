@@ -12,7 +12,7 @@ spring:
     encoding: UTF-8
   #数据库连接
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       time-between-eviction-runsMillis: 60000

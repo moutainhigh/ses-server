@@ -8,7 +8,7 @@ log:
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://192.168.2.200:3306/platform_1213?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://192.168.2.200:3306/operation_test
     username: root
     password: 1qaz2wsx
     druid:
@@ -24,9 +24,4 @@ redis:
 ## DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://192.168.2.200:32181
-  metadata-report: #元数据中心
-    address: zookeeper://192.168.2.200:32181
-    timeout: 30000
-  config-center: #配置中心
     address: zookeeper://192.168.2.200:32181

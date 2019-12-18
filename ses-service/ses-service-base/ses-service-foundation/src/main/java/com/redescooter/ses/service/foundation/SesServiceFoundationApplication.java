@@ -3,8 +3,11 @@ package com.redescooter.ses.service.foundation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
@@ -24,7 +27,11 @@ public class SesServiceFoundationApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(SesServiceFoundationApplication.class, args);
+
+        //非web启动
+        new SpringApplicationBuilder(SesServiceFoundationApplication.class)
+                .web(WebApplicationType.NONE) // .REACTIVE, .SERVLET
+                .run(args);
         log.info("SesServiceFoundationApplication started success ... ");
         synchronized (SesServiceFoundationApplication.class) {
             while (running) {
