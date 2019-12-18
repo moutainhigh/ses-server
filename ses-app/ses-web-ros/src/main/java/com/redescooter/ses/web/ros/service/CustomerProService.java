@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.CreateCustomerAccountEnter;
 import com.redescooter.ses.web.ros.vo.CustomerAccountListEnter;
 import com.redescooter.ses.web.ros.vo.CustomerAccountListResult;
@@ -40,7 +41,7 @@ public interface CustomerProService {
      * @date: 2019/12/18 11:51
      * @Version: CRM 1.3 进销存
      */
-    CustomerListByPageResult customerListByPage(CustomerListByPageEnter enter);
+    PageResult<CustomerListByPageResult> customerListByPage(CustomerListByPageEnter enter);
 
     /**
      * @desc: saveCustomer
@@ -85,7 +86,7 @@ public interface CustomerProService {
     /**
      * @desc: 客户开通账户
      * @param: enter
-     *@return: GeneralResult
+     *@return: Map<String, Integer>
       *@auther: alex
      * @date: 2019/12/18 17:39
      * @Version: ROS 1.0
