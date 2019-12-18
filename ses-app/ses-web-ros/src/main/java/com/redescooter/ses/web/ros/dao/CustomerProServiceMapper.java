@@ -44,5 +44,14 @@ public interface CustomerProServiceMapper {
      */
     List<CustomerListByPageResult> queryCustomerList(CustomerListByPageEnter enter);
 
+    /**
+     * @desc:
+     * @param: enter
+     * @return: List<CountByStatusResult>
+     * @auther: alex
+     * @date: 2019/12/18 21:29
+     * @Version: ROS 1.0
+     */
     List<CountByStatusResult> countByCustomerAccountStatus();
+
 }

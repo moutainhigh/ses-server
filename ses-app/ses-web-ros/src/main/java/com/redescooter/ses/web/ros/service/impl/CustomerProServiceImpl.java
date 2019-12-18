@@ -47,6 +47,7 @@ public class CustomerProServiceImpl implements CustomerProService {
     @Override
     public Map<String, Integer> countByCustomerStatus(GeneralEnter enter) {
         // 查询 客户状态
+        //todo 补完整mapper
         List<CountByStatusResult> countByCustomerStatus= customerProServiceMapper.countByCustomerStatus();
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByCustomerStatus) {
@@ -71,6 +72,7 @@ public class CustomerProServiceImpl implements CustomerProService {
      */
     @Override
     public PageResult<CustomerListByPageResult> customerListByPage(CustomerListByPageEnter enter) {
+        // todo 补mapper
         int count=customerProServiceMapper.queryCustomerListCount(enter);
         if (count==0){
             return PageResult.createZeroRowResult(enter);
@@ -131,8 +133,7 @@ public class CustomerProServiceImpl implements CustomerProService {
             // 异常
         }
         customer.setStatus(CustomerStatus.TRASH.getCode());
-        //todo 删除原因
-
+        //todo 删除原因 需要改动数据库
         customer.setUpdatedBy(enter.getUserId());
         customer.setUpdatedTime(new Date());
 
@@ -186,6 +187,7 @@ public class CustomerProServiceImpl implements CustomerProService {
     @Override
     public Map<String, Integer> countByCustomerAccountStatus(GeneralEnter enter) {
         // 查询 客户状态
+        //todo 补mapper 有需要可以掉 platform 注意
         List<CountByStatusResult> countByCustomerAccountStatus= customerProServiceMapper.countByCustomerAccountStatus();
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByCustomerAccountStatus) {
