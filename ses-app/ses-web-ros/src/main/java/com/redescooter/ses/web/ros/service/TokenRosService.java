@@ -2,11 +2,13 @@ package com.redescooter.ses.web.ros.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
+import com.redescooter.ses.web.ros.vo.AddSysUserEnter;
 
 /**
  * 功能描述: TOKE服务
@@ -56,4 +58,20 @@ public interface TokenRosService {
      * @return
      */
     GeneralResult sendCode(SendMailEnter enter);
+
+    /**
+     * 添加ROS用户
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult createRosUser(AddSysUserEnter enter);
+
+    /**
+     * 删除ROS用户
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult deleteRosUser(IdEnter enter);
 }

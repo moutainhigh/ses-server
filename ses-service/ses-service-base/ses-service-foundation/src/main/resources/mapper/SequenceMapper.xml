@@ -4,7 +4,7 @@
 
     <update id="updateSequence">
     	UPDATE
-    		SYS_SEQUENCE
+    		PLA_SYS_SEQUENCE
     	SET 
     		CURRENT_VALUE = CURRENT_VALUE + #{length}
     	WHERE 
@@ -15,7 +15,7 @@
     	SELECT
     		name, CURRENT_VALUE currentValue, INCREMENT, CACHE
     	FROM
-    		SYS_SEQUENCE
+    		PLA_SYS_SEQUENCE
     	WHERE
     		name=#{name}
     </select>
@@ -24,11 +24,11 @@
 		SELECT
 		name, CURRENT_VALUE currentValue, INCREMENT, cache
 		FROM
-		SYS_SEQUENCE
+		PLA_SYS_SEQUENCE
 	</select>
 
     <insert id="insertSequence">
-		INSERT INTO SYS_SEQUENCE (NAME)
+		INSERT INTO PLA_SYS_SEQUENCE (NAME)
 		VALUES (#{name})
 	</insert>
 

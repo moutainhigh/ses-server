@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.CountryEnums;
 import com.redescooter.ses.api.common.vo.base.ReqHeader;
 import com.redescooter.ses.app.common.exception.HttpHeaderException;
+import com.redescooter.ses.tool.utils.IpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,8 +35,8 @@ public abstract class AbstractRequestFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HashMap parameterMap = new HashMap(request.getParameterMap());
         parameterMap.put("requestId", request.getAttribute("requestId"));
-        String clientIp = getClientIp(request, true, "x-forwarded-for");
-        parameterMap.put("clientIp", clientIp);
+        //String clientIp = getClientIp(request, true, "x-forwarded-for");
+        parameterMap.put("clientIp", IpUtils.getIpAddr(request));
         parameterMap.put("timestamp", request.getAttribute("timestamp"));
         parameterMap.put("appId", getAppId().getAppId());
         parameterMap.put("systemId", getAppId().getSystemId());

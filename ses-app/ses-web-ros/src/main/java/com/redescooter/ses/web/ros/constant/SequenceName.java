@@ -7,13 +7,20 @@ package com.redescooter.ses.web.ros.constant;
  */
 public interface SequenceName {
 
+    String OPE_SYS_USER = "OPE_SYS_USER";
+
+    String OPE_SYS_USER_PROFILE = "OPE_SYS_USER_PROFILE";
+
+
+
+
+
+
+
+
     String CUSTOMER = "CUSTOMER";
 
     String CUSTOMERINQUIRY = "CUSTOMER_INQUIRY";
-
-    String SYSUSER = "SYS_USER";
-
-    String SYS_USER_PROFILE = "SYS_USER_PROFILE";
 
     String ORG_STAFF_POSITION = "ORG_STAFF_POSITION";
 

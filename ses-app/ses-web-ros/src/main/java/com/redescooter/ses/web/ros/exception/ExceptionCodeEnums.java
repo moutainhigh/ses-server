@@ -55,6 +55,10 @@ public enum ExceptionCodeEnums {
 
     COUNTRY_CANNOT_EMPTY(10019, "国家为空"),
 
+    LOGIN_NAME_CANNOT_EMPTY(10020,"用户名不能为空"),
+
+    INSUFFICIENT_PERMISSIONS(10021,"权限不足"),
+
     ;
 
     private int code;

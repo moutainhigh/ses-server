@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.base.impl;
+package com.redescooter.ses.web.ros.service.impl.base;
 
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;

@@ -75,7 +75,7 @@ public class Swagger2DocketConfiguration implements BeanFactoryPostProcessor, En
         List<Parameter> pars = new ArrayList<Parameter>();
         ticketPar.name("CHP").description("Header校验")//name表示名称，description表示描述
                 .modelRef(new ModelRef("string")).parameterType("header")
-                .required(false).defaultValue("{\"Content-Type\":\"application/x-www-form-urlencoded\",\"clientType\":\"PC\",\"token\":\"\",\"language\":\"en\",\"timeZone\":\"GMT+0800\",\"version\":\"1.1\"}").build();//required表示是否必填，defaultvalue表示默认值
+                .required(false).defaultValue("{\"Content-Type\":\"application/x-www-form-urlencoded\",\"clientType\":\"PC\",\"token\":\"\",\"language\":\"en\",\"timeZone\":\"GMT+0800\",\"version\":\"1.2\"}").build();//required表示是否必填，defaultvalue表示默认值
         pars.add(ticketPar.build());//添加完此处一定要把下边的带***的也加上否则不生效
 
         return new Docket(DocumentationType.SWAGGER_2)
