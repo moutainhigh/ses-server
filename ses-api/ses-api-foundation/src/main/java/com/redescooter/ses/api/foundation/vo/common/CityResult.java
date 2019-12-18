@@ -15,7 +15,6 @@ import java.math.BigDecimal;
  */
 
 @Data
-@Builder
 @ApiModel(value = "城市结果集", description = "城市结果集")
 public class CityResult extends GeneralResult {
 

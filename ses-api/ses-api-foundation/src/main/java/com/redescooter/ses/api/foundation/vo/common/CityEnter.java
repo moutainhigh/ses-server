@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 
 
 @Data
-@Builder
 @ApiModel(value = "城市查询参数", description = "城市查询参数")
 public class CityEnter extends GeneralEnter {
 

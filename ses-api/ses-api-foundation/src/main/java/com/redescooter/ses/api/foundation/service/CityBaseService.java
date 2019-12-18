@@ -2,6 +2,7 @@ package com.redescooter.ses.api.foundation.service;
 
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
@@ -18,15 +19,6 @@ import java.util.List;
 
 public interface CityBaseService {
 
-
-    /**
-     * 根据条件查询城市信息列表
-     *
-     * @param enter
-     * @return
-     */
-    List<CityResult> queryCityByParameter(CityEnter enter);
-
     /**
      * 分页查询 根据条件查询城市信息列表
      *
@@ -35,36 +27,19 @@ public interface CityBaseService {
      */
     PageResult<CityResult> queryCityByParameterPage(CityByPageEnter enter);
 
-
     /**
      * 根据id查询城市详情信息
      *
      * @param enter
      * @return
      */
-    CityResult queryCityDeatliById(CityEnter enter);
-
-    /**
-     * 查询全部城市
-     *
-     * @param enter
-     * @return
-     */
-    List<CityResult> queryAllCity(GeneralEnter enter);
-
-    /**
-     * 查询全部城市分页
-     *
-     * @param enter
-     * @return
-     */
-    PageResult<CityResult> queryAllCityPage(PageEnter enter);
+    CityResult queryCityDeatliById(IdEnter enter);
 
     /**
      * 查询指定层级的下级
      *
-     * @param cityId
+     * @param enter
      * @return
      */
-    List<CityResult> queryChildlevelByCity(Long cityId);
+    List<CityResult> queryChildlevel(IdEnter enter);
 }
