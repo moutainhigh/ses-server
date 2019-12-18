@@ -65,6 +65,7 @@ dubbo:
     name: @project.artifactId@
     qos-enable: false # 是否启动QoS
     qos-accept-foreign-ip: false #是否允许远程访问
+    logger: log4j
   registry:
     check: false # 注册中心不存在时，是否报错
     protocol: zookeeper #注册中心地址协议
