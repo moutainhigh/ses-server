@@ -17,13 +17,9 @@ public enum CustomerSource {
     OFFICIAL_WEBSITE("OFFICIAL_WEBSITE", "OFFICIAL_WEBSITE"),
 
     // crm 管理员系统添加
-    ROS("ROS", "ROS"),
+    ROS("ROS", "ROS")
 
-    //email方式 联系添加
-    EMAIL("EMAIL", "EMAIL"),
-
-    //电话联系添加
-    PHONE("PHONE", "PHONE");
+  ;
 
     private String code;
 
