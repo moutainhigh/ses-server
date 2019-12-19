@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.mail;
+package com.redescooter.ses.api.common.enums.proxy.mail;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum MailTemplateStatusEnums {
+public enum MailConfigStatusEnums {
 
     NORMAL("NORMAL", "正常"),
     DISABLED("DISABLED", "失效"),

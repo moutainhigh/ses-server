@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.mail;
+package com.redescooter.ses.api.common.enums.proxy.mail;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 11/10/2019 4:25 下午
- * @ClassName: MailTemplateEventEnum
+ * @ClassName: MailTemplateEventEnums
  * @Function: TODO
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum MailTemplateEventEnum {
+public enum MailTemplateEventEnums {
 
     WEB_ACTIVATE("WEB激活", 1, "web_activate", "WEB_ACTIVATE"),
     MOBILE_ACTIVATE("MOBILE激活", 2, "mobile_activate", "MOBILE_ACTIVATE"),
@@ -35,8 +35,8 @@ public enum MailTemplateEventEnum {
     private String event;
 
 
-    public static MailTemplateEventEnum getMailTemplateEventEnum(int templateNo) {
-        for (MailTemplateEventEnum item : MailTemplateEventEnum.values()) {
+    public static MailTemplateEventEnums getMailTemplateEventEnum(int templateNo) {
+        for (MailTemplateEventEnums item : MailTemplateEventEnums.values()) {
             if (item.getTemplateNo() == templateNo) {
                 return item;
             }

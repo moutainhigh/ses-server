@@ -11,14 +11,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeCustomer")
+@ApiModel(value="com.redescooter.ses.web.ros.dm.OpeCustomer")
 @Data
 @TableName(value = "ope_customer")
 public class OpeCustomer implements Serializable {
     /**
      * id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value="id")
     private Long id;
 
@@ -28,6 +28,20 @@ public class OpeCustomer implements Serializable {
     @TableField(value = "dr")
     @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
     private Integer dr;
+
+    /**
+     * 租户id
+     */
+    @TableField(value = "tenant_id")
+    @ApiModelProperty(value="租户id")
+    private Long tenantId;
+
+    /**
+     * 时区
+     */
+    @TableField(value = "time_zone")
+    @ApiModelProperty(value="时区")
+    private String timeZone;
 
     /**
      * 国家
@@ -58,13 +72,6 @@ public class OpeCustomer implements Serializable {
     private String status;
 
     /**
-     * 租户id
-     */
-    @TableField(value = "tenant_id")
-    @ApiModelProperty(value="租户id")
-    private Long tenantId;
-
-    /**
      * 销售
      */
     @TableField(value = "sales_id")
@@ -93,18 +100,18 @@ public class OpeCustomer implements Serializable {
     private String customerSource;
 
     /**
-     * 客户类型 企业/个人
+     * 客户类型 1企业/2个人
      */
     @TableField(value = "customer_type")
-    @ApiModelProperty(value="客户类型 企业/个人")
-    private String customerType;
+    @ApiModelProperty(value="客户类型 1企业/2个人")
+    private Integer customerType;
 
     /**
-     * 客户行业
+     * 客户行业类型，1餐厅/2快递
      */
-    @TableField(value = "industry")
-    @ApiModelProperty(value="客户行业")
-    private String industry;
+    @TableField(value = "industry_type")
+    @ApiModelProperty(value="客户行业类型，1餐厅/2快递")
+    private Integer industryType;
 
     /**
      * 地址
@@ -149,6 +156,13 @@ public class OpeCustomer implements Serializable {
     private String email;
 
     /**
+     * 备注信息
+     */
+    @TableField(value = "memo")
+    @ApiModelProperty(value="备注信息")
+    private String memo;
+
+    /**
      * 车辆数量
      */
     @TableField(value = "scooter_quantity")
@@ -156,25 +170,25 @@ public class OpeCustomer implements Serializable {
     private Integer scooterQuantity;
 
     /**
-     * 身份证号
+     * 证件类型1身份证，2驾驶证，3护照
      */
-    @TableField(value = "id_card")
-    @ApiModelProperty(value="身份证号")
-    private String idCard;
+    @TableField(value = "certificate_type")
+    @ApiModelProperty(value="证件类型1身份证，2驾驶证，3护照")
+    private Integer certificateType;
 
     /**
-     * 身份证正面图片
+     * 证件正面图片
      */
-    @TableField(value = "id_card_positive")
-    @ApiModelProperty(value="身份证正面图片")
-    private String idCardPositive;
+    @TableField(value = "certificate_positive_annex")
+    @ApiModelProperty(value="证件正面图片")
+    private String certificatePositiveAnnex;
 
     /**
-     * 身份证反面图片
+     * 证件反面图片
      */
-    @TableField(value = "id_card_negative")
-    @ApiModelProperty(value="身份证反面图片")
-    private String idCardNegative;
+    @TableField(value = "certificate_negative_annex")
+    @ApiModelProperty(value="证件反面图片")
+    private String certificateNegativeAnnex;
 
     /**
      * 营业执照编号
@@ -186,37 +200,37 @@ public class OpeCustomer implements Serializable {
     /**
      * 营业执照图片
      */
-    @TableField(value = "business_license_picture")
+    @TableField(value = "business_license_annex")
     @ApiModelProperty(value="营业执照图片")
-    private String businessLicensePicture;
+    private String businessLicenseAnnex;
 
     /**
-     * 发票附件1
+     * 发票编号
      */
-    @TableField(value = "invoice_attachment1")
-    @ApiModelProperty(value="发票附件1")
-    private String invoiceAttachment1;
+    @TableField(value = "invoice_num")
+    @ApiModelProperty(value="发票编号")
+    private String invoiceNum;
 
     /**
-     * 发票附件2
+     * 发票附件
      */
-    @TableField(value = "invoice_attachment2")
-    @ApiModelProperty(value="发票附件2")
-    private String invoiceAttachment2;
+    @TableField(value = "invoice_annex")
+    @ApiModelProperty(value="发票附件")
+    private String invoiceAnnex;
 
     /**
-     * 合同 多个图片逗号隔开
+     * 合同附件
      */
-    @TableField(value = "contract")
-    @ApiModelProperty(value="合同 多个图片逗号隔开")
-    private String contract;
+    @TableField(value = "contract_annex")
+    @ApiModelProperty(value="合同附件")
+    private String contractAnnex;
 
     /**
-     * 时区
+     * 账号使用标识，即激活使用过1，未激活未使用2
      */
-    @TableField(value = "time_zone")
-    @ApiModelProperty(value="时区")
-    private String timeZone;
+    @TableField(value = "account_flag")
+    @ApiModelProperty(value="账号使用标识，即激活使用过1，未激活未使用2")
+    private Integer accountFlag;
 
     /**
      * 创建人
@@ -283,9 +297,11 @@ public class OpeCustomer implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String COL_ID = "id";
-
     public static final String COL_DR = "dr";
+
+    public static final String COL_TENANT_ID = "tenant_id";
+
+    public static final String COL_TIME_ZONE = "time_zone";
 
     public static final String COL_COUNTRY = "country";
 
@@ -294,8 +310,6 @@ public class OpeCustomer implements Serializable {
     public static final String COL_DISTRUST = "distrust";
 
     public static final String COL_STATUS = "status";
-
-    public static final String COL_TENANT_ID = "tenant_id";
 
     public static final String COL_SALES_ID = "sales_id";
 
@@ -307,7 +321,7 @@ public class OpeCustomer implements Serializable {
 
     public static final String COL_CUSTOMER_TYPE = "customer_type";
 
-    public static final String COL_INDUSTRY = "industry";
+    public static final String COL_INDUSTRY_TYPE = "industry_type";
 
     public static final String COL_ADDRESS = "address";
 
@@ -321,25 +335,27 @@ public class OpeCustomer implements Serializable {
 
     public static final String COL_EMAIL = "email";
 
+    public static final String COL_MEMO = "memo";
+
     public static final String COL_SCOOTER_QUANTITY = "scooter_quantity";
 
-    public static final String COL_ID_CARD = "id_card";
+    public static final String COL_CERTIFICATE_TYPE = "certificate_type";
 
-    public static final String COL_ID_CARD_POSITIVE = "id_card_positive";
+    public static final String COL_CERTIFICATE_POSITIVE_ANNEX = "certificate_positive_annex";
 
-    public static final String COL_ID_CARD_NEGATIVE = "id_card_negative";
+    public static final String COL_CERTIFICATE_NEGATIVE_ANNEX = "certificate_negative_annex";
 
     public static final String COL_BUSINESS_LICENSE_NUM = "business_license_num";
 
-    public static final String COL_BUSINESS_LICENSE_PICTURE = "business_license_picture";
+    public static final String COL_BUSINESS_LICENSE_ANNEX = "business_license_annex";
 
-    public static final String COL_INVOICE_ATTACHMENT1 = "invoice_attachment1";
+    public static final String COL_INVOICE_NUM = "invoice_num";
 
-    public static final String COL_INVOICE_ATTACHMENT2 = "invoice_attachment2";
+    public static final String COL_INVOICE_ANNEX = "invoice_annex";
 
-    public static final String COL_CONTRACT = "contract";
+    public static final String COL_CONTRACT_ANNEX = "contract_annex";
 
-    public static final String COL_TIME_ZONE = "time_zone";
+    public static final String COL_ACCOUNT_FLAG = "account_flag";
 
     public static final String COL_CREATED_BY = "created_by";
 

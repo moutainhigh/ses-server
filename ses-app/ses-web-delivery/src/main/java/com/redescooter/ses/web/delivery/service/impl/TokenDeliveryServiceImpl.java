@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
-import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -49,7 +49,7 @@ public class TokenDeliveryServiceImpl implements TokenDeliveryService {
 
         BaseMailTaskEnter baseMailTask = new BaseMailTaskEnter();
         baseMailTask.setCode(code);
-        baseMailTask.setEvent(MailTemplateEventEnum.MOBILE_PASSWORD.getEvent());
+        baseMailTask.setEvent(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent());
 
         if (enter.getMail().indexOf("@") == (-1)) {
             baseMailTask.setName(enter.getMail());
@@ -62,7 +62,7 @@ public class TokenDeliveryServiceImpl implements TokenDeliveryService {
         baseMailTask.setMailAppId(AppIDEnums.SAAS_APP.getAppId());
         baseMailTask.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
 
-        mailMultiTaskService.addSetPasswordMobileUserTask(ValidateCodeEnter.builder().code(code).event(MailTemplateEventEnum.MOBILE_PASSWORD.getEvent()).t(baseMailTask).build());
+        mailMultiTaskService.addSetPasswordMobileUserTask(ValidateCodeEnter.builder().code(code).event(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent()).t(baseMailTask).build());
 
         return new GeneralResult(enter.getRequestId());
     }

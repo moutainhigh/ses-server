@@ -1,11 +1,11 @@
-package com.redescooter.ses.api.common.enums.jiguang;
+package com.redescooter.ses.api.common.enums.proxy.jiguang;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * description: PushTypeEnum 推送目标
+ * description: PushTypeEnums 推送目标
  * 推送设备对象，表示一条推送可以被推送到哪些设备列表。确认推送设备对象，
  * JPush 提供了多种方式，比如：别名、标签、注册 ID、分群、广播等。
  * author: jerry.li
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum PushTypeEnum {
+public enum PushTypeEnums {
 
     /**
      * 用标签来进行大规模的设备属性、用户属性分群。 一次推送最多 20 个。

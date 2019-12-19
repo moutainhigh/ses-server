@@ -11,7 +11,7 @@ import com.redescooter.ses.web.ros.vo.CustomerDetailResult;
 import com.redescooter.ses.web.ros.vo.CustomerListByPageEnter;
 import com.redescooter.ses.web.ros.vo.CustomerListByPageResult;
 import com.redescooter.ses.web.ros.vo.DeleteCustomerEnter;
-import com.redescooter.ses.web.ros.vo.SaveCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
 
 import java.util.Map;
 
@@ -22,7 +22,16 @@ import java.util.Map;
  * @Version：1.0
  * @create: 2019/12/18 10:06
  */
-public interface CustomerProService {
+public interface CustomerRosService {
+
+    /**
+     * 创建客户
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult save(CreateCustomerEnter enter);
+
     /**
      * @desc: 客户状态分类
      * @param: enter
@@ -43,21 +52,12 @@ public interface CustomerProService {
      */
     PageResult<CustomerListByPageResult> customerListByPage(CustomerListByPageEnter enter);
 
-    /**
-     * @desc: saveCustomer
-     * @param: enter
-      @return: GeneralResult
-      @auther: alex
-     * @date: 2019/12/18 16:29
-     * @Version: ROS 1.0
-     */
-    GeneralResult saveCustomer(SaveCustomerEnter enter);
 
     /**
      * @desc: 潜在客户转正式客户
      * @param: enter
-     *@return: GeneralResult
-      @auther: alex
+     * @return: GeneralResult
+     * @auther: alex
      * @date: 2019/12/18 16:31
      * @Version: ROS 1.0
      */
@@ -66,8 +66,8 @@ public interface CustomerProService {
     /**
      * @desc: 删除客户
      * @param: enter
-     *@return: GeneralResult
-      @auther: alex
+     * @return: GeneralResult
+     * @auther: alex
      * @date: 2019/12/18 16:35
      * @Version: ROS 1.0
      */
@@ -86,8 +86,8 @@ public interface CustomerProService {
     /**
      * @desc: 客户开通账户
      * @param: enter
-     *@return: Map<String, Integer>
-      *@auther: alex
+     * @return: Map<String, Integer>
+     * @auther: alex
      * @date: 2019/12/18 17:39
      * @Version: ROS 1.0
      */
@@ -96,8 +96,8 @@ public interface CustomerProService {
     /**
      * @desc: 客户账户列表状态
      * @param: enter
-     *@return: enter
-     *@auther: alex
+     * @return: enter
+     * @auther: alex
      * @date: 2019/12/18 16:43
      * @Version: ROS 1.0
      */
@@ -106,8 +106,8 @@ public interface CustomerProService {
     /**
      * @desc: 客户账户列表
      * @param: enter
-     *@return: CustomerAccountListResult
-      *@auther: alex
+     * @return: CustomerAccountListResult
+     * @auther: alex
      * @date: 2019/12/18 17:33
      * @Version: ROS 1.0
      */

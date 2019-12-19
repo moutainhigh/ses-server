@@ -1,11 +1,11 @@
-package com.redescooter.ses.api.common.enums.jiguang;
+package com.redescooter.ses.api.common.enums.proxy.jiguang;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * description: PlatformTypeEnum
+ * description: PlatformTypeEnums
  * author: jerry.li
  * create: 2019-05-20 18:36
  */
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum PlatformTypeEnum {
+public enum PlatformTypeEnums {
 
     ALL("All", "all", "全部设备"),
     ANDROID("Android", "android", "安卓"),

@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @description: AccountStatus
+ * @description: AccountStatusEnum
  * @author: Alex
  */
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum AccountStatus {
+public enum AccountStatusEnum {
     //正常
     NORMAL("NORMAL", "NORMAL"),
 
@@ -27,8 +27,8 @@ public enum AccountStatus {
     private String message;
 
 
-    public static AccountStatus getErrorCodeByCode(String code) {
-        for (AccountStatus item : AccountStatus.values()) {
+    public static AccountStatusEnum getErrorCodeByCode(String code) {
+        for (AccountStatusEnum item : AccountStatusEnum.values()) {
             if (item.getCode().equals(code)) {
                 return item;
             }

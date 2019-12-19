@@ -8,6 +8,13 @@ import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import java.util.List;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
+/**
+ * @author      Mr.lijiating
+ * @Date:       19/12/2019 8:50 上午
+ * @ClassName:  ${NAME}
+ * @Function:   TODO
+ * @version     V1.0
+ */ 
 @Service
 public class OpeCustomerServiceImpl extends ServiceImpl<OpeCustomerMapper, OpeCustomer> implements OpeCustomerService{
 

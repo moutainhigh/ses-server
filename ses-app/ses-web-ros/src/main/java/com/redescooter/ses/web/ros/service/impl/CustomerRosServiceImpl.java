@@ -1,18 +1,25 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import com.redescooter.ses.api.common.enums.customer.CustomerStatus;
+import com.redescooter.ses.api.common.enums.ros.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerProServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.service.CustomerProService;
+import com.redescooter.ses.web.ros.service.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.*;
+import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -27,13 +34,40 @@ import java.util.Map;
  * @create: 2019/12/18 10:06
  */
 @Service
-public class CustomerProServiceImpl implements CustomerProService {
+public class CustomerRosServiceImpl implements CustomerRosService {
 
     @Autowired
     private CustomerProServiceMapper customerProServiceMapper;
-
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+
+    @Reference
+    private IdAppService idAppService;
+
+    /**
+     * 创建客户
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult save(CreateCustomerEnter enter) {
+
+        OpeCustomer saveVo = new OpeCustomer();
+        BeanUtils.copyProperties(enter, saveVo);
+        if (saveVo.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
+            saveVo.setScooterQuantity(1);
+        }
+        saveVo.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+        saveVo.setCreatedBy(enter.getUserId());
+        saveVo.setCreatedTime(new Date());
+        saveVo.setUpdatedBy(enter.getUserId());
+        saveVo.setUpdatedTime(new Date());
+
+        opeCustomerMapper.insert(saveVo);
+        return new GeneralResult(enter.getRequestId());
+    }
 
     /**
      * @param enter
@@ -53,7 +87,7 @@ public class CustomerProServiceImpl implements CustomerProService {
         for (CountByStatusResult item : countByCustomerStatus) {
             map.put(item.getStatus(), item.getTotalCount());
         }
-        for (CustomerStatus status : CustomerStatus.values()) {
+        for (CustomerStatusEnum status : CustomerStatusEnum.values()) {
             if (!map.containsKey(status.getCode())) {
                 map.put(status.getCode(), 0);
             }
@@ -83,20 +117,6 @@ public class CustomerProServiceImpl implements CustomerProService {
 
     /**
      * @param enter
-     * @desc: saveCustomer
-     * @param: enter
-     * @return: GeneralResult
-     * @auther: alex
-     * @date: 2019/12/18 16:29
-     * @Version: ROS 1.0
-     */
-    @Override
-    public GeneralResult saveCustomer(SaveCustomerEnter enter) {
-        return null;
-    }
-
-    /**
-     * @param enter
      * @desc: 潜在客户转正式客户
      * @param: enter
      * @return: GeneralResult
@@ -110,7 +130,7 @@ public class CustomerProServiceImpl implements CustomerProService {
         if (customer == null) {
             //todo 异常
         }
-        customer.setStatus(CustomerStatus.OFFICIAL_CUSTOMER.getCode());
+        customer.setStatus(CustomerStatusEnum.OFFICIAL_CUSTOMER.getCode());
         customer.setUpdatedBy(enter.getUserId());
         customer.setUpdatedTime(new Date());
         opeCustomerMapper.updateById(customer);
@@ -132,7 +152,7 @@ public class CustomerProServiceImpl implements CustomerProService {
         if (customer == null) {
             // 异常
         }
-        customer.setStatus(CustomerStatus.TRASH.getCode());
+        //customer.setStatus(CustomerStatusEnum.TRASH.getCode());
         //todo 删除原因 需要改动数据库
         customer.setUpdatedBy(enter.getUserId());
         customer.setUpdatedTime(new Date());
@@ -195,7 +215,7 @@ public class CustomerProServiceImpl implements CustomerProService {
             map.put(item.getStatus(), item.getTotalCount());
         }
         //todo 换成客户账户enum
-        for (CustomerStatus status : CustomerStatus.values()) {
+        for (CustomerStatusEnum status : CustomerStatusEnum.values()) {
             if (!map.containsKey(status.getCode())) {
                 map.put(status.getCode(), 0);
             }

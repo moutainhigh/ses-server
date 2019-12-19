@@ -8,7 +8,7 @@ import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
 import cn.jpush.api.push.model.notification.Notification;
-import com.redescooter.ses.api.common.enums.jiguang.PushTypeEnum;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
 import com.redescooter.ses.api.common.vo.jiguang.PushJgResult;
 import com.redescooter.ses.api.proxy.constant.PushResultCode;
 import com.redescooter.ses.api.proxy.service.PushProxyService;
@@ -241,7 +241,7 @@ public class PushProxyServiceImpl implements PushProxyService {
 
         PushResult pushResult = sendPush(PushPayload.newBuilder()
                 .setPlatform(Platform.android())
-                .setAudience((enter.getPushAimsType().equals(PushTypeEnum.REGISTRATION_ID)) ? (Audience.registrationId(pushAims)) : (Audience.alias(pushAims)))
+                .setAudience((enter.getPushAimsType().equals(PushTypeEnums.REGISTRATION_ID)) ? (Audience.registrationId(pushAims)) : (Audience.alias(pushAims)))
                 .setNotification(Notification.android(enter.getAlert(), enter.getTitle(), enter.getExtras()))
                 .setOptions(Options.newBuilder().setApnsProduction(jPushConfig.getApns(enter)).build())
                 .build(), enter);

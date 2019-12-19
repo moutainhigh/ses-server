@@ -3,36 +3,37 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeCustomer">
     <!--@mbg.generated-->
-    <!--@Table ope_customer-->
     <id column="id" property="id" />
     <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="time_zone" property="timeZone" />
     <result column="country" property="country" />
     <result column="city" property="city" />
     <result column="distrust" property="distrust" />
     <result column="status" property="status" />
-    <result column="tenant_id" property="tenantId" />
     <result column="sales_id" property="salesId" />
     <result column="name" property="name" />
     <result column="picture" property="picture" />
     <result column="customer_source" property="customerSource" />
     <result column="customer_type" property="customerType" />
-    <result column="industry" property="industry" />
+    <result column="industry_type" property="industryType" />
     <result column="address" property="address" />
     <result column="longitude" property="longitude" />
     <result column="latitude" property="latitude" />
     <result column="contact" property="contact" />
     <result column="telephone" property="telephone" />
     <result column="email" property="email" />
+    <result column="memo" property="memo" />
     <result column="scooter_quantity" property="scooterQuantity" />
-    <result column="id_card" property="idCard" />
-    <result column="id_card_positive" property="idCardPositive" />
-    <result column="id_card_negative" property="idCardNegative" />
+    <result column="certificate_type" property="certificateType" />
+    <result column="certificate_positive_annex" property="certificatePositiveAnnex" />
+    <result column="certificate_negative_annex" property="certificateNegativeAnnex" />
     <result column="business_license_num" property="businessLicenseNum" />
-    <result column="business_license_picture" property="businessLicensePicture" />
-    <result column="invoice_attachment1" property="invoiceAttachment1" />
-    <result column="invoice_attachment2" property="invoiceAttachment2" />
-    <result column="contract" property="contract" />
-    <result column="time_zone" property="timeZone" />
+    <result column="business_license_annex" property="businessLicenseAnnex" />
+    <result column="invoice_num" property="invoiceNum" />
+    <result column="invoice_annex" property="invoiceAnnex" />
+    <result column="contract_annex" property="contractAnnex" />
+    <result column="account_flag" property="accountFlag" />
     <result column="created_by" property="createdBy" />
     <result column="created_time" property="createdTime" />
     <result column="updated_by" property="updatedBy" />
@@ -45,12 +46,12 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, country, city, distrust, `status`, tenant_id, sales_id, `name`, picture, 
-    customer_source, customer_type, industry, address, longitude, latitude, contact, 
-    telephone, email, scooter_quantity, id_card, id_card_positive, id_card_negative, 
-    business_license_num, business_license_picture, invoice_attachment1, invoice_attachment2, 
-    contract, time_zone, created_by, created_time, updated_by, updated_time, def1, def2, 
-    def3, def5, def6
+    id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, `name`, 
+    picture, customer_source, customer_type, industry_type, address, longitude, latitude, 
+    contact, telephone, email, memo, scooter_quantity, certificate_type, certificate_positive_annex, 
+    certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+    invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -59,6 +60,16 @@
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="time_zone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.timeZone}
         </foreach>
       </trim>
       <trim prefix="country = case" suffix="end,">
@@ -79,11 +90,6 @@
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.status}
-        </foreach>
-      </trim>
-      <trim prefix="tenant_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.tenantId}
         </foreach>
       </trim>
       <trim prefix="sales_id = case" suffix="end,">
@@ -111,9 +117,9 @@
           when id = #{item.id} then #{item.customerType}
         </foreach>
       </trim>
-      <trim prefix="industry = case" suffix="end,">
+      <trim prefix="industry_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.industry}
+          when id = #{item.id} then #{item.industryType}
         </foreach>
       </trim>
       <trim prefix="address = case" suffix="end,">
@@ -146,24 +152,29 @@
           when id = #{item.id} then #{item.email}
         </foreach>
       </trim>
+      <trim prefix="memo = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.memo}
+        </foreach>
+      </trim>
       <trim prefix="scooter_quantity = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.scooterQuantity}
         </foreach>
       </trim>
-      <trim prefix="id_card = case" suffix="end,">
+      <trim prefix="certificate_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.idCard}
+          when id = #{item.id} then #{item.certificateType}
         </foreach>
       </trim>
-      <trim prefix="id_card_positive = case" suffix="end,">
+      <trim prefix="certificate_positive_annex = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.idCardPositive}
+          when id = #{item.id} then #{item.certificatePositiveAnnex}
         </foreach>
       </trim>
-      <trim prefix="id_card_negative = case" suffix="end,">
+      <trim prefix="certificate_negative_annex = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.idCardNegative}
+          when id = #{item.id} then #{item.certificateNegativeAnnex}
         </foreach>
       </trim>
       <trim prefix="business_license_num = case" suffix="end,">
@@ -171,29 +182,29 @@
           when id = #{item.id} then #{item.businessLicenseNum}
         </foreach>
       </trim>
-      <trim prefix="business_license_picture = case" suffix="end,">
+      <trim prefix="business_license_annex = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.businessLicensePicture}
+          when id = #{item.id} then #{item.businessLicenseAnnex}
         </foreach>
       </trim>
-      <trim prefix="invoice_attachment1 = case" suffix="end,">
+      <trim prefix="invoice_num = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.invoiceAttachment1}
+          when id = #{item.id} then #{item.invoiceNum}
         </foreach>
       </trim>
-      <trim prefix="invoice_attachment2 = case" suffix="end,">
+      <trim prefix="invoice_annex = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.invoiceAttachment2}
+          when id = #{item.id} then #{item.invoiceAnnex}
         </foreach>
       </trim>
-      <trim prefix="contract = case" suffix="end,">
+      <trim prefix="contract_annex = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.contract}
+          when id = #{item.id} then #{item.contractAnnex}
         </foreach>
       </trim>
-      <trim prefix="time_zone = case" suffix="end,">
+      <trim prefix="account_flag = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.timeZone}
+          when id = #{item.id} then #{item.accountFlag}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
@@ -250,20 +261,21 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_customer
-    (id, dr, country, city, distrust, `status`, tenant_id, sales_id, `name`, picture, 
-      customer_source, customer_type, industry, address, longitude, latitude, contact, 
-      telephone, email, scooter_quantity, id_card, id_card_positive, id_card_negative, 
-      business_license_num, business_license_picture, invoice_attachment1, invoice_attachment2, 
-      contract, time_zone, created_by, created_time, updated_by, updated_time, def1, 
-      def2, def3, def5, def6)
+    (id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, `name`, 
+      picture, customer_source, customer_type, industry_type, address, longitude, latitude, 
+      contact, telephone, email, memo, scooter_quantity, certificate_type, certificate_positive_annex, 
+      certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+      invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id}, #{item.dr}, #{item.country}, #{item.city}, #{item.distrust}, #{item.status}, 
-        #{item.tenantId}, #{item.salesId}, #{item.name}, #{item.picture}, #{item.customerSource}, 
-        #{item.customerType}, #{item.industry}, #{item.address}, #{item.longitude}, #{item.latitude}, 
-        #{item.contact}, #{item.telephone}, #{item.email}, #{item.scooterQuantity}, #{item.idCard}, 
-        #{item.idCardPositive}, #{item.idCardNegative}, #{item.businessLicenseNum}, #{item.businessLicensePicture}, 
-        #{item.invoiceAttachment1}, #{item.invoiceAttachment2}, #{item.contract}, #{item.timeZone}, 
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.timeZone}, #{item.country}, #{item.city}, 
+        #{item.distrust}, #{item.status}, #{item.salesId}, #{item.name}, #{item.picture}, 
+        #{item.customerSource}, #{item.customerType}, #{item.industryType}, #{item.address}, 
+        #{item.longitude}, #{item.latitude}, #{item.contact}, #{item.telephone}, #{item.email}, 
+        #{item.memo}, #{item.scooterQuantity}, #{item.certificateType}, #{item.certificatePositiveAnnex}, 
+        #{item.certificateNegativeAnnex}, #{item.businessLicenseNum}, #{item.businessLicenseAnnex}, 
+        #{item.invoiceNum}, #{item.invoiceAnnex}, #{item.contractAnnex}, #{item.accountFlag}, 
         #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
         #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
     </foreach>
@@ -271,50 +283,52 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomer">
     <!--@mbg.generated-->
     insert into ope_customer
-    (id, dr, country, city, distrust, `status`, tenant_id, sales_id, `name`, picture, 
-      customer_source, customer_type, industry, address, longitude, latitude, contact, 
-      telephone, email, scooter_quantity, id_card, id_card_positive, id_card_negative, 
-      business_license_num, business_license_picture, invoice_attachment1, invoice_attachment2, 
-      contract, time_zone, created_by, created_time, updated_by, updated_time, def1, 
-      def2, def3, def5, def6)
+    (id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, `name`, 
+      picture, customer_source, customer_type, industry_type, address, longitude, latitude, 
+      contact, telephone, email, memo, scooter_quantity, certificate_type, certificate_positive_annex, 
+      certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+      invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
     values
-    (#{id}, #{dr}, #{country}, #{city}, #{distrust}, #{status}, #{tenantId}, #{salesId}, 
-      #{name}, #{picture}, #{customerSource}, #{customerType}, #{industry}, #{address}, 
-      #{longitude}, #{latitude}, #{contact}, #{telephone}, #{email}, #{scooterQuantity}, 
-      #{idCard}, #{idCardPositive}, #{idCardNegative}, #{businessLicenseNum}, #{businessLicensePicture}, 
-      #{invoiceAttachment1}, #{invoiceAttachment2}, #{contract}, #{timeZone}, #{createdBy}, 
-      #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, 
-      #{def6})
+    (#{id}, #{dr}, #{tenantId}, #{timeZone}, #{country}, #{city}, #{distrust}, #{status}, 
+      #{salesId}, #{name}, #{picture}, #{customerSource}, #{customerType}, #{industryType}, 
+      #{address}, #{longitude}, #{latitude}, #{contact}, #{telephone}, #{email}, #{memo}, 
+      #{scooterQuantity}, #{certificateType}, #{certificatePositiveAnnex}, #{certificateNegativeAnnex}, 
+      #{businessLicenseNum}, #{businessLicenseAnnex}, #{invoiceNum}, #{invoiceAnnex}, 
+      #{contractAnnex}, #{accountFlag}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
+      #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
     on duplicate key update 
     id = #{id}, 
     dr = #{dr}, 
+    tenant_id = #{tenantId}, 
+    time_zone = #{timeZone}, 
     country = #{country}, 
     city = #{city}, 
     distrust = #{distrust}, 
     `status` = #{status}, 
-    tenant_id = #{tenantId}, 
     sales_id = #{salesId}, 
     `name` = #{name}, 
     picture = #{picture}, 
     customer_source = #{customerSource}, 
     customer_type = #{customerType}, 
-    industry = #{industry}, 
+    industry_type = #{industryType}, 
     address = #{address}, 
     longitude = #{longitude}, 
     latitude = #{latitude}, 
     contact = #{contact}, 
     telephone = #{telephone}, 
     email = #{email}, 
+    memo = #{memo}, 
     scooter_quantity = #{scooterQuantity}, 
-    id_card = #{idCard}, 
-    id_card_positive = #{idCardPositive}, 
-    id_card_negative = #{idCardNegative}, 
+    certificate_type = #{certificateType}, 
+    certificate_positive_annex = #{certificatePositiveAnnex}, 
+    certificate_negative_annex = #{certificateNegativeAnnex}, 
     business_license_num = #{businessLicenseNum}, 
-    business_license_picture = #{businessLicensePicture}, 
-    invoice_attachment1 = #{invoiceAttachment1}, 
-    invoice_attachment2 = #{invoiceAttachment2}, 
-    contract = #{contract}, 
-    time_zone = #{timeZone}, 
+    business_license_annex = #{businessLicenseAnnex}, 
+    invoice_num = #{invoiceNum}, 
+    invoice_annex = #{invoiceAnnex}, 
+    contract_annex = #{contractAnnex}, 
+    account_flag = #{accountFlag}, 
     created_by = #{createdBy}, 
     created_time = #{createdTime}, 
     updated_by = #{updatedBy}, 
@@ -335,6 +349,12 @@
       <if test="dr != null">
         dr,
       </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="timeZone != null">
+        time_zone,
+      </if>
       <if test="country != null">
         country,
       </if>
@@ -346,9 +366,6 @@
       </if>
       <if test="status != null">
         `status`,
-      </if>
-      <if test="tenantId != null">
-        tenant_id,
       </if>
       <if test="salesId != null">
         sales_id,
@@ -365,8 +382,8 @@
       <if test="customerType != null">
         customer_type,
       </if>
-      <if test="industry != null">
-        industry,
+      <if test="industryType != null">
+        industry_type,
       </if>
       <if test="address != null">
         address,
@@ -386,35 +403,38 @@
       <if test="email != null">
         email,
       </if>
+      <if test="memo != null">
+        memo,
+      </if>
       <if test="scooterQuantity != null">
         scooter_quantity,
       </if>
-      <if test="idCard != null">
-        id_card,
+      <if test="certificateType != null">
+        certificate_type,
       </if>
-      <if test="idCardPositive != null">
-        id_card_positive,
+      <if test="certificatePositiveAnnex != null">
+        certificate_positive_annex,
       </if>
-      <if test="idCardNegative != null">
-        id_card_negative,
+      <if test="certificateNegativeAnnex != null">
+        certificate_negative_annex,
       </if>
       <if test="businessLicenseNum != null">
         business_license_num,
       </if>
-      <if test="businessLicensePicture != null">
-        business_license_picture,
+      <if test="businessLicenseAnnex != null">
+        business_license_annex,
       </if>
-      <if test="invoiceAttachment1 != null">
-        invoice_attachment1,
+      <if test="invoiceNum != null">
+        invoice_num,
       </if>
-      <if test="invoiceAttachment2 != null">
-        invoice_attachment2,
+      <if test="invoiceAnnex != null">
+        invoice_annex,
       </if>
-      <if test="contract != null">
-        contract,
+      <if test="contractAnnex != null">
+        contract_annex,
       </if>
-      <if test="timeZone != null">
-        time_zone,
+      <if test="accountFlag != null">
+        account_flag,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -452,6 +472,12 @@
       <if test="dr != null">
         #{dr},
       </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="timeZone != null">
+        #{timeZone},
+      </if>
       <if test="country != null">
         #{country},
       </if>
@@ -463,9 +489,6 @@
       </if>
       <if test="status != null">
         #{status},
-      </if>
-      <if test="tenantId != null">
-        #{tenantId},
       </if>
       <if test="salesId != null">
         #{salesId},
@@ -482,8 +505,8 @@
       <if test="customerType != null">
         #{customerType},
       </if>
-      <if test="industry != null">
-        #{industry},
+      <if test="industryType != null">
+        #{industryType},
       </if>
       <if test="address != null">
         #{address},
@@ -503,35 +526,38 @@
       <if test="email != null">
         #{email},
       </if>
+      <if test="memo != null">
+        #{memo},
+      </if>
       <if test="scooterQuantity != null">
         #{scooterQuantity},
       </if>
-      <if test="idCard != null">
-        #{idCard},
+      <if test="certificateType != null">
+        #{certificateType},
       </if>
-      <if test="idCardPositive != null">
-        #{idCardPositive},
+      <if test="certificatePositiveAnnex != null">
+        #{certificatePositiveAnnex},
       </if>
-      <if test="idCardNegative != null">
-        #{idCardNegative},
+      <if test="certificateNegativeAnnex != null">
+        #{certificateNegativeAnnex},
       </if>
       <if test="businessLicenseNum != null">
         #{businessLicenseNum},
       </if>
-      <if test="businessLicensePicture != null">
-        #{businessLicensePicture},
+      <if test="businessLicenseAnnex != null">
+        #{businessLicenseAnnex},
       </if>
-      <if test="invoiceAttachment1 != null">
-        #{invoiceAttachment1},
+      <if test="invoiceNum != null">
+        #{invoiceNum},
       </if>
-      <if test="invoiceAttachment2 != null">
-        #{invoiceAttachment2},
+      <if test="invoiceAnnex != null">
+        #{invoiceAnnex},
       </if>
-      <if test="contract != null">
-        #{contract},
+      <if test="contractAnnex != null">
+        #{contractAnnex},
       </if>
-      <if test="timeZone != null">
-        #{timeZone},
+      <if test="accountFlag != null">
+        #{accountFlag},
       </if>
       <if test="createdBy != null">
         #{createdBy},
@@ -569,6 +595,12 @@
       <if test="dr != null">
         dr = #{dr},
       </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="timeZone != null">
+        time_zone = #{timeZone},
+      </if>
       <if test="country != null">
         country = #{country},
       </if>
@@ -580,9 +612,6 @@
       </if>
       <if test="status != null">
         `status` = #{status},
-      </if>
-      <if test="tenantId != null">
-        tenant_id = #{tenantId},
       </if>
       <if test="salesId != null">
         sales_id = #{salesId},
@@ -599,8 +628,8 @@
       <if test="customerType != null">
         customer_type = #{customerType},
       </if>
-      <if test="industry != null">
-        industry = #{industry},
+      <if test="industryType != null">
+        industry_type = #{industryType},
       </if>
       <if test="address != null">
         address = #{address},
@@ -620,35 +649,38 @@
       <if test="email != null">
         email = #{email},
       </if>
+      <if test="memo != null">
+        memo = #{memo},
+      </if>
       <if test="scooterQuantity != null">
         scooter_quantity = #{scooterQuantity},
       </if>
-      <if test="idCard != null">
-        id_card = #{idCard},
+      <if test="certificateType != null">
+        certificate_type = #{certificateType},
       </if>
-      <if test="idCardPositive != null">
-        id_card_positive = #{idCardPositive},
+      <if test="certificatePositiveAnnex != null">
+        certificate_positive_annex = #{certificatePositiveAnnex},
       </if>
-      <if test="idCardNegative != null">
-        id_card_negative = #{idCardNegative},
+      <if test="certificateNegativeAnnex != null">
+        certificate_negative_annex = #{certificateNegativeAnnex},
       </if>
       <if test="businessLicenseNum != null">
         business_license_num = #{businessLicenseNum},
       </if>
-      <if test="businessLicensePicture != null">
-        business_license_picture = #{businessLicensePicture},
+      <if test="businessLicenseAnnex != null">
+        business_license_annex = #{businessLicenseAnnex},
       </if>
-      <if test="invoiceAttachment1 != null">
-        invoice_attachment1 = #{invoiceAttachment1},
+      <if test="invoiceNum != null">
+        invoice_num = #{invoiceNum},
       </if>
-      <if test="invoiceAttachment2 != null">
-        invoice_attachment2 = #{invoiceAttachment2},
+      <if test="invoiceAnnex != null">
+        invoice_annex = #{invoiceAnnex},
       </if>
-      <if test="contract != null">
-        contract = #{contract},
+      <if test="contractAnnex != null">
+        contract_annex = #{contractAnnex},
       </if>
-      <if test="timeZone != null">
-        time_zone = #{timeZone},
+      <if test="accountFlag != null">
+        account_flag = #{accountFlag},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy},

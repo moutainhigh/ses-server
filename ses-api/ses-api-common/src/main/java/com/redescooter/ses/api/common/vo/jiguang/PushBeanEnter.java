@@ -1,8 +1,8 @@
 package com.redescooter.ses.api.common.vo.jiguang;
 
 
-import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
-import com.redescooter.ses.api.common.enums.jiguang.PushTypeEnum;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.*;
 
@@ -30,8 +30,8 @@ public class PushBeanEnter extends GeneralEnter {
     //极光注册ID
     private String[] registids;
     //设备类型  当前支持 Android, iOS, Windows Phone 三个平台的推送.
-    private String type = PlatformTypeEnum.ANDROID.getCode();
+    private String type = PlatformTypeEnums.ANDROID.getCode();
     //推送目标，默认根据设备唯一标识进行推送
-    private String pushAimsType = PushTypeEnum.REGISTRATION_ID.getCode();
+    private String pushAimsType = PushTypeEnums.REGISTRATION_ID.getCode();
 
 }

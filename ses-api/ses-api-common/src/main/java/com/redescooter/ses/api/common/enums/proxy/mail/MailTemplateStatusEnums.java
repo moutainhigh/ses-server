@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.mail;
+package com.redescooter.ses.api.common.enums.proxy.mail;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,17 +8,16 @@ import lombok.NoArgsConstructor;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 11/10/2019 12:29 下午
- * @ClassName: MailConfigStatusEnums, PENDING待发送，SUCCESS发送成功，FAIL发送失败
+ * @ClassName: MailConfigStatusEnums, normal正常，Disabled失效的
  * @Function: TODO
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum MailTaskStatusEnums {
+public enum MailTemplateStatusEnums {
 
-    PENDING("PENDING", "待发送"),
-    SUCCESS("SUCCESS", "发送成功"),
-    FAIL("FAIL", "发送失败"),
+    NORMAL("NORMAL", "正常"),
+    DISABLED("DISABLED", "失效"),
     ;
 
     private String code;

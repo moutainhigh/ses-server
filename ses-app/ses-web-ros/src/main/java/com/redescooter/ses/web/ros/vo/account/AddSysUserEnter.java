@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo;
+package com.redescooter.ses.web.ros.vo.account;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;

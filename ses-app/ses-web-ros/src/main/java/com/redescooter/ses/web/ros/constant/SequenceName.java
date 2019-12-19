@@ -11,6 +11,7 @@ public interface SequenceName {
 
     String OPE_SYS_USER_PROFILE = "OPE_SYS_USER_PROFILE";
 
+    String OPE_CUSTOMER = "OPE_CUSTOMER";
 
 
 
@@ -18,7 +19,7 @@ public interface SequenceName {
 
 
 
-    String CUSTOMER = "CUSTOMER";
+
 
     String CUSTOMERINQUIRY = "CUSTOMER_INQUIRY";
 

@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.proxy.service;
 
 import com.alibaba.fastjson.JSON;
-import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.proxy.exception.ProxyException;
 import com.redescooter.ses.api.proxy.service.IMailService;
 import com.redescooter.ses.service.proxy.exception.ExceptionCodeEnums;
@@ -272,7 +272,7 @@ public class IMailServiceImpl implements IMailService {
     private String getContent(String parameterJson, int mailTemplateNo) {
         Context context = new Context();
         context.setVariables(JSON.parseObject(parameterJson, Map.class));
-        return templateEngine.process(MailTemplateEventEnum.getMailTemplateEventEnum(mailTemplateNo).getName(), context);
+        return templateEngine.process(MailTemplateEventEnums.getMailTemplateEventEnum(mailTemplateNo).getName(), context);
 
     }
 }
