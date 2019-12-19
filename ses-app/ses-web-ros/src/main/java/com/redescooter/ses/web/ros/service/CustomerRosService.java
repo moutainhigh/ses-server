@@ -77,14 +77,12 @@ public interface CustomerRosService {
     GeneralResult openAccount(OpenAccountEnter enter);
 
     /**
-     * @desc: 客户状态分类
-     * @param: enter
-     * @return: countByCustomerStatus
-     * @auther: alex
-     * @date: 2019/12/18 11:17
-     * @Version: ros 1.0
+     * 状态统计
+     *
+     * @param enter
+     * @return
      */
-    Map<String, Integer> countByCustomerStatus(GeneralEnter enter);
+    Map<String, Integer> countStatus(GeneralEnter enter);
 
     /**
      * @desc: 客户账户列表状态

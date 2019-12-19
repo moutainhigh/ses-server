@@ -14,14 +14,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CustomerTypeEnum {
 
-    ENTERPRISE("ENTERPRISE", "公司",1),
-    PERSONAL("PERSONAL", "个人",2);
+    ENTERPRISE("ENTERPRISE", "公司","1"),
+    PERSONAL("PERSONAL", "个人","2");
 
     private String code;
 
     private String message;
 
-    private Integer value;
+    private String value;
 
     public static CustomerTypeEnum getErrorCodeByCode(String code) {
         for (CustomerTypeEnum item : CustomerTypeEnum.values()) {

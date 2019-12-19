@@ -17,15 +17,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum CustomerSourceEnum {
 
-    SYSTEM("SYSTEM", "系统", 1),
-    WEBSITE("WEBSITE", "官网", 2),
+    SYSTEM("SYSTEM", "系统", "1"),
+    WEBSITE("WEBSITE", "官网", "2"),
     ;
 
     private String code;
 
     private String message;
 
-    private Integer value;
+    private String value;
 
 
     public static CustomerSourceEnum getCustomerSourceEnumByCode(String code) {

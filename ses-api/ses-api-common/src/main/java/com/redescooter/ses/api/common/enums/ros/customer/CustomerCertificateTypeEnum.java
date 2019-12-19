@@ -17,14 +17,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum CustomerCertificateTypeEnum {
 
-    ID_CARD("ID_CARD", "身份证号", 1),
-    DRIVER_LICENSE("DRIVER_LICENSE", "驾驶证", 2),
-    PASSPORT("PASSPORT", "护照", 3);
+    ID_CARD("ID_CARD", "身份证号", "1"),
+    DRIVER_LICENSE("DRIVER_LICENSE", "驾驶证", "2"),
+    PASSPORT("PASSPORT", "护照", "3");
 
     private String code;
 
     private String message;
 
-    private Integer value;
+    private String value;
+
+    public static CustomerCertificateTypeEnum getCustomerCertificateTypeEnumByCode(String value) {
+        for (CustomerCertificateTypeEnum item : CustomerCertificateTypeEnum.values()) {
+            if (item.getCode().equals(value)) {
+                return item;
+            }
+        }
+        return null;
+    }
 
 }

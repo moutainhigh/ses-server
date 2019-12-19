@@ -31,6 +31,9 @@ public class CreateCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "时区")
     private String timeZone;
 
+    @ApiModelProperty(value = "国家")
+    private Long countrys;
+
     @ApiModelProperty(value = "城市")
     private Long city;
 
@@ -41,25 +44,22 @@ public class CreateCustomerEnter extends GeneralEnter {
     private Long salesId;
 
     @ApiModelProperty(value = "客户名字")
-    private String firstName;
+    private String customerFirstName;
 
     @ApiModelProperty(value = "客户姓氏")
-    private String lastName;
+    private String customerLastName;
 
     @ApiModelProperty(value = "企业名称")
     private String companyName;
-
-    @ApiModelProperty(value = "客户头像")
-    private String picture;
 
     @ApiModelProperty(value="客户来源渠道,SYSTEM-系统-1, WEBSITE-官网-2")
     private String customerSource;
 
     @ApiModelProperty(value="客户类型,ENTERPRISE-公司-1, PERSONAL-个人-2")
-    private Integer customerType;
+    private String customerType;
 
     @ApiModelProperty(value="客户行业类型,RESTAURANT-餐厅-1, EXPRESS_DELIVERY-快递-2")
-    private Integer industryType;
+    private String industryType;
 
     @ApiModelProperty(value = "地址")
     private String address;
@@ -73,8 +73,14 @@ public class CreateCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "纬度")
     private BigDecimal latitude;
 
-    @ApiModelProperty(value = "联系人")
-    private String contact;
+    @ApiModelProperty(value = "联系人名字")
+    private String contactFirstName;
+
+    @ApiModelProperty(value = "联系人姓氏")
+    private String contactLastName;
+
+    @ApiModelProperty(value = "联系人全名")
+    private String contactFullName;
 
     @ApiModelProperty(value = "电话")
     private String telephone;
@@ -86,7 +92,7 @@ public class CreateCustomerEnter extends GeneralEnter {
     private Integer scooterQuantity;
 
     @ApiModelProperty(value="证件类型:ID_CARD-身份证-1,DRIVER_LICENSE-驾驶证2，PASSPORT-护照-3")
-    private Integer certificateType;
+    private String certificateType;
 
     @ApiModelProperty(value = "证件正面附件")
     private String certificatePositiveAnnex;

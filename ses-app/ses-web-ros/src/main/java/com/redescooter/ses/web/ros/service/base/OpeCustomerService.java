@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
 
 /**
  * @author Mr.lijiating
@@ -23,5 +23,8 @@ public interface OpeCustomerService extends IService<OpeCustomer> {
     int insertOrUpdateSelective(OpeCustomer record);
 
 }
+
+
+
 
 

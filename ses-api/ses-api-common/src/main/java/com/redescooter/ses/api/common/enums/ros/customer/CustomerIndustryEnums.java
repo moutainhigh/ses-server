@@ -15,14 +15,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum CustomerIndustryEnums {
-    RESTAURANT("RESTAURANT", "餐厅",1),
-    EXPRESS_DELIVERY("EXPRESS_DELIVERY","快递",2);
+    RESTAURANT("RESTAURANT", "餐厅","1"),
+    EXPRESS_DELIVERY("EXPRESS_DELIVERY","快递","2");
 
     private String code;
 
     private String message;
 
-    private Integer value;
+    private String value;
 
     public static CustomerIndustryEnums getIndustryEnumByCode(String code) {
         for (CustomerIndustryEnums item : CustomerIndustryEnums.values()) {

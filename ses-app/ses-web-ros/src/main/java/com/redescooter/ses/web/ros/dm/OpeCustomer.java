@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -15,7 +12,6 @@ import lombok.Data;
 @Data
 @TableName(value = "ope_customer")
 public class OpeCustomer implements Serializable {
-    public static final String COL_NAME = "name";
     /**
      * id
      */
@@ -27,6 +23,7 @@ public class OpeCustomer implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -82,23 +79,23 @@ public class OpeCustomer implements Serializable {
     /**
      * 客户名字
      */
-    @TableField(value = "first_name")
+    @TableField(value = "customer_first_name")
     @ApiModelProperty(value = "客户名字")
-    private String firstName;
+    private String customerFirstName;
 
     /**
      * 客户姓氏
      */
-    @TableField(value = "last_name")
+    @TableField(value = "customer_last_name")
     @ApiModelProperty(value = "客户姓氏")
-    private String lastName;
+    private String customerLastName;
 
     /**
      * 客户全名
      */
-    @TableField(value = "full_name")
+    @TableField(value = "customer_full_name")
     @ApiModelProperty(value = "客户全名")
-    private String fullName;
+    private String customerFullName;
 
     /**
      * 企业名称
@@ -126,14 +123,14 @@ public class OpeCustomer implements Serializable {
      */
     @TableField(value = "customer_type")
     @ApiModelProperty(value = "客户类型 1企业/2个人")
-    private Integer customerType;
+    private String customerType;
 
     /**
      * 客户行业类型，1餐厅/2快递
      */
     @TableField(value = "industry_type")
     @ApiModelProperty(value = "客户行业类型，1餐厅/2快递")
-    private Integer industryType;
+    private String industryType;
 
     /**
      * 地址
@@ -164,11 +161,25 @@ public class OpeCustomer implements Serializable {
     private BigDecimal latitude;
 
     /**
-     * 联系人
+     * 联系人名字
      */
-    @TableField(value = "contact")
-    @ApiModelProperty(value = "联系人")
-    private String contact;
+    @TableField(value = "contact_first_name")
+    @ApiModelProperty(value = "联系人名字")
+    private String contactFirstName;
+
+    /**
+     * 联系人姓氏
+     */
+    @TableField(value = "contact_last_name")
+    @ApiModelProperty(value = "联系人姓氏")
+    private String contactLastName;
+
+    /**
+     * 联系人全名
+     */
+    @TableField(value = "contact_full_name")
+    @ApiModelProperty(value = "联系人全名")
+    private String contactFullName;
 
     /**
      * 电话
@@ -203,7 +214,7 @@ public class OpeCustomer implements Serializable {
      */
     @TableField(value = "certificate_type")
     @ApiModelProperty(value = "证件类型1身份证，2驾驶证，3护照")
-    private Integer certificateType;
+    private String certificateType;
 
     /**
      * 证件正面图片
@@ -342,11 +353,11 @@ public class OpeCustomer implements Serializable {
 
     public static final String COL_SALES_ID = "sales_id";
 
-    public static final String COL_FIRST_NAME = "first_name";
+    public static final String COL_CUSTOMER_FIRST_NAME = "customer_first_name";
 
-    public static final String COL_LAST_NAME = "last_name";
+    public static final String COL_CUSTOMER_LAST_NAME = "customer_last_name";
 
-    public static final String COL_FULL_NAME = "full_name";
+    public static final String COL_CUSTOMER_FULL_NAME = "customer_full_name";
 
     public static final String COL_COMPANY_NAME = "company_name";
 
@@ -366,7 +377,11 @@ public class OpeCustomer implements Serializable {
 
     public static final String COL_LATITUDE = "latitude";
 
-    public static final String COL_CONTACT = "contact";
+    public static final String COL_CONTACT_FIRST_NAME = "contact_first_name";
+
+    public static final String COL_CONTACT_LAST_NAME = "contact_last_name";
+
+    public static final String COL_CONTACT_FULL_NAME = "contact_full_name";
 
     public static final String COL_TELEPHONE = "telephone";
 

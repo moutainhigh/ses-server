@@ -1,6 +1,6 @@
 package com.redescooter.ses.api.common.vo.base;
 
-import lombok.Data;
+import lombok.*;
 
 import io.swagger.annotations.*;
 
@@ -12,7 +12,11 @@ import io.swagger.annotations.*;
  * @create: 2019/12/18 16:32
  */
 @ApiModel(value = "Id入参", description = "Id入参")
-@Data
+@Data //生成getter,setter等函数
+@AllArgsConstructor //生成全参数构造函数
+@NoArgsConstructor//生成无参构造函数
+@Builder
+@EqualsAndHashCode(callSuper = false)
 public class IdEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "业务Id")

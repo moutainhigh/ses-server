@@ -36,13 +36,13 @@ public class ListCustomerEnter extends PageEnter {
     private Integer dr;
 
     @ApiModelProperty(value = "客户类型")
-    private Integer customerType;
+    private String customerType;
 
     @ApiModelProperty(value = "客户行业类型")
-    private Integer customerIndustry;
+    private String customerIndustry;
 
     @ApiModelProperty(value = "客户来源类型")
-    private Integer customerSource;
+    private String customerSource;
 
     @ApiModelProperty(value = "客户状态")
     private String status;

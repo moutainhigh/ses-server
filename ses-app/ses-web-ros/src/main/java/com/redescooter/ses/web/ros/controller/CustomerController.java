@@ -10,6 +10,8 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * @ClassName:CustomerController
  * @description: CustomerController
@@ -61,6 +63,12 @@ public class CustomerController {
     @ApiOperation(value = "客户转换", response = GeneralResult.class)
     public Response<GeneralResult> change(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(customerRosService.change(enter));
+    }
+
+    @PostMapping(value = "/countStatus")
+    @ApiOperation(value = "状态统计", response = GeneralResult.class)
+    public Response<Map<String, Integer>> countStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(customerRosService.countStatus(enter));
     }
 
     @PostMapping(value = "/openAccount")

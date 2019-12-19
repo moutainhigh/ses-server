@@ -77,6 +77,31 @@ public enum ExceptionCodeEnums {
 
     INVOICE_CANNOT_EMPTY(10036, "发票不能为空"),
 
+    CITY_CANNOT_EMPTY(10037, "城市不能为空"),
+
+    DISTRUST_CANNOT_EMPTY(10038, "区域不能为空"),
+
+    CUSTOMER_TYPE_CANNOT_EMPTY(10039, "客户类型不能为空"),
+
+    INDUSTRY_TYPE_CANNOT_EMPTY(10040, "行业类型不能为空"),
+
+    ADDRESS_TYPE_CANNOT_EMPTY(10041, "地址不能为空"),
+
+    LATITUDE_AND_LONGITUDE_CANNOT_EMPTY(10042, "经纬度不能为空"),
+
+    TELEPHONE_CANNOT_EMPTY(10043, "手机号不能为空"),
+
+    CERTIFICATETYPE_CANNOT_EMPTY(10044, "证件类型不能为空"),
+
+    ID_CARD_CANNOT_EMPTY(10045, "身份证附件不能为空"),
+
+    CERTIFICATE_CANNOT_EMPTY(10046, "证件附件不能为空"),
+
+    INVOICE_NUM_CANNOT_EMPTY(10047, "发票编号不能为空"),
+
+    INVOICE_ANNEX_CANNOT_EMPTY(10048, "发票附件不能为空"),
+
+    CONTRACT_ANNEX_CANNOT_EMPTY(10049, "合同附件不能为空"),
 
     ;
 

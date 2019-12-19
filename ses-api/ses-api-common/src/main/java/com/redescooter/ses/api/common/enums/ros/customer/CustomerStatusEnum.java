@@ -14,20 +14,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum CustomerStatusEnum {
 
-    POTENTIAL_CUSTOMERS("POTENTIAL_CUSTOMERS", "潜在客户",1),
+    POTENTIAL_CUSTOMERS("POTENTIAL_CUSTOMERS", "潜在客户", "1"),
 
-    OFFICIAL_CUSTOMER("OFFICIAL_CUSTOMER", "正式客户",2);
+    OFFICIAL_CUSTOMER("OFFICIAL_CUSTOMER", "正式客户", "2"),
+
+    TRASH_CUSTOMER("TRASH_CUSTOMER", "垃圾客户", "3");
+
 
     private String code;
 
     private String message;
 
-    private Integer value;
+    private String value;
 
 
-    public static CustomerStatusEnum getCustomerStatusEnumByCode(String code) {
+    public static CustomerStatusEnum getCustomerStatusEnumByCode(String value) {
         for (CustomerStatusEnum item : CustomerStatusEnum.values()) {
-            if (item.getCode().equals(code)) {
+            if (item.getValue().equals(value)) {
                 return item;
             }
         }
