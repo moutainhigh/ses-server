@@ -1,17 +1,11 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-import io.swagger.annotations.*;
-
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @ClassName:SaveCustomerEnter
@@ -20,13 +14,16 @@ import java.util.Date;
  * @Version：1.3
  * @create: 2019/12/18 15:31
  */
-@ApiModel(value = "创建客户", description = "创建客户")
+@ApiModel(value = "编辑客户", description = "编辑客户")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class CreateCustomerEnter extends GeneralEnter {
+public class EditCustomerEnter extends GeneralEnter {
+
+    @ApiModelProperty(value = "主键")
+    private Long id;
 
     @ApiModelProperty(value = "时区")
     private String timeZone;
@@ -70,9 +67,6 @@ public class CreateCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "电话")
     private String telephone;
 
-    @ApiModelProperty(value = "邮件")
-    private String email;
-
     @ApiModelProperty(value = "车辆数量")
     private Integer scooterQuantity;
 
@@ -99,6 +93,5 @@ public class CreateCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "合同附件")
     private String contractAnnex;
-
 
 }

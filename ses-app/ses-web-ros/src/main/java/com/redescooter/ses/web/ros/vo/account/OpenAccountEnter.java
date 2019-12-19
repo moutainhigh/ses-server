@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo;
+package com.redescooter.ses.web.ros.vo.account;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import io.swagger.annotations.*;
 
 /**
  * @ClassName:CreateCustomerAccountEnter
- * @description: CreateCustomerAccountEnter
+ * @description: OpenAccountEnter
  * @author: Alex
  * @Version：1.3
  * @create: 2019/12/18 17:39
@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class CreateCustomerAccountEnter extends GeneralEnter {
+public class OpenAccountEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id")
     private Long id;

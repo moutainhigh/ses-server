@@ -1,5 +1,9 @@
 package com.redescooter.ses.web.ros.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -12,19 +16,18 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerProServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
-import com.redescooter.ses.web.ros.vo.*;
-import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
+import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
+import com.redescooter.ses.web.ros.vo.customer.*;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName:CustomerImpl
@@ -96,7 +99,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     }
 
     /**
-     * @param enter
+     * @param page
      * @desc: 客户列表分页
      * @param: enter
      * @return: CustomerListByPageResult
@@ -105,15 +108,109 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @Version: CRM 1.3 进销存
      */
     @Override
-    public PageResult<CustomerListByPageResult> customerListByPage(CustomerListByPageEnter enter) {
-        // todo 补mapper
-        int count = customerProServiceMapper.queryCustomerListCount(enter);
-        if (count == 0) {
-            return PageResult.createZeroRowResult(enter);
+    public PageResult<CustomerDetailsResult> list(ListCustomerEnter page) {
+
+        List<CustomerDetailsResult> resultList = new ArrayList<>();
+        CustomerDetailsResult detailsResult = null;
+
+        QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
+
+        if (page.getDr() != null) {
+            wrapper.eq(OpeCustomer.COL_DR, page.getDr());
+        } else {
+            wrapper.eq(OpeCustomer.COL_DR, 0);
         }
-        List<CustomerListByPageResult> customerList = customerProServiceMapper.queryCustomerList(enter);
-        return PageResult.create(enter, count, customerList);
+        if (page.getStatus() != null) {
+            wrapper.eq(OpeCustomer.COL_STATUS, page.getStatus());
+        }
+        if (page.getOneCityiD() != null && page.getTwoCityiD() != null) {
+            wrapper.eq(OpeCustomer.COL_CITY, page.getOneCityiD());
+            wrapper.eq(OpeCustomer.COL_DISTRUST, page.getTwoCityiD());
+        }
+        if (page.getCustomerType() != null) {
+            wrapper.eq(OpeCustomer.COL_CUSTOMER_TYPE, page.getCustomerType());
+        }
+        if (page.getCustomerIndustry() != null) {
+            wrapper.eq(OpeCustomer.COL_INDUSTRY_TYPE, page.getCustomerIndustry());
+        }
+        if (page.getCustomerSource() != null) {
+            wrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, page.getCustomerSource());
+        }
+        if (page.getCreateStartDateTime() != null && page.getCreateEndDateTime() != null) {
+            wrapper.between(OpeCustomer.COL_CREATED_TIME, page.getCreateStartDateTime(), page.getCreateEndDateTime());
+        }
+        if (page.getKeyword() != null) {
+            wrapper.like(OpeCustomer.COL_NAME, page.getKeyword()).or().like(OpeCustomer.COL_EMAIL, page.getKeyword());
+        }
+
+        Page<OpeCustomer> customerPage = new Page<>(page.getPageNo(), page.getPageSize());
+        IPage<OpeCustomer> opeCustomerIPage = opeCustomerMapper.selectPage(customerPage, wrapper);
+        List<OpeCustomer> pageRecords = opeCustomerIPage.getRecords();
+
+        for (OpeCustomer customer : pageRecords) {
+            detailsResult = new CustomerDetailsResult();
+            BeanUtils.copyProperties(customer, detailsResult);
+            resultList.add(detailsResult);
+        }
+
+        return PageResult.create(page, (int) opeCustomerIPage.getTotal(), resultList);
     }
+
+    /**
+     * 客户详情查询
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public CustomerDetailsResult details(IdEnter enter) {
+
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+        CustomerDetailsResult result = new CustomerDetailsResult();
+        BeanUtils.copyProperties(opeCustomer, result);
+        result.setRequestId(enter.getRequestId());
+
+        return result;
+    }
+
+    /**
+     * 客户进入垃圾箱
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult delete(DeleteCustomerEnter enter) {
+
+        UpdateWrapper<OpeCustomer> deleteWrapper = new UpdateWrapper<>();
+        deleteWrapper.eq("id", enter.getId());
+        deleteWrapper.eq(OpeCustomer.COL_MEMO, enter.getReason());
+
+        opeCustomerMapper.delete(deleteWrapper);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 编辑更新客户
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult edit(EditCustomerEnter enter) {
+
+        OpeCustomer update = new OpeCustomer();
+        if (update.getId() == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
+        }
+        BeanUtils.copyProperties(enter, update);
+        opeCustomerMapper.updateById(update);
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
 
     /**
      * @param enter
@@ -125,10 +222,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @Version: ROS 1.0
      */
     @Override
-    public GeneralResult convertCustomer(IdEnter enter) {
+    public GeneralResult change(IdEnter enter) {
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         if (customer == null) {
-            //todo 异常
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         customer.setStatus(CustomerStatusEnum.OFFICIAL_CUSTOMER.getCode());
         customer.setUpdatedBy(enter.getUserId());
@@ -137,49 +234,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    /**
-     * @param enter
-     * @desc: 删除客户
-     * @param: enter
-     * @return: GeneralResult
-     * @auther: alex
-     * @date: 2019/12/18 16:35
-     * @Version: ROS 1.0
-     */
-    @Override
-    public GeneralResult deleteCustomer(DeleteCustomerEnter enter) {
-        OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
-        if (customer == null) {
-            // 异常
-        }
-        //customer.setStatus(CustomerStatusEnum.TRASH.getCode());
-        //todo 删除原因 需要改动数据库
-        customer.setUpdatedBy(enter.getUserId());
-        customer.setUpdatedTime(new Date());
-
-        opeCustomerMapper.updateById(customer);
-        return new GeneralResult(enter.getRequestId());
-    }
-
-    /**
-     * @param enter
-     * @desc: 客户详情
-     * @param: enter
-     * @return: GeneralResult
-     * @auther: alex
-     * @date: 2019/12/18 16:36
-     * @Version: ROS 1.0
-     */
-    @Override
-    public CustomerDetailResult customerDetail(IdEnter enter) {
-        OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
-        if (customer == null) {
-            // 异常
-        }
-        //todo 封装 返回
-        CustomerDetailResult result = new CustomerDetailResult();
-        return result;
-    }
 
     /**
      * @param enter
@@ -191,7 +245,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @Version: ROS 1.0
      */
     @Override
-    public GeneralResult createCustomerAccount(CreateCustomerAccountEnter enter) {
+    public GeneralResult openAccount(OpenAccountEnter enter) {
 
         return null;
     }
@@ -221,19 +275,5 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             }
         }
         return map;
-    }
-
-    /**
-     * @param enter
-     * @desc: 客户账户列表
-     * @param: enter
-     * @return: CustomerAccountListResult
-     * @auther: alex
-     * @date: 2019/12/18 17:33
-     * @Version: ROS 1.0
-     */
-    @Override
-    public CustomerAccountListResult customerAccountList(CustomerAccountListEnter enter) {
-        return null;
     }
 }

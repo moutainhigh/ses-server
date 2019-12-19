@@ -59,7 +59,7 @@ public enum ExceptionCodeEnums {
 
     LOGIN_NAME_CANNOT_EMPTY(10021,"用户名不能为空"),
 
-
+    PRIMARY_KEY_CANNOT_EMPTY(10022,"主键不能为空"),
 
     ;
 

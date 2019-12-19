@@ -4,14 +4,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.CreateCustomerAccountEnter;
-import com.redescooter.ses.web.ros.vo.CustomerAccountListEnter;
-import com.redescooter.ses.web.ros.vo.CustomerAccountListResult;
-import com.redescooter.ses.web.ros.vo.CustomerDetailResult;
-import com.redescooter.ses.web.ros.vo.CustomerListByPageEnter;
-import com.redescooter.ses.web.ros.vo.CustomerListByPageResult;
-import com.redescooter.ses.web.ros.vo.DeleteCustomerEnter;
-import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
+import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
+import com.redescooter.ses.web.ros.vo.customer.*;
 
 import java.util.Map;
 
@@ -33,25 +27,36 @@ public interface CustomerRosService {
     GeneralResult save(CreateCustomerEnter enter);
 
     /**
-     * @desc: 客户状态分类
-     * @param: enter
-     * @return: countByCustomerStatus
-     * @auther: alex
-     * @date: 2019/12/18 11:17
-     * @Version: ros 1.0
+     * 编辑更新客户
+     *
+     * @param enter
+     * @return
      */
-    Map<String, Integer> countByCustomerStatus(GeneralEnter enter);
+    GeneralResult edit(EditCustomerEnter enter);
 
     /**
-     * @desc: 客户列表分页
-     * @param: enter
-     * @return: CustomerListByPageResult
-     * @auther: alex
-     * @date: 2019/12/18 11:51
-     * @Version: CRM 1.3 进销存
+     * 客户分页列表
+     *
+     * @param enter
+     * @return
      */
-    PageResult<CustomerListByPageResult> customerListByPage(CustomerListByPageEnter enter);
+    PageResult<CustomerDetailsResult> list(ListCustomerEnter enter);
 
+    /**
+     * 客户详情查询
+     *
+     * @param enter
+     * @return
+     */
+    CustomerDetailsResult details(IdEnter enter);
+
+    /**
+     * 客户进入垃圾箱
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult delete(DeleteCustomerEnter enter);
 
     /**
      * @desc: 潜在客户转正式客户
@@ -61,37 +66,25 @@ public interface CustomerRosService {
      * @date: 2019/12/18 16:31
      * @Version: ROS 1.0
      */
-    GeneralResult convertCustomer(IdEnter enter);
+    GeneralResult change(IdEnter enter);
 
     /**
-     * @desc: 删除客户
-     * @param: enter
-     * @return: GeneralResult
-     * @auther: alex
-     * @date: 2019/12/18 16:35
-     * @Version: ROS 1.0
+     * 账号开通
+     *
+     * @param enter
+     * @return
      */
-    GeneralResult deleteCustomer(DeleteCustomerEnter enter);
+    GeneralResult openAccount(OpenAccountEnter enter);
 
     /**
-     * @desc: 客户详情
+     * @desc: 客户状态分类
      * @param: enter
-     * @return: GeneralResult
+     * @return: countByCustomerStatus
      * @auther: alex
-     * @date: 2019/12/18 16:36
-     * @Version: ROS 1.0
+     * @date: 2019/12/18 11:17
+     * @Version: ros 1.0
      */
-    CustomerDetailResult customerDetail(IdEnter enter);
-
-    /**
-     * @desc: 客户开通账户
-     * @param: enter
-     * @return: Map<String, Integer>
-     * @auther: alex
-     * @date: 2019/12/18 17:39
-     * @Version: ROS 1.0
-     */
-    GeneralResult createCustomerAccount(CreateCustomerAccountEnter enter);
+    Map<String, Integer> countByCustomerStatus(GeneralEnter enter);
 
     /**
      * @desc: 客户账户列表状态
@@ -103,13 +96,4 @@ public interface CustomerRosService {
      */
     Map<String, Integer> countByCustomerAccountStatus(GeneralEnter enter);
 
-    /**
-     * @desc: 客户账户列表
-     * @param: enter
-     * @return: CustomerAccountListResult
-     * @auther: alex
-     * @date: 2019/12/18 17:33
-     * @Version: ROS 1.0
-     */
-    CustomerAccountListResult customerAccountList(CustomerAccountListEnter enter);
 }

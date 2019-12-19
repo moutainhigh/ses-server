@@ -1,11 +1,9 @@
 package com.redescooter.ses.web.ros.controller;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
-import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
+import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
+import com.redescooter.ses.web.ros.vo.customer.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -35,28 +33,40 @@ public class CustomerController {
         return new Response<>(customerRosService.save(enter));
     }
 
-    @PostMapping(value = "/queryCustomerListByPage")
+    @PostMapping(value = "/edit")
+    @ApiOperation(value = "编辑客户", response = GeneralResult.class)
+    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") EditCustomerEnter enter) {
+        return new Response<>(customerRosService.edit(enter));
+    }
+
+    @PostMapping(value = "/list")
     @ApiOperation(value = "客户列表", response = GeneralResult.class)
-    public Response<PageResult<GeneralResult>> queryCustomerListByPage(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    public Response<PageResult<CustomerDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") ListCustomerEnter enter) {
+        return new Response<>(customerRosService.list(enter));
     }
 
-    @PostMapping(value = "/queryCustomerDetail")
+    @PostMapping(value = "/details")
     @ApiOperation(value = "客户详情", response = GeneralResult.class)
-    public Response<GeneralResult> queryCustomerDetail(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    public Response<CustomerDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(customerRosService.details(enter));
     }
 
-    @PostMapping(value = "/modifyCustomerStatus")
-    @ApiOperation(value = "潜在客户转正式客户", response = GeneralResult.class)
-    public Response<GeneralResult> modifyCustomerStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    @PostMapping(value = "/delete")
+    @ApiOperation(value = "加入垃圾箱", response = GeneralResult.class)
+    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") DeleteCustomerEnter enter) {
+        return new Response<>(customerRosService.delete(enter));
     }
 
-    @PostMapping(value = "/createSaasAccount")
-    @ApiOperation(value = "开通saas账户", response = GeneralResult.class)
-    public Response<GeneralResult> createSaasAccount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    @PostMapping(value = "/change")
+    @ApiOperation(value = "客户转换", response = GeneralResult.class)
+    public Response<GeneralResult> change(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(customerRosService.change(enter));
+    }
+
+    @PostMapping(value = "/openAccount")
+    @ApiOperation(value = "开通账号", response = GeneralResult.class)
+    public Response<GeneralResult> openAccount(@ModelAttribute @ApiParam("请求参数") OpenAccountEnter enter) {
+        return new Response<>(customerRosService.openAccount(enter));
     }
 
 }
