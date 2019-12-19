@@ -12,12 +12,16 @@
     <result column="distrust" property="distrust" />
     <result column="status" property="status" />
     <result column="sales_id" property="salesId" />
-    <result column="name" property="name" />
+    <result column="first_name" property="firstName" />
+    <result column="last_name" property="lastName" />
+    <result column="full_name" property="fullName" />
+    <result column="company_name" property="companyName" />
     <result column="picture" property="picture" />
     <result column="customer_source" property="customerSource" />
     <result column="customer_type" property="customerType" />
     <result column="industry_type" property="industryType" />
     <result column="address" property="address" />
+    <result column="place_id" property="placeId" />
     <result column="longitude" property="longitude" />
     <result column="latitude" property="latitude" />
     <result column="contact" property="contact" />
@@ -46,12 +50,12 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, `name`, 
-    picture, customer_source, customer_type, industry_type, address, longitude, latitude, 
-    contact, telephone, email, memo, scooter_quantity, certificate_type, certificate_positive_annex, 
-    certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
-    invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
-    updated_time, def1, def2, def3, def5, def6
+    id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, first_name, 
+    last_name, full_name, company_name, picture, customer_source, customer_type, industry_type, 
+    address, place_id, longitude, latitude, contact, telephone, email, memo, scooter_quantity, 
+    certificate_type, certificate_positive_annex, certificate_negative_annex, business_license_num, 
+    business_license_annex, invoice_num, invoice_annex, contract_annex, account_flag, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -97,9 +101,24 @@
           when id = #{item.id} then #{item.salesId}
         </foreach>
       </trim>
-      <trim prefix="`name` = case" suffix="end,">
+      <trim prefix="first_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.name}
+          when id = #{item.id} then #{item.firstName}
+        </foreach>
+      </trim>
+      <trim prefix="last_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.lastName}
+        </foreach>
+      </trim>
+      <trim prefix="full_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.fullName}
+        </foreach>
+      </trim>
+      <trim prefix="company_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.companyName}
         </foreach>
       </trim>
       <trim prefix="picture = case" suffix="end,">
@@ -125,6 +144,11 @@
       <trim prefix="address = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.address}
+        </foreach>
+      </trim>
+      <trim prefix="place_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.placeId}
         </foreach>
       </trim>
       <trim prefix="longitude = case" suffix="end,">
@@ -261,19 +285,21 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_customer
-    (id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, `name`, 
-      picture, customer_source, customer_type, industry_type, address, longitude, latitude, 
-      contact, telephone, email, memo, scooter_quantity, certificate_type, certificate_positive_annex, 
-      certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
-      invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def5, def6)
+    (id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, first_name, 
+      last_name, full_name, company_name, picture, customer_source, customer_type, industry_type, 
+      address, place_id, longitude, latitude, contact, telephone, email, memo, scooter_quantity, 
+      certificate_type, certificate_positive_annex, certificate_negative_annex, business_license_num, 
+      business_license_annex, invoice_num, invoice_annex, contract_annex, account_flag, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.timeZone}, #{item.country}, #{item.city}, 
-        #{item.distrust}, #{item.status}, #{item.salesId}, #{item.name}, #{item.picture}, 
-        #{item.customerSource}, #{item.customerType}, #{item.industryType}, #{item.address}, 
-        #{item.longitude}, #{item.latitude}, #{item.contact}, #{item.telephone}, #{item.email}, 
-        #{item.memo}, #{item.scooterQuantity}, #{item.certificateType}, #{item.certificatePositiveAnnex}, 
+        #{item.distrust}, #{item.status}, #{item.salesId}, #{item.firstName}, #{item.lastName}, 
+        #{item.fullName}, #{item.companyName}, #{item.picture}, #{item.customerSource}, 
+        #{item.customerType}, #{item.industryType}, #{item.address}, #{item.placeId}, #{item.longitude}, 
+        #{item.latitude}, #{item.contact}, #{item.telephone}, #{item.email}, #{item.memo}, 
+        #{item.scooterQuantity}, #{item.certificateType}, #{item.certificatePositiveAnnex}, 
         #{item.certificateNegativeAnnex}, #{item.businessLicenseNum}, #{item.businessLicenseAnnex}, 
         #{item.invoiceNum}, #{item.invoiceAnnex}, #{item.contractAnnex}, #{item.accountFlag}, 
         #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
@@ -283,20 +309,22 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomer">
     <!--@mbg.generated-->
     insert into ope_customer
-    (id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, `name`, 
-      picture, customer_source, customer_type, industry_type, address, longitude, latitude, 
-      contact, telephone, email, memo, scooter_quantity, certificate_type, certificate_positive_annex, 
-      certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
-      invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def5, def6)
+    (id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, first_name, 
+      last_name, full_name, company_name, picture, customer_source, customer_type, industry_type, 
+      address, place_id, longitude, latitude, contact, telephone, email, memo, scooter_quantity, 
+      certificate_type, certificate_positive_annex, certificate_negative_annex, business_license_num, 
+      business_license_annex, invoice_num, invoice_annex, contract_annex, account_flag, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
     values
     (#{id}, #{dr}, #{tenantId}, #{timeZone}, #{country}, #{city}, #{distrust}, #{status}, 
-      #{salesId}, #{name}, #{picture}, #{customerSource}, #{customerType}, #{industryType}, 
-      #{address}, #{longitude}, #{latitude}, #{contact}, #{telephone}, #{email}, #{memo}, 
-      #{scooterQuantity}, #{certificateType}, #{certificatePositiveAnnex}, #{certificateNegativeAnnex}, 
-      #{businessLicenseNum}, #{businessLicenseAnnex}, #{invoiceNum}, #{invoiceAnnex}, 
-      #{contractAnnex}, #{accountFlag}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
-      #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+      #{salesId}, #{firstName}, #{lastName}, #{fullName}, #{companyName}, #{picture}, 
+      #{customerSource}, #{customerType}, #{industryType}, #{address}, #{placeId}, #{longitude}, 
+      #{latitude}, #{contact}, #{telephone}, #{email}, #{memo}, #{scooterQuantity}, #{certificateType}, 
+      #{certificatePositiveAnnex}, #{certificateNegativeAnnex}, #{businessLicenseNum}, 
+      #{businessLicenseAnnex}, #{invoiceNum}, #{invoiceAnnex}, #{contractAnnex}, #{accountFlag}, 
+      #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, 
+      #{def5}, #{def6})
     on duplicate key update 
     id = #{id}, 
     dr = #{dr}, 
@@ -307,12 +335,16 @@
     distrust = #{distrust}, 
     `status` = #{status}, 
     sales_id = #{salesId}, 
-    `name` = #{name}, 
+    first_name = #{firstName}, 
+    last_name = #{lastName}, 
+    full_name = #{fullName}, 
+    company_name = #{companyName}, 
     picture = #{picture}, 
     customer_source = #{customerSource}, 
     customer_type = #{customerType}, 
     industry_type = #{industryType}, 
     address = #{address}, 
+    place_id = #{placeId}, 
     longitude = #{longitude}, 
     latitude = #{latitude}, 
     contact = #{contact}, 
@@ -370,8 +402,17 @@
       <if test="salesId != null">
         sales_id,
       </if>
-      <if test="name != null">
-        `name`,
+      <if test="firstName != null">
+        first_name,
+      </if>
+      <if test="lastName != null">
+        last_name,
+      </if>
+      <if test="fullName != null">
+        full_name,
+      </if>
+      <if test="companyName != null">
+        company_name,
       </if>
       <if test="picture != null">
         picture,
@@ -387,6 +428,9 @@
       </if>
       <if test="address != null">
         address,
+      </if>
+      <if test="placeId != null">
+        place_id,
       </if>
       <if test="longitude != null">
         longitude,
@@ -493,8 +537,17 @@
       <if test="salesId != null">
         #{salesId},
       </if>
-      <if test="name != null">
-        #{name},
+      <if test="firstName != null">
+        #{firstName},
+      </if>
+      <if test="lastName != null">
+        #{lastName},
+      </if>
+      <if test="fullName != null">
+        #{fullName},
+      </if>
+      <if test="companyName != null">
+        #{companyName},
       </if>
       <if test="picture != null">
         #{picture},
@@ -510,6 +563,9 @@
       </if>
       <if test="address != null">
         #{address},
+      </if>
+      <if test="placeId != null">
+        #{placeId},
       </if>
       <if test="longitude != null">
         #{longitude},
@@ -616,8 +672,17 @@
       <if test="salesId != null">
         sales_id = #{salesId},
       </if>
-      <if test="name != null">
-        `name` = #{name},
+      <if test="firstName != null">
+        first_name = #{firstName},
+      </if>
+      <if test="lastName != null">
+        last_name = #{lastName},
+      </if>
+      <if test="fullName != null">
+        full_name = #{fullName},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName},
       </if>
       <if test="picture != null">
         picture = #{picture},
@@ -633,6 +698,9 @@
       </if>
       <if test="address != null">
         address = #{address},
+      </if>
+      <if test="placeId != null">
+        place_id = #{placeId},
       </if>
       <if test="longitude != null">
         longitude = #{longitude},

@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public enum CustomerCertificateTypeEnum {
 
     ID_CARD("ID_CARD", "身份证号", 1),
-    DRIVER_LICENSE("DRIVER_LICENSE", "驾照号", 2),
+    DRIVER_LICENSE("DRIVER_LICENSE", "驾驶证", 2),
     PASSPORT("PASSPORT", "护照", 3);
 
     private String code;

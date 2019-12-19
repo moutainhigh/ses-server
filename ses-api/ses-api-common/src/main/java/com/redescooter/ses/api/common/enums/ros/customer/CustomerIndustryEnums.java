@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum CustomerIndustryEnums {
     RESTAURANT("RESTAURANT", "餐厅",1),
-    EXPRESS_DELIVERY("EXPRESS_DELIVERY", "快递",2);
+    EXPRESS_DELIVERY("EXPRESS_DELIVERY","快递",2);
 
     private String code;
 

@@ -35,7 +35,7 @@ public enum ExceptionCodeEnums {
 
     ACCOUNT_EXPIRED(10009, "账号过期"),
 
-    INSUFFICIENT_PERMISSIONS(10010,"权限不足"),
+    INSUFFICIENT_PERMISSIONS(10010, "权限不足"),
 
     INCONSISTENT_PASSWORD(10011, "密码不一致"),
 
@@ -57,9 +57,26 @@ public enum ExceptionCodeEnums {
 
     COUNTRY_CANNOT_EMPTY(10020, "国家为空"),
 
-    LOGIN_NAME_CANNOT_EMPTY(10021,"用户名不能为空"),
+    LOGIN_NAME_CANNOT_EMPTY(10021, "用户名不能为空"),
 
-    PRIMARY_KEY_CANNOT_EMPTY(10022,"主键不能为空"),
+    PRIMARY_KEY_CANNOT_EMPTY(10022, "主键不能为空"),
+
+
+    //30之后是业务错误码
+    FIRST_NAME_CANNOT_EMPTY(10030, "名字不能为空"),
+
+    LAST_NAME_CANNOT_EMPTY(10031, "姓氏不能为空"),
+
+    COMPANY_NAME_CANNOT_EMPTY(10032, "企业名不能为空"),
+
+    MAIL_NAME_CANNOT_EMPTY(10033, "邮箱不能为空"),
+
+    CERTIFICATE_TYPE_CANNOT_EMPTY(10034, "证件类型不能为空"),
+
+    BUSINESS_LICENSE_CANNOT_EMPTY(10035, "营业执照不能为空"),
+
+    INVOICE_CANNOT_EMPTY(10036, "发票不能为空"),
+
 
     ;
 

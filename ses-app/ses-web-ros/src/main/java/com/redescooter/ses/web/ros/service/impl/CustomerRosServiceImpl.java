@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -11,6 +12,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.foundation.service.CityBaseService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerProServiceMapper;
@@ -21,7 +23,9 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import com.redescooter.ses.web.ros.vo.customer.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +51,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Reference
     private IdAppService idAppService;
 
+    @Reference
+    private CityBaseService cityBaseService;
+
     /**
      * 创建客户
      *
@@ -57,12 +64,33 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult save(CreateCustomerEnter enter) {
 
+        QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
+        Integer count = opeCustomerMapper.selectCount(queryWrapper);
+
+        if (count > 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        }
+        if (StringUtils.isBlank(enter.getFirstName())) {
+            throw new SesWebRosException(ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(enter.getLastName())) {
+            throw new SesWebRosException(ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(enter.getEmail())) {
+            throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
+        }
+        if (enter.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
+            enter.setScooterQuantity(1);
+        } else {
+            if (StringUtils.isBlank(enter.getCompanyName())) {
+                throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COMPANY_NAME_CANNOT_EMPTY.getMessage());
+            }
+        }
         OpeCustomer saveVo = new OpeCustomer();
         BeanUtils.copyProperties(enter, saveVo);
-        if (saveVo.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
-            saveVo.setScooterQuantity(1);
-        }
         saveVo.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+        saveVo.setFullName(new StringBuffer().append(saveVo.getFirstName()).append(" ").append(saveVo.getLastName()).toString());
         saveVo.setCreatedBy(enter.getUserId());
         saveVo.setCreatedTime(new Date());
         saveVo.setUpdatedBy(enter.getUserId());

@@ -40,23 +40,32 @@ public class CreateCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "销售")
     private Long salesId;
 
-    @ApiModelProperty(value = "客户名")
-    private String name;
+    @ApiModelProperty(value = "客户名字")
+    private String firstName;
+
+    @ApiModelProperty(value = "客户姓氏")
+    private String lastName;
+
+    @ApiModelProperty(value = "企业名称")
+    private String companyName;
 
     @ApiModelProperty(value = "客户头像")
     private String picture;
 
-    @ApiModelProperty(value = "客户来源渠道 官网/email/电话")
+    @ApiModelProperty(value="客户来源渠道,SYSTEM-系统-1, WEBSITE-官网-2")
     private String customerSource;
 
-    @ApiModelProperty(value = "客户类型 1企业/2个人")
+    @ApiModelProperty(value="客户类型,ENTERPRISE-公司-1, PERSONAL-个人-2")
     private Integer customerType;
 
-    @ApiModelProperty(value = "客户行业类型，1餐厅/2快递")
+    @ApiModelProperty(value="客户行业类型,RESTAURANT-餐厅-1, EXPRESS_DELIVERY-快递-2")
     private Integer industryType;
 
     @ApiModelProperty(value = "地址")
     private String address;
+
+    @ApiModelProperty(value = "地点编号")
+    private String placeId;
 
     @ApiModelProperty(value = "经度")
     private BigDecimal longitude;
@@ -76,7 +85,7 @@ public class CreateCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "车辆数量")
     private Integer scooterQuantity;
 
-    @ApiModelProperty(value = "证件类型1身份证，2驾驶证，3护照")
+    @ApiModelProperty(value="证件类型:ID_CARD-身份证-1,DRIVER_LICENSE-驾驶证2，PASSPORT-护照-3")
     private Integer certificateType;
 
     @ApiModelProperty(value = "证件正面附件")

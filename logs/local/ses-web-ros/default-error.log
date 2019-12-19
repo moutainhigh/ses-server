@@ -30,3 +30,6 @@ Consider defining a bean of type 'com.redescooter.ses.starter.common.service.IdA
 2019-12-19 10:59:38,097 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider
 2019-12-19 11:00:50,037 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider
 2019-12-19 12:12:27,635 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider
+2019-12-19 12:22:30,653 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider
+2019-12-19 12:22:35,099 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider
+2019-12-19 12:22:44,125 [ERROR] [SwaggerBootstrapUiController.java:142] - java.lang.NoClassDefFoundError:springfox/documentation/swagger/common/HostNameProvider

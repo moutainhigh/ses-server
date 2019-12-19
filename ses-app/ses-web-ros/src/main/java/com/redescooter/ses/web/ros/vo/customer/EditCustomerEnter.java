@@ -37,8 +37,14 @@ public class EditCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "销售")
     private Long salesId;
 
-    @ApiModelProperty(value = "客户名")
-    private String name;
+    @ApiModelProperty(value = "客户名字")
+    private String firstName;
+
+    @ApiModelProperty(value = "客户姓氏")
+    private String lastName;
+
+    @ApiModelProperty(value = "企业名称")
+    private String companyName;
 
     @ApiModelProperty(value = "客户头像")
     private String picture;
