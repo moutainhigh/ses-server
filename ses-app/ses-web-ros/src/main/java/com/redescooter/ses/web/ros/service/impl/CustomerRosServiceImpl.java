@@ -100,7 +100,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         } else {
             saveVo.setCustomerFullName(new StringBuffer().append(saveVo.getCustomerFirstName()).append(" ").append(saveVo.getCustomerLastName()).toString());
         }
-        saveVo.setAccountFlag(Integer.valueOf(CustomerAccountFlagEnum.INACTIVATED.getValue()));
+        saveVo.setAccountFlag(Integer.valueOf(CustomerAccountFlagEnum.NORMAL.getValue()));
         saveVo.setCreatedBy(enter.getUserId());
         saveVo.setCreatedTime(new Date());
         saveVo.setUpdatedBy(enter.getUserId());
