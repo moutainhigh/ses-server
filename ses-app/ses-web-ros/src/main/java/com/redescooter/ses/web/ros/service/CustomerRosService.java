@@ -84,14 +84,4 @@ public interface CustomerRosService {
      */
     Map<String, Integer> countStatus(GeneralEnter enter);
 
-    /**
-     * @desc: 客户账户列表状态
-     * @param: enter
-     * @return: enter
-     * @auther: alex
-     * @date: 2019/12/18 16:43
-     * @Version: ROS 1.0
-     */
-    Map<String, Integer> countByCustomerAccountStatus(GeneralEnter enter);
-
 }

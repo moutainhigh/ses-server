@@ -62,8 +62,8 @@ public class TokenRosServiceImpl implements TokenRosService {
     public TokenResult login(LoginEnter enter) {
 
         QueryWrapper<OpeSysUser> wrapper = new QueryWrapper<>();
-        wrapper.eq(OpeSysUser.COL_LOGIN_NAME,enter.getLoginName());
-        wrapper.eq(OpeSysUser.COL_DR,0);
+        wrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getLoginName());
+        wrapper.eq(OpeSysUser.COL_DR, 0);
         wrapper.eq(OpeSysUser.COL_APP_ID, enter.getAppId());
         wrapper.eq(OpeSysUser.COL_SYSTEM_ID, enter.getSystemId());
 
@@ -74,10 +74,10 @@ public class TokenRosServiceImpl implements TokenRosService {
         }
         //状态验证
         if (StringUtils.equals(sysUser.getStatus(), UserStatusEnum.LOCK.getCode())) {
-            throw new SesWebRosException(ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getCode(),ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getCode(), ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getMessage());
         }
         if (StringUtils.equals(sysUser.getStatus(), UserStatusEnum.CANCEL.getCode())) {
-            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_CANCELLED.getCode(),ExceptionCodeEnums.ACCOUNT_CANCELLED.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_CANCELLED.getCode(), ExceptionCodeEnums.ACCOUNT_CANCELLED.getMessage());
         }
         if (StringUtils.equals(sysUser.getStatus(), UserStatusEnum.EXPIRED.getCode())) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_EXPIRED.getCode(), ExceptionCodeEnums.ACCOUNT_EXPIRED.getMessage());
@@ -85,7 +85,12 @@ public class TokenRosServiceImpl implements TokenRosService {
         String password = DigestUtils.md5Hex(enter.getPassword() + sysUser.getSalt());
 
         if (!password.equals(sysUser.getPassword())) {
-            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(),ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+
+        //清除上次登录token信息
+        if(StringUtils.isNotBlank(sysUser.getLastLoginToken())){
+            jedisCluster.del(sysUser.getLastLoginToken());
         }
 
         //将token及用户相关信息 放到Redis中
@@ -202,12 +207,12 @@ public class TokenRosServiceImpl implements TokenRosService {
 
         OpeSysUser opeSysUser = sysUserMapper.selectById(enter.getId());
 
-        if(opeSysUser.getLoginName().equals(Constant.ADMIN_USER_NAME)){
+        if (opeSysUser.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
 
         UpdateWrapper<OpeSysUserProfile> delete = new UpdateWrapper<>();
-        delete.eq(OpeSysUserProfile.COL_SYS_USER_ID,opeSysUser.getId());
+        delete.eq(OpeSysUserProfile.COL_SYS_USER_ID, opeSysUser.getId());
         sysUserProfileMapper.delete(delete);
         sysUserMapper.deleteById(enter.getId());
 
@@ -268,7 +273,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         }
         UserToken userToken = new UserToken();
         try {
-           BeanUtils.populate(userToken, map);
+            BeanUtils.populate(userToken, map);
         } catch (IllegalAccessException e) {
             log.error("checkToken IllegalAccessException sessionMap:" + map, e);
         } catch (InvocationTargetException e) {

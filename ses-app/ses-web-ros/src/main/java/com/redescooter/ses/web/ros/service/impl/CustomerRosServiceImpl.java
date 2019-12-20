@@ -227,13 +227,19 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult delete(DeleteCustomerEnter enter) {
 
+        //验证客户是否开通SaaS账户等信息
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+
+       if(opeCustomer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION)){
+           throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
+       }
+
         OpeCustomer update = new OpeCustomer();
         update.setId(enter.getId());
+        update.setDr(1);
         update.setStatus(CustomerStatusEnum.TRASH_CUSTOMER.getValue());
         update.setMemo(enter.getReason());
         opeCustomerMapper.updateById(update);
-
-        opeCustomerMapper.deleteById(enter.getId());
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -250,7 +256,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         //客户验证
         checkCustomer(enter);
-
         OpeCustomer update = new OpeCustomer();
         BeanUtils.copyProperties(enter, update);
         opeCustomerMapper.updateById(update);
@@ -266,6 +271,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public GeneralResult change(IdEnter enter) {
+
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
@@ -276,7 +282,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         opeCustomerMapper.updateById(customer);
         return new GeneralResult(enter.getRequestId());
     }
-
 
     /**
      * @param enter
@@ -291,33 +296,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public GeneralResult openAccount(OpenAccountEnter enter) {
 
         return null;
-    }
-
-    /**
-     * @param enter
-     * @desc: 客户账户列表状态
-     * @param: enter
-     * @return: enter
-     * @auther: alex
-     * @date: 2019/12/18 16:43
-     * @Version: ROS 1.0
-     */
-    @Override
-    public Map<String, Integer> countByCustomerAccountStatus(GeneralEnter enter) {
-        // 查询 客户状态
-        //todo 补mapper 有需要可以掉 platform 注意
-        List<CountByStatusResult> countByCustomerAccountStatus =null;
-        Map<String, Integer> map = new HashMap<>();
-        for (CountByStatusResult item : countByCustomerAccountStatus) {
-            map.put(item.getStatus(), item.getTotalCount());
-        }
-        //todo 换成客户账户enum
-        for (CustomerStatusEnum status : CustomerStatusEnum.values()) {
-            if (!map.containsKey(status.getCode())) {
-                map.put(status.getCode(), 0);
-            }
-        }
-        return map;
     }
 
     private void checkCustomer(EditCustomerEnter enter) {
