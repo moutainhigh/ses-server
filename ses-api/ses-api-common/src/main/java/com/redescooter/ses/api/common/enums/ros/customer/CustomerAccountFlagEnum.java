@@ -15,9 +15,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum CustomerAccountFlagEnum {
-
-    ACTIVATION("ACTIVATION","激活成功","1"),
-    INACTIVATED("INACTIVATED","未激活","0"),;
+    NORMAL("NORMAL","未操作","0"),
+    INACTIVATED("INACTIVATED","未激活","1"),
+    ACTIVATION("ACTIVATION","激活成功","3"),
+    ;
 
     private String code;
 

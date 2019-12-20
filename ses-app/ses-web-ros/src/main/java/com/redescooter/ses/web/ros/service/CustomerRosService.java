@@ -51,12 +51,20 @@ public interface CustomerRosService {
     CustomerDetailsResult details(IdEnter enter);
 
     /**
-     * 客户进入垃圾箱
+     * 客户逻辑
      *
      * @param enter
      * @return
      */
-    GeneralResult delete(DeleteCustomerEnter enter);
+    GeneralResult delete(IdEnter enter);
+
+    /**
+     * 客户垃圾
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult trash(TrashCustomerEnter enter);
 
     /**
      * @desc: 潜在客户转正式客户

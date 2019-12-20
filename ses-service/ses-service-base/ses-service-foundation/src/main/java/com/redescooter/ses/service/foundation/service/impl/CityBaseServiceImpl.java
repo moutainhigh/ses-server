@@ -73,11 +73,16 @@ public class CityBaseServiceImpl implements CityBaseService {
     @Override
     public CityResult queryCityDeatliById(IdEnter enter) {
 
+        if (enter == null) {
+            return new CityResult();
+        }
+
         PlaCity city = cityMapper.selectById(enter.getId());
 
         CityResult result = new CityResult();
-        BeanUtils.copyProperties(city, result);
-
+        if (city != null) {
+            BeanUtils.copyProperties(city, result);
+        }
         return result;
     }
 

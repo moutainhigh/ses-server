@@ -111,17 +111,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     }
 
     /**
+     * 状态统计
+     *
      * @param enter
-     * @desc: 客户状态分类
-     * @param: enter
-     * @return: countByCustomerStatus
-     * @auther: alex
-     * @date: 2019/12/18 11:17
-     * @Version: ros 1.0
+     * @return
      */
     @Override
     public Map<String, Integer> countStatus(GeneralEnter enter) {
-        List<CountByStatusResult> countByCustomerStatus =customerServiceMapper.countStatus();
+        List<CountByStatusResult> countByCustomerStatus = customerServiceMapper.countStatus();
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByCustomerStatus) {
             map.put(item.getStatus(), item.getTotalCount());
@@ -151,13 +148,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
 
-        if (page.getDr() != null && page.getDr() == 1) {
-            wrapper.eq(OpeCustomer.COL_DR, page.getDr());
-        } else {
-            //这里只查询没有做逻辑删除的数据
-            wrapper.eq(OpeCustomer.COL_DR, 0);
-        }
-        if (page.getStatus() != null) {
+        if (StringUtils.isNotBlank(page.getStatus())) {
             wrapper.eq(OpeCustomer.COL_STATUS, page.getStatus());
         }
         if (page.getOneCityiD() != null && page.getTwoCityiD() != null) {
@@ -177,7 +168,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             wrapper.between(OpeCustomer.COL_CREATED_TIME, page.getCreateStartDateTime(), page.getCreateEndDateTime());
         }
         if (StringUtils.isNotBlank(page.getKeyword())) {
-            wrapper.like(OpeCustomer.COL_CONTACT_FULL_NAME, page.getKeyword()).or().like(OpeCustomer.COL_EMAIL, page.getKeyword()).or().like(OpeCustomer.COL_CONTACT_FULL_NAME, page.getKeyword());
+            wrapper.and(wh -> wh.like(OpeCustomer.COL_CONTACT_FULL_NAME, page.getKeyword()).or().like(OpeCustomer.COL_EMAIL, page.getKeyword()).or().like(OpeCustomer.COL_CONTACT_FULL_NAME, page.getKeyword()));
         }
 
         Page<OpeCustomer> customerPage = new Page<>(page.getPageNo(), page.getPageSize());
@@ -187,8 +178,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         for (OpeCustomer customer : pageRecords) {
             detailsResult = new CustomerDetailsResult();
             BeanUtils.copyProperties(customer, detailsResult);
-            detailsResult.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(detailsResult.getCity()).build()).getName());
-            detailsResult.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(detailsResult.getDistrust()).build()).getName());
+            if (customer.getCity()==null || customer.getDistrust()==null) {
+                detailsResult.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(detailsResult.getCity()).build()).getName());
+                detailsResult.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(detailsResult.getDistrust()).build()).getName());
+            }
             resultList.add(detailsResult);
         }
 
@@ -218,25 +211,40 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     }
 
     /**
-     * 客户进入垃圾箱
+     * 客户逻辑
      *
      * @param enter
      * @return
      */
     @Transactional
     @Override
-    public GeneralResult delete(DeleteCustomerEnter enter) {
+    public GeneralResult delete(IdEnter enter) {
+        //验证客户是否开通SaaS账户等信息
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
+        }
+        opeCustomerMapper.deleteById(enter.getId());
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 客户垃圾
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult trash(TrashCustomerEnter enter) {
 
         //验证客户是否开通SaaS账户等信息
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-
-       if(opeCustomer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION)){
-           throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
-       }
-
+        if (opeCustomer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION)) {
+            throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
+        }
         OpeCustomer update = new OpeCustomer();
         update.setId(enter.getId());
-        update.setDr(1);
         update.setStatus(CustomerStatusEnum.TRASH_CUSTOMER.getValue());
         update.setMemo(enter.getReason());
         opeCustomerMapper.updateById(update);
@@ -254,6 +262,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult edit(EditCustomerEnter enter) {
 
+        OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
+        if(customer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getCode(), ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getMessage());
+        }
         //客户验证
         checkCustomer(enter);
         OpeCustomer update = new OpeCustomer();
@@ -294,6 +306,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public GeneralResult openAccount(OpenAccountEnter enter) {
+
 
         return null;
     }
@@ -339,7 +352,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isBlank(enter.getAddress())) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CUSTOMER_TYPE_CANNOT_EMPTY.getMessage());
         }
-
         if (StringUtils.isAllBlank(String.valueOf(enter.getLongitude()), String.valueOf(enter.getLatitude()))) {
             throw new SesWebRosException(ExceptionCodeEnums.LATITUDE_AND_LONGITUDE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LATITUDE_AND_LONGITUDE_CANNOT_EMPTY.getMessage());
         }
@@ -368,8 +380,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isBlank(enter.getContractAnnex())) {
             throw new SesWebRosException(ExceptionCodeEnums.CONTRACT_ANNEX_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CONTRACT_ANNEX_CANNOT_EMPTY.getMessage());
         }
-
-
     }
 
 }

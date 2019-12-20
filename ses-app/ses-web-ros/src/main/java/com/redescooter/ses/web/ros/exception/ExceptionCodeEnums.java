@@ -102,6 +102,7 @@ public enum ExceptionCodeEnums {
 
     CONTRACT_ANNEX_CANNOT_EMPTY(10049, "合同附件不能为空"),
 
+    TRASH_CAN_NOT_BE_EDITED(10050, "垃圾箱资源不能编辑"),
     ;
 
     private int code;

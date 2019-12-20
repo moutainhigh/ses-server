@@ -5,6 +5,7 @@
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
    select a.status, count(*) totalCount
    from ope_customer a
+   where a.dr =0
    group by a.status
     </select>
 </mapper>

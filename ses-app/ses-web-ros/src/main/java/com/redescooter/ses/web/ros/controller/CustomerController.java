@@ -8,7 +8,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Version;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -54,9 +53,15 @@ public class CustomerController {
         return new Response<>(customerRosService.details(enter));
     }
 
-    @PostMapping(value = "/delete")
+    @PostMapping(value = "/trash")
     @ApiOperation(value = "加入垃圾箱", response = GeneralResult.class)
-    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") DeleteCustomerEnter enter) {
+    public Response<GeneralResult> trash(@ModelAttribute @ApiParam("请求参数") TrashCustomerEnter enter) {
+        return new Response<>(customerRosService.trash(enter));
+    }
+
+    @PostMapping(value = "/delete")
+    @ApiOperation(value = "删除", response = GeneralResult.class)
+    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(customerRosService.delete(enter));
     }
 

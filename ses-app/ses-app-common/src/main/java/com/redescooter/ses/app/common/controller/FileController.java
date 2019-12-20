@@ -45,10 +45,6 @@ public class FileController {
                                        @PathVariable(required = false) String bucket,
                                        MultipartFile file) {
 
-        String ipAddr = IpUtils.getIpAddr(request);
-
-        log.info("====ip地址为==={}",ipAddr);
-
         return new Response(true, fileAppService.uplaod(bucket, file));
     }
 }
