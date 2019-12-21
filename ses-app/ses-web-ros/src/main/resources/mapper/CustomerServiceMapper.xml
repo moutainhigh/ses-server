@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.CustomerServiceMapper">
+
+    <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+   select a.status, count(*) totalCount
+   from ope_customer a
+   where a.dr =0
+   group by a.status
+    </select>
+</mapper>

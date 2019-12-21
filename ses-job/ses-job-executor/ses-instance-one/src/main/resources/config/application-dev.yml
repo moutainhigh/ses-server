@@ -1,0 +1,43 @@
+#日志路径
+log:
+  file:
+    path: /data/java_service/logs/@profile-active@
+    max-size: 128MB
+    max-history: 180
+# DUBBO 配置
+dubbo:
+  registries:
+    ses:
+      group: ses
+      address: zookeeper://192.168.2.200:12181
+# 多注册中心配置
+#    reg2:
+#      group: hdg2
+#      address: zookeeper://zk1.t.xqcx.com:2181?backup=zk2.t.xqcx.com:2181,zk3.t.xqcx.com:2181
+
+
+# sentinel 规则文件位置，以下依次是：流控规则，降级规则，系统规则文件位置
+#sentinel:
+#  zk-address: zk1.t.xqcx.com:2181,zk2.t.xqcx.com:2181,zk3.t.xqcx.com:2181
+#  groupid: hdg_sentinel
+#  flow-dataid: @project.artifactId@-flow
+#  degra-dedataid: @project.artifactId@-degra
+#  system-dataid: @project.artifactId@-sys
+
+# xxl-job config
+xxl:
+  job:
+    admin:
+      ### xxl-job admin address list, such as "http://address" or "http://address01,http://address02"
+      addresses: http://192.168.2.200:48090/rede/job/admin
+    ### xxl-job executor address
+    executor:
+      appname: ses-executor-01
+      ip:
+      port: 48098
+      ### xxl-job log path
+      logpath: /data/java_service/logs/dev/ses-job-executor
+      ### xxl-job log retention days
+      logretentiondays: -1
+    ### xxl-job, access token
+    accessToken:

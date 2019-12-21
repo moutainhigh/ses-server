@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.redescooter.ses</groupId>
+        <artifactId>ses-service</artifactId>
+        <version>1.2.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.redescooter.ses</groupId>
+    <artifactId>ses-service-common</artifactId>
+    <version>1.2.0</version>
+    <name>ses-service-common</name>
+    <description>Common Foundation Package</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-tool</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-logs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-db</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-foundation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-proxy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-scooter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-hub</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.redescooter.ses</groupId>
+        <artifactId>ses-server</artifactId>
+        <version>1.2.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.redescooter.ses</groupId>
+    <artifactId>ses-service</artifactId>
+    <version>1.2.0</version>
+    <packaging>pom</packaging>
+    <name>ses-service</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <modules>
+        <module>ses-service-base</module>
+        <module>ses-service-common</module>
+        <module>ses-service-hub</module>
+        <module>ses-service-mobile-b</module>
+        <module>ses-service-mobile-c</module>
+        <module>ses-service-security</module>
+    </modules>
+
+</project>

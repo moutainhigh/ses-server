@@ -1,0 +1,55 @@
+#Springboot 基础配置
+spring:
+  application:
+    name: @project.artifactId@
+  profiles:
+    active: @profile-active@
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false
+    encoding: UTF-8
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
+  #编码格式
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+server:
+  port: 8082
+  tomcat:
+    uri-encoding: UTF-8
+# Spring boot actuator 配置
+management:
+  server:
+    servlet:
+      context-path: "/management"
+    port: 68088
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: "/monitor"
+  endpoint:
+    shutdown:
+      enabled: true
+# DUBBO 配置
+dubbo:
+  application:
+    name: @project.artifactId@
+    qos:
+      enable: false
+  scan:
+    basePackages: com.redescooter.ses
+  provider:
+    validation: true
+  consumer:
+    # 启动时检查提供者是否存在，true报错，false忽略
+    check: false
+    timeout: 20000
+    filter: dubboContextFilter
+  protocol:
+    port: -1
+    threads: 300
