@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaSysSequenceMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaSysSequence">
+    <!--@mbg.generated-->
+    <id column="NAME" property="name" />
+    <result column="dr" property="dr" />
+    <result column="CURRENT_VALUE" property="currentValue" />
+    <result column="INCREMENT" property="increment" />
+    <result column="CACHE" property="cache" />
+    <result column="CREATED_BY" property="createdBy" />
+    <result column="CREATED_TIME" property="createdTime" />
+    <result column="UPDATED_BY" property="updatedBy" />
+    <result column="UPDATED_TIME" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `NAME`, dr, CURRENT_VALUE, `INCREMENT`, `CACHE`, CREATED_BY, CREATED_TIME, UPDATED_BY, 
+    UPDATED_TIME
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update pla_sys_sequence
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when `NAME` = #{item.name} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="CURRENT_VALUE = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when `NAME` = #{item.name} then #{item.currentValue}
+        </foreach>
+      </trim>
+      <trim prefix="`INCREMENT` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when `NAME` = #{item.name} then #{item.increment}
+        </foreach>
+      </trim>
+      <trim prefix="`CACHE` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when `NAME` = #{item.name} then #{item.cache}
+        </foreach>
+      </trim>
+      <trim prefix="CREATED_BY = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when `NAME` = #{item.name} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="CREATED_TIME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when `NAME` = #{item.name} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="UPDATED_BY = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when `NAME` = #{item.name} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="UPDATED_TIME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when `NAME` = #{item.name} then #{item.updatedTime}
+        </foreach>
+      </trim>
+    </trim>
+    where `NAME` in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.name}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into pla_sys_sequence
+    (`NAME`, dr, CURRENT_VALUE, `INCREMENT`, `CACHE`, CREATED_BY, CREATED_TIME, UPDATED_BY, 
+      UPDATED_TIME)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.name}, #{item.dr}, #{item.currentValue}, #{item.increment}, #{item.cache}, 
+        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaSysSequence">
+    <!--@mbg.generated-->
+    insert into pla_sys_sequence
+    (`NAME`, dr, CURRENT_VALUE, `INCREMENT`, `CACHE`, CREATED_BY, CREATED_TIME, UPDATED_BY, 
+      UPDATED_TIME)
+    values
+    (#{name}, #{dr}, #{currentValue}, #{increment}, #{cache}, #{createdBy}, #{createdTime}, 
+      #{updatedBy}, #{updatedTime})
+    on duplicate key update 
+    `NAME` = #{name}, 
+    dr = #{dr}, 
+    CURRENT_VALUE = #{currentValue}, 
+    `INCREMENT` = #{increment}, 
+    `CACHE` = #{cache}, 
+    CREATED_BY = #{createdBy}, 
+    CREATED_TIME = #{createdTime}, 
+    UPDATED_BY = #{updatedBy}, 
+    UPDATED_TIME = #{updatedTime}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaSysSequence">
+    <!--@mbg.generated-->
+    insert into pla_sys_sequence
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `NAME`,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="currentValue != null">
+        CURRENT_VALUE,
+      </if>
+      <if test="increment != null">
+        `INCREMENT`,
+      </if>
+      <if test="cache != null">
+        `CACHE`,
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY,
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME,
+      </if>
+      <if test="updatedBy != null">
+        UPDATED_BY,
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="currentValue != null">
+        #{currentValue},
+      </if>
+      <if test="increment != null">
+        #{increment},
+      </if>
+      <if test="cache != null">
+        #{cache},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="name != null">
+        `NAME` = #{name},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="currentValue != null">
+        CURRENT_VALUE = #{currentValue},
+      </if>
+      <if test="increment != null">
+        `INCREMENT` = #{increment},
+      </if>
+      <if test="cache != null">
+        `CACHE` = #{cache},
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        UPDATED_BY = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME = #{updatedTime},
+      </if>
+    </trim>
+  </insert>
+</mapper>

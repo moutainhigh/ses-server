@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.redescooter.ses.api.foundation.exception.SequenceException;
-import com.redescooter.ses.api.foundation.service.SequenceService;
+import com.redescooter.ses.api.foundation.service.base.SequenceService;
 import com.redescooter.ses.service.foundation.dao.SequenceMapper;
 import com.redescooter.ses.service.foundation.dm.Sequence;
 import com.redescooter.ses.service.foundation.dm.SequenceDefination;

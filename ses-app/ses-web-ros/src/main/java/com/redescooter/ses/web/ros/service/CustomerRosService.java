@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.service;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import com.redescooter.ses.web.ros.vo.customer.*;
 
@@ -17,6 +14,14 @@ import java.util.Map;
  * @create: 2019/12/18 10:06
  */
 public interface CustomerRosService {
+
+    /**
+     * 邮箱验证
+     *
+     * @param mail
+     * @return
+     */
+    BooleanResult checkMail(String mail);
 
     /**
      * 创建客户
@@ -40,7 +45,7 @@ public interface CustomerRosService {
      * @param enter
      * @return
      */
-    PageResult<CustomerDetailsResult> list(ListCustomerEnter enter);
+    PageResult<DetailsCustomerResult> list(ListCustomerEnter enter);
 
     /**
      * 客户详情查询
@@ -48,7 +53,7 @@ public interface CustomerRosService {
      * @param enter
      * @return
      */
-    CustomerDetailsResult details(IdEnter enter);
+    DetailsCustomerResult details(IdEnter enter);
 
     /**
      * 客户逻辑

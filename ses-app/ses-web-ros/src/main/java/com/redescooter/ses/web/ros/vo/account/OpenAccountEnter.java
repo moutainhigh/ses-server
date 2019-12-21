@@ -31,6 +31,5 @@ public class OpenAccountEnter extends GeneralEnter {
     private String startActivationTime;
 
     @ApiModelProperty(value = "结束激活时间")
-
     private String endActivationTime;
 }

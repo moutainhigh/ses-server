@@ -29,6 +29,12 @@ public class CustomerController {
     @Autowired
     private CustomerRosService customerRosService;
 
+    @PostMapping(value = "/checkMail")
+    @ApiOperation(value = "邮箱验证", response = BooleanResult.class)
+    public Response<BooleanResult> checkMail(@ModelAttribute @ApiParam("邮箱") String mail) {
+        return new Response<>(customerRosService.checkMail(mail));
+    }
+
     @PostMapping(value = "/save")
     @ApiOperation(value = "新建客户", response = GeneralResult.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") CreateCustomerEnter enter) {
@@ -43,13 +49,13 @@ public class CustomerController {
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "客户列表", response = GeneralResult.class)
-    public Response<PageResult<CustomerDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") ListCustomerEnter enter) {
+    public Response<PageResult<DetailsCustomerResult>> list(@ModelAttribute @ApiParam("请求参数") ListCustomerEnter enter) {
         return new Response<>(customerRosService.list(enter));
     }
 
     @PostMapping(value = "/details")
     @ApiOperation(value = "客户详情", response = GeneralResult.class)
-    public Response<CustomerDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<DetailsCustomerResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(customerRosService.details(enter));
     }
 

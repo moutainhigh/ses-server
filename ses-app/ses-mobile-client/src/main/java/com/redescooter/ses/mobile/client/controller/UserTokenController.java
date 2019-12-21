@@ -4,7 +4,7 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.foundation.service.UserTokenService;
+import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;

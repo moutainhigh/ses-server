@@ -867,7 +867,7 @@ public class DateUtil {
      */
     public static Date stringToDate(String time) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
         Date date = new Date();
         try {
             date = sdf.parse(time);
@@ -883,7 +883,7 @@ public class DateUtil {
      * 转换10位
      */
     public static Long tenNow(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
         Date date = new Date();
         try {
             date = sdf.parse(time);
@@ -933,7 +933,7 @@ public class DateUtil {
      * @return
      */
     public static Date getDateByString(String str) {
-        SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sim = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
         Date dateTime = null;
         try {
             dateTime = sim.parse(str);
@@ -951,7 +951,7 @@ public class DateUtil {
      */
     public static Date changeOne() {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
         calendar.add(Calendar.DAY_OF_YEAR, 1);
         Date date = calendar.getTime();
         return date;

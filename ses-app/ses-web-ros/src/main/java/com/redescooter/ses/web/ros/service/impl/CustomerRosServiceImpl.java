@@ -5,12 +5,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.redescooter.ses.api.common.enums.ros.customer.*;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.foundation.service.CityBaseService;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
@@ -46,9 +45,27 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private CustomerServiceMapper customerServiceMapper;
     @Reference
     private IdAppService idAppService;
-
     @Reference
     private CityBaseService cityBaseService;
+    @Reference
+    private AccountBaseService accountBaseService;
+
+    /**
+     * 邮箱验证
+     *
+     * @param mail
+     * @return
+     */
+    @Override
+    public BooleanResult checkMail(String mail) {
+
+        QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
+        wrapper.eq(OpeCustomer.COL_EMAIL, mail);
+        wrapper.eq(OpeCustomer.COL_DR, 0);
+        Boolean mailBoolean = opeCustomerMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
+
+        return new BooleanResult(mailBoolean);
+    }
 
     /**
      * 创建客户
@@ -111,6 +128,55 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     }
 
     /**
+     * 编辑更新客户
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult edit(EditCustomerEnter enter) {
+
+        OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
+        if (customer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getCode(), ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getMessage());
+        }
+        if (customer.getStatus().equals(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
+            //客户验证
+            checkCustomer(enter);
+        }
+        OpeCustomer update = new OpeCustomer();
+        BeanUtils.copyProperties(enter, update);
+        opeCustomerMapper.updateById(update);
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 客户详情查询
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public DetailsCustomerResult details(IdEnter enter) {
+
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        DetailsCustomerResult result = new DetailsCustomerResult();
+        BeanUtils.copyProperties(opeCustomer, result);
+        result.setRequestId(enter.getRequestId());
+        if (opeCustomer.getCity() != null || opeCustomer.getDistrust() != null) {
+            result.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getCity()).build()).getName());
+            result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
+        }
+        return result;
+    }
+
+    /**
      * 状态统计
      *
      * @param enter
@@ -141,10 +207,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @Version: CRM 1.3 进销存
      */
     @Override
-    public PageResult<CustomerDetailsResult> list(ListCustomerEnter page) {
+    public PageResult<DetailsCustomerResult> list(ListCustomerEnter page) {
 
-        List<CustomerDetailsResult> resultList = new ArrayList<>();
-        CustomerDetailsResult detailsResult = null;
+        List<DetailsCustomerResult> resultList = new ArrayList<>();
+        DetailsCustomerResult detailsResult = null;
 
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
 
@@ -171,14 +237,20 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             wrapper.and(wh -> wh.like(OpeCustomer.COL_CONTACT_FULL_NAME, page.getKeyword()).or().like(OpeCustomer.COL_EMAIL, page.getKeyword()).or().like(OpeCustomer.COL_CONTACT_FULL_NAME, page.getKeyword()));
         }
 
+        if (page.getStatus().equals(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())) {
+            wrapper.orderByDesc(OpeCustomer.COL_CREATED_TIME);
+        } else {
+            wrapper.orderByDesc(OpeCustomer.COL_UPDATED_TIME);
+        }
+
         Page<OpeCustomer> customerPage = new Page<>(page.getPageNo(), page.getPageSize());
         IPage<OpeCustomer> opeCustomerIPage = opeCustomerMapper.selectPage(customerPage, wrapper);
         List<OpeCustomer> pageRecords = opeCustomerIPage.getRecords();
 
         for (OpeCustomer customer : pageRecords) {
-            detailsResult = new CustomerDetailsResult();
+            detailsResult = new DetailsCustomerResult();
             BeanUtils.copyProperties(customer, detailsResult);
-            if (customer.getCity()==null || customer.getDistrust()==null) {
+            if (customer.getCity() != null || customer.getDistrust() != null) {
                 detailsResult.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(detailsResult.getCity()).build()).getName());
                 detailsResult.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(detailsResult.getDistrust()).build()).getName());
             }
@@ -186,28 +258,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
 
         return PageResult.create(page, (int) opeCustomerIPage.getTotal(), resultList);
-    }
-
-    /**
-     * 客户详情查询
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public CustomerDetailsResult details(IdEnter enter) {
-
-        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-
-        if (opeCustomer == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
-        }
-        CustomerDetailsResult result = new CustomerDetailsResult();
-        BeanUtils.copyProperties(opeCustomer, result);
-        result.setRequestId(enter.getRequestId());
-        result.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getCity()).build()).getName());
-        result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
-        return result;
     }
 
     /**
@@ -253,29 +303,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     }
 
     /**
-     * 编辑更新客户
-     *
-     * @param enter
-     * @return
-     */
-    @Transactional
-    @Override
-    public GeneralResult edit(EditCustomerEnter enter) {
-
-        OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
-        if(customer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())){
-            throw new SesWebRosException(ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getCode(), ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getMessage());
-        }
-        //客户验证
-        checkCustomer(enter);
-        OpeCustomer update = new OpeCustomer();
-        BeanUtils.copyProperties(enter, update);
-        opeCustomerMapper.updateById(update);
-
-        return new GeneralResult(enter.getRequestId());
-    }
-
-    /**
      * 客户转正
      *
      * @param enter
@@ -307,8 +334,32 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult openAccount(OpenAccountEnter enter) {
 
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
 
-        return null;
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        BooleanResult checkMail = checkMail(opeCustomer.getEmail());
+
+        if (checkMail.isSuccess()) {
+            BaseCustomerResult baseCustomer = new BaseCustomerResult();
+            BeanUtils.copyProperties(opeCustomer, baseCustomer);
+
+            DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
+            parmEnter.setStartDateTime(DateUtil.stringToDate(enter.getStartActivationTime()));
+            parmEnter.setEndDateTime(DateUtil.stringToDate(enter.getEndActivationTime()));
+
+            BaseUserResult userResult = accountBaseService.open(parmEnter);
+
+            opeCustomer.setTenantId(userResult.getTenantId());
+            opeCustomer.setAccountFlag(Integer.parseInt(CustomerAccountFlagEnum.INACTIVATED.getValue()));
+            opeCustomer.setUpdatedBy(enter.getUserId());
+            opeCustomer.setUpdatedTime(new Date());
+            opeCustomerMapper.updateById(opeCustomer);
+        } else {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        }
+        return new GeneralResult(enter.getRequestId());
     }
 
     private void checkCustomer(EditCustomerEnter enter) {
@@ -347,10 +398,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CUSTOMER_TYPE_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isBlank(enter.getIndustryType())) {
-            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CUSTOMER_TYPE_CANNOT_EMPTY.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.INDUSTRY_TYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.INDUSTRY_TYPE_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isBlank(enter.getAddress())) {
-            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CUSTOMER_TYPE_CANNOT_EMPTY.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_TYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.ADDRESS_TYPE_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isAllBlank(String.valueOf(enter.getLongitude()), String.valueOf(enter.getLatitude()))) {
             throw new SesWebRosException(ExceptionCodeEnums.LATITUDE_AND_LONGITUDE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LATITUDE_AND_LONGITUDE_CANNOT_EMPTY.getMessage());
@@ -361,7 +412,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isBlank(enter.getCertificateType())) {
             throw new SesWebRosException(ExceptionCodeEnums.CERTIFICATETYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CERTIFICATETYPE_CANNOT_EMPTY.getMessage());
         }
-
         if (enter.getCertificateType().equals(CustomerCertificateTypeEnum.ID_CARD.getValue())) {
             if (StringUtils.isAllBlank(enter.getCertificatePositiveAnnex(), enter.getCertificateNegativeAnnex())) {
                 throw new SesWebRosException(ExceptionCodeEnums.ID_CARD_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.ID_CARD_CANNOT_EMPTY.getMessage());

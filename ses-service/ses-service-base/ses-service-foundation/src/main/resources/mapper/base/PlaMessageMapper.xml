@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaMessageMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaMessage">
+    <!--@mbg.generated-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="system_id" property="systemId" />
+    <result column="app_id" property="appId" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="user_id" property="userId" />
+    <result column="message_type" property="messageType" />
+    <result column="biz_type" property="bizType" />
+    <result column="biz_id" property="bizId" />
+    <result column="status" property="status" />
+    <result column="business_status" property="businessStatus" />
+    <result column="title" property="title" />
+    <result column="content" property="content" />
+    <result column="memo" property="memo" />
+    <result column="send_time" property="sendTime" />
+    <result column="read_time" property="readTime" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, system_id, app_id, tenant_id, user_id, message_type, biz_type, biz_id, `status`, 
+    business_status, title, content, memo, send_time, read_time, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update pla_message
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="system_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.systemId}
+        </foreach>
+      </trim>
+      <trim prefix="app_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.appId}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.userId}
+        </foreach>
+      </trim>
+      <trim prefix="message_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.messageType}
+        </foreach>
+      </trim>
+      <trim prefix="biz_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.bizType}
+        </foreach>
+      </trim>
+      <trim prefix="biz_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.bizId}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="business_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.businessStatus}
+        </foreach>
+      </trim>
+      <trim prefix="title = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.title}
+        </foreach>
+      </trim>
+      <trim prefix="content = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.content}
+        </foreach>
+      </trim>
+      <trim prefix="memo = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.memo}
+        </foreach>
+      </trim>
+      <trim prefix="send_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.sendTime}
+        </foreach>
+      </trim>
+      <trim prefix="read_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.readTime}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into pla_message
+    (id, dr, system_id, app_id, tenant_id, user_id, message_type, biz_type, biz_id, `status`, 
+      business_status, title, content, memo, send_time, read_time, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.systemId}, #{item.appId}, #{item.tenantId}, #{item.userId}, 
+        #{item.messageType}, #{item.bizType}, #{item.bizId}, #{item.status}, #{item.businessStatus}, 
+        #{item.title}, #{item.content}, #{item.memo}, #{item.sendTime}, #{item.readTime}, 
+        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMessage">
+    <!--@mbg.generated-->
+    insert into pla_message
+    (id, dr, system_id, app_id, tenant_id, user_id, message_type, biz_type, biz_id, `status`, 
+      business_status, title, content, memo, send_time, read_time, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
+    values
+    (#{id}, #{dr}, #{systemId}, #{appId}, #{tenantId}, #{userId}, #{messageType}, #{bizType}, 
+      #{bizId}, #{status}, #{businessStatus}, #{title}, #{content}, #{memo}, #{sendTime}, 
+      #{readTime}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, 
+      #{def2}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    system_id = #{systemId}, 
+    app_id = #{appId}, 
+    tenant_id = #{tenantId}, 
+    user_id = #{userId}, 
+    message_type = #{messageType}, 
+    biz_type = #{bizType}, 
+    biz_id = #{bizId}, 
+    `status` = #{status}, 
+    business_status = #{businessStatus}, 
+    title = #{title}, 
+    content = #{content}, 
+    memo = #{memo}, 
+    send_time = #{sendTime}, 
+    read_time = #{readTime}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMessage">
+    <!--@mbg.generated-->
+    insert into pla_message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="systemId != null">
+        system_id,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="messageType != null">
+        message_type,
+      </if>
+      <if test="bizType != null">
+        biz_type,
+      </if>
+      <if test="bizId != null">
+        biz_id,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="businessStatus != null">
+        business_status,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="memo != null">
+        memo,
+      </if>
+      <if test="sendTime != null">
+        send_time,
+      </if>
+      <if test="readTime != null">
+        read_time,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="systemId != null">
+        #{systemId},
+      </if>
+      <if test="appId != null">
+        #{appId},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="userId != null">
+        #{userId},
+      </if>
+      <if test="messageType != null">
+        #{messageType},
+      </if>
+      <if test="bizType != null">
+        #{bizType},
+      </if>
+      <if test="bizId != null">
+        #{bizId},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="businessStatus != null">
+        #{businessStatus},
+      </if>
+      <if test="title != null">
+        #{title},
+      </if>
+      <if test="content != null">
+        #{content},
+      </if>
+      <if test="memo != null">
+        #{memo},
+      </if>
+      <if test="sendTime != null">
+        #{sendTime},
+      </if>
+      <if test="readTime != null">
+        #{readTime},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId},
+      </if>
+      <if test="messageType != null">
+        message_type = #{messageType},
+      </if>
+      <if test="bizType != null">
+        biz_type = #{bizType},
+      </if>
+      <if test="bizId != null">
+        biz_id = #{bizId},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="businessStatus != null">
+        business_status = #{businessStatus},
+      </if>
+      <if test="title != null">
+        title = #{title},
+      </if>
+      <if test="content != null">
+        content = #{content},
+      </if>
+      <if test="memo != null">
+        memo = #{memo},
+      </if>
+      <if test="sendTime != null">
+        send_time = #{sendTime},
+      </if>
+      <if test="readTime != null">
+        read_time = #{readTime},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>

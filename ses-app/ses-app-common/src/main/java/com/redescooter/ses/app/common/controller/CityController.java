@@ -2,9 +2,8 @@ package com.redescooter.ses.app.common.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.api.foundation.service.CityBaseService;
+import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
-import com.redescooter.ses.api.foundation.vo.common.CityEnter;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

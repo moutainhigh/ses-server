@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.common.service.impl;
 
 
-import com.redescooter.ses.api.foundation.service.SequenceService;
+import com.redescooter.ses.api.foundation.service.base.SequenceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;

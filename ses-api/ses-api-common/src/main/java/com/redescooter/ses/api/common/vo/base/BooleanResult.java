@@ -17,5 +17,5 @@ import lombok.*;
 public class BooleanResult extends GeneralResult {
 
     @ApiModelProperty(value = "值")
-    private boolean value;
+    private boolean success;
 }

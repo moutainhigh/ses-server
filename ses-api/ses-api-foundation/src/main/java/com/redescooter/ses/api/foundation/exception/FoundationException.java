@@ -10,7 +10,7 @@ import com.redescooter.ses.api.common.exception.BusinessException;
  */
 public class FoundationException extends BusinessException {
 
-    private static final String ROOT_CODE = "S003";
+    private static final String ROOT_CODE = "BA001";
 
     public FoundationException() {
         super();

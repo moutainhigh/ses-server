@@ -6,8 +6,8 @@ import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
-import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
-import com.redescooter.ses.api.foundation.service.UserTokenService;
+import com.redescooter.ses.api.foundation.service.base.MailMultiBaseTaskService;
+import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
@@ -30,7 +30,7 @@ public class TokenServiceImpl implements TokenService {
     @Reference
     private UserTokenService userTokenService;
     @Reference
-    private MailMultiTaskService mailMultiTaskService;
+    private MailMultiBaseTaskService mailMultiBaseTaskService;
 
     @Override
     public UserToken checkAndGetSession(GeneralEnter enter) {
@@ -63,7 +63,7 @@ public class TokenServiceImpl implements TokenService {
         baseMailTask.setMailAppId(AppIDEnums.SAAS_APP.getAppId());
         baseMailTask.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
 
-        mailMultiTaskService.addSetPasswordMobileUserTask(ValidateCodeEnter.builder().code(code).event(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent()).t(baseMailTask).build());
+        mailMultiBaseTaskService.addSetPasswordMobileUserTask(ValidateCodeEnter.builder().code(code).event(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent()).t(baseMailTask).build());
 
         return new GeneralResult(enter.getRequestId());
     }

@@ -3,7 +3,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.foundation.service.CityBaseService;
+import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.service.foundation.dao.base.PlaCityMapper;
