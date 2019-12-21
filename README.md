@@ -15,7 +15,7 @@ SV 1.2.0
 # <div align=center>[RedE Server.多租户分布式服务架构1.2.0.v](https://github.com/mrjerryli/ses-server) :confused:	
  
 
-### 技术选型
+#### 一、技术选型
 
 - 语言框架
 	- JDK 1.8
@@ -39,7 +39,7 @@ SV 1.2.0
 	- Windows 10
 	- Mac Os
 
-#### 框架搭建
+#### 二、框架搭建
 
 - [x] 基础框架
     - [x] 父模块、通用模块创建
@@ -66,7 +66,7 @@ SV 1.2.0
     - [ ] ROS v1.0.0
     - [ ] 完善登录流程
 
-#### 项目结构说明
+#### 三、项目结构说明
 ```text
 ses-server
   ├── ses-api
@@ -114,7 +114,7 @@ ses-server
 ```
 
 
-#### 相关文档
+#### 四、相关文档
 
 | Name | Documentation|
 | ---------- | ---------------------------------------- |
