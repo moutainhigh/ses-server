@@ -12,7 +12,7 @@ SV 1.2.0
 
                              
 ###### <div align=right>RedE Scooter 2019
-# <div align=center>[ses-server 多租户分布式服务架构1.2.0.v](https://github.com/mrjerryli/ses-server) :confused:	
+# <div align=center>[RedE Server.多租户分布式服务架构1.2.0.v](https://github.com/mrjerryli/ses-server) :confused:	
  
 
 ### 技术选型
@@ -65,6 +65,53 @@ SV 1.2.0
     - [X] 整合第三方服务
     - [ ] ROS v1.0.0
     - [ ] 完善登录流程
+
+#### 项目结构说明
+```text
+ses-server
+  ├── ses-api
+  │   ├── ses-api-common
+  │   ├── ses-api-foundation
+  │   ├── ses-api-hub
+  │   ├── ses-api-mobile-b
+  │   ├── ses-api-mobile-c
+  │   ├── ses-api-proxy
+  │   └── ses-api-scooter
+  ├── ses-app
+  │   ├── ses-admin-dev
+  │   ├── ses-app-common
+  │   ├── ses-mobile-client
+  │   ├── ses-web-delivery
+  │   ├── ses-web-repair
+  │   └── ses-web-ros
+  ├── ses-doc
+  ├── ses-job
+  │   ├── doc
+  │   ├── ses-job-admin
+  │   ├── ses-job-core
+  │   └── ses-job-executor
+  ├── ses-monitor-admin
+  ├── ses-service
+  │   ├── ses-service-base
+  │   │   ├── ses-service-proxy
+  │   │   ├── ses-service-scooter
+  │   │   └── ses-service-foundation
+  │   ├── ses-service-common
+  │   ├── ses-service-hub
+  │   ├── ses-service-mobile-b
+  │   ├── ses-service-mobile-c
+  │   └── ses-service-security
+  ├── ses-starter
+  │   ├── ses-starter-common
+  │   ├── ses-starter-db
+  │   ├── ses-starter-dubbo
+  │   ├── ses-starter-logs
+  │   ├── ses-starter-poi
+  │   ├── ses-starter-redis
+  │   └── ses-starter-swagger
+  ├── ses-tool
+  └── ses-txlcn-manager
+```
 
 
 #### 相关文档
