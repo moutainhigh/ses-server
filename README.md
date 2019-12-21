@@ -20,6 +20,9 @@ SV 1.2.0
 - 语言框架
 	- JDK 1.8
 	- Spring Boot 2.1.9.RELEASE
+    - Spring Security
+    - Spring security Oauth2
+    - Spring Security OAuth2 SSO
 	- Dubbo 2.7.3
 	- Zookeeper 3.4.9
 	- Redis 2.9.0
@@ -66,8 +69,12 @@ SV 1.2.0
 
 #### 相关文档
 
-| [springboot](https://docs.spring.io/spring-boot/docs/) | https://docs.spring.io/spring-boot/docs/ |
+| Name | Documentation|
 | ---------- | ---------------------------------------- |
-| [dubbo](http://dubbo.apache.org/en-us/) | http://dubbo.apache.org/ |                                          |
+| [springboot](https://docs.spring.io/spring-boot/docs/) | https://docs.spring.io/spring-boot/docs/ |
+| [dubbo](http://dubbo.apache.org/en-us/) | http://dubbo.apache.org/ |      
 | [MyBatis-Plus](https://mp.baomidou.com/) |https://mp.baomidou.com/|
-
+| [Swagger](https://swagger.io/#)|https://swagger.io/|
+| [TX-LCN](http://www.txlcn.org/)|http://www.txlcn.org/|
+| [Spring Security](https://docs.spring.io/spring-security/site/docs/5.2.2.BUILD-SNAPSHOT/reference/htmlsingle/)|https://docs.spring.io/spring-security/site/docs/5.2.2.BUILD-SNAPSHOT/reference/htmlsingle/|
+| [Spring Security Oauth](https://projects.spring.io/spring-security-oauth/docs/oauth2.html)|https://projects.spring.io/spring-security-oauth/docs/oauth2.html|
