@@ -120,6 +120,7 @@ ses-server
 
 #### 四、RedE架构体系图
 
+![rede体系图](https://github.com/mrjerryli/ses-server/blob/master/ses-doc/images/rede.png)
 
 #### 四、相关文档
 
