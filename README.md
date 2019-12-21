@@ -12,7 +12,7 @@ SV 1.2.0
 
                              
 ###### <div align=right>RedE Scooter 2019
-# <div align=center>[RedE Server.多租户分布式服务架构1.2.0.v](https://github.com/mrjerryli/ses-server) :confused:	
+# <div align=center>[RedE Server.多租户分布式架构 SV1.2.0](https://github.com/mrjerryli/ses-server) :confused:	
  
 
 #### 一、技术选型
