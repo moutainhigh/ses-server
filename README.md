@@ -86,7 +86,7 @@ ses-server
   │   └── ses-web-ros                                                 RedE内部管理系统
   ├── ses-doc                                                         rede文档
   ├── ses-job                                                         分布式定时任务
-  │   ├── doc
+  │   ├── doc                                                         分布式定时任务文件
   │   ├── ses-job-admin                                               分布式管理平台
   │   ├── ses-job-core                                                分布式任务核心
   │   └── ses-job-executor                                            任务执行器
