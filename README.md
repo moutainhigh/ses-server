@@ -71,48 +71,48 @@
 #### 三、项目结构说明
 ```text
 ses-server
-  ├── ses-api
-  │   ├── ses-api-common
-  │   ├── ses-api-foundation
-  │   ├── ses-api-hub
-  │   ├── ses-api-mobile-b
-  │   ├── ses-api-mobile-c
-  │   ├── ses-api-proxy
-  │   └── ses-api-scooter
-  ├── ses-app
-  │   ├── ses-admin-dev
-  │   ├── ses-app-common
-  │   ├── ses-mobile-client
-  │   ├── ses-web-delivery
-  │   ├── ses-web-repair
-  │   └── ses-web-ros
-  ├── ses-doc
-  ├── ses-job
+  ├── ses-api                                                         接口API暴露层
+  │   ├── ses-api-common                                              RedE API公共资源
+  │   ├── ses-api-foundation                                          RedE 底层基础支持
+  │   ├── ses-api-hub                                                 RedE 多数据源支持API
+  │   ├── ses-api-mobile-b                                            RedE B端移动支持
+  │   ├── ses-api-mobile-c                                            RedE C端移动支持
+  │   ├── ses-api-proxy                                               RedE 三方服务底层
+  │   └── ses-api-scooter                                             RedE 车辆API
+  ├── ses-app                                                         应用层
+  │   ├── ses-admin-dev                                               RedE 开发管理平台
+  │   ├── ses-app-common                                              RedE 应用公共资源 
+  │   ├── ses-mobile-client                                           RedE 移动端服务支持
+  │   ├── ses-web-delivery                                            RedE SaaS管理系统
+  │   ├── ses-web-repair                                              RedE 维修管理系统
+  │   └── ses-web-ros                                                 RedE内部管理系统
+  ├── ses-doc                                                         rede文档
+  ├── ses-job                                                         分布式定时任务
   │   ├── doc
-  │   ├── ses-job-admin
-  │   ├── ses-job-core
-  │   └── ses-job-executor
-  ├── ses-monitor-admin
-  ├── ses-service
-  │   ├── ses-service-base
-  │   │   ├── ses-service-proxy
-  │   │   ├── ses-service-scooter
-  │   │   └── ses-service-foundation
-  │   ├── ses-service-common
-  │   ├── ses-service-hub
-  │   ├── ses-service-mobile-b
-  │   ├── ses-service-mobile-c
-  │   └── ses-service-security
-  ├── ses-starter
-  │   ├── ses-starter-common
-  │   ├── ses-starter-db
-  │   ├── ses-starter-dubbo
-  │   ├── ses-starter-logs
-  │   ├── ses-starter-poi
-  │   ├── ses-starter-redis
-  │   └── ses-starter-swagger
-  ├── ses-tool
-  └── ses-txlcn-manager
+  │   ├── ses-job-admin                                               分布式管理平台
+  │   ├── ses-job-core                                                分布式任务核心
+  │   └── ses-job-executor                                            任务执行器
+  ├── ses-monitor-admin                                               rede监控系统
+  ├── ses-service                                                     生产者服务提供层
+  │   ├── ses-service-base                                            底层基础服务
+  │   │   ├── ses-service-proxy                                       三方基础支持
+  │   │   ├── ses-service-scooter                                     车辆基础服务
+  │   │   └── ses-service-foundation                                  SaaS底层基础服务
+  │   ├── ses-service-common                                          服务层公共资源
+  │   ├── ses-service-hub                                             多数据源调度平台
+  │   ├── ses-service-mobile-b                                        B端移动服务支持
+  │   ├── ses-service-mobile-c                                        C端移动服务支持
+  │   └── ses-service-security                                        权限安全
+  ├── ses-starter                                                     rede组件层
+  │   ├── ses-starter-common                                          RedE基础依赖
+  │   ├── ses-starter-db                                              数据库组件
+  │   ├── ses-starter-dubbo                                           dubbo RPC组件
+  │   ├── ses-starter-logs                                            日志组件
+  │   ├── ses-starter-poi                                             表格组件
+  │   ├── ses-starter-redis                                           Redis缓存组件
+  │   └── ses-starter-swagger                                         swagger在线文档组件
+  ├── ses-tool                                                        公共工具类
+  └── ses-txlcn-manager                                               分布式事务管理
 ```
 ---
 
