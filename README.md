@@ -1,6 +1,7 @@
 
-![RedEScooter](https://github.com/mrjerryli/ses-server/blob/master/ses-doc/images/redescooter.png)
-      
+![RedEScooter](https://github.com/mrjerryli/ses-server/blob/master/ses-doc/images/redescooter.png)      
+###### <div align=right>RedE Scooter 2019
+
 <div align=center>
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/mrjerryli/ses-server/blob/master/LICENSE) 
@@ -8,9 +9,6 @@
 
 </div>
 
-
-                             
-###### <div align=right>RedE Scooter 2019
 ## <div align=center>[多租户分布式架构(dubbo版)](https://github.com/mrjerryli/ses-server) `Sv 1.2.0` 
  
 #### 一、技术选型
