@@ -1,8 +1,8 @@
 
 ![RedEScooter](https://github.com/mrjerryli/ses-server/blob/master/ses-doc/images/redescooter.png)
-`
+```text
 Sv 1.2.0
-`
+```
       
 <div align=center>
 
