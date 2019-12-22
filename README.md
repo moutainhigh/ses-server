@@ -11,7 +11,7 @@ SV 1.2.0
       
 
 <p align="center">
-	RedE
+	 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/mrjerryli/ses-server/blob/master/LICENSE) 
 </p>
                              
 ###### <div align=right>RedE Scooter 2019
