@@ -31,7 +31,7 @@
 - 构建工具
 	- Intellij IDEA Ultimate 2019.2
 	- Maven
-- 其他
+- 系统
 	- Windows 10
 	- Mac Os
 
