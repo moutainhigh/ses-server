@@ -10,6 +10,9 @@ SV 1.2.0
 ```
       
 
+<p align="center">
+	RedE
+</p>
                              
 ###### <div align=right>RedE Scooter 2019
 # <div align=center>[RedE Server.多租户分布式架构 SV1.2.0](https://github.com/mrjerryli/ses-server) :confused:	
