@@ -63,6 +63,9 @@
         <httpclient.version>4.5.10</httpclient.version>
         <jasypt.version>2.1.1</jasypt.version>
         <jpush.client.version>3.3.10</jpush.client.version>
+        <codingapi.txlcn.version>5.0.2.RELEASE</codingapi.txlcn.version>
+        <codingapi.txlcn.version>5.0.2.RELEASE</codingapi.txlcn.version>
+
         <!--build-plugin相关版本控制-->
         <lombok-maven-plugin.version>1.16.8.0</lombok-maven-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
