@@ -28,11 +28,16 @@ spring:
         driver-class-name: com.mysql.jdbc.Driver
         username: root
         type: com.zaxxer.hikari.HikariDataSource
-
-
-#REDIS配置
-redis:
-  redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
+  #REDIS集群配置
+  redis:
+    cluster:
+      nodes:
+        - 192.168.2.200:7000
+        - 192.168.2.200:7001
+        - 192.168.2.200:7002
+        - 192.168.2.200:7003
+        - 192.168.2.200:7004
+        - 192.168.2.200:7005
 
 # DUBBO 配置
 dubbo:

@@ -8,7 +8,7 @@ log:
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://192.168.2.200:3306/platform?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://192.168.2.200:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
     druid:
@@ -16,10 +16,16 @@ spring:
       min-idle: 1
       max-active: 20
       max-wait: 60000
-
-#REDIS配置
-redis:
-  redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
+  #REDIS集群配置
+  redis:
+    cluster:
+      nodes:
+        - 192.168.2.200:7000
+        - 192.168.2.200:7001
+        - 192.168.2.200:7002
+        - 192.168.2.200:7003
+        - 192.168.2.200:7004
+        - 192.168.2.200:7005
 
 # DUBBO 配置
 dubbo:
