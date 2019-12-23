@@ -54,7 +54,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     private PlaMailTemplateMapper mailTemplateMapper;
     @Autowired
     private IdAppService idSerService;
-    @Reference
+    @Autowired
     private JedisCluster jedisCluster;
     @Reference
     private IMailService iMailService;
