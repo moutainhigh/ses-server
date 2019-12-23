@@ -55,6 +55,7 @@
             or customer_full_name like concat("%",#{keyword},"%")
             or email like concat("%",#{keyword},"%")
             )
+            order by created_time desc
         </if>
     </select>
 </mapper>
