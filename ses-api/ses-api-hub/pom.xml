@@ -18,6 +18,12 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-common</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-mobile-c</artifactId>
+            <version>1.2.0</version>
+        </dependency>
     </dependencies>
 
 </project>

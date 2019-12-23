@@ -3,9 +3,20 @@ package com.redescooter.ses.web.ros.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.redescooter.ses.api.common.enums.ros.customer.*;
+import com.redescooter.ses.api.common.enums.ros.customer.CustomerAccountFlagEnum;
+import com.redescooter.ses.api.common.enums.ros.customer.CustomerCertificateTypeEnum;
+import com.redescooter.ses.api.common.enums.ros.customer.CustomerSourceEnum;
+import com.redescooter.ses.api.common.enums.ros.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -18,7 +29,13 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
-import com.redescooter.ses.web.ros.vo.customer.*;
+import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
+import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
+import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
@@ -26,7 +43,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:CustomerImpl
@@ -204,7 +225,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @return: CustomerListByPageResult
      * @auther: alex
      * @date: 2019/12/18 11:51
-     * @Version: CRM 1.3 进销存
+     * @Version: Ros 1.0
      */
     @Override
     public PageResult<DetailsCustomerResult> list(ListCustomerEnter page) {
@@ -360,6 +381,40 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 账户列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<AccountListResult> accountList(AccountListEnter enter) {
+        List<AccountListResult> resultList = new ArrayList<>();
+
+        QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
+
+        if (StringUtils.isNotBlank(enter.getStatus())) {
+            wrapper.eq(OpeCustomer.COL_STATUS, enter.getStatus());
+        }
+        if (StringUtils.isNotBlank(enter.getCustomerType())) {
+            wrapper.eq(OpeCustomer.COL_CUSTOMER_TYPE, enter.getCustomerType());
+        }
+        if (StringUtils.isNotBlank(enter.getIndustryType())) {
+            wrapper.eq(OpeCustomer.COL_INDUSTRY_TYPE, enter.getIndustryType());
+        }
+        if (StringUtils.isNotBlank(enter.getKeyword())) {
+            wrapper.and(wh -> wh.like(OpeCustomer.COL_EMAIL, enter.getKeyword()).or().like(OpeCustomer.COL_CUSTOMER_FIRST_NAME, enter.getKeyword()).or().like(OpeCustomer.COL_CUSTOMER_LAST_NAME,
+                    enter.getKeyword()).or().like(OpeCustomer.COL_CUSTOMER_FULL_NAME, enter.getKeyword()));
+        }
+
+        Page<OpeCustomer> customerPage = new Page<>(enter.getPageNo(), enter.getPageSize());
+        IPage<OpeCustomer> opeCustomerIPage = opeCustomerMapper.selectPage(customerPage, wrapper);
+        // 时间过滤
+        List<OpeCustomer> pageRecords = opeCustomerIPage.getRecords();
+        //  内容获取
+        return null;
     }
 
     private void checkCustomer(EditCustomerEnter enter) {

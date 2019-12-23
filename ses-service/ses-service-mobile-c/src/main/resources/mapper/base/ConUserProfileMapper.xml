@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.c.dao.base.ConUserProfileMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile">
+    <!--@mbg.generated-->
+    <!--@Table con_user_profile-->
+    <id column="ID" property="id" />
+    <result column="dr" property="dr" />
+    <result column="TENANT_ID" property="tenantId" />
+    <result column="USER_ID" property="userId" />
+    <result column="FIRST_NAME" property="firstName" />
+    <result column="LAST_NAME" property="lastName" />
+    <result column="FULL_NAME" property="fullName" />
+    <result column="PICTURE" property="picture" />
+    <result column="EMAIL_1" property="email1" />
+    <result column="EMAIL_2" property="email2" />
+    <result column="EMAIL_3" property="email3" />
+    <result column="TEL_NUMBER_1" property="telNumber1" />
+    <result column="TEL_NUMBER_2" property="telNumber2" />
+    <result column="TEL_NUMBER_3" property="telNumber3" />
+    <result column="GENDER" property="gender" />
+    <result column="BIRTHDAY" property="birthday" />
+    <result column="CERTIFICATE_TYPE" property="certificateType" />
+    <result column="CERTIFICATE_NEGATIVE_ANNEX" property="certificateNegativeAnnex" />
+    <result column="CERTIFICATE_POSITIVE_ANNEX" property="certificatePositiveAnnex" />
+    <result column="ROLE" property="role" />
+    <result column="PLACE_BIRTH" property="placeBirth" />
+    <result column="ADDRESS" property="address" />
+    <result column="JOIN_DATE" property="joinDate" />
+    <result column="TIME_ZONE" property="timeZone" />
+    <result column="CREATED_BY" property="createdBy" />
+    <result column="CREATED_TIME" property="createdTime" />
+    <result column="UPDATED_BY" property="updatedBy" />
+    <result column="UPDATED_TIME" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, dr, TENANT_ID, USER_ID, FIRST_NAME, LAST_NAME, FULL_NAME, PICTURE, EMAIL_1, EMAIL_2, 
+    EMAIL_3, TEL_NUMBER_1, TEL_NUMBER_2, TEL_NUMBER_3, GENDER, BIRTHDAY, CERTIFICATE_TYPE, 
+    CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `ROLE`, PLACE_BIRTH, ADDRESS, 
+    JOIN_DATE, TIME_ZONE, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, def2, 
+    def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update con_user_profile
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="TENANT_ID = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="USER_ID = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.userId}
+        </foreach>
+      </trim>
+      <trim prefix="FIRST_NAME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.firstName}
+        </foreach>
+      </trim>
+      <trim prefix="LAST_NAME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.lastName}
+        </foreach>
+      </trim>
+      <trim prefix="FULL_NAME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.fullName}
+        </foreach>
+      </trim>
+      <trim prefix="PICTURE = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.picture}
+        </foreach>
+      </trim>
+      <trim prefix="EMAIL_1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.email1}
+        </foreach>
+      </trim>
+      <trim prefix="EMAIL_2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.email2}
+        </foreach>
+      </trim>
+      <trim prefix="EMAIL_3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.email3}
+        </foreach>
+      </trim>
+      <trim prefix="TEL_NUMBER_1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.telNumber1}
+        </foreach>
+      </trim>
+      <trim prefix="TEL_NUMBER_2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.telNumber2}
+        </foreach>
+      </trim>
+      <trim prefix="TEL_NUMBER_3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.telNumber3}
+        </foreach>
+      </trim>
+      <trim prefix="GENDER = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.gender}
+        </foreach>
+      </trim>
+      <trim prefix="BIRTHDAY = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.birthday}
+        </foreach>
+      </trim>
+      <trim prefix="CERTIFICATE_TYPE = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.certificateType}
+        </foreach>
+      </trim>
+      <trim prefix="CERTIFICATE_NEGATIVE_ANNEX = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.certificateNegativeAnnex}
+        </foreach>
+      </trim>
+      <trim prefix="CERTIFICATE_POSITIVE_ANNEX = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.certificatePositiveAnnex}
+        </foreach>
+      </trim>
+      <trim prefix="`ROLE` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.role}
+        </foreach>
+      </trim>
+      <trim prefix="PLACE_BIRTH = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.placeBirth}
+        </foreach>
+      </trim>
+      <trim prefix="ADDRESS = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.address}
+        </foreach>
+      </trim>
+      <trim prefix="JOIN_DATE = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.joinDate}
+        </foreach>
+      </trim>
+      <trim prefix="TIME_ZONE = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.timeZone}
+        </foreach>
+      </trim>
+      <trim prefix="CREATED_BY = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="CREATED_TIME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="UPDATED_BY = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="UPDATED_TIME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where ID in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into con_user_profile
+    (ID, dr, TENANT_ID, USER_ID, FIRST_NAME, LAST_NAME, FULL_NAME, PICTURE, EMAIL_1, 
+      EMAIL_2, EMAIL_3, TEL_NUMBER_1, TEL_NUMBER_2, TEL_NUMBER_3, GENDER, BIRTHDAY, CERTIFICATE_TYPE, 
+      CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `ROLE`, PLACE_BIRTH, ADDRESS, 
+      JOIN_DATE, TIME_ZONE, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, 
+      def2, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.userId}, #{item.firstName}, #{item.lastName}, 
+        #{item.fullName}, #{item.picture}, #{item.email1}, #{item.email2}, #{item.email3}, 
+        #{item.telNumber1}, #{item.telNumber2}, #{item.telNumber3}, #{item.gender}, #{item.birthday}, 
+        #{item.certificateType}, #{item.certificateNegativeAnnex}, #{item.certificatePositiveAnnex}, 
+        #{item.role}, #{item.placeBirth}, #{item.address}, #{item.joinDate}, #{item.timeZone}, 
+        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile">
+    <!--@mbg.generated-->
+    insert into con_user_profile
+    (ID, dr, TENANT_ID, USER_ID, FIRST_NAME, LAST_NAME, FULL_NAME, PICTURE, EMAIL_1, 
+      EMAIL_2, EMAIL_3, TEL_NUMBER_1, TEL_NUMBER_2, TEL_NUMBER_3, GENDER, BIRTHDAY, CERTIFICATE_TYPE, 
+      CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `ROLE`, PLACE_BIRTH, ADDRESS, 
+      JOIN_DATE, TIME_ZONE, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, 
+      def2, def3, def5, def6)
+    values
+    (#{id}, #{dr}, #{tenantId}, #{userId}, #{firstName}, #{lastName}, #{fullName}, #{picture}, 
+      #{email1}, #{email2}, #{email3}, #{telNumber1}, #{telNumber2}, #{telNumber3}, #{gender}, 
+      #{birthday}, #{certificateType}, #{certificateNegativeAnnex}, #{certificatePositiveAnnex}, 
+      #{role}, #{placeBirth}, #{address}, #{joinDate}, #{timeZone}, #{createdBy}, #{createdTime}, 
+      #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    ID = #{id}, 
+    dr = #{dr}, 
+    TENANT_ID = #{tenantId}, 
+    USER_ID = #{userId}, 
+    FIRST_NAME = #{firstName}, 
+    LAST_NAME = #{lastName}, 
+    FULL_NAME = #{fullName}, 
+    PICTURE = #{picture}, 
+    EMAIL_1 = #{email1}, 
+    EMAIL_2 = #{email2}, 
+    EMAIL_3 = #{email3}, 
+    TEL_NUMBER_1 = #{telNumber1}, 
+    TEL_NUMBER_2 = #{telNumber2}, 
+    TEL_NUMBER_3 = #{telNumber3}, 
+    GENDER = #{gender}, 
+    BIRTHDAY = #{birthday}, 
+    CERTIFICATE_TYPE = #{certificateType}, 
+    CERTIFICATE_NEGATIVE_ANNEX = #{certificateNegativeAnnex}, 
+    CERTIFICATE_POSITIVE_ANNEX = #{certificatePositiveAnnex}, 
+    `ROLE` = #{role}, 
+    PLACE_BIRTH = #{placeBirth}, 
+    ADDRESS = #{address}, 
+    JOIN_DATE = #{joinDate}, 
+    TIME_ZONE = #{timeZone}, 
+    CREATED_BY = #{createdBy}, 
+    CREATED_TIME = #{createdTime}, 
+    UPDATED_BY = #{updatedBy}, 
+    UPDATED_TIME = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile">
+    <!--@mbg.generated-->
+    insert into con_user_profile
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        TENANT_ID,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="firstName != null">
+        FIRST_NAME,
+      </if>
+      <if test="lastName != null">
+        LAST_NAME,
+      </if>
+      <if test="fullName != null">
+        FULL_NAME,
+      </if>
+      <if test="picture != null">
+        PICTURE,
+      </if>
+      <if test="email1 != null">
+        EMAIL_1,
+      </if>
+      <if test="email2 != null">
+        EMAIL_2,
+      </if>
+      <if test="email3 != null">
+        EMAIL_3,
+      </if>
+      <if test="telNumber1 != null">
+        TEL_NUMBER_1,
+      </if>
+      <if test="telNumber2 != null">
+        TEL_NUMBER_2,
+      </if>
+      <if test="telNumber3 != null">
+        TEL_NUMBER_3,
+      </if>
+      <if test="gender != null">
+        GENDER,
+      </if>
+      <if test="birthday != null">
+        BIRTHDAY,
+      </if>
+      <if test="certificateType != null">
+        CERTIFICATE_TYPE,
+      </if>
+      <if test="certificateNegativeAnnex != null">
+        CERTIFICATE_NEGATIVE_ANNEX,
+      </if>
+      <if test="certificatePositiveAnnex != null">
+        CERTIFICATE_POSITIVE_ANNEX,
+      </if>
+      <if test="role != null">
+        `ROLE`,
+      </if>
+      <if test="placeBirth != null">
+        PLACE_BIRTH,
+      </if>
+      <if test="address != null">
+        ADDRESS,
+      </if>
+      <if test="joinDate != null">
+        JOIN_DATE,
+      </if>
+      <if test="timeZone != null">
+        TIME_ZONE,
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY,
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME,
+      </if>
+      <if test="updatedBy != null">
+        UPDATED_BY,
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="userId != null">
+        #{userId},
+      </if>
+      <if test="firstName != null">
+        #{firstName},
+      </if>
+      <if test="lastName != null">
+        #{lastName},
+      </if>
+      <if test="fullName != null">
+        #{fullName},
+      </if>
+      <if test="picture != null">
+        #{picture},
+      </if>
+      <if test="email1 != null">
+        #{email1},
+      </if>
+      <if test="email2 != null">
+        #{email2},
+      </if>
+      <if test="email3 != null">
+        #{email3},
+      </if>
+      <if test="telNumber1 != null">
+        #{telNumber1},
+      </if>
+      <if test="telNumber2 != null">
+        #{telNumber2},
+      </if>
+      <if test="telNumber3 != null">
+        #{telNumber3},
+      </if>
+      <if test="gender != null">
+        #{gender},
+      </if>
+      <if test="birthday != null">
+        #{birthday},
+      </if>
+      <if test="certificateType != null">
+        #{certificateType},
+      </if>
+      <if test="certificateNegativeAnnex != null">
+        #{certificateNegativeAnnex},
+      </if>
+      <if test="certificatePositiveAnnex != null">
+        #{certificatePositiveAnnex},
+      </if>
+      <if test="role != null">
+        #{role},
+      </if>
+      <if test="placeBirth != null">
+        #{placeBirth},
+      </if>
+      <if test="address != null">
+        #{address},
+      </if>
+      <if test="joinDate != null">
+        #{joinDate},
+      </if>
+      <if test="timeZone != null">
+        #{timeZone},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        ID = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="tenantId != null">
+        TENANT_ID = #{tenantId},
+      </if>
+      <if test="userId != null">
+        USER_ID = #{userId},
+      </if>
+      <if test="firstName != null">
+        FIRST_NAME = #{firstName},
+      </if>
+      <if test="lastName != null">
+        LAST_NAME = #{lastName},
+      </if>
+      <if test="fullName != null">
+        FULL_NAME = #{fullName},
+      </if>
+      <if test="picture != null">
+        PICTURE = #{picture},
+      </if>
+      <if test="email1 != null">
+        EMAIL_1 = #{email1},
+      </if>
+      <if test="email2 != null">
+        EMAIL_2 = #{email2},
+      </if>
+      <if test="email3 != null">
+        EMAIL_3 = #{email3},
+      </if>
+      <if test="telNumber1 != null">
+        TEL_NUMBER_1 = #{telNumber1},
+      </if>
+      <if test="telNumber2 != null">
+        TEL_NUMBER_2 = #{telNumber2},
+      </if>
+      <if test="telNumber3 != null">
+        TEL_NUMBER_3 = #{telNumber3},
+      </if>
+      <if test="gender != null">
+        GENDER = #{gender},
+      </if>
+      <if test="birthday != null">
+        BIRTHDAY = #{birthday},
+      </if>
+      <if test="certificateType != null">
+        CERTIFICATE_TYPE = #{certificateType},
+      </if>
+      <if test="certificateNegativeAnnex != null">
+        CERTIFICATE_NEGATIVE_ANNEX = #{certificateNegativeAnnex},
+      </if>
+      <if test="certificatePositiveAnnex != null">
+        CERTIFICATE_POSITIVE_ANNEX = #{certificatePositiveAnnex},
+      </if>
+      <if test="role != null">
+        `ROLE` = #{role},
+      </if>
+      <if test="placeBirth != null">
+        PLACE_BIRTH = #{placeBirth},
+      </if>
+      <if test="address != null">
+        ADDRESS = #{address},
+      </if>
+      <if test="joinDate != null">
+        JOIN_DATE = #{joinDate},
+      </if>
+      <if test="timeZone != null">
+        TIME_ZONE = #{timeZone},
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        UPDATED_BY = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>

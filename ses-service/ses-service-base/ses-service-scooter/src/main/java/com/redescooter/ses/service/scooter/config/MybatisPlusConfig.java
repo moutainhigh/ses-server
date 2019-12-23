@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Properties;
 
 @Configuration
-@MapperScan("com.redescooter.ses.service.scooter.dao.base")
+@MapperScan("com.redescooter.ses.service.scooter.com.redescooter.ses.service.mobile.c.base")
 public class MybatisPlusConfig {
     /**
      * 分页插件

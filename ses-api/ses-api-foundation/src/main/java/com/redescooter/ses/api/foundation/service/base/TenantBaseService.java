@@ -1,14 +1,36 @@
 package com.redescooter.ses.api.foundation.service.base;
 
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.foundation.vo.tenant.SaveTenantConfigEnter;
+
 /**
- * @author Mr.lijiating
- * @version V1.0
- * @Date: 20/12/2019 2:07 下午
- * @ClassName: TenantBaseService
- * @Function: TODO
+ * @ClassName:TenantBaseService
+ * @description: TenantBaseService
+ * @author: Alex
+ * @Version：1.0
+ * @create: 2019/12/23 13:57
  */
 public interface TenantBaseService {
+    /**
+     * 保存租户
+     * @param enter
+     * @return
+     */
+    Long saveTenant(DateTimeParmEnter<BaseCustomerResult> enter);
 
+    /**
+     * 保存租户节点
+     * @param enter
+     * @return
+     */
+    GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter);
 
-
+    /**
+     * 保存租户默认配置
+     * @param enter
+     * @return
+     */
+    GeneralResult saveTenantConfig(SaveTenantConfigEnter enter);
 }

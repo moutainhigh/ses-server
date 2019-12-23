@@ -58,7 +58,6 @@ public enum ExceptionCodeEnums {
     TENANT_NOT_EXIST(10020, "租户不存在"),
 
     ;
-
     private int code;
     private String message;
 

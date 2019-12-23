@@ -1,0 +1,52 @@
+#日志路径
+log:
+  file:
+    path: logs/@profile-active@
+    max-size: 128MB
+    max-history: 180
+
+spring:
+  datasource:
+    #默认master数据源为 corporate
+    master:
+      password: 1qaz2wsx
+      url: jdbc:mysql://192.168.2.200:3306/corporate?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      type: com.zaxxer.hikari.HikariDataSource
+    cluster:
+      - key: operation
+        password: 1qaz2wsx
+        url: jdbc:mysql://192.168.2.200:3306/operation?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+        idle-timeout: 20000
+        driver-class-name: com.mysql.jdbc.Driver
+        username: root
+        type: com.zaxxer.hikari.HikariDataSource
+      - key: consumer
+        password: 1qaz2wsx
+        url: jdbc:mysql://192.168.2.200:3306/consumer?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+        driver-class-name: com.mysql.jdbc.Driver
+        username: root
+#REDIS配置
+redis:
+  redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
+
+# DUBBO 配置
+dubbo:
+  registries:
+    ses:
+      group: ses
+      address: zookeeper://192.168.2.200:22181
+# 多注册中心配置
+#    reg2:
+#      group: corporte
+#      address: zookeeper://zk1.t.xqcx.com:2181?backup=zk2.t.xqcx.com:2181,zk3.t.xqcx.com:2181
+
+
+# sentinel 规则文件位置，以下依次是：流控规则，降级规则，系统规则文件位置
+#sentinel:
+#  zk-address: zk1.t.xqcx.com:2181,zk2.t.xqcx.com:2181,zk3.t.xqcx.com:2181
+#  groupid: hdg_sentinel
+#  flow-dataid: @project.artifactId@-flow
+#  degra-dedataid: @project.artifactId@-degra
+#  system-dataid: @project.artifactId@-sys
