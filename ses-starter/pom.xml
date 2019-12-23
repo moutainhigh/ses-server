@@ -23,6 +23,7 @@
         <module>ses-starter-poi</module>
         <module>ses-starter-swagger</module>
         <module>ses-starter-common</module>
+        <module>ses-starter-txlcn</module>
     </modules>
 
 </project>
