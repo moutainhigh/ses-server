@@ -106,6 +106,8 @@ public enum ExceptionCodeEnums {
 
     TRASH_CAN_NOT_BE_EDITED(10050, "垃圾箱资源不能编辑"),
 
+    CUSTOMER_NOT_EXIST(10051,"客户不存在");
+
     ;
 
     private int code;

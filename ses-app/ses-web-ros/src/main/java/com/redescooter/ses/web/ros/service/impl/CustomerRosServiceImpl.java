@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerCertificateTypeEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerSourceEnum;
@@ -10,6 +12,7 @@ import com.redescooter.ses.api.common.enums.ros.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
@@ -17,8 +20,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
+import com.redescooter.ses.api.foundation.vo.QueryTenantNodeResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -47,6 +53,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,6 +83,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private CityBaseService cityBaseService;
     @Reference
     private AccountBaseService accountBaseService;
+    @Reference
+    private TenantBaseService tenantBaseService;
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
 
     /**
      * 邮箱验证
@@ -89,7 +100,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, mail);
         wrapper.eq(OpeCustomer.COL_DR, 0);
-        Boolean mailBoolean = opeCustomerMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
+        Boolean mailBoolean = opeCustomerMapper.selectCount(wrapper) == 1 ? Boolean.TRUE : Boolean.FALSE;
 
         return new BooleanResult(mailBoolean);
     }
@@ -386,17 +397,18 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         BooleanResult checkMail = checkMail(opeCustomer.getEmail());
-
+        BaseUserResult userResult=null;
         if (checkMail.isSuccess()) {
             BaseCustomerResult baseCustomer = new BaseCustomerResult();
             BeanUtils.copyProperties(opeCustomer, baseCustomer);
 
             DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
+            BeanUtils.copyProperties(enter,parmEnter);
             parmEnter.setStartDateTime(DateUtil.stringToDate(enter.getStartActivationTime()));
             parmEnter.setEndDateTime(DateUtil.stringToDate(enter.getEndActivationTime()));
             parmEnter.setT(baseCustomer);
 
-            BaseUserResult userResult = accountBaseService.open(parmEnter);
+            userResult = accountBaseService.open(parmEnter);
 
             opeCustomer.setTenantId(userResult.getTenantId());
             opeCustomer.setAccountFlag(Integer.parseInt(CustomerAccountFlagEnum.INACTIVATED.getValue()));
@@ -408,7 +420,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
 
         // 邮件通知
-
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
+        baseMailTaskEnter.setName(opeCustomer.getCustomerFullName());
+        baseMailTaskEnter.setToMail(opeCustomer.getEmail());
+        baseMailTaskEnter.setToUserId(userResult.getId());
+        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+        baseMailTaskEnter.setMailAppId(AccountTypeEnums.APP_PERSONAL.getAppId());
+        baseMailTaskEnter.setMailSystemId(AccountTypeEnums.APP_PERSONAL.getSystemId());
+        mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -422,7 +442,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public PageResult<AccountListResult> accountList(AccountListEnter enter) {
         int countCustomer= customerServiceMapper.accountListCount(enter);
-        if (countCustomer!=0){
+        if (countCustomer==0){
             return PageResult.createZeroRowResult(enter);
         }
         // 查询内容
@@ -445,9 +465,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         resultList.forEach(item->{
             tenantAccountRecords.forEach(tenantAccount->{
             if (tenantAccount.getInputTenantId().equals(item.getTenantId())){
-                item.setId(tenantAccount.getId());
+                item.setTenantId(tenantAccount.getId());
                 item.setStatus(tenantAccount.getStatus());
-                item.setActivationTime(tenantAccount.getStatus());
+                item.setActivationTime(tenantAccount.getActivationTime());
                 item.setExpirationTime(tenantAccount.getExpirationTime());
             }else {
                 resultList.remove(item);
@@ -476,7 +496,32 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public List<AccountNodeResult> accountNode(IdEnter enter) {
-        return null;
+        List<AccountNodeResult> resultList=new ArrayList<>();
+        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer==null){
+            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        enter.setId(opeCustomer.getTenantId());
+      List<QueryTenantNodeResult> tenantNodeResultList= tenantBaseService.queryTenantNdoe(enter);
+
+      QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper=new QueryWrapper<>();
+      // todo 需优化
+      if (!CollectionUtils.isEmpty(tenantNodeResultList)){
+          tenantNodeResultList.forEach(item->{
+              opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID,item.getCreateBy());
+              OpeSysUserProfile opeSysUserProfile = sysUserProfileMapper.selectOne(opeSysUserProfileQueryWrapper);
+              AccountNodeResult result = AccountNodeResult.builder()
+                      .id(item.getId())
+                      .event(item.getEvent())
+                      .eventTime(item.getEventTime().toString())
+                      .createdBy(item.getCreateBy())
+                      .createdFirstName(opeSysUserProfile.getFirstName())
+                      .createdLastName(opeSysUserProfile.getLastName())
+                      .build();
+              resultList.add(result);
+          });
+      }
+        return resultList;
     }
 
     private void checkCustomer(EditCustomerEnter enter) {

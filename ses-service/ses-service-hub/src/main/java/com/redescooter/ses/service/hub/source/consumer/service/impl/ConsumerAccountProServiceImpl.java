@@ -9,7 +9,6 @@ import com.redescooter.ses.api.mobile.c.vo.SaveUserPofileEnter;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @ClassName:CorporateAccountProServiceImpl
@@ -35,7 +34,6 @@ public class ConsumerAccountProServiceImpl implements ConsumerAccountProService 
     public GeneralResult saveUserProfileHub(UserProfileHubEnter enter) {
         SaveUserPofileEnter saveUserPofileEnter = new SaveUserPofileEnter();
         BeanUtils.copyProperties(enter,saveUserPofileEnter);
-
         return userProfileProService.saveUserPofile(saveUserPofileEnter);
     }
 }

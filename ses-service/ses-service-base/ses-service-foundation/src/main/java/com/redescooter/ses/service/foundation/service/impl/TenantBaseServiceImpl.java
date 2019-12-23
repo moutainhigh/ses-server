@@ -1,13 +1,16 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEvent;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatus;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
+import com.redescooter.ses.api.foundation.vo.QueryTenantNodeResult;
 import com.redescooter.ses.api.foundation.vo.tenant.SaveTenantConfigEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.constant.TenantDefaultValue;
@@ -24,7 +27,9 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName:TenantBaseServiceImpl
@@ -81,6 +86,33 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         PlaTenantNode plaTenantNode = buildPlaTenantNodeSingle(enter);
         plaTenantNodeMapper.insert(plaTenantNode);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 查询租户节点
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<QueryTenantNodeResult> queryTenantNdoe(IdEnter enter) {
+        QueryWrapper<PlaTenantNode> plaTenantNodeQueryWrapper = new QueryWrapper<>();
+        plaTenantNodeQueryWrapper.eq(PlaTenantNode.COL_TENANT_ID,enter.getId());
+        List<PlaTenantNode> plaTenantNodeList = plaTenantNodeMapper.selectList(plaTenantNodeQueryWrapper);
+
+        List<QueryTenantNodeResult> resultList=new ArrayList<>();
+        plaTenantNodeList.forEach(item->{
+            QueryTenantNodeResult queryTenantNodeResult = QueryTenantNodeResult.builder()
+                    .id(item.getId())
+                    .event(item.getEvent())
+                    .eventTime(item.getEventTime())
+                    .memo(item.getMemo())
+                    .tenantId(item.getTenantId())
+                    .createBy(item.getCreateBy())
+                    .build();
+            resultList.add(queryTenantNodeResult);
+        });
+        return resultList;
     }
 
     /**
@@ -172,7 +204,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         plaTenant.setPId(0L);
         plaTenant.setTenantName(enter.getT().getCompanyName());
         plaTenant.setEmail(enter.getT().getEmail());
-        plaTenant.setStatus(TenantStatus.INOPERATION.getCode());
+        plaTenant.setStatus(TenantStatus.INOPERATION.getValue());
         plaTenant.setCountryId(enter.getT().getCountry());
         plaTenant.setCityId(enter.getT().getCity());
         plaTenant.setDistrustId(enter.getT().getDistrust());

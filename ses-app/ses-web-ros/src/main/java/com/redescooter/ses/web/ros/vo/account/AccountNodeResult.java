@@ -1,9 +1,13 @@
 package com.redescooter.ses.web.ros.vo.account;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import io.swagger.annotations.*;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @ClassName:AccountNodeResult
@@ -14,6 +18,10 @@ import io.swagger.annotations.*;
  */
 @ApiModel(value = "账户节点出参", description = "账户节点出参")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = true)
 public class AccountNodeResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")

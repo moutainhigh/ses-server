@@ -26,13 +26,13 @@ public class UserProfileHubEnter extends GeneralEnter {
      * 租户ID
      */
     @ApiModelProperty(value="租户ID")
-    private Long tenantId;
+    private Long inputTenantId;
 
     /**
      * 用户ID
      */
     @ApiModelProperty(value="用户ID")
-    private Long userId;
+    private Long inputUserId;
 
     /**
      * 姓
@@ -88,5 +88,4 @@ public class UserProfileHubEnter extends GeneralEnter {
      */
     @ApiModelProperty(value="居住地址")
     private String address;
-
 }

@@ -4,7 +4,7 @@
 
 
     <select id="queryAccountListCount"
-            resultType="com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult">
+            resultType="int">
         select count(*) from pla_tenant tenant
         where  tenant.id in
         <foreach collection="inputTenantId" open="(" separator="," close=")" item="item">
@@ -25,10 +25,11 @@
 
     <select id="queryAccountList"
             resultType="com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult">
-        select
-        id as id,
-        effective_time as ,
-        expire_time
+        select tenant.id              as id,
+        tenant.id              as inputTenantId,
+        tenant.activation_time as activationTime,
+        tenant.expire_time     as expirationTime,
+        tenant.status          as status
         from pla_tenant tenant
         where  tenant.id in
         <foreach collection="inputTenantId" open="(" separator="," close=")" item="item">

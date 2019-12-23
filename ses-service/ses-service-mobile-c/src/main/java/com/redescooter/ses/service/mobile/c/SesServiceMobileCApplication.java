@@ -1,13 +1,44 @@
 package com.redescooter.ses.service.mobile.c;
 
-import org.springframework.boot.SpringApplication;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
+import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
-@SpringBootApplication
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
+@Slf4j
+@EnableDubbo
+@EnableDubboConfig(multiple = true)
+@SpringBootApplication(scanBasePackages = {"com.redescooter.ses"})
 public class SesServiceMobileCApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SesServiceMobileCApplication.class, args);
+    private static volatile boolean running = true;
+
+    @PostConstruct
+    void started() {
+        System.setProperty("user.timezone", "UTC");
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     }
 
+    public static void main(String[] args) {
+
+        //非web启动
+        new SpringApplicationBuilder(SesServiceMobileCApplication.class)
+                .web(WebApplicationType.NONE) // .REACTIVE, .SERVLET
+                .run(args);
+        log.info("SesServiceFoundationApplication started success ... ");
+        synchronized (SesServiceMobileCApplication.class) {
+            while (running) {
+                try {
+                    SesServiceMobileCApplication.class.wait();
+                } catch (Throwable e) {
+                    log.error("SesServiceFoundationApplication Throwable：", e);
+                }
+            }
+        }
+    }
 }
