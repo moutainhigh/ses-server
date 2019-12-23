@@ -171,9 +171,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         DetailsCustomerResult result = new DetailsCustomerResult();
         BeanUtils.copyProperties(opeCustomer, result);
+        QueryWrapper<OpeSysUserProfile> created= new QueryWrapper<>();
+        created.eq(OpeSysUserProfile.COL_SYS_USER_ID,result.getCreatedBy());
+        created.eq(OpeSysUserProfile.COL_DR,0);
+        result.setCreatedName(sysUserProfileMapper.selectOne(created).getFullName());
 
-        result.setCreatedName(sysUserProfileMapper.selectById(result.getCreatedBy()).getFullName());
-        result.setUpdatedName(sysUserProfileMapper.selectById(result.getUpdatedBy()).getFullName());
+        QueryWrapper<OpeSysUserProfile> updated= new QueryWrapper<>();
+        updated.eq(OpeSysUserProfile.COL_SYS_USER_ID,result.getUpdatedBy());
+        updated.eq(OpeSysUserProfile.COL_DR,0);
+        result.setUpdatedName(sysUserProfileMapper.selectOne(updated).getFullName());
 
         result.setRequestId(enter.getRequestId());
         if (opeCustomer.getCity() != null || opeCustomer.getDistrust() != null) {
@@ -224,9 +230,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotBlank(page.getStatus())) {
             wrapper.eq(OpeCustomer.COL_STATUS, page.getStatus());
         }
-        if (page.getOneCityiD() != null && page.getTwoCityiD() != null) {
+        if (page.getOneCityiD() != null ) {
             wrapper.eq(OpeCustomer.COL_CITY, page.getOneCityiD());
-            wrapper.eq(OpeCustomer.COL_DISTRUST, page.getTwoCityiD());
+            if(page.getTwoCityiD() != null){
+                wrapper.eq(OpeCustomer.COL_DISTRUST, page.getTwoCityiD());
+            }
         }
         if (StringUtils.isNotBlank(page.getCustomerType())) {
             wrapper.eq(OpeCustomer.COL_CUSTOMER_TYPE, page.getCustomerType());
@@ -245,11 +253,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
 
         if (StringUtils.isNotBlank(page.getStatus())) {
-            if (page.getStatus().equals(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())) {
+            if (page.getStatus().equals(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
                 wrapper.orderByDesc(OpeCustomer.COL_CREATED_TIME);
-            } else {
-                wrapper.orderByDesc(OpeCustomer.COL_UPDATED_TIME);
             }
+        }else{
+            wrapper.orderByDesc(OpeCustomer.COL_UPDATED_TIME);
+
         }
 
         Page<OpeCustomer> customerPage = new Page<>(page.getPageNo(), page.getPageSize());
@@ -327,6 +336,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        if(!customer.getStatus().equals(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())){
+            return new GeneralResult(enter.getRequestId());
         }
         customer.setStatus(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue());
         customer.setUpdatedBy(enter.getUserId());
