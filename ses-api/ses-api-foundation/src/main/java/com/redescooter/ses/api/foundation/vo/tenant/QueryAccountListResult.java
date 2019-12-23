@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.foundation.vo.login;
+package com.redescooter.ses.api.foundation.vo.tenant;
 
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import io.swagger.annotations.ApiModel;
@@ -19,29 +19,11 @@ public class QueryAccountListResult extends PageResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "customerId")
-    private Long customerId;
-
-    @ApiModelProperty(value = "customerFirstName")
-    private String customerFirstName;
-
-    @ApiModelProperty(value = "customerLastName")
-    private String customerLastName;
-
-    @ApiModelProperty(value = "customerFullName")
-    private String customerFullName;
-
-    @ApiModelProperty(value = "email")
-    private String email;
+    @ApiModelProperty(value = "inputTenantId")
+    private Long inputTenantId;
 
     @ApiModelProperty(value = "status")
     private String status;
-
-    @ApiModelProperty(value = "类型")
-    private String customerType;
-
-    @ApiModelProperty(value = "行业")
-    private String industryType;
 
     @ApiModelProperty(value = "激活时间")
     private String activationTime;

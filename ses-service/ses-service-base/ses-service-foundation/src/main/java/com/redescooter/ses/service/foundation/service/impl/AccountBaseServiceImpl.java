@@ -10,10 +10,13 @@ import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 import com.redescooter.ses.api.hub.service.corporate.CorporateAccountProService;
 import com.redescooter.ses.api.hub.service.customer.ConsumerAccountProService;
 import com.redescooter.ses.api.hub.vo.UserProfileHubEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
+import com.redescooter.ses.service.foundation.dao.AccountBaseServiceMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserPasswordMapper;
@@ -33,6 +36,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Mr.lijiating
@@ -73,6 +77,9 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
     @Reference
     private ConsumerAccountProService consumerAccountProService;
+
+    @Autowired
+    private AccountBaseServiceMapper accountBaseServiceMapper;
 
 
     /**
@@ -127,6 +134,29 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         return tenantMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
     }
+
+    /**
+     * 查询已创建 的账户
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public int countTenantAccount(QueryAccountListEnter enter) {
+        return accountBaseServiceMapper.queryAccountListCount(enter);
+    }
+
+    /**
+     * 查询 已创建的 账户记录
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<QueryAccountListResult> tenantAccountRecords(QueryAccountListEnter enter) {
+        return accountBaseServiceMapper.queryAccountList(enter);
+    }
+
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {
 
         // 保存 user 信息

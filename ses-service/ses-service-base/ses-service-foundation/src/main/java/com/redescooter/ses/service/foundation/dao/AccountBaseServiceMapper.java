@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.foundation.dao;
 
-import com.redescooter.ses.api.foundation.vo.login.QueryAccountListEnter;
-import com.redescooter.ses.api.foundation.vo.login.QueryAccountListResult;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 
 import java.util.List;
 

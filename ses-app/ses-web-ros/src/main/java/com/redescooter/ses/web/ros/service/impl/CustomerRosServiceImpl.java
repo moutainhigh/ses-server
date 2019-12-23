@@ -19,6 +19,8 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -375,6 +377,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
             parmEnter.setStartDateTime(DateUtil.stringToDate(enter.getStartActivationTime()));
             parmEnter.setEndDateTime(DateUtil.stringToDate(enter.getEndActivationTime()));
+            parmEnter.setT(baseCustomer);
 
             BaseUserResult userResult = accountBaseService.open(parmEnter);
 
@@ -397,30 +400,40 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public PageResult<AccountListResult> accountList(AccountListEnter enter) {
-        List<AccountListResult> resultList = new ArrayList<>();
+        int countCustomer= customerServiceMapper.accountListCount(enter);
+        if (countCustomer!=0){
+            return PageResult.createZeroRowResult(enter);
+        }
+        // 查询内容
+        List<AccountListResult> resultList =  customerServiceMapper.queryAccountRecord(enter);
+        List<Long> tenantIdList=new ArrayList<>();
+        resultList.forEach(item->{
+            tenantIdList.add(item.getTenantId());
+        });
 
-        QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
-
-        if (StringUtils.isNotBlank(enter.getStatus())) {
-            wrapper.eq(OpeCustomer.COL_STATUS, enter.getStatus());
-        }
-        if (StringUtils.isNotBlank(enter.getCustomerType())) {
-            wrapper.eq(OpeCustomer.COL_CUSTOMER_TYPE, enter.getCustomerType());
-        }
-        if (StringUtils.isNotBlank(enter.getIndustryType())) {
-            wrapper.eq(OpeCustomer.COL_INDUSTRY_TYPE, enter.getIndustryType());
-        }
-        if (StringUtils.isNotBlank(enter.getKeyword())) {
-            wrapper.and(wh -> wh.like(OpeCustomer.COL_EMAIL, enter.getKeyword()).or().like(OpeCustomer.COL_CUSTOMER_FIRST_NAME, enter.getKeyword()).or().like(OpeCustomer.COL_CUSTOMER_LAST_NAME,
-                    enter.getKeyword()).or().like(OpeCustomer.COL_CUSTOMER_FULL_NAME, enter.getKeyword()));
+        // 查询时间
+        QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
+        queryAccountListEnter.setInputTenantId(tenantIdList);
+        BeanUtils.copyProperties(enter,queryAccountListEnter);
+        int  countTenantAccount =accountBaseService.countTenantAccount(queryAccountListEnter);
+        if (countTenantAccount==0){
+            return PageResult.createZeroRowResult(enter);
         }
 
-        Page<OpeCustomer> customerPage = new Page<>(enter.getPageNo(), enter.getPageSize());
-        IPage<OpeCustomer> opeCustomerIPage = opeCustomerMapper.selectPage(customerPage, wrapper);
-        // 时间过滤
-        List<OpeCustomer> pageRecords = opeCustomerIPage.getRecords();
-        //  内容获取
-        return null;
+        List<QueryAccountListResult> tenantAccountRecords=accountBaseService.tenantAccountRecords(queryAccountListEnter);
+        resultList.forEach(item->{
+            tenantAccountRecords.forEach(tenantAccount->{
+            if (tenantAccount.getInputTenantId().equals(item.getTenantId())){
+                item.setId(tenantAccount.getId());
+                item.setStatus(tenantAccount.getStatus());
+                item.setActivationTime(tenantAccount.getStatus());
+                item.setExpirationTime(tenantAccount.getExpirationTime());
+            }else {
+                resultList.remove(item);
+            }
+            });
+        });
+        return PageResult.create(enter,countTenantAccount,resultList);
     }
 
     private void checkCustomer(EditCustomerEnter enter) {

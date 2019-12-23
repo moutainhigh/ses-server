@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.service.foundation.com.redescooter.ses.service.mobile.c.base.PlaTenantMapper">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaTenant">
     <!--@mbg.generated-->
+    <!--@Table pla_tenant-->
     <id column="id" property="id" />
     <result column="dr" property="dr" />
     <result column="p_id" property="pId" />
@@ -31,6 +32,7 @@
     <result column="email_3" property="email3" />
     <result column="time_zone" property="timeZone" />
     <result column="effective_time" property="effectiveTime" />
+    <result column="activation_time" property="activationTime" />
     <result column="expire_time" property="expireTime" />
     <result column="created_by" property="createdBy" />
     <result column="created_time" property="createdTime" />
@@ -47,8 +49,8 @@
     id, dr, p_id, tenant_name, email, `status`, country_id, city_id, distrust_id, driver_counts, 
     sales_id, tenant_source, tenant_type, tenant_industry, address, contact, `position`, 
     tenant_code, longitude, latitude, tel_1, tel_2, tel_3, email_1, email_2, email_3, 
-    time_zone, effective_time, expire_time, created_by, created_time, updated_by, updated_time, 
-    def1, def2, def3, def5, def6
+    time_zone, effective_time, activation_time, expire_time, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -189,6 +191,11 @@
           when id = #{item.id} then #{item.effectiveTime}
         </foreach>
       </trim>
+      <trim prefix="activation_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.activationTime}
+        </foreach>
+      </trim>
       <trim prefix="expire_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.expireTime}
@@ -251,8 +258,8 @@
     (id, dr, p_id, tenant_name, email, `status`, country_id, city_id, distrust_id, driver_counts, 
       sales_id, tenant_source, tenant_type, tenant_industry, address, contact, `position`, 
       tenant_code, longitude, latitude, tel_1, tel_2, tel_3, email_1, email_2, email_3, 
-      time_zone, effective_time, expire_time, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def5, def6)
+      time_zone, effective_time, activation_time, expire_time, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id}, #{item.dr}, #{item.pId}, #{item.tenantName}, #{item.email}, #{item.status}, 
@@ -260,9 +267,9 @@
         #{item.tenantSource}, #{item.tenantType}, #{item.tenantIndustry}, #{item.address}, 
         #{item.contact}, #{item.position}, #{item.tenantCode}, #{item.longitude}, #{item.latitude}, 
         #{item.tel1}, #{item.tel2}, #{item.tel3}, #{item.email1}, #{item.email2}, #{item.email3}, 
-        #{item.timeZone}, #{item.effectiveTime}, #{item.expireTime}, #{item.createdBy}, 
-        #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, 
-        #{item.def3}, #{item.def5}, #{item.def6})
+        #{item.timeZone}, #{item.effectiveTime}, #{item.activationTime}, #{item.expireTime}, 
+        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaTenant">
@@ -271,15 +278,15 @@
     (id, dr, p_id, tenant_name, email, `status`, country_id, city_id, distrust_id, driver_counts, 
       sales_id, tenant_source, tenant_type, tenant_industry, address, contact, `position`, 
       tenant_code, longitude, latitude, tel_1, tel_2, tel_3, email_1, email_2, email_3, 
-      time_zone, effective_time, expire_time, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def5, def6)
+      time_zone, effective_time, activation_time, expire_time, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     (#{id}, #{dr}, #{pId}, #{tenantName}, #{email}, #{status}, #{countryId}, #{cityId}, 
       #{distrustId}, #{driverCounts}, #{salesId}, #{tenantSource}, #{tenantType}, #{tenantIndustry}, 
       #{address}, #{contact}, #{position}, #{tenantCode}, #{longitude}, #{latitude}, 
       #{tel1}, #{tel2}, #{tel3}, #{email1}, #{email2}, #{email3}, #{timeZone}, #{effectiveTime}, 
-      #{expireTime}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, 
-      #{def2}, #{def3}, #{def5}, #{def6})
+      #{activationTime}, #{expireTime}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
+      #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
     on duplicate key update 
     id = #{id}, 
     dr = #{dr}, 
@@ -309,6 +316,7 @@
     email_3 = #{email3}, 
     time_zone = #{timeZone}, 
     effective_time = #{effectiveTime}, 
+    activation_time = #{activationTime}, 
     expire_time = #{expireTime}, 
     created_by = #{createdBy}, 
     created_time = #{createdTime}, 
@@ -407,6 +415,9 @@
       </if>
       <if test="effectiveTime != null">
         effective_time,
+      </if>
+      <if test="activationTime != null">
+        activation_time,
       </if>
       <if test="expireTime != null">
         expire_time,
@@ -525,6 +536,9 @@
       <if test="effectiveTime != null">
         #{effectiveTime},
       </if>
+      <if test="activationTime != null">
+        #{activationTime},
+      </if>
       <if test="expireTime != null">
         #{expireTime},
       </if>
@@ -641,6 +655,9 @@
       </if>
       <if test="effectiveTime != null">
         effective_time = #{effectiveTime},
+      </if>
+      <if test="activationTime != null">
+        activation_time = #{activationTime},
       </if>
       <if test="expireTime != null">
         expire_time = #{expireTime},

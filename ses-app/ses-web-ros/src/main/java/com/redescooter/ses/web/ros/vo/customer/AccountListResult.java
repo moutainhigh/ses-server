@@ -24,11 +24,11 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class AccountListResult extends PageResult {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "customerId")
     private Long id;
 
-    @ApiModelProperty(value = "customerId")
-    private Long customerId;
+    @ApiModelProperty(value = "tenantId")
+    private Long tenantId;
 
     @ApiModelProperty(value = "customerFirstName")
     private String customerFirstName;

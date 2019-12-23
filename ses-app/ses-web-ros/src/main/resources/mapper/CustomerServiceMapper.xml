@@ -3,9 +3,58 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.CustomerServiceMapper">
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
-   select a.status, count(*) totalCount
-   from ope_customer a
-   where a.dr =0
-   group by a.status
+           select a.status, count(*) totalCount
+           from ope_customer a
+           where a.dr =0
+           group by a.status
+    </select>
+
+    <select id="accountListCount" resultType="int">
+        select count(*)
+        from ope_customer
+        where 1=
+        <if test="customerType != null and customerType != ''">
+            and customerType =#{customerType}
+        </if>
+        <if test="industryType != null and industryType != ''">
+            and industryType #{industryType}
+        </if>
+        <if test="keyword != null and keyword != ''" >
+            and (
+            customer_first_name like concat("%",#{keyword},"%")
+            or customer_last_name like concat("%",#{keyword},"%")
+            or customer_full_name like concat("%",#{keyword},"%")
+            or customer_full_name like concat("%",#{keyword},"%")
+            or email like concat("%",#{keyword},"%")
+            )
+        </if>
+    </select>
+
+    <select id="queryAccountRecord" resultType="com.redescooter.ses.web.ros.vo.customer.AccountListResult">
+        select id                  as id,
+               tenant_id           as tenantId,
+               customer_first_name as customerFirstName,
+               customer_last_name  as customerLastName,
+               customer_full_name  as customerFullName,
+               email               as email,
+               customer_type       as customerType,
+               industry_type       as industryType
+        from ope_customer
+        where 1=1
+        <if test="customerType != null and customerType != ''">
+            and customerType =#{customerType}
+        </if>
+        <if test="industryType != null and industryType != ''">
+            and industryType #{industryType}
+        </if>
+        <if test="keyword != null and keyword != ''" >
+            and (
+            customer_first_name like concat("%",#{keyword},"%")
+            or customer_last_name like concat("%",#{keyword},"%")
+            or customer_full_name like concat("%",#{keyword},"%")
+            or customer_full_name like concat("%",#{keyword},"%")
+            or email like concat("%",#{keyword},"%")
+            )
+        </if>
     </select>
 </mapper>
