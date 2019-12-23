@@ -32,6 +32,7 @@ import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
+import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
@@ -465,6 +466,17 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public Map<String, Integer> accountCountStatus(GeneralEnter enter) {
         return accountBaseService.accountCountStatus();
+    }
+
+    /**
+     * 账户节点
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<AccountNodeResult> accountNode(IdEnter enter) {
+        return null;
     }
 
     private void checkCustomer(EditCustomerEnter enter) {
