@@ -6,7 +6,6 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.redescooter.ses.api.common.exception.BaseException;
 import com.redescooter.ses.app.common.service.FileAppService;
 import com.redescooter.ses.starter.common.config.OssConfig;
-import com.redescooter.ses.starter.redis.config.RedisConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
