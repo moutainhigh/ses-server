@@ -1,5 +1,4 @@
-#Springboot 基础配置
-server:
+server:                                                                                                                 #Springboot 基础配置
   port: 28190
   servlet:
     context-path: /ses/t/ros/w/api
@@ -33,16 +32,15 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
-  #编码格式
-  http:
+
+  http:                                                                                                                 #编码格式
     encoding:
       force: true
       charset: UTF-8
       enabled: true
   freemarker:
     check-template-location: false
-
-# Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
+                                                                                                                        #Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
 management:
   server:
     port: 28188
@@ -67,7 +65,7 @@ dubbo:                                                                          
     logger: log4j
   registry:
     check: false                                                                                                        #注册中心不存在时，是否报错
-    protocol: zookeeper                                                                                                 #注册中心地址协议
+    group: ses
   scan:
     base-packages: com.redescooter.ses                                                                                  #服务暴露与发现消费所在的package
   provider:                                                                                                             #服务提供者缺省值配置
