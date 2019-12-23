@@ -59,3 +59,7 @@ dubbo:
 #  flow-dataid: @project.artifactId@-flow
 #  degra-dedataid: @project.artifactId@-degra
 #  system-dataid: @project.artifactId@-sys
+
+
+    saasAccountSecondairePath: /account-plugin/#/
+    sesRepairAccountSecondairePath: /repair/#/retrieve
