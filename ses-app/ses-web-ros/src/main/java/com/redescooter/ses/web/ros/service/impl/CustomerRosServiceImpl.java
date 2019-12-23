@@ -380,9 +380,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public GeneralResult openAccount(OpenAccountEnter enter) {
-
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -407,6 +405,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         } else {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
+
+        // 邮件通知
+
+
         return new GeneralResult(enter.getRequestId());
     }
 

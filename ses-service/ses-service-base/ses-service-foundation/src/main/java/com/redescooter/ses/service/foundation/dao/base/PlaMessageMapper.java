@@ -13,4 +13,6 @@ public interface PlaMessageMapper extends BaseMapper<PlaMessage> {
     int insertOrUpdate(PlaMessage record);
 
     int insertOrUpdateSelective(PlaMessage record);
+
+    int insertOrUpdateWithBLOBs(PlaMessage record);
 }

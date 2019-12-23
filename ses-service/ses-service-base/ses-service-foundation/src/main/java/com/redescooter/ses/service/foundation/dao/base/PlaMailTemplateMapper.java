@@ -11,4 +11,6 @@ public interface PlaMailTemplateMapper extends BaseMapper<PlaMailTemplate> {
     int insertOrUpdate(PlaMailTemplate record);
 
     int insertOrUpdateSelective(PlaMailTemplate record);
+
+    int insertOrUpdateWithBLOBs(PlaMailTemplate record);
 }

@@ -1,15 +1,16 @@
 package com.redescooter.ses.service.foundation.dm.base;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 import java.util.Date;
-
 import lombok.Data;
 
-@ApiModel(value = "com.redescooter.ses.service.foundation.dm.base.PlaAppVersion")
+@ApiModel(value = "com-redescooter-ses-service-foundation-dm-base-PlaAppVersion")
 @Data
 @TableName(value = "pla_app_version")
 public class PlaAppVersion implements Serializable {
@@ -24,7 +25,6 @@ public class PlaAppVersion implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -176,6 +176,8 @@ public class PlaAppVersion implements Serializable {
     private Double def6;
 
     private static final long serialVersionUID = 1L;
+
+    public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
 

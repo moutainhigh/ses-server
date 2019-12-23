@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.service.foundation.com.redescooter.ses.service.mobile.c.base.PlaMailTemplateMapper">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaMailTemplateMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate">
     <!--@mbg.generated-->
+    <!--@Table pla_mail_template-->
     <result column="id" property="id" />
     <result column="dr" property="dr" />
     <result column="status" property="status" />
@@ -10,7 +11,6 @@
     <result column="name" property="name" />
     <result column="event" property="event" />
     <result column="subject" property="subject" />
-    <result column="content" property="content" />
     <result column="memo" property="memo" />
     <result column="backup" property="backup" />
     <result column="expire" property="expire" />
@@ -24,29 +24,38 @@
     <result column="def5" property="def5" />
     <result column="def6" property="def6" />
   </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate">
+    <!--@mbg.generated-->
+    <!--@Table pla_mail_template-->
+    <result column="content" property="content" />
+  </resultMap>
+  <sql id="Blob_Column_List">
+    <!--@mbg.generated-->
+    content
+  </sql>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into pla_mail_template
-    (id, dr, `status`, mail_template_no, `name`, event, subject, content, memo, `backup`, 
-      expire, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
-      def6)
+    (id, dr, `status`, mail_template_no, `name`, event, subject, memo, `backup`, expire, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6, 
+      content)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id}, #{item.dr}, #{item.status}, #{item.mailTemplateNo}, #{item.name}, #{item.event}, 
-        #{item.subject}, #{item.content}, #{item.memo}, #{item.backup}, #{item.expire}, 
-        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
-        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
+        #{item.subject}, #{item.memo}, #{item.backup}, #{item.expire}, #{item.createdBy}, 
+        #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, 
+        #{item.def3}, #{item.def5}, #{item.def6}, #{item.content})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate">
     <!--@mbg.generated-->
     insert into pla_mail_template
-    (id, dr, `status`, mail_template_no, `name`, event, subject, content, memo, `backup`, 
-      expire, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
-      def6)
+    (id, dr, `status`, mail_template_no, `name`, event, subject, memo, `backup`, expire, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
     values
-    (#{id}, #{dr}, #{status}, #{mailTemplateNo}, #{name}, #{event}, #{subject}, #{content}, 
-      #{memo}, #{backup}, #{expire}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
+    (#{id}, #{dr}, #{status}, #{mailTemplateNo}, #{name}, #{event}, #{subject}, #{memo}, 
+      #{backup}, #{expire}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
       #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
     on duplicate key update 
     id = #{id}, 
@@ -56,7 +65,6 @@
     `name` = #{name}, 
     event = #{event}, 
     subject = #{subject}, 
-    content = #{content}, 
     memo = #{memo}, 
     `backup` = #{backup}, 
     expire = #{expire}, 
@@ -69,6 +77,38 @@
     def3 = #{def3}, 
     def5 = #{def5}, 
     def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateWithBLOBs" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate">
+    <!--@mbg.generated-->
+    insert into pla_mail_template
+    (id, dr, `status`, mail_template_no, `name`, event, subject, memo, `backup`, expire, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6, 
+      content)
+    values
+    (#{id}, #{dr}, #{status}, #{mailTemplateNo}, #{name}, #{event}, #{subject}, #{memo}, 
+      #{backup}, #{expire}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
+      #{def1}, #{def2}, #{def3}, #{def5}, #{def6}, #{content})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    `status` = #{status}, 
+    mail_template_no = #{mailTemplateNo}, 
+    `name` = #{name}, 
+    event = #{event}, 
+    subject = #{subject}, 
+    memo = #{memo}, 
+    `backup` = #{backup}, 
+    expire = #{expire}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}, 
+    content = #{content}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate">
     <!--@mbg.generated-->
@@ -94,9 +134,6 @@
       </if>
       <if test="subject != null">
         subject,
-      </if>
-      <if test="content != null">
-        content,
       </if>
       <if test="memo != null">
         memo,
@@ -134,6 +171,9 @@
       <if test="def6 != null">
         def6,
       </if>
+      <if test="content != null">
+        content,
+      </if>
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -157,9 +197,6 @@
       </if>
       <if test="subject != null">
         #{subject},
-      </if>
-      <if test="content != null">
-        #{content},
       </if>
       <if test="memo != null">
         #{memo},
@@ -197,6 +234,9 @@
       <if test="def6 != null">
         #{def6},
       </if>
+      <if test="content != null">
+        #{content},
+      </if>
     </trim>
     on duplicate key update 
     <trim suffixOverrides=",">
@@ -220,9 +260,6 @@
       </if>
       <if test="subject != null">
         subject = #{subject},
-      </if>
-      <if test="content != null">
-        content = #{content},
       </if>
       <if test="memo != null">
         memo = #{memo},
@@ -259,6 +296,9 @@
       </if>
       <if test="def6 != null">
         def6 = #{def6},
+      </if>
+      <if test="content != null">
+        content = #{content},
       </if>
     </trim>
   </insert>
