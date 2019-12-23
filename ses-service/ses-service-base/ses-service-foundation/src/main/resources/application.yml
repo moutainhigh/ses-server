@@ -35,7 +35,6 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
-
   swagger:                                                                                                              #swagger配置
     enabled: false                                                                                                      #是否启用swagger
   http:
@@ -43,7 +42,6 @@ spring:
       force: true
       charset: UTF-8
       enabled: true
-
 dubbo:                                                                                                                  #DUBBO 配置
   application:
     id: @project.artifactId@
@@ -65,19 +63,16 @@ dubbo:                                                                          
   protocol:
     port: -1
     threads: 300
-
 redis:                                                                                                                  #REDIS配置
   max-total: 10000
   max-idle: 200
   min-Idle: 50
   timeout: 3000
   max-attempts: 5
-
 mybatis:                                                                                                                #MYBATIS配置
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl                                                               #打印sql
-
 mybatis-plus:                                                                                                           #mybaits-plus配置，此配置 不影响原始的mybatis
   mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml
   typeAliasesPackage: com.redescooter.ses.service.foundation.dm.base

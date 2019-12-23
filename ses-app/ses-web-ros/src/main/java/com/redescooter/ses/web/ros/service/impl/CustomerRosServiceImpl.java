@@ -258,10 +258,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             wrapper.and(wh -> wh.like(OpeCustomer.COL_CONTACT_FULL_NAME, page.getKeyword()).or().like(OpeCustomer.COL_EMAIL, page.getKeyword()).or().like(OpeCustomer.COL_CONTACT_FULL_NAME, page.getKeyword()));
         }
 
-        if (page.getStatus().equals(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())) {
-            wrapper.orderByDesc(OpeCustomer.COL_CREATED_TIME);
-        } else {
-            wrapper.orderByDesc(OpeCustomer.COL_UPDATED_TIME);
+        if(StringUtils.isNotBlank(page.getStatus())){
+            if (page.getStatus().equals(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())) {
+                wrapper.orderByDesc(OpeCustomer.COL_CREATED_TIME);
+            } else {
+                wrapper.orderByDesc(OpeCustomer.COL_UPDATED_TIME);
+            }
         }
 
         Page<OpeCustomer> customerPage = new Page<>(page.getPageNo(), page.getPageSize());
@@ -333,6 +335,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public GeneralResult change(IdEnter enter) {
 
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
+        EditCustomerEnter checkCustomer = new EditCustomerEnter();
+        BeanUtils.copyProperties(customer,checkCustomer);
+        checkCustomer(checkCustomer);
+
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
