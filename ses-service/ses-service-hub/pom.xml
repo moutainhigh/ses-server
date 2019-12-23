@@ -25,11 +25,17 @@
             <version>1.2.0</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-service-common</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>${dynamic-datasource.version}</version>
+        </dependency>
+
     </dependencies>
 
     <!--环境配置-->

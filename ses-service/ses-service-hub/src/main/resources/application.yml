@@ -10,29 +10,42 @@ spring:
     basename: i18n/messages
     fallback-to-system-locale: false
     encoding: UTF-8
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   #数据库连接
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
+    # 是否开启 SQL日志输出，生产环境建议关闭，有性能损耗
+    p6spy: true
     druid:
-      time-between-eviction-runsMillis: 60000
-      min-evictable-idle-timeMillis: 300000
-      validation-query: select 'x' FROM DUAL
-      test-while-idle: true
-      test-on-borrow: false
-      test-on-return: false
-      pool-prepared-statements: true
-      max-open-prepared-statements: 20
-      max-pool-prepared-statement-per-connection-size: 20
-      filters: stat
-      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-      use-global-data-source-stat: true
-      # 监控页面的用户名和密码 以及页面地址
       stat-view-servlet:
-        login-username: admin
-        login-password: admin@RedE2019
-        enabled: false
-        url-pattern: /druid/*
+        loginUsername: admin
+        loginPassword: admin@RedE2019
+    dynamic:
+      druid:
+        initial-size: 3
+        max-active: 8
+        min-idle: 2
+        max-wait: -1
+        min-evictable-idle-time-millis: 30000
+        max-evictable-idle-time-millis: 30000
+        time-between-eviction-runs-millis: 0
+        validation-query: select 1
+        validation-query-timeout: -1
+        test-on-borrow: false
+        test-on-return: false
+        test-while-idle: true
+        pool-prepared-statements: true
+        max-open-prepared-statements: 100
+        filters: stat,wall
+        share-prepared-statements: true
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    generate-ddl: true
+    open-in-view: true
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
@@ -45,27 +58,29 @@ spring:
       charset: UTF-8
       enabled: true
 
-# DUBBO 配置
-dubbo:
+dubbo:                                                                                                                  #DUBBO 配置
   application:
     id: @project.artifactId@
     name: @project.artifactId@
-    qos-enable: false # 是否启动QoS
-    qos-accept-foreign-ip: false #是否允许远程访问
+    qos-enable: false                                                                                                   #是否启动QoS
+    qos-accept-foreign-ip: false                                                                                        #是否允许远程访问
+    logger: log4j
   registry:
-    check: false # 注册中心不存在时，是否报错
+    check: false                                                                                                        #注册中心不存在时，是否报错
+    group: ses
   scan:
-    base-packages: com.redescooter.ses #服务暴露与发现消费所在的package
-  provider: #服务提供者缺省值配置
+    base-packages: com.redescooter.ses                                                                                  #服务暴露与发现消费所在的package
+  provider:                                                                                                             #服务提供者缺省值配置
     timeout: 30000
     threads: 300
-  consumer: #服务消费者缺省值配置
-    check: false # 启动时检查提供者是否存在，true报错，false忽略
+  consumer:                                                                                                             #服务消费者缺省值配置
+    check: false                                                                                                        #启动时检查提供者是否存在，true报错，false忽略
     timeout: 20000
     filter: dubboAccessLogFilter
   protocol:
     port: -1
     threads: 300
+    name: dubbo
 
 #REDIS配置
 redis:
@@ -84,8 +99,9 @@ mybatis:
 
 #mybaits-plus配置，此配置 不影响原始的mybatis
 mybatis-plus:
-  mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml
-  typeAliasesPackage: com.redescooter.ses.service.foundation.dm.base
+  mapper-locations: classpath:mapper/**/*.xml
+  typeAliasesPackage: com.redescooter.ses.service.hub.source.consumer.dm,com.redescooter.ses.service.hub.source.corporate.dm,com.redescooter.ses.service.hub.source.operation.dm
+  check-config-location: true
   global-config:
     #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
     id-type: 3
@@ -100,7 +116,14 @@ mybatis-plus:
     #刷新mapper 调试神器
     refresh-mapper: true
     #数据库大写下划线转换
-    #capital-mode: true
+    capital-mode: true
   configuration:
+    #是否开启自动驼峰命名规则（camel case）映射
     map-underscore-to-camel-case: true
-    cache-enabled: true
+    #全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存
+    cache-enabled: false
+    call-setters-on-nulls: true
+    #配置JdbcTypeForNull, oracle数据库必须配置
+    jdbc-type-for-null: 'null'
+    #MyBatis 自动映射时未知列或未知属性处理策略 NONE：不做任何处理 (默认值), WARNING：以日志的形式打印相关警告信息, FAILING：当作映射失败处理，并抛出异常和详细信息
+    auto-mapping-unknown-column-behavior: warning

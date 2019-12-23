@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.service.hub.dao.corporate.base.CorUserProfileMapper">
-  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.dm.corporate.base.CorUserProfile">
+<mapper namespace="com.redescooter.ses.service.hub.source.corporate.dao.CorUserProfileMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile">
     <!--@mbg.generated-->
-    <!--@Table cor_user_profile-->
     <id column="id" property="id" />
     <result column="dr" property="dr" />
     <result column="tenant_id" property="tenantId" />
@@ -21,9 +20,9 @@
     <result column="tel_number_3" property="telNumber3" />
     <result column="gender" property="gender" />
     <result column="birthday" property="birthday" />
-    <result column="driving_license" property="drivingLicense" />
-    <result column="driving_license_picture" property="drivingLicensePicture" />
-    <result column="identity" property="identity" />
+    <result column="CERTIFICATE_TYPE" property="certificateType" />
+    <result column="CERTIFICATE_NEGATIVE_ANNEX" property="certificateNegativeAnnex" />
+    <result column="CERTIFICATE_POSITIVE_ANNEX" property="certificatePositiveAnnex" />
     <result column="role" property="role" />
     <result column="page_boot_tips" property="pageBootTips" />
     <result column="place_birth" property="placeBirth" />
@@ -43,393 +42,10 @@
     <!--@mbg.generated-->
     id, dr, tenant_id, user_id, is_master, picture, first_name, last_name, full_name, 
     email_1, email_2, email_3, tel_number_1, tel_number_2, tel_number_3, gender, birthday, 
-    driving_license, driving_license_picture, `identity`, `role`, page_boot_tips, place_birth, 
-    join_date, time_zone, created_by, created_time, updated_by, updated_time, def1, def2, 
-    def3, def5, def6
+    CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `role`, 
+    page_boot_tips, place_birth, join_date, time_zone, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def5, def6
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!--@mbg.generated-->
-    select 
-    <include refid="Base_Column_List" />
-    from cor_user_profile
-    where id = #{id}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    <!--@mbg.generated-->
-    delete from cor_user_profile
-    where id = #{id}
-  </delete>
-  <insert id="insert" parameterType="com.redescooter.ses.service.hub.dm.corporate.base.CorUserProfile">
-    <!--@mbg.generated-->
-    insert into cor_user_profile (id, dr, tenant_id, user_id, is_master, picture, first_name, 
-      last_name, full_name, email_1, email_2, email_3, tel_number_1, tel_number_2, 
-      tel_number_3, gender, birthday, driving_license, driving_license_picture, 
-      `identity`, `role`, page_boot_tips, place_birth, join_date, time_zone, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def5, def6)
-    values (#{id}, #{dr}, #{tenantId}, #{userId}, #{isMaster}, #{picture}, #{firstName}, 
-      #{lastName}, #{fullName}, #{email1}, #{email2}, #{email3}, #{telNumber1}, #{telNumber2}, 
-      #{telNumber3}, #{gender}, #{birthday}, #{drivingLicense}, #{drivingLicensePicture}, 
-      #{identity}, #{role}, #{pageBootTips}, #{placeBirth}, #{joinDate}, #{timeZone}, 
-      #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, 
-      #{def5}, #{def6})
-  </insert>
-  <insert id="insertSelective" parameterType="com.redescooter.ses.service.hub.dm.corporate.base.CorUserProfile">
-    <!--@mbg.generated-->
-    insert into cor_user_profile
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="dr != null">
-        dr,
-      </if>
-      <if test="tenantId != null">
-        tenant_id,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="isMaster != null">
-        is_master,
-      </if>
-      <if test="picture != null">
-        picture,
-      </if>
-      <if test="firstName != null">
-        first_name,
-      </if>
-      <if test="lastName != null">
-        last_name,
-      </if>
-      <if test="fullName != null">
-        full_name,
-      </if>
-      <if test="email1 != null">
-        email_1,
-      </if>
-      <if test="email2 != null">
-        email_2,
-      </if>
-      <if test="email3 != null">
-        email_3,
-      </if>
-      <if test="telNumber1 != null">
-        tel_number_1,
-      </if>
-      <if test="telNumber2 != null">
-        tel_number_2,
-      </if>
-      <if test="telNumber3 != null">
-        tel_number_3,
-      </if>
-      <if test="gender != null">
-        gender,
-      </if>
-      <if test="birthday != null">
-        birthday,
-      </if>
-      <if test="drivingLicense != null">
-        driving_license,
-      </if>
-      <if test="drivingLicensePicture != null">
-        driving_license_picture,
-      </if>
-      <if test="identity != null">
-        `identity`,
-      </if>
-      <if test="role != null">
-        `role`,
-      </if>
-      <if test="pageBootTips != null">
-        page_boot_tips,
-      </if>
-      <if test="placeBirth != null">
-        place_birth,
-      </if>
-      <if test="joinDate != null">
-        join_date,
-      </if>
-      <if test="timeZone != null">
-        time_zone,
-      </if>
-      <if test="createdBy != null">
-        created_by,
-      </if>
-      <if test="createdTime != null">
-        created_time,
-      </if>
-      <if test="updatedBy != null">
-        updated_by,
-      </if>
-      <if test="updatedTime != null">
-        updated_time,
-      </if>
-      <if test="def1 != null">
-        def1,
-      </if>
-      <if test="def2 != null">
-        def2,
-      </if>
-      <if test="def3 != null">
-        def3,
-      </if>
-      <if test="def5 != null">
-        def5,
-      </if>
-      <if test="def6 != null">
-        def6,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id},
-      </if>
-      <if test="dr != null">
-        #{dr},
-      </if>
-      <if test="tenantId != null">
-        #{tenantId},
-      </if>
-      <if test="userId != null">
-        #{userId},
-      </if>
-      <if test="isMaster != null">
-        #{isMaster},
-      </if>
-      <if test="picture != null">
-        #{picture},
-      </if>
-      <if test="firstName != null">
-        #{firstName},
-      </if>
-      <if test="lastName != null">
-        #{lastName},
-      </if>
-      <if test="fullName != null">
-        #{fullName},
-      </if>
-      <if test="email1 != null">
-        #{email1},
-      </if>
-      <if test="email2 != null">
-        #{email2},
-      </if>
-      <if test="email3 != null">
-        #{email3},
-      </if>
-      <if test="telNumber1 != null">
-        #{telNumber1},
-      </if>
-      <if test="telNumber2 != null">
-        #{telNumber2},
-      </if>
-      <if test="telNumber3 != null">
-        #{telNumber3},
-      </if>
-      <if test="gender != null">
-        #{gender},
-      </if>
-      <if test="birthday != null">
-        #{birthday},
-      </if>
-      <if test="drivingLicense != null">
-        #{drivingLicense},
-      </if>
-      <if test="drivingLicensePicture != null">
-        #{drivingLicensePicture},
-      </if>
-      <if test="identity != null">
-        #{identity},
-      </if>
-      <if test="role != null">
-        #{role},
-      </if>
-      <if test="pageBootTips != null">
-        #{pageBootTips},
-      </if>
-      <if test="placeBirth != null">
-        #{placeBirth},
-      </if>
-      <if test="joinDate != null">
-        #{joinDate},
-      </if>
-      <if test="timeZone != null">
-        #{timeZone},
-      </if>
-      <if test="createdBy != null">
-        #{createdBy},
-      </if>
-      <if test="createdTime != null">
-        #{createdTime},
-      </if>
-      <if test="updatedBy != null">
-        #{updatedBy},
-      </if>
-      <if test="updatedTime != null">
-        #{updatedTime},
-      </if>
-      <if test="def1 != null">
-        #{def1},
-      </if>
-      <if test="def2 != null">
-        #{def2},
-      </if>
-      <if test="def3 != null">
-        #{def3},
-      </if>
-      <if test="def5 != null">
-        #{def5},
-      </if>
-      <if test="def6 != null">
-        #{def6},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.service.hub.dm.corporate.base.CorUserProfile">
-    <!--@mbg.generated-->
-    update cor_user_profile
-    <set>
-      <if test="dr != null">
-        dr = #{dr},
-      </if>
-      <if test="tenantId != null">
-        tenant_id = #{tenantId},
-      </if>
-      <if test="userId != null">
-        user_id = #{userId},
-      </if>
-      <if test="isMaster != null">
-        is_master = #{isMaster},
-      </if>
-      <if test="picture != null">
-        picture = #{picture},
-      </if>
-      <if test="firstName != null">
-        first_name = #{firstName},
-      </if>
-      <if test="lastName != null">
-        last_name = #{lastName},
-      </if>
-      <if test="fullName != null">
-        full_name = #{fullName},
-      </if>
-      <if test="email1 != null">
-        email_1 = #{email1},
-      </if>
-      <if test="email2 != null">
-        email_2 = #{email2},
-      </if>
-      <if test="email3 != null">
-        email_3 = #{email3},
-      </if>
-      <if test="telNumber1 != null">
-        tel_number_1 = #{telNumber1},
-      </if>
-      <if test="telNumber2 != null">
-        tel_number_2 = #{telNumber2},
-      </if>
-      <if test="telNumber3 != null">
-        tel_number_3 = #{telNumber3},
-      </if>
-      <if test="gender != null">
-        gender = #{gender},
-      </if>
-      <if test="birthday != null">
-        birthday = #{birthday},
-      </if>
-      <if test="drivingLicense != null">
-        driving_license = #{drivingLicense},
-      </if>
-      <if test="drivingLicensePicture != null">
-        driving_license_picture = #{drivingLicensePicture},
-      </if>
-      <if test="identity != null">
-        `identity` = #{identity},
-      </if>
-      <if test="role != null">
-        `role` = #{role},
-      </if>
-      <if test="pageBootTips != null">
-        page_boot_tips = #{pageBootTips},
-      </if>
-      <if test="placeBirth != null">
-        place_birth = #{placeBirth},
-      </if>
-      <if test="joinDate != null">
-        join_date = #{joinDate},
-      </if>
-      <if test="timeZone != null">
-        time_zone = #{timeZone},
-      </if>
-      <if test="createdBy != null">
-        created_by = #{createdBy},
-      </if>
-      <if test="createdTime != null">
-        created_time = #{createdTime},
-      </if>
-      <if test="updatedBy != null">
-        updated_by = #{updatedBy},
-      </if>
-      <if test="updatedTime != null">
-        updated_time = #{updatedTime},
-      </if>
-      <if test="def1 != null">
-        def1 = #{def1},
-      </if>
-      <if test="def2 != null">
-        def2 = #{def2},
-      </if>
-      <if test="def3 != null">
-        def3 = #{def3},
-      </if>
-      <if test="def5 != null">
-        def5 = #{def5},
-      </if>
-      <if test="def6 != null">
-        def6 = #{def6},
-      </if>
-    </set>
-    where id = #{id}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.service.hub.dm.corporate.base.CorUserProfile">
-    <!--@mbg.generated-->
-    update cor_user_profile
-    set dr = #{dr},
-      tenant_id = #{tenantId},
-      user_id = #{userId},
-      is_master = #{isMaster},
-      picture = #{picture},
-      first_name = #{firstName},
-      last_name = #{lastName},
-      full_name = #{fullName},
-      email_1 = #{email1},
-      email_2 = #{email2},
-      email_3 = #{email3},
-      tel_number_1 = #{telNumber1},
-      tel_number_2 = #{telNumber2},
-      tel_number_3 = #{telNumber3},
-      gender = #{gender},
-      birthday = #{birthday},
-      driving_license = #{drivingLicense},
-      driving_license_picture = #{drivingLicensePicture},
-      `identity` = #{identity},
-      `role` = #{role},
-      page_boot_tips = #{pageBootTips},
-      place_birth = #{placeBirth},
-      join_date = #{joinDate},
-      time_zone = #{timeZone},
-      created_by = #{createdBy},
-      created_time = #{createdTime},
-      updated_by = #{updatedBy},
-      updated_time = #{updatedTime},
-      def1 = #{def1},
-      def2 = #{def2},
-      def3 = #{def3},
-      def5 = #{def5},
-      def6 = #{def6}
-    where id = #{id}
-  </update>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
     update cor_user_profile
@@ -514,19 +130,19 @@
           when id = #{item.id} then #{item.birthday}
         </foreach>
       </trim>
-      <trim prefix="driving_license = case" suffix="end,">
+      <trim prefix="CERTIFICATE_TYPE = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.drivingLicense}
+          when id = #{item.id} then #{item.certificateType}
         </foreach>
       </trim>
-      <trim prefix="driving_license_picture = case" suffix="end,">
+      <trim prefix="CERTIFICATE_NEGATIVE_ANNEX = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.drivingLicensePicture}
+          when id = #{item.id} then #{item.certificateNegativeAnnex}
         </foreach>
       </trim>
-      <trim prefix="`identity` = case" suffix="end,">
+      <trim prefix="CERTIFICATE_POSITIVE_ANNEX = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.identity}
+          when id = #{item.id} then #{item.certificatePositiveAnnex}
         </foreach>
       </trim>
       <trim prefix="`role` = case" suffix="end,">
@@ -610,32 +226,32 @@
     insert into cor_user_profile
     (id, dr, tenant_id, user_id, is_master, picture, first_name, last_name, full_name, 
       email_1, email_2, email_3, tel_number_1, tel_number_2, tel_number_3, gender, birthday, 
-      driving_license, driving_license_picture, `identity`, `role`, page_boot_tips, place_birth, 
-      join_date, time_zone, created_by, created_time, updated_by, updated_time, def1, 
-      def2, def3, def5, def6)
+      CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `role`, 
+      page_boot_tips, place_birth, join_date, time_zone, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.userId}, #{item.isMaster}, #{item.picture}, 
         #{item.firstName}, #{item.lastName}, #{item.fullName}, #{item.email1}, #{item.email2}, 
         #{item.email3}, #{item.telNumber1}, #{item.telNumber2}, #{item.telNumber3}, #{item.gender}, 
-        #{item.birthday}, #{item.drivingLicense}, #{item.drivingLicensePicture}, #{item.identity}, 
+        #{item.birthday}, #{item.certificateType}, #{item.certificateNegativeAnnex}, #{item.certificatePositiveAnnex}, 
         #{item.role}, #{item.pageBootTips}, #{item.placeBirth}, #{item.joinDate}, #{item.timeZone}, 
         #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
         #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
     </foreach>
   </insert>
-  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.hub.dm.corporate.base.CorUserProfile">
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile">
     <!--@mbg.generated-->
     insert into cor_user_profile
     (id, dr, tenant_id, user_id, is_master, picture, first_name, last_name, full_name, 
       email_1, email_2, email_3, tel_number_1, tel_number_2, tel_number_3, gender, birthday, 
-      driving_license, driving_license_picture, `identity`, `role`, page_boot_tips, place_birth, 
-      join_date, time_zone, created_by, created_time, updated_by, updated_time, def1, 
-      def2, def3, def5, def6)
+      CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `role`, 
+      page_boot_tips, place_birth, join_date, time_zone, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
     values
     (#{id}, #{dr}, #{tenantId}, #{userId}, #{isMaster}, #{picture}, #{firstName}, #{lastName}, 
       #{fullName}, #{email1}, #{email2}, #{email3}, #{telNumber1}, #{telNumber2}, #{telNumber3}, 
-      #{gender}, #{birthday}, #{drivingLicense}, #{drivingLicensePicture}, #{identity}, 
+      #{gender}, #{birthday}, #{certificateType}, #{certificateNegativeAnnex}, #{certificatePositiveAnnex}, 
       #{role}, #{pageBootTips}, #{placeBirth}, #{joinDate}, #{timeZone}, #{createdBy}, 
       #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, 
       #{def6})
@@ -657,9 +273,9 @@
     tel_number_3 = #{telNumber3}, 
     gender = #{gender}, 
     birthday = #{birthday}, 
-    driving_license = #{drivingLicense}, 
-    driving_license_picture = #{drivingLicensePicture}, 
-    `identity` = #{identity}, 
+    CERTIFICATE_TYPE = #{certificateType}, 
+    CERTIFICATE_NEGATIVE_ANNEX = #{certificateNegativeAnnex}, 
+    CERTIFICATE_POSITIVE_ANNEX = #{certificatePositiveAnnex}, 
     `role` = #{role}, 
     page_boot_tips = #{pageBootTips}, 
     place_birth = #{placeBirth}, 
@@ -675,7 +291,7 @@
     def5 = #{def5}, 
     def6 = #{def6}
   </insert>
-  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.hub.dm.corporate.base.CorUserProfile">
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile">
     <!--@mbg.generated-->
     insert into cor_user_profile
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -730,14 +346,14 @@
       <if test="birthday != null">
         birthday,
       </if>
-      <if test="drivingLicense != null">
-        driving_license,
+      <if test="certificateType != null">
+        CERTIFICATE_TYPE,
       </if>
-      <if test="drivingLicensePicture != null">
-        driving_license_picture,
+      <if test="certificateNegativeAnnex != null">
+        CERTIFICATE_NEGATIVE_ANNEX,
       </if>
-      <if test="identity != null">
-        `identity`,
+      <if test="certificatePositiveAnnex != null">
+        CERTIFICATE_POSITIVE_ANNEX,
       </if>
       <if test="role != null">
         `role`,
@@ -835,14 +451,14 @@
       <if test="birthday != null">
         #{birthday},
       </if>
-      <if test="drivingLicense != null">
-        #{drivingLicense},
+      <if test="certificateType != null">
+        #{certificateType},
       </if>
-      <if test="drivingLicensePicture != null">
-        #{drivingLicensePicture},
+      <if test="certificateNegativeAnnex != null">
+        #{certificateNegativeAnnex},
       </if>
-      <if test="identity != null">
-        #{identity},
+      <if test="certificatePositiveAnnex != null">
+        #{certificatePositiveAnnex},
       </if>
       <if test="role != null">
         #{role},
@@ -940,14 +556,14 @@
       <if test="birthday != null">
         birthday = #{birthday},
       </if>
-      <if test="drivingLicense != null">
-        driving_license = #{drivingLicense},
+      <if test="certificateType != null">
+        CERTIFICATE_TYPE = #{certificateType},
       </if>
-      <if test="drivingLicensePicture != null">
-        driving_license_picture = #{drivingLicensePicture},
+      <if test="certificateNegativeAnnex != null">
+        CERTIFICATE_NEGATIVE_ANNEX = #{certificateNegativeAnnex},
       </if>
-      <if test="identity != null">
-        `identity` = #{identity},
+      <if test="certificatePositiveAnnex != null">
+        CERTIFICATE_POSITIVE_ANNEX = #{certificatePositiveAnnex},
       </if>
       <if test="role != null">
         `role` = #{role},
