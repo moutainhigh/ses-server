@@ -53,7 +53,8 @@ dubbo:
     qos-enable: false # 是否启动QoS
     qos-accept-foreign-ip: false #是否允许远程访问
   registry:
-    check: false # 注册中心不存在时，是否报错
+    check: false                                                                                                        #注册中心不存在时，是否报错
+    group: ses
   scan:
     base-packages: com.redescooter.ses #服务暴露与发现消费所在的package
   provider: #服务提供者缺省值配置

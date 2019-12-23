@@ -96,7 +96,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     public BaseUserResult open(DateTimeParmEnter<BaseCustomerResult> enter) {
         BaseUserResult result = new BaseUserResult();
         BaseCustomerResult customer = enter.getT();
-        if (!chectMail(customer.getEmail())) {
+        if (chectMail(customer.getEmail())) {
             // 开通账户
             //1、 创建租户
             Long tenantId = tenantBaseService.saveTenant(enter);
@@ -104,8 +104,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             Long userId = saveUserSingle(enter, tenantId);
             //3、 创建个人信息
             UserProfileHubEnter userProfileHubEnter = UserProfileHubEnter.builder()
-                    .tenantId(tenantId)
-                    .userId(userId)
+                    .inputUserId(tenantId)
+                    .inputTenantId(userId)
                     .firstName(enter.getT().getContactFirstName())
                     .lastName(enter.getT().getCustomerLastName())
                     .fullName(enter.getT().getContactFirstName()+" " +enter.getT().getCustomerLastName())
@@ -116,12 +116,15 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                     .telNumber1(enter.getT().getTelephone())
                     .email1(enter.getT().getEmail())
                     .build();
+            userProfileHubEnter.setUserId(enter.getUserId());
             if (StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(),enter.getT().getCustomerType())){
-                consumerAccountProService.saveUserProfileHub(userProfileHubEnter);
+//                consumerAccountProService.saveUserProfileHub(userProfileHubEnter);
             }
             if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(),enter.getT().getCustomerType())){
                 corporateAccountProService.saveUserProfileHub(userProfileHubEnter);
             }
+            result.setId(userId);
+            result.setTenantId(tenantId);
         } else {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }

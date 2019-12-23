@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.foundation.vo.tenant;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,7 +15,7 @@ import lombok.Data;
  */
 @ApiModel(value = "账户列表出参", description = "账户列表出参")
 @Data
-public class QueryAccountListResult extends PageResult {
+public class QueryAccountListResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;

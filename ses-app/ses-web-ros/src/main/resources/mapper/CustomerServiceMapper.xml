@@ -12,12 +12,12 @@
     <select id="accountListCount" resultType="int">
         select count(*)
         from ope_customer
-        where 1=
+        where 1=1 and tenant_id !=0
         <if test="customerType != null and customerType != ''">
             and customerType =#{customerType}
         </if>
         <if test="industryType != null and industryType != ''">
-            and industryType #{industryType}
+            and industryType =#{industryType}
         </if>
         <if test="keyword != null and keyword != ''" >
             and (
@@ -40,12 +40,12 @@
                customer_type       as customerType,
                industry_type       as industryType
         from ope_customer
-        where 1=1
+        where 1=1 and tenant_id !=0
         <if test="customerType != null and customerType != ''">
             and customerType =#{customerType}
         </if>
         <if test="industryType != null and industryType != ''">
-            and industryType #{industryType}
+            and industryType =#{industryType}
         </if>
         <if test="keyword != null and keyword != ''" >
             and (
