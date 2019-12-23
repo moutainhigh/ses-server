@@ -1,43 +1,51 @@
 #日志路径
 log:
   file:
-    path: /data/java_service/logs2/@profile-active@
+    path: /data/java_service/logs3/@profile-active@
     max-size: 128MB
     max-history: 180
 
 spring:
   datasource:
-    #默认master数据源为 corporate
-    master:
-      password: RedE2019!!
-      url: jdbc:mysql://127.0.0.1:3306/corporate?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-      driver-class-name: com.mysql.jdbc.Driver
-      username: rede
-      type: com.zaxxer.hikari.HikariDataSource
+    dynamic:
+      # 配置默认数据源
+      primary: corporate
+      datasource:
+        corporate:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://192.168.2.200:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: root
+          password: 1qaz2wsx
+        operation:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://192.168.2.200:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: root
+          password: 1qaz2wsx
+        consumer:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://192.168.2.200:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: root
+          password: 1qaz2wsx
+  #REDIS集群配置
+  redis:
     cluster:
-      - key: operation
-        password: RedE2019!!
-        url: jdbc:mysql://127.0.0.1:3306/operation?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-        idle-timeout: 20000
-        driver-class-name: com.mysql.jdbc.Driver
-        username: rede
-        type: com.zaxxer.hikari.HikariDataSource
-      - key: consumer
-        password: RedE2019!!
-        url: jdbc:mysql://127.0.0.1:3306/consumer?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-        driver-class-name: com.mysql.jdbc.Driver
-        username: rede
-
-#REDIS配置
-redis:
-  redis-address: 127.0.0.1:7000;127.0.0.1:7001;127.0.0.1:7002;127.0.0.1:7003;127.0.0.1:7004;127.0.0.1:7005
+      nodes:
+        - 192.168.2.200:7000
+        - 192.168.2.200:7001
+        - 192.168.2.200:7002
+        - 192.168.2.200:7003
+        - 192.168.2.200:7004
+        - 192.168.2.200:7005
 
 # DUBBO 配置
 dubbo:
-  registries:
-    ses:
-      group: ses
-      address: zookeeper://127.0.0.1:2181
+  registry: #注册中心
+    address: zookeeper://192.168.2.200:2181
+
+
+
+
+
 # 多注册中心配置
 #    reg2:
 #      group: corporte
@@ -51,4 +59,3 @@ dubbo:
 #  flow-dataid: @project.artifactId@-flow
 #  degra-dedataid: @project.artifactId@-degra
 #  system-dataid: @project.artifactId@-sys
-
