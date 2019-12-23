@@ -28,11 +28,12 @@ spring:
         - 192.168.2.200:7005
 
 # DUBBO 配置
-dubbo:
-  registries:
-    ses:
-      group: ses
-      address: zookeeper://192.168.2.200:12181
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://192.168.2.200:32181
+
+
+
 # 多注册中心配置
 #    reg2:
 #      group: hdg2
