@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.dao;
 
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 
@@ -17,4 +18,6 @@ public interface AccountBaseServiceMapper {
     int queryAccountListCount(QueryAccountListEnter enter);
 
     List<QueryAccountListResult> queryAccountList(QueryAccountListEnter enter);
+
+    List<CountByStatusResult> accountCountStatus();
 }

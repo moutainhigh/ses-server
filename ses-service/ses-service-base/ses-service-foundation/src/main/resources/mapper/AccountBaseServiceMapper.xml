@@ -47,4 +47,10 @@
         </if>
         order by tenant.created_time desc
     </select>
+
+    <select id="accountCountStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select status, count(*) as totalCount
+        from pla_tenant
+        group by status
+    </select>
 </mapper>

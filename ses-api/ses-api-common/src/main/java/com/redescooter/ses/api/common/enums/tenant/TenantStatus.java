@@ -17,17 +17,19 @@ import lombok.NoArgsConstructor;
 public enum TenantStatus {
 
     //运行中
-    INOPERATION("INOPERATION", "运行中"),
+    INOPERATION("INOPERATION", "运行中","1"),
 
     //已过期
-    EXPIRED("EXPIRED", "已过期"),
+    EXPIRED("EXPIRED", "已过期","2"),
 
     //已冻结
-    FROZEN("FROZEN", "已冻结");
+    FROZEN("FROZEN", "已冻结","3");
 
     private String code;
 
     private String message;
+
+    private String value;
 
 
     public static TenantStatus getErrorCodeByCode(String code) {

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.ros.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.tenant.TenantStatus;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
@@ -36,7 +38,9 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mr.lijiating
@@ -155,6 +159,26 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public List<QueryAccountListResult> tenantAccountRecords(QueryAccountListEnter enter) {
         return accountBaseServiceMapper.queryAccountList(enter);
+    }
+
+    /**
+     * 查询租户状态
+     *
+     * @return
+     */
+    @Override
+    public Map<String, Integer> accountCountStatus() {
+        List<CountByStatusResult>  countByStatusResult = accountBaseServiceMapper.accountCountStatus();
+        Map<String, Integer> map = new HashMap<>();
+        for (CountByStatusResult item : countByStatusResult) {
+            map.put(item.getStatus(), item.getTotalCount());
+        }
+        for (TenantStatus status : TenantStatus.values()) {
+            if (!map.containsKey(status.getValue())) {
+                map.put(status.getValue(), 0);
+            }
+        }
+        return map;
     }
 
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {

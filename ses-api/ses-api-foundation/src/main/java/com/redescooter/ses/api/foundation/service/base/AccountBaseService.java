@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.foundation.service.base;
 
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
@@ -7,6 +8,7 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mr.lijiating
@@ -46,4 +48,10 @@ public interface AccountBaseService {
      * @return
      */
     List<QueryAccountListResult> tenantAccountRecords(QueryAccountListEnter enter);
+
+    /**
+     * 查询租户状态
+     * @return
+     */
+    Map<String, Integer> accountCountStatus();
 }

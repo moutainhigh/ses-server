@@ -26,7 +26,6 @@ import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeSysUserMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
@@ -453,6 +452,17 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             });
         });
         return PageResult.create(enter,countTenantAccount,resultList);
+    }
+
+    /**
+     * 状态统计
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, Integer> accountCountStatus(GeneralEnter enter) {
+        return accountBaseService.accountCountStatus();
     }
 
     private void checkCustomer(EditCustomerEnter enter) {

@@ -114,4 +114,12 @@ public interface CustomerRosService {
      */
     PageResult<AccountListResult> accountList(AccountListEnter enter);
 
+    /**
+     * 状态统计
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> accountCountStatus(GeneralEnter enter);
+
 }
