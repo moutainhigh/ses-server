@@ -15,6 +15,12 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-foundation</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-hub</artifactId>
+        </dependency>
+
     </dependencies>
     <name>ses-service-foundation</name>
     <description>Base Server Application Service</description>

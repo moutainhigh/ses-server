@@ -3,6 +3,9 @@ package com.redescooter.ses.api.foundation.service.base;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.foundation.vo.login.QueryAccountListEnter;
+import com.redescooter.ses.api.foundation.vo.login.QueryAccountListResult;
 
 /**
  * @author Mr.lijiating
@@ -28,5 +31,4 @@ public interface AccountBaseService {
      * @return
      */
     Boolean chectMail(String mail);
-
 }

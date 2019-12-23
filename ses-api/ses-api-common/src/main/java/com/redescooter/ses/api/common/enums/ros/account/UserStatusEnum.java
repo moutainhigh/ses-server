@@ -12,14 +12,16 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UserStatusEnum {
 
-    NORMAL("NORMAL", "正常"),
-    LOCK("LOCKED", "锁定"),
-    CANCEL("CANCEL", "取消"),
-    EXPIRED("EXPIRED","过期");
+    NORMAL("NORMAL", "正常","1"),
+    LOCK("LOCKED", "锁定","2"),
+    CANCEL("CANCEL", "取消","3"),
+    EXPIRED("EXPIRED","过期","4");
 
     private String code;
 
     private String message;
+
+    private String value;
 
     public static UserStatusEnum getErrorCodeByCode(String code) {
         for (UserStatusEnum item : UserStatusEnum.values()) {

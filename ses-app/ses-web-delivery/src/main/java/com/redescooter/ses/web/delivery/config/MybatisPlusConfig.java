@@ -15,7 +15,7 @@ import java.util.Properties;
  */
 @Configuration
 @MapperScan({"com.redescooter.ses.web.delivery.dao",
-             "com.redescooter.ses.web.delivery.dao.base"})
+             "com.redescooter.ses.web.delivery.com.redescooter.ses.service.mobile.c.base"})
 public class MybatisPlusConfig {
     /**
      * 分页插件

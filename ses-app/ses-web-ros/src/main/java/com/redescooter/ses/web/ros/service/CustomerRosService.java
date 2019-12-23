@@ -1,8 +1,18 @@
 package com.redescooter.ses.web.ros.service;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
-import com.redescooter.ses.web.ros.vo.customer.*;
+import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
+import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
+import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
 
 import java.util.Map;
 
@@ -96,5 +106,12 @@ public interface CustomerRosService {
      * @return
      */
     Map<String, Integer> countStatus(GeneralEnter enter);
+
+    /**
+     * 账户列表
+     * @param enter
+     * @return
+     */
+    PageResult<AccountListResult> accountList(AccountListEnter enter);
 
 }
