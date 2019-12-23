@@ -141,11 +141,17 @@ public class DetailsCustomerResult extends GeneralResult {
     @ApiModelProperty(value = "账号使用标识，激活使用-1，未激活未使用-2")
     private Integer accountFlag;
 
+    @ApiModelProperty(value = "创建人名称")
+    private String createdName;
+
     @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
+
+    @ApiModelProperty(value = "更新人名称")
+    private String updatedName;
 
     @ApiModelProperty(value = "更新人")
     private Long updatedBy;
