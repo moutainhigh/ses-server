@@ -9,7 +9,7 @@ dubbo:
   registries:
     ses:
       group: ses
-      address: zookeeper://192.168.2.200:32181
+      address: zookeeper://192.168.2.200:22181
 # 多注册中心配置
 #    reg2:
 #      group: hdg2
@@ -29,10 +29,10 @@ xxl:
   job:
     admin:
       ### xxl-job admin address list, such as "http://address" or "http://address01,http://address02"
-      addresses: http://127.0.0.1:48090/rede/job/admin/
+      addresses: http://localhost:18690/ses/t/job/admin
     ### xxl-job executor address
     executor:
-      appname: ses-executor-02
+      appname: ses-executor-04
       ip:
       port: 9977
       ### xxl-job log path
