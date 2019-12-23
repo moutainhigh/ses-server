@@ -9,7 +9,7 @@ import java.util.Random;
  * @version V1.0
  * @Date: 17/12/2019 11:03 上午
  * @ClassName: RedisLock
- * @Function: TODO
+ * @Function: redis 锁机制
  */
 public class RedisLock {
 
