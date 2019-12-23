@@ -49,13 +49,10 @@ public class XxlJobLogDaoTest {
         dto = xxlJobLogDao.load(log.getId());
 
 
-        List<Map<String, Object>> list2 = xxlJobLogDao.triggerCountByDay(new Date(new Date().getTime() + 30*24*60*60*1000), new Date());
-
-        int ret4 = xxlJobLogDao.clearLog(1, 1, new Date(), 100);
+        List<Long> ret4 = xxlJobLogDao.findClearLogIds(1, 1, new Date(), 100, 100);
 
         int ret2 = xxlJobLogDao.delete(log.getJobId());
 
-        int ret3 = xxlJobLogDao.triggerCountByHandleCode(-1);
     }
 
 }
