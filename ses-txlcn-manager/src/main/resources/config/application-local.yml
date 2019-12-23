@@ -20,7 +20,7 @@ spring:
         - 192.168.2.200:7004
         - 192.168.2.200:7005
 #lcn配置
-lcn配置tx-lcn:
+tx-lcn:
   logger:
     enabled: true
     driver-class-name: ${spring.datasource.driver-class-name}
