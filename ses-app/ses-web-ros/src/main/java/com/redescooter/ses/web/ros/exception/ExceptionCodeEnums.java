@@ -61,6 +61,8 @@ public enum ExceptionCodeEnums {
 
     PRIMARY_KEY_CANNOT_EMPTY(10022, "主键不能为空"),
 
+    STATUS_CANNOT_EMPTY(10023, "状态不能为空"),
+
     //30之后是业务错误码
     FIRST_NAME_CANNOT_EMPTY(10030, "名字不能为空"),
 
