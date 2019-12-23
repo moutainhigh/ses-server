@@ -13,4 +13,6 @@ public interface PlaMailTaskMapper extends BaseMapper<PlaMailTask> {
     int insertOrUpdate(PlaMailTask record);
 
     int insertOrUpdateSelective(PlaMailTask record);
+
+    int insertOrUpdateWithBLOBs(PlaMailTask record);
 }

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.service.foundation.com.redescooter.ses.service.mobile.c.base.PlaUserPermissionMapper">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaUserPermissionMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaUserPermission">
     <!--@mbg.generated-->
+    <!--@Table pla_user_permission-->
     <id column="ID" property="id" />
     <result column="dr" property="dr" />
     <result column="USER_ID" property="userId" />

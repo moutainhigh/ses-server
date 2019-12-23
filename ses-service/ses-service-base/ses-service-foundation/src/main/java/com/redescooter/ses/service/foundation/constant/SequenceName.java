@@ -18,4 +18,10 @@ public interface SequenceName {
     String PLA_USER_PASSWORD = "PLA_USER_PASSWORD";
 
     String PLA_USER_PERMISSION = "PLA_USER_PERMISSION";
+
+    String PLA_MAIL_TEMPLATE = "PLA_MAIL_TEMPLATE";
+
+    String PLA_MAIL_CONFIG = "PLA_MAIL_CONFIG";
+
+    String PLA_MAIL_TASK = "PLA_MAIL_TASK";
 }

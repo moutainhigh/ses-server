@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.service.foundation.com.redescooter.ses.service.mobile.c.base.PlaAppVersionMapper">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaAppVersionMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaAppVersion">
     <!--@mbg.generated-->
+    <!--@Table pla_app_version-->
     <id column="id" property="id" />
     <result column="dr" property="dr" />
     <result column="system_id" property="systemId" />
