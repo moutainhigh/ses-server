@@ -16,7 +16,8 @@ public abstract  class Status {
      */
     public static enum ExpireEnum{
         //未读消息的有效期为30天
-        UNREAD_MSG(30L, TimeUnit.DAYS)
+        UNREAD_MSG(30L, TimeUnit.DAYS),
+        LOGIN_TOKE(24L, TimeUnit.HOURS),
         ;
 
         /**

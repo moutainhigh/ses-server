@@ -42,6 +42,7 @@
         <!--swagger start-->
         <swagger.version>2.9.2</swagger.version>
         <swagger.bootstrap.ui.version>1.9.5</swagger.bootstrap.ui.version>
+        <guava.version>28.1-jre</guava.version>
         <!--swagger end-->
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <commons-codec.version>1.12</commons-codec.version>

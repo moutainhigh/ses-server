@@ -28,7 +28,7 @@ import java.util.Map;
  * @ClassName: CustomerAccountController
  * @Function: TODO
  */
-@Api(tags = {"客户账号管理"})
+@Api(tags = {"账号管理"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/account/customer/")
