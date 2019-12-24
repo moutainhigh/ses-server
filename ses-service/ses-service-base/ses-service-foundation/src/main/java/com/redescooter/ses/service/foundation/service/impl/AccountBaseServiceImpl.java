@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.ros.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
@@ -10,6 +11,7 @@ import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
@@ -33,11 +35,13 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.bussinessutils.AccountTypeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -89,6 +93,9 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
     @Autowired
     private PlaTenantMapper plaTenantMapper;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
 
     /**
@@ -205,8 +212,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (plaTenant == null) {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(TenantStatus.INOPERATION.getValue(),plaTenant.getStatus())){
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        if (!StringUtils.equals(TenantStatus.INOPERATION.getValue(), plaTenant.getStatus())) {
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaTenant.setStatus(TenantStatus.FROZEN.getValue());
         plaTenant.setUpdatedBy(enter.getUserId());
@@ -218,11 +225,11 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserQueryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getT().getEmail());
         plaUserQueryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
         PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
-        if (plaUser==null){
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        if (plaUser == null) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(UserStatusEnum.NORMAL.getValue(),plaUser.getStatus())){
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        if (!StringUtils.equals(UserStatusEnum.NORMAL.getValue(), plaUser.getStatus())) {
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaUser.setStatus(UserStatusEnum.LOCK.getValue());
         plaUser.setUpdatedBy(enter.getUserId());
@@ -230,14 +237,14 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserMapper.updateById(plaUser);
         // 权限
         QueryWrapper<PlaUserPermission> plaUserPermissionQueryWrapper = new QueryWrapper<>();
-        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_USER_ID,plaUser.getId());
-        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID,appId);
+        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_USER_ID, plaUser.getId());
+        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID, appId);
         PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
-        if (plaUserPermission==null){
-            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
+        if (plaUserPermission == null) {
+            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(UserStatusEnum.NORMAL.getValue(),plaUserPermission.getStatus())){
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        if (!StringUtils.equals(UserStatusEnum.NORMAL.getValue(), plaUserPermission.getStatus())) {
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaUserPermission.setStatus(UserStatusEnum.LOCK.getValue());
         plaUserPermission.setUpdatedBy(enter.getUserId());
@@ -262,8 +269,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (plaTenant == null) {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(TenantStatus.FROZEN.getValue(),plaTenant.getStatus())){
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        if (!StringUtils.equals(TenantStatus.FROZEN.getValue(), plaTenant.getStatus())) {
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaTenant.setStatus(TenantStatus.INOPERATION.getValue());
         plaTenant.setUpdatedBy(enter.getUserId());
@@ -275,11 +282,11 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserQueryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getT().getEmail());
         plaUserQueryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
         PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
-        if (plaUser==null){
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        if (plaUser == null) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(),plaUser.getStatus())){
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(), plaUser.getStatus())) {
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaUser.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUser.setUpdatedBy(enter.getUserId());
@@ -287,14 +294,14 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserMapper.updateById(plaUser);
         // 权限
         QueryWrapper<PlaUserPermission> plaUserPermissionQueryWrapper = new QueryWrapper<>();
-        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_USER_ID,plaUser.getId());
-        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID,appId);
+        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_USER_ID, plaUser.getId());
+        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID, appId);
         PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
-        if (plaUserPermission==null){
-            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
+        if (plaUserPermission == null) {
+            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(),plaUserPermission.getStatus())){
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(), plaUserPermission.getStatus())) {
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUserPermission.setUpdatedBy(enter.getUserId());
@@ -321,7 +328,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         }
         // 1、 续期开始时间 必须在开通时间之后
         // 2、续期结束时间 必须在到期时间之后
-        if (DateUtil.timeComolete( plaTenant.getExpireTime(),enter.getEndDateTime()) < 0) {
+        if (DateUtil.timeComolete(plaTenant.getExpireTime(), enter.getEndDateTime()) < 0) {
             throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(), ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
         }
 
@@ -333,6 +340,26 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaTenant.setUpdatedBy(enter.getUserId());
 
         plaTenantMapper.updateById(plaTenant);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult setPassword(SetPasswordEnter<BaseCustomerResult> enter) {
+        QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
+        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getT().getEmail());
+        PlaUserPassword plaUserPassword = plaUserPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
+        if (plaUserPassword == null) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+
+        plaUserPassword.setPassword(DigestUtils.md5Hex(Constant.DEFAULT_PASSWORD + plaUserPassword.getSalt()));
+        plaUserPassword.setUpdatedBy(enter.getUserId());
+        plaUserPassword.setUpdatedTime(new Date());
+        plaUserPasswordMapper.updateById(plaUserPassword);
         return new GeneralResult(enter.getRequestId());
     }
 

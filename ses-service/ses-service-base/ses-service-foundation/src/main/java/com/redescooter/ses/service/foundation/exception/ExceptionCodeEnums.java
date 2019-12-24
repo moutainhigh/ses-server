@@ -65,6 +65,8 @@ public enum ExceptionCodeEnums {
 
     TENANT_NOT_EXIST(10024, "租户不存在"),
 
+    ACCOUNT_IS_NOT_EXIST(10025,"账户不存在"),
+
 
     //10030 之后业务异常
     RENEW_END_DATETIME_IS_NOT_AVAILABLE(10030,"续期结束时间不可用"),
@@ -76,6 +78,7 @@ public enum ExceptionCodeEnums {
     STATUS_IS_REASONABLE(10033,"状态不合理"),
 
     TENANT_ALREADY_EXIST(10034,"租户已经存在"),
+
 
     ;
     private int code;

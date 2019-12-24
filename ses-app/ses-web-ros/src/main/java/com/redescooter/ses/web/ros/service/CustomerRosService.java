@@ -5,9 +5,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
+import com.redescooter.ses.web.ros.vo.account.VerificationCodeResult;
 import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
 import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
@@ -152,4 +154,17 @@ public interface CustomerRosService {
      */
     GeneralResult renewAccont(RenewAccountEnter enter);
 
+    /**
+     * 验证码 返回base64 加密 格式
+     * @param enter
+     * @return
+     */
+    VerificationCodeResult verificationCode(GeneralEnter enter);
+
+    /**
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult customerSetPassword(SetPasswordEnter enter);
 }
