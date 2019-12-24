@@ -88,4 +88,4 @@ spring:                                                                         
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:22181
+    address: zookeeper://192.168.2.200:32181

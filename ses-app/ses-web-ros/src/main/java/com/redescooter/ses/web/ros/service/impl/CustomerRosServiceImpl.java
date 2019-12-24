@@ -293,7 +293,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             }
         }else{
             wrapper.orderByDesc(OpeCustomer.COL_UPDATED_TIME);
-
         }
 
         Page<OpeCustomer> customerPage = new Page<>(page.getPageNo(), page.getPageSize());
