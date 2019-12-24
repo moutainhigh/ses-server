@@ -7,7 +7,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
-import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
+import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
 import com.redescooter.ses.web.ros.vo.account.VerificationCodeResult;
 import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,17 +49,16 @@ public class CustomerAccountController {
         return new Response<>(customerRosService.accountList(enter));
     }
 
-
     @PostMapping(value = "/accountCountStatus")
     @ApiOperation(value = "账户状态", response = Map.class)
     public Response<Map<String, Integer>> accountCountStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(customerRosService.accountCountStatus(enter));
     }
 
-    @PostMapping(value = "/accountNode")
-    @ApiOperation(value = "账户节点", response = AccountNodeResult.class)
-    public Response<List<AccountNodeResult>> accountNode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(customerRosService.accountNode(enter));
+    @PostMapping(value = "/accountDeatil")
+    @ApiOperation(value = "账户详情", response = AccountDeatilResult.class)
+    public Response<AccountDeatilResult> accountDeatil(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(customerRosService.accountDeatil(enter));
     }
 
     @PostMapping(value = "/freeze")

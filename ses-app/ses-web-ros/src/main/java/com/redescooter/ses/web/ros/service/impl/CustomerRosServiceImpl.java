@@ -28,6 +28,7 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.QueryTenantNodeResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
@@ -40,6 +41,7 @@ import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
+import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
@@ -531,6 +533,59 @@ public class CustomerRosServiceImpl implements CustomerRosService {
           });
       }
         return resultList;
+    }
+
+    /**
+     * 账户详情
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public AccountDeatilResult accountDeatil(IdEnter enter) {
+        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer==null){
+            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        enter.setId(opeCustomer.getTenantId());
+        List<QueryTenantNodeResult> tenantNodeResultList= tenantBaseService.queryTenantNdoe(enter);
+
+        QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper=new QueryWrapper<>();
+        // todo 需优化 调用数据库过于频繁
+        List<AccountNodeResult> tenantNodeList=new ArrayList<>();
+
+        if (!CollectionUtils.isEmpty(tenantNodeResultList)){
+            tenantNodeResultList.forEach(item->{
+                opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID,item.getCreateBy());
+                OpeSysUserProfile opeSysUserProfile = sysUserProfileMapper.selectOne(opeSysUserProfileQueryWrapper);
+                AccountNodeResult result = AccountNodeResult.builder()
+                        .id(item.getId())
+                        .event(item.getEvent())
+                        .eventTime(item.getEventTime().toString())
+                        .createdBy(item.getCreateBy())
+                        .createdFirstName(opeSysUserProfile.getFirstName())
+                        .createdLastName(opeSysUserProfile.getLastName())
+                        .build();
+                tenantNodeList.add(result);
+            });
+        }
+        IdEnter idEnter=new IdEnter();
+        BeanUtils.copyProperties(enter,idEnter);
+        idEnter.setId(opeCustomer.getTenantId());
+        QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(idEnter);
+        return AccountDeatilResult.builder()
+                .accountNodeList(tenantNodeList)
+                .id(opeCustomer.getId())
+                .customerType(opeCustomer.getCustomerType())
+                .customerFirstName(opeCustomer.getCustomerFirstName())
+                .customerLastName(opeCustomer.getCustomerLastName())
+                .customerFullName(opeCustomer.getCustomerFullName())
+                .industryType(opeCustomer.getIndustryType())
+                .status(opeCustomer.getStatus())
+                .email(opeCustomer.getEmail())
+                .startActivationTime(DateUtil.getTimeStr(queryTenantResult.getEffectiveTime(),DateUtil.DEFAULT_DATETIME_FORMAT))
+                .endActivationTime(DateUtil.getTimeStr(queryTenantResult.getExpireTime(),DateUtil.DEFAULT_DATETIME_FORMAT))
+                .build();
     }
 
     /**

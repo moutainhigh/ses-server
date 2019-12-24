@@ -14,10 +14,10 @@
         from ope_customer
         where 1=1 and tenant_id !=0
         <if test="customerType != null and customerType != ''">
-            and customerType =#{customerType}
+            and customer_type =#{customerType}
         </if>
         <if test="industryType != null and industryType != ''">
-            and industryType =#{industryType}
+            and industry_type =#{industryType}
         </if>
         <if test="keyword != null and keyword != ''" >
             and (
@@ -42,10 +42,10 @@
         from ope_customer
         where 1=1 and tenant_id !=0
         <if test="customerType != null and customerType != ''">
-            and customerType =#{customerType}
+            and customer_type =#{customerType}
         </if>
         <if test="industryType != null and industryType != ''">
-            and industryType =#{industryType}
+            and industry_type =#{industryType}
         </if>
         <if test="keyword != null and keyword != ''" >
             and (

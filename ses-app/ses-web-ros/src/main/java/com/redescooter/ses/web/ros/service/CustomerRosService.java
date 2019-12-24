@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
@@ -132,6 +133,13 @@ public interface CustomerRosService {
      * @return
      */
     List<AccountNodeResult> accountNode(IdEnter enter);
+
+    /**
+     * 账户详情
+     * @param enter
+     * @return
+     */
+    AccountDeatilResult accountDeatil(IdEnter enter);
 
     /**
      * 账户冻结

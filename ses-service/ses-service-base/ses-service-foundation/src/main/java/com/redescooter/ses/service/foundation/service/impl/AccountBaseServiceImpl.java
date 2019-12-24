@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.ros.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.tenant.TenanNodeEvent;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatus;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
@@ -250,6 +251,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermission.setUpdatedBy(enter.getUserId());
         plaUserPermission.setUpdatedTime(new Date());
         plaUserPermissionMapper.updateById(plaUserPermission);
+
+        // 账户节点
+        tenantBaseService.saveTenantNode(enter, TenanNodeEvent.FROZEN.getValue());
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -307,6 +312,9 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermission.setUpdatedBy(enter.getUserId());
         plaUserPermission.setUpdatedTime(new Date());
         plaUserPermissionMapper.updateById(plaUserPermission);
+
+        // 账户节点
+        tenantBaseService.saveTenantNode(enter, TenanNodeEvent.UNFREEZE.getValue());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -340,6 +348,9 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaTenant.setUpdatedBy(enter.getUserId());
 
         plaTenantMapper.updateById(plaTenant);
+
+        // 账户节点
+        tenantBaseService.saveTenantNode(enter, TenanNodeEvent.RENEW.getValue());
         return new GeneralResult(enter.getRequestId());
     }
 

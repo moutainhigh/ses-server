@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.vo.QueryTenantNodeResult;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.foundation.vo.tenant.SaveTenantConfigEnter;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public interface TenantBaseService {
      * @param enter
      * @return
      */
-    GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter);
+    GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter,String event);
 
     /**
      * 查询租户节点
@@ -44,4 +45,11 @@ public interface TenantBaseService {
      * @return
      */
     GeneralResult saveTenantConfig(SaveTenantConfigEnter enter);
+
+    /**
+     * 查询租户信息
+     * @param enter
+     * @return
+     */
+    QueryTenantResult queryTenantById(IdEnter enter);
 }
