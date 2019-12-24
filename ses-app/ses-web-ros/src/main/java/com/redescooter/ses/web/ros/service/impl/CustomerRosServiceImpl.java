@@ -465,7 +465,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
 
         List<QueryAccountListResult> tenantAccountRecords=accountBaseService.tenantAccountRecords(queryAccountListEnter);
-        if(!CollectionUtils.isEmpty(resultList)){
+        if(!CollectionUtils.isEmpty(resultList) || !CollectionUtils.isEmpty(tenantAccountRecords)){
             resultList.forEach(item->{
                 tenantAccountRecords.forEach(tenantAccount->{
                     if (tenantAccount.getInputTenantId().equals(item.getTenantId())){
