@@ -168,6 +168,9 @@ public class TenantBaseServiceImpl implements TenantBaseService {
     @Override
     public QueryTenantResult queryTenantById(IdEnter enter) {
         PlaTenant plaTenant = plaTenantMapper.selectById(enter.getId());
+        if (plaTenant==null){
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+        }
         QueryTenantResult result=new QueryTenantResult();
         BeanUtils.copyProperties(plaTenant,result);
         return result;

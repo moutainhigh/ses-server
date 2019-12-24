@@ -562,10 +562,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                         .id(item.getId())
                         .event(item.getEvent())
                         .eventTime(item.getEventTime().toString())
-                        .createdBy(item.getCreateBy())
-                        .createdFirstName(opeSysUserProfile.getFirstName())
-                        .createdLastName(opeSysUserProfile.getLastName())
                         .build();
+                if (opeSysUserProfile !=null){
+                    result.setCreatedBy(item.getCreateBy());
+                    result.setCreatedFirstName(opeSysUserProfile.getFirstName());
+                    result.setCreatedLastName(opeSysUserProfile.getLastName());
+                }
                 tenantNodeList.add(result);
             });
         }
