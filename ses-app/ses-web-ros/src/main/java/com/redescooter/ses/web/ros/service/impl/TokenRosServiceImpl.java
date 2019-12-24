@@ -12,6 +12,7 @@ import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.constants.Status;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
@@ -302,7 +303,7 @@ public class TokenRosServiceImpl implements TokenRosService {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
             jedisCluster.hmset(token, map);
-            jedisCluster.expire(token, 60 * 60 * 24 * 30);
+            jedisCluster.expire(token, (int) Status.ExpireEnum.LOGIN_TOKE.getTimeUnit().toMinutes(Status.ExpireEnum.LOGIN_TOKE.getTime()));
         } catch (IllegalAccessException e) {
             log.error("setToken IllegalAccessException userSession:" + userToken, e);
         } catch (InvocationTargetException e) {
