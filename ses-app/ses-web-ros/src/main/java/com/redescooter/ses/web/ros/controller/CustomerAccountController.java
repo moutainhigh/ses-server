@@ -33,7 +33,7 @@ import java.util.Map;
 @Api(tags = {"客户账号管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/customer/account")
+@RequestMapping(value = "/account/customer/")
 public class CustomerAccountController {
 
     @Autowired

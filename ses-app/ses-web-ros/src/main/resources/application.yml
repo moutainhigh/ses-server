@@ -116,3 +116,4 @@ oss:                                                                            
   defaultBucketName: rede
   publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
   maxFileSize: 10485760
+
