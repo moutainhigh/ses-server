@@ -40,6 +40,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
+import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
 import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
@@ -448,9 +449,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         // 查询内容
         List<AccountListResult> resultList =  customerServiceMapper.queryAccountRecord(enter);
         List<Long> tenantIdList=new ArrayList<>();
-        resultList.forEach(item->{
-            tenantIdList.add(item.getTenantId());
-        });
+        if(!CollectionUtils.isEmpty(resultList)){
+            resultList.forEach(item->{
+                tenantIdList.add(item.getTenantId());
+            });
+        }
 
         // 查询时间
         QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
@@ -462,18 +465,20 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
 
         List<QueryAccountListResult> tenantAccountRecords=accountBaseService.tenantAccountRecords(queryAccountListEnter);
-        resultList.forEach(item->{
-            tenantAccountRecords.forEach(tenantAccount->{
-            if (tenantAccount.getInputTenantId().equals(item.getTenantId())){
-                item.setTenantId(tenantAccount.getId());
-                item.setStatus(tenantAccount.getStatus());
-                item.setActivationTime(tenantAccount.getActivationTime());
-                item.setExpirationTime(tenantAccount.getExpirationTime());
-            }else {
-                resultList.remove(item);
-            }
+        if(!CollectionUtils.isEmpty(resultList)){
+            resultList.forEach(item->{
+                tenantAccountRecords.forEach(tenantAccount->{
+                    if (tenantAccount.getInputTenantId().equals(item.getTenantId())){
+                        item.setTenantId(tenantAccount.getId());
+                        item.setStatus(tenantAccount.getStatus());
+                        item.setActivationTime(tenantAccount.getActivationTime());
+                        item.setExpirationTime(tenantAccount.getExpirationTime());
+                    }else {
+                        resultList.remove(item);
+                    }
+                });
             });
-        });
+        }
         return PageResult.create(enter,countTenantAccount,resultList);
     }
 
@@ -505,7 +510,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
       List<QueryTenantNodeResult> tenantNodeResultList= tenantBaseService.queryTenantNdoe(enter);
 
       QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper=new QueryWrapper<>();
-      // todo 需优化
+      // todo 需优化 调用数据库过于频繁
       if (!CollectionUtils.isEmpty(tenantNodeResultList)){
           tenantNodeResultList.forEach(item->{
               opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID,item.getCreateBy());
@@ -522,6 +527,75 @@ public class CustomerRosServiceImpl implements CustomerRosService {
           });
       }
         return resultList;
+    }
+
+    /**
+     * 账户冻结
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult freezeAccount(IdEnter enter) {
+        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer==null){
+            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+
+        BaseCustomerResult baseCustomer = new BaseCustomerResult();
+        BeanUtils.copyProperties(opeCustomer, baseCustomer);
+
+        DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
+        BeanUtils.copyProperties(enter,parmEnter);
+        parmEnter.setT(baseCustomer);
+        accountBaseService.freeze(parmEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 解冻账户
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult unFreezeAccount(IdEnter enter) {
+        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer==null){
+            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        BaseCustomerResult baseCustomer = new BaseCustomerResult();
+        BeanUtils.copyProperties(opeCustomer, baseCustomer);
+
+        DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
+        BeanUtils.copyProperties(enter,parmEnter);
+        parmEnter.setT(baseCustomer);
+        accountBaseService.unFreezeAccount(parmEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 账户续期
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult renewAccont(RenewAccountEnter enter) {
+        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer==null){
+            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        BaseCustomerResult baseCustomer = new BaseCustomerResult();
+        BeanUtils.copyProperties(opeCustomer, baseCustomer);
+
+        DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
+        BeanUtils.copyProperties(enter,parmEnter);
+        parmEnter.setStartDateTime(DateUtil.stringToDate(enter.getStartRenewAccountTime()));
+        parmEnter.setEndDateTime(DateUtil.stringToDate(enter.getEndRenewAccountTime()));
+        parmEnter.setT(baseCustomer);
+        accountBaseService.renewAccont(parmEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     private void checkCustomer(EditCustomerEnter enter) {

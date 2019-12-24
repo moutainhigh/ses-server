@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.controller;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
+import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
 import io.swagger.annotations.Api;
@@ -54,5 +56,23 @@ public class CustomerAccountController {
     @ApiOperation(value = "账户节点", response = AccountNodeResult.class)
     public Response<List<AccountNodeResult>> accountNode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(customerRosService.accountNode(enter));
+    }
+
+    @PostMapping(value = "/freeze")
+    @ApiOperation(value = "账户冻结", response = GeneralResult.class)
+    public Response<GeneralResult> freezeAccount(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(customerRosService.freezeAccount(enter));
+    }
+
+    @PostMapping(value = "/unFreeze")
+    @ApiOperation(value = "账户解冻", response = GeneralResult.class)
+    public Response<GeneralResult> unFreezeAccount(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(customerRosService.unFreezeAccount(enter));
+    }
+
+    @PostMapping(value = "/renew")
+    @ApiOperation(value = "账户续期", response = GeneralResult.class)
+    public Response<GeneralResult> renewAccont(@ModelAttribute @ApiParam("请求参数") RenewAccountEnter enter) {
+        return new Response<>(customerRosService.renewAccont(enter));
     }
 }
