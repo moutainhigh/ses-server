@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
@@ -29,6 +30,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.bussinessutils.AccountTypeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
@@ -85,6 +87,9 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Autowired
     private AccountBaseServiceMapper accountBaseServiceMapper;
 
+    @Autowired
+    private PlaTenantMapper plaTenantMapper;
+
 
     /**
      * 账号开通
@@ -108,7 +113,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                     .inputTenantId(userId)
                     .firstName(enter.getT().getContactFirstName())
                     .lastName(enter.getT().getCustomerLastName())
-                    .fullName(enter.getT().getContactFirstName()+" " +enter.getT().getCustomerLastName())
+                    .fullName(enter.getT().getContactFirstName() + " " + enter.getT().getCustomerLastName())
                     .address(enter.getT().getAddress())
                     .certificateType(enter.getT().getCertificateType())
                     .certificateNegativeAnnex(enter.getT().getCertificateNegativeAnnex())
@@ -117,10 +122,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                     .email1(enter.getT().getEmail())
                     .build();
             userProfileHubEnter.setUserId(enter.getUserId());
-            if (StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(),enter.getT().getCustomerType())){
+            if (StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), enter.getT().getCustomerType())) {
 //                consumerAccountProService.saveUserProfileHub(userProfileHubEnter);
             }
-            if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(),enter.getT().getCustomerType())){
+            if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), enter.getT().getCustomerType())) {
 //                corporateAccountProService.saveUserProfileHub(userProfileHubEnter);
             }
             result.setId(userId);
@@ -171,7 +176,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      */
     @Override
     public Map<String, Integer> accountCountStatus() {
-        List<CountByStatusResult>  countByStatusResult = accountBaseServiceMapper.accountCountStatus();
+        List<CountByStatusResult> countByStatusResult = accountBaseServiceMapper.accountCountStatus();
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByStatusResult) {
             map.put(item.getStatus(), item.getTotalCount());
@@ -184,17 +189,164 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         return map;
     }
 
+    /**
+     * 账户冻结
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult freeze(DateTimeParmEnter<BaseCustomerResult> enter) {
+        int accountType = AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
+        String appId = AccountTypeUtils.queryAppId(accountType);
+
+        // 租户
+        PlaTenant plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
+        if (plaTenant == null) {
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(TenantStatus.INOPERATION.getValue(),plaTenant.getStatus())){
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        }
+        plaTenant.setStatus(TenantStatus.FROZEN.getValue());
+        plaTenant.setUpdatedBy(enter.getUserId());
+        plaTenant.setUpdatedTime(new Date());
+        plaTenantMapper.updateById(plaTenant);
+
+        // user
+        QueryWrapper<PlaUser> plaUserQueryWrapper = new QueryWrapper<>();
+        plaUserQueryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getT().getEmail());
+        plaUserQueryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
+        PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
+        if (plaUser==null){
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(UserStatusEnum.NORMAL.getValue(),plaUser.getStatus())){
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        }
+        plaUser.setStatus(UserStatusEnum.LOCK.getValue());
+        plaUser.setUpdatedBy(enter.getUserId());
+        plaUser.setUpdatedTime(new Date());
+        plaUserMapper.updateById(plaUser);
+        // 权限
+        QueryWrapper<PlaUserPermission> plaUserPermissionQueryWrapper = new QueryWrapper<>();
+        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_USER_ID,plaUser.getId());
+        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID,appId);
+        PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
+        if (plaUserPermission==null){
+            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(UserStatusEnum.NORMAL.getValue(),plaUserPermission.getStatus())){
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        }
+        plaUserPermission.setStatus(UserStatusEnum.LOCK.getValue());
+        plaUserPermission.setUpdatedBy(enter.getUserId());
+        plaUserPermission.setUpdatedTime(new Date());
+        plaUserPermissionMapper.updateById(plaUserPermission);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 账户解冻
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult unFreezeAccount(DateTimeParmEnter<BaseCustomerResult> enter) {
+        int accountType = AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
+        String appId = AccountTypeUtils.queryAppId(accountType);
+
+        // 租户
+        PlaTenant plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
+        if (plaTenant == null) {
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(TenantStatus.FROZEN.getValue(),plaTenant.getStatus())){
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        }
+        plaTenant.setStatus(TenantStatus.INOPERATION.getValue());
+        plaTenant.setUpdatedBy(enter.getUserId());
+        plaTenant.setUpdatedTime(new Date());
+        plaTenantMapper.updateById(plaTenant);
+
+        // user
+        QueryWrapper<PlaUser> plaUserQueryWrapper = new QueryWrapper<>();
+        plaUserQueryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getT().getEmail());
+        plaUserQueryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
+        PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
+        if (plaUser==null){
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(),plaUser.getStatus())){
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        }
+        plaUser.setStatus(UserStatusEnum.NORMAL.getValue());
+        plaUser.setUpdatedBy(enter.getUserId());
+        plaUser.setUpdatedTime(new Date());
+        plaUserMapper.updateById(plaUser);
+        // 权限
+        QueryWrapper<PlaUserPermission> plaUserPermissionQueryWrapper = new QueryWrapper<>();
+        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_USER_ID,plaUser.getId());
+        plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID,appId);
+        PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
+        if (plaUserPermission==null){
+            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(),plaUserPermission.getStatus())){
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        }
+        plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
+        plaUserPermission.setUpdatedBy(enter.getUserId());
+        plaUserPermission.setUpdatedTime(new Date());
+        plaUserPermissionMapper.updateById(plaUserPermission);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 账户续期
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult renewAccont(DateTimeParmEnter<BaseCustomerResult> enter) {
+        int accountType = AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
+        String appId = AccountTypeUtils.queryAppId(accountType);
+
+        // 租户
+        PlaTenant plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
+        if (plaTenant == null) {
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+        }
+        // 1、 续期开始时间 必须在开通时间之后
+        // 2、续期结束时间 必须在到期时间之后
+        if (DateUtil.timeComolete( plaTenant.getExpireTime(),enter.getEndDateTime()) < 0) {
+            throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(), ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
+        }
+
+        if (DateUtil.timeComolete(plaTenant.getEffectiveTime(), enter.getStartDateTime()) < 0) {
+            throw new FoundationException(ExceptionCodeEnums.RENEW_START_DATETIME_IS_NOT_AVAILABLE.getCode(), ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
+        }
+        plaTenant.setExpireTime(enter.getEndDateTime());
+        plaTenant.setUpdatedTime(new Date());
+        plaTenant.setUpdatedBy(enter.getUserId());
+
+        plaTenantMapper.updateById(plaTenant);
+        return new GeneralResult(enter.getRequestId());
+    }
+
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {
 
         // 保存 user 信息
-        PlaUser plaUser=new PlaUser();
+        PlaUser plaUser = new PlaUser();
         plaUser.setId(idAppService.getId(SequenceName.PLA_USER));
         plaUser.setDr(0);
         plaUser.setTenantId(tenantId);
         plaUser.setSystemId(SystemIDEnums.REDE_SAAS.getSystemId());
         plaUser.setLoginName(enter.getT().getEmail());
-        plaUser.setUserType(AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(),enter.getT().getIndustryType()));
-        plaUser.setStatus(UserStatusEnum.NORMAL.getCode());
+        plaUser.setUserType(AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType()));
+        plaUser.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUser.setCreatedBy(enter.getUserId());
         plaUser.setCreatedTime(new Date());
         plaUser.setUpdatedBy(enter.getUserId());
@@ -203,12 +355,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserMapper.insert(plaUser);
 
         // 保存密码
-        QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper=new QueryWrapper<>();
-        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME,enter.getT().getEmail());
+        QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
+        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getT().getEmail());
         PlaUserPassword plaUserPassword = plaUserPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
 
         // 密码不存在创建，已存在 跳过
-        if (plaUserPassword==null){
+        if (plaUserPassword == null) {
             PlaUserPassword savePassWord = new PlaUserPassword();
             savePassWord.setId(idAppService.getId(SequenceName.PLA_USER_PASSWORD));
             savePassWord.setLoginName(enter.getT().getEmail());
@@ -227,7 +379,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermission.setId(idAppService.getId(SequenceName.PLA_USER_PERMISSION));
         plaUserPermission.setUserId(plaUser.getId());
         plaUserPermission.setSystemId(enter.getSystemId());
-        plaUserPermission.setAppId(AccountTypeUtils.queryAppId(AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(),enter.getT().getIndustryType())));
+        plaUserPermission.setAppId(AccountTypeUtils.queryAppId(AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType())));
         plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUserPermission.setCreatedBy(enter.getUserId());
         plaUserPermission.setCreatedTime(new Date());

@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
+import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
 import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
@@ -129,5 +130,26 @@ public interface CustomerRosService {
      * @return
      */
     List<AccountNodeResult> accountNode(IdEnter enter);
+
+    /**
+     * 账户冻结
+     * @param enter
+     * @return
+     */
+    GeneralResult freezeAccount(IdEnter enter);
+
+    /**
+     * 解冻账户
+     * @param enter
+     * @return
+     */
+    GeneralResult unFreezeAccount(IdEnter enter);
+
+    /**
+     * 账户续期
+     * @param enter
+     * @return
+     */
+    GeneralResult renewAccont(RenewAccountEnter enter);
 
 }
