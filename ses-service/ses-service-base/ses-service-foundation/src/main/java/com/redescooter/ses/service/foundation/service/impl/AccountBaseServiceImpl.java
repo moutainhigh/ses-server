@@ -131,7 +131,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             result.setId(userId);
             result.setTenantId(tenantId);
         } else {
-            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.TENANT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.TENANT_ALREADY_EXIST.getMessage());
         }
         // 发送邮件
         return result;
