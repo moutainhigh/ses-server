@@ -121,7 +121,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 //                consumerAccountProService.saveUserProfileHub(userProfileHubEnter);
             }
             if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(),enter.getT().getCustomerType())){
-                corporateAccountProService.saveUserProfileHub(userProfileHubEnter);
+//                corporateAccountProService.saveUserProfileHub(userProfileHubEnter);
             }
             result.setId(userId);
             result.setTenantId(tenantId);
