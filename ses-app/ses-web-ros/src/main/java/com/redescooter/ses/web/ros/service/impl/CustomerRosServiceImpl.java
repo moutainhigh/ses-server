@@ -473,8 +473,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                         item.setStatus(tenantAccount.getStatus());
                         item.setActivationTime(tenantAccount.getActivationTime());
                         item.setExpirationTime(tenantAccount.getExpirationTime());
-                    }else {
-                        resultList.remove(item);
                     }
                 });
             });
