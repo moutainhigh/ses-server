@@ -1,13 +1,15 @@
 package com.redescooter.ses.web.ros.vo.account;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import io.swagger.annotations.*;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:AccountNodeResult
@@ -31,6 +33,8 @@ public class AccountNodeResult extends GeneralResult {
     private String event;
 
     @ApiModelProperty(value = "时间时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private String eventTime;
 
     @ApiModelProperty(value = "创建人Id")

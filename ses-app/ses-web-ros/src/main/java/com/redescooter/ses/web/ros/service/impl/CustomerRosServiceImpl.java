@@ -20,6 +20,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
@@ -27,8 +28,10 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.QueryTenantNodeResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
@@ -38,9 +41,11 @@ import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
+import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
+import com.redescooter.ses.web.ros.vo.account.VerificationCodeResult;
 import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
 import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
@@ -55,6 +60,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -88,6 +94,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private TenantBaseService tenantBaseService;
     @Reference
     private MailMultiTaskService mailMultiTaskService;
+    @Autowired
+    private JedisCluster jedisCluster;
 
     /**
      * 邮箱验证
@@ -527,6 +535,61 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     }
 
     /**
+     * 账户详情
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public AccountDeatilResult accountDeatil(IdEnter enter) {
+        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer==null){
+            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        enter.setId(opeCustomer.getTenantId());
+        List<QueryTenantNodeResult> tenantNodeResultList= tenantBaseService.queryTenantNdoe(enter);
+
+        QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper=new QueryWrapper<>();
+        // todo 需优化 调用数据库过于频繁
+        List<AccountNodeResult> tenantNodeList=new ArrayList<>();
+
+        if (!CollectionUtils.isEmpty(tenantNodeResultList)){
+            tenantNodeResultList.forEach(item->{
+                opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID,item.getCreateBy());
+                OpeSysUserProfile opeSysUserProfile = sysUserProfileMapper.selectOne(opeSysUserProfileQueryWrapper);
+                AccountNodeResult result = AccountNodeResult.builder()
+                        .id(item.getId())
+                        .event(item.getEvent())
+                        .eventTime(item.getEventTime().toString())
+                        .build();
+                if (opeSysUserProfile !=null){
+                    result.setCreatedBy(item.getCreateBy());
+                    result.setCreatedFirstName(opeSysUserProfile.getFirstName());
+                    result.setCreatedLastName(opeSysUserProfile.getLastName());
+                }
+                tenantNodeList.add(result);
+            });
+        }
+        IdEnter idEnter=new IdEnter();
+        BeanUtils.copyProperties(enter,idEnter);
+        idEnter.setId(opeCustomer.getTenantId());
+        QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(idEnter);
+        return AccountDeatilResult.builder()
+                .accountNodeList(tenantNodeList)
+                .id(opeCustomer.getId())
+                .customerType(opeCustomer.getCustomerType())
+                .customerFirstName(opeCustomer.getCustomerFirstName())
+                .customerLastName(opeCustomer.getCustomerLastName())
+                .customerFullName(opeCustomer.getCustomerFullName())
+                .industryType(opeCustomer.getIndustryType())
+                .status(opeCustomer.getStatus())
+                .email(opeCustomer.getEmail())
+                .startActivationTime(DateUtil.getTimeStr(queryTenantResult.getEffectiveTime(),DateUtil.DEFAULT_DATETIME_FORMAT))
+                .endActivationTime(DateUtil.getTimeStr(queryTenantResult.getExpireTime(),DateUtil.DEFAULT_DATETIME_FORMAT))
+                .build();
+    }
+
+    /**
      * 账户冻结
      *
      * @param enter
@@ -593,6 +656,55 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         parmEnter.setT(baseCustomer);
         accountBaseService.renewAccont(parmEnter);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 验证码 返回base64 加密 格式
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public VerificationCodeResult verificationCode(GeneralEnter enter) {
+        // 定义 图片大小
+        VerificationCodeImgUtil vCode = new VerificationCodeImgUtil(103, 32, 5, 16);
+        // 调用写操作
+        vCode.write();
+        //获取code码
+        String code=vCode.code;
+        // redis 存储
+        jedisCluster.set(enter.getRequestId(),code);
+        // 设置超时时间
+        jedisCluster.expire(enter.getRequestId(), 60);
+        VerificationCodeResult result = VerificationCodeResult.builder().base64Img(vCode.base64SString).build();
+        result.setRequestId(enter.getRequestId());
+        System.out.println(code);
+        return result;
+    }
+
+    /**
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult customerSetPassword(SetPasswordEnter enter) {
+        // 数据校验
+        String code = jedisCluster.get(enter.getRequestId());
+        if (!StringUtils.equals(code,enter.getCode())){
+            throw new SesWebRosException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(),ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
+        }
+        if (!StringUtils.equals(enter.getConfirmPassword(),enter.getNewPassword())){
+            throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+        }
+
+        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer==null){
+            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        BaseCustomerResult baseCustomerResult=new BaseCustomerResult();
+        BeanUtils.copyProperties(opeCustomer,baseCustomerResult);
+        enter.setT(baseCustomerResult);
+        return accountBaseService.setPassword(enter);
     }
 
     private void checkCustomer(EditCustomerEnter enter) {

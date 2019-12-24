@@ -6,12 +6,15 @@
     <select id="queryAccountListCount"
             resultType="int">
         select count(*) from pla_tenant tenant
-        where  tenant.id in
-        <foreach collection="inputTenantId" open="(" separator="," close=")" item="item">
-            #{item}
-        </foreach>
+        where  1=1
         <if test="status != null and status != ''">
-          and  tenant.status = #{status}
+            and  tenant.status = #{status}
+        </if>
+        <if test="inputTenantId != null and inputTenantId.size() != 0">
+            and  id in
+            <foreach collection="inputTenantId" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
         </if>
         <if
                 test="startActivationTime != null and startActivationTime != '' and endActivationTime != null and endActivationTime != ''">
@@ -31,12 +34,15 @@
         tenant.expire_time     as expirationTime,
         tenant.status          as status
         from pla_tenant tenant
-        where  tenant.id in
-        <foreach collection="inputTenantId" open="(" separator="," close=")" item="item">
-            #{item}
-        </foreach>
+        where  1=1
         <if test="status != null and status != ''">
             and  tenant.status = #{status}
+        </if>
+        <if test="inputTenantId != null and inputTenantId.size() != 0">
+            and  id in
+            <foreach collection="inputTenantId" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
         </if>
         <if
                 test="startActivationTime != null and startActivationTime != '' and endActivationTime != null and endActivationTime != ''">

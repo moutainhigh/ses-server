@@ -11,6 +11,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.QueryTenantNodeResult;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.foundation.vo.tenant.SaveTenantConfigEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.constant.TenantDefaultValue;
@@ -67,7 +68,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
 
         // 租户节点
         enter.getT().setTenantId(plaTenant.getId());
-        saveTenantNode(enter);
+        saveTenantNode(enter,TenanNodeEvent.CREAT.getValue());
         // 租户配置
         SaveTenantConfigEnter saveTenantConfigEnter = SaveTenantConfigEnter.builder().inputTenantId(plaTenant.getId()).tenantDefaultConfig(Boolean.TRUE).build();
         saveTenantConfig(saveTenantConfigEnter);
@@ -82,8 +83,8 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @return
      */
     @Override
-    public GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter) {
-        PlaTenantNode plaTenantNode = buildPlaTenantNodeSingle(enter);
+    public GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter,String event) {
+        PlaTenantNode plaTenantNode = buildPlaTenantNodeSingle(enter,TenanNodeEvent.CREAT.getValue());
         plaTenantNodeMapper.insert(plaTenantNode);
         return new GeneralResult(enter.getRequestId());
     }
@@ -158,6 +159,23 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 查询租户信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public QueryTenantResult queryTenantById(IdEnter enter) {
+        PlaTenant plaTenant = plaTenantMapper.selectById(enter.getId());
+        if (plaTenant==null){
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+        }
+        QueryTenantResult result=new QueryTenantResult();
+        BeanUtils.copyProperties(plaTenant,result);
+        return result;
+    }
+
     private PlaTenantConfig buildTenantConfigSingle(PlaTenantConfig tenantConfig, Long tennatId, GeneralEnter enter) {
         PlaTenant tenant = plaTenantMapper.selectById(tennatId);
         if (tenant == null) {
@@ -182,12 +200,12 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         return tenantConfig;
     }
 
-    private PlaTenantNode buildPlaTenantNodeSingle(DateTimeParmEnter<BaseCustomerResult> enter) {
+    private PlaTenantNode buildPlaTenantNodeSingle(DateTimeParmEnter<BaseCustomerResult> enter,String event) {
         PlaTenantNode plaTenantNode=new PlaTenantNode();
         plaTenantNode.setId(idAppService.getId(SequenceName.PLA_TENANT_NODE));
         plaTenantNode.setDr(0);
         plaTenantNode.setTenantId(enter.getT().getTenantId());
-        plaTenantNode.setEvent(TenanNodeEvent.CREAT.getValue());
+        plaTenantNode.setEvent(event);
         plaTenantNode.setEventTime(new Date());
         plaTenantNode.setMemo(null);
         plaTenantNode.setCreateBy(enter.getUserId());

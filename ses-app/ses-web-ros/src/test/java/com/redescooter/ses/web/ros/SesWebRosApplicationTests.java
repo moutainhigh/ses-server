@@ -1,10 +1,9 @@
 package com.redescooter.ses.web.ros;
 
-import com.redescooter.ses.web.ros.service.CustomerRosService;
-import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import redis.clients.jedis.JedisCluster;
 
 @SpringBootTest
 public class SesWebRosApplicationTests {
@@ -14,16 +13,10 @@ public class SesWebRosApplicationTests {
     }
 
     @Reference
-    private CustomerRosService customerRosService;
+    private JedisCluster jedisCluster;
 
     @Test
     public void createAccount() {
-        OpenAccountEnter enter = OpenAccountEnter.builder()
-                .endActivationTime("2019-12-23 16:45:40")
-                .startActivationTime("2019-12-25 16:45:40")
-                .id(1000004L)
-                .build();
-        enter.setUserId(1000003L);
-        customerRosService.openAccount(enter);
+        System.out.println("是否存在:"+jedisCluster.exists("f932ef6212ac472995454a7bf5a9786e"));
     }
 }

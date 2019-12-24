@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 
@@ -75,6 +76,13 @@ public interface AccountBaseService {
      * @return
      */
     GeneralResult renewAccont(DateTimeParmEnter<BaseCustomerResult> enter);
+
+    /**
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult setPassword(SetPasswordEnter<BaseCustomerResult> enter);
 
 
 

@@ -40,7 +40,10 @@
         <!--表格操作组件-->
         <easypoi.version>4.1.0</easypoi.version>
         <!--swagger start-->
-        <swagger.version>2.9.2</swagger.version>
+        <springfox.version>2.8.0</springfox.version>
+        <swagger.version>2.8.0</swagger.version>
+        <swagger-annotations.version>1.5.21</swagger-annotations.version>
+<!--        <swagger.version>2.9.2</swagger.version>-->
         <swagger.bootstrap.ui.version>1.9.5</swagger.bootstrap.ui.version>
         <guava.version>28.1-jre</guava.version>
         <!--swagger end-->

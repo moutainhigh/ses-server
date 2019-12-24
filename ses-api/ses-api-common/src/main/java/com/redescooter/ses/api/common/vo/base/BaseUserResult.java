@@ -1,8 +1,14 @@
 package com.redescooter.ses.api.common.vo.base;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -46,6 +52,8 @@ public class BaseUserResult extends GeneralResult {
     private String lastLoginIp;
 
     @ApiModelProperty(value = "最后登录时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date lastLoginTime;
 
     @ApiModelProperty(value = "最后登录TOKEN")
@@ -55,11 +63,15 @@ public class BaseUserResult extends GeneralResult {
     private Long createdBy;
 
     @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date createdTime;
 
     @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     @ApiModelProperty(value = "更新时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date updatedTime;
 }

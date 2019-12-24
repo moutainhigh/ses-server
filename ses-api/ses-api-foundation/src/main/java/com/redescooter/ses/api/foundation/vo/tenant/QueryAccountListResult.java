@@ -1,10 +1,11 @@
 package com.redescooter.ses.api.foundation.vo.tenant;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:QueryAccountListResult
@@ -27,8 +28,12 @@ public class QueryAccountListResult extends GeneralResult {
     private String status;
 
     @ApiModelProperty(value = "激活时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private String activationTime;
 
     @ApiModelProperty(value = "到期时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private String expirationTime;
 }
