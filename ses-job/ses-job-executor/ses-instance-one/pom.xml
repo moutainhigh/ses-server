@@ -37,6 +37,10 @@
                  <groupId>com.redescooter.ses</groupId>
                  <artifactId>ses-starter-swagger</artifactId>
              </exclusion>
+             <exclusion>
+                 <artifactId>commons-collections</artifactId>
+                 <groupId>commons-collections</groupId>
+             </exclusion>
          </exclusions>
         </dependency>
         <dependency>
@@ -105,6 +109,14 @@
                 <exclusion>
                     <artifactId>guava</artifactId>
                     <groupId>com.google.guava</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>fastjson</artifactId>
+                    <groupId>com.alibaba</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>kryo</artifactId>
+                    <groupId>com.esotericsoftware</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
