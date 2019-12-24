@@ -53,6 +53,7 @@ spring:
       force: true
       charset: UTF-8
       enabled: true
+
 dubbo:                                                                                                                  #DUBBO 配置
   application:
     id: @project.artifactId@
