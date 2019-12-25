@@ -553,35 +553,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         enter.setId(opeCustomer.getTenantId());
-        List<QueryTenantNodeResult> tenantNodeResultList = tenantBaseService.queryTenantNdoe(enter);
 
-        // todo 需优化 调用数据库过于频繁
-        List<AccountNodeResult> tenantNodeList = new ArrayList<>();
-
-        if (!CollectionUtils.isEmpty(tenantNodeResultList)){
-            tenantNodeResultList.forEach(item->{
-                QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper=new QueryWrapper<>();
-                opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID,item.getCreateBy());
-                OpeSysUserProfile opeSysUserProfile = sysUserProfileMapper.selectOne(opeSysUserProfileQueryWrapper);
-                AccountNodeResult result = AccountNodeResult.builder()
-                        .id(item.getId())
-                        .event(item.getEvent())
-                        .eventTime(item.getEventTime().toString())
-                        .build();
-                if (opeSysUserProfile != null) {
-                    result.setCreatedBy(item.getCreateBy());
-                    result.setCreatedFirstName(opeSysUserProfile.getFirstName());
-                    result.setCreatedLastName(opeSysUserProfile.getLastName());
-                }
-                tenantNodeList.add(result);
-            });
-        }
         IdEnter idEnter = new IdEnter();
         BeanUtils.copyProperties(enter, idEnter);
         idEnter.setId(opeCustomer.getTenantId());
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(idEnter);
         return AccountDeatilResult.builder()
-                .accountNodeList(tenantNodeList)
                 .id(opeCustomer.getId())
                 .customerType(opeCustomer.getCustomerType())
                 .customerFirstName(opeCustomer.getCustomerFirstName())
@@ -682,7 +659,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         jedisCluster.set(enter.getRequestId(), code);
         // 设置超时时间
         jedisCluster.expire(enter.getRequestId(), 60);
-        VerificationCodeResult result = VerificationCodeResult.builder().base64Img(vCode.base64SString).build();
+        VerificationCodeResult result = VerificationCodeResult.builder().base64Img(vCode.base64String).build();
         result.setRequestId(enter.getRequestId());
         System.out.println(code);
         return result;

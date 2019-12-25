@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -27,7 +28,7 @@ public class VerificationCodeImgUtil {
     // 验证码图片Buffer
     private static BufferedImage buffImg = null;
     // 图片base64 加密
-    public static String base64SString=null;
+    public static String base64String = null;
 
     // 验证码范围,去掉0(数字)和O(拼音)容易混淆的(小写的1和L也可以去掉,大写不用了)
     private char[] codeSequence = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R',
@@ -133,7 +134,7 @@ public class VerificationCodeImgUtil {
             e.printStackTrace();
         }
         String base64Img = Base64Util.encode(byteArrayOutputStream.toByteArray());
-        base64SString=base64Img;
+        base64String = base64Img;
         //sos.close();
     }
 
@@ -152,18 +153,13 @@ public class VerificationCodeImgUtil {
      */
     public static void main(String[] args) {
         VerificationCodeImgUtil vCode = new VerificationCodeImgUtil(160, 40, 5, 150);
-//        try {
-//            String path = "E:/" + new Date().getTime() + ".png";
-//            System.out.println(vCode.getCode() + " >" + path);
-//            vCode.write();
-//            System.out.println(VerificationCodeImgUtil.base64SString);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
+        String path = "E:/" + new Date().getTime() + ".png";
+        System.out.println(vCode.getCode() + " >" + path);
+        vCode.write();
+        System.out.println(VerificationCodeImgUtil.base64String);
 //        String path = "E:/" + new Date().getTime() + ".png";
 //        System.out.println(vCode.getCode() + " >" + path);
-        vCode.write();
-        System.out.println(VerificationCodeImgUtil.base64SString);
+//        vCode.write();
+        System.out.println(VerificationCodeImgUtil.base64String);
     }
 }

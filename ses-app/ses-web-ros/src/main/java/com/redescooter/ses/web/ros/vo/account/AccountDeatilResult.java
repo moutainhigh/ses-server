@@ -11,8 +11,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.List;
-
 /**
  * @ClassName:AccountDeatilResult
  * @description: AccountDeatilResult
@@ -61,7 +59,4 @@ public class AccountDeatilResult extends GeneralResult {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private String endActivationTime;
-
-    @ApiModelProperty(value = "账户节点")
-    private List<AccountNodeResult> accountNodeList;
 }
