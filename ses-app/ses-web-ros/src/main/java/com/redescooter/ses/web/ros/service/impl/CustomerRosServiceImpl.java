@@ -558,18 +558,25 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         BeanUtils.copyProperties(enter, idEnter);
         idEnter.setId(opeCustomer.getTenantId());
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(idEnter);
-        return AccountDeatilResult.builder()
+        AccountDeatilResult reslut = AccountDeatilResult.builder()
                 .id(opeCustomer.getId())
                 .customerType(opeCustomer.getCustomerType())
                 .customerFirstName(opeCustomer.getCustomerFirstName())
                 .customerLastName(opeCustomer.getCustomerLastName())
                 .customerFullName(opeCustomer.getCustomerFullName())
+                .companyName(opeCustomer.getCompanyName())
                 .industryType(opeCustomer.getIndustryType())
                 .status(opeCustomer.getStatus())
                 .email(opeCustomer.getEmail())
                 .startActivationTime(DateUtil.getTimeStr(queryTenantResult.getEffectiveTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
                 .endActivationTime(DateUtil.getTimeStr(queryTenantResult.getExpireTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
                 .build();
+        if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), opeCustomer.getCustomerType())) {
+            reslut.setContactFirstName(opeCustomer.getContactFirstName());
+            reslut.setContactLastName(opeCustomer.getContactLastName());
+            reslut.setContactFullName(opeCustomer.getContactFullName());
+        }
+        return reslut;
     }
 
     /**

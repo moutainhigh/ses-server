@@ -47,6 +47,18 @@ public class AccountDeatilResult extends GeneralResult {
     @ApiModelProperty(value = "customerFullName")
     private String customerFullName;
 
+    @ApiModelProperty(value = "contactFirstName")
+    private String contactFirstName;
+
+    @ApiModelProperty(value = "contactLastName")
+    private String contactLastName;
+
+    @ApiModelProperty(value = "contactFullName")
+    private String contactFullName;
+
+    @ApiModelProperty(value = "companyName")
+    private String companyName;
+
     @ApiModelProperty(value = "email")
     private String email;
 
