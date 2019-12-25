@@ -27,6 +27,6 @@ public class SetPasswordEnter<T> extends GeneralEnter {
     @ApiModelProperty(value = "验证码")
     private String code;
 
-    @ApiModelProperty(value = "业务对象")
+    @ApiModelProperty(value = "业务对象",hidden = true)
     private T t;
 }

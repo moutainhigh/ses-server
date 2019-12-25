@@ -11,18 +11,18 @@
             and  tenant.status = #{status}
         </if>
         <if test="inputTenantId != null and inputTenantId.size() != 0">
-            and  id in
+            and  tenant.id in
             <foreach collection="inputTenantId" open="(" separator="," close=")" item="item">
                 #{item}
             </foreach>
         </if>
         <if
                 test="startActivationTime != null and startActivationTime != '' and endActivationTime != null and endActivationTime != ''">
-           and activation_time  between #{startActivationTime} and #{endActivationTime}
+           and tenant.activation_time  between #{startActivationTime} and #{endActivationTime}
         </if>
         <if
                 test="startExpirationTime != null and startExpirationTime != '' and endExpirationTime != null and endExpirationTime != '' != null and startExpirationTime != ''">
-            and effective_time  between #{startExpirationTime} and #{endExpirationTime}
+            and tenant.expire_time  between #{startExpirationTime} and #{endExpirationTime}
         </if>
     </select>
 
@@ -39,7 +39,7 @@
             and  tenant.status = #{status}
         </if>
         <if test="inputTenantId != null and inputTenantId.size() != 0">
-            and  id in
+            and  tenant.id in
             <foreach collection="inputTenantId" open="(" separator="," close=")" item="item">
                 #{item}
             </foreach>
@@ -50,7 +50,7 @@
         </if>
         <if
                 test="startExpirationTime != null and startExpirationTime != '' and endExpirationTime != null and endExpirationTime != '' != null and startExpirationTime != ''">
-            and tenant.effective_time  between #{startExpirationTime} and #{endExpirationTime}
+            and tenant.expire_time  between #{startExpirationTime} and #{endExpirationTime}
         </if>
         order by tenant.created_time desc
     </select>

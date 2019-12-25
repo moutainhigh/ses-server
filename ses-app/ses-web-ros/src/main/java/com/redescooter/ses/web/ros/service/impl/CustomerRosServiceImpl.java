@@ -430,6 +430,17 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
 
+        // 邮件通知
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
+        baseMailTaskEnter.setName(opeCustomer.getCustomerFullName());
+        baseMailTaskEnter.setToMail(opeCustomer.getEmail());
+        baseMailTaskEnter.setToUserId(userResult.getId());
+        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+        baseMailTaskEnter.setMailAppId(AccountTypeEnums.APP_PERSONAL.getAppId());
+        baseMailTaskEnter.setMailSystemId(AccountTypeEnums.APP_PERSONAL.getSystemId());
+        mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -446,10 +457,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             return PageResult.createZeroRowResult(enter);
         }
         // 查询内容
-        List<AccountListResult> resultList = customerServiceMapper.queryAccountRecord(enter);
-        List<Long> tenantIdList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(resultList)) {
-            resultList.forEach(item -> {
+        List<AccountListResult> accountList =  customerServiceMapper.queryAccountRecord(enter);
+        List<Long> tenantIdList=new ArrayList<>();
+        if(!CollectionUtils.isEmpty(accountList)){
+            accountList.forEach(item->{
                 tenantIdList.add(item.getTenantId());
             });
         }
@@ -463,15 +474,18 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             return PageResult.createZeroRowResult(enter);
         }
 
-        List<QueryAccountListResult> tenantAccountRecords = accountBaseService.tenantAccountRecords(queryAccountListEnter);
-        if (!CollectionUtils.isEmpty(resultList) || !CollectionUtils.isEmpty(tenantAccountRecords)) {
-            resultList.forEach(item -> {
-                tenantAccountRecords.forEach(tenantAccount -> {
-                    if (tenantAccount.getInputTenantId().equals(item.getTenantId())) {
+        List<QueryAccountListResult> tenantAccountRecords=accountBaseService.tenantAccountRecords(queryAccountListEnter);
+
+        List<AccountListResult> resultList=new ArrayList<>();
+        if(!CollectionUtils.isEmpty(accountList) && !CollectionUtils.isEmpty(tenantAccountRecords)){
+            tenantAccountRecords.forEach(tenantAccount->{
+                accountList.forEach(item->{
+                    if (tenantAccount.getInputTenantId().equals(item.getTenantId())){
                         item.setTenantId(tenantAccount.getId());
                         item.setStatus(tenantAccount.getStatus());
                         item.setActivationTime(tenantAccount.getActivationTime());
                         item.setExpirationTime(tenantAccount.getExpirationTime());
+                        resultList.add(item);
                     }
                 });
             });
@@ -541,13 +555,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         enter.setId(opeCustomer.getTenantId());
         List<QueryTenantNodeResult> tenantNodeResultList = tenantBaseService.queryTenantNdoe(enter);
 
-        QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         // todo 需优化 调用数据库过于频繁
         List<AccountNodeResult> tenantNodeList = new ArrayList<>();
 
-        if (!CollectionUtils.isEmpty(tenantNodeResultList)) {
-            tenantNodeResultList.forEach(item -> {
-                opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, item.getCreateBy());
+        if (!CollectionUtils.isEmpty(tenantNodeResultList)){
+            tenantNodeResultList.forEach(item->{
+                QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper=new QueryWrapper<>();
+                opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID,item.getCreateBy());
                 OpeSysUserProfile opeSysUserProfile = sysUserProfileMapper.selectOne(opeSysUserProfileQueryWrapper);
                 AccountNodeResult result = AccountNodeResult.builder()
                         .id(item.getId())
