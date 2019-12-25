@@ -58,7 +58,7 @@ public class PlaTenant implements Serializable {
     private String status;
 
     @TableField(value = "country_id")
-    @ApiModelProperty(value="null")
+    @ApiModelProperty(value="城市ID")
     private Long countryId;
 
     /**
@@ -69,7 +69,7 @@ public class PlaTenant implements Serializable {
     private Long cityId;
 
     @TableField(value = "distrust_id")
-    @ApiModelProperty(value="null")
+    @ApiModelProperty(value="")
     private Long distrustId;
 
     /**
