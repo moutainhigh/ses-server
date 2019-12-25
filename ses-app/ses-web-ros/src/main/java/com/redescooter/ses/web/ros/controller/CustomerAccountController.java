@@ -52,7 +52,7 @@ public class CustomerAccountController {
     }
 
     @PostMapping(value = "/accountCountStatus")
-    @ApiOperation(value = "账户状态", response = Map.class)
+    @ApiOperation(value = "状态统计", response = Map.class)
     public Response<Map<String, Integer>> accountCountStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(customerRosService.accountCountStatus(enter));
     }
