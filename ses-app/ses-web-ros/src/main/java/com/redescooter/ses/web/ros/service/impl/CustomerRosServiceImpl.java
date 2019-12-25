@@ -520,10 +520,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         enter.setId(opeCustomer.getTenantId());
         List<QueryTenantNodeResult> tenantNodeResultList = tenantBaseService.queryTenantNdoe(enter);
 
-        QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         // todo 需优化 调用数据库过于频繁
         if (!CollectionUtils.isEmpty(tenantNodeResultList)) {
             tenantNodeResultList.forEach(item -> {
+                QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
                 opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, item.getCreateBy());
                 OpeSysUserProfile opeSysUserProfile = sysUserProfileMapper.selectOne(opeSysUserProfileQueryWrapper);
                 AccountNodeResult result = AccountNodeResult.builder()
