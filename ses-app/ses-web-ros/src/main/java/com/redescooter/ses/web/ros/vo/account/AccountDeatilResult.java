@@ -65,10 +65,10 @@ public class AccountDeatilResult extends GeneralResult {
     @ApiModelProperty(value = "激活时间 为了和 开通账户入参保持一致")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
-    private String startActivationTime;
+    private String activationTime;
 
     @ApiModelProperty(value = "到期时间 为了和 开通账户入参保持一致")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
-    private String endActivationTime;
+    private String expireTime;
 }
