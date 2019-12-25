@@ -2,18 +2,18 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.ros.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEvent;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatus;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
@@ -42,12 +42,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Mr.lijiating
@@ -83,20 +82,23 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Autowired
     private PlaUserPermissionMapper plaUserPermissionMapper;
 
-    @Reference
-    private CorporateAccountProService corporateAccountProService;
-
-    @Reference
-    private ConsumerAccountProService consumerAccountProService;
+    @Autowired
+    private PlaTenantMapper plaTenantMapper;
 
     @Autowired
     private AccountBaseServiceMapper accountBaseServiceMapper;
 
     @Autowired
-    private PlaTenantMapper plaTenantMapper;
-
-    @Autowired
     private JedisCluster jedisCluster;
+
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
+
+    @Reference
+    private CorporateAccountProService corporateAccountProService;
+
+    @Reference
+    private ConsumerAccountProService consumerAccountProService;
 
 
     /**
@@ -108,40 +110,47 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public BaseUserResult open(DateTimeParmEnter<BaseCustomerResult> enter) {
         BaseUserResult result = new BaseUserResult();
-        BaseCustomerResult customer = enter.getT();
-        if (chectMail(customer.getEmail())) {
-            // 开通账户
-            //1、 创建租户
-            Long tenantId = tenantBaseService.saveTenant(enter);
-            //2、 创建账户
-            Long userId = saveUserSingle(enter, tenantId);
-            //3、 创建个人信息
-            UserProfileHubEnter userProfileHubEnter = UserProfileHubEnter.builder()
-                    .inputUserId(tenantId)
-                    .inputTenantId(userId)
-                    .firstName(enter.getT().getContactFirstName())
-                    .lastName(enter.getT().getCustomerLastName())
-                    .fullName(enter.getT().getContactFirstName() + " " + enter.getT().getCustomerLastName())
-                    .address(enter.getT().getAddress())
-                    .certificateType(enter.getT().getCertificateType())
-                    .certificateNegativeAnnex(enter.getT().getCertificateNegativeAnnex())
-                    .certificatePositiveAnnex(enter.getT().getCertificatePositiveAnnex())
-                    .telNumber1(enter.getT().getTelephone())
-                    .email1(enter.getT().getEmail())
-                    .build();
-            userProfileHubEnter.setUserId(enter.getUserId());
-            if (StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), enter.getT().getCustomerType())) {
-//                consumerAccountProService.saveUserProfileHub(userProfileHubEnter);
-            }
-            if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), enter.getT().getCustomerType())) {
-//                corporateAccountProService.saveUserProfileHub(userProfileHubEnter);
-            }
-            result.setId(userId);
-            result.setTenantId(tenantId);
-        } else {
-            throw new FoundationException(ExceptionCodeEnums.TENANT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.TENANT_ALREADY_EXIST.getMessage());
+        // 开通账户
+        //1、 创建租户
+        Long tenantId = tenantBaseService.saveTenant(enter);
+        //2、 创建账户
+        Long userId = saveUserSingle(enter, tenantId);
+        //3、 创建个人信息
+        UserProfileHubEnter userProfileHubEnter = UserProfileHubEnter.builder()
+                .inputUserId(tenantId)
+                .inputTenantId(userId)
+                .firstName(enter.getT().getContactFirstName())
+                .lastName(enter.getT().getCustomerLastName())
+                .fullName(new StringBuilder().append(enter.getT().getContactFirstName()).append(" ").append(enter.getT().getCustomerLastName()).toString())
+                .address(enter.getT().getAddress())
+                .certificateType(enter.getT().getCertificateType())
+                .certificateNegativeAnnex(enter.getT().getCertificateNegativeAnnex())
+                .certificatePositiveAnnex(enter.getT().getCertificatePositiveAnnex())
+                .telNumber1(enter.getT().getTelephone())
+                .email1(enter.getT().getEmail())
+                .build();
+        userProfileHubEnter.setUserId(enter.getUserId());
+
+        result.setId(userId);
+        result.setTenantId(tenantId);
+        // 创建邮件任务
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setName(enter.getT().getCustomerFullName());
+        baseMailTaskEnter.setToMail(enter.getT().getEmail());
+        baseMailTaskEnter.setToUserId(userId);
+        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+
+        if (StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), enter.getT().getCustomerType())) {
+            baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
+            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getAppId());
+            baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
         }
-        // 发送邮件
+        if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), enter.getT().getCustomerType())) {
+            baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
+            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getAppId());
+            baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_WEB.getSystemId());
+        }
+        mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
         return result;
     }
 
@@ -371,6 +380,43 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPassword.setUpdatedBy(enter.getUserId());
         plaUserPassword.setUpdatedTime(new Date());
         plaUserPasswordMapper.updateById(plaUserPassword);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 根据租户ID删除所有用户
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult deleteUserbyTenantId(IdEnter enter) {
+        /**
+         * 1.租户删除
+         * 2.用户删除
+         * 3.用户信息删除
+         */
+        PlaTenant tenant = plaTenantMapper.selectById(enter.getId());
+
+        QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
+        wrapper.eq(PlaUser.COL_TENANT_ID, tenant.getId());
+        wrapper.eq(PlaUser.COL_DR, 0);
+        List<PlaUser> userList = plaUserMapper.selectList(wrapper);
+        List<Long> idList = new ArrayList<>();
+        idList = userList.stream().map(user -> user.getId()).collect(Collectors.toList());
+        plaUserMapper.deleteBatchIds(idList);
+
+        tenantMapper.deleteById(tenant.getId());
+
+        if (tenant.getTenantType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
+            //删除公司--2B信息 TODO
+
+        } else {
+            //删除个人--2C信息 TODO
+
+        }
+
         return new GeneralResult(enter.getRequestId());
     }
 

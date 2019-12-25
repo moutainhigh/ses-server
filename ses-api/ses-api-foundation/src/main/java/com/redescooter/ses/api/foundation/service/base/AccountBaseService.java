@@ -1,10 +1,6 @@
 package com.redescooter.ses.api.foundation.service.base;
 
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 
@@ -38,6 +34,7 @@ public interface AccountBaseService {
 
     /**
      * 查询已创建 的账户
+     *
      * @param enter
      * @return
      */
@@ -45,6 +42,7 @@ public interface AccountBaseService {
 
     /**
      * 查询 已创建的 账户记录
+     *
      * @param enter
      * @return
      */
@@ -52,19 +50,22 @@ public interface AccountBaseService {
 
     /**
      * 查询租户状态
+     *
      * @return
      */
     Map<String, Integer> accountCountStatus();
 
     /**
      * 账户冻结
+     *
      * @param enter
      * @return
      */
-   GeneralResult freeze(DateTimeParmEnter<BaseCustomerResult> enter);
+    GeneralResult freeze(DateTimeParmEnter<BaseCustomerResult> enter);
 
     /**
      * 账户解冻
+     *
      * @param enter
      * @return
      */
@@ -72,18 +73,25 @@ public interface AccountBaseService {
 
     /**
      * 账户续期
+     *
      * @param enter
      * @return
      */
     GeneralResult renewAccont(DateTimeParmEnter<BaseCustomerResult> enter);
 
     /**
-     *
      * @param enter
      * @return
      */
     GeneralResult setPassword(SetPasswordEnter<BaseCustomerResult> enter);
 
 
+    /**
+     * 根据租户ID删除所有用户
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult deleteUserbyTenantId(IdEnter enter);
 
 }

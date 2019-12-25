@@ -214,14 +214,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         DetailsCustomerResult result = new DetailsCustomerResult();
         BeanUtils.copyProperties(opeCustomer, result);
-        QueryWrapper<OpeSysUserProfile> created= new QueryWrapper<>();
-        created.eq(OpeSysUserProfile.COL_SYS_USER_ID,result.getCreatedBy());
-        created.eq(OpeSysUserProfile.COL_DR,0);
+        QueryWrapper<OpeSysUserProfile> created = new QueryWrapper<>();
+        created.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getCreatedBy());
+        created.eq(OpeSysUserProfile.COL_DR, 0);
         result.setCreatedName(sysUserProfileMapper.selectOne(created).getFullName());
 
-        QueryWrapper<OpeSysUserProfile> updated= new QueryWrapper<>();
-        updated.eq(OpeSysUserProfile.COL_SYS_USER_ID,result.getUpdatedBy());
-        updated.eq(OpeSysUserProfile.COL_DR,0);
+        QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
+        updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
+        updated.eq(OpeSysUserProfile.COL_DR, 0);
         result.setUpdatedName(sysUserProfileMapper.selectOne(updated).getFullName());
 
         result.setRequestId(enter.getRequestId());
@@ -273,9 +273,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotBlank(page.getStatus())) {
             wrapper.eq(OpeCustomer.COL_STATUS, page.getStatus());
         }
-        if (page.getOneCityiD() != null ) {
+        if (page.getOneCityiD() != null) {
             wrapper.eq(OpeCustomer.COL_CITY, page.getOneCityiD());
-            if(page.getTwoCityiD() != null){
+            if (page.getTwoCityiD() != null) {
                 wrapper.eq(OpeCustomer.COL_DISTRUST, page.getTwoCityiD());
             }
         }
@@ -299,9 +299,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             if (page.getStatus().equals(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
                 wrapper.orderByDesc(OpeCustomer.COL_CREATED_TIME);
             }
-        }else{
+        } else {
             wrapper.orderByDesc(OpeCustomer.COL_UPDATED_TIME);
-
         }
 
         Page<OpeCustomer> customerPage = new Page<>(page.getPageNo(), page.getPageSize());
@@ -351,8 +350,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         //验证客户是否开通SaaS账户等信息
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION)) {
+        if (opeCustomer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
+        }
+        if (opeCustomer.getStatus().equals(CustomerAccountFlagEnum.NORMAL.getValue()) || opeCustomer.getStatus().equals(CustomerAccountFlagEnum.INACTIVATED.getValue())) {
+            accountBaseService.deleteUserbyTenantId(IdEnter.builder().id(opeCustomer.getTenantId()).build());
         }
         OpeCustomer update = new OpeCustomer();
         update.setId(enter.getId());
@@ -380,7 +382,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if(!customer.getStatus().equals(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())){
+        if (!customer.getStatus().equals(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())) {
             return new GeneralResult(enter.getRequestId());
         }
         customer.setStatus(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue());
@@ -406,13 +408,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         BooleanResult checkMail = checkMail(opeCustomer.getEmail());
-        BaseUserResult userResult=null;
+        BaseUserResult userResult = null;
         if (checkMail.isSuccess()) {
             BaseCustomerResult baseCustomer = new BaseCustomerResult();
             BeanUtils.copyProperties(opeCustomer, baseCustomer);
 
             DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
-            BeanUtils.copyProperties(enter,parmEnter);
+            BeanUtils.copyProperties(enter, parmEnter);
             parmEnter.setStartDateTime(DateUtil.stringToDate(enter.getStartActivationTime()));
             parmEnter.setEndDateTime(DateUtil.stringToDate(enter.getEndActivationTime()));
             parmEnter.setT(baseCustomer);
@@ -450,8 +452,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public PageResult<AccountListResult> accountList(AccountListEnter enter) {
-        int countCustomer= customerServiceMapper.accountListCount(enter);
-        if (countCustomer==0){
+        int countCustomer = customerServiceMapper.accountListCount(enter);
+        if (countCustomer == 0) {
             return PageResult.createZeroRowResult(enter);
         }
         // 查询内容
@@ -466,9 +468,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         // 查询时间
         QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
         queryAccountListEnter.setInputTenantId(tenantIdList);
-        BeanUtils.copyProperties(enter,queryAccountListEnter);
-        int  countTenantAccount =accountBaseService.countTenantAccount(queryAccountListEnter);
-        if (countTenantAccount==0){
+        BeanUtils.copyProperties(enter, queryAccountListEnter);
+        int countTenantAccount = accountBaseService.countTenantAccount(queryAccountListEnter);
+        if (countTenantAccount == 0) {
             return PageResult.createZeroRowResult(enter);
         }
 
@@ -488,7 +490,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 });
             });
         }
-        return PageResult.create(enter,countTenantAccount,resultList);
+        return PageResult.create(enter, countTenantAccount, resultList);
     }
 
     /**
@@ -510,31 +512,31 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public List<AccountNodeResult> accountNode(IdEnter enter) {
-        List<AccountNodeResult> resultList=new ArrayList<>();
-        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer==null){
-            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        List<AccountNodeResult> resultList = new ArrayList<>();
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         enter.setId(opeCustomer.getTenantId());
-      List<QueryTenantNodeResult> tenantNodeResultList= tenantBaseService.queryTenantNdoe(enter);
+        List<QueryTenantNodeResult> tenantNodeResultList = tenantBaseService.queryTenantNdoe(enter);
 
-      QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper=new QueryWrapper<>();
-      // todo 需优化 调用数据库过于频繁
-      if (!CollectionUtils.isEmpty(tenantNodeResultList)){
-          tenantNodeResultList.forEach(item->{
-              opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID,item.getCreateBy());
-              OpeSysUserProfile opeSysUserProfile = sysUserProfileMapper.selectOne(opeSysUserProfileQueryWrapper);
-              AccountNodeResult result = AccountNodeResult.builder()
-                      .id(item.getId())
-                      .event(item.getEvent())
-                      .eventTime(item.getEventTime().toString())
-                      .createdBy(item.getCreateBy())
-                      .createdFirstName(opeSysUserProfile.getFirstName())
-                      .createdLastName(opeSysUserProfile.getLastName())
-                      .build();
-              resultList.add(result);
-          });
-      }
+        QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
+        // todo 需优化 调用数据库过于频繁
+        if (!CollectionUtils.isEmpty(tenantNodeResultList)) {
+            tenantNodeResultList.forEach(item -> {
+                opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, item.getCreateBy());
+                OpeSysUserProfile opeSysUserProfile = sysUserProfileMapper.selectOne(opeSysUserProfileQueryWrapper);
+                AccountNodeResult result = AccountNodeResult.builder()
+                        .id(item.getId())
+                        .event(item.getEvent())
+                        .eventTime(item.getEventTime().toString())
+                        .createdBy(item.getCreateBy())
+                        .createdFirstName(opeSysUserProfile.getFirstName())
+                        .createdLastName(opeSysUserProfile.getLastName())
+                        .build();
+                resultList.add(result);
+            });
+        }
         return resultList;
     }
 
@@ -546,15 +548,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public AccountDeatilResult accountDeatil(IdEnter enter) {
-        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer==null){
-            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         enter.setId(opeCustomer.getTenantId());
-        List<QueryTenantNodeResult> tenantNodeResultList= tenantBaseService.queryTenantNdoe(enter);
+        List<QueryTenantNodeResult> tenantNodeResultList = tenantBaseService.queryTenantNdoe(enter);
 
         // todo 需优化 调用数据库过于频繁
-        List<AccountNodeResult> tenantNodeList=new ArrayList<>();
+        List<AccountNodeResult> tenantNodeList = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(tenantNodeResultList)){
             tenantNodeResultList.forEach(item->{
@@ -566,7 +568,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                         .event(item.getEvent())
                         .eventTime(item.getEventTime().toString())
                         .build();
-                if (opeSysUserProfile !=null){
+                if (opeSysUserProfile != null) {
                     result.setCreatedBy(item.getCreateBy());
                     result.setCreatedFirstName(opeSysUserProfile.getFirstName());
                     result.setCreatedLastName(opeSysUserProfile.getLastName());
@@ -574,8 +576,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 tenantNodeList.add(result);
             });
         }
-        IdEnter idEnter=new IdEnter();
-        BeanUtils.copyProperties(enter,idEnter);
+        IdEnter idEnter = new IdEnter();
+        BeanUtils.copyProperties(enter, idEnter);
         idEnter.setId(opeCustomer.getTenantId());
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(idEnter);
         return AccountDeatilResult.builder()
@@ -588,8 +590,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 .industryType(opeCustomer.getIndustryType())
                 .status(opeCustomer.getStatus())
                 .email(opeCustomer.getEmail())
-                .startActivationTime(DateUtil.getTimeStr(queryTenantResult.getEffectiveTime(),DateUtil.DEFAULT_DATETIME_FORMAT))
-                .endActivationTime(DateUtil.getTimeStr(queryTenantResult.getExpireTime(),DateUtil.DEFAULT_DATETIME_FORMAT))
+                .startActivationTime(DateUtil.getTimeStr(queryTenantResult.getEffectiveTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
+                .endActivationTime(DateUtil.getTimeStr(queryTenantResult.getExpireTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
                 .build();
     }
 
@@ -601,16 +603,16 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public GeneralResult freezeAccount(IdEnter enter) {
-        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer==null){
-            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
         BaseCustomerResult baseCustomer = new BaseCustomerResult();
         BeanUtils.copyProperties(opeCustomer, baseCustomer);
 
         DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
-        BeanUtils.copyProperties(enter,parmEnter);
+        BeanUtils.copyProperties(enter, parmEnter);
         parmEnter.setT(baseCustomer);
         accountBaseService.freeze(parmEnter);
         return new GeneralResult(enter.getRequestId());
@@ -624,15 +626,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public GeneralResult unFreezeAccount(IdEnter enter) {
-        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer==null){
-            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         BaseCustomerResult baseCustomer = new BaseCustomerResult();
         BeanUtils.copyProperties(opeCustomer, baseCustomer);
 
         DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
-        BeanUtils.copyProperties(enter,parmEnter);
+        BeanUtils.copyProperties(enter, parmEnter);
         parmEnter.setT(baseCustomer);
         accountBaseService.unFreezeAccount(parmEnter);
         return new GeneralResult(enter.getRequestId());
@@ -646,15 +648,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public GeneralResult renewAccont(RenewAccountEnter enter) {
-        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer==null){
-            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         BaseCustomerResult baseCustomer = new BaseCustomerResult();
         BeanUtils.copyProperties(opeCustomer, baseCustomer);
 
         DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
-        BeanUtils.copyProperties(enter,parmEnter);
+        BeanUtils.copyProperties(enter, parmEnter);
         parmEnter.setStartDateTime(DateUtil.stringToDate(enter.getStartRenewAccountTime()));
         parmEnter.setEndDateTime(DateUtil.stringToDate(enter.getEndRenewAccountTime()));
         parmEnter.setT(baseCustomer);
@@ -675,9 +677,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         // 调用写操作
         vCode.write();
         //获取code码
-        String code=vCode.code;
+        String code = vCode.code;
         // redis 存储
-        jedisCluster.set(enter.getRequestId(),code);
+        jedisCluster.set(enter.getRequestId(), code);
         // 设置超时时间
         jedisCluster.expire(enter.getRequestId(), 60);
         VerificationCodeResult result = VerificationCodeResult.builder().base64Img(vCode.base64SString).build();
@@ -694,19 +696,19 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public GeneralResult customerSetPassword(SetPasswordEnter enter) {
         // 数据校验
         String code = jedisCluster.get(enter.getRequestId());
-        if (!StringUtils.equals(code,enter.getCode())){
-            throw new SesWebRosException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(),ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
+        if (!StringUtils.equals(code, enter.getCode())) {
+            throw new SesWebRosException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
         }
-        if (!StringUtils.equals(enter.getConfirmPassword(),enter.getNewPassword())){
-            throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+        if (!StringUtils.equals(enter.getConfirmPassword(), enter.getNewPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
 
-        OpeCustomer opeCustomer=opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer==null){
-            throw  new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
-        BaseCustomerResult baseCustomerResult=new BaseCustomerResult();
-        BeanUtils.copyProperties(opeCustomer,baseCustomerResult);
+        BaseCustomerResult baseCustomerResult = new BaseCustomerResult();
+        BeanUtils.copyProperties(opeCustomer, baseCustomerResult);
         enter.setT(baseCustomerResult);
         return accountBaseService.setPassword(enter);
     }
