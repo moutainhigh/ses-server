@@ -529,7 +529,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 AccountNodeResult result = AccountNodeResult.builder()
                         .id(item.getId())
                         .event(item.getEvent())
-                        .eventTime(item.getEventTime().toString())
+                        .eventTime(DateUtil.format(item.getEventTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
                         .createdBy(item.getCreateBy())
                         .createdFirstName(opeSysUserProfile.getFirstName())
                         .createdLastName(opeSysUserProfile.getLastName())
