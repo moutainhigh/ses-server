@@ -84,7 +84,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      */
     @Override
     public GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter,String event) {
-        PlaTenantNode plaTenantNode = buildPlaTenantNodeSingle(enter,TenanNodeEvent.CREAT.getValue());
+        PlaTenantNode plaTenantNode = buildPlaTenantNodeSingle(enter,event);
         plaTenantNodeMapper.insert(plaTenantNode);
         return new GeneralResult(enter.getRequestId());
     }
