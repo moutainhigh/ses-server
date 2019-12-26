@@ -102,6 +102,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         QueryWrapper<PlaTenantNode> plaTenantNodeQueryWrapper = new QueryWrapper<>();
         plaTenantNodeQueryWrapper.eq(PlaTenantNode.COL_TENANT_ID, enter.getId());
         plaTenantNodeQueryWrapper.orderByAsc(PlaTenantNode.COL_CREATE_TIME);
+        plaTenantNodeQueryWrapper.eq(PlaTenantNode.COL_DR, 0);
         List<PlaTenantNode> plaTenantNodeList = plaTenantNodeMapper.selectList(plaTenantNodeQueryWrapper);
 
         List<QueryTenantNodeResult> resultList = new ArrayList<>();

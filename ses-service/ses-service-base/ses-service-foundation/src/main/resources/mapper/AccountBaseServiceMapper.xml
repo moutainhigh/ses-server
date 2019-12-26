@@ -6,7 +6,7 @@
     <select id="queryAccountListCount"
             resultType="int">
         select count(*) from pla_tenant tenant
-        where  1=1
+        where tenant.dr = 0
         <if test="status != null and status != ''">
             and  tenant.status = #{status}
         </if>
@@ -34,7 +34,7 @@
         tenant.expire_time     as expirationTime,
         tenant.status          as status
         from pla_tenant tenant
-        where  1=1
+        where tenant.dr = 0
         <if test="status != null and status != ''">
             and  tenant.status = #{status}
         </if>
@@ -58,6 +58,7 @@
     <select id="accountCountStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select status, count(*) as totalCount
         from pla_tenant
+        where dr = 0
         group by status
     </select>
 </mapper>

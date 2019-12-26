@@ -56,7 +56,7 @@
     <select id="customerAccountCount" resultType="int">
         select count(*)
         from ope_customer
-        where 1=1 and tenant_id !=0
+        where dr = 0 and tenant_id !=0
         <if test="customerType != null and customerType != ''">
             and customer_type =#{customerType}
         </if>
@@ -85,7 +85,7 @@
         customer_type as customerType,
         industry_type as industryType
         from ope_customer
-        where 1=1 and tenant_id !=0
+        where dr = 0 and tenant_id !=0
         <if test="customerType != null and customerType != ''">
             and customer_type =#{customerType}
         </if>
