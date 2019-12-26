@@ -1,8 +1,6 @@
 package com.redescooter.ses.web.ros.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerAccountFlagEnum;
@@ -169,7 +167,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         } else {
             saveVo.setCustomerFullName(new StringBuffer().append(saveVo.getCustomerFirstName()).append(" ").append(saveVo.getCustomerLastName()).toString());
         }
-        saveVo.setAccountFlag(Integer.valueOf(CustomerAccountFlagEnum.NORMAL.getValue()));
+        saveVo.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
         saveVo.setCreatedBy(enter.getUserId());
         saveVo.setCreatedTime(new Date());
         saveVo.setUpdatedBy(enter.getUserId());
@@ -390,7 +388,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             userResult = accountBaseService.open(parmEnter);
 
             opeCustomer.setTenantId(userResult.getTenantId());
-            opeCustomer.setAccountFlag(Integer.parseInt(CustomerAccountFlagEnum.INACTIVATED.getValue()));
+            opeCustomer.setAccountFlag(CustomerAccountFlagEnum.INACTIVATED.getValue());
             opeCustomer.setUpdatedBy(enter.getUserId());
             opeCustomer.setUpdatedTime(new Date());
             opeCustomerMapper.updateById(opeCustomer);
