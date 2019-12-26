@@ -68,6 +68,9 @@ public class DetailsCustomerResult extends GeneralResult {
     @ApiModelProperty(value = "销售")
     private Long salesId;
 
+    @ApiModelProperty(value = "客户编码")
+    private String customerCode;
+
     @ApiModelProperty(value = "客户名字")
     private String customerFirstName;
 

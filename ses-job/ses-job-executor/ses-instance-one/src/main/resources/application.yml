@@ -20,6 +20,7 @@ server:
   port: 8082
   tomcat:
     uri-encoding: UTF-8
+
 dubbo:                                                                                                                  #DUBBO 配置
   application:
     id: @project.artifactId@

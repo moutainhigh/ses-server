@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
+import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
 
 import java.util.List;
 
@@ -17,7 +19,11 @@ public interface CustomerServiceMapper {
 
     List<CountByStatusResult> countStatus();
 
-    int accountListCount(AccountListEnter enter);
+    int customerListCount(ListCustomerEnter enter);
+
+    List<DetailsCustomerResult> customerList(ListCustomerEnter enter);
+
+    int customerAccountCount(AccountListEnter enter);
 
     List<AccountListResult> queryAccountRecord(AccountListEnter enter);
 }

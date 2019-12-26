@@ -84,6 +84,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private CustomerServiceMapper customerServiceMapper;
     @Autowired
     private OpeSysUserProfileMapper sysUserProfileMapper;
+    @Autowired
+    private JedisCluster jedisCluster;
     @Reference
     private IdAppService idAppService;
     @Reference
@@ -94,8 +96,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private TenantBaseService tenantBaseService;
     @Reference
     private MailMultiTaskService mailMultiTaskService;
-    @Autowired
-    private JedisCluster jedisCluster;
+
 
     /**
      * 邮箱验证
@@ -265,59 +266,22 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public PageResult<DetailsCustomerResult> list(ListCustomerEnter page) {
 
-        List<DetailsCustomerResult> resultList = new ArrayList<>();
-        DetailsCustomerResult detailsResult = null;
+        int totalRows = customerServiceMapper.customerListCount(page);
 
-        QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
-
-        if (StringUtils.isNotBlank(page.getStatus())) {
-            wrapper.eq(OpeCustomer.COL_STATUS, page.getStatus());
-        }
-        if (page.getOneCityiD() != null) {
-            wrapper.eq(OpeCustomer.COL_CITY, page.getOneCityiD());
-            if (page.getTwoCityiD() != null) {
-                wrapper.eq(OpeCustomer.COL_DISTRUST, page.getTwoCityiD());
-            }
-        }
-        if (StringUtils.isNotBlank(page.getCustomerType())) {
-            wrapper.eq(OpeCustomer.COL_CUSTOMER_TYPE, page.getCustomerType());
-        }
-        if (StringUtils.isNotBlank(page.getCustomerIndustry())) {
-            wrapper.eq(OpeCustomer.COL_INDUSTRY_TYPE, page.getCustomerIndustry());
-        }
-        if (StringUtils.isNotBlank(page.getCustomerSource())) {
-            wrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, page.getCustomerSource());
-        }
-        if (page.getCreateStartDateTime() != null && page.getCreateEndDateTime() != null) {
-            wrapper.between(OpeCustomer.COL_CREATED_TIME, page.getCreateStartDateTime(), page.getCreateEndDateTime());
-        }
-        if (StringUtils.isNotBlank(page.getKeyword())) {
-            wrapper.and(wh -> wh.like(OpeCustomer.COL_CONTACT_FULL_NAME, page.getKeyword()).or().like(OpeCustomer.COL_EMAIL, page.getKeyword()).or().like(OpeCustomer.COL_CONTACT_FULL_NAME, page.getKeyword()));
+        if (totalRows == 0) {
+            return PageResult.createZeroRowResult(page);
         }
 
-        if (StringUtils.isNotBlank(page.getStatus())) {
-            if (page.getStatus().equals(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
-                wrapper.orderByDesc(OpeCustomer.COL_CREATED_TIME);
-            }
-        } else {
-            wrapper.orderByDesc(OpeCustomer.COL_UPDATED_TIME);
-        }
+        List<DetailsCustomerResult> detailsCustomerList = customerServiceMapper.customerList(page);
 
-        Page<OpeCustomer> customerPage = new Page<>(page.getPageNo(), page.getPageSize());
-        IPage<OpeCustomer> opeCustomerIPage = opeCustomerMapper.selectPage(customerPage, wrapper);
-        List<OpeCustomer> pageRecords = opeCustomerIPage.getRecords();
-
-        for (OpeCustomer customer : pageRecords) {
-            detailsResult = new DetailsCustomerResult();
-            BeanUtils.copyProperties(customer, detailsResult);
+        detailsCustomerList.forEach(customer -> {
             if (customer.getCity() != null || customer.getDistrust() != null) {
-                detailsResult.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(detailsResult.getCity()).build()).getName());
-                detailsResult.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(detailsResult.getDistrust()).build()).getName());
+                customer.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(customer.getCity()).build()).getName());
+                customer.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(customer.getDistrust()).build()).getName());
             }
-            resultList.add(detailsResult);
-        }
+        });
 
-        return PageResult.create(page, (int) opeCustomerIPage.getTotal(), resultList);
+        return PageResult.create(page, totalRows, detailsCustomerList);
     }
 
     /**
@@ -452,15 +416,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public PageResult<AccountListResult> accountList(AccountListEnter enter) {
-        int countCustomer = customerServiceMapper.accountListCount(enter);
+        int countCustomer = customerServiceMapper.customerAccountCount(enter);
         if (countCustomer == 0) {
             return PageResult.createZeroRowResult(enter);
         }
         // 查询内容
-        List<AccountListResult> accountList =  customerServiceMapper.queryAccountRecord(enter);
-        List<Long> tenantIdList=new ArrayList<>();
-        if(!CollectionUtils.isEmpty(accountList)){
-            accountList.forEach(item->{
+        List<AccountListResult> accountList = customerServiceMapper.queryAccountRecord(enter);
+        List<Long> tenantIdList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(accountList)) {
+            accountList.forEach(item -> {
                 tenantIdList.add(item.getTenantId());
             });
         }
@@ -474,13 +438,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             return PageResult.createZeroRowResult(enter);
         }
 
-        List<QueryAccountListResult> tenantAccountRecords=accountBaseService.tenantAccountRecords(queryAccountListEnter);
+        List<QueryAccountListResult> tenantAccountRecords = accountBaseService.tenantAccountRecords(queryAccountListEnter);
 
-        List<AccountListResult> resultList=new ArrayList<>();
-        if(!CollectionUtils.isEmpty(accountList) && !CollectionUtils.isEmpty(tenantAccountRecords)){
-            tenantAccountRecords.forEach(tenantAccount->{
-                accountList.forEach(item->{
-                    if (tenantAccount.getInputTenantId().equals(item.getTenantId())){
+        List<AccountListResult> resultList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(accountList) && !CollectionUtils.isEmpty(tenantAccountRecords)) {
+            tenantAccountRecords.forEach(tenantAccount -> {
+                accountList.forEach(item -> {
+                    if (tenantAccount.getInputTenantId().equals(item.getTenantId())) {
                         item.setTenantId(tenantAccount.getId());
                         item.setStatus(tenantAccount.getStatus());
                         item.setActivationTime(tenantAccount.getActivationTime());

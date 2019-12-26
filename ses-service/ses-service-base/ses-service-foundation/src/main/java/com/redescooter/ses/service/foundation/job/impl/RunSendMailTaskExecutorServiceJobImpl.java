@@ -1,4 +1,4 @@
-package com.redescooter.ses.service.foundation.job;
+package com.redescooter.ses.service.foundation.job.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.jiguang.JobResult;
