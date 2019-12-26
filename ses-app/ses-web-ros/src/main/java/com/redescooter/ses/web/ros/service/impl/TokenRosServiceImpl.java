@@ -303,7 +303,7 @@ public class TokenRosServiceImpl implements TokenRosService {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
             jedisCluster.hmset(token, map);
-            jedisCluster.expire(token, (int) Status.ExpireEnum.LOGIN_TOKE.getTimeUnit().toMinutes(Status.ExpireEnum.LOGIN_TOKE.getTime()));
+            jedisCluster.expire(token,60 * 60 * 24 * 30);
         } catch (IllegalAccessException e) {
             log.error("setToken IllegalAccessException userSession:" + userToken, e);
         } catch (InvocationTargetException e) {
