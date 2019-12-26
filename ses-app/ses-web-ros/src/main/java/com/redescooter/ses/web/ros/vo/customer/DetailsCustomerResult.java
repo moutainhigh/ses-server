@@ -174,5 +174,8 @@ public class DetailsCustomerResult extends GeneralResult {
     @ApiModelProperty(value = "信息完善度")
     private Integer informationPerfectionNum;
 
+    @ApiModelProperty(value = "邮件发送剩余时间")
+    private Long ttl;
+
 
 }
