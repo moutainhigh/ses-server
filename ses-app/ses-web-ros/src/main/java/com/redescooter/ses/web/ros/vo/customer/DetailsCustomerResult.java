@@ -171,5 +171,8 @@ public class DetailsCustomerResult extends GeneralResult {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date updatedTime;
 
+    @ApiModelProperty(value = "信息完善度")
+    private String informationPerfectionNum;
+
 
 }

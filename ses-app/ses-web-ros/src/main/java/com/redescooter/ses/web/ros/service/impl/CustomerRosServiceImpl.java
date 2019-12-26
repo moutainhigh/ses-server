@@ -20,6 +20,7 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.StatisticalUtil;
 import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
@@ -240,6 +241,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             result.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getCity()).build()).getName());
             result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
         }
+        // 信息完善度 计算
+        result.setInformationPerfectionNum(checkCustomerInformation(opeCustomer));
         return result;
     }
 
@@ -739,6 +742,84 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isBlank(enter.getContractAnnex())) {
             throw new SesWebRosException(ExceptionCodeEnums.CONTRACT_ANNEX_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CONTRACT_ANNEX_CANNOT_EMPTY.getMessage());
         }
+    }
+
+    private String checkCustomerInformation(OpeCustomer customer) {
+        // 个人客户为 14个 基本字段
+        //企业客户为 16个基本字段
+
+        int result = 14;
+        int count = 0;
+
+        if (customer.getCity() != null) {
+            count++;
+        }
+        if (customer.getDistrust() != null) {
+            count++;
+        }
+        if (customer.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
+            if (!StringUtils.isBlank(customer.getCustomerFirstName())) {
+                count++;
+            }
+            if (!StringUtils.isBlank(customer.getCustomerLastName())) {
+                count++;
+            }
+        } else {
+            // 企业 为16个字段 所以这里现加 2
+            result += 2;
+            if (!StringUtils.isBlank(customer.getCompanyName())) {
+                count++;
+            }
+            if (!StringUtils.isBlank(customer.getBusinessLicenseNum())) {
+                count++;
+            }
+            if (!StringUtils.isBlank(customer.getBusinessLicenseNum())) {
+                count++;
+            }
+            if (!StringUtils.isBlank(customer.getBusinessLicenseAnnex())) {
+                count++;
+            }
+        }
+        if (!StringUtils.isBlank(customer.getCustomerType())) {
+            count++;
+        }
+        if (!StringUtils.isBlank(customer.getIndustryType())) {
+            count++;
+        }
+        if (!StringUtils.isBlank(customer.getAddress())) {
+            count++;
+        }
+        if (!StringUtils.isAllBlank(String.valueOf(customer.getLongitude()), String.valueOf(customer.getLatitude()))) {
+            count += 2;
+        }
+        if (!StringUtils.isBlank(customer.getTelephone())) {
+            count++;
+        }
+        if (!StringUtils.isBlank(customer.getCertificateType())) {
+            count++;
+        }
+        if (customer.getCertificateType().equals(CustomerCertificateTypeEnum.ID_CARD.getValue())) {
+            //如果 IdCard 所有的字段个数 +2 否则 +1
+            result += 2;
+            if (!StringUtils.isAllBlank(customer.getCertificatePositiveAnnex(), customer.getCertificateNegativeAnnex())) {
+                count += 2;
+            }
+        } else {
+            result++;
+            if (!StringUtils.isBlank(customer.getCertificatePositiveAnnex())) {
+                count++;
+            }
+        }
+        if (!StringUtils.isBlank(customer.getInvoiceNum())) {
+            count++;
+        }
+        if (!StringUtils.isBlank(customer.getInvoiceAnnex())) {
+            count++;
+        }
+        if (!StringUtils.isBlank(customer.getContractAnnex())) {
+            count++;
+        }
+        return StatisticalUtil.percentageUtil(count, result);
     }
 
 }
