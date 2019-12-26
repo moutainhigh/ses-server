@@ -206,7 +206,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         if(!enter.getEmail().equals(customer.getEmail())){
             //潜在客户允许编辑邮箱，但不允许重复
-            if (checkMailCount(new StringEnter(enter.getEmail())).getValue() > 1) {
+            if (checkMailCount(new StringEnter(enter.getEmail())).getValue() > 0) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
             }
         }
