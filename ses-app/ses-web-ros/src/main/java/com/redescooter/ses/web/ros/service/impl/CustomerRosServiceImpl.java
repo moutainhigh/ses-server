@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerAccountFlagEnum;
@@ -742,6 +741,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getAppId());
             baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_WEB.getSystemId());
         }
+        baseMailTaskEnter.setName(customer.getCustomerFullName());
         baseMailTaskEnter.setToMail(customer.getEmail());
         baseMailTaskEnter.setUserId(enter.getUserId());
         baseMailTaskEnter.setToUserId(enter.getUserId());
