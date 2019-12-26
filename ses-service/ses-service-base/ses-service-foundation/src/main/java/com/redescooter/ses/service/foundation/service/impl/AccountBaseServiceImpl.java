@@ -357,8 +357,18 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (plaTenant == null) {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
+        // 冻结不可续费
+        if (StringUtils.equals(TenantStatus.FROZEN.getValue(), plaTenant.getStatus())) {
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        }
+
         // 1、 续期开始时间 必须在开通时间之后
         // 2、续期结束时间 必须在到期时间之后
+        // 3、 续期结束时间 必须在开始时间之后
+        if (DateUtil.timeComolete(enter.getStartDateTime(), enter.getEndDateTime()) < 0) {
+            throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(), ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
+        }
+
         if (DateUtil.timeComolete(plaTenant.getExpireTime(), enter.getEndDateTime()) < 0) {
             throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(), ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
         }
