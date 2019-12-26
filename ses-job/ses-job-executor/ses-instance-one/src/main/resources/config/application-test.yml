@@ -1,16 +1,16 @@
 #日志路径
 log:
   file:
-    path: /data/java_service/logs2/@profile-active@
+    path: /data/java_service/logs3/@profile-active@
     max-size: 128MB
     max-history: 180
 
 # DUBBO 配置
-dubbo:
-  registries:
-    ses:
-      group: ses
-      address: zookeeper://192.168.2.200:12181
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://192.168.2.200:32181
+
+
 # 多注册中心配置
 #    reg2:
 #      group: hdg2
@@ -33,11 +33,11 @@ xxl:
       addresses: http://192.168.2.200:48090/rede/job/admin
     ### xxl-job executor address
     executor:
-      appname: ses-executor-04
+      appname: ses-one
       ip:
       port: 9999
       ### xxl-job log path
-      logpath: /data/java_service/logs/test/ses-job-executor
+      logpath: /data/java_service/logs3/@profile-active@
       ### xxl-job log retention days
       logretentiondays: -1
     ### xxl-job, access token

@@ -9,16 +9,7 @@ import com.redescooter.ses.api.common.enums.ros.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
@@ -108,9 +99,25 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, mail);
         wrapper.eq(OpeCustomer.COL_DR, 0);
-        Boolean mailBoolean = opeCustomerMapper.selectCount(wrapper) == 1 ? Boolean.TRUE : Boolean.FALSE;
+        Boolean mailBoolean = opeCustomerMapper.selectCount(wrapper) > 1 ? Boolean.TRUE : Boolean.FALSE;
 
         return new BooleanResult(mailBoolean);
+    }
+
+    /**
+     * 邮箱验证
+     *
+     * @param mail
+     * @return
+     */
+    @Override
+    public IntResult checkMailCount(String mail) {
+        QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
+        wrapper.eq(OpeCustomer.COL_EMAIL, mail);
+        wrapper.eq(OpeCustomer.COL_DR, 0);
+        Integer count = opeCustomerMapper.selectCount(wrapper);
+
+        return new IntResult(count);
     }
 
     /**
