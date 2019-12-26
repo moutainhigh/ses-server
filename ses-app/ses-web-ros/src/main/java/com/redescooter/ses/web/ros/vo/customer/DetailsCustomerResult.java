@@ -172,7 +172,7 @@ public class DetailsCustomerResult extends GeneralResult {
     private Date updatedTime;
 
     @ApiModelProperty(value = "信息完善度")
-    private String informationPerfectionNum;
+    private Integer informationPerfectionNum;
 
 
 }

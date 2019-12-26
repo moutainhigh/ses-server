@@ -1,8 +1,6 @@
 package com.redescooter.ses.web.ros.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
-import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerCertificateTypeEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerSourceEnum;
@@ -10,7 +8,6 @@ import com.redescooter.ses.api.common.enums.ros.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
@@ -424,18 +421,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         } else {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
-
-        // 邮件通知
-        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
-        baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
-        baseMailTaskEnter.setName(opeCustomer.getCustomerFullName());
-        baseMailTaskEnter.setToMail(opeCustomer.getEmail());
-        baseMailTaskEnter.setToUserId(userResult.getId());
-        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
-        baseMailTaskEnter.setMailAppId(AccountTypeEnums.APP_PERSONAL.getAppId());
-        baseMailTaskEnter.setMailSystemId(AccountTypeEnums.APP_PERSONAL.getSystemId());
-        mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
-
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -762,7 +747,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
     }
 
-    private String checkCustomerInformation(OpeCustomer customer) {
+    private Integer checkCustomerInformation(OpeCustomer customer) {
         // 个人客户为 14个 基本字段
         //企业客户为 16个基本字段
 
@@ -837,7 +822,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (!StringUtils.isBlank(customer.getContractAnnex())) {
             count++;
         }
-        return StatisticalUtil.percentageUtil(count, result);
+        return Integer.valueOf(StatisticalUtil.percentageUtil(count, result, 0));
     }
 
 }
