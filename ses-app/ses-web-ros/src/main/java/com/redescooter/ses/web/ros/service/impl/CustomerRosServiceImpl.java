@@ -221,6 +221,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         created.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getCreatedBy());
         created.eq(OpeSysUserProfile.COL_DR, 0);
         result.setCreatedName(sysUserProfileMapper.selectOne(created).getFullName());
+        result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
 
         QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
         updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
