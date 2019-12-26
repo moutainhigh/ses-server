@@ -100,7 +100,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, mail);
         wrapper.eq(OpeCustomer.COL_DR, 0);
-        Boolean mailBoolean = opeCustomerMapper.selectCount(wrapper) > 1 ? Boolean.TRUE : Boolean.FALSE;
+
+        Boolean mailBoolean = opeCustomerMapper.selectCount(wrapper) == 1 ? Boolean.TRUE : Boolean.FALSE;
 
         return new BooleanResult(mailBoolean);
     }
