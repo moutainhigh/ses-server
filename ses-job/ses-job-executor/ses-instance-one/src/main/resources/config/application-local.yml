@@ -21,7 +21,7 @@ xxl:
       ip:
       port: 9977
       ### xxl-job log path
-      logpath: logs/ses-job-executor
+      logpath: logs/@profile-active@
       ### xxl-job log retention days
       logretentiondays: 30
     ### xxl-job, access token
