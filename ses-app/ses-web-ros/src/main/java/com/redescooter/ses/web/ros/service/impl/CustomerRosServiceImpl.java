@@ -327,7 +327,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public GeneralResult delete(IdEnter enter) {
         //验证客户是否开通SaaS账户等信息
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
+        if (!opeCustomer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
 
@@ -744,9 +744,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (enter.getCity() == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CITY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CITY_CANNOT_EMPTY.getMessage());
         }
-        if (enter.getDistrust() == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.DISTRUST_CANNOT_EMPTY.getMessage());
-        }
+//        if (enter.getDistrust() == null) {
+//            throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.DISTRUST_CANNOT_EMPTY.getMessage());
+//        }
         if (enter.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
 
             if (StringUtils.isBlank(enter.getCustomerFirstName())) {

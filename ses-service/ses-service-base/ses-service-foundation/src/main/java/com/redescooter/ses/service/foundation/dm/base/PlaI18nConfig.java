@@ -22,6 +22,7 @@ public class PlaI18nConfig implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
