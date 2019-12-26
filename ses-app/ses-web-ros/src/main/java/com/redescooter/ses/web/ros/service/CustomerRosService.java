@@ -118,6 +118,7 @@ public interface CustomerRosService {
 
     /**
      * 账户列表
+     *
      * @param enter
      * @return
      */
@@ -133,12 +134,14 @@ public interface CustomerRosService {
 
     /**
      * 账户节点
+     *
      * @return
      */
     List<AccountNodeResult> accountNode(IdEnter enter);
 
     /**
      * 账户详情
+     *
      * @param enter
      * @return
      */
@@ -146,6 +149,7 @@ public interface CustomerRosService {
 
     /**
      * 账户冻结
+     *
      * @param enter
      * @return
      */
@@ -153,6 +157,7 @@ public interface CustomerRosService {
 
     /**
      * 解冻账户
+     *
      * @param enter
      * @return
      */
@@ -160,6 +165,7 @@ public interface CustomerRosService {
 
     /**
      * 账户续期
+     *
      * @param enter
      * @return
      */
@@ -167,15 +173,25 @@ public interface CustomerRosService {
 
     /**
      * 验证码 返回base64 加密 格式
+     *
      * @param enter
      * @return
      */
     VerificationCodeResult verificationCode(GeneralEnter enter);
 
     /**
-     *
      * @param enter
      * @return
      */
     GeneralResult customerSetPassword(SetPasswordEnter enter);
+
+    /**
+     * 邮件再次发生
+     *
+     * @param enter
+     * @return
+     */
+    BooleanResult sendEmailAgian(IdEnter enter);
+
+
 }

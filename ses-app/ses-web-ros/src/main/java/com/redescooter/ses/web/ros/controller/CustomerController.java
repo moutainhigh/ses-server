@@ -96,4 +96,11 @@ public class CustomerController {
     public Response<GeneralResult> openAccount(@ModelAttribute @ApiParam("请求参数") OpenAccountEnter enter) {
         return new Response<>(customerRosService.openAccount(enter));
     }
+
+    @PostMapping(value = "/sendEmailAgian")
+    @ApiOperation(value = "客户再次发生邮件", response = GeneralResult.class)
+    public Response<BooleanResult> sendEmailAgian(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(customerRosService.sendEmailAgian(enter));
+    }
+
 }

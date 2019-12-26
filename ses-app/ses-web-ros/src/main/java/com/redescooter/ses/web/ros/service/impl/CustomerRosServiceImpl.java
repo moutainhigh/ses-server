@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerCertificateTypeEnum;
@@ -204,7 +205,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             //客户验证
             checkCustomer(enter);
         }
-        if(!enter.getEmail().equals(customer.getEmail())){
+        if (!enter.getEmail().equals(customer.getEmail())) {
             //潜在客户允许编辑邮箱，但不允许重复
             if (checkMailCount(new StringEnter(enter.getEmail())).getValue() > 0) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
@@ -249,6 +250,16 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             result.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getCity()).build()).getName());
             result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
         }
+
+        //验证是否可以再次发生邮件
+        Boolean exists = jedisCluster.exists(new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString());
+        if (exists) {
+            Long ttl = jedisCluster.ttl(new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString());
+            result.setTtl(ttl);
+        } else {
+            result.setTtl(new Long(0));
+        }
+
         // 信息完善度 计算
         result.setInformationPerfectionNum(checkCustomerInformation(opeCustomer));
         return result;
@@ -319,6 +330,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (opeCustomer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
+
         opeCustomerMapper.deleteById(enter.getId());
 
         return new GeneralResult(enter.getRequestId());
@@ -414,17 +426,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         } else {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
+        //设置邮箱发送有效时间
+        String key = new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString();
+        jedisCluster.set(key, DateUtil.getDate());
+        jedisCluster.expire(key, 180);
 
-        // 邮件通知
-        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
-        baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
-        baseMailTaskEnter.setName(opeCustomer.getCustomerFullName());
-        baseMailTaskEnter.setToMail(opeCustomer.getEmail());
-        baseMailTaskEnter.setToUserId(userResult.getId());
-        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
-        baseMailTaskEnter.setMailAppId(AccountTypeEnums.APP_PERSONAL.getAppId());
-        baseMailTaskEnter.setMailSystemId(AccountTypeEnums.APP_PERSONAL.getSystemId());
-        mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -680,6 +686,55 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         BeanUtils.copyProperties(opeCustomer, baseCustomerResult);
         enter.setT(baseCustomerResult);
         return accountBaseService.setPassword(enter);
+    }
+
+    /**
+     * 邮件再次发生
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public BooleanResult sendEmailAgian(IdEnter enter) {
+
+        OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
+
+        if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION)) {
+            return new BooleanResult(true);
+        }
+
+        //验证是否可以再次发生邮件
+        if (jedisCluster.exists(new StringBuffer().append("send::").append(customer.getEmail()).toString())) {
+            return new BooleanResult(true);
+        }
+
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+
+        BeanUtils.copyProperties(enter, baseMailTaskEnter);
+
+        if (StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), customer.getCustomerType())) {
+            baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
+            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getAppId());
+            baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
+        }
+        if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), customer.getCustomerType())) {
+            baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
+            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getAppId());
+            baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_WEB.getSystemId());
+        }
+        baseMailTaskEnter.setToMail(customer.getEmail());
+        baseMailTaskEnter.setUserId(enter.getUserId());
+        baseMailTaskEnter.setToUserId(enter.getUserId());
+        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+        mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
+
+        //设置邮箱发送有效时间
+        String key = new StringBuffer().append("send::").append(customer.getEmail()).toString();
+        jedisCluster.set(key, DateUtil.getDate());
+        jedisCluster.expire(key, 180);
+
+        return new BooleanResult(true);
     }
 
     private void checkCustomer(EditCustomerEnter enter) {
