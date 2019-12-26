@@ -118,13 +118,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      */
     @Override
     public BaseUserResult open(DateTimeParmEnter<BaseCustomerResult> enter) {
-
         Boolean chectMail = chectMail(enter.getT().getEmail());
         if (!chectMail) {
             throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
         BaseUserResult result = new BaseUserResult();
-
+        // 开通账户
         //1、 创建租户
         Long tenantId = tenantBaseService.saveTenant(enter);
         //2、 创建账户
@@ -435,7 +434,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         if (tenant.getTenantType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
             //删除公司--2B信息 TODO
-
 
         } else {
             //删除个人--2C信息 TODO

@@ -1,14 +1,18 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
-@ApiModel(value = "com.redescooter.ses.web.ros.dm.OpeCustomer")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeCustomer")
 @Data
 @TableName(value = "ope_customer")
 public class OpeCustomer implements Serializable {
@@ -23,7 +27,6 @@ public class OpeCustomer implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -75,6 +78,13 @@ public class OpeCustomer implements Serializable {
     @TableField(value = "sales_id")
     @ApiModelProperty(value = "销售")
     private Long salesId;
+
+    /**
+     * 客户编码
+     */
+    @TableField(value = "customer_code")
+    @ApiModelProperty(value = "客户编码")
+    private String customerCode;
 
     /**
      * 客户名字
@@ -266,11 +276,11 @@ public class OpeCustomer implements Serializable {
     private String contractAnnex;
 
     /**
-     * 账号使用标识，即激活使用过1，未激活未使用2
+     * 账号使用标识，即激活使用过1，未激活未使用0
      */
     @TableField(value = "account_flag")
-    @ApiModelProperty(value = "账号使用标识，即激活使用过1，未激活未使用2")
-    private Integer accountFlag;
+    @ApiModelProperty(value = "账号使用标识，即激活使用过1，未激活未使用0")
+    private String accountFlag;
 
     /**
      * 创建人
@@ -337,6 +347,8 @@ public class OpeCustomer implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String COL_ID = "id";
+
     public static final String COL_DR = "dr";
 
     public static final String COL_TENANT_ID = "tenant_id";
@@ -352,6 +364,8 @@ public class OpeCustomer implements Serializable {
     public static final String COL_STATUS = "status";
 
     public static final String COL_SALES_ID = "sales_id";
+
+    public static final String COL_CUSTOMER_CODE = "customer_code";
 
     public static final String COL_CUSTOMER_FIRST_NAME = "customer_first_name";
 
