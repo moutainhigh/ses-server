@@ -209,13 +209,18 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         if (customer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getCode(), ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getMessage());
-        }if(checkMailCount(new StringEnter(enter.getEmail())).getValue()>0){
-            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         if (customer.getStatus().equals(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
             //客户验证
             checkCustomer(enter);
         }
+        if(!enter.getEmail().equals(customer.getEmail())){
+            //潜在客户允许编辑邮箱，但不允许重复
+            if (checkMailCount(new StringEnter(enter.getEmail())).getValue() > 0) {
+                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+            }
+        }
+
         OpeCustomer update = new OpeCustomer();
         BeanUtils.copyProperties(enter, update);
         opeCustomerMapper.updateById(update);
