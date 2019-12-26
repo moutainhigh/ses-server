@@ -9,7 +9,6 @@ package com.redescooter.ses.service.hub.common;
  */
 public interface UserProfileService {
 
-
     void saveUserProfile2C();
 
     void saveUserProfile2B();
