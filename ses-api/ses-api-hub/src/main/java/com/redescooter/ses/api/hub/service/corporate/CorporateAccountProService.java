@@ -1,7 +1,7 @@
 package com.redescooter.ses.api.hub.service.corporate;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.hub.vo.UserProfileHubEnter;
+import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 
 /**
  * @ClassName:CorPorateAccountProService
@@ -16,5 +16,5 @@ public interface CorporateAccountProService {
      * @param enter
      * @return
      */
-    GeneralResult saveUserProfileHub(UserProfileHubEnter enter);
+    GeneralResult saveUserProfileHub(SaveUserProfileHubEnter enter);
 }

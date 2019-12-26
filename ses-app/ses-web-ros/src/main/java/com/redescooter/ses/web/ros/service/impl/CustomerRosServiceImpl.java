@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerAccountFlagEnum;
@@ -10,7 +9,18 @@ import com.redescooter.ses.api.common.enums.ros.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
@@ -342,6 +352,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult trash(TrashCustomerEnter enter) {
 
@@ -368,6 +379,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult change(IdEnter enter) {
 
@@ -398,6 +410,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @date: 2019/12/18 17:39
      * @Version: ROS 1.0
      */
+    @Transactional
     @Override
     public GeneralResult openAccount(OpenAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -576,6 +589,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult freezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -599,6 +613,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult unFreezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -621,6 +636,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult renewAccont(RenewAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -645,6 +661,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public VerificationCodeResult verificationCode(GeneralEnter enter) {
         // 定义 图片大小
@@ -667,6 +684,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult customerSetPassword(SetPasswordEnter enter) {
         // 数据校验
@@ -723,6 +741,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getAppId());
             baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_WEB.getSystemId());
         }
+        baseMailTaskEnter.setName(customer.getCustomerFullName());
         baseMailTaskEnter.setToMail(customer.getEmail());
         baseMailTaskEnter.setUserId(enter.getUserId());
         baseMailTaskEnter.setToUserId(enter.getUserId());
@@ -807,7 +826,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
     }
 
-    private String checkCustomerInformation(OpeCustomer customer) {
+    private Integer checkCustomerInformation(OpeCustomer customer) {
         // 个人客户为 14个 基本字段
         //企业客户为 16个基本字段
 
@@ -882,7 +901,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (!StringUtils.isBlank(customer.getContractAnnex())) {
             count++;
         }
-        return StatisticalUtil.percentageUtil(count, result);
+        return Integer.valueOf(StatisticalUtil.percentageUtil(count, result, 0));
     }
 
 }

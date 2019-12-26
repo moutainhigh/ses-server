@@ -1,7 +1,7 @@
 package com.redescooter.ses.api.hub.service.customer;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.hub.vo.UserProfileHubEnter;
+import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 
 /**
  * @ClassName:AccountProService
@@ -16,5 +16,5 @@ public interface ConsumerAccountProService {
      * @param enter
      * @return
      */
-    GeneralResult saveUserProfileHub(UserProfileHubEnter enter);
+    GeneralResult saveUserProfileHub(SaveUserProfileHubEnter enter);
 }

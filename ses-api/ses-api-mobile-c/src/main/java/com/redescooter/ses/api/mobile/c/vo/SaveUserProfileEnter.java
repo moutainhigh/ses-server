@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.hub.vo;
+package com.redescooter.ses.api.mobile.c.vo;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,30 +9,37 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName:UserProfileHubEnter
- * @description: UserProfileHubEnter
+ * @ClassName:SaveUserPofileEnter
+ * @description: SaveUserPofileEnter
  * @author: Alex
  * @Version：1.3
- * @create: 2019/12/23 15:28
+ * @create: 2019/12/23 16:45
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class UserProfileHubEnter extends GeneralEnter {
+public class SaveUserProfileEnter extends GeneralEnter {
+
+
+    /**
+     * 逻辑删除标识 0正常 1删除
+     */
+    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
+    private Integer dr;
 
     /**
      * 租户ID
      */
     @ApiModelProperty(value="租户ID")
-    private Long inputTenantId;
+    private Long tenantId;
 
     /**
      * 用户ID
      */
     @ApiModelProperty(value="用户ID")
-    private Long inputUserId;
+    private Long userId;
 
     /**
      * 姓
@@ -53,6 +60,12 @@ public class UserProfileHubEnter extends GeneralEnter {
     private String fullName;
 
     /**
+     * 照片
+     */
+    @ApiModelProperty(value="照片")
+    private String picture;
+
+    /**
      * 邮箱
      */
     @ApiModelProperty(value="邮箱")
@@ -64,6 +77,12 @@ public class UserProfileHubEnter extends GeneralEnter {
      */
     @ApiModelProperty(value="电话号")
     private String telNumber1;
+
+    /**
+     * 性别
+     */
+    @ApiModelProperty(value="性别")
+    private String gender;
 
     /**
      * 证件类型1身份证，2驾驶证，3护照

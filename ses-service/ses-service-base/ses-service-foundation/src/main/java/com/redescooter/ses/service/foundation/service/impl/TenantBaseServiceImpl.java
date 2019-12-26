@@ -27,6 +27,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +61,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public Long saveTenant(DateTimeParmEnter<BaseCustomerResult> enter) {
         // 保存租户
@@ -114,7 +116,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
                     .build();
             resultList.add(queryTenantNodeResult);
         });
-        return resultList;
+        return (ArrayList) resultList;
     }
 
     /**
@@ -123,6 +125,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult saveTenantConfig(SaveTenantConfigEnter enter) {
         PlaTenantConfig save = new PlaTenantConfig();

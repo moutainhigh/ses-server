@@ -2,7 +2,7 @@ package com.redescooter.ses.service.mobile.c.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
-import com.redescooter.ses.api.mobile.c.vo.SaveUserPofileEnter;
+import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 import com.redescooter.ses.service.mobile.c.constant.SequenceName;
 import com.redescooter.ses.service.mobile.c.dao.base.ConUserProfileMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
@@ -11,6 +11,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -36,11 +37,13 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
-    public GeneralResult saveUserPofile(SaveUserPofileEnter enter) {
+    public GeneralResult saveUserPofile(SaveUserProfileEnter enter) {
         ConUserProfile userProfile=new ConUserProfile();
         BeanUtils.copyProperties(enter,userProfile);
         userProfile.setId(idAppService.getId(SequenceName.CON_USER_PROFILE));
+        userProfile.setTenantId(enter.getTenantId());
         userProfile.setJoinDate(new Date());
         userProfile.setCreatedBy(enter.getUserId());
         userProfile.setCreatedTime(new Date());
