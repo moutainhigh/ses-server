@@ -56,6 +56,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         CorUserProfile userProfile = new CorUserProfile();
         BeanUtils.copyProperties(enter, userProfile);
         userProfile.setId(idAppService.getId(SequenceName.COR_USER_PROFILE));
+        userProfile.setTenantId(enter.getTenantId());
         userProfile.setJoinDate(new Date());
         userProfile.setCreatedBy(enter.getUserId());
         userProfile.setCreatedTime(new Date());

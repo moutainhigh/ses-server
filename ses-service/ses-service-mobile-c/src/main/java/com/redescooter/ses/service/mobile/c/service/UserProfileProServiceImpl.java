@@ -11,6 +11,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -36,11 +37,13 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult saveUserPofile(SaveUserProfileEnter enter) {
         ConUserProfile userProfile=new ConUserProfile();
         BeanUtils.copyProperties(enter,userProfile);
         userProfile.setId(idAppService.getId(SequenceName.CON_USER_PROFILE));
+        userProfile.setTenantId(enter.getTenantId());
         userProfile.setJoinDate(new Date());
         userProfile.setCreatedBy(enter.getUserId());
         userProfile.setCreatedTime(new Date());

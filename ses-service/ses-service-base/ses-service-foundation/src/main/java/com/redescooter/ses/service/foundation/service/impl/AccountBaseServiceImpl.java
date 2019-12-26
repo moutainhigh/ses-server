@@ -24,6 +24,7 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
+import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.AccountBaseServiceMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
@@ -111,6 +112,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public BaseUserResult open(DateTimeParmEnter<BaseCustomerResult> enter) {
         Boolean chectMail = chectMail(enter.getT().getEmail());
@@ -124,26 +126,27 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         //2、 创建账户
         Long userId = saveUserSingle(enter, tenantId);
         //3、 创建个人信息
-//        SaveUserProfileHubEnter saveUserProfileHubEnter = SaveUserProfileHubEnter.builder()
-//                .inputUserId(tenantId)
-//                .inputTenantId(userId)
-//                .firstName(enter.getT().getContactFirstName())
-//                .lastName(enter.getT().getCustomerLastName())
-//                .fullName(new StringBuilder().append(enter.getT().getContactFirstName()).append(" ").append(enter.getT().getCustomerLastName()).toString())
-//                .address(enter.getT().getAddress())
-//                .certificateType(enter.getT().getCertificateType())
-//                .certificateNegativeAnnex(enter.getT().getCertificateNegativeAnnex())
-//                .certificatePositiveAnnex(enter.getT().getCertificatePositiveAnnex())
-//                .telNumber1(enter.getT().getTelephone())
-//                .email1(enter.getT().getEmail())
-//                .build();
-//        saveUserProfileHubEnter.setUserId(enter.getUserId());
-//
-//        if (StringUtils.equals(enter.getT().getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
-//            userProfileService.saveUserProfile2C(saveUserProfileHubEnter);
-//        } else {
-//            userProfileService.saveUserProfile2B(saveUserProfileHubEnter);
-//        }
+        SaveUserProfileHubEnter saveUserProfileHubEnter = SaveUserProfileHubEnter.builder()
+                .inputUserId(tenantId)
+                .inputTenantId(userId)
+                .firstName(enter.getT().getCustomerFirstName())
+                .lastName(enter.getT().getCustomerLastName())
+                .fullName(new StringBuilder().append(enter.getT().getCustomerFirstName()).append(" ").append(enter.getT().getCustomerLastName()).toString())
+                .address(enter.getT().getAddress())
+                .certificateType(enter.getT().getCertificateType())
+                .certificateNegativeAnnex(enter.getT().getCertificateNegativeAnnex())
+                .certificatePositiveAnnex(enter.getT().getCertificatePositiveAnnex())
+                .telNumber1(enter.getT().getTelephone())
+                .email1(enter.getT().getEmail())
+                .build();
+        saveUserProfileHubEnter.setUserId(userId);
+        saveUserProfileHubEnter.setTenantId(tenantId);
+
+        if (StringUtils.equals(enter.getT().getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
+            userProfileService.saveUserProfile2C(saveUserProfileHubEnter);
+        } else {
+            userProfileService.saveUserProfile2B(saveUserProfileHubEnter);
+        }
 
 
         result.setId(userId);
@@ -227,6 +230,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult freeze(DateTimeParmEnter<BaseCustomerResult> enter) {
         int accountType = AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
@@ -288,6 +292,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult unFreezeAccount(DateTimeParmEnter<BaseCustomerResult> enter) {
         int accountType = AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
@@ -348,6 +353,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult renewAccont(DateTimeParmEnter<BaseCustomerResult> enter) {
         int accountType = AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
@@ -392,6 +398,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult setPassword(SetPasswordEnter<BaseCustomerResult> enter) {
         QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
@@ -439,7 +446,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         } else {
             //删除个人--2C信息 TODO
-
         }
 
         return new GeneralResult(enter.getRequestId());

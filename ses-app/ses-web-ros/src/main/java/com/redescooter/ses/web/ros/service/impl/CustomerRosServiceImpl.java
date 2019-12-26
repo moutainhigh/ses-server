@@ -337,6 +337,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult trash(TrashCustomerEnter enter) {
 
@@ -363,6 +364,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult change(IdEnter enter) {
 
@@ -393,6 +395,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @date: 2019/12/18 17:39
      * @Version: ROS 1.0
      */
+    @Transactional
     @Override
     public GeneralResult openAccount(OpenAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -565,6 +568,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult freezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -588,6 +592,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult unFreezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -610,6 +615,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult renewAccont(RenewAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -634,6 +640,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public VerificationCodeResult verificationCode(GeneralEnter enter) {
         // 定义 图片大小
@@ -656,6 +663,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult customerSetPassword(SetPasswordEnter enter) {
         // 数据校验
