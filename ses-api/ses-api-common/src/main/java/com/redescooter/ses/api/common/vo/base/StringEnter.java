@@ -5,9 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 /**
- * @description: KeywordEnter
+ * @description: BooleanResult
  * @author: Darren
- * @create: 2019/08/16 13:33
+ * @create: 2019/08/19 11:24
  */
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
@@ -17,5 +17,5 @@ import lombok.*;
 public class StringEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "值")
-    private String value;
+    private String st;
 }

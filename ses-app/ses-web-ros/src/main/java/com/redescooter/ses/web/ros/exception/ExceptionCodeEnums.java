@@ -67,6 +67,8 @@ public enum ExceptionCodeEnums {
 
     ACCOUNT_IS_NOT_EXIST(10025, "账户不存在"),
 
+    EMAIL_ALREADY_EXISTS(10026, "邮箱已存在"),
+
     //30之后是业务错误码
     FIRST_NAME_CANNOT_EMPTY(10030, "名字不能为空"),
 

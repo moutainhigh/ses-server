@@ -39,8 +39,8 @@ public class CustomerController {
 
     @PostMapping(value = "/checkMail")
     @ApiOperation(value = "邮箱验证", response = IntResult.class)
-    public Response<IntResult> checkMail(@ModelAttribute @ApiParam("邮箱") String mail) {
-        return new Response<>(customerRosService.checkMailCount(mail));
+    public Response<IntResult> checkMail(@ModelAttribute @ApiParam("邮箱") StringEnter enter ) {
+        return new Response<>(customerRosService.checkMailCount(enter));
     }
 
     @PostMapping(value = "/save")

@@ -108,13 +108,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     /**
      * 邮箱验证
      *
-     * @param mail
+     * @param enter
      * @return
      */
     @Override
-    public IntResult checkMailCount(String mail) {
+    public IntResult checkMailCount(StringEnter enter) {
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
-        wrapper.eq(OpeCustomer.COL_EMAIL, mail);
+        wrapper.eq(OpeCustomer.COL_EMAIL, enter.getSt());
         wrapper.eq(OpeCustomer.COL_DR, 0);
         Integer count = opeCustomerMapper.selectCount(wrapper);
 
@@ -195,9 +195,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult edit(EditCustomerEnter enter) {
 
+
+
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         if (customer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getCode(), ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getMessage());
+        }if(checkMailCount(new StringEnter(enter.getEmail())).getValue()>0){
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         if (customer.getStatus().equals(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
             //客户验证

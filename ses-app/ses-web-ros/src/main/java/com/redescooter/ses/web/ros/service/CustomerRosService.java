@@ -37,10 +37,10 @@ public interface CustomerRosService {
     /**
      * 邮箱验证
      *
-     * @param mail
+     * @param enter
      * @return
      */
-    IntResult checkMailCount(String mail);
+    IntResult checkMailCount(StringEnter enter);
 
     /**
      * 创建客户
