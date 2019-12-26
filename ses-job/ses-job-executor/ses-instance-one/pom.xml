@@ -37,10 +37,6 @@
                  <groupId>com.redescooter.ses</groupId>
                  <artifactId>ses-starter-swagger</artifactId>
              </exclusion>
-             <exclusion>
-                 <artifactId>commons-collections</artifactId>
-                 <groupId>commons-collections</groupId>
-             </exclusion>
          </exclusions>
         </dependency>
         <dependency>
@@ -103,20 +99,8 @@
             <version>${ses-app.version}</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>javassist</artifactId>
-                    <groupId>org.javassist</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>fastjson</artifactId>
-                    <groupId>com.alibaba</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>kryo</artifactId>
-                    <groupId>com.esotericsoftware</groupId>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
                 </exclusion>
             </exclusions>
         </dependency>

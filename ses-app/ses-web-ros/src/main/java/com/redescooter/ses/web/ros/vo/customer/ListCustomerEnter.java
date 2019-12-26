@@ -47,13 +47,13 @@ public class ListCustomerEnter extends PageEnter {
     @ApiModelProperty(value = "客户状态")
     private String status;
 
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATE_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATE_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
     @ApiModelProperty(value = "创建开始时间")
     private Date createStartDateTime;
 
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATE_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATE_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
     @ApiModelProperty(value = "创建结束时间")
     private Date createEndDateTime;
 
