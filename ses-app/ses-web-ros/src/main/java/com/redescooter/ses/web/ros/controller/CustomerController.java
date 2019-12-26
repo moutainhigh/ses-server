@@ -1,11 +1,6 @@
 package com.redescooter.ses.web.ros.controller;
 
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
@@ -43,9 +38,9 @@ public class CustomerController {
     private CustomerRosService customerRosService;
 
     @PostMapping(value = "/checkMail")
-    @ApiOperation(value = "邮箱验证", response = BooleanResult.class)
-    public Response<BooleanResult> checkMail(@ModelAttribute @ApiParam("邮箱") String mail) {
-        return new Response<>(customerRosService.checkMail(mail));
+    @ApiOperation(value = "邮箱验证", response = IntResult.class)
+    public Response<IntResult> checkMail(@ModelAttribute @ApiParam("邮箱") StringEnter enter ) {
+        return new Response<>(customerRosService.checkMailCount(enter));
     }
 
     @PostMapping(value = "/save")

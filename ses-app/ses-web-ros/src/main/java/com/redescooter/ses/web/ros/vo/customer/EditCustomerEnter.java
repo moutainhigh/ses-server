@@ -32,6 +32,9 @@ public class EditCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "区域")
     private Long distrust;
 
+    @ApiModelProperty(value = "邮箱")
+    private String email;
+
     @ApiModelProperty(value = "客户名字")
     private String customerFirstName;
 

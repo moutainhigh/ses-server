@@ -14,8 +14,8 @@ import lombok.*;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class StringEnter extends GeneralEnter {
+public class IntResult extends GeneralResult {
 
     @ApiModelProperty(value = "值")
-    private String st;
+    private int value;
 }
