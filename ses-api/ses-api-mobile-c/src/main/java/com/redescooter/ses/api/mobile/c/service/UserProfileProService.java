@@ -1,7 +1,7 @@
 package com.redescooter.ses.api.mobile.c.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.mobile.c.vo.SaveUserPofileEnter;
+import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 
 /**
  * @ClassName:UserProfileProService
@@ -16,5 +16,5 @@ public interface UserProfileProService {
      * @param enter
      * @return
      */
-    GeneralResult saveUserPofile(SaveUserPofileEnter enter);
+    GeneralResult saveUserPofile(SaveUserProfileEnter enter);
 }

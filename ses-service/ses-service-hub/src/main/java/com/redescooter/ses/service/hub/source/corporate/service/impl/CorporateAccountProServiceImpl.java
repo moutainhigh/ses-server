@@ -3,7 +3,7 @@ package com.redescooter.ses.service.hub.source.corporate.service.impl;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.corporate.CorporateAccountProService;
-import com.redescooter.ses.api.hub.vo.UserProfileHubEnter;
+import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.corporate.dao.CorUserProfileMapper;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile;
@@ -37,7 +37,7 @@ public class CorporateAccountProServiceImpl implements CorporateAccountProServic
      * @return
      */
     @Override
-    public GeneralResult saveUserProfileHub(UserProfileHubEnter enter) {
+    public GeneralResult saveUserProfileHub(SaveUserProfileHubEnter enter) {
         CorUserProfile corUserProfile = new CorUserProfile();
         corUserProfile.setId(idAppService.getId(SequenceName.COR_USER_PROFILE));
         corUserProfile.setDr(0);

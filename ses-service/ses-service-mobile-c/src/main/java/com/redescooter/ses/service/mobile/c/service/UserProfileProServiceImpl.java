@@ -2,7 +2,7 @@ package com.redescooter.ses.service.mobile.c.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
-import com.redescooter.ses.api.mobile.c.vo.SaveUserPofileEnter;
+import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 import com.redescooter.ses.service.mobile.c.constant.SequenceName;
 import com.redescooter.ses.service.mobile.c.dao.base.ConUserProfileMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
@@ -37,7 +37,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      * @return
      */
     @Override
-    public GeneralResult saveUserPofile(SaveUserPofileEnter enter) {
+    public GeneralResult saveUserPofile(SaveUserProfileEnter enter) {
         ConUserProfile userProfile=new ConUserProfile();
         BeanUtils.copyProperties(enter,userProfile);
         userProfile.setId(idAppService.getId(SequenceName.CON_USER_PROFILE));

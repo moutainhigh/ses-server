@@ -3,9 +3,9 @@ package com.redescooter.ses.service.hub.source.consumer.service.impl;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.customer.ConsumerAccountProService;
-import com.redescooter.ses.api.hub.vo.UserProfileHubEnter;
+import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
-import com.redescooter.ses.api.mobile.c.vo.SaveUserPofileEnter;
+import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -31,9 +31,9 @@ public class ConsumerAccountProServiceImpl implements ConsumerAccountProService 
      * @return
      */
     @Override
-    public GeneralResult saveUserProfileHub(UserProfileHubEnter enter) {
-        SaveUserPofileEnter saveUserPofileEnter = new SaveUserPofileEnter();
-        BeanUtils.copyProperties(enter,saveUserPofileEnter);
-        return userProfileProService.saveUserPofile(saveUserPofileEnter);
+    public GeneralResult saveUserProfileHub(SaveUserProfileHubEnter enter) {
+        SaveUserProfileEnter saveUserProfileEnter = new SaveUserProfileEnter();
+        BeanUtils.copyProperties(enter, saveUserProfileEnter);
+        return userProfileProService.saveUserPofile(saveUserProfileEnter);
     }
 }

@@ -23,9 +23,8 @@ import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
-import com.redescooter.ses.api.hub.service.corporate.CorporateAccountProService;
-import com.redescooter.ses.api.hub.service.customer.ConsumerAccountProService;
-import com.redescooter.ses.api.hub.vo.UserProfileHubEnter;
+import com.redescooter.ses.api.hub.common.UserProfileService;
+import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.AccountBaseServiceMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
@@ -104,10 +103,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     private MailMultiTaskService mailMultiTaskService;
 
     @Reference
-    private CorporateAccountProService corporateAccountProService;
-
-    @Reference
-    private ConsumerAccountProService consumerAccountProService;
+    private UserProfileService userProfileService;
 
 
     /**
@@ -129,7 +125,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         //2、 创建账户
         Long userId = saveUserSingle(enter, tenantId);
         //3、 创建个人信息
-        UserProfileHubEnter userProfileHubEnter = UserProfileHubEnter.builder()
+        SaveUserProfileHubEnter saveUserProfileHubEnter = SaveUserProfileHubEnter.builder()
                 .inputUserId(tenantId)
                 .inputTenantId(userId)
                 .firstName(enter.getT().getContactFirstName())
@@ -142,7 +138,14 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                 .telNumber1(enter.getT().getTelephone())
                 .email1(enter.getT().getEmail())
                 .build();
-        userProfileHubEnter.setUserId(enter.getUserId());
+        saveUserProfileHubEnter.setUserId(enter.getUserId());
+
+        if (StringUtils.equals(enter.getT().getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
+            userProfileService.saveUserProfile2C(saveUserProfileHubEnter);
+        } else {
+            userProfileService.saveUserProfile2B(saveUserProfileHubEnter);
+        }
+
 
         result.setId(userId);
         result.setTenantId(tenantId);
