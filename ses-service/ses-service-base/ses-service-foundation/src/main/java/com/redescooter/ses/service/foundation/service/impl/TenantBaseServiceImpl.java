@@ -114,7 +114,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
                     .build();
             resultList.add(queryTenantNodeResult);
         });
-        return resultList;
+        return (ArrayList) resultList;
     }
 
     /**
