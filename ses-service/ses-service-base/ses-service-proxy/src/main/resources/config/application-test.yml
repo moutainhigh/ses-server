@@ -1,14 +1,14 @@
 #日志路径
 log:
   file:
-    path: /data/java_service/logs2/@profile-active@
+    path: /data/java_service/logs3/@profile-active@
     max-size: 128MB
     max-history: 180
 
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://192.168.2.200:3306/platform_1213?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://192.168.2.200:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
     druid:
@@ -30,7 +30,7 @@ spring:
 # DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:32181
+    address: zookeeper://192.168.2.200:2181
 
 
 

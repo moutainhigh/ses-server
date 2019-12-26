@@ -118,6 +118,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      */
     @Override
     public BaseUserResult open(DateTimeParmEnter<BaseCustomerResult> enter) {
+        Boolean chectMail = chectMail(enter.getT().getEmail());
+        if (!chectMail) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        }
         BaseUserResult result = new BaseUserResult();
         // 开通账户
         //1、 创建租户

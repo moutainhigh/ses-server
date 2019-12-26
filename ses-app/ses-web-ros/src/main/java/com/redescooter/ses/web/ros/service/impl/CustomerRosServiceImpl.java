@@ -161,6 +161,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         saveVo.setCustomerSource(CustomerSourceEnum.SYSTEM.getValue());
         if (enter.getCustomerType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
             saveVo.setContactFullName(new StringBuffer().append(saveVo.getContactFirstName()).append(" ").append(saveVo.getContactLastName()).toString());
+            // 企业个人信息 也要赋值给客户的名字
+            saveVo.setCustomerFirstName(saveVo.getContactFirstName());
+            saveVo.setCustomerLastName(saveVo.getContactLastName());
+            saveVo.setCustomerFullName(saveVo.getContactFullName());
         } else {
             saveVo.setCustomerFullName(new StringBuffer().append(saveVo.getCustomerFirstName()).append(" ").append(saveVo.getCustomerLastName()).toString());
         }
@@ -353,7 +357,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (opeCustomer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
-        if (opeCustomer.getStatus().equals(CustomerAccountFlagEnum.NORMAL.getValue()) || opeCustomer.getStatus().equals(CustomerAccountFlagEnum.INACTIVATED.getValue())) {
+        if (opeCustomer.getAccountFlag().equals(CustomerAccountFlagEnum.INACTIVATED.getValue())) {
             accountBaseService.deleteUserbyTenantId(IdEnter.builder().id(opeCustomer.getTenantId()).build());
         }
         OpeCustomer update = new OpeCustomer();
@@ -566,7 +570,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 .customerFullName(opeCustomer.getCustomerFullName())
                 .companyName(opeCustomer.getCompanyName())
                 .industryType(opeCustomer.getIndustryType())
-                .status(opeCustomer.getStatus())
+                .status(queryTenantResult.getStatus())
                 .email(opeCustomer.getEmail())
                 .activationTime(DateUtil.getTimeStr(queryTenantResult.getEffectiveTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
                 .expireTime(DateUtil.getTimeStr(queryTenantResult.getExpireTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
