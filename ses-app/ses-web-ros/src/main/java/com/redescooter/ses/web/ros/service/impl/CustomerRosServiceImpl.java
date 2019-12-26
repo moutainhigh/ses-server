@@ -195,8 +195,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult edit(EditCustomerEnter enter) {
 
-
-
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         if (customer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getCode(), ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getMessage());
