@@ -68,7 +68,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
 
         // 租户节点
         enter.getT().setTenantId(plaTenant.getId());
-        saveTenantNode(enter,TenanNodeEvent.CREAT.getValue());
+        saveTenantNode(enter, TenanNodeEvent.CREAT.getValue());
         // 租户配置
         SaveTenantConfigEnter saveTenantConfigEnter = SaveTenantConfigEnter.builder().inputTenantId(plaTenant.getId()).tenantDefaultConfig(Boolean.TRUE).build();
         saveTenantConfig(saveTenantConfigEnter);
@@ -83,8 +83,8 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @return
      */
     @Override
-    public GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter,String event) {
-        PlaTenantNode plaTenantNode = buildPlaTenantNodeSingle(enter,event);
+    public GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter, String event) {
+        PlaTenantNode plaTenantNode = buildPlaTenantNodeSingle(enter, event);
         plaTenantNodeMapper.insert(plaTenantNode);
         return new GeneralResult(enter.getRequestId());
     }
@@ -98,11 +98,12 @@ public class TenantBaseServiceImpl implements TenantBaseService {
     @Override
     public List<QueryTenantNodeResult> queryTenantNdoe(IdEnter enter) {
         QueryWrapper<PlaTenantNode> plaTenantNodeQueryWrapper = new QueryWrapper<>();
-        plaTenantNodeQueryWrapper.eq(PlaTenantNode.COL_TENANT_ID,enter.getId());
+        plaTenantNodeQueryWrapper.eq(PlaTenantNode.COL_TENANT_ID, enter.getId());
+        plaTenantNodeQueryWrapper.orderByAsc(PlaTenantNode.COL_CREATE_TIME);
         List<PlaTenantNode> plaTenantNodeList = plaTenantNodeMapper.selectList(plaTenantNodeQueryWrapper);
 
-        List<QueryTenantNodeResult> resultList=new ArrayList<>();
-        plaTenantNodeList.forEach(item->{
+        List<QueryTenantNodeResult> resultList = new ArrayList<>();
+        plaTenantNodeList.forEach(item -> {
             QueryTenantNodeResult queryTenantNodeResult = QueryTenantNodeResult.builder()
                     .id(item.getId())
                     .event(item.getEvent())
@@ -168,11 +169,11 @@ public class TenantBaseServiceImpl implements TenantBaseService {
     @Override
     public QueryTenantResult queryTenantById(IdEnter enter) {
         PlaTenant plaTenant = plaTenantMapper.selectById(enter.getId());
-        if (plaTenant==null){
-            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+        if (plaTenant == null) {
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
-        QueryTenantResult result=new QueryTenantResult();
-        BeanUtils.copyProperties(plaTenant,result);
+        QueryTenantResult result = new QueryTenantResult();
+        BeanUtils.copyProperties(plaTenant, result);
         return result;
     }
 
@@ -200,8 +201,8 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         return tenantConfig;
     }
 
-    private PlaTenantNode buildPlaTenantNodeSingle(DateTimeParmEnter<BaseCustomerResult> enter,String event) {
-        PlaTenantNode plaTenantNode=new PlaTenantNode();
+    private PlaTenantNode buildPlaTenantNodeSingle(DateTimeParmEnter<BaseCustomerResult> enter, String event) {
+        PlaTenantNode plaTenantNode = new PlaTenantNode();
         plaTenantNode.setId(idAppService.getId(SequenceName.PLA_TENANT_NODE));
         plaTenantNode.setDr(0);
         plaTenantNode.setTenantId(enter.getT().getTenantId());
@@ -216,7 +217,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
     }
 
     private PlaTenant buildTenantSingle(DateTimeParmEnter<BaseCustomerResult> enter) {
-        PlaTenant plaTenant=new PlaTenant();
+        PlaTenant plaTenant = new PlaTenant();
         plaTenant.setId(idAppService.getId(SequenceName.PLA_TENANT));
         plaTenant.setDr(0);
         plaTenant.setPId(0L);
