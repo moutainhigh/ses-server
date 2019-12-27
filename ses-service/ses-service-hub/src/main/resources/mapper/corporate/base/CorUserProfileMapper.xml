@@ -3,48 +3,51 @@
 <mapper namespace="com.redescooter.ses.service.hub.source.corporate.dao.CorUserProfileMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile">
     <!--@mbg.generated-->
-    <id column="id" property="id" />
-    <result column="dr" property="dr" />
-    <result column="tenant_id" property="tenantId" />
-    <result column="user_id" property="userId" />
-    <result column="is_master" property="isMaster" />
-    <result column="picture" property="picture" />
-    <result column="first_name" property="firstName" />
-    <result column="last_name" property="lastName" />
-    <result column="full_name" property="fullName" />
-    <result column="email_1" property="email1" />
-    <result column="email_2" property="email2" />
-    <result column="email_3" property="email3" />
-    <result column="tel_number_1" property="telNumber1" />
-    <result column="tel_number_2" property="telNumber2" />
-    <result column="tel_number_3" property="telNumber3" />
-    <result column="gender" property="gender" />
-    <result column="birthday" property="birthday" />
-    <result column="CERTIFICATE_TYPE" property="certificateType" />
-    <result column="CERTIFICATE_NEGATIVE_ANNEX" property="certificateNegativeAnnex" />
-    <result column="CERTIFICATE_POSITIVE_ANNEX" property="certificatePositiveAnnex" />
-    <result column="role" property="role" />
-    <result column="page_boot_tips" property="pageBootTips" />
-    <result column="place_birth" property="placeBirth" />
-    <result column="join_date" property="joinDate" />
-    <result column="time_zone" property="timeZone" />
-    <result column="created_by" property="createdBy" />
-    <result column="created_time" property="createdTime" />
-    <result column="updated_by" property="updatedBy" />
-    <result column="updated_time" property="updatedTime" />
-    <result column="def1" property="def1" />
-    <result column="def2" property="def2" />
-    <result column="def3" property="def3" />
-    <result column="def5" property="def5" />
-    <result column="def6" property="def6" />
+    <id column="id" jdbcType="BIGINT" property="id"/>
+    <result column="dr" jdbcType="INTEGER" property="dr"/>
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+    <result column="user_id" jdbcType="BIGINT" property="userId"/>
+    <result column="is_master" jdbcType="INTEGER" property="isMaster"/>
+    <result column="picture" jdbcType="VARCHAR" property="picture"/>
+    <result column="first_name" jdbcType="VARCHAR" property="firstName"/>
+    <result column="last_name" jdbcType="VARCHAR" property="lastName"/>
+    <result column="full_name" jdbcType="VARCHAR" property="fullName"/>
+    <result column="email_1" jdbcType="VARCHAR" property="email1"/>
+    <result column="email_2" jdbcType="VARCHAR" property="email2"/>
+    <result column="email_3" jdbcType="VARCHAR" property="email3"/>
+    <result column="tel_number_1" jdbcType="VARCHAR" property="telNumber1"/>
+    <result column="country_code_1" jdbcType="VARCHAR" property="countryCode1"/>
+    <result column="tel_number_2" jdbcType="VARCHAR" property="telNumber2"/>
+    <result column="country_code_2" jdbcType="VARCHAR" property="countryCode2"/>
+    <result column="tel_number_3" jdbcType="VARCHAR" property="telNumber3"/>
+    <result column="country_code_3" jdbcType="VARCHAR" property="countryCode3"/>
+    <result column="gender" jdbcType="VARCHAR" property="gender"/>
+    <result column="birthday" jdbcType="DATE" property="birthday"/>
+    <result column="CERTIFICATE_TYPE" jdbcType="VARCHAR" property="certificateType"/>
+    <result column="CERTIFICATE_NEGATIVE_ANNEX" jdbcType="VARCHAR" property="certificateNegativeAnnex"/>
+    <result column="CERTIFICATE_POSITIVE_ANNEX" jdbcType="VARCHAR" property="certificatePositiveAnnex"/>
+    <result column="role" jdbcType="VARCHAR" property="role"/>
+    <result column="page_boot_tips" jdbcType="BOOLEAN" property="pageBootTips"/>
+    <result column="place_birth" jdbcType="VARCHAR" property="placeBirth"/>
+    <result column="join_date" jdbcType="DATE" property="joinDate"/>
+    <result column="time_zone" jdbcType="VARCHAR" property="timeZone"/>
+    <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+    <result column="def1" jdbcType="VARCHAR" property="def1"/>
+    <result column="def2" jdbcType="VARCHAR" property="def2"/>
+    <result column="def3" jdbcType="VARCHAR" property="def3"/>
+    <result column="def5" jdbcType="VARCHAR" property="def5"/>
+    <result column="def6" jdbcType="DOUBLE" property="def6"/>
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, tenant_id, user_id, is_master, picture, first_name, last_name, full_name, 
-    email_1, email_2, email_3, tel_number_1, tel_number_2, tel_number_3, gender, birthday, 
-    CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `role`, 
-    page_boot_tips, place_birth, join_date, time_zone, created_by, created_time, updated_by, 
-    updated_time, def1, def2, def3, def5, def6
+    id, dr, tenant_id, user_id, is_master, picture, first_name, last_name, full_name,
+    email_1, email_2, email_3, tel_number_1, country_code_1, tel_number_2, country_code_2,
+    tel_number_3, country_code_3, gender, birthday, CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX,
+    CERTIFICATE_POSITIVE_ANNEX, `role`, page_boot_tips, place_birth, join_date, time_zone,
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -52,244 +55,276 @@
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.dr}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="tenant_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.tenantId}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="user_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.userId}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="is_master = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.isMaster}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.isMaster,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="picture = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.picture}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.picture,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="first_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.firstName}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.firstName,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="last_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.lastName}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.lastName,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="full_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.fullName}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.fullName,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="email_1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.email1}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.email1,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="email_2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.email2}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.email2,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="email_3 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.email3}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.email3,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="tel_number_1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.telNumber1}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.telNumber1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country_code_1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode1,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="tel_number_2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.telNumber2}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.telNumber2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country_code_2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode2,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="tel_number_3 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.telNumber3}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.telNumber3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country_code_3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode3,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="gender = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.gender}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.gender,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="birthday = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.birthday}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.birthday,jdbcType=DATE}
         </foreach>
       </trim>
       <trim prefix="CERTIFICATE_TYPE = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.certificateType}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="CERTIFICATE_NEGATIVE_ANNEX = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.certificateNegativeAnnex}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.certificateNegativeAnnex,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="CERTIFICATE_POSITIVE_ANNEX = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.certificatePositiveAnnex}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.certificatePositiveAnnex,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="`role` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.role}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.role,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="page_boot_tips = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.pageBootTips}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.pageBootTips,jdbcType=BOOLEAN}
         </foreach>
       </trim>
       <trim prefix="place_birth = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.placeBirth}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.placeBirth,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="join_date = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.joinDate}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.joinDate,jdbcType=DATE}
         </foreach>
       </trim>
       <trim prefix="time_zone = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.timeZone}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.timeZone,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.createdBy}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="created_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.createdTime}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.updatedBy}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.updatedTime}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="def1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def1}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def2}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def3 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def3}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def5 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def5}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def6 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def6}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
         </foreach>
       </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id}
+      #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into cor_user_profile
-    (id, dr, tenant_id, user_id, is_master, picture, first_name, last_name, full_name, 
-      email_1, email_2, email_3, tel_number_1, tel_number_2, tel_number_3, gender, birthday, 
-      CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `role`, 
-      page_boot_tips, place_birth, join_date, time_zone, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def5, def6)
+    (id, dr, tenant_id, user_id, is_master, picture, first_name, last_name, full_name,
+    email_1, email_2, email_3, tel_number_1, country_code_1, tel_number_2, country_code_2,
+    tel_number_3, country_code_3, gender, birthday, CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX,
+    CERTIFICATE_POSITIVE_ANNEX, `role`, page_boot_tips, place_birth, join_date, time_zone,
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    )
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.userId}, #{item.isMaster}, #{item.picture}, 
-        #{item.firstName}, #{item.lastName}, #{item.fullName}, #{item.email1}, #{item.email2}, 
-        #{item.email3}, #{item.telNumber1}, #{item.telNumber2}, #{item.telNumber3}, #{item.gender}, 
-        #{item.birthday}, #{item.certificateType}, #{item.certificateNegativeAnnex}, #{item.certificatePositiveAnnex}, 
-        #{item.role}, #{item.pageBootTips}, #{item.placeBirth}, #{item.joinDate}, #{item.timeZone}, 
-        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
-        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
+      #{item.userId,jdbcType=BIGINT}, #{item.isMaster,jdbcType=INTEGER}, #{item.picture,jdbcType=VARCHAR},
+      #{item.firstName,jdbcType=VARCHAR}, #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR},
+      #{item.email1,jdbcType=VARCHAR}, #{item.email2,jdbcType=VARCHAR}, #{item.email3,jdbcType=VARCHAR},
+      #{item.telNumber1,jdbcType=VARCHAR}, #{item.countryCode1,jdbcType=VARCHAR}, #{item.telNumber2,jdbcType=VARCHAR},
+      #{item.countryCode2,jdbcType=VARCHAR}, #{item.telNumber3,jdbcType=VARCHAR}, #{item.countryCode3,jdbcType=VARCHAR},
+      #{item.gender,jdbcType=VARCHAR}, #{item.birthday,jdbcType=DATE}, #{item.certificateType,jdbcType=VARCHAR},
+      #{item.certificateNegativeAnnex,jdbcType=VARCHAR}, #{item.certificatePositiveAnnex,jdbcType=VARCHAR},
+      #{item.role,jdbcType=VARCHAR}, #{item.pageBootTips,jdbcType=BOOLEAN}, #{item.placeBirth,jdbcType=VARCHAR},
+      #{item.joinDate,jdbcType=DATE}, #{item.timeZone,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
+      #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+      #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
+      #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile">
     <!--@mbg.generated-->
     insert into cor_user_profile
-    (id, dr, tenant_id, user_id, is_master, picture, first_name, last_name, full_name, 
-      email_1, email_2, email_3, tel_number_1, tel_number_2, tel_number_3, gender, birthday, 
-      CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `role`, 
-      page_boot_tips, place_birth, join_date, time_zone, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def5, def6)
+    (id, dr, tenant_id, user_id, is_master, picture, first_name, last_name, full_name,
+    email_1, email_2, email_3, tel_number_1, country_code_1, tel_number_2, country_code_2,
+    tel_number_3, country_code_3, gender, birthday, CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX,
+    CERTIFICATE_POSITIVE_ANNEX, `role`, page_boot_tips, place_birth, join_date, time_zone,
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    )
     values
-    (#{id}, #{dr}, #{tenantId}, #{userId}, #{isMaster}, #{picture}, #{firstName}, #{lastName}, 
-      #{fullName}, #{email1}, #{email2}, #{email3}, #{telNumber1}, #{telNumber2}, #{telNumber3}, 
-      #{gender}, #{birthday}, #{certificateType}, #{certificateNegativeAnnex}, #{certificatePositiveAnnex}, 
-      #{role}, #{pageBootTips}, #{placeBirth}, #{joinDate}, #{timeZone}, #{createdBy}, 
-      #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, 
-      #{def6})
-    on duplicate key update 
-    id = #{id}, 
-    dr = #{dr}, 
-    tenant_id = #{tenantId}, 
-    user_id = #{userId}, 
-    is_master = #{isMaster}, 
-    picture = #{picture}, 
-    first_name = #{firstName}, 
-    last_name = #{lastName}, 
-    full_name = #{fullName}, 
-    email_1 = #{email1}, 
-    email_2 = #{email2}, 
-    email_3 = #{email3}, 
-    tel_number_1 = #{telNumber1}, 
-    tel_number_2 = #{telNumber2}, 
-    tel_number_3 = #{telNumber3}, 
-    gender = #{gender}, 
-    birthday = #{birthday}, 
-    CERTIFICATE_TYPE = #{certificateType}, 
-    CERTIFICATE_NEGATIVE_ANNEX = #{certificateNegativeAnnex}, 
-    CERTIFICATE_POSITIVE_ANNEX = #{certificatePositiveAnnex}, 
-    `role` = #{role}, 
-    page_boot_tips = #{pageBootTips}, 
-    place_birth = #{placeBirth}, 
-    join_date = #{joinDate}, 
-    time_zone = #{timeZone}, 
-    created_by = #{createdBy}, 
-    created_time = #{createdTime}, 
-    updated_by = #{updatedBy}, 
-    updated_time = #{updatedTime}, 
-    def1 = #{def1}, 
-    def2 = #{def2}, 
-    def3 = #{def3}, 
-    def5 = #{def5}, 
-    def6 = #{def6}
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
+    #{isMaster,jdbcType=INTEGER}, #{picture,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR},
+    #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{email1,jdbcType=VARCHAR},
+    #{email2,jdbcType=VARCHAR}, #{email3,jdbcType=VARCHAR}, #{telNumber1,jdbcType=VARCHAR},
+    #{countryCode1,jdbcType=VARCHAR}, #{telNumber2,jdbcType=VARCHAR}, #{countryCode2,jdbcType=VARCHAR},
+    #{telNumber3,jdbcType=VARCHAR}, #{countryCode3,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR},
+    #{birthday,jdbcType=DATE}, #{certificateType,jdbcType=VARCHAR}, #{certificateNegativeAnnex,jdbcType=VARCHAR},
+    #{certificatePositiveAnnex,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}, #{pageBootTips,jdbcType=BOOLEAN},
+    #{placeBirth,jdbcType=VARCHAR}, #{joinDate,jdbcType=DATE}, #{timeZone,jdbcType=VARCHAR},
+    #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+    #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
+    #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    tenant_id = #{tenantId,jdbcType=BIGINT},
+    user_id = #{userId,jdbcType=BIGINT},
+    is_master = #{isMaster,jdbcType=INTEGER},
+    picture = #{picture,jdbcType=VARCHAR},
+    first_name = #{firstName,jdbcType=VARCHAR},
+    last_name = #{lastName,jdbcType=VARCHAR},
+    full_name = #{fullName,jdbcType=VARCHAR},
+    email_1 = #{email1,jdbcType=VARCHAR},
+    email_2 = #{email2,jdbcType=VARCHAR},
+    email_3 = #{email3,jdbcType=VARCHAR},
+    tel_number_1 = #{telNumber1,jdbcType=VARCHAR},
+    country_code_1 = #{countryCode1,jdbcType=VARCHAR},
+    tel_number_2 = #{telNumber2,jdbcType=VARCHAR},
+    country_code_2 = #{countryCode2,jdbcType=VARCHAR},
+    tel_number_3 = #{telNumber3,jdbcType=VARCHAR},
+    country_code_3 = #{countryCode3,jdbcType=VARCHAR},
+    gender = #{gender,jdbcType=VARCHAR},
+    birthday = #{birthday,jdbcType=DATE},
+    CERTIFICATE_TYPE = #{certificateType,jdbcType=VARCHAR},
+    CERTIFICATE_NEGATIVE_ANNEX = #{certificateNegativeAnnex,jdbcType=VARCHAR},
+    CERTIFICATE_POSITIVE_ANNEX = #{certificatePositiveAnnex,jdbcType=VARCHAR},
+    `role` = #{role,jdbcType=VARCHAR},
+    page_boot_tips = #{pageBootTips,jdbcType=BOOLEAN},
+    place_birth = #{placeBirth,jdbcType=VARCHAR},
+    join_date = #{joinDate,jdbcType=DATE},
+    time_zone = #{timeZone,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def5 = #{def5,jdbcType=VARCHAR},
+    def6 = #{def6,jdbcType=DOUBLE}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile">
     <!--@mbg.generated-->
@@ -334,11 +369,20 @@
       <if test="telNumber1 != null">
         tel_number_1,
       </if>
+      <if test="countryCode1 != null">
+        country_code_1,
+      </if>
       <if test="telNumber2 != null">
         tel_number_2,
       </if>
+      <if test="countryCode2 != null">
+        country_code_2,
+      </if>
       <if test="telNumber3 != null">
         tel_number_3,
+      </if>
+      <if test="countryCode3 != null">
+        country_code_3,
       </if>
       <if test="gender != null">
         gender,
@@ -401,211 +445,229 @@
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
-        #{dr},
+        #{dr,jdbcType=INTEGER},
       </if>
       <if test="tenantId != null">
-        #{tenantId},
+        #{tenantId,jdbcType=BIGINT},
       </if>
       <if test="userId != null">
-        #{userId},
+        #{userId,jdbcType=BIGINT},
       </if>
       <if test="isMaster != null">
-        #{isMaster},
+        #{isMaster,jdbcType=INTEGER},
       </if>
       <if test="picture != null">
-        #{picture},
+        #{picture,jdbcType=VARCHAR},
       </if>
       <if test="firstName != null">
-        #{firstName},
+        #{firstName,jdbcType=VARCHAR},
       </if>
       <if test="lastName != null">
-        #{lastName},
+        #{lastName,jdbcType=VARCHAR},
       </if>
       <if test="fullName != null">
-        #{fullName},
+        #{fullName,jdbcType=VARCHAR},
       </if>
       <if test="email1 != null">
-        #{email1},
+        #{email1,jdbcType=VARCHAR},
       </if>
       <if test="email2 != null">
-        #{email2},
+        #{email2,jdbcType=VARCHAR},
       </if>
       <if test="email3 != null">
-        #{email3},
+        #{email3,jdbcType=VARCHAR},
       </if>
       <if test="telNumber1 != null">
-        #{telNumber1},
+        #{telNumber1,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode1 != null">
+        #{countryCode1,jdbcType=VARCHAR},
       </if>
       <if test="telNumber2 != null">
-        #{telNumber2},
+        #{telNumber2,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode2 != null">
+        #{countryCode2,jdbcType=VARCHAR},
       </if>
       <if test="telNumber3 != null">
-        #{telNumber3},
+        #{telNumber3,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode3 != null">
+        #{countryCode3,jdbcType=VARCHAR},
       </if>
       <if test="gender != null">
-        #{gender},
+        #{gender,jdbcType=VARCHAR},
       </if>
       <if test="birthday != null">
-        #{birthday},
+        #{birthday,jdbcType=DATE},
       </if>
       <if test="certificateType != null">
-        #{certificateType},
+        #{certificateType,jdbcType=VARCHAR},
       </if>
       <if test="certificateNegativeAnnex != null">
-        #{certificateNegativeAnnex},
+        #{certificateNegativeAnnex,jdbcType=VARCHAR},
       </if>
       <if test="certificatePositiveAnnex != null">
-        #{certificatePositiveAnnex},
+        #{certificatePositiveAnnex,jdbcType=VARCHAR},
       </if>
       <if test="role != null">
-        #{role},
+        #{role,jdbcType=VARCHAR},
       </if>
       <if test="pageBootTips != null">
-        #{pageBootTips},
+        #{pageBootTips,jdbcType=BOOLEAN},
       </if>
       <if test="placeBirth != null">
-        #{placeBirth},
+        #{placeBirth,jdbcType=VARCHAR},
       </if>
       <if test="joinDate != null">
-        #{joinDate},
+        #{joinDate,jdbcType=DATE},
       </if>
       <if test="timeZone != null">
-        #{timeZone},
+        #{timeZone,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        #{createdBy},
+        #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="createdTime != null">
-        #{createdTime},
+        #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy},
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
-        #{updatedTime},
+        #{updatedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="def1 != null">
-        #{def1},
+        #{def1,jdbcType=VARCHAR},
       </if>
       <if test="def2 != null">
-        #{def2},
+        #{def2,jdbcType=VARCHAR},
       </if>
       <if test="def3 != null">
-        #{def3},
+        #{def3,jdbcType=VARCHAR},
       </if>
       <if test="def5 != null">
-        #{def5},
+        #{def5,jdbcType=VARCHAR},
       </if>
       <if test="def6 != null">
-        #{def6},
+        #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
-        id = #{id},
+        id = #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
-        dr = #{dr},
+        dr = #{dr,jdbcType=INTEGER},
       </if>
       <if test="tenantId != null">
-        tenant_id = #{tenantId},
+        tenant_id = #{tenantId,jdbcType=BIGINT},
       </if>
       <if test="userId != null">
-        user_id = #{userId},
+        user_id = #{userId,jdbcType=BIGINT},
       </if>
       <if test="isMaster != null">
-        is_master = #{isMaster},
+        is_master = #{isMaster,jdbcType=INTEGER},
       </if>
       <if test="picture != null">
-        picture = #{picture},
+        picture = #{picture,jdbcType=VARCHAR},
       </if>
       <if test="firstName != null">
-        first_name = #{firstName},
+        first_name = #{firstName,jdbcType=VARCHAR},
       </if>
       <if test="lastName != null">
-        last_name = #{lastName},
+        last_name = #{lastName,jdbcType=VARCHAR},
       </if>
       <if test="fullName != null">
-        full_name = #{fullName},
+        full_name = #{fullName,jdbcType=VARCHAR},
       </if>
       <if test="email1 != null">
-        email_1 = #{email1},
+        email_1 = #{email1,jdbcType=VARCHAR},
       </if>
       <if test="email2 != null">
-        email_2 = #{email2},
+        email_2 = #{email2,jdbcType=VARCHAR},
       </if>
       <if test="email3 != null">
-        email_3 = #{email3},
+        email_3 = #{email3,jdbcType=VARCHAR},
       </if>
       <if test="telNumber1 != null">
-        tel_number_1 = #{telNumber1},
+        tel_number_1 = #{telNumber1,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode1 != null">
+        country_code_1 = #{countryCode1,jdbcType=VARCHAR},
       </if>
       <if test="telNumber2 != null">
-        tel_number_2 = #{telNumber2},
+        tel_number_2 = #{telNumber2,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode2 != null">
+        country_code_2 = #{countryCode2,jdbcType=VARCHAR},
       </if>
       <if test="telNumber3 != null">
-        tel_number_3 = #{telNumber3},
+        tel_number_3 = #{telNumber3,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode3 != null">
+        country_code_3 = #{countryCode3,jdbcType=VARCHAR},
       </if>
       <if test="gender != null">
-        gender = #{gender},
+        gender = #{gender,jdbcType=VARCHAR},
       </if>
       <if test="birthday != null">
-        birthday = #{birthday},
+        birthday = #{birthday,jdbcType=DATE},
       </if>
       <if test="certificateType != null">
-        CERTIFICATE_TYPE = #{certificateType},
+        CERTIFICATE_TYPE = #{certificateType,jdbcType=VARCHAR},
       </if>
       <if test="certificateNegativeAnnex != null">
-        CERTIFICATE_NEGATIVE_ANNEX = #{certificateNegativeAnnex},
+        CERTIFICATE_NEGATIVE_ANNEX = #{certificateNegativeAnnex,jdbcType=VARCHAR},
       </if>
       <if test="certificatePositiveAnnex != null">
-        CERTIFICATE_POSITIVE_ANNEX = #{certificatePositiveAnnex},
+        CERTIFICATE_POSITIVE_ANNEX = #{certificatePositiveAnnex,jdbcType=VARCHAR},
       </if>
       <if test="role != null">
-        `role` = #{role},
+        `role` = #{role,jdbcType=VARCHAR},
       </if>
       <if test="pageBootTips != null">
-        page_boot_tips = #{pageBootTips},
+        page_boot_tips = #{pageBootTips,jdbcType=BOOLEAN},
       </if>
       <if test="placeBirth != null">
-        place_birth = #{placeBirth},
+        place_birth = #{placeBirth,jdbcType=VARCHAR},
       </if>
       <if test="joinDate != null">
-        join_date = #{joinDate},
+        join_date = #{joinDate,jdbcType=DATE},
       </if>
       <if test="timeZone != null">
-        time_zone = #{timeZone},
+        time_zone = #{timeZone,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        created_by = #{createdBy},
+        created_by = #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="createdTime != null">
-        created_time = #{createdTime},
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
-        updated_time = #{updatedTime},
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="def1 != null">
-        def1 = #{def1},
+        def1 = #{def1,jdbcType=VARCHAR},
       </if>
       <if test="def2 != null">
-        def2 = #{def2},
+        def2 = #{def2,jdbcType=VARCHAR},
       </if>
       <if test="def3 != null">
-        def3 = #{def3},
+        def3 = #{def3,jdbcType=VARCHAR},
       </if>
       <if test="def5 != null">
-        def5 = #{def5},
+        def5 = #{def5,jdbcType=VARCHAR},
       </if>
       <if test="def6 != null">
-        def6 = #{def6},
+        def6 = #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>

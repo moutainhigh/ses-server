@@ -1,10 +1,12 @@
 package com.redescooter.ses.service.hub.source.corporate.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.*;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @ApiModel(value="com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile")
@@ -14,7 +16,7 @@ public class CorUserProfile implements Serializable {
     /**
      * ID
      */
-     @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value="ID")
     private Long id;
 
@@ -104,6 +106,13 @@ public class CorUserProfile implements Serializable {
     private String telNumber1;
 
     /**
+     * 国家编码如+86
+     */
+    @TableField(value = "country_code_1")
+    @ApiModelProperty(value = "国家编码如+86")
+    private String countryCode1;
+
+    /**
      * 电话号
      */
     @TableField(value = "tel_number_2")
@@ -111,11 +120,25 @@ public class CorUserProfile implements Serializable {
     private String telNumber2;
 
     /**
+     * 国家编码如+86
+     */
+    @TableField(value = "country_code_2")
+    @ApiModelProperty(value = "国家编码如+86")
+    private String countryCode2;
+
+    /**
      * 电话号
      */
     @TableField(value = "tel_number_3")
     @ApiModelProperty(value="电话号")
     private String telNumber3;
+
+    /**
+     * 国家编码如+86
+     */
+    @TableField(value = "country_code_3")
+    @ApiModelProperty(value = "国家编码如+86")
+    private String countryCode3;
 
     /**
      * 性别
@@ -276,9 +299,15 @@ public class CorUserProfile implements Serializable {
 
     public static final String COL_TEL_NUMBER_1 = "tel_number_1";
 
+    public static final String COL_COUNTRY_CODE_1 = "country_code_1";
+
     public static final String COL_TEL_NUMBER_2 = "tel_number_2";
 
+    public static final String COL_COUNTRY_CODE_2 = "country_code_2";
+
     public static final String COL_TEL_NUMBER_3 = "tel_number_3";
+
+    public static final String COL_COUNTRY_CODE_3 = "country_code_3";
 
     public static final String COL_GENDER = "gender";
 

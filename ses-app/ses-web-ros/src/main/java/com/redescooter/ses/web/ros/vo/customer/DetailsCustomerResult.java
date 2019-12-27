@@ -1,18 +1,16 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.math.BigDecimal;
 import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 /**
  * @author Mr.lijiating
@@ -112,6 +110,9 @@ public class DetailsCustomerResult extends GeneralResult {
 
     @ApiModelProperty(value = "联系人全名")
     private String contactFullName;
+
+    @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
+    private String countryCode;
 
     @ApiModelProperty(value = "电话")
     private String telephone;

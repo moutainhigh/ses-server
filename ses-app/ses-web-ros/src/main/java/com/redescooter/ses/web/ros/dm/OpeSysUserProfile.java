@@ -1,12 +1,15 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @ApiModel(value = "com.redescooter.ses.web.ros.dm.OpeSysUserProfile")
@@ -24,7 +27,6 @@ public class OpeSysUserProfile implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -76,6 +78,13 @@ public class OpeSysUserProfile implements Serializable {
     @TableField(value = "email")
     @ApiModelProperty(value = "邮箱")
     private String email;
+
+    /**
+     * 国家编码如+86
+     */
+    @TableField(value = "country_code")
+    @ApiModelProperty(value = "国家编码如+86")
+    private String countryCode;
 
     /**
      * 电话号
@@ -199,6 +208,8 @@ public class OpeSysUserProfile implements Serializable {
     public static final String COL_FULL_NAME = "full_name";
 
     public static final String COL_EMAIL = "email";
+
+    public static final String COL_COUNTRY_CODE = "country_code";
 
     public static final String COL_TEL_NUMBER = "tel_number";
 

@@ -1,17 +1,12 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import lombok.*;
-
-import io.swagger.annotations.*;
-
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 /**
  * @ClassName:SaveCustomerEnter
@@ -81,6 +76,9 @@ public class CreateCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "联系人全名")
     private String contactFullName;
+
+    @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
+    private String countryCode;
 
     @ApiModelProperty(value = "电话")
     private String telephone;

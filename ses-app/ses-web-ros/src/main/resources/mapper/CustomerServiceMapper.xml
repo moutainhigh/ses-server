@@ -27,6 +27,7 @@
        opc.contact_first_name         as contactFirstName,
        opc.contact_last_name          as contactLastName,
        opc.contact_full_name          as contactFullName,
+       opc.country_code               as countryCode,
        opc.telephone,
        opc.email,
        opc.memo,
