@@ -10,7 +10,7 @@ import com.redescooter.ses.api.common.exception.BusinessException;
  */
 public class ScooterException extends BusinessException {
 
-    private static final String ROOT_CODE = "S002";
+    private static final String ROOT_CODE = "BA003";
 
     private static final int DEFAULT_ERROR_CODE = 1;
 

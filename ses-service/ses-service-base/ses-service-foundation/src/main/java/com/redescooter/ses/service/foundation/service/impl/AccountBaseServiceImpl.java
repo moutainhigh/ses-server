@@ -1,5 +1,20 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -39,22 +54,9 @@ import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.bussinessutils.AccountTypeUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import redis.clients.jedis.JedisCluster;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import redis.clients.jedis.JedisCluster;
 
 /**
  * @author Mr.lijiating
@@ -125,6 +127,9 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         Long tenantId = tenantBaseService.saveTenant(enter);
         //2、 创建账户
         Long userId = saveUserSingle(enter, tenantId);
+
+        result.setId(userId);
+        result.setTenantId(tenantId);
         //3、 创建个人信息
         SaveUserProfileHubEnter saveUserProfileHubEnter = SaveUserProfileHubEnter.builder()
                 .inputUserId(tenantId)
@@ -147,10 +152,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         } else {
             userProfileService.saveUserProfile2B(saveUserProfileHubEnter);
         }
-
-
-        result.setId(userId);
-        result.setTenantId(tenantId);
         // 创建邮件任务
         BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
         baseMailTaskEnter.setName(enter.getT().getCustomerFullName());

@@ -1,42 +1,43 @@
 package com.redescooter.ses.api.scooter.service;
 
-
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.scooter.vo.*;
+import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
 
 /**
- * @description: ScooterIOTService
- * @author: Darren
- * @create: 2019/03/05 17:53
+ * @ClassName:ScooterIotService
+ * @description: ScooterIotService
+ * @author: Alex
+ * @Version：1.3
+ * @create: 2019/12/26 19:58
  */
-public interface ScooterIOTService {
+public interface ScooterIotService {
+    /**
+     * 导航接口
+     * @param enter
+     * @return
+     */
+    GeneralResult navigation(IotScooterEnter enter);
 
     /**
-     * 锁定scooter
+     * 车锁
+     * @param enter
+     * @return
+     */
+    GeneralResult lock(IotScooterEnter enter);
+
+    /**
+     * obd 接口
      *
      * @param enter
      * @return
      */
-    ScooterIotResult lockOrUnlockScooter(LockOrUnLockScooterEnter enter);
+    GeneralResult obd(IotScooterEnter enter);
 
     /**
-     * 导航
+     * 开解锁后备箱接口
      *
      * @param enter
      * @return
      */
-    ScooterIotResult navigation(NavigationEnter enter);
-
-    /**
-     * OBD检测
-     *
-     * @param enter
-     * @return
-     */
-    ObdResult obd(ObdEnter enter);
-
-
-    ScooterIotResult lockOrLockScooterBox(LockOrLockScooterBoxEnter enter);
-
-    GeneralResult editScooterAvailableStatus(EditScooterAvailableStatusEnter enter);
+    GeneralResult box(IotScooterEnter enter);
 }

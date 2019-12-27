@@ -1,15 +1,16 @@
 package com.redescooter.ses.service.scooter.config;
 
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
+import java.util.Properties;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Properties;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 
 @Configuration
-@MapperScan("com.redescooter.ses.service.scooter.com.redescooter.ses.service.mobile.c.base")
+@MapperScan("com.redescooter.ses.service.scooter.dao")
 public class MybatisPlusConfig {
     /**
      * 分页插件

@@ -8,10 +8,10 @@ log:
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://39.108.92.232:3306/scooter_test?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://192.168.2.200:3306/scooter?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     druid:
       initial-size: 8
       min-idle: 1
@@ -31,7 +31,7 @@ spring:
 # DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:32181
+    address: zookeeper://192.168.2.200:22181
 
 
 # 多注册中心配置

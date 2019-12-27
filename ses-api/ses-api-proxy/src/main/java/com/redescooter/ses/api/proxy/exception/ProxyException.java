@@ -10,7 +10,7 @@ import com.redescooter.ses.api.common.exception.BusinessException;
  */
 public class ProxyException extends BusinessException {
 
-    private static final String ROOT_CODE = "S007";
+    private static final String ROOT_CODE = "BA002";
 
     private static final int DEFAULT_ERROR_CODE = 1;
 

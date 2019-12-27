@@ -13,6 +13,12 @@
 	<name>ses-service-scooter</name>
 	<description>Base Scooter Application Service</description>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.redescooter.ses</groupId>
+			<artifactId>ses-api-scooter</artifactId>
+		</dependency>
+	</dependencies>
 	<!--环境配置-->
 	<profiles>
 		<profile>

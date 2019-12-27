@@ -1,42 +1,31 @@
 package com.redescooter.ses.api.scooter.service;
 
-
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.scooter.vo.*;
-
 import java.util.List;
 
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
+import com.redescooter.ses.api.scooter.vo.SaveScooterRecordEnter;
+import com.redescooter.ses.api.scooter.vo.ScooterRecordListEnter;
+import com.redescooter.ses.api.scooter.vo.ScooterRecordListResult;
+
 /**
+ * @ClassName:ScooterRecordService
  * @description: ScooterRecordService
  * @author: Alex
- * @create: 2019/03/22 18:05
+ * @Version：1.3
+ * @create: 2019/12/26 20:52
  */
 public interface ScooterRecordService {
-
     /**
-     * scooter 充电记录
+     * 保存车辆操作记录
      * @param enter
-     * @return
      */
-    List<ScooterChargRecordResult> scooterChargRecord(ScooterChargRecordEnter enter);
+    void saveScooterRecords(List<SaveScooterRecordEnter<BaseScooterEnter>> enter);
 
     /**
-     * 维修记录
-     * @param enter
-     * @return
+     * 查询车辆操作记录
+     * @param enter 为ScooterId
      */
-    List<ScooterRepairResult> scooteRepairRecord(ScooterRepairEnter enter);
+    PageResult<ScooterRecordListResult> scooterRecordList(ScooterRecordListEnter enter);
 
-    /**
-     * 创建维修预约单 记录维修记录
-     * @param enter
-     * @return
-     */
-    GeneralResult saveScooteRepairRecord(SaveScooterRepairRecordEnter enter);
-
-    /**
-     * 更新 维修记录状态
-     * @return
-     */
-    GeneralResult editScooterRepairRecord(EditScooterRepairRecordEnter enter);
 }
