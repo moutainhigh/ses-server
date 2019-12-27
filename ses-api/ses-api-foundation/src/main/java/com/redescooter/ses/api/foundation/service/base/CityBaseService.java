@@ -1,15 +1,11 @@
 package com.redescooter.ses.api.foundation.service.base;
 
+import java.util.List;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
-import com.redescooter.ses.api.foundation.vo.common.CityEnter;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
-
-import java.util.List;
 
 /**
  * description: CityBaseService

@@ -1,24 +1,18 @@
 package com.redescooter.ses.web.ros.controller;
 
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
-import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
-import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
-import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
-import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
-import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.*;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 /**
  * @ClassName:CustomerController
@@ -56,13 +50,13 @@ public class CustomerController {
     }
 
     @PostMapping(value = "/list")
-    @ApiOperation(value = "客户列表", response = GeneralResult.class)
+    @ApiOperation(value = "客户列表", response = DetailsCustomerResult.class)
     public Response<PageResult<DetailsCustomerResult>> list(@ModelAttribute @ApiParam("请求参数") ListCustomerEnter enter) {
         return new Response<>(customerRosService.list(enter));
     }
 
     @PostMapping(value = "/details")
-    @ApiOperation(value = "客户详情", response = GeneralResult.class)
+    @ApiOperation(value = "客户详情", response = DetailsCustomerResult.class)
     public Response<DetailsCustomerResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(customerRosService.details(enter));
     }
@@ -86,7 +80,7 @@ public class CustomerController {
     }
 
     @PostMapping(value = "/countStatus")
-    @ApiOperation(value = "状态统计", response = GeneralResult.class)
+    @ApiOperation(value = "状态统计", response = Map.class)
     public Response<Map<String, Integer>> countStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(customerRosService.countStatus(enter));
     }
@@ -98,7 +92,7 @@ public class CustomerController {
     }
 
     @PostMapping(value = "/sendEmailAgian")
-    @ApiOperation(value = "客户再次发生邮件", response = GeneralResult.class)
+    @ApiOperation(value = "客户再次发生邮件", response = BooleanResult.class)
     public Response<BooleanResult> sendEmailAgian(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(customerRosService.sendEmailAgian(enter));
     }

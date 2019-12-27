@@ -1,12 +1,12 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
-import com.baomidou.mybatisplus.annotation.TableField;
+import java.math.BigDecimal;
+
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-
-import java.math.BigDecimal;
 
 /**
  * @ClassName:SaveCustomerEnter
@@ -73,6 +73,9 @@ public class EditCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "联系人全名")
     private String contactFullName;
+
+    @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
+    private String countryCode;
 
     @ApiModelProperty(value = "电话")
     private String telephone;

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaCountryCodeMapper">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaCountryCode">
+        <!--@mbg.generated-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
+        <result column="country_name" jdbcType="VARCHAR" property="countryName"/>
+        <result column="country_language" jdbcType="VARCHAR" property="countryLanguage"/>
+        <result column="time_zone" jdbcType="VARCHAR" property="timeZone"/>
+        <result column="def1" jdbcType="VARCHAR" property="def1"/>
+        <result column="def2" jdbcType="VARCHAR" property="def2"/>
+        <result column="def3" jdbcType="VARCHAR" property="def3"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, dr, icon, country_code, country_name, country_language, time_zone, def1, def2,
+        def3
+    </sql>
+    <update id="updateBatch" parameterType="java.util.List">
+        <!--@mbg.generated-->
+        update pla_country_code
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="dr = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+                </foreach>
+            </trim>
+            <trim prefix="icon = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.icon,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="country_code = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="country_name = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.countryName,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="country_language = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.countryLanguage,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="time_zone = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.timeZone,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def1 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def2 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def3 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach close=")" collection="list" item="item" open="(" separator=", ">
+            #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into pla_country_code
+        (id, dr, icon, country_code, country_name, country_language, time_zone, def1, def2,
+        def3)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.icon,jdbcType=VARCHAR},
+            #{item.countryCode,jdbcType=VARCHAR}, #{item.countryName,jdbcType=VARCHAR},
+            #{item.countryLanguage,jdbcType=VARCHAR},
+            #{item.timeZone,jdbcType=VARCHAR}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
+            #{item.def3,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaCountryCode">
+        <!--@mbg.generated-->
+        insert into pla_country_code
+        (id, dr, icon, country_code, country_name, country_language, time_zone, def1, def2,
+        def3)
+        values
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR},
+        #{countryName,jdbcType=VARCHAR}, #{countryLanguage,jdbcType=VARCHAR}, #{timeZone,jdbcType=VARCHAR},
+        #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR})
+        on duplicate key update
+        id = #{id,jdbcType=BIGINT},
+        dr = #{dr,jdbcType=INTEGER},
+        icon = #{icon,jdbcType=VARCHAR},
+        country_code = #{countryCode,jdbcType=VARCHAR},
+        country_name = #{countryName,jdbcType=VARCHAR},
+        country_language = #{countryLanguage,jdbcType=VARCHAR},
+        time_zone = #{timeZone,jdbcType=VARCHAR},
+        def1 = #{def1,jdbcType=VARCHAR},
+        def2 = #{def2,jdbcType=VARCHAR},
+        def3 = #{def3,jdbcType=VARCHAR}
+    </insert>
+    <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaCountryCode">
+        <!--@mbg.generated-->
+        insert into pla_country_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="icon != null">
+                icon,
+            </if>
+            <if test="countryCode != null">
+                country_code,
+            </if>
+            <if test="countryName != null">
+                country_name,
+            </if>
+            <if test="countryLanguage != null">
+                country_language,
+            </if>
+            <if test="timeZone != null">
+                time_zone,
+            </if>
+            <if test="def1 != null">
+                def1,
+            </if>
+            <if test="def2 != null">
+                def2,
+            </if>
+            <if test="def3 != null">
+                def3,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="icon != null">
+                #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="countryCode != null">
+                #{countryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="countryName != null">
+                #{countryName,jdbcType=VARCHAR},
+            </if>
+            <if test="countryLanguage != null">
+                #{countryLanguage,jdbcType=VARCHAR},
+            </if>
+            <if test="timeZone != null">
+                #{timeZone,jdbcType=VARCHAR},
+            </if>
+            <if test="def1 != null">
+                #{def1,jdbcType=VARCHAR},
+            </if>
+            <if test="def2 != null">
+                #{def2,jdbcType=VARCHAR},
+            </if>
+            <if test="def3 != null">
+                #{def3,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        on duplicate key update
+        <trim suffixOverrides=",">
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="icon != null">
+                icon = #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="countryCode != null">
+                country_code = #{countryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="countryName != null">
+                country_name = #{countryName,jdbcType=VARCHAR},
+            </if>
+            <if test="countryLanguage != null">
+                country_language = #{countryLanguage,jdbcType=VARCHAR},
+            </if>
+            <if test="timeZone != null">
+                time_zone = #{timeZone,jdbcType=VARCHAR},
+            </if>
+            <if test="def1 != null">
+                def1 = #{def1,jdbcType=VARCHAR},
+            </if>
+            <if test="def2 != null">
+                def2 = #{def2,jdbcType=VARCHAR},
+            </if>
+            <if test="def3 != null">
+                def3 = #{def3,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>
