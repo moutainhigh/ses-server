@@ -1,13 +1,14 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.*;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeCustomer")
 @Data
@@ -190,6 +191,13 @@ public class OpeCustomer implements Serializable {
     private String contactFullName;
 
     /**
+     * 国家编码，如手机号 中国 +86
+     */
+    @TableField(value = "country_code")
+    @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
+    private String countryCode;
+
+    /**
      * 电话
      */
     @TableField(value = "telephone")
@@ -345,8 +353,6 @@ public class OpeCustomer implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String COL_ID = "id";
-
     public static final String COL_DR = "dr";
 
     public static final String COL_TENANT_ID = "tenant_id";
@@ -394,6 +400,8 @@ public class OpeCustomer implements Serializable {
     public static final String COL_CONTACT_LAST_NAME = "contact_last_name";
 
     public static final String COL_CONTACT_FULL_NAME = "contact_full_name";
+
+    public static final String COL_COUNTRY_CODE = "country_code";
 
     public static final String COL_TELEPHONE = "telephone";
 

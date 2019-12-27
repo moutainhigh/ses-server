@@ -446,7 +446,7 @@ public interface ValidationExceptionCode {
     // 极光注册Id
     int REGISTRATIONID_EMPTY11 = 1011;
 
-    /********************************customer*********************************/
+    /********************************consumer*********************************/
     int INPUTTENANTID_IS_EMPTY=1001;
 
     int PICTURE_IS_EMPTY11=1002;

@@ -61,7 +61,7 @@ spring:                                                                         
         title: 客户相关的操作
         description: 客户相关的操作
         base-package: com.redescooter.ses.web.ros
-        path-regex: /customer/.*
+        path-regex: /consumer/.*
         path-mapping: /
         version: 1.2.0
         license: RedE 公司内部传阅
@@ -76,7 +76,7 @@ spring:                                                                         
         title: 客户账户管理
         description: 客户账号相关操作
         base-package: com.redescooter.ses.web.ros
-        path-regex: /account/customer/.*
+        path-regex: /account/consumer/.*
         path-mapping: /
         version: 1.2.0
         license: RedE 公司内部传阅
