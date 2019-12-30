@@ -1,13 +1,19 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.tenant.TenanNodeEvent;
-import com.redescooter.ses.api.common.enums.tenant.TenantStatus;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
+import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.QueryTenantNodeResult;
@@ -23,15 +29,6 @@ import com.redescooter.ses.service.foundation.dm.base.PlaTenantConfig;
 import com.redescooter.ses.service.foundation.dm.base.PlaTenantNode;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @ClassName:TenantBaseServiceImpl
@@ -70,7 +67,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
 
         // 租户节点
         enter.getT().setTenantId(plaTenant.getId());
-        saveTenantNode(enter, TenanNodeEvent.CREAT.getValue());
+        saveTenantNode(enter, TenanNodeEventEnum.CREAT.getValue());
         // 租户配置
         SaveTenantConfigEnter saveTenantConfigEnter = SaveTenantConfigEnter.builder().inputTenantId(plaTenant.getId()).tenantDefaultConfig(Boolean.TRUE).build();
         saveTenantConfig(saveTenantConfigEnter);
@@ -227,7 +224,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         plaTenant.setPId(0L);
         plaTenant.setTenantName(enter.getT().getCompanyName());
         plaTenant.setEmail(enter.getT().getEmail());
-        plaTenant.setStatus(TenantStatus.INOPERATION.getValue());
+        plaTenant.setStatus(TenantStatusEnum.INOPERATION.getValue());
         plaTenant.setCountryId(enter.getT().getCountry());
         plaTenant.setCityId(enter.getT().getCity());
         plaTenant.setDistrustId(enter.getT().getDistrust());

@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.ros.account;
+package com.redescooter.ses.api.common.enums.account;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,12 +23,4 @@ public enum UserStatusEnum {
 
     private String value;
 
-    public static UserStatusEnum getErrorCodeByCode(String code) {
-        for (UserStatusEnum item : UserStatusEnum.values()) {
-            if (item.getCode().equals(code)) {
-                return item;
-            }
-        }
-        return null;
-    }
 }

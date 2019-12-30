@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @description: TenantStatus
+ * @description: TenantStatusEnum
  * @desc filed: 运营中、已过期、已冻结
  * @author: Alex
  * @create: 2019/01/22 09:52
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum TenantStatus {
+public enum TenantStatusEnum {
 
     //运行中
     INOPERATION("INOPERATION", "运行中","1"),
@@ -32,8 +32,8 @@ public enum TenantStatus {
     private String value;
 
 
-    public static TenantStatus getErrorCodeByCode(String code) {
-        for (TenantStatus item : TenantStatus.values()) {
+    public static TenantStatusEnum getErrorCodeByCode(String code) {
+        for (TenantStatusEnum item : TenantStatusEnum.values()) {
             if (item.getCode().equals(code)) {
                 return item;
             }

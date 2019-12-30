@@ -1,10 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -17,21 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.enums.ros.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
-import com.redescooter.ses.api.common.enums.tenant.TenanNodeEvent;
-import com.redescooter.ses.api.common.enums.tenant.TenantStatus;
+import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
+import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
@@ -217,7 +207,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         for (CountByStatusResult item : countByStatusResult) {
             map.put(item.getStatus(), item.getTotalCount());
         }
-        for (TenantStatus status : TenantStatus.values()) {
+        for (TenantStatusEnum status : TenantStatusEnum.values()) {
             if (!map.containsKey(status.getValue())) {
                 map.put(status.getValue(), 0);
             }
@@ -242,10 +232,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (plaTenant == null) {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(TenantStatus.INOPERATION.getValue(), plaTenant.getStatus())) {
+        if (!StringUtils.equals(TenantStatusEnum.INOPERATION.getValue(), plaTenant.getStatus())) {
             throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
-        plaTenant.setStatus(TenantStatus.FROZEN.getValue());
+        plaTenant.setStatus(TenantStatusEnum.FROZEN.getValue());
         plaTenant.setUpdatedBy(enter.getUserId());
         plaTenant.setUpdatedTime(new Date());
         plaTenantMapper.updateById(plaTenant);
@@ -282,7 +272,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermissionMapper.updateById(plaUserPermission);
 
         // 账户节点
-        tenantBaseService.saveTenantNode(enter, TenanNodeEvent.FROZEN.getValue());
+        tenantBaseService.saveTenantNode(enter, TenanNodeEventEnum.FROZEN.getValue());
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -304,10 +294,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (plaTenant == null) {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(TenantStatus.FROZEN.getValue(), plaTenant.getStatus())) {
+        if (!StringUtils.equals(TenantStatusEnum.FROZEN.getValue(), plaTenant.getStatus())) {
             throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
-        plaTenant.setStatus(TenantStatus.INOPERATION.getValue());
+        plaTenant.setStatus(TenantStatusEnum.INOPERATION.getValue());
         plaTenant.setUpdatedBy(enter.getUserId());
         plaTenant.setUpdatedTime(new Date());
         plaTenantMapper.updateById(plaTenant);
@@ -344,7 +334,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermissionMapper.updateById(plaUserPermission);
 
         // 账户节点
-        tenantBaseService.saveTenantNode(enter, TenanNodeEvent.UNFREEZE.getValue());
+        tenantBaseService.saveTenantNode(enter, TenanNodeEventEnum.UNFREEZE.getValue());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -366,7 +356,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
         // 冻结不可续费
-        if (StringUtils.equals(TenantStatus.FROZEN.getValue(), plaTenant.getStatus())) {
+        if (StringUtils.equals(TenantStatusEnum.FROZEN.getValue(), plaTenant.getStatus())) {
             throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
 
@@ -391,7 +381,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaTenantMapper.updateById(plaTenant);
 
         // 账户节点
-        tenantBaseService.saveTenantNode(enter, TenanNodeEvent.RENEW.getValue());
+        tenantBaseService.saveTenantNode(enter, TenanNodeEventEnum.RENEW.getValue());
         return new GeneralResult(enter.getRequestId());
     }
 

@@ -1,23 +1,17 @@
 package com.redescooter.ses.api.foundation.service.base;
 
+import java.util.List;
+
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
-import com.redescooter.ses.api.foundation.vo.login.*;
-import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
+import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
+import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
+import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 
-import java.util.List;
-
 public interface UserTokenService {
-
-    /**
-     * 登陆token检查
-     *
-     * @param enter
-     * @return
-     */
-    UserToken checkToken(GeneralEnter enter);
 
     /**
      * 用户登录
@@ -44,12 +38,12 @@ public interface UserTokenService {
     GeneralResult logout(GeneralEnter enter);
 
     /**
-     * 根据邮箱及账户类型获取账户信息
+     * 登陆token检查
      *
      * @param enter
      * @return
      */
-    UserToken getUserByEmailType(GetUserEnter enter);
+    UserToken checkToken(GeneralEnter enter);
 
     /**
      * 根据租户id锁定所有账户
@@ -73,7 +67,7 @@ public interface UserTokenService {
      * @param enter
      * @return
      */
-    GeneralResult validateCode(ValidateCodeEnter enter);
+    GeneralResult validateCode(ValidateCodeEnter<AccountsDto> enter);
 
     /**
      * 员工离职 账户禁用、token 清除
@@ -82,4 +76,44 @@ public interface UserTokenService {
      */
     GeneralResult accountDisabled(GeneralEnter enter);
 
+    /**
+     * 实际登录逻辑
+     * 
+     * @param user
+     * @param enter
+     * @return
+     */
+    LoginResult signIn(AccountsDto user, LoginEnter enter);
+
+    /**
+     * 默认PC端验证用户，不支持账号通用， 一个邮箱只能开设一种类型的用户
+     * 
+     * @param enter
+     * @return
+     */
+    AccountsDto checkDefaultUser(LoginEnter enter);
+
+    /**
+     * APP用户验证，2B/2C账号通用
+     * 
+     * @param enter
+     * @return
+     */
+    List<AccountsDto> checkAppUser(LoginEnter enter);
+
+    /**
+     * 权限校验
+     *
+     * @param dto
+     */
+    void chectPermission(AccountsDto dto);
+
+    /**
+     * 设置token
+     *
+     * @param enter
+     * @param userDto
+     * @return
+     */
+    UserToken setToken(LoginEnter enter, AccountsDto userDto);
 }
