@@ -47,7 +47,7 @@ public class SesServiceMobileBApplicationTests {
         startEnter.setTenantId(1060980L);
         startEnter.setId(1067025L);
         startEnter.setLat("48.8694328000");
-        startEnter.setLon("2.3302575000");
+        startEnter.setLng("2.3302575000");
         startEnter.setBluetoothCommunication(Boolean.FALSE);
         System.out.println(deliveryService.start(startEnter));
     }
@@ -59,7 +59,7 @@ public class SesServiceMobileBApplicationTests {
         completeEnter.setTenantId(1060980L);
         completeEnter.setId(1067025L);
         completeEnter.setLat("48.8694328000");
-        completeEnter.setLon("2.3302575000");
+        completeEnter.setLng("2.3302575000");
         completeEnter.setMileage("1000");
         completeEnter.setBluetoothCommunication(Boolean.FALSE);
         System.out.println(deliveryService.complete(completeEnter));

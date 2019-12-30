@@ -1,6 +1,8 @@
 package com.redescooter.ses.api.mobile.b.vo;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.mobile.b.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -26,11 +28,14 @@ public class SaveDeliveryTraceEnter<T> extends GeneralEnter {
 
 
     @ApiModelProperty(value = "事件")
+    @NotNull(code = ValidationExceptionCode.EVENT_IS_EMPTY, message = "事件为空")
     private String event;
 
     @ApiModelProperty(value = "原因")
+    @NotNull(code = ValidationExceptionCode.REASON_IS_EMPTY, message = "原因为空")
     private String reason;
 
     @ApiModelProperty(value = "业务对象")
+    @NotNull(code = ValidationExceptionCode.BUSSINESS_OBJ_IS_EMPTY, message = "业务为空")
     private T t;
 }

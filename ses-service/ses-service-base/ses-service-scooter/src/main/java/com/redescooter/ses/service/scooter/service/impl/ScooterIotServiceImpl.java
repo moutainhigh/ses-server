@@ -67,6 +67,8 @@ public class ScooterIotServiceImpl implements ScooterIotService {
     @Transactional
     @Override
     public GeneralResult navigation(IotScooterEnter enter) {
+        checkIotScooterEnterParameter(enter);
+
         List<Long> idEnterList = new ArrayList<>();
         idEnterList.add(enter.getId());
         List<BaseScooterResult> scooterList = scooterService.scooterInfor(idEnterList);
@@ -132,6 +134,8 @@ public class ScooterIotServiceImpl implements ScooterIotService {
      */
     @Override
     public GeneralResult lock(IotScooterEnter enter) {
+        checkIotScooterEnterParameter(enter);
+
         List<Long> idEnterList = new ArrayList<>();
         idEnterList.add(enter.getId());
         List<BaseScooterResult> scooterList = scooterService.scooterInfor(idEnterList);

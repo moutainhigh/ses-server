@@ -1,6 +1,8 @@
 package com.redescooter.ses.api.mobile.b.vo;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.mobile.b.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -24,8 +26,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RefuseEnter extends GeneralEnter {
     @ApiModelProperty(value = "id")
+    @NotNull
     private Long id;
 
     @ApiModelProperty(value = "拒绝原因")
+    @NotNull(code = ValidationExceptionCode.REASON_IS_EMPTY, message = "拒绝原因为空")
     private String reason;
 }

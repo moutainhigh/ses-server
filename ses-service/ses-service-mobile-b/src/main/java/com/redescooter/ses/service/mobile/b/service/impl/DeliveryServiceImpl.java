@@ -150,7 +150,7 @@ public class DeliveryServiceImpl implements DeliveryService {
             throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         // 开启导航
-        navugation(enter.getBluetoothCommunication(), enter.getLat(), enter.getLon(), enter, delivery, CommonEvent.START.getValue());
+        navugation(enter.getBluetoothCommunication(), enter.getLat(), enter.getLng(), enter, delivery, CommonEvent.START.getValue());
         // 修改状态
         delivery.setStatus(DeliveryStatusEnums.DELIVERING.getValue());
         delivery.setAtd(new Date());
@@ -210,7 +210,7 @@ public class DeliveryServiceImpl implements DeliveryService {
             throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         // 关闭导航
-        navugation(enter.getBluetoothCommunication(), enter.getLat(), enter.getLon(), enter, delivery, CommonEvent.END.getValue());
+        navugation(enter.getBluetoothCommunication(), enter.getLat(), enter.getLng(), enter, delivery, CommonEvent.END.getValue());
         // 修改状态
         delivery.setAta(new Date());
         delivery.setDrivenMileage(new BigDecimal(enter.getMileage()));
