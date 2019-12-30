@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.DeliveryServiceMapper">
+    <select id="countByStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select status, count(*) as totalCount
+        from cor_delivery delivery
+        where delivery.dr = 0
+        and delivery.deliverer_id=#{userId}
+        group by delivery.status
+    </select>
+
+    <select id="deliveryList" resultType="com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult">
+        select *
+        from cor_delivery delivery
+        where delivery.dr = 0
+        and delivery.status in ('1', '4', '2', '8')
+        and delivery.deliverer_id=#{userId}
+    </select>
+</mapper>

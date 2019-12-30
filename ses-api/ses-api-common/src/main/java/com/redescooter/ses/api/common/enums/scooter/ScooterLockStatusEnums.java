@@ -15,7 +15,7 @@ import lombok.Getter;
 public enum ScooterLockStatusEnums {
 
     LOCK("LOCK", "加锁", "1"),
-    UNLOCK("UNLOCK", "开锁", "2");
+    UNLOCK("UNLOCK", "解锁", "2");
 
     private String code;
 

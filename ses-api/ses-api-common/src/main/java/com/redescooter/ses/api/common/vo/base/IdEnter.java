@@ -1,8 +1,13 @@
 package com.redescooter.ses.api.common.vo.base;
 
-import lombok.*;
-
-import io.swagger.annotations.*;
+import com.redescooter.ses.api.common.annotation.NotNull;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @ClassName:IdEnter
@@ -20,5 +25,6 @@ import io.swagger.annotations.*;
 public class IdEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "业务Id")
+    @NotNull
     private Long id;
 }

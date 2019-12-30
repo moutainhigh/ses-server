@@ -14,7 +14,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ScooterActionTypeEnums {
 
-    UNLOCK("UNLOCK","开锁","1"),
+    UNLOCK("UNLOCK", "解锁", "1"),
     LOCK("LOCK","上锁","2"),
     START_NAVIGATION("START_NAVIGATION","开启导航","3"),
     END_NAVIGATION("END_NAVIGATION","结束导航","4"),

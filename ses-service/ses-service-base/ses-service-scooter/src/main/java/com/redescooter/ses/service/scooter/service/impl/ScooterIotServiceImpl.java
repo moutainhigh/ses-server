@@ -67,6 +67,8 @@ public class ScooterIotServiceImpl implements ScooterIotService {
     @Transactional
     @Override
     public GeneralResult navigation(IotScooterEnter enter) {
+        checkIotScooterEnterParameter(enter);
+
         List<Long> idEnterList = new ArrayList<>();
         idEnterList.add(enter.getId());
         List<BaseScooterResult> scooterList = scooterService.scooterInfor(idEnterList);
@@ -132,6 +134,8 @@ public class ScooterIotServiceImpl implements ScooterIotService {
      */
     @Override
     public GeneralResult lock(IotScooterEnter enter) {
+        checkIotScooterEnterParameter(enter);
+
         List<Long> idEnterList = new ArrayList<>();
         idEnterList.add(enter.getId());
         List<BaseScooterResult> scooterList = scooterService.scooterInfor(idEnterList);
@@ -139,17 +143,33 @@ public class ScooterIotServiceImpl implements ScooterIotService {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
 
+        List<SaveScooterRecordEnter<BaseScooterEnter>> saveScooterRecordEnterList = new ArrayList<>();
+        SaveScooterRecordEnter<BaseScooterEnter> saveScooterRecordEnter = buildBaseScooterEnterSaveScooterRecordEnterSingle(enter, scooterList);
+
         if (StringUtils.equals(enter.getEvent(), CommonEvent.START.getValue())) {
             if (StringUtils.equals(scooterList.get(0).getStatus(), ScooterLockStatusEnums.LOCK.getValue())) {
                 return new GeneralResult(enter.getRequestId());
             } else {
                 // 更新车锁状态
                 scooterIotServiceMapper.updateScooterLock(ScooterLockStatusEnums.LOCK.getValue(), enter.getUserId(), enter.getId());
-            }
 
+                saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.LOCK.getValue());
+                saveScooterRecordEnterList.add(saveScooterRecordEnter);
+            }
+        } else {
+            if (StringUtils.equals(scooterList.get(0).getStatus(), ScooterLockStatusEnums.UNLOCK.getValue())) {
+                return new GeneralResult(enter.getRequestId());
+            } else {
+                // 更新车锁状态
+                scooterIotServiceMapper.updateScooterLock(ScooterLockStatusEnums.UNLOCK.getValue(), enter.getUserId(), enter.getId());
+
+                saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.UNLOCK.getValue());
+                saveScooterRecordEnterList.add(saveScooterRecordEnter);
+            }
         }
 
-
+        // 日志记录
+        scooterRecordService.saveScooterRecords(saveScooterRecordEnterList);
         return new GeneralResult(enter.getRequestId());
     }
 
