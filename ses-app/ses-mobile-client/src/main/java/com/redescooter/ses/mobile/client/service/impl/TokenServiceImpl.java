@@ -51,7 +51,7 @@ public class TokenServiceImpl implements TokenService {
         user.setEmail(enter.getMail());
         user.setSystemId(AppIDEnums.SAAS_APP.getSystemId());
         user.setAppId(AppIDEnums.SAAS_APP.getAppId());
-        UserToken userByEmail = userTokenService.getUserByEmailType(user);
+//        UserToken userByEmail = userTokenService.getUserByEmailType(user);
 
         String code = String.valueOf(RandomUtils.nextInt(10000, 99999));
         // 存入redis

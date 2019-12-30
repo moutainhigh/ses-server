@@ -41,4 +41,6 @@ public class StartEnter extends GeneralEnter {
     @ApiModelProperty(value = "纬度")
     @NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY, message = "经度为空")
     private String lng;
+
+    private String mileage;
 }
