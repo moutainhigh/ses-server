@@ -1,5 +1,9 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.stereotype.Service;
+
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
@@ -11,11 +15,11 @@ import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
+import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.TokenDeliveryService;
+
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Mr.lijiating
@@ -43,7 +47,12 @@ public class TokenDeliveryServiceImpl implements TokenDeliveryService {
         user.setEmail(enter.getMail());
         user.setSystemId(AppIDEnums.SAAS_APP.getSystemId());
         user.setAppId(AppIDEnums.SAAS_APP.getAppId());
-        UserToken userByEmail = userTokenService.getUserByEmailType(user);
+        UserToken userByEmail = userTokenService.getAppUser(user);
+
+        if (userByEmail == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
+                ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        }
 
         String code = String.valueOf(RandomUtils.nextInt(10000, 99999));
 

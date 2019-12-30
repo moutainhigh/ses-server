@@ -4,8 +4,8 @@ import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.vo.FreezeWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.NnfreezeWarnWebTaskEnter;
+import com.redescooter.ses.api.foundation.vo.RenewalWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
-import com.redescooter.ses.api.vo.RenewalWarnWebTaskEnter;
 
 /**
  * @author Mr.lijiating
