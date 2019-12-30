@@ -1,9 +1,11 @@
 package com.redescooter.ses.service.mobile.b.service.base.impl;
 
-import java.util.List;
-import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface CorDriverScooterService extends IService<CorDriverScooter>{
+import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
+
+import java.util.List;
+
+public interface CorDriverScooterService extends IService<CorDriverScooter> {
 
 
     int updateBatch(List<CorDriverScooter> list);
@@ -15,3 +17,4 @@ public interface CorDriverScooterService extends IService<CorDriverScooter>{
     int insertOrUpdateSelective(CorDriverScooter record);
 
 }
+

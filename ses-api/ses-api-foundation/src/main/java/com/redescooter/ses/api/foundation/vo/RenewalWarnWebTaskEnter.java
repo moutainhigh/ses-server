@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.vo;
+package com.redescooter.ses.api.foundation.vo;
 
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import io.swagger.annotations.ApiModelProperty;

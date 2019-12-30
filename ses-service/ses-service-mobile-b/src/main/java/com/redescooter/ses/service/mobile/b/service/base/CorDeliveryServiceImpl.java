@@ -31,3 +31,4 @@ public class CorDeliveryServiceImpl extends ServiceImpl<CorDeliveryMapper, CorDe
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
