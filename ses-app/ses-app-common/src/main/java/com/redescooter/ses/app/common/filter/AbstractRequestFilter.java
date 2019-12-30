@@ -1,21 +1,24 @@
 package com.redescooter.ses.app.common.filter;
 
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.HashMap;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.CountryEnums;
 import com.redescooter.ses.api.common.vo.base.ReqHeader;
 import com.redescooter.ses.app.common.exception.HttpHeaderException;
 import com.redescooter.ses.tool.utils.IpUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.HashMap;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class AbstractRequestFilter implements Filter {
@@ -38,7 +41,8 @@ public abstract class AbstractRequestFilter implements Filter {
         //String clientIp = getClientIp(request, true, "x-forwarded-for");
         parameterMap.put("clientIp", IpUtils.getIpAddr(request));
         parameterMap.put("timestamp", request.getAttribute("timestamp"));
-        parameterMap.put("appId", getAppId().getAppId());
+        log.info("*******appId===={}*************", getAppId().getValue());
+        parameterMap.put("appId", getAppId().getValue());
         parameterMap.put("systemId", getAppId().getSystemId());
         commonHeaderProcess(request, parameterMap);
         ParameterRequestWrapper wrapRequest = new ParameterRequestWrapper(request, parameterMap);

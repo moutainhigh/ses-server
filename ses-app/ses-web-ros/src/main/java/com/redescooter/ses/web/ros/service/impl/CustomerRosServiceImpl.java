@@ -1,26 +1,21 @@
 package com.redescooter.ses.web.ros.service.impl;
 
+import java.util.*;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.enums.ros.customer.CustomerAccountFlagEnum;
-import com.redescooter.ses.api.common.enums.ros.customer.CustomerCertificateTypeEnum;
-import com.redescooter.ses.api.common.enums.ros.customer.CustomerSourceEnum;
-import com.redescooter.ses.api.common.enums.ros.customer.CustomerStatusEnum;
-import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.ros.customer.*;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IntResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
@@ -42,32 +37,10 @@ import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
-import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
-import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
-import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
-import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
-import com.redescooter.ses.web.ros.vo.account.VerificationCodeResult;
-import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
-import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
-import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
-import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
-import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
-import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
-import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import redis.clients.jedis.JedisCluster;
+import com.redescooter.ses.web.ros.vo.account.*;
+import com.redescooter.ses.web.ros.vo.customer.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import redis.clients.jedis.JedisCluster;
 
 /**
  * @ClassName:CustomerImpl
@@ -317,9 +290,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         List<DetailsCustomerResult> detailsCustomerList = customerServiceMapper.customerList(page);
 
         detailsCustomerList.forEach(customer -> {
-            if (customer.getCity() != null || customer.getDistrust() != null) {
+            if (customer.getCity() != null) {
                 customer.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(customer.getCity()).build()).getName());
-                customer.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(customer.getDistrust()).build()).getName());
+            }
+
+            if (customer.getDistrust() != null) {
+                customer.setDistrustName(cityBaseService
+                    .queryCityDeatliById(IdEnter.builder().id(customer.getDistrust()).build()).getName());
             }
         });
 
@@ -443,7 +420,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         String key = new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString();
         jedisCluster.set(key, DateUtil.getDate());
         jedisCluster.expire(key, 180);
-
 
         return new GeneralResult(enter.getRequestId());
     }

@@ -76,10 +76,14 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Override
     public LoginResult login(LoginEnter enter) {
 
+        log.info("*********appId********{}", enter.getAppId());
+
         if (enter.getAppId().equals(AppIDEnums.SAAS_WEB.getValue())) {
+            log.info("****① PC端登录逻辑*****appId********{}", enter.getAppId());
             // ① PC端登录逻辑
             return signIn(checkDefaultUser(enter), enter);
         } else if (enter.getAppId().equals(AppIDEnums.SAAS_APP.getValue())) {
+            log.info("****② APP端登录逻辑*****appId********{}", enter.getAppId());
             // ② APP端登录逻辑
             List<AccountsDto> checkAppUser = checkAppUser(enter);
             if (checkAppUser.size() == 1) {

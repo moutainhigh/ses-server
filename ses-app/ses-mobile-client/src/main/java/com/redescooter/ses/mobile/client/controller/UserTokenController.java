@@ -41,20 +41,20 @@ public class UserTokenController {
 
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "登入接口")
+    @ApiOperation(value = "登入接口", response = LoginResult.class)
     @RequestMapping(value = "/login")
     public Response<LoginResult> login(@ModelAttribute LoginEnter enter) {
         return new Response<>(userTokenService.login(enter));
     }
 
-    @ApiOperation(value = "登出注销")
+    @ApiOperation(value = "登出注销", response = GeneralResult.class)
     @RequestMapping(value = "/logout")
     public Response<GeneralResult> logout(@ModelAttribute GeneralEnter enter) {
         return new Response<>(userTokenService.logout(enter));
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "登入确认")
+    @ApiOperation(value = "登入确认", response = LoginResult.class)
     @RequestMapping(value = "/login/confirm/{confirmRequestId}")
     public Response<LoginResult> loginConfirm(@PathVariable("confirmRequestId") String confirmRequestId,
         LoginConfirmEnter enter) {
@@ -63,7 +63,7 @@ public class UserTokenController {
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "发送验证码")
+    @ApiOperation(value = "发送验证码", response = GeneralResult.class)
     @RequestMapping(value = "/sendCode")
     public Response<GeneralResult> sendCode(@ModelAttribute SendMailEnter enter) {
         return new Response<>(tokenService.sendCode(enter));

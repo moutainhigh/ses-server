@@ -59,7 +59,6 @@ import redis.clients.jedis.JedisCluster;
 @Service
 public class AccountBaseServiceImpl implements AccountBaseService {
 
-
     @Autowired
     private PlaTenantMapper tenantMapper;
     @Autowired
@@ -97,7 +96,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Reference
     private UserProfileService userProfileService;
 
-
     /**
      * 账号开通
      *
@@ -109,31 +107,28 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     public BaseUserResult open(DateTimeParmEnter<BaseCustomerResult> enter) {
         Boolean chectMail = chectMail(enter.getT().getEmail());
         if (!chectMail) {
-            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
+                ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
         BaseUserResult result = new BaseUserResult();
         // 开通账户
-        //1、 创建租户
+        // 1、 创建租户
         Long tenantId = tenantBaseService.saveTenant(enter);
-        //2、 创建账户
+        // 2、 创建账户
         Long userId = saveUserSingle(enter, tenantId);
 
         result.setId(userId);
         result.setTenantId(tenantId);
-        //3、 创建个人信息
-        SaveUserProfileHubEnter saveUserProfileHubEnter = SaveUserProfileHubEnter.builder()
-                .inputUserId(tenantId)
-                .inputTenantId(userId)
-                .firstName(enter.getT().getCustomerFirstName())
-                .lastName(enter.getT().getCustomerLastName())
-                .fullName(new StringBuilder().append(enter.getT().getCustomerFirstName()).append(" ").append(enter.getT().getCustomerLastName()).toString())
-                .address(enter.getT().getAddress())
-                .certificateType(enter.getT().getCertificateType())
+        // 3、 创建个人信息
+        SaveUserProfileHubEnter saveUserProfileHubEnter =
+            SaveUserProfileHubEnter.builder().inputUserId(tenantId).inputTenantId(userId)
+                .firstName(enter.getT().getCustomerFirstName()).lastName(enter.getT().getCustomerLastName())
+                .fullName(new StringBuilder().append(enter.getT().getCustomerFirstName()).append(" ")
+                    .append(enter.getT().getCustomerLastName()).toString())
+                .address(enter.getT().getAddress()).certificateType(enter.getT().getCertificateType())
                 .certificateNegativeAnnex(enter.getT().getCertificateNegativeAnnex())
                 .certificatePositiveAnnex(enter.getT().getCertificatePositiveAnnex())
-                .telNumber1(enter.getT().getTelephone())
-                .email1(enter.getT().getEmail())
-                .build();
+                .telNumber1(enter.getT().getTelephone()).email1(enter.getT().getEmail()).build();
         saveUserProfileHubEnter.setUserId(userId);
         saveUserProfileHubEnter.setTenantId(tenantId);
 
@@ -224,16 +219,19 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Transactional
     @Override
     public GeneralResult freeze(DateTimeParmEnter<BaseCustomerResult> enter) {
-        int accountType = AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
+        int accountType =
+            AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
         String appId = AccountTypeUtils.queryAppId(accountType);
 
         // 租户
         PlaTenant plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
         if (plaTenant == null) {
-            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(TenantStatusEnum.INOPERATION.getValue(), plaTenant.getStatus())) {
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
+                ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaTenant.setStatus(TenantStatusEnum.FROZEN.getValue());
         plaTenant.setUpdatedBy(enter.getUserId());
@@ -246,10 +244,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserQueryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
         PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
         if (plaUser == null) {
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(UserStatusEnum.NORMAL.getValue(), plaUser.getStatus())) {
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
+                ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaUser.setStatus(UserStatusEnum.LOCK.getValue());
         plaUser.setUpdatedBy(enter.getUserId());
@@ -261,10 +261,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID, appId);
         PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
         if (plaUserPermission == null) {
-            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(UserStatusEnum.NORMAL.getValue(), plaUserPermission.getStatus())) {
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
+                ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaUserPermission.setStatus(UserStatusEnum.LOCK.getValue());
         plaUserPermission.setUpdatedBy(enter.getUserId());
@@ -286,16 +288,19 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Transactional
     @Override
     public GeneralResult unFreezeAccount(DateTimeParmEnter<BaseCustomerResult> enter) {
-        int accountType = AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
+        int accountType =
+            AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
         String appId = AccountTypeUtils.queryAppId(accountType);
 
         // 租户
         PlaTenant plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
         if (plaTenant == null) {
-            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(TenantStatusEnum.FROZEN.getValue(), plaTenant.getStatus())) {
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
+                ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaTenant.setStatus(TenantStatusEnum.INOPERATION.getValue());
         plaTenant.setUpdatedBy(enter.getUserId());
@@ -308,10 +313,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserQueryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
         PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
         if (plaUser == null) {
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(), plaUser.getStatus())) {
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
+                ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaUser.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUser.setUpdatedBy(enter.getUserId());
@@ -323,10 +330,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID, appId);
         PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
         if (plaUserPermission == null) {
-            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(), plaUserPermission.getStatus())) {
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
+                ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUserPermission.setUpdatedBy(enter.getUserId());
@@ -347,32 +356,38 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Transactional
     @Override
     public GeneralResult renewAccont(DateTimeParmEnter<BaseCustomerResult> enter) {
-        int accountType = AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
+        int accountType =
+            AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
         String appId = AccountTypeUtils.queryAppId(accountType);
 
         // 租户
         PlaTenant plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
         if (plaTenant == null) {
-            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
         // 冻结不可续费
         if (StringUtils.equals(TenantStatusEnum.FROZEN.getValue(), plaTenant.getStatus())) {
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
+                ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
 
         // 1、 续期开始时间 必须在开通时间之后
         // 2、续期结束时间 必须在到期时间之后
         // 3、 续期结束时间 必须在开始时间之后
         if (DateUtil.timeComolete(enter.getStartDateTime(), enter.getEndDateTime()) < 0) {
-            throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(), ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(),
+                ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
         }
 
         if (DateUtil.timeComolete(plaTenant.getExpireTime(), enter.getEndDateTime()) < 0) {
-            throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(), ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(),
+                ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
         }
 
         if (DateUtil.timeComolete(plaTenant.getEffectiveTime(), enter.getStartDateTime()) < 0) {
-            throw new FoundationException(ExceptionCodeEnums.RENEW_START_DATETIME_IS_NOT_AVAILABLE.getCode(), ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.RENEW_START_DATETIME_IS_NOT_AVAILABLE.getCode(),
+                ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
         }
         plaTenant.setExpireTime(enter.getEndDateTime());
         plaTenant.setUpdatedTime(new Date());
@@ -396,7 +411,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getT().getEmail());
         PlaUserPassword plaUserPassword = plaUserPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
         if (plaUserPassword == null) {
-            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
 
         plaUserPassword.setPassword(DigestUtils.md5Hex(Constant.DEFAULT_PASSWORD + plaUserPassword.getSalt()));
@@ -416,9 +432,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public GeneralResult deleteUserbyTenantId(IdEnter enter) {
         /**
-         * 1.租户删除
-         * 2.用户删除
-         * 3.用户信息删除
+         * 1.租户删除 2.用户删除 3.用户信息删除
          */
         PlaTenant tenant = plaTenantMapper.selectById(enter.getId());
 
@@ -433,25 +447,27 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         tenantMapper.deleteById(tenant.getId());
 
         if (tenant.getTenantType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
-            //删除公司--2B信息 TODO
+            // 删除公司--2B信息 TODO
 
         } else {
-            //删除个人--2C信息 TODO
+            // 删除个人--2C信息 TODO
         }
 
         return new GeneralResult(enter.getRequestId());
     }
 
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {
-
+        log.info("appId==={}", enter.getAppId());
         // 保存 user 信息
         PlaUser plaUser = new PlaUser();
         plaUser.setId(idAppService.getId(SequenceName.PLA_USER));
         plaUser.setDr(0);
         plaUser.setTenantId(tenantId);
+        plaUser.setAppId(enter.getAppId());
         plaUser.setSystemId(SystemIDEnums.REDE_SAAS.getSystemId());
         plaUser.setLoginName(enter.getT().getEmail());
-        plaUser.setUserType(AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType()));
+        plaUser.setUserType(
+            AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType()));
         plaUser.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUser.setCreatedBy(enter.getUserId());
         plaUser.setCreatedTime(new Date());
@@ -476,7 +492,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             savePassWord.setCreatedTime(new Date());
             savePassWord.setUpdatedBy(enter.getUserId());
             savePassWord.setUpdatedTime(new Date());
-            //2.2用户激活时，有客户输入密码进行设置密码流程
+            // 2.2用户激活时，有客户输入密码进行设置密码流程
             plaUserPasswordMapper.insert(savePassWord);
         }
 
@@ -485,7 +501,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermission.setId(idAppService.getId(SequenceName.PLA_USER_PERMISSION));
         plaUserPermission.setUserId(plaUser.getId());
         plaUserPermission.setSystemId(enter.getSystemId());
-        plaUserPermission.setAppId(AccountTypeUtils.queryAppId(AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType())));
+        plaUserPermission.setAppId(AccountTypeUtils.queryAppId(
+            AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType())));
         plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUserPermission.setCreatedBy(enter.getUserId());
         plaUserPermission.setCreatedTime(new Date());

@@ -1,10 +1,15 @@
 package com.redescooter.ses.service.foundation.dm.base;
 
-import com.baomidou.mybatisplus.annotation.*;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @ApiModel(value = "com-redescooter-ses-service-foundation-dm-base-PlaUser")
@@ -22,7 +27,6 @@ public class PlaUser implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -39,6 +43,14 @@ public class PlaUser implements Serializable {
     @TableField(value = "SYSTEM_ID")
     @ApiModelProperty(value = "系统ID")
     private String systemId;
+
+    /**
+     * 应用ip，SAAS_WEB:SaaS配送，SAAS_APP:SaaS移动，SAAS_REPAIR_WEB:SaaS维修，SES_ROS:RedE办公系统，SES_DEVL:RedE开发系统
+     */
+    @TableField(value = "APP_ID")
+    @ApiModelProperty(
+        value = "应用ip，SAAS_WEB:SaaS配送，SAAS_APP:SaaS移动，SAAS_REPAIR_WEB:SaaS维修，SES_ROS:RedE办公系统，SES_DEVL:RedE开发系统")
+    private String appId;
 
     /**
      * 登录名
@@ -154,13 +166,13 @@ public class PlaUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String COL_ID = "ID";
-
     public static final String COL_DR = "dr";
 
     public static final String COL_TENANT_ID = "TENANT_ID";
 
     public static final String COL_SYSTEM_ID = "SYSTEM_ID";
+
+    public static final String COL_APP_ID = "APP_ID";
 
     public static final String COL_LOGIN_NAME = "LOGIN_NAME";
 
