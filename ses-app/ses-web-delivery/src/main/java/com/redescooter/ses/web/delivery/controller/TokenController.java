@@ -1,21 +1,15 @@
 package com.redescooter.ses.web.delivery.controller;
 
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
-
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
-import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Mr.lijiating
@@ -48,15 +42,15 @@ public class TokenController {
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "发送验证邮件接口", response = GeneralResult.class)
+    @ApiOperation(value = "邮件发送", response = GeneralResult.class)
     @PostMapping(value = "/sendEmail")
-    public Response<GeneralResult> sendEmail(@ModelAttribute SendMailEnter enter) {
-        return new Response<>();
+    public Response<GeneralResult> sendEmail(@ModelAttribute BaseSendMailEnter enter) {
+        return new Response<>(userTokenService.sendEmail(enter));
     }
 
     @IgnoreLoginCheck
     @ApiOperation(value = "忘记密码", response = GeneralResult.class)
-    @PostMapping(value = "/forgetPassword")
+    @PostMapping(value = "/forgotPassword")
     public Response<GeneralResult> forgetPassword(@ModelAttribute SetPasswordEnter enter) {
         return new Response<>(userTokenService.setPassword(enter));
     }

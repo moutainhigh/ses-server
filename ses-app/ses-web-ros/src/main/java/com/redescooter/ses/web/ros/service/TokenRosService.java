@@ -1,13 +1,9 @@
 package com.redescooter.ses.web.ros.service;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
 
 /**
@@ -57,7 +53,7 @@ public interface TokenRosService {
      * @param enter
      * @return
      */
-    GeneralResult sendCode(SendMailEnter enter);
+    GeneralResult sendCode(BaseSendMailEnter enter);
 
     /**
      * 添加ROS用户

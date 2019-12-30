@@ -1,10 +1,7 @@
 package com.redescooter.ses.mobile.client.controller;
 
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -12,12 +9,13 @@ import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
-import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.mobile.client.service.TokenService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Mr.lijiating
@@ -65,7 +63,7 @@ public class UserTokenController {
     @IgnoreLoginCheck
     @ApiOperation(value = "发送验证码", response = GeneralResult.class)
     @RequestMapping(value = "/sendCode")
-    public Response<GeneralResult> sendCode(@ModelAttribute SendMailEnter enter) {
+    public Response<GeneralResult> sendCode(@ModelAttribute BaseSendMailEnter enter) {
         return new Response<>(tokenService.sendCode(enter));
     }
 }

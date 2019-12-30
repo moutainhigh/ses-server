@@ -1,19 +1,16 @@
 package com.redescooter.ses.web.ros.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
-import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.web.ros.service.TokenRosService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 功能描述:
@@ -66,7 +63,7 @@ public class TokenController {
 
     @ApiOperation(value = "发送验证码", response = GeneralResult.class)
     @PostMapping(value = "/sendCode")
-    public Response<GeneralResult> sendCode(@ModelAttribute @ApiParam("请求参数") SendMailEnter enter) {
+    public Response<GeneralResult> sendCode(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
         return new Response<>(tokenRosService.sendCode(enter));
     }
 

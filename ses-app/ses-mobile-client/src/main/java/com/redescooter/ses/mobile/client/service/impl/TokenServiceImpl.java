@@ -1,13 +1,12 @@
 package com.redescooter.ses.mobile.client.service.impl;
 
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.base.MailMultiBaseTaskService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.mobile.client.service.TokenService;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public GeneralResult sendCode(SendMailEnter enter) {
+    public GeneralResult sendCode(BaseSendMailEnter enter) {
 
 //        GetUserEnter user = new GetUserEnter();
 //        user.setEmail(enter.getMail());

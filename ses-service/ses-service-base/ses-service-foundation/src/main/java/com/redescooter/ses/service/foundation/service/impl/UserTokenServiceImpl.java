@@ -6,12 +6,11 @@ import com.redescooter.ses.api.common.enums.account.LoginTypeEnum;
 import com.redescooter.ses.api.common.enums.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
+import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
-import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
@@ -31,6 +30,7 @@ import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +65,9 @@ public class UserTokenServiceImpl implements UserTokenService {
 
     @Autowired
     private JedisCluster jedisCluster;
+
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
 
     /**
      * 用户登录
@@ -498,7 +501,9 @@ public class UserTokenServiceImpl implements UserTokenService {
      */
     @Override
     public GeneralResult setPassword(SetPasswordEnter enter) {
-
+        /**
+         * 系统内部进行设置密码
+         */
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
             throw new FoundationException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
                     ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
@@ -514,6 +519,9 @@ public class UserTokenServiceImpl implements UserTokenService {
             getUser.setAppId(enter.getAppId());
             getUser.setSystemId(enter.getSystemId());
         } else {
+            /**
+             * 系统外部进行设置密码
+             */
             Map<String, String> hash = jedisCluster.hgetAll(enter.getRequestId());
             hash.forEach((k, v) -> {
                 log.info("存放redis中对应的key【{}】==========================vlue【{}】", k, v);
@@ -556,6 +564,38 @@ public class UserTokenServiceImpl implements UserTokenService {
             jedisCluster.del(emailUser.getLastLoginToken());
         }
 
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 邮件发送
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult sendEmail(BaseSendMailEnter enter) {
+
+        GetUserEnter getUser = new GetUserEnter();
+        BeanUtils.copyProperties(enter, getUser);
+        getUser.setEmail(enter.getMail());
+        PlaUser limitOne = userTokenMapper.getUserLimitOne(getUser);
+
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setEvent(MailTemplateEventEnum.WEB_ACTIVATE.getEvent());
+
+        if (enter.getMail().indexOf("@") == (-1)) {
+            baseMailTaskEnter.setName(enter.getMail());
+        } else {
+            baseMailTaskEnter.setName(enter.getMail().split("@", 2)[0]);
+        }
+        baseMailTaskEnter.setToMail(enter.getMail());
+        baseMailTaskEnter.setToUserId(limitOne.getId());
+        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+        baseMailTaskEnter.setRequestId(enter.getRequestId());
+        baseMailTaskEnter.setMailAppId(enter.getAppId());
+        baseMailTaskEnter.setMailSystemId(enter.getSystemId());
+        mailMultiTaskService.addSetPasswordWebUserTask(baseMailTaskEnter);
         return new GeneralResult(enter.getRequestId());
     }
 

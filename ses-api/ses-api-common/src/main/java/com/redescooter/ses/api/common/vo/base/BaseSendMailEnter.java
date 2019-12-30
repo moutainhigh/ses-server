@@ -1,16 +1,11 @@
-package com.redescooter.ses.api.proxy.vo.mail;
+package com.redescooter.ses.api.common.vo.base;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
- * @description: SendMailEnter
+ * @description: BaseSendMailEnter
  * @author: Darren
  * @create: 2019/04/03 11:10
  */
@@ -20,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class SendMailEnter extends GeneralEnter {
+public class BaseSendMailEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "邮箱账户")
     private String mail;

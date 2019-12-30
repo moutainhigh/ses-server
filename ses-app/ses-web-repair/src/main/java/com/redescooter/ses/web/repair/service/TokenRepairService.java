@@ -1,12 +1,12 @@
 package com.redescooter.ses.web.repair.service;
 
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 
 /**
  * @author Mr.lijiating
@@ -56,5 +56,5 @@ public interface TokenRepairService {
      * @param enter
      * @return
      */
-    GeneralResult sendCode(SendMailEnter enter);
+    GeneralResult sendCode(BaseSendMailEnter enter);
 }

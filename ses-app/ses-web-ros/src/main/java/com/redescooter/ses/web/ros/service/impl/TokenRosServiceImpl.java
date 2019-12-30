@@ -1,32 +1,14 @@
 package com.redescooter.ses.web.ros.service.impl;
 
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserMapper;
@@ -37,9 +19,21 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.TokenRosService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -163,7 +157,7 @@ public class TokenRosServiceImpl implements TokenRosService {
      * @return
      */
     @Override
-    public GeneralResult sendCode(SendMailEnter enter) {
+    public GeneralResult sendCode(BaseSendMailEnter enter) {
         return null;
     }
 

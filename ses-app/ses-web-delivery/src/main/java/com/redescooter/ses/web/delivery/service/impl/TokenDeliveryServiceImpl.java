@@ -1,11 +1,11 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.base.MailMultiBaseTaskService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.web.delivery.service.TokenDeliveryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
@@ -31,7 +31,7 @@ public class TokenDeliveryServiceImpl implements TokenDeliveryService {
     }
 
     @Override
-    public GeneralResult sendMail(SendMailEnter enter) {
+    public GeneralResult sendMail(BaseSendMailEnter enter) {
 //
 //        GetUserEnter user = new GetUserEnter();
 //        user.setEmail(enter.getMail());

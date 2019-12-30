@@ -1,12 +1,12 @@
 package com.redescooter.ses.web.repair.service.impl;
 
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.web.repair.service.TokenRepairService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
@@ -75,7 +75,7 @@ public class TokenRepairServiceImpl implements TokenRepairService {
      * @return
      */
     @Override
-    public GeneralResult sendCode(SendMailEnter enter) {
+    public GeneralResult sendCode(BaseSendMailEnter enter) {
         return null;
     }
 }
