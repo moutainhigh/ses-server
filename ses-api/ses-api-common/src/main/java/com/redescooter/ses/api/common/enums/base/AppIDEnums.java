@@ -14,11 +14,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AppIDEnums {
 
-    SAAS_WEB("SAAS_WEB", SystemIDEnums.REDE_SAAS.getSystemId(), 1, "SaaS配送"),
-    SAAS_APP("SAAS_APP", SystemIDEnums.REDE_SAAS.getSystemId(), 2, "SaaS移动"),
-    SAAS_REPAIR_WEB("SAAS_REPAIR_WEB", SystemIDEnums.REDE_SAAS.getSystemId(), 3, "SaaS维修"),
-    SES_ROS("SES_ROS", SystemIDEnums.REDE_SES.getSystemId(), 4, "RedE办公系统"),
-    SES_DEV("SES_DEV", SystemIDEnums.REDE_DEV.getSystemId(), 5, "RedE开发系统"),
+    SAAS_WEB("SAAS_WEB", SystemIDEnums.REDE_SAAS.getSystemId(), "1", "SaaS配送"),
+    SAAS_APP("SAAS_APP", SystemIDEnums.REDE_SAAS.getSystemId(), "2", "SaaS移动"),
+    SAAS_REPAIR_WEB("SAAS_REPAIR_WEB", SystemIDEnums.REDE_SAAS.getSystemId(), "3", "SaaS维修"),
+    SES_ROS("SES_ROS", SystemIDEnums.REDE_SES.getSystemId(), "4", "RedE办公系统"),
+    SES_DEV("SES_DEV", SystemIDEnums.REDE_DEV.getSystemId(), "5", "RedE开发系统"),
     ;
 
     //应用ID
@@ -26,7 +26,7 @@ public enum AppIDEnums {
     //系统ID
     private String systemId;
     //应用值
-    private Integer value;
+    private String value;
     //编码备注说明
     private String remark;
 

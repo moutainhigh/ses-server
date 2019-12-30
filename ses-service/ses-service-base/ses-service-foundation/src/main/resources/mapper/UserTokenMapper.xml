@@ -21,7 +21,7 @@
     </select>
     <select id="chectPermission" resultType="com.redescooter.ses.service.foundation.dm.base.PlaUserPermission">
     select a.Id,a.USER_ID,a.SYSTEM_ID,a.APP_ID,a.STATUS
-     from user_permission a
+     from pla_user_permission a
     where a.dr = 0
      and a.USER_ID =  #{userId}
      and a.SYSTEM_ID=#{systemId}

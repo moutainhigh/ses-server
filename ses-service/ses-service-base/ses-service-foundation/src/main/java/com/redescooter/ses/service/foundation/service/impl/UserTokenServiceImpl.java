@@ -328,13 +328,16 @@ public class UserTokenServiceImpl implements UserTokenService {
                 throw new FoundationException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),
                     ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
             }
-
             if (userPassword == null) {
                 throw new FoundationException(ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getCode(),
                     ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
             }
+            if (StringUtils.isBlank(userPassword.getPassword())) {
+                throw new FoundationException(ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getCode(),
+                    ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
+            }
             String password = DigestUtils.md5Hex(enter.getPassword() + userPassword.getSalt());
-            if (!enter.getPassword().equals(password)) {
+            if (!userPassword.getPassword().equals(password)) {
                 throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(),
                     ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
@@ -430,8 +433,8 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         if (permissionlist.isEmpty()) {
             // 没权限
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.AUTHORIZATION_FAILED.getCode(),
+                ExceptionCodeEnums.AUTHORIZATION_FAILED.getMessage());
         }
         boolean hasPerimission = false;
         for (PlaUserPermission p : permissionlist) {
@@ -443,8 +446,8 @@ public class UserTokenServiceImpl implements UserTokenService {
         }
         if (!hasPerimission) {
             // 没权限
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.AUTHORIZATION_FAILED.getCode(),
+                ExceptionCodeEnums.AUTHORIZATION_FAILED.getMessage());
         }
 
     }

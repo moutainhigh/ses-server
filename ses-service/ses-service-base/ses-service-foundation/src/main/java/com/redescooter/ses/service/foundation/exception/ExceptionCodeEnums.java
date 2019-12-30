@@ -34,7 +34,7 @@ public enum ExceptionCodeEnums {
 
     ACCOUNT_EXPIRED(10009, "账号过期"),
 
-    INSUFFICIENT_PERMISSIONS(10010, "权限不足,不允许操作"),
+    AUTHORIZATION_FAILED(10010, "授权失败"),
 
     INCONSISTENT_PASSWORD(10011, "密码不一致"),
 
