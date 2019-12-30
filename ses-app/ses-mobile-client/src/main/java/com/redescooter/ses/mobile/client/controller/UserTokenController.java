@@ -1,5 +1,9 @@
 package com.redescooter.ses.mobile.client.controller;
 
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -10,17 +14,10 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.mobile.client.service.TokenService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Mr.lijiating
@@ -42,13 +39,6 @@ public class UserTokenController {
     @Reference
     private UserTokenService userTokenService;
 
-    @IgnoreLoginCheck
-    @ApiOperation(value = "登入确认")
-    @RequestMapping(value = "/login/confirm/{confirmRequestId}")
-    public Response<LoginResult> loginConfirm(@PathVariable("confirmRequestId") String confirmRequestId, LoginConfirmEnter enter) {
-        log.info("多用户登录RequestId==={}",confirmRequestId);
-        return new Response<>(userTokenService.loginConfirm(enter));
-    }
 
     @IgnoreLoginCheck
     @ApiOperation(value = "登入接口")
@@ -63,6 +53,14 @@ public class UserTokenController {
         return new Response<>(userTokenService.logout(enter));
     }
 
+    @IgnoreLoginCheck
+    @ApiOperation(value = "登入确认")
+    @RequestMapping(value = "/login/confirm/{confirmRequestId}")
+    public Response<LoginResult> loginConfirm(@PathVariable("confirmRequestId") String confirmRequestId,
+        LoginConfirmEnter enter) {
+        log.info("多用户登录RequestId==={}", confirmRequestId);
+        return new Response<>(userTokenService.loginConfirm(enter));
+    }
 
     @IgnoreLoginCheck
     @ApiOperation(value = "发送验证码")

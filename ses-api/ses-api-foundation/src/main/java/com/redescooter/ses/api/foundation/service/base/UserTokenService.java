@@ -9,6 +9,7 @@ import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
+import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 
 public interface UserTokenService {
@@ -84,6 +85,14 @@ public interface UserTokenService {
      * @return
      */
     LoginResult signIn(AccountsDto user, LoginEnter enter);
+
+    /**
+     * 获取APP用户信息
+     * 
+     * @param enter
+     * @return
+     */
+    UserToken getAppUser(GetUserEnter enter);
 
     /**
      * 默认PC端验证用户，不支持账号通用， 一个邮箱只能开设一种类型的用户
