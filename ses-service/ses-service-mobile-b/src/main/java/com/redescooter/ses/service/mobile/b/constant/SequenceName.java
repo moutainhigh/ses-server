@@ -9,4 +9,6 @@ public interface SequenceName {
 
     String CON_USER_PROFILE = "CON_USER_PROFILE";
 
+    String COR_DELIVERY_TRACE = "COR_DELIVERY_TRACE";
+
 }

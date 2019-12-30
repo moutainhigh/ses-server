@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.mobile.b.dm.base.CorDelivery">
+    <!--@mbg.generated-->
+    <!--@Table cor_delivery-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="order_no" property="orderNo" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="deliverer_id" property="delivererId" />
+    <result column="scooter_id" property="scooterId" />
+    <result column="recipient" property="recipient" />
+    <result column="recipient_email" property="recipientEmail" />
+    <result column="recipient_tel" property="recipientTel" />
+    <result column="recipient_address" property="recipientAddress" />
+    <result column="longitude" property="longitude" />
+    <result column="latitude" property="latitude" />
+    <result column="geohash" property="geohash" />
+    <result column="house_info" property="houseInfo" />
+    <result column="parcel_quantity" property="parcelQuantity" />
+    <result column="goods_inventory" property="goodsInventory" />
+    <result column="result" property="result" />
+    <result column="status" property="status" />
+    <result column="planned_time" property="plannedTime" />
+    <result column="timeout_expectde" property="timeoutExpectde" />
+    <result column="time_out" property="timeOut" />
+    <result column="etd" property="etd" />
+    <result column="atd" property="atd" />
+    <result column="eta" property="eta" />
+    <result column="ata" property="ata" />
+    <result column="driven_mileage" property="drivenMileage" />
+    <result column="driven_duration" property="drivenDuration" />
+    <result column="co2" property="co2" />
+    <result column="savings" property="savings" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="created_by" property="createdBy" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, order_no, tenant_id, deliverer_id, scooter_id, recipient, recipient_email, 
+    recipient_tel, recipient_address, longitude, latitude, geohash, house_info, parcel_quantity, 
+    goods_inventory, `result`, `status`, planned_time, timeout_expectde, time_out, etd, 
+    atd, eta, ata, driven_mileage, driven_duration, co2, savings, updated_time, created_time, 
+    updated_by, created_by, def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update cor_delivery
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="order_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.orderNo}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="deliverer_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.delivererId}
+        </foreach>
+      </trim>
+      <trim prefix="scooter_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.scooterId}
+        </foreach>
+      </trim>
+      <trim prefix="recipient = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipient}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientEmail}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_tel = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientTel}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientAddress}
+        </foreach>
+      </trim>
+      <trim prefix="longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.longitude}
+        </foreach>
+      </trim>
+      <trim prefix="latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.latitude}
+        </foreach>
+      </trim>
+      <trim prefix="geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.geohash}
+        </foreach>
+      </trim>
+      <trim prefix="house_info = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.houseInfo}
+        </foreach>
+      </trim>
+      <trim prefix="parcel_quantity = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.parcelQuantity}
+        </foreach>
+      </trim>
+      <trim prefix="goods_inventory = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.goodsInventory}
+        </foreach>
+      </trim>
+      <trim prefix="`result` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.result}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="planned_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.plannedTime}
+        </foreach>
+      </trim>
+      <trim prefix="timeout_expectde = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.timeoutExpectde}
+        </foreach>
+      </trim>
+      <trim prefix="time_out = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.timeOut}
+        </foreach>
+      </trim>
+      <trim prefix="etd = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.etd}
+        </foreach>
+      </trim>
+      <trim prefix="atd = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.atd}
+        </foreach>
+      </trim>
+      <trim prefix="eta = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.eta}
+        </foreach>
+      </trim>
+      <trim prefix="ata = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.ata}
+        </foreach>
+      </trim>
+      <trim prefix="driven_mileage = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.drivenMileage}
+        </foreach>
+      </trim>
+      <trim prefix="driven_duration = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.drivenDuration}
+        </foreach>
+      </trim>
+      <trim prefix="co2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.co2}
+        </foreach>
+      </trim>
+      <trim prefix="savings = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.savings}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into cor_delivery
+    (id, dr, order_no, tenant_id, deliverer_id, scooter_id, recipient, recipient_email, 
+      recipient_tel, recipient_address, longitude, latitude, geohash, house_info, parcel_quantity, 
+      goods_inventory, `result`, `status`, planned_time, timeout_expectde, time_out, 
+      etd, atd, eta, ata, driven_mileage, driven_duration, co2, savings, updated_time, 
+      created_time, updated_by, created_by, def1, def2, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.orderNo}, #{item.tenantId}, #{item.delivererId}, 
+        #{item.scooterId}, #{item.recipient}, #{item.recipientEmail}, #{item.recipientTel}, 
+        #{item.recipientAddress}, #{item.longitude}, #{item.latitude}, #{item.geohash}, 
+        #{item.houseInfo}, #{item.parcelQuantity}, #{item.goodsInventory}, #{item.result}, 
+        #{item.status}, #{item.plannedTime}, #{item.timeoutExpectde}, #{item.timeOut}, 
+        #{item.etd}, #{item.atd}, #{item.eta}, #{item.ata}, #{item.drivenMileage}, #{item.drivenDuration}, 
+        #{item.co2}, #{item.savings}, #{item.updatedTime}, #{item.createdTime}, #{item.updatedBy}, 
+        #{item.createdBy}, #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorDelivery">
+    <!--@mbg.generated-->
+    insert into cor_delivery
+    (id, dr, order_no, tenant_id, deliverer_id, scooter_id, recipient, recipient_email, 
+      recipient_tel, recipient_address, longitude, latitude, geohash, house_info, parcel_quantity, 
+      goods_inventory, `result`, `status`, planned_time, timeout_expectde, time_out, 
+      etd, atd, eta, ata, driven_mileage, driven_duration, co2, savings, updated_time, 
+      created_time, updated_by, created_by, def1, def2, def3, def5, def6)
+    values
+    (#{id}, #{dr}, #{orderNo}, #{tenantId}, #{delivererId}, #{scooterId}, #{recipient}, 
+      #{recipientEmail}, #{recipientTel}, #{recipientAddress}, #{longitude}, #{latitude}, 
+      #{geohash}, #{houseInfo}, #{parcelQuantity}, #{goodsInventory}, #{result}, #{status}, 
+      #{plannedTime}, #{timeoutExpectde}, #{timeOut}, #{etd}, #{atd}, #{eta}, #{ata}, 
+      #{drivenMileage}, #{drivenDuration}, #{co2}, #{savings}, #{updatedTime}, #{createdTime}, 
+      #{updatedBy}, #{createdBy}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    order_no = #{orderNo}, 
+    tenant_id = #{tenantId}, 
+    deliverer_id = #{delivererId}, 
+    scooter_id = #{scooterId}, 
+    recipient = #{recipient}, 
+    recipient_email = #{recipientEmail}, 
+    recipient_tel = #{recipientTel}, 
+    recipient_address = #{recipientAddress}, 
+    longitude = #{longitude}, 
+    latitude = #{latitude}, 
+    geohash = #{geohash}, 
+    house_info = #{houseInfo}, 
+    parcel_quantity = #{parcelQuantity}, 
+    goods_inventory = #{goodsInventory}, 
+    `result` = #{result}, 
+    `status` = #{status}, 
+    planned_time = #{plannedTime}, 
+    timeout_expectde = #{timeoutExpectde}, 
+    time_out = #{timeOut}, 
+    etd = #{etd}, 
+    atd = #{atd}, 
+    eta = #{eta}, 
+    ata = #{ata}, 
+    driven_mileage = #{drivenMileage}, 
+    driven_duration = #{drivenDuration}, 
+    co2 = #{co2}, 
+    savings = #{savings}, 
+    updated_time = #{updatedTime}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    created_by = #{createdBy}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorDelivery">
+    <!--@mbg.generated-->
+    insert into cor_delivery
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="delivererId != null">
+        deliverer_id,
+      </if>
+      <if test="scooterId != null">
+        scooter_id,
+      </if>
+      <if test="recipient != null">
+        recipient,
+      </if>
+      <if test="recipientEmail != null">
+        recipient_email,
+      </if>
+      <if test="recipientTel != null">
+        recipient_tel,
+      </if>
+      <if test="recipientAddress != null">
+        recipient_address,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="geohash != null">
+        geohash,
+      </if>
+      <if test="houseInfo != null">
+        house_info,
+      </if>
+      <if test="parcelQuantity != null">
+        parcel_quantity,
+      </if>
+      <if test="goodsInventory != null">
+        goods_inventory,
+      </if>
+      <if test="result != null">
+        `result`,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="plannedTime != null">
+        planned_time,
+      </if>
+      <if test="timeoutExpectde != null">
+        timeout_expectde,
+      </if>
+      <if test="timeOut != null">
+        time_out,
+      </if>
+      <if test="etd != null">
+        etd,
+      </if>
+      <if test="atd != null">
+        atd,
+      </if>
+      <if test="eta != null">
+        eta,
+      </if>
+      <if test="ata != null">
+        ata,
+      </if>
+      <if test="drivenMileage != null">
+        driven_mileage,
+      </if>
+      <if test="drivenDuration != null">
+        driven_duration,
+      </if>
+      <if test="co2 != null">
+        co2,
+      </if>
+      <if test="savings != null">
+        savings,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="delivererId != null">
+        #{delivererId},
+      </if>
+      <if test="scooterId != null">
+        #{scooterId},
+      </if>
+      <if test="recipient != null">
+        #{recipient},
+      </if>
+      <if test="recipientEmail != null">
+        #{recipientEmail},
+      </if>
+      <if test="recipientTel != null">
+        #{recipientTel},
+      </if>
+      <if test="recipientAddress != null">
+        #{recipientAddress},
+      </if>
+      <if test="longitude != null">
+        #{longitude},
+      </if>
+      <if test="latitude != null">
+        #{latitude},
+      </if>
+      <if test="geohash != null">
+        #{geohash},
+      </if>
+      <if test="houseInfo != null">
+        #{houseInfo},
+      </if>
+      <if test="parcelQuantity != null">
+        #{parcelQuantity},
+      </if>
+      <if test="goodsInventory != null">
+        #{goodsInventory},
+      </if>
+      <if test="result != null">
+        #{result},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="plannedTime != null">
+        #{plannedTime},
+      </if>
+      <if test="timeoutExpectde != null">
+        #{timeoutExpectde},
+      </if>
+      <if test="timeOut != null">
+        #{timeOut},
+      </if>
+      <if test="etd != null">
+        #{etd},
+      </if>
+      <if test="atd != null">
+        #{atd},
+      </if>
+      <if test="eta != null">
+        #{eta},
+      </if>
+      <if test="ata != null">
+        #{ata},
+      </if>
+      <if test="drivenMileage != null">
+        #{drivenMileage},
+      </if>
+      <if test="drivenDuration != null">
+        #{drivenDuration},
+      </if>
+      <if test="co2 != null">
+        #{co2},
+      </if>
+      <if test="savings != null">
+        #{savings},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="delivererId != null">
+        deliverer_id = #{delivererId},
+      </if>
+      <if test="scooterId != null">
+        scooter_id = #{scooterId},
+      </if>
+      <if test="recipient != null">
+        recipient = #{recipient},
+      </if>
+      <if test="recipientEmail != null">
+        recipient_email = #{recipientEmail},
+      </if>
+      <if test="recipientTel != null">
+        recipient_tel = #{recipientTel},
+      </if>
+      <if test="recipientAddress != null">
+        recipient_address = #{recipientAddress},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude},
+      </if>
+      <if test="geohash != null">
+        geohash = #{geohash},
+      </if>
+      <if test="houseInfo != null">
+        house_info = #{houseInfo},
+      </if>
+      <if test="parcelQuantity != null">
+        parcel_quantity = #{parcelQuantity},
+      </if>
+      <if test="goodsInventory != null">
+        goods_inventory = #{goodsInventory},
+      </if>
+      <if test="result != null">
+        `result` = #{result},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="plannedTime != null">
+        planned_time = #{plannedTime},
+      </if>
+      <if test="timeoutExpectde != null">
+        timeout_expectde = #{timeoutExpectde},
+      </if>
+      <if test="timeOut != null">
+        time_out = #{timeOut},
+      </if>
+      <if test="etd != null">
+        etd = #{etd},
+      </if>
+      <if test="atd != null">
+        atd = #{atd},
+      </if>
+      <if test="eta != null">
+        eta = #{eta},
+      </if>
+      <if test="ata != null">
+        ata = #{ata},
+      </if>
+      <if test="drivenMileage != null">
+        driven_mileage = #{drivenMileage},
+      </if>
+      <if test="drivenDuration != null">
+        driven_duration = #{drivenDuration},
+      </if>
+      <if test="co2 != null">
+        co2 = #{co2},
+      </if>
+      <if test="savings != null">
+        savings = #{savings},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>
