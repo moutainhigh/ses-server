@@ -58,7 +58,7 @@ public class TokenController {
     @ApiOperation(value = "忘记密码", response = GeneralResult.class)
     @PostMapping(value = "/forgetPassword")
     public Response<GeneralResult> forgetPassword(@ModelAttribute SetPasswordEnter enter) {
-        return new Response<>();
+        return new Response<>(userTokenService.setPassword(enter));
     }
 
     @ApiOperation(value = "修改密码", response = GeneralResult.class)

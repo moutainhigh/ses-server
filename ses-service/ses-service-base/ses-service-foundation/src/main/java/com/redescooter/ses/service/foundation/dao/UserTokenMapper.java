@@ -60,6 +60,6 @@ public interface UserTokenMapper {
      * @param enter
      * @return
      */
-    PlaUser getAppUser(GetUserEnter enter);
+    PlaUser getUserLimitOne(GetUserEnter enter);
 
 }

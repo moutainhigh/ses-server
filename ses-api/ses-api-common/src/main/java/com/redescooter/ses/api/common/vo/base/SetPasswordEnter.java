@@ -1,8 +1,8 @@
 package com.redescooter.ses.api.common.vo.base;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import io.swagger.annotations.*;
 
 /**
  * @ClassName:SetPassword
@@ -15,7 +15,7 @@ import io.swagger.annotations.*;
 @Data
 public class SetPasswordEnter<T> extends GeneralEnter {
 
-    @ApiModelProperty(value = "业务Id")
+    @ApiModelProperty(value = "业务Id", hidden = true)
     private Long id;
 
     @ApiModelProperty(value = "密码")

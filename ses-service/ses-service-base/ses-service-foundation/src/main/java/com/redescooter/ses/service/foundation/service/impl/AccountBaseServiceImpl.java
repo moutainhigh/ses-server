@@ -15,7 +15,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
-import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
@@ -220,8 +219,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public GeneralResult freeze(DateTimeParmEnter<BaseCustomerResult> enter) {
         int accountType =
-            AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
-        String appId = AccountTypeUtils.queryAppId(accountType);
+            AccountTypeUtils.getAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
+        String appId = AccountTypeUtils.getAppId(accountType);
 
         // 租户
         PlaTenant plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
@@ -289,8 +288,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public GeneralResult unFreezeAccount(DateTimeParmEnter<BaseCustomerResult> enter) {
         int accountType =
-            AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
-        String appId = AccountTypeUtils.queryAppId(accountType);
+            AccountTypeUtils.getAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
+        String appId = AccountTypeUtils.getAppId(accountType);
 
         // 租户
         PlaTenant plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
@@ -329,15 +328,11 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_USER_ID, plaUser.getId());
         plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID, appId);
         PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
-        if (plaUserPermission == null) {
-            throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
-        }
         if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(), plaUserPermission.getStatus())) {
             throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
                 ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
-        plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
+        Objects.requireNonNull(plaUserPermission).setStatus(UserStatusEnum.NORMAL.getValue());
         plaUserPermission.setUpdatedBy(enter.getUserId());
         plaUserPermission.setUpdatedTime(new Date());
         plaUserPermissionMapper.updateById(plaUserPermission);
@@ -357,8 +352,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public GeneralResult renewAccont(DateTimeParmEnter<BaseCustomerResult> enter) {
         int accountType =
-            AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
-        String appId = AccountTypeUtils.queryAppId(accountType);
+            AccountTypeUtils.getAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
+        String appId = AccountTypeUtils.getAppId(accountType);
 
         // 租户
         PlaTenant plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
@@ -457,17 +452,17 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     }
 
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {
-        log.info("appId==={}", enter.getAppId());
+        Integer accountType =
+            AccountTypeUtils.getAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
         // 保存 user 信息
         PlaUser plaUser = new PlaUser();
         plaUser.setId(idAppService.getId(SequenceName.PLA_USER));
         plaUser.setDr(0);
         plaUser.setTenantId(tenantId);
-        plaUser.setAppId(enter.getAppId());
-        plaUser.setSystemId(SystemIDEnums.REDE_SAAS.getSystemId());
+        plaUser.setAppId(AccountTypeUtils.getAppId(accountType));
+        plaUser.setSystemId(AccountTypeUtils.getSystemId(accountType));
         plaUser.setLoginName(enter.getT().getEmail());
-        plaUser.setUserType(
-            AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType()));
+        plaUser.setUserType(accountType);
         plaUser.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUser.setCreatedBy(enter.getUserId());
         plaUser.setCreatedTime(new Date());
@@ -500,9 +495,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         PlaUserPermission plaUserPermission = new PlaUserPermission();
         plaUserPermission.setId(idAppService.getId(SequenceName.PLA_USER_PERMISSION));
         plaUserPermission.setUserId(plaUser.getId());
-        plaUserPermission.setSystemId(enter.getSystemId());
-        plaUserPermission.setAppId(AccountTypeUtils.queryAppId(
-            AccountTypeUtils.queryAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType())));
+        plaUserPermission.setSystemId(AccountTypeUtils.getSystemId(accountType));
+        plaUserPermission.setAppId(AccountTypeUtils.getAppId(accountType));
         plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUserPermission.setCreatedBy(enter.getUserId());
         plaUserPermission.setCreatedTime(new Date());

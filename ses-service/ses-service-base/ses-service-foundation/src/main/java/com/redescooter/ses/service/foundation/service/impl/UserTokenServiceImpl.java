@@ -1,14 +1,5 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.account.LoginTypeEnum;
@@ -18,6 +9,7 @@ import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
@@ -36,9 +28,16 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.JedisCluster;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 /**
  * @author Mr.lijiating
@@ -103,7 +102,7 @@ public class UserTokenServiceImpl implements UserTokenService {
             }
         } else {
             throw new FoundationException(ExceptionCodeEnums.ACCESS_DENIED.getCode(),
-                ExceptionCodeEnums.ACCESS_DENIED.getMessage());
+                    ExceptionCodeEnums.ACCESS_DENIED.getMessage());
         }
     }
 
@@ -122,7 +121,7 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         if (appUserJson == null) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
         List<AccountsDto> userList = JSON.parseArray(appUserJson, AccountsDto.class);
@@ -162,10 +161,10 @@ public class UserTokenServiceImpl implements UserTokenService {
     public UserToken checkToken(GeneralEnter enter) {
         UserToken userToken = getUserToken(enter.getToken());
         if (!StringUtils.equals(userToken.getClientType(), enter.getClientType())
-            || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId())
-            || !StringUtils.equals(userToken.getAppId(), enter.getAppId())) {
+                || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId())
+                || !StringUtils.equals(userToken.getAppId(), enter.getAppId())) {
             throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+                    ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         return userToken;
     }
@@ -207,19 +206,19 @@ public class UserTokenServiceImpl implements UserTokenService {
         Map<String, String> hash = jedisCluster.hgetAll(enter.getT().getRequestId());
         if (hash == null || hash.isEmpty()) {
             throw new FoundationException(ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_EXPIRED.getCode(),
-                ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_EXPIRED.getMessage());
+                    ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_EXPIRED.getMessage());
         }
         if (!StringUtils.equals(hash.get("verificationCode"), enter.getCode())) {
             throw new FoundationException(ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_WRONG.getCode(),
-                ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_WRONG.getMessage());
+                    ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_WRONG.getMessage());
         }
         if (!StringUtils.equals(hash.get("systemId"), enter.getT().getSystemId())) {
             throw new FoundationException(ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_WRONG.getCode(),
-                ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_WRONG.getMessage());
+                    ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_WRONG.getMessage());
         }
         if (!StringUtils.equals(hash.get("appId"), enter.getT().getAppId())) {
             throw new FoundationException(ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_WRONG.getCode(),
-                ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_WRONG.getMessage());
+                    ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_WRONG.getMessage());
         }
 
         return new GeneralResult(enter.getRequestId());
@@ -237,7 +236,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         PlaUser user = userMapper.selectById(enter.getUserId());
         if (user == null) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         user.setStatus(UserStatusEnum.LOCK.getCode());
         user.setUpdatedBy(enter.getUserId());
@@ -275,9 +274,9 @@ public class UserTokenServiceImpl implements UserTokenService {
         updateUser.setLastLoginTime(new Date(enter.getTimestamp()));
         updateUser.setLastLoginToken(userToken.getToken());
         userMapper.updateById(updateUser);
-
-        return LoginResult.builder().token(userToken.getToken()).noPassword(Boolean.FALSE)
-            .accountType(user.getUserType()).build();
+        LoginResult result = LoginResult.builder().token(userToken.getToken()).noPassword(Boolean.FALSE).accountType(user.getUserType()).build();
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**
@@ -289,7 +288,7 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Override
     public UserToken getAppUser(GetUserEnter enter) {
 
-        PlaUser appUser = userTokenMapper.getAppUser(enter);
+        PlaUser appUser = userTokenMapper.getUserLimitOne(enter);
 
         if (appUser == null) {
             return new UserToken();
@@ -301,7 +300,7 @@ public class UserTokenServiceImpl implements UserTokenService {
 
     /**
      * PC端不支持账号通用，一个邮箱只能开设一种类型的用户
-     * 
+     *
      * @param enter
      * @return
      */
@@ -314,7 +313,7 @@ public class UserTokenServiceImpl implements UserTokenService {
          */
         if (accountsDto == null) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         /**
          * 账户密码验证
@@ -326,20 +325,20 @@ public class UserTokenServiceImpl implements UserTokenService {
             PlaUserPassword userPassword = userPasswordMapper.selectOne(wrapper);
             if (enter.getPassword() == null) {
                 throw new FoundationException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),
-                    ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
+                        ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
             }
             if (userPassword == null) {
                 throw new FoundationException(ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getCode(),
-                    ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
+                        ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
             }
             if (StringUtils.isBlank(userPassword.getPassword())) {
                 throw new FoundationException(ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getCode(),
-                    ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
+                        ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
             }
             String password = DigestUtils.md5Hex(enter.getPassword() + userPassword.getSalt());
             if (!userPassword.getPassword().equals(password)) {
                 throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(),
-                    ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+                        ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
         } else {
             // 验证码登录逻辑 todo 待测试
@@ -357,15 +356,15 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (accountsDto.getStatus().equals(UserStatusEnum.EXPIRED.getValue())) {
             // 判断账号是否过期
             throw new FoundationException(ExceptionCodeEnums.ACCOUNT_EXPIRED.getCode(),
-                ExceptionCodeEnums.ACCOUNT_EXPIRED.getMessage());
+                    ExceptionCodeEnums.ACCOUNT_EXPIRED.getMessage());
         } else if (accountsDto.getStatus().equals(UserStatusEnum.LOCK.getValue())) {
             // 判断账号是否锁定
             throw new FoundationException(ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getCode(),
-                ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getMessage());
+                    ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getMessage());
         } else if (accountsDto.getStatus().equals(UserStatusEnum.CANCEL.getValue())) {
             // 判断账号是否取消
             throw new FoundationException(ExceptionCodeEnums.ACCOUNT_CANCELLED.getCode(),
-                ExceptionCodeEnums.ACCOUNT_CANCELLED.getMessage());
+                    ExceptionCodeEnums.ACCOUNT_CANCELLED.getMessage());
         } else if (accountsDto.getStatus().equals(UserStatusEnum.NORMAL.getValue())) {
             /**
              * 合法用户的 1.租户非空判断 2.状态合法判断
@@ -375,15 +374,15 @@ public class UserTokenServiceImpl implements UserTokenService {
                 if (tenant == null) {
                     // ①、判断账号是否取消
                     throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+                            ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
                 } else if (tenant.getStatus().equals(TenantStatusEnum.EXPIRED.getValue())) {
                     // ②、 判断租户是否过期
                     throw new FoundationException(ExceptionCodeEnums.ACCOUNT_EXPIRED.getCode(),
-                        ExceptionCodeEnums.ACCOUNT_EXPIRED.getMessage());
+                            ExceptionCodeEnums.ACCOUNT_EXPIRED.getMessage());
                 } else if (tenant.getStatus().equals(TenantStatusEnum.FROZEN.getValue())) {
                     // ③、 判断租户是否冻结
                     throw new FoundationException(ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getCode(),
-                        ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getMessage());
+                            ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getMessage());
                 }
             }
 
@@ -395,7 +394,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         } else {
             // 判断账号是否取消
             throw new FoundationException(ExceptionCodeEnums.ACCESS_DENIED.getCode(),
-                ExceptionCodeEnums.ACCESS_DENIED.getMessage());
+                    ExceptionCodeEnums.ACCESS_DENIED.getMessage());
         }
     }
 
@@ -416,14 +415,14 @@ public class UserTokenServiceImpl implements UserTokenService {
             return resultOne;
         } else if (resultMultiple.size() == 0) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         return resultMultiple;
     }
 
     /**
      * 权限校验
-     * 
+     *
      * @param dto
      */
     @Override
@@ -434,12 +433,12 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (permissionlist.isEmpty()) {
             // 没权限
             throw new FoundationException(ExceptionCodeEnums.AUTHORIZATION_FAILED.getCode(),
-                ExceptionCodeEnums.AUTHORIZATION_FAILED.getMessage());
+                    ExceptionCodeEnums.AUTHORIZATION_FAILED.getMessage());
         }
         boolean hasPerimission = false;
         for (PlaUserPermission p : permissionlist) {
             if (StringUtils.equals(dto.getSystemId(), p.getSystemId())
-                && StringUtils.equals(dto.getAppId(), p.getAppId())) {
+                    && StringUtils.equals(dto.getAppId(), p.getAppId())) {
                 hasPerimission = true;
                 break;
             }
@@ -447,7 +446,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (!hasPerimission) {
             // 没权限
             throw new FoundationException(ExceptionCodeEnums.AUTHORIZATION_FAILED.getCode(),
-                ExceptionCodeEnums.AUTHORIZATION_FAILED.getMessage());
+                    ExceptionCodeEnums.AUTHORIZATION_FAILED.getMessage());
         }
 
     }
@@ -491,15 +490,84 @@ public class UserTokenServiceImpl implements UserTokenService {
         return userToken;
     }
 
+    /**
+     * 设置密码
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult setPassword(SetPasswordEnter enter) {
+
+        if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
+            throw new FoundationException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
+                    ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+        }
+        GetUserEnter getUser = new GetUserEnter();
+        if (StringUtils.isNotBlank(enter.getToken())) {
+            UserToken userToken = getUserToken(enter.getToken());
+            if (userToken.getUserId() == null || userToken.getUserId() == 0) {
+                throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                        ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            }
+            getUser.setUserId(userToken.getUserId());
+            getUser.setAppId(enter.getAppId());
+            getUser.setSystemId(enter.getSystemId());
+        } else {
+            Map<String, String> hash = jedisCluster.hgetAll(enter.getRequestId());
+            hash.forEach((k, v) -> {
+                log.info("存放redis中对应的key【{}】==========================vlue【{}】", k, v);
+            });
+            if (hash == null || hash.isEmpty()) {
+                throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                        ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            }
+            if (!StringUtils.equals(hash.get("systemId"), enter.getSystemId())) {
+                throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                        ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            }
+            if (!StringUtils.equals(hash.get("appId"), enter.getAppId())) {
+                throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                        ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            }
+            getUser.setUserId(Long.parseLong(hash.get("userId")));
+            getUser.setAppId(hash.get("appId"));
+            getUser.setSystemId(hash.get("systemId"));
+        }
+
+        PlaUser emailUser = userTokenMapper.getUserLimitOne(getUser);
+        if (emailUser == null) {
+            throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                    ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+        }
+
+        QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
+        wrapper.eq(PlaUserPassword.COL_LOGIN_NAME, emailUser.getLoginName());
+        wrapper.eq(PlaUserPassword.COL_DR, 0);
+        PlaUserPassword updatePassword = userPasswordMapper.selectOne(wrapper);
+
+        updatePassword.setPassword(DigestUtils.md5Hex(enter.getConfirmPassword() + updatePassword.getSalt()));
+        updatePassword.setUpdatedBy(enter.getUserId());
+        updatePassword.setUpdatedTime(new Date());
+        userPasswordMapper.updateById(updatePassword);
+
+        if (StringUtils.isNotBlank(emailUser.getLastLoginToken())) {
+            // 清除原有token,重新登录
+            jedisCluster.del(emailUser.getLastLoginToken());
+        }
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
     private UserToken getUserToken(String token) {
         if (StringUtils.isBlank(token)) {
             throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+                    ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         Map<String, String> map = jedisCluster.hgetAll(token);
         if (map == null) {
             throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+                    ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         map.forEach((k, v) -> {
             log.info("存放redis中对应的key【{}】==========================vlue【{}】", k, v);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
@@ -47,22 +48,6 @@ public interface UserTokenService {
     UserToken checkToken(GeneralEnter enter);
 
     /**
-     * 根据租户id锁定所有账户
-     *
-     * @param list
-     * @return
-     */
-    GeneralResult lockBySaaSAccount(List<Long> list);
-
-    /**
-     * 解锁SaaS账户
-     *
-     * @param list
-     * @return
-     */
-    GeneralResult UnlockBySaaSAccount(List<Long> list);
-
-    /**
      * 验证验证码
      *
      * @param enter
@@ -71,15 +56,8 @@ public interface UserTokenService {
     GeneralResult validateCode(ValidateCodeEnter<AccountsDto> enter);
 
     /**
-     * 员工离职 账户禁用、token 清除
-     *
-     * @return
-     */
-    GeneralResult accountDisabled(GeneralEnter enter);
-
-    /**
      * 实际登录逻辑
-     * 
+     *
      * @param user
      * @param enter
      * @return
@@ -87,16 +65,8 @@ public interface UserTokenService {
     LoginResult signIn(AccountsDto user, LoginEnter enter);
 
     /**
-     * 获取APP用户信息
-     * 
-     * @param enter
-     * @return
-     */
-    UserToken getAppUser(GetUserEnter enter);
-
-    /**
      * 默认PC端验证用户，不支持账号通用， 一个邮箱只能开设一种类型的用户
-     * 
+     *
      * @param enter
      * @return
      */
@@ -104,7 +74,7 @@ public interface UserTokenService {
 
     /**
      * APP用户验证，2B/2C账号通用
-     * 
+     *
      * @param enter
      * @return
      */
@@ -125,4 +95,45 @@ public interface UserTokenService {
      * @return
      */
     UserToken setToken(LoginEnter enter, AccountsDto userDto);
+
+    /**
+     * 设置密码
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult setPassword(SetPasswordEnter enter);
+
+    /**
+     * 根据租户id锁定所有账户
+     *
+     * @param list
+     * @return
+     */
+    GeneralResult lockBySaaSAccount(List<Long> list);
+
+    /**
+     * 解锁SaaS账户
+     *
+     * @param list
+     * @return
+     */
+    GeneralResult UnlockBySaaSAccount(List<Long> list);
+
+
+    /**
+     * 员工离职 账户禁用、token 清除
+     *
+     * @return
+     */
+    GeneralResult accountDisabled(GeneralEnter enter);
+
+    /**
+     * 获取APP用户信息
+     * 
+     * @param enter
+     * @return
+     */
+    UserToken getAppUser(GetUserEnter enter);
+
 }
