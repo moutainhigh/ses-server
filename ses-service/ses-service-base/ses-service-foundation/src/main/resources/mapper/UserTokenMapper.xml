@@ -65,5 +65,12 @@
         </foreach>
 
     </update>
+    <select id="getAppUser" resultType="com.redescooter.ses.service.foundation.dm.base.PlaUser">
+    select *
+    from pla_user u
+    where u.dr = 0
+      and u.LOGIN_NAME =#{email}
+    limit 1
+    </select>
 
 </mapper>

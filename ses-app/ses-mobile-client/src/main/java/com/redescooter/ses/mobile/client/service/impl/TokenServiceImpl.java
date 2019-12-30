@@ -7,6 +7,7 @@ import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.mobile.client.service.TokenService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,6 @@ public class TokenServiceImpl implements TokenService {
     private UserTokenService userTokenService;
     @Reference
     private MailMultiBaseTaskService mailMultiBaseTaskService;
-
 
     @Override
     public UserToken checkAndGetSession(GeneralEnter enter) {

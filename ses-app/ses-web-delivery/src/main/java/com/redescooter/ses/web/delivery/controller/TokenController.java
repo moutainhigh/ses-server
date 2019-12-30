@@ -2,12 +2,23 @@ package com.redescooter.ses.web.delivery.controller;
 
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
+import com.redescooter.ses.api.foundation.vo.ChanagePasswordEnter;
+import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.foundation.vo.login.LoginResult;
+import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @author Mr.lijiating
@@ -26,4 +37,36 @@ public class TokenController {
     @Reference
     private UserTokenService userTokenService;
 
+    @IgnoreLoginCheck
+    @ApiOperation(value = "登录接口")
+    @RequestMapping(value = "/login")
+    public Response<LoginResult> login(@ModelAttribute LoginEnter enter) {
+        return new Response<>(userTokenService.login(enter));
+    }
+
+    @ApiOperation(value = "登出接口")
+    @RequestMapping(value = "/logout")
+    public Response<GeneralResult> logout(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(userTokenService.logout(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "发送验证邮件接口")
+    @RequestMapping(value = "/sendEmail")
+    public Response<GeneralResult> sendEmail(@ModelAttribute SendMailEnter enter) {
+        return new Response<>();
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "忘记密码")
+    @RequestMapping(value = "/forgetPassword")
+    public Response<GeneralResult> forgetPassword(@ModelAttribute SetPasswordEnter enter) {
+        return new Response<>();
+    }
+
+    @ApiOperation(value = "修改密码")
+    @RequestMapping(value = "/chanagePassword")
+    public Response<GeneralResult> chanagePassword(@ModelAttribute ChanagePasswordEnter enter) {
+        return new Response<>();
+    }
 }

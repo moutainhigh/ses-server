@@ -25,6 +25,7 @@ import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
+import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
@@ -273,6 +274,25 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         return LoginResult.builder().token(userToken.getToken()).noPassword(Boolean.FALSE)
             .accountType(user.getUserType()).build();
+    }
+
+    /**
+     * 获取APP用户信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public UserToken getAppUser(GetUserEnter enter) {
+
+        PlaUser appUser = userTokenMapper.getAppUser(enter);
+
+        if (appUser == null) {
+            return new UserToken();
+        }
+        UserToken user = new UserToken();
+        BeanUtils.copyProperties(appUser, user);
+        return user;
     }
 
     /**

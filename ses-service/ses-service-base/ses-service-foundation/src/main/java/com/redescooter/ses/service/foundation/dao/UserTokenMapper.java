@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
+import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 
 /**
@@ -51,5 +53,13 @@ public interface UserTokenMapper {
      * @param list
      */
     void unlockBySaaSAccount(List<Long> list);
+
+    /**
+     * 获取APP用户，只取其中一条
+     * 
+     * @param enter
+     * @return
+     */
+    PlaUser getAppUser(GetUserEnter enter);
 
 }
