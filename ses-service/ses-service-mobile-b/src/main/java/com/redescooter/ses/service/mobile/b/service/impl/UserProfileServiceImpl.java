@@ -1,4 +1,4 @@
-package com.redescooter.ses.service.mobile.b.service;
+package com.redescooter.ses.service.mobile.b.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;

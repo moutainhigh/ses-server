@@ -155,6 +155,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setStatus(DeliveryStatusEnums.DELIVERING.getValue());
         delivery.setAtd(new Date());
         delivery.setEta(DateUtil.change(DateUtil.pay30()));
+        delivery.setDrivenMileage(new BigDecimal(enter.getMileage()));
         delivery.setUpdatedBy(enter.getUserId());
         delivery.setUpdatedTime(new Date());
         corDeliveryMapper.updateById(delivery);
@@ -215,10 +216,9 @@ public class DeliveryServiceImpl implements DeliveryService {
         navugation(enter.getBluetoothCommunication(), enter.getLat(), enter.getLng(), enter, delivery, CommonEvent.END.getValue());
         // 修改状态
         delivery.setAta(new Date());
-        delivery.setDrivenMileage(new BigDecimal(enter.getMileage()));
         delivery.setDrivenDuration(DateUtil.timeComolete(delivery.getAta(), delivery.getAtd()).intValue() * 60);
-        delivery.setCo2(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(Long.valueOf(enter.getMileage()))));
-        delivery.setSavings(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(Long.valueOf(enter.getMileage()))));
+        delivery.setCo2(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(delivery.getDrivenMileage().longValue())));
+        delivery.setSavings(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(delivery.getDrivenMileage().longValue())));
 
         String deliveryResult = DateUtil.timeComolete(delivery.getEta(), delivery.getAta()).intValue() > 0 ? DeliveryResultEnums.DELAY.getValue() : DeliveryResultEnums.ONTIME.getValue();
         delivery.setResult(deliveryResult);
@@ -227,9 +227,10 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setUpdatedTime(new Date());
         corDeliveryMapper.updateById(delivery);
         // 记录日志
+
         saveDelivertTrace(enter, delivery, DeliveryEventEnums.COMPLETED.getValue());
-        return new CompleteResult(enter.getMileage(),
-                StatisticalUtil.percentageUtil(Integer.valueOf(enter.getMileage()), delivery.getDrivenDuration(), 1)
+        return new CompleteResult(delivery.getDrivenMileage().toString(),
+                StatisticalUtil.percentageUtil(delivery.getDrivenMileage().intValue(), delivery.getDrivenDuration().intValue(), 1)
                 , delivery.getCo2().toString()
                 , delivery.getSavings().toString());
     }

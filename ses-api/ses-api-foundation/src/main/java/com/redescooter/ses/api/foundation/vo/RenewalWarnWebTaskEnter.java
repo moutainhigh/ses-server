@@ -1,11 +1,14 @@
 package com.redescooter.ses.api.foundation.vo;
 
-import java.util.Date;
-
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
  * @author Mr.lijiating

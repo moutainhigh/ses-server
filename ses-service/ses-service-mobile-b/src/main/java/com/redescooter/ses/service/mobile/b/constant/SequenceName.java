@@ -11,4 +11,6 @@ public interface SequenceName {
 
     String COR_DELIVERY_TRACE = "COR_DELIVERY_TRACE";
 
+    String COR_DRIVER_RIDE_STAT_DETAIL = "COR_DRIVER_RIDE_STAT_DETAIL";
+
 }

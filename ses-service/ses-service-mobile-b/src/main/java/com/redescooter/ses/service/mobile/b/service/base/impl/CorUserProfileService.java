@@ -1,9 +1,11 @@
 package com.redescooter.ses.service.mobile.b.service.base.impl;
 
-import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface CorUserProfileService extends IService<CorUserProfile>{
+import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
+
+import java.util.List;
+
+public interface CorUserProfileService extends IService<CorUserProfile> {
 
 
     int updateBatch(List<CorUserProfile> list);
@@ -15,3 +17,4 @@ public interface CorUserProfileService extends IService<CorUserProfile>{
     int insertOrUpdateSelective(CorUserProfile record);
 
 }
+
