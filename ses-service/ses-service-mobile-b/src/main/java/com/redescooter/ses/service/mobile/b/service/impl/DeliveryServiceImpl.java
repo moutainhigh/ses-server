@@ -128,7 +128,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         result.setTenantLatitude(tenant.getLatitude());
         result.setTenantLongitude(tenant.getLongitude());
         result.setScooterLatitude(scooter.get(0).getLatitude());
-        result.setScooterLongitude(scooter.get(0).getLatitude());
+        result.setScooterLongitude(scooter.get(0).getLongitule());
         result.setBattery(scooter.get(0).getBattery());
         return result;
     }

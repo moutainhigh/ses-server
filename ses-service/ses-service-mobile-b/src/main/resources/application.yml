@@ -1,6 +1,6 @@
 #Springboot 基础配置
 server:
-  port: ${random.int[10000,19999]}
+  port: 28290
 spring:
   application:
     name: @project.artifactId@

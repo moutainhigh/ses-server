@@ -12,7 +12,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Mr.lijiating
@@ -25,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "登入登出")
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/user/token", method = RequestMethod.POST)
+@RequestMapping(value = "/sign/token", method = RequestMethod.POST)
 public class UserTokenController {
 
     @Reference
