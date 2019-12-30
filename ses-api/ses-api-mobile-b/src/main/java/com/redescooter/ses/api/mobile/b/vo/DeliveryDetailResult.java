@@ -69,8 +69,7 @@ public class DeliveryDetailResult extends GeneralResult {
     @ApiModelProperty(value = "订单服务结果  按时、延迟、取消  ONTIME、DELAY、CANCEl")
     private String result;
 
-    @ApiModelProperty(value = "订单状态:PENDING待配送，  DELIVERING正在配送，REJECTED拒绝，TIMEOUT配送超时，COMPLETE已送达，CANCEL取消失败；PC订单状态显示:待配送Pending,配送中In  progress,拒单Declined,配送超时Overdue,超时完成Delayed,已送达Delivered," +
-            "取消订单Cancelled")
+    @ApiModelProperty(value = "订单状态1 待配送，2配送中，3拒单，4配送超时，5超时完成，6已送达，7失败（取消订单），8超时预警")
     private String status;
 
     @ApiModelProperty(value = "安排配送时间")

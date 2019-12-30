@@ -8,10 +8,13 @@ import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
+import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
+import com.redescooter.ses.mobile.client.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +35,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/sign/token", method = RequestMethod.POST)
 public class UserTokenController {
+
+    @Autowired
+    private TokenService tokenService;
 
     @Reference
     private UserTokenService userTokenService;
@@ -58,6 +64,12 @@ public class UserTokenController {
     }
 
 
+    @IgnoreLoginCheck
+    @ApiOperation(value = "发送验证码")
+    @RequestMapping(value = "/sendCode")
+    public Response<GeneralResult> sendCode(@ModelAttribute SendMailEnter enter) {
+        return new Response<>(tokenService.sendCode(enter));
+    }
 }
 
 

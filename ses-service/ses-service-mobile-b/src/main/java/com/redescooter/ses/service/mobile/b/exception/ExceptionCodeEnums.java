@@ -76,6 +76,9 @@ public enum ExceptionCodeEnums {
     DELIVERY_IS_NOT_EXIST(10031, "订单不存在"),
 
     STATUS_IS_REASONABLE(10032, "状态不合理"),
+
+    DRIVER_NOT_ASSIGNED_VEHICLE(10033, "司机未分配车辆"),
+
     ;
     private int code;
 

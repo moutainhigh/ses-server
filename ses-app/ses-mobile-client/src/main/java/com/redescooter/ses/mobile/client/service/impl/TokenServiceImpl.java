@@ -15,7 +15,9 @@ import com.redescooter.ses.mobile.client.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.JedisCluster;
 
 /**
  * @author Mr.lijiating
@@ -27,10 +29,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class TokenServiceImpl implements TokenService {
+
+    @Autowired
+    private JedisCluster jedisCluster;
+
     @Reference
     private UserTokenService userTokenService;
     @Reference
     private MailMultiBaseTaskService mailMultiBaseTaskService;
+
 
     @Override
     public UserToken checkAndGetSession(GeneralEnter enter) {
@@ -47,6 +54,10 @@ public class TokenServiceImpl implements TokenService {
         UserToken userByEmail = userTokenService.getUserByEmailType(user);
 
         String code = String.valueOf(RandomUtils.nextInt(10000, 99999));
+        // 存入redis
+        jedisCluster.set(enter.getRequestId(), code);
+        // 设置超时时间
+        jedisCluster.expire(enter.getRequestId(), 60);
 
         BaseMailTaskEnter baseMailTask = new BaseMailTaskEnter();
         baseMailTask.setCode(code);

@@ -169,6 +169,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult refuse(RefuseEnter enter) {
         CorDelivery delivery = corDeliveryMapper.selectById(enter.getId());
@@ -195,6 +196,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public CompleteResult complete(CompleteEnter enter) {
         List<String> deliveryStatus = new ArrayList<>();

@@ -3,7 +3,11 @@ package com.redescooter.ses.api.proxy.vo.mail;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @description: SendMailEnter
@@ -20,7 +24,5 @@ public class SendMailEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "邮箱账户")
     private String mail;
-    @ApiModelProperty(value = "发送验证码事件")
-    private String event;
 
 }

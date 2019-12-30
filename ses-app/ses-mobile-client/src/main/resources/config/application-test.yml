@@ -54,12 +54,42 @@ spring:                                                                         
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
 
-      customer-api:
+      delivery-api:
         group-name: 2.Delivery-API
-        title: 客户相关的操作
-        description: 客户相关的操作
+        title: 订单相关的操作
+        description: 订单相关的操作
         base-package: com.redescooter.ses
         path-regex: /delivery/.*
+        path-mapping: /
+        version: 1.2.0
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
+
+      scooter-api:
+        group-name: 3.Scooter-API
+        title: 车辆相关的操作
+        description: 车辆相关的操作
+        base-package: com.redescooter.ses
+        path-regex: /scooter/.*
+        path-mapping: /
+        version: 1.2.0
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
+
+      userProfile-api:
+        group-name: 4.UserProfile-API
+        title: 个人信息相关的操作
+        description: 个人信息相关的操作
+        base-package: com.redescooter.ses
+        path-regex: /userProfile/.*
         path-mapping: /
         version: 1.2.0
         license: RedE 公司内部传阅
