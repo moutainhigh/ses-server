@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.foundation.vo.login;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -28,5 +29,8 @@ public class LoginEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "密码")
     private String password;
+
+    @ApiModelProperty(value = "验证码")
+    private String code;
 
 }

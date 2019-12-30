@@ -1,18 +1,33 @@
 package com.redescooter.ses.web.ros.service.impl;
 
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
-import com.redescooter.ses.api.common.enums.ros.account.AccountStatusEnum;
-import com.redescooter.ses.api.common.enums.ros.account.UserStatusEnum;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.proxy.vo.mail.SendMailEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.starter.redis.constants.Status;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
@@ -22,21 +37,9 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.TokenRosService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import redis.clients.jedis.JedisCluster;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
+import redis.clients.jedis.JedisCluster;
 
 @Slf4j
 @Service
@@ -74,13 +77,13 @@ public class TokenRosServiceImpl implements TokenRosService {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         //状态验证
-        if (StringUtils.equals(sysUser.getStatus(), UserStatusEnum.LOCK.getCode())) {
+        if (StringUtils.equals(sysUser.getStatus(), SysUserStatusEnum.LOCK.getCode())) {
             throw new SesWebRosException(ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getCode(), ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getMessage());
         }
-        if (StringUtils.equals(sysUser.getStatus(), UserStatusEnum.CANCEL.getCode())) {
+        if (StringUtils.equals(sysUser.getStatus(), SysUserStatusEnum.CANCEL.getCode())) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_CANCELLED.getCode(), ExceptionCodeEnums.ACCOUNT_CANCELLED.getMessage());
         }
-        if (StringUtils.equals(sysUser.getStatus(), UserStatusEnum.EXPIRED.getCode())) {
+        if (StringUtils.equals(sysUser.getStatus(), SysUserStatusEnum.EXPIRED.getCode())) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_EXPIRED.getCode(), ExceptionCodeEnums.ACCOUNT_EXPIRED.getMessage());
         }
         String password = DigestUtils.md5Hex(enter.getPassword() + sysUser.getSalt());
@@ -230,7 +233,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         sysUser.setSystemId(enter.getSystemId());
         sysUser.setPassword(savePassword);
         sysUser.setSalt(String.valueOf(salt));
-        sysUser.setStatus(AccountStatusEnum.NORMAL.getCode());
+        sysUser.setStatus(SysUserStatusEnum.NORMAL.getCode());
         sysUser.setLoginName(enter.getLoginName());
         sysUser.setCreatedBy(enter.getUserId());
         sysUser.setCreatedTime(new Date());

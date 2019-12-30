@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum TenanNodeEvent {
+public enum TenanNodeEventEnum {
 
     CREAT("CREAT", "creat", "创建", "1"),
     ACTIVE("ACTIVE", "ACTIVE", "激活", "2"),
@@ -30,8 +30,8 @@ public enum TenanNodeEvent {
 
     private String value;
 
-    public static TenanNodeEvent getErrorCodeByCode(String code) {
-        for (TenanNodeEvent item : TenanNodeEvent.values()) {
+    public static TenanNodeEventEnum getErrorCodeByCode(String code) {
+        for (TenanNodeEventEnum item : TenanNodeEventEnum.values()) {
             if (item.getCode().equals(code)) {
                 return item;
             }

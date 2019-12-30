@@ -1,6 +1,5 @@
 package com.redescooter.ses.api.common.enums.ros.customer;
 
-import com.redescooter.ses.api.common.enums.ros.account.AccountStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

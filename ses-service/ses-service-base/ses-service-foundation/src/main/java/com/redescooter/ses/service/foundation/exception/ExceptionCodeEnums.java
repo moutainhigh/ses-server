@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 /**
  * @ClassName:ExceptionCodeEnums
  * @description: ExceptionCodeEnums
- * @author: Alex
- * @Version：1.3
+ * @author: Alex @Version：1.3
  * @create: 2019/11/01 11:12
  */
 @Getter
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum ExceptionCodeEnums {
 
-    //  10000   系统公用异常
+    // 10000 系统公用异常
     TOKEN_NOT_EXIST(10001, "token不存在"),
 
     TOKEN_MESSAGE_IS_FALSE(10002, "token过期"),
@@ -65,22 +64,27 @@ public enum ExceptionCodeEnums {
 
     TENANT_NOT_EXIST(10024, "租户不存在"),
 
-    ACCOUNT_IS_NOT_EXIST(10025,"账户不存在"),
+    ACCOUNT_IS_NOT_EXIST(10025, "账户不存在"),
 
+    ACCESS_DENIED(10026, "非法登录，授权失败，禁止访问"),
 
-    //10030 之后业务异常
-    RENEW_END_DATETIME_IS_NOT_AVAILABLE(10030,"续期结束时间不可用"),
+    // 10030 之后业务异常
+    RENEW_END_DATETIME_IS_NOT_AVAILABLE(10030, "续期结束时间不可用"),
 
-    RENEW_START_DATETIME_IS_NOT_AVAILABLE(10031,"续期开始时间不可用"),
+    RENEW_START_DATETIME_IS_NOT_AVAILABLE(10031, "续期开始时间不可用"),
 
-    USERPERMISSION_IS_NOT_EXIST(10032,"没有权限"),
+    USERPERMISSION_IS_NOT_EXIST(10032, "没有权限"),
 
-    STATUS_IS_REASONABLE(10033,"状态不合理"),
+    STATUS_IS_REASONABLE(10033, "状态不合理"),
 
-    TENANT_ALREADY_EXIST(10034,"租户已经存在"),
+    TENANT_ALREADY_EXIST(10034, "租户已经存在"),
 
+    USERTOKEN_SERVICE_CODE_EXPIRED(10035, "验证码不存在"),
+
+    USERTOKEN_SERVICE_CODE_WRONG(10036, "验证码错误"),
 
     ;
+
     private int code;
     private String message;
 
