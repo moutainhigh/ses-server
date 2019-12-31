@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * @Function: TODO
  */
 
-@Api(tags = {"Driver-API"})
+@Api(tags = {"DriverController"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/driver", method = RequestMethod.POST)

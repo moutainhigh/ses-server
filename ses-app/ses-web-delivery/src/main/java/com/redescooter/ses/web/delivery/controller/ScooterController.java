@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * @ClassName: ScooterController
  * @Function: TODO
  */
-@Api(tags = {"Scooter-API"})
+@Api(tags = {"ScooterController"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/scooter", method = RequestMethod.POST)

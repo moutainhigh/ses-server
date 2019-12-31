@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * @ClassName: OrderDeliveryController
  * @Function: TODO
  */
-@Api(tags = {"Order-Delivery-API"})
+@Api(tags = {"OrderDeliveryController"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/order/delivery", method = RequestMethod.POST)

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @Function: TODO
  */
 
-@Api(tags = {"SaaS-Sign"})
+@Api(tags = {"SaaS.Sign"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/sign/token", method = RequestMethod.POST)
