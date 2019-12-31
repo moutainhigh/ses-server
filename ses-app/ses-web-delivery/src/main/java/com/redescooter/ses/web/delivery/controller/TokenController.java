@@ -58,6 +58,6 @@ public class TokenController {
     @ApiOperation(value = "修改密码", response = GeneralResult.class)
     @PostMapping(value = "/chanagePassword")
     public Response<GeneralResult> chanagePassword(@ModelAttribute ChanagePasswordEnter enter) {
-        return new Response<>();
+        return new Response<>(userTokenService.chanagePassword(enter));
     }
 }
