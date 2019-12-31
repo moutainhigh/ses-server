@@ -40,8 +40,8 @@ spring:                                                                         
     enabled: true                                                                                                       #是否启用swagger
     group:
       sign-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 1.Sign-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: ROS Sign接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        group-name: 1.鉴权管理API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: ROS Sign API                                                                                          #api组的标题，会在swagger-ui的标题处显示
         description: 用户登录注销创建操作                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
         path-regex: /sign/token/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
@@ -56,8 +56,8 @@ spring:                                                                         
           url: https://github.com/mrjerryli                                                                             #联系地址
 
       delivery-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 2.Order-Delivery-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: Order Delivery接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        group-name: 2.配送单管理API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: Order Delivery API                                                                                           #api组的标题，会在swagger-ui的标题处显示
         description: 配送单服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
         path-regex: /order/delivery/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
@@ -72,8 +72,8 @@ spring:                                                                         
           url: https://github.com/mrjerryli                                                                             #联系地址
 
       driver-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 3.Driver-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: Driver管理接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        group-name: 3.司机管理API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: Driver API                                                                                              #api组的标题，会在swagger-ui的标题处显示
         description: 司机管理服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
         path-regex: /driver/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
@@ -88,8 +88,8 @@ spring:                                                                         
           url: https://github.com/mrjerryli                                                                             #联系地址
 
       scooter-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 4.Scooter-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: Scooter管理接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        group-name: 4.车辆管理API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: Scooter API                                                                                            #api组的标题，会在swagger-ui的标题处显示
         description: 车辆管理服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
         path-regex: /scooter/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
@@ -102,8 +102,6 @@ spring:                                                                         
           name: 李加廷                                                                                                   #联系人名字
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli                                                                             #联系地址
-
-
 
 redis:                                                                                                                  #REDIS配置
   redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
