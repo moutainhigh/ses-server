@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @Function: TODO
  */
 
-@Api(tags = {"SaaS-Sign"})
+@Api(tags = {"SaaS.Sign"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/sign/token", method = RequestMethod.POST)
@@ -58,6 +58,6 @@ public class TokenController {
     @ApiOperation(value = "修改密码", response = GeneralResult.class)
     @PostMapping(value = "/chanagePassword")
     public Response<GeneralResult> chanagePassword(@ModelAttribute ChanagePasswordEnter enter) {
-        return new Response<>();
+        return new Response<>(userTokenService.chanagePassword(enter));
     }
 }

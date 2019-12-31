@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.foundation.service.base;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.vo.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -101,6 +102,13 @@ public interface UserTokenService {
      */
     GeneralResult setPassword(SetPasswordEnter enter);
 
+    /**
+     * 系统内部设置密码
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult chanagePassword(ChanagePasswordEnter enter);
 
     /**
      * 邮件发送

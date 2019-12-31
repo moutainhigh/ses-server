@@ -31,4 +31,13 @@ public enum AppIDEnums {
     private String remark;
 
 
+    public static String getAppIdValue(String appId) {
+        for (AppIDEnums item : AppIDEnums.values()) {
+            if (item.getAppId().equals(appId)) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
+
 }

@@ -1,15 +1,5 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import java.util.*;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
@@ -39,8 +29,16 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.*;
 import com.redescooter.ses.web.ros.vo.customer.*;
-
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
+
+import java.util.*;
 
 /**
  * @ClassName:CustomerImpl
@@ -709,12 +707,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         if (StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), customer.getCustomerType())) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
-            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getAppId());
+            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getValue());
             baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
         }
         if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), customer.getCustomerType())) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
-            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getAppId());
+            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getValue());
             baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_WEB.getSystemId());
         }
         baseMailTaskEnter.setName(customer.getCustomerFullName());

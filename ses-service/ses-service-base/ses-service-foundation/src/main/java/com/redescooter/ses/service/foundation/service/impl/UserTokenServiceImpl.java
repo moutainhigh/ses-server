@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
+import com.redescooter.ses.api.foundation.vo.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -34,6 +35,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
@@ -562,6 +564,52 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (StringUtils.isNotBlank(emailUser.getLastLoginToken())) {
             // 清除原有token,重新登录
             jedisCluster.del(emailUser.getLastLoginToken());
+        }
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 系统内部设置密码
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult chanagePassword(ChanagePasswordEnter enter) {
+        //新密码判断是否一致
+        if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmNewPassword())) {
+            throw new FoundationException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+        }
+
+        GetUserEnter getUser = new GetUserEnter();
+        getUser.setAppId(enter.getAppId());
+        getUser.setSystemId(enter.getSystemId());
+        getUser.setEmail(enter.getEmail());
+        PlaUser user = userTokenMapper.getUserLimitOne(getUser);
+        if (user == null) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
+        wrapper.eq(PlaUserPassword.COL_LOGIN_NAME, user.getLoginName());
+        wrapper.eq(PlaUserPassword.COL_DR, 0);
+        PlaUserPassword updatePassword = userPasswordMapper.selectOne(wrapper);
+
+        //旧密码验证
+        String oldPsaaword = DigestUtils.md5Hex(enter.getOldPassword() + updatePassword.getSalt());
+        if (!StringUtils.equals(oldPsaaword, updatePassword.getPassword())) {
+            throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+
+        updatePassword.setPassword(DigestUtils.md5Hex(enter.getNewPassword() + updatePassword.getSalt()));
+        updatePassword.setUpdatedBy(enter.getUserId());
+        updatePassword.setUpdatedTime(new Date());
+        userPasswordMapper.updateById(updatePassword);
+
+        if (StringUtils.isNotBlank(user.getLastLoginToken())) {
+            // 清除原有token,重新登录
+            jedisCluster.del(user.getLastLoginToken());
         }
 
         return new GeneralResult(enter.getRequestId());
