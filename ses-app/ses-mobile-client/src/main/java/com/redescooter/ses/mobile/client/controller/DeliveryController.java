@@ -44,7 +44,7 @@ public class DeliveryController {
     @RequestMapping(value = "/list")
     public Response<DeliveryListResult> list(@ModelAttribute GeneralEnter enter) {
         enter.setUserId(1060938L);
-        enter.setTenantId(1060980L);
+        enter.setTenantId(0L);
         return new Response<>(deliveryService.list(enter));
     }
 
@@ -53,7 +53,7 @@ public class DeliveryController {
     @RequestMapping(value = "/detail")
     public Response<DeliveryDetailResult> detail(@ModelAttribute IdEnter enter) {
         enter.setUserId(1060938L);
-        enter.setTenantId(1060980L);
+        enter.setTenantId(0L);
         return new Response<>(deliveryService.detail(enter));
     }
 
@@ -62,7 +62,7 @@ public class DeliveryController {
     @RequestMapping(value = "/start")
     public Response<GeneralResult> start(@ModelAttribute StartEnter enter) {
         enter.setUserId(1060938L);
-        enter.setTenantId(1060980L);
+        enter.setTenantId(0L);
         return new Response<>(deliveryService.start(enter));
     }
 
@@ -71,7 +71,7 @@ public class DeliveryController {
     @RequestMapping(value = "/complete")
     public Response<CompleteResult> complete(@ModelAttribute CompleteEnter enter) {
         enter.setUserId(1060938L);
-        enter.setTenantId(1060980L);
+        enter.setTenantId(0L);
         return new Response<>(deliveryService.complete(enter));
     }
 
@@ -80,7 +80,7 @@ public class DeliveryController {
     @RequestMapping(value = "/refuse")
     public Response<GeneralResult> refuse(@ModelAttribute RefuseEnter enter) {
         enter.setUserId(1060938L);
-        enter.setTenantId(1060980L);
+        enter.setTenantId(0L);
         return new Response<>(deliveryService.refuse(enter));
     }
 

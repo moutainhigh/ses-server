@@ -22,4 +22,8 @@ public class StatisticalUtil {
 				numberFormat.format((float) molecular / (float) denominator * 100);
 		return completeProportion;
 	}
+
+	public static void main(String[] args) {
+		System.out.println(percentageUtil(10, 30, 2));
+	}
 }

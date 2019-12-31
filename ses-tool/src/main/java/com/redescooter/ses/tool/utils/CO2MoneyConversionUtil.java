@@ -23,8 +23,8 @@ public class CO2MoneyConversionUtil {
     public static String cO2Conversion(long distance) {
 
         String zero = "0.00";
-        //CO2比例
-        cO2Proportion = 0.071;
+        //CO2比例 没 m 产生 co2
+        cO2Proportion = 0.000071;
         DecimalFormat df = new DecimalFormat("#0.00");
         String CO2 = df.format(distance * cO2Proportion);
         if (Double.parseDouble(CO2) > 0) {

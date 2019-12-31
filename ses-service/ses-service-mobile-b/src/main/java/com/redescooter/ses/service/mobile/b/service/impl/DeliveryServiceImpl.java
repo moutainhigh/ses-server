@@ -230,7 +230,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         saveDelivertTrace(enter, delivery, DeliveryEventEnums.COMPLETED.getValue());
         return new CompleteResult(delivery.getDrivenMileage().toString(),
-                StatisticalUtil.percentageUtil(delivery.getDrivenMileage().intValue(), delivery.getDrivenDuration().intValue(), 1)
+                StatisticalUtil.percentageUtil(delivery.getDrivenMileage().intValue(), delivery.getDrivenDuration().intValue() > 0 ? delivery.getDrivenDuration().intValue() : 1, 2)
                 , delivery.getCo2().toString()
                 , delivery.getSavings().toString());
     }
