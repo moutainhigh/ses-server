@@ -14,7 +14,7 @@ public class PasswordTest {
 
     @Test
     public void test01() {
-        String s = DigestUtils.md5Hex("12345678" + "56787");
+        String s = DigestUtils.md5Hex("12345678" + "94400");
 
         System.out.println(s);
     }
