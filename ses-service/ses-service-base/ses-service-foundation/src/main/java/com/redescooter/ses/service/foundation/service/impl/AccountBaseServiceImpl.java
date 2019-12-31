@@ -144,12 +144,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         if (StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), enter.getT().getCustomerType())) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
-            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getAppId());
+            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getValue());
             baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
         }
         if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), enter.getT().getCustomerType())) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
-            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getAppId());
+            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getValue());
             baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_WEB.getSystemId());
         }
         mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
