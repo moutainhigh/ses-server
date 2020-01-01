@@ -37,7 +37,7 @@ public class DriverController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新建司机", response = GeneralResult.class)
-    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveDriverEnter enter) {
         return new Response<>();
     }
 
