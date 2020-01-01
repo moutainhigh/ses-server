@@ -1,16 +1,22 @@
 package com.redescooter.ses.service.mobile.b;
 
+import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.mobile.b.service.DeliveryService;
+import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
 import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
 import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
+import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryStatEnter;
 import com.redescooter.ses.api.mobile.b.vo.StartEnter;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -22,6 +28,9 @@ public class SesServiceMobileBApplicationTests {
 
     @Reference
     private DeliveryService deliveryService;
+
+    @Reference
+    private StatisticalDataService statisticalDataService;
 
     @Test
     public void list() {
@@ -73,6 +82,36 @@ public class SesServiceMobileBApplicationTests {
         refuseEnter.setId(1067025L);
         refuseEnter.setReason("客户取消");
         System.out.println(deliveryService.refuse(refuseEnter));
+    }
+
+    @Test
+    public void saveDriverRideStat() {
+        SaveDeliveryStatEnter enter = SaveDeliveryStatEnter.builder()
+                .bizId(1067025L)
+                .bizType(BizType.DELIVERY.getValue())
+                .duration(10L)
+                .mileage(1000000d)
+                .build();
+        enter.setTenantId(0L);
+        enter.setUserId(1060938L);
+        List<SaveDeliveryStatEnter> saveDeliveryStatEnterList = new ArrayList<>();
+        saveDeliveryStatEnterList.add(enter);
+        statisticalDataService.saveDriverRideStat(saveDeliveryStatEnterList);
+    }
+
+    @Test
+    public void saveScooterRideStat() {
+        SaveDeliveryStatEnter enter = SaveDeliveryStatEnter.builder()
+                .bizId(1067025L)
+                .bizType(BizType.DELIVERY.getValue())
+                .duration(10L)
+                .mileage(1000000d)
+                .build();
+        enter.setTenantId(0L);
+        enter.setUserId(1060938L);
+        List<SaveDeliveryStatEnter> saveDeliveryStatEnterList = new ArrayList<>();
+        saveDeliveryStatEnterList.add(enter);
+        statisticalDataService.saveScooterRideStat(saveDeliveryStatEnterList);
     }
 
 }

@@ -72,7 +72,7 @@ public class DeliveryDetailResult extends GeneralResult {
     @ApiModelProperty(value = "订单状态1 待配送，2配送中，3拒单，4配送超时，5超时完成，6已送达，7失败（取消订单），8超时预警")
     private String status;
 
-    @ApiModelProperty(value = "安排配送时间")
+    @ApiModelProperty(value = "安排配送时间 单位分钟")
     private String plannedTime;
 
     @ApiModelProperty(value = "超时预警值，单位分钟")
@@ -93,13 +93,13 @@ public class DeliveryDetailResult extends GeneralResult {
     @ApiModelProperty(value = "实际送达时间")
     private Date ata;
 
-    @ApiModelProperty(value = "骑行里程")
+    @ApiModelProperty(value = "骑行里程 单位 米")
     private BigDecimal drivenMileage;
 
-    @ApiModelProperty(value = "骑行时长")
+    @ApiModelProperty(value = "骑行时长 单位 s")
     private Integer drivenDuration;
 
-    @ApiModelProperty(value = "二氧化碳排放量")
+    @ApiModelProperty(value = "二氧化碳排放量 单位 g")
     private BigDecimal co2;
 
     @ApiModelProperty(value = "节省金额")

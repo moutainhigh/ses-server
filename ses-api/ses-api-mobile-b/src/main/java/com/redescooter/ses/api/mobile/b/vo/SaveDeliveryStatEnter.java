@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * @ClassName:SaveDriverRideStatEnter
  * @description: SaveDriverRideStatEnter
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class SaveDriverRideStatEnter extends GeneralEnter {
+public class SaveDeliveryStatEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "耗时")
     private Long duration;
@@ -34,4 +36,13 @@ public class SaveDriverRideStatEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "业务id")
     private Long bizId;
+
+    @ApiModelProperty(value = "交付人Id")
+    private Long inputUserId;
+
+    @ApiModelProperty(value = "交付人租户Id")
+    private Long inputTenantId;
+
+    @ApiModelProperty(value = "业务最后的更新时间")
+    private Date lastUpdateTime;
 }

@@ -9,7 +9,13 @@ import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
@@ -42,7 +48,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -242,12 +253,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserQueryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
         PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
         if (plaUser == null) {
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(UserStatusEnum.NORMAL.getValue(), plaUser.getStatus())) {
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
-                    ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaUser.setStatus(UserStatusEnum.LOCK.getValue());
         plaUser.setUpdatedBy(enter.getUserId());
@@ -293,12 +302,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         // 租户
         PlaTenant plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
         if (plaTenant == null) {
-            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(TenantStatusEnum.FROZEN.getValue(), plaTenant.getStatus())) {
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
-                    ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         plaTenant.setStatus(TenantStatusEnum.INOPERATION.getValue());
         plaTenant.setUpdatedBy(enter.getUserId());
@@ -311,8 +318,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserQueryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
         PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
         if (plaUser == null) {
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(), plaUser.getStatus())) {
             throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
@@ -328,8 +334,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID, appId);
         PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
         if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(), plaUserPermission.getStatus())) {
-            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
-                    ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         Objects.requireNonNull(plaUserPermission).setStatus(UserStatusEnum.NORMAL.getValue());
         plaUserPermission.setUpdatedBy(enter.getUserId());

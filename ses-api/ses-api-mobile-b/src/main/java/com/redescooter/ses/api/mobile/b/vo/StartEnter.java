@@ -42,7 +42,7 @@ public class StartEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY, message = "经度为空")
     private String lng;
 
-    @ApiModelProperty(value = "距离")
+    @ApiModelProperty(value = "距离 单位 米 ")
     @NotNull(code = ValidationExceptionCode.MILEAGE_IS_EMPTY, message = "距离为空")
     private String mileage;
 }

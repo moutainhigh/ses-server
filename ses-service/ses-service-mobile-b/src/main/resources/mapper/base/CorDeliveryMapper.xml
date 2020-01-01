@@ -33,11 +33,11 @@
     <result column="driven_duration" property="drivenDuration" />
     <result column="co2" property="co2" />
     <result column="savings" property="savings" />
+    <result column="statistics" property="statistics" />
     <result column="updated_time" property="updatedTime" />
     <result column="created_time" property="createdTime" />
     <result column="updated_by" property="updatedBy" />
     <result column="created_by" property="createdBy" />
-    <result column="def1" property="def1" />
     <result column="def2" property="def2" />
     <result column="def3" property="def3" />
     <result column="def5" property="def5" />
@@ -48,8 +48,8 @@
     id, dr, order_no, tenant_id, deliverer_id, scooter_id, recipient, recipient_email, 
     recipient_tel, recipient_address, longitude, latitude, geohash, house_info, parcel_quantity, 
     goods_inventory, `result`, `status`, planned_time, timeout_expectde, time_out, etd, 
-    atd, eta, ata, driven_mileage, driven_duration, co2, savings, updated_time, created_time, 
-    updated_by, created_by, def1, def2, def3, def5, def6
+    atd, eta, ata, driven_mileage, driven_duration, co2, savings, `statistics`, updated_time, 
+    created_time, updated_by, created_by, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -195,6 +195,11 @@
           when id = #{item.id} then #{item.savings}
         </foreach>
       </trim>
+      <trim prefix="`statistics` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.statistics}
+        </foreach>
+      </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.updatedTime}
@@ -213,11 +218,6 @@
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.createdBy}
-        </foreach>
-      </trim>
-      <trim prefix="def1 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def1}
         </foreach>
       </trim>
       <trim prefix="def2 = case" suffix="end,">
@@ -252,8 +252,8 @@
     (id, dr, order_no, tenant_id, deliverer_id, scooter_id, recipient, recipient_email, 
       recipient_tel, recipient_address, longitude, latitude, geohash, house_info, parcel_quantity, 
       goods_inventory, `result`, `status`, planned_time, timeout_expectde, time_out, 
-      etd, atd, eta, ata, driven_mileage, driven_duration, co2, savings, updated_time, 
-      created_time, updated_by, created_by, def1, def2, def3, def5, def6)
+      etd, atd, eta, ata, driven_mileage, driven_duration, co2, savings, `statistics`, 
+      updated_time, created_time, updated_by, created_by, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id}, #{item.dr}, #{item.orderNo}, #{item.tenantId}, #{item.delivererId}, 
@@ -262,9 +262,9 @@
         #{item.houseInfo}, #{item.parcelQuantity}, #{item.goodsInventory}, #{item.result}, 
         #{item.status}, #{item.plannedTime}, #{item.timeoutExpectde}, #{item.timeOut}, 
         #{item.etd}, #{item.atd}, #{item.eta}, #{item.ata}, #{item.drivenMileage}, #{item.drivenDuration}, 
-        #{item.co2}, #{item.savings}, #{item.updatedTime}, #{item.createdTime}, #{item.updatedBy}, 
-        #{item.createdBy}, #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6}
-        )
+        #{item.co2}, #{item.savings}, #{item.statistics}, #{item.updatedTime}, #{item.createdTime}, 
+        #{item.updatedBy}, #{item.createdBy}, #{item.def2}, #{item.def3}, #{item.def5}, 
+        #{item.def6})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorDelivery">
@@ -273,15 +273,15 @@
     (id, dr, order_no, tenant_id, deliverer_id, scooter_id, recipient, recipient_email, 
       recipient_tel, recipient_address, longitude, latitude, geohash, house_info, parcel_quantity, 
       goods_inventory, `result`, `status`, planned_time, timeout_expectde, time_out, 
-      etd, atd, eta, ata, driven_mileage, driven_duration, co2, savings, updated_time, 
-      created_time, updated_by, created_by, def1, def2, def3, def5, def6)
+      etd, atd, eta, ata, driven_mileage, driven_duration, co2, savings, `statistics`, 
+      updated_time, created_time, updated_by, created_by, def2, def3, def5, def6)
     values
     (#{id}, #{dr}, #{orderNo}, #{tenantId}, #{delivererId}, #{scooterId}, #{recipient}, 
       #{recipientEmail}, #{recipientTel}, #{recipientAddress}, #{longitude}, #{latitude}, 
       #{geohash}, #{houseInfo}, #{parcelQuantity}, #{goodsInventory}, #{result}, #{status}, 
       #{plannedTime}, #{timeoutExpectde}, #{timeOut}, #{etd}, #{atd}, #{eta}, #{ata}, 
-      #{drivenMileage}, #{drivenDuration}, #{co2}, #{savings}, #{updatedTime}, #{createdTime}, 
-      #{updatedBy}, #{createdBy}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+      #{drivenMileage}, #{drivenDuration}, #{co2}, #{savings}, #{statistics}, #{updatedTime}, 
+      #{createdTime}, #{updatedBy}, #{createdBy}, #{def2}, #{def3}, #{def5}, #{def6})
     on duplicate key update 
     id = #{id}, 
     dr = #{dr}, 
@@ -312,11 +312,11 @@
     driven_duration = #{drivenDuration}, 
     co2 = #{co2}, 
     savings = #{savings}, 
+    `statistics` = #{statistics}, 
     updated_time = #{updatedTime}, 
     created_time = #{createdTime}, 
     updated_by = #{updatedBy}, 
     created_by = #{createdBy}, 
-    def1 = #{def1}, 
     def2 = #{def2}, 
     def3 = #{def3}, 
     def5 = #{def5}, 
@@ -413,6 +413,9 @@
       <if test="savings != null">
         savings,
       </if>
+      <if test="statistics != null">
+        `statistics`,
+      </if>
       <if test="updatedTime != null">
         updated_time,
       </if>
@@ -424,9 +427,6 @@
       </if>
       <if test="createdBy != null">
         created_by,
-      </if>
-      <if test="def1 != null">
-        def1,
       </if>
       <if test="def2 != null">
         def2,
@@ -530,6 +530,9 @@
       <if test="savings != null">
         #{savings},
       </if>
+      <if test="statistics != null">
+        #{statistics},
+      </if>
       <if test="updatedTime != null">
         #{updatedTime},
       </if>
@@ -541,9 +544,6 @@
       </if>
       <if test="createdBy != null">
         #{createdBy},
-      </if>
-      <if test="def1 != null">
-        #{def1},
       </if>
       <if test="def2 != null">
         #{def2},
@@ -647,6 +647,9 @@
       <if test="savings != null">
         savings = #{savings},
       </if>
+      <if test="statistics != null">
+        `statistics` = #{statistics},
+      </if>
       <if test="updatedTime != null">
         updated_time = #{updatedTime},
       </if>
@@ -658,9 +661,6 @@
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy},
-      </if>
-      <if test="def1 != null">
-        def1 = #{def1},
       </if>
       <if test="def2 != null">
         def2 = #{def2},

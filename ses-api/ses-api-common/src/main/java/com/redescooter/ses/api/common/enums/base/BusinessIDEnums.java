@@ -14,7 +14,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum BusinessIDEnums {
 
-    NORMAL("NORMAL", "1", "游离端"), PERSONAL("PERSONAL", "2", "个人端"), RESTAURANT("RESTAURANT", "3", "餐厅端"),
+    NORMAL("NORMAL", "1", "游离端"),
+    PERSONAL("PERSONAL", "2", "个人端"),
+    RESTAURANT("RESTAURANT", "3", "餐厅端"),
     EXPRESS("EXPRESS", "4", "快递端"),
     ;
 

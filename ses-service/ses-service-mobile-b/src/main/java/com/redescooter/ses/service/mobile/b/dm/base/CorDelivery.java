@@ -17,6 +17,7 @@ import java.util.Date;
 @Data
 @TableName(value = "cor_delivery")
 public class CorDelivery implements Serializable {
+    public static final String COL_DEF1 = "def1";
     /**
      * ID
      */
@@ -223,6 +224,13 @@ public class CorDelivery implements Serializable {
     private BigDecimal savings;
 
     /**
+     * 0 标识未统计，1 标识 已统计
+     */
+    @TableField(value = "statistics")
+    @ApiModelProperty(value = "0 标识未统计，1 标识 已统计")
+    private String statistics;
+
+    /**
      * 更新时间
      */
     @TableField(value = "updated_time")
@@ -249,13 +257,6 @@ public class CorDelivery implements Serializable {
     @TableField(value = "created_by")
     @ApiModelProperty(value = "创建人")
     private Long createdBy;
-
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def1")
-    @ApiModelProperty(value = "冗余字段")
-    private String def1;
 
     /**
      * 冗余字段
@@ -345,6 +346,8 @@ public class CorDelivery implements Serializable {
 
     public static final String COL_SAVINGS = "savings";
 
+    public static final String COL_STATISTICS = "statistics";
+
     public static final String COL_UPDATED_TIME = "updated_time";
 
     public static final String COL_CREATED_TIME = "created_time";
@@ -352,8 +355,6 @@ public class CorDelivery implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_CREATED_BY = "created_by";
-
-    public static final String COL_DEF1 = "def1";
 
     public static final String COL_DEF2 = "def2";
 

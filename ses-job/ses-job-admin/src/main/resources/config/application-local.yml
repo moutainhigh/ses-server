@@ -15,5 +15,5 @@ spring:
 
 xxl:
   job:
-    accessToken:
+    accessToken: gfdsgfdssgsdfdfsdfsd
     i18n:
