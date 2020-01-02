@@ -1,7 +1,7 @@
 #日志路径
 log:
   file:
-    path: /data/java_service/logs3/@profile-active@
+    path: logs/@profile-active@
     max-size: 128MB
     max-history: 180
 
@@ -13,34 +13,34 @@ spring:
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://192.168.2.200:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          url: jdbc:mysql://localhost:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: root
-          password: 1qaz2wsx
+          password: root
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://192.168.2.200:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          url: jdbc:mysql://localhost:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: root
-          password: 1qaz2wsx
+          password: root
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://192.168.2.200:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          url: jdbc:mysql://localhost:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: root
-          password: 1qaz2wsx
+          password: root
   #REDIS集群配置
   redis:
     cluster:
       nodes:
-        - 192.168.2.200:7000
-        - 192.168.2.200:7001
-        - 192.168.2.200:7002
-        - 192.168.2.200:7003
-        - 192.168.2.200:7004
-        - 192.168.2.200:7005
+        - 10.211.55.5:7000
+        - 10.211.55.5:7001
+        - 10.211.55.5:7002
+        - 10.211.55.5:7003
+        - 10.211.55.5:7004
+        - 10.211.55.5:7005
 
 # DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://192.168.2.200:2181
+    address: zookeeper://10.211.55.5:12181?backup=10.211.55.5:22181,10.211.55.5:32181
 
 
 
@@ -59,7 +59,3 @@ dubbo:
 #  flow-dataid: @project.artifactId@-flow
 #  degra-dedataid: @project.artifactId@-degra
 #  system-dataid: @project.artifactId@-sys
-
-
-    saasAccountSecondairePath: /account-plugin/#/
-    sesRepairAccountSecondairePath: /repair/#/retrieve

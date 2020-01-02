@@ -540,10 +540,16 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult sendEmailAgian(IdEnter enter) {
 
         PlaUser user = userMapper.selectById(enter.getId());
+
+        if (user == null) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
         //验证是否可以再次发生邮件
         if (jedisCluster.exists(new StringBuffer().append("send::").append(user.getLoginName()).toString())) {
             return new BooleanResult(true);

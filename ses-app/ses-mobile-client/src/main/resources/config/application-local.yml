@@ -4,6 +4,18 @@ log:
     path: logs/@profile-active@
     max-size: 128MB
     max-history: 180
+
+## DUBBO 配置
+dubbo:
+  registry: #注册中心
+    address: zookeeper://10.211.55.5:12181?backup=10.211.55.5:22181,10.211.55.5:32181
+  metadata-report:
+    address: zookeeper://10.211.55.5:12181?backup=10.211.55.5:22181,10.211.55.5:32181
+  config-center:
+    address: zookeeper://10.211.55.5:12181?backup=10.211.55.5:22181,10.211.55.5:32181
+
+
+
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -99,9 +111,3 @@ spring:                                                                         
           email: Jerry@redescooter.com
           url: https://github.com/mrjerryli#联系地址
 
-redis:                                                                                                                  #REDIS配置
-  redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
-
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:22181

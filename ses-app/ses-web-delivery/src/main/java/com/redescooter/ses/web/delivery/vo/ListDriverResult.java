@@ -24,6 +24,9 @@ public class ListDriverResult extends GeneralResult {
     @ApiModelProperty(value = "司机主键")
     private Long id;
 
+    @ApiModelProperty(value = "头像")
+    private String avatar;
+
     @ApiModelProperty(value = "司机状态")
     private String status;
 
@@ -35,6 +38,9 @@ public class ListDriverResult extends GeneralResult {
 
     @ApiModelProperty(value = "邮箱")
     private String email;
+
+    @ApiModelProperty(value = "司机地址")
+    private String address;
 
     @ApiModelProperty(value = "车牌号")
     private String plateNumber;

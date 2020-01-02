@@ -525,9 +525,6 @@ public class UserTokenServiceImpl implements UserTokenService {
              * 系统外部进行设置密码
              */
             Map<String, String> hash = jedisCluster.hgetAll(enter.getRequestId());
-            hash.forEach((k, v) -> {
-                log.info("存放redis中对应的key【{}】==========================vlue【{}】", k, v);
-            });
             if (hash == null || hash.isEmpty()) {
                 throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
                         ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());

@@ -5,11 +5,13 @@
     <select id="listCount" resultType="int">
         select count(cdr.id)
         from cor_driver cdr
-        inner join cor_user_profile cup on cdr.user_id = cup.user_id
-        left join cor_driver_scooter cds on cdr.id = cds.driver_id
-        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id
+        inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr=0
+        left join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr=0
+        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr=0
         <where>
-            <if test="keywords != null and keywords != ''">
+            and cdr.status !='3'
+            and cdr.dr=0
+            <if test="keyword != null and keyword != ''">
                 and (
                 cup.first_name like concat("%",#{keyword},"%")
                 or cup.last_name like concat("%",#{keyword},"%")
@@ -25,6 +27,8 @@
     <select id="list" resultType="com.redescooter.ses.web.delivery.vo.ListDriverResult">
         select cdr.id,
         cdr.status,
+        cup.picture as avatar,
+        cup.place_birth as address,
         cup.first_name as driverFirstName,
         cup.last_name as driverLastName,
         cup.email_1 as email,
@@ -33,11 +37,13 @@
         cts.license_plate as plateNumber,
         false as activatBoolean
         from cor_driver cdr
-        inner join cor_user_profile cup on cdr.user_id = cup.user_id
-        left join cor_driver_scooter cds on cdr.id = cds.driver_id
-        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id
+        inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr=0
+        left join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr=0
+        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr=0
         <where>
-            <if test="keywords != null and keywords != ''">
+            and cdr.status !='3'
+            and cdr.dr=0
+            <if test="keyword != null and keyword != ''">
                 and (
                 cup.first_name like concat("%",#{keyword},"%")
                 or cup.last_name like concat("%",#{keyword},"%")
@@ -47,14 +53,16 @@
             <if test="status != null and status != ''">
                 and cdr.status = #{status}
             </if>
-            limit #{startRow},#{pageSize}
+            and cdr.status !='3'
         </where>
+        limit #{startRow},#{pageSize}
     </select>
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
      select cd.status, count(*) totalCount
      from cor_driver cd
      where cd.dr = 0
         and cd.tenant_id=#{tenantId}
+        and cd.status != '3'
      group by cd.status
         </select>
 </mapper>

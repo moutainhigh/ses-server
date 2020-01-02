@@ -76,7 +76,7 @@ public class DriverController {
 
     @PostMapping(value = "/removeScooter")
     @ApiOperation(value = "移除车辆", response = GeneralResult.class)
-    public Response<GeneralResult> removeScooter(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<GeneralResult> removeScooter(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>();
     }
 

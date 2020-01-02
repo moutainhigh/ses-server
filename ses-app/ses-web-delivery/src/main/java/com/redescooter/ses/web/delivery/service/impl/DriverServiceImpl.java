@@ -73,7 +73,7 @@ public class DriverServiceImpl implements DriverService {
             throw new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
 
-        if (enter.getDriverId() == null || enter.getDriverId() == 0) {
+        if (enter.getId() == null || enter.getId() == 0) {
             BaseUserResult user = openDriver2BAccout(enter);
 
             CorDriver driverSave = new CorDriver();
@@ -115,25 +115,42 @@ public class DriverServiceImpl implements DriverService {
             profileSave.setUpdatedBy(enter.getUserId());
             profileSave.setUpdatedTime(new Date());
             profileMapper.insert(profileSave);
-            accountBaseService.sendEmailAgian(new IdEnter(driverSave.getUserId()));
+            IdEnter idEnter = new IdEnter();
+            BeanUtils.copyProperties(enter, idEnter);
+            idEnter.setId(driverSave.getUserId());
+            accountBaseService.sendEmailAgian(idEnter);
         } else {
+
+            CorDriver driver = driverMapper.selectById(enter.getId());
+            if (driver == null) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+            }
+
             CorDriver driverUpdate = new CorDriver();
-            driverUpdate.setId(enter.getDriverId());
-            driverUpdate.setDrivingLicense(enter.getDriverLicense());
+            driverUpdate.setId(enter.getId());
+            if (enter.getDriverLicense() != null) {
+                driverUpdate.setDrivingLicense(enter.getDriverLicense());
+            }
             driverUpdate.setUpdatedBy(enter.getUserId());
             driverUpdate.setUpdatedTime(new Date());
             driverMapper.updateById(driverUpdate);
 
             QueryWrapper<CorUserProfile> wrapper = new QueryWrapper<>();
-            wrapper.eq(CorUserProfile.COL_USER_ID, enter.getDriverId());
+            wrapper.eq(CorUserProfile.COL_USER_ID, driver.getUserId());
             wrapper.eq(CorUserProfile.COL_DR, 0);
 
             CorUserProfile profile = profileMapper.selectOne(wrapper);
-            profile.setPicture(enter.getAvatar());
-            profile.setFirstName(enter.getDriverFirstName());
-            profile.setLastName(enter.getDriverLastName());
-            profile.setFullName(new StringBuffer().append(enter.getDriverFirstName()).append(" ").append(enter.getDriverLastName()).toString());
-            profile.setBirthday(DateUtil.timaConversion(enter.getBirthday()));
+            if (enter.getAvatar() != null) {
+                profile.setPicture(enter.getAvatar());
+            }
+            if (enter.getDriverFirstName() != null && enter.getDriverLastName() != null) {
+                profile.setFirstName(enter.getDriverFirstName());
+                profile.setLastName(enter.getDriverLastName());
+                profile.setFullName(new StringBuffer().append(enter.getDriverFirstName()).append(" ").append(enter.getDriverLastName()).toString());
+            }
+            if (enter.getBirthday() != null) {
+                profile.setBirthday(DateUtil.timaConversion(enter.getBirthday()));
+            }
             profile.setUpdatedBy(enter.getUserId());
             profile.setUpdatedTime(new Date());
             profileMapper.updateById(profile);
@@ -177,6 +194,7 @@ public class DriverServiceImpl implements DriverService {
                 map.put(status.getValue(), 0);
             }
         }
+        map.remove(DriverStatusEnum.DEPARTURE.getValue());
         return map;
     }
 
@@ -263,6 +281,7 @@ public class DriverServiceImpl implements DriverService {
 
         GeneralResult result = accountBaseService.cancelDriver2BAccout(new IdEnter(driver.getUserId()));
 
+        driverMapper.deleteById(driver.getId());
         return result;
     }
 
@@ -282,6 +301,7 @@ public class DriverServiceImpl implements DriverService {
         if (driver.getStatus().equals(DriverStatusEnum.DEPARTURE.getValue())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
+        enter.setId(driver.getUserId());
         GeneralResult result = accountBaseService.sendEmailAgian(enter);
         return result;
     }

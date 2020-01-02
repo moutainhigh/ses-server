@@ -5,6 +5,11 @@ log:
     max-size: 128MB
     max-history: 180
 
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://192.168.2.200:32181
+
+
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -86,6 +91,3 @@ spring:                                                                         
           email: Jerry@redescooter.com
           url: https://github.com/mrjerryli
 
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:32181

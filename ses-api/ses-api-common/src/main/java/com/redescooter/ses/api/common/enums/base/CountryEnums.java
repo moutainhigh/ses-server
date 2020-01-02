@@ -12,12 +12,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CountryEnums {
 
-    SAAS_DRIVER("US", "en"),
-    SES_DRIVER("FR", "fr");
+    SAAS_DRIVER("US", "en", "1"),
+    SES_DRIVER("FR", "fr", "2");
 
     private String country;
 
     private String language;
+
+    //编码对应值
+    private String value;
 
     public static CountryEnums findCountryByLanguage(String key) {
         for (CountryEnums item : CountryEnums.values()) {

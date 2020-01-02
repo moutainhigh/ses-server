@@ -23,5 +23,5 @@ public class ListDriverPage extends PageEnter {
     @ApiModelProperty(value = "状态")
     private String status;
     @ApiModelProperty(value = "关键字")
-    private String keywords;
+    private String keyword;
 }

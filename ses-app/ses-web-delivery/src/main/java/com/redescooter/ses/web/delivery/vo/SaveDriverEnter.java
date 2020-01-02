@@ -21,7 +21,7 @@ import lombok.*;
 public class SaveDriverEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "司机主键")
-    private Long driverId;
+    private Long id;
 
     @ApiModelProperty(value = "头像")
     private String avatar;
