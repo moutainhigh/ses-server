@@ -109,7 +109,11 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                 saveDriverRideStatDetailList.add(driverRideStatDetail);
 
                 if (driverRideStat == null) {
-                    saveDriverRideStatList.add(buildCorDriverRideStat(item, driver, driverRideStatDetail));
+                    saveDriverRideStatList.forEach(driverRide -> {
+                        if (driverRide.getDriverId() != driver.getId()) {
+                            saveDriverRideStatList.add(buildCorDriverRideStat(item, driver, driverRideStatDetail));
+                        }
+                    });
                 } else {
                     driverRideStat.setCo2Total(driverRideStat.getCo2Total().add(driverRideStatDetail.getCo2Increment()));
                     driverRideStat.setCo2Increment(driverRideStatDetail.getCo2Increment());
