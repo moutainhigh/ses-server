@@ -1,7 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
@@ -419,7 +418,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                     ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
 
-        plaUserPassword.setPassword(DigestUtils.md5Hex(Constant.DEFAULT_PASSWORD + plaUserPassword.getSalt()));
+        plaUserPassword.setPassword(DigestUtils.md5Hex(enter.getConfirmPassword() + plaUserPassword.getSalt()));
         plaUserPassword.setUpdatedBy(enter.getUserId());
         plaUserPassword.setUpdatedTime(new Date());
         plaUserPasswordMapper.updateById(plaUserPassword);
