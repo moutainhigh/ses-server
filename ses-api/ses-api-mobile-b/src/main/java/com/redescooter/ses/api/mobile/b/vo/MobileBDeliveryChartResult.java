@@ -18,7 +18,7 @@ import java.util.Map;
  * @Version：1.3
  * @create: 2019/12/31 14:40
  */
-@ApiModel(value = "订单数据", description = "")
+@ApiModel(value = "订单数据出参", description = "订单数据出参")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -26,10 +26,10 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class MobileBDeliveryChartResult extends GeneralResult {
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "状态统计")
     Map<String, Integer> countByStatus;
 
-    @ApiModelProperty(value = "")
-    private Map<String, MonthlyChartResult> monthlyOrderResults;
+    @ApiModelProperty(value = "图表统计")
+    private Map<String, MonthlyDeliveryChartResult> monthlyOrderResults;
 
 }

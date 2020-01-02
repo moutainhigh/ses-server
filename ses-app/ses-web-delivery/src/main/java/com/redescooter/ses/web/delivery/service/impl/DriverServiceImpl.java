@@ -4,16 +4,23 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.driver.RoleEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
+import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorDriverMapper;
+import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorUserProfileMapper;
 import com.redescooter.ses.web.delivery.dm.CorDriver;
+import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.dm.CorUserProfile;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
@@ -21,14 +28,17 @@ import com.redescooter.ses.web.delivery.service.DriverService;
 import com.redescooter.ses.web.delivery.vo.DriverDetailsResult;
 import com.redescooter.ses.web.delivery.vo.ListDriverPage;
 import com.redescooter.ses.web.delivery.vo.ListDriverResult;
+import com.redescooter.ses.web.delivery.vo.ListScooterResult;
 import com.redescooter.ses.web.delivery.vo.SaveDriverEnter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +58,8 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private CorDriverMapper driverMapper;
     @Autowired
+    private CorTenantScooterMapper corTenantScooterMapper;
+    @Autowired
     private CorUserProfileMapper profileMapper;
     @Autowired
     private DriverServiceMapper driverServiceMapper;
@@ -55,6 +67,8 @@ public class DriverServiceImpl implements DriverService {
     private IdAppService idAppService;
     @Reference
     private AccountBaseService accountBaseService;
+    @Reference
+    private ScooterService scooterService;
 
     /**
      * 创建司机
@@ -308,5 +322,38 @@ public class DriverServiceImpl implements DriverService {
         enter.setId(driver.getUserId());
         GeneralResult result = accountBaseService.sendEmailAgian(enter);
         return result;
+    }
+
+    /**
+     * 门店车辆列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ListScooterResult> scooterList(GeneralEnter enter) {
+        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+        List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
+        if (CollectionUtils.isEmpty(corTenantScooterList)) {
+            return new ArrayList<>();
+        }
+        List<Long> scooterIdList = new ArrayList<>();
+        corTenantScooterList.forEach(item -> {
+            scooterIdList.add(item.getScooterId());
+        });
+
+        List<ListScooterResult> resultList = new ArrayList<>();
+        scooterService.scooterInfor(scooterIdList).forEach(scooter -> {
+            ListScooterResult scooterResult = ListScooterResult.builder()
+                    .id(scooter.getId())
+                    .battery(scooter.getBattery())
+                    .scooterLicense(scooter.getLicensePlate())
+                    .build();
+            resultList.add(scooterResult);
+        });
+
+        return resultList;
     }
 }

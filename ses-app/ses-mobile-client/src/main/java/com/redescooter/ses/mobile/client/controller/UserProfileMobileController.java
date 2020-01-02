@@ -38,8 +38,8 @@ public class UserProfileMobileController {
     @ApiOperation(value = "个人信息")
     @RequestMapping(value = "/detail")
     public Response<UserProfileResult> userProfile(@ModelAttribute GeneralEnter enter) {
-        enter.setUserId(1060938L);
-        enter.setTenantId(1060980L);
+        enter.setUserId(1071493L);
+        enter.setTenantId(0L);
         return new Response<>(userProfileMobileService.userProfile(enter));
     }
 
@@ -47,8 +47,8 @@ public class UserProfileMobileController {
     @ApiOperation(value = "个人信息修改")
     @RequestMapping(value = "/updateUserProfile")
     public Response<GeneralResult> updateUserProfile(@ModelAttribute SaveUserProfileEnter enter) {
-        enter.setUserId(1060938L);
-        enter.setTenantId(1060980L);
+        enter.setUserId(1071493L);
+        enter.setTenantId(0L);
         return new Response<>(userProfileMobileService.saveUserProfile(enter));
     }
 

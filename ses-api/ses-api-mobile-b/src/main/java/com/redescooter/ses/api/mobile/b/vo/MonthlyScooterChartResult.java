@@ -14,23 +14,26 @@ import lombok.NoArgsConstructor;
  * @author: Alex
  * @create: 2019/06/25 15:03
  */
-@ApiModel(value = "月订单统计出参", description = "月订单统计出参")
+@ApiModel(value = "scooter统计出参", description = "scooter统计出参")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class MonthlyChartResult extends GeneralResult {
+public class MonthlyScooterChartResult extends GeneralResult {
 
-    @ApiModelProperty(value = "完成总计")
-    private int completeTotal;
+    @ApiModelProperty(value = "公里数")
+    private String mileage = "0";
 
-    @ApiModelProperty(value = "超时完成总计")
-    private int delayeCompleteTotal;
+    @ApiModelProperty(value = "平均时速")
+    private String avgSpeed = "0";
 
-    @ApiModelProperty(value = "拒绝总计总计")
-    private int declined;
+    @ApiModelProperty(value = "co2")
+    private String co2 = "0";
 
-    @ApiModelProperty(value = "取消总计")
-    private int cancelTotal;
+    @ApiModelProperty(value = "money")
+    private String money = "0";
+
+    @ApiModelProperty(value = "日期")
+    private String times;
 }

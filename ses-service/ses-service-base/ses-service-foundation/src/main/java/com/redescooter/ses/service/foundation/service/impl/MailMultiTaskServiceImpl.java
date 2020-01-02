@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTaskStatusEnums;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
@@ -463,9 +464,11 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
      */
     private void pullResdis(PlaMailTask mailTask, int seconds) {
         //int code = RandomUtils.nextInt(10000, 99999);
-        Map<String, String> map = JSON.parseObject(mailTask.getParameter(), Map.class);
+        String sendParameter = mailTask.getParameter();
+        Map<String, String> map = JSONObject.parseObject(sendParameter, Map.class);
         String key = map.get("requestId");
         jedisCluster.hmset(key, map);
+//        jedisCluster.set(key, mailTask.getParameter());
         //默认为72小时
         jedisCluster.expire(key, seconds);
         map.forEach((k, v) -> {

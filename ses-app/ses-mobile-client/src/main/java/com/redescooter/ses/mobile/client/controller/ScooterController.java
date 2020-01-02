@@ -38,8 +38,8 @@ public class ScooterController {
     @ApiOperation(value = "车辆信息")
     @RequestMapping(value = "/scooterInfor")
     public Response<BaseScooterResult> scooterInfor(@ModelAttribute GeneralEnter enter) {
-        enter.setUserId(1060938L);
-        enter.setTenantId(1060980L);
+        enter.setUserId(1071493L);
+        enter.setTenantId(0L);
         return new Response<>(scooterMobileService.scooterInfor(enter));
     }
 
@@ -47,8 +47,8 @@ public class ScooterController {
     @ApiOperation(value = "车辆开关锁")
     @RequestMapping(value = "/lock")
     public Response<GeneralResult> lock(@ModelAttribute LockEnter enter) {
-        enter.setUserId(1060938L);
-        enter.setTenantId(1060980L);
+        enter.setUserId(1071493L);
+        enter.setTenantId(0L);
         return new Response<>(scooterMobileService.lock(enter));
     }
 }

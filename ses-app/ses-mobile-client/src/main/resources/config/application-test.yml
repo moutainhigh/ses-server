@@ -105,3 +105,21 @@ spring:                                                                         
           email: Jerry@redescooter.com
           url: https://github.com/mrjerryli#联系地址
 
+      Data-api:
+        group-name: 4.Data-API
+        title: 个人信息相关的操作
+        description: 个人信息相关的操作
+        base-package: com.redescooter.ses
+        path-regex: /data/.*
+        path-mapping: /
+        version: 1.2.0
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
+
+redis:                                                                                                                  #REDIS配置
+  redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
+

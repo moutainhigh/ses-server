@@ -15,8 +15,11 @@
     <result column="EMAIL_1" property="email1" />
     <result column="EMAIL_2" property="email2" />
     <result column="EMAIL_3" property="email3" />
+    <result column="country_code_1" property="countryCode1" />
     <result column="TEL_NUMBER_1" property="telNumber1" />
+    <result column="country_code_2" property="countryCode2" />
     <result column="TEL_NUMBER_2" property="telNumber2" />
+    <result column="country_code_3" property="countryCode3" />
     <result column="TEL_NUMBER_3" property="telNumber3" />
     <result column="GENDER" property="gender" />
     <result column="BIRTHDAY" property="birthday" />
@@ -41,10 +44,10 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     ID, dr, TENANT_ID, USER_ID, FIRST_NAME, LAST_NAME, FULL_NAME, PICTURE, EMAIL_1, EMAIL_2, 
-    EMAIL_3, TEL_NUMBER_1, TEL_NUMBER_2, TEL_NUMBER_3, GENDER, BIRTHDAY, CERTIFICATE_TYPE, 
-    CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `ROLE`, PLACE_BIRTH, ADDRESS, 
-    JOIN_DATE, TIME_ZONE, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, def2, 
-    def3, def5, def6
+    EMAIL_3, country_code_1, TEL_NUMBER_1, country_code_2, TEL_NUMBER_2, country_code_3, 
+    TEL_NUMBER_3, GENDER, BIRTHDAY, CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, 
+    `ROLE`, PLACE_BIRTH, ADDRESS, JOIN_DATE, TIME_ZONE, CREATED_BY, CREATED_TIME, UPDATED_BY, 
+    UPDATED_TIME, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -100,14 +103,29 @@
           when ID = #{item.id} then #{item.email3}
         </foreach>
       </trim>
+      <trim prefix="country_code_1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.countryCode1}
+        </foreach>
+      </trim>
       <trim prefix="TEL_NUMBER_1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when ID = #{item.id} then #{item.telNumber1}
         </foreach>
       </trim>
+      <trim prefix="country_code_2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.countryCode2}
+        </foreach>
+      </trim>
       <trim prefix="TEL_NUMBER_2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when ID = #{item.id} then #{item.telNumber2}
+        </foreach>
+      </trim>
+      <trim prefix="country_code_3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id} then #{item.countryCode3}
         </foreach>
       </trim>
       <trim prefix="TEL_NUMBER_3 = case" suffix="end,">
@@ -220,35 +238,37 @@
     <!--@mbg.generated-->
     insert into con_user_profile
     (ID, dr, TENANT_ID, USER_ID, FIRST_NAME, LAST_NAME, FULL_NAME, PICTURE, EMAIL_1, 
-      EMAIL_2, EMAIL_3, TEL_NUMBER_1, TEL_NUMBER_2, TEL_NUMBER_3, GENDER, BIRTHDAY, CERTIFICATE_TYPE, 
-      CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `ROLE`, PLACE_BIRTH, ADDRESS, 
-      JOIN_DATE, TIME_ZONE, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, 
-      def2, def3, def5, def6)
+      EMAIL_2, EMAIL_3, country_code_1, TEL_NUMBER_1, country_code_2, TEL_NUMBER_2, country_code_3, 
+      TEL_NUMBER_3, GENDER, BIRTHDAY, CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, 
+      `ROLE`, PLACE_BIRTH, ADDRESS, JOIN_DATE, TIME_ZONE, CREATED_BY, CREATED_TIME, UPDATED_BY, 
+      UPDATED_TIME, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.userId}, #{item.firstName}, #{item.lastName}, 
         #{item.fullName}, #{item.picture}, #{item.email1}, #{item.email2}, #{item.email3}, 
-        #{item.telNumber1}, #{item.telNumber2}, #{item.telNumber3}, #{item.gender}, #{item.birthday}, 
-        #{item.certificateType}, #{item.certificateNegativeAnnex}, #{item.certificatePositiveAnnex}, 
-        #{item.role}, #{item.placeBirth}, #{item.address}, #{item.joinDate}, #{item.timeZone}, 
-        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
-        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
+        #{item.countryCode1}, #{item.telNumber1}, #{item.countryCode2}, #{item.telNumber2}, 
+        #{item.countryCode3}, #{item.telNumber3}, #{item.gender}, #{item.birthday}, #{item.certificateType}, 
+        #{item.certificateNegativeAnnex}, #{item.certificatePositiveAnnex}, #{item.role}, 
+        #{item.placeBirth}, #{item.address}, #{item.joinDate}, #{item.timeZone}, #{item.createdBy}, 
+        #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, 
+        #{item.def3}, #{item.def5}, #{item.def6})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile">
     <!--@mbg.generated-->
     insert into con_user_profile
     (ID, dr, TENANT_ID, USER_ID, FIRST_NAME, LAST_NAME, FULL_NAME, PICTURE, EMAIL_1, 
-      EMAIL_2, EMAIL_3, TEL_NUMBER_1, TEL_NUMBER_2, TEL_NUMBER_3, GENDER, BIRTHDAY, CERTIFICATE_TYPE, 
-      CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, `ROLE`, PLACE_BIRTH, ADDRESS, 
-      JOIN_DATE, TIME_ZONE, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, 
-      def2, def3, def5, def6)
+      EMAIL_2, EMAIL_3, country_code_1, TEL_NUMBER_1, country_code_2, TEL_NUMBER_2, country_code_3, 
+      TEL_NUMBER_3, GENDER, BIRTHDAY, CERTIFICATE_TYPE, CERTIFICATE_NEGATIVE_ANNEX, CERTIFICATE_POSITIVE_ANNEX, 
+      `ROLE`, PLACE_BIRTH, ADDRESS, JOIN_DATE, TIME_ZONE, CREATED_BY, CREATED_TIME, UPDATED_BY, 
+      UPDATED_TIME, def1, def2, def3, def5, def6)
     values
     (#{id}, #{dr}, #{tenantId}, #{userId}, #{firstName}, #{lastName}, #{fullName}, #{picture}, 
-      #{email1}, #{email2}, #{email3}, #{telNumber1}, #{telNumber2}, #{telNumber3}, #{gender}, 
-      #{birthday}, #{certificateType}, #{certificateNegativeAnnex}, #{certificatePositiveAnnex}, 
-      #{role}, #{placeBirth}, #{address}, #{joinDate}, #{timeZone}, #{createdBy}, #{createdTime}, 
-      #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+      #{email1}, #{email2}, #{email3}, #{countryCode1}, #{telNumber1}, #{countryCode2}, 
+      #{telNumber2}, #{countryCode3}, #{telNumber3}, #{gender}, #{birthday}, #{certificateType}, 
+      #{certificateNegativeAnnex}, #{certificatePositiveAnnex}, #{role}, #{placeBirth}, 
+      #{address}, #{joinDate}, #{timeZone}, #{createdBy}, #{createdTime}, #{updatedBy}, 
+      #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
     on duplicate key update 
     ID = #{id}, 
     dr = #{dr}, 
@@ -261,8 +281,11 @@
     EMAIL_1 = #{email1}, 
     EMAIL_2 = #{email2}, 
     EMAIL_3 = #{email3}, 
+    country_code_1 = #{countryCode1}, 
     TEL_NUMBER_1 = #{telNumber1}, 
+    country_code_2 = #{countryCode2}, 
     TEL_NUMBER_2 = #{telNumber2}, 
+    country_code_3 = #{countryCode3}, 
     TEL_NUMBER_3 = #{telNumber3}, 
     GENDER = #{gender}, 
     BIRTHDAY = #{birthday}, 
@@ -321,11 +344,20 @@
       <if test="email3 != null">
         EMAIL_3,
       </if>
+      <if test="countryCode1 != null">
+        country_code_1,
+      </if>
       <if test="telNumber1 != null">
         TEL_NUMBER_1,
       </if>
+      <if test="countryCode2 != null">
+        country_code_2,
+      </if>
       <if test="telNumber2 != null">
         TEL_NUMBER_2,
+      </if>
+      <if test="countryCode3 != null">
+        country_code_3,
       </if>
       <if test="telNumber3 != null">
         TEL_NUMBER_3,
@@ -423,11 +455,20 @@
       <if test="email3 != null">
         #{email3},
       </if>
+      <if test="countryCode1 != null">
+        #{countryCode1},
+      </if>
       <if test="telNumber1 != null">
         #{telNumber1},
       </if>
+      <if test="countryCode2 != null">
+        #{countryCode2},
+      </if>
       <if test="telNumber2 != null">
         #{telNumber2},
+      </if>
+      <if test="countryCode3 != null">
+        #{countryCode3},
       </if>
       <if test="telNumber3 != null">
         #{telNumber3},
@@ -525,11 +566,20 @@
       <if test="email3 != null">
         EMAIL_3 = #{email3},
       </if>
+      <if test="countryCode1 != null">
+        country_code_1 = #{countryCode1},
+      </if>
       <if test="telNumber1 != null">
         TEL_NUMBER_1 = #{telNumber1},
       </if>
+      <if test="countryCode2 != null">
+        country_code_2 = #{countryCode2},
+      </if>
       <if test="telNumber2 != null">
         TEL_NUMBER_2 = #{telNumber2},
+      </if>
+      <if test="countryCode3 != null">
+        country_code_3 = #{countryCode3},
       </if>
       <if test="telNumber3 != null">
         TEL_NUMBER_3 = #{telNumber3},

@@ -8,7 +8,12 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
 import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
@@ -30,6 +35,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -39,7 +45,11 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Mr.lijiating
@@ -67,6 +77,9 @@ public class UserTokenServiceImpl implements UserTokenService {
 
     @Autowired
     private JedisCluster jedisCluster;
+
+    @Autowired
+    private PlaUserMapper plaUserMapper;
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
@@ -291,16 +304,44 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
-    public UserToken getAppUser(GetUserEnter enter) {
+    public List<UserToken> getAppUser(GetUserEnter enter) {
 
-        PlaUser appUser = userTokenMapper.getUserLimitOne(enter);
-
-        if (appUser == null) {
-            return new UserToken();
+        QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(enter.getEmail())) {
+            queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getEmail());
         }
-        UserToken user = new UserToken();
-        BeanUtils.copyProperties(appUser, user);
-        return user;
+        if (StringUtils.isNotBlank(enter.getLoginName())) {
+            queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getLoginName());
+        }
+        if (null != enter.getAccountType() && 0 != enter.getAccountType()) {
+            queryWrapper.eq(PlaUser.COL_USER_TYPE, enter.getAccountType());
+        }
+        if (StringUtils.isNotBlank(enter.getAppId())) {
+            queryWrapper.eq(PlaUser.COL_APP_ID, enter.getAppId());
+        }
+        if (StringUtils.isNotBlank(enter.getSystemId())) {
+            queryWrapper.eq(PlaUser.COL_SYSTEM_ID, enter.getSystemId());
+        }
+
+        List<PlaUser> plaUser = plaUserMapper.selectList(queryWrapper);
+
+        List<UserToken> plaUseList = new ArrayList<>();
+
+        if (CollectionUtils.isEmpty(plaUser)) {
+            return plaUseList;
+        }
+
+        plaUser.forEach(item -> {
+            UserToken user = new UserToken();
+            user.setToken(item.getLastLoginToken());
+            user.setAppId(item.getAppId());
+            user.setClientIp(item.getLastLoginIp());
+            user.setSystemId(item.getSystemId());
+            user.setTenantId(item.getTenantId());
+            user.setUserId(item.getId());
+            plaUseList.add(user);
+        });
+        return plaUseList;
     }
 
     /**
@@ -419,8 +460,7 @@ public class UserTokenServiceImpl implements UserTokenService {
             resultOne.add(accountsDto);
             return resultOne;
         } else if (resultMultiple.size() == 0) {
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         return resultMultiple;
     }
@@ -554,7 +594,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         PlaUserPassword updatePassword = userPasswordMapper.selectOne(wrapper);
 
         updatePassword.setPassword(DigestUtils.md5Hex(enter.getConfirmPassword() + updatePassword.getSalt()));
-        updatePassword.setUpdatedBy(enter.getUserId());
+        updatePassword.setUpdatedBy(emailUser.getId());
         updatePassword.setUpdatedTime(new Date());
         userPasswordMapper.updateById(updatePassword);
 

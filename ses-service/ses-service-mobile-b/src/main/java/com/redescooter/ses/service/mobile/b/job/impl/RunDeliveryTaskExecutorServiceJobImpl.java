@@ -52,7 +52,7 @@ public class RunDeliveryTaskExecutorServiceJobImpl implements RunDeliveryTaskExe
 
         QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
         corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, DeliveryStatusEnums.COMPLETED.getValue()).or().eq(CorDelivery.COL_STATUS, DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue());
-        corDeliveryQueryWrapper.eq(CorDelivery.COL_STATISTICS, DeliveryStatisticsEnums.COUNTED.getValue());
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_STATISTICS, DeliveryStatisticsEnums.NOT_COUNTED.getValue());
         List<CorDelivery> deliveryList = corDeliveryMapper.selectList(corDeliveryQueryWrapper);
 
         List<SaveDeliveryStatEnter> saveDeliveryStatEnterList = new ArrayList<>();

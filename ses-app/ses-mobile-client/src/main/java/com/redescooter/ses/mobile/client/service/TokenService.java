@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.client.service;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 
 /**
@@ -17,4 +18,6 @@ public interface TokenService {
     UserToken checkAndGetSession(GeneralEnter enter);
 
     GeneralResult sendCode(BaseSendMailEnter enter);
+
+    GeneralResult setPassword(SetPasswordEnter enter);
 }

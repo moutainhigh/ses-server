@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.ScooterMobileServiceMapper">
+
+    <select id="driverScooterByUserId" resultType="com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter">
+        select cds.*
+        from cor_driver driver
+        inner join cor_driver_scooter cds on driver.id = cds.driver_id
+        where cds.status = #{scooterStatus}
+        and driver.user_id = #{userId}
+        and driver.dr = 0
+        and cds.dr = 0
+    </select>
+</mapper>
