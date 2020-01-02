@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,6 +45,7 @@ public class RunDeliveryTaskExecutorServiceJobImpl implements RunDeliveryTaskExe
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public JobResult countDelivery(GeneralEnter enter) {
 
@@ -70,7 +72,7 @@ public class RunDeliveryTaskExecutorServiceJobImpl implements RunDeliveryTaskExe
                         .build();
                 saveDeliveryStatEnterList.add(saveDeliveryStatEnter);
 
-                item.setStatistics(DeliveryStatisticsEnums.COUNTED.getCode());
+                item.setStatistics(DeliveryStatisticsEnums.COUNTED.getValue());
             });
         }
         // 抓取订单 进行数据保存

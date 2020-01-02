@@ -69,10 +69,6 @@ public class TokenServiceImpl implements TokenService {
         List<UserToken> appUserList = userTokenService.getAppUser(getUserEnter);
 
         String code = String.valueOf(RandomUtils.nextInt(10000, 99999));
-        // 存入redis
-        jedisCluster.set(enter.getRequestId(), code);
-        // 设置超时时间
-        jedisCluster.expire(enter.getRequestId(), 60);
 
         BaseMailTaskEnter baseMailTask = new BaseMailTaskEnter();
         baseMailTask.setCode(code);
