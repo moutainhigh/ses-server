@@ -94,6 +94,7 @@ public class DriverServiceImpl implements DriverService {
             driverSave.setTenantId(user.getTenantId());
             driverSave.setDrivingLicense(enter.getDriverLicense());
             driverSave.setStatus(DriverStatusEnum.OFFWORK.getValue());
+            driverSave.setDef1(Boolean.FALSE.toString());
             driverSave.setCreatedBy(enter.getUserId());
             driverSave.setCreatedTime(new Date());
             driverSave.setUpdatedBy(enter.getUserId());
@@ -293,10 +294,22 @@ public class DriverServiceImpl implements DriverService {
         driver.setStatus(DriverStatusEnum.DEPARTURE.getValue());
         driver.setUpdatedBy(enter.getUserId());
         driver.setUpdatedTime(new Date());
+        driverMapper.deleteById(driver.getId());
+
+        QueryWrapper<CorUserProfile> profileQueryWrapper = new QueryWrapper<>();
+        profileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+        profileQueryWrapper.eq(CorUserProfile.COL_USER_ID, driver.getUserId());
+        CorUserProfile userProfile = profileMapper.selectOne(profileQueryWrapper);
+
+        if (userProfile == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+        }
+
+        profileMapper.deleteById(userProfile.getId());
 
         GeneralResult result = accountBaseService.cancelDriver2BAccout(new IdEnter(driver.getUserId()));
 
-        driverMapper.deleteById(driver.getId());
+
         return result;
     }
 
