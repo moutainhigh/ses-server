@@ -99,7 +99,7 @@ public class DriverController {
 
     @PostMapping(value = "/scooterList")
     @ApiOperation(value = "车辆列表", response = ListScooterResult.class)
-    public Response<List<ListScooterResult>> againSendEmail(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<ListScooterResult>> scooterList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(driverService.scooterList(enter));
     }
 }
