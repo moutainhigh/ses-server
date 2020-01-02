@@ -109,4 +109,29 @@ public interface AccountBaseService {
      */
     QueryUserResult queryUserById(GeneralEnter enter);
 
+
+    /**
+     * 开通2B司机账户
+     *
+     * @param dto
+     * @return
+     */
+    BaseUserResult openDriver2BAccout(SaveDriverAccountDto dto);
+
+    /**
+     * 关闭2B司机账号
+     *
+     * @return
+     */
+    GeneralResult cancelDriver2BAccout(IdEnter enter);
+
+    /**
+     * 再次发生激活邮件
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult sendEmailAgian(IdEnter enter);
+
+
 }

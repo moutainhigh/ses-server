@@ -1,6 +1,5 @@
-package com.redescooter.ses.api.common.enums.ros.customer;
+package com.redescooter.ses.api.common.enums.customer;
 
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

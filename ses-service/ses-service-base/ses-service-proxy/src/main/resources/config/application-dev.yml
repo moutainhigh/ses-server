@@ -1,16 +1,16 @@
 #日志路径
 log:
   file:
-    path: /data/java_service/logs2/@profile-active@
+    path: logs/@profile-active@
     max-size: 128MB
     max-history: 180
 
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://192.168.2.200:3306/platform_dev?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://localhost:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: 1qaz2wsx
+    password: root
     druid:
       initial-size: 8
       min-idle: 1
@@ -20,18 +20,20 @@ spring:
   redis:
     cluster:
       nodes:
-        - 192.168.2.200:7000
-        - 192.168.2.200:7001
-        - 192.168.2.200:7002
-        - 192.168.2.200:7003
-        - 192.168.2.200:7004
-        - 192.168.2.200:7005
+        - 10.211.55.5:7000
+        - 10.211.55.5:7001
+        - 10.211.55.5:7002
+        - 10.211.55.5:7003
+        - 10.211.55.5:7004
+        - 10.211.55.5:7005
+
 # DUBBO 配置
-dubbo:
-  registries:
-    ses:
-      group: ses
-      address: zookeeper://192.168.2.200:32181
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://10.211.55.5:12181?backup=10.211.55.5:22181,10.211.55.5:32181
+
+
+
 # 多注册中心配置
 #    reg2:
 #      group: hdg2

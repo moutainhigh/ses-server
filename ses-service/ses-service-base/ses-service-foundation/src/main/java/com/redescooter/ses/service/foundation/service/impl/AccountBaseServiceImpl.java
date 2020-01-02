@@ -17,13 +17,13 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
-import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
@@ -46,7 +46,6 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
@@ -454,6 +453,141 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         } else {
             // 删除个人--2C信息 TODO
         }
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 开通2B司机账户
+     *
+     * @param dto
+     * @return
+     */
+    @Transactional
+    @Override
+    public BaseUserResult openDriver2BAccout(SaveDriverAccountDto dto) {
+
+        PlaTenant tenant = tenantMapper.selectById(dto.getTenantId());
+
+        int accountType = AccountTypeUtils.getAccountType(tenant.getTenantType(), tenant.getTenantIndustry());
+        //①、创建user信息
+        PlaUser user = new PlaUser();
+        user.setId(idAppService.getId(SequenceName.PLA_USER));
+        user.setDr(0);
+        user.setTenantId(tenant.getId());
+        user.setAppId(AccountTypeUtils.getAppId(accountType));
+        user.setSystemId(AccountTypeUtils.getSystemId(accountType));
+        user.setLoginName(dto.getEmail());
+        user.setUserType(accountType);
+        user.setStatus(UserStatusEnum.NORMAL.getValue());
+        user.setCreatedBy(dto.getUserId());
+        user.setCreatedTime(new Date());
+        user.setUpdatedBy(dto.getUserId());
+        user.setUpdatedTime(new Date());
+        plaUserMapper.insert(user);
+
+        //②、创建密码记录
+        PlaUserPassword savePassWord = new PlaUserPassword();
+        savePassWord.setId(idAppService.getId(SequenceName.PLA_USER_PASSWORD));
+        savePassWord.setLoginName(dto.getEmail());
+        savePassWord.setSalt(String.valueOf(RandomUtils.nextInt(10000, 99999)));
+        savePassWord.setPassword(null);
+        savePassWord.setCreatedBy(dto.getUserId());
+        savePassWord.setCreatedTime(new Date());
+        savePassWord.setUpdatedBy(dto.getUserId());
+        savePassWord.setUpdatedTime(new Date());
+        //②.①、用户激活时，有客户输入密码进行设置密码流程
+        plaUserPasswordMapper.insert(savePassWord);
+
+        //③、开通权限
+        PlaUserPermission plaUserPermission = new PlaUserPermission();
+        plaUserPermission.setId(idAppService.getId(SequenceName.PLA_USER_PERMISSION));
+        plaUserPermission.setUserId(user.getId());
+        plaUserPermission.setSystemId(AccountTypeUtils.getSystemId(accountType));
+        plaUserPermission.setAppId(AccountTypeUtils.getAppId(accountType));
+        plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
+        plaUserPermission.setCreatedBy(dto.getUserId());
+        plaUserPermission.setCreatedTime(new Date());
+        plaUserPermission.setUpdatedBy(dto.getUserId());
+        plaUserPermission.setUpdatedTime(new Date());
+
+        plaUserPermissionMapper.insert(plaUserPermission);
+
+        //④、组织结果返回
+        BaseUserResult result = new BaseUserResult();
+        result.setId(user.getId());
+        result.setTenantId(dto.getTenantId());
+        result.setLoginName(user.getLoginName());
+        result.setStatus(user.getStatus());
+        result.setUserType(user.getUserType());
+        result.setCreatedBy(dto.getUserId());
+        result.setCreatedTime(new Date());
+        result.setUpdatedBy(dto.getUserId());
+        result.setUpdatedTime(new Date());
+        return result;
+    }
+
+    /**
+     * 关闭2B司机账号
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult cancelDriver2BAccout(IdEnter enter) {
+        PlaUser cancel = new PlaUser();
+        cancel.setId(enter.getId());
+        cancel.setStatus(UserStatusEnum.CANCEL.getValue());
+        cancel.setUpdatedBy(enter.getUserId());
+        cancel.setUpdatedTime(new Date());
+        userMapper.updateById(cancel);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 再次发生激活邮件
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult sendEmailAgian(IdEnter enter) {
+
+        PlaUser user = userMapper.selectById(enter.getId());
+
+        if (user == null) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        //验证是否可以再次发生邮件
+        if (jedisCluster.exists(new StringBuffer().append("send::").append(user.getLoginName()).toString())) {
+            return new BooleanResult(true);
+        }
+
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+
+        BeanUtils.copyProperties(enter, baseMailTaskEnter);
+
+        baseMailTaskEnter.setMailAppId(AccountTypeUtils.getAppId(user.getUserType()));
+        baseMailTaskEnter.setMailSystemId(AccountTypeUtils.getSystemId(user.getUserType()));
+        if (user.getLoginName().contains("@")) {
+            String str = user.getLoginName().substring(0, user.getLoginName().indexOf("@"));
+            baseMailTaskEnter.setName(str);
+        }
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
+        baseMailTaskEnter.setName(user.getLoginName());
+        baseMailTaskEnter.setToMail(user.getLoginName());
+        baseMailTaskEnter.setUserId(enter.getUserId());
+        baseMailTaskEnter.setToUserId(enter.getUserId());
+        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+        mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
+
+        //设置邮箱发送有效时间
+        String key = new StringBuffer().append("send::").append(user.getLoginName()).toString();
+        jedisCluster.set(key, DateUtil.getDate());
+        jedisCluster.expire(key, 180);
 
         return new GeneralResult(enter.getRequestId());
     }

@@ -4,6 +4,12 @@ log:
     path: /data/java_service/logs3/@profile-active@
     max-size: 128MB
     max-history: 180
+
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://192.168.2.200:2181
+
+
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -117,6 +123,3 @@ spring:                                                                         
 redis:                                                                                                                  #REDIS配置
   redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
 
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:2181

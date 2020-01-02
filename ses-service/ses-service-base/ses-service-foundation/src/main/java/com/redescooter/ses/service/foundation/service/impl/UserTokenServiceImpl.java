@@ -17,7 +17,7 @@ import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
-import com.redescooter.ses.api.foundation.vo.ChanagePasswordEnter;
+import com.redescooter.ses.api.foundation.vo.account.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -565,9 +565,6 @@ public class UserTokenServiceImpl implements UserTokenService {
              * 系统外部进行设置密码
              */
             Map<String, String> hash = jedisCluster.hgetAll(enter.getRequestId());
-            hash.forEach((k, v) -> {
-                log.info("存放redis中对应的key【{}】==========================vlue【{}】", k, v);
-            });
             if (hash == null || hash.isEmpty()) {
                 throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
                         ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());

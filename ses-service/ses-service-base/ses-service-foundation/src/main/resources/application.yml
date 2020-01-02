@@ -75,6 +75,8 @@ dubbo:                                                                          
   protocol:
     port: -1
     threads: 300
+  config-center:
+    check: false
 
 mybatis:                                                                                                                #MYBATIS配置
   configuration:
