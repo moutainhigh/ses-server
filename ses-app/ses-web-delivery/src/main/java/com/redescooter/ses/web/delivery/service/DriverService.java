@@ -1,15 +1,7 @@
 package com.redescooter.ses.web.delivery.service;
 
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.delivery.vo.DriverDetailsResult;
-import com.redescooter.ses.web.delivery.vo.ListDriverPage;
-import com.redescooter.ses.web.delivery.vo.ListDriverResult;
-import com.redescooter.ses.web.delivery.vo.ListScooterResult;
-import com.redescooter.ses.web.delivery.vo.SaveDriverEnter;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.delivery.vo.*;
 
 import java.util.List;
 import java.util.Map;
@@ -87,4 +79,20 @@ public interface DriverService {
      * @return
      */
     List<ListScooterResult> scooterList(GeneralEnter enter);
+
+    /**
+     * 司机车辆分配
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult assignScooter(AssignScooterEnter enter);
+
+    /**
+     * 司机归还车辆
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult removeScooter(IdEnter enter);
 }

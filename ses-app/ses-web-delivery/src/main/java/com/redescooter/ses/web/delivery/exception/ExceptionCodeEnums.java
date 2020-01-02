@@ -59,6 +59,14 @@ public enum ExceptionCodeEnums {
 
     DRIVER_IS_NOT_EXIST(10030, "司机不存在"),
 
+    DRIVER_STATUS_IS_DEPARTURE(10031, "司机已经离职"),
+
+    DRIVER_STATUS_IS_WORKING(10032, "司机已分配车辆上班，不可重复分配"),
+
+    DRIVER_HAS_NOT_AVAILABLE_SCOOTER(10033, "司机没有可用的车辆"),
+
+    DRIVER_STATUS_IS_OFFWORK(10034, "司机已下班"),
+
     ;
 
     private int code;
