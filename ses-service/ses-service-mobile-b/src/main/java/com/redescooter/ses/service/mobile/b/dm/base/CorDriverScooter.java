@@ -3,7 +3,6 @@ package com.redescooter.ses.service.mobile.b.dm.base;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,65 +11,59 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value="com-redescooter-ses-service-mobile-b-dm-base-CorDriverScooter")
+@ApiModel(value = "com-redescooter-ses-service-mobile-b-dm-base-CorDriverScooter")
 @Data
 @TableName(value = "cor_driver_scooter")
 public class CorDriverScooter implements Serializable {
+    public static final String COL_USER_ID = "user_id";
+    public static final String COL_RFID = "rfid";
     /**
      * ID
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="ID")
+    @ApiModelProperty(value = "ID")
     private Long id;
 
     /**
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
-    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
+    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value="租户ID")
+    @ApiModelProperty(value = "租户ID")
     private Long tenantId;
 
     /**
      * 司机ID
      */
-    @TableField(value = "user_id")
-    @ApiModelProperty(value="司机ID")
-    private Long userId;
+    @TableField(value = "driver_id")
+    @ApiModelProperty(value = "司机ID")
+    private Long driverId;
 
     /**
      * 车辆ID
      */
     @TableField(value = "scooter_id")
-    @ApiModelProperty(value="车辆ID")
+    @ApiModelProperty(value = "车辆ID")
     private Long scooterId;
-
-    /**
-     * RFID
-     */
-    @TableField(value = "rfid")
-    @ApiModelProperty(value="RFID")
-    private Long rfid;
 
     /**
      * 车辆分配开始时间
      */
     @TableField(value = "begin_time")
-    @ApiModelProperty(value="车辆分配开始时间")
+    @ApiModelProperty(value = "车辆分配开始时间")
     private Date beginTime;
 
     /**
      * 车辆归还时间
      */
     @TableField(value = "end_time")
-    @ApiModelProperty(value="车辆归还时间")
+    @ApiModelProperty(value = "车辆归还时间")
     private Date endTime;
 
     /**
@@ -84,70 +77,70 @@ public class CorDriverScooter implements Serializable {
      * 行驶里程
      */
     @TableField(value = "mileage")
-    @ApiModelProperty(value="行驶里程")
+    @ApiModelProperty(value = "行驶里程")
     private String mileage;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;
@@ -158,11 +151,9 @@ public class CorDriverScooter implements Serializable {
 
     public static final String COL_TENANT_ID = "tenant_id";
 
-    public static final String COL_USER_ID = "user_id";
+    public static final String COL_DRIVER_ID = "driver_id";
 
     public static final String COL_SCOOTER_ID = "scooter_id";
-
-    public static final String COL_RFID = "rfid";
 
     public static final String COL_BEGIN_TIME = "begin_time";
 

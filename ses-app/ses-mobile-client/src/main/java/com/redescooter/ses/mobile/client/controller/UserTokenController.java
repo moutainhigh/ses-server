@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -15,7 +16,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Mr.lijiating
@@ -55,7 +61,7 @@ public class UserTokenController {
     @ApiOperation(value = "登入确认", response = LoginResult.class)
     @RequestMapping(value = "/login/confirm/{confirmRequestId}")
     public Response<LoginResult> loginConfirm(@PathVariable("confirmRequestId") String confirmRequestId,
-        LoginConfirmEnter enter) {
+                                              LoginConfirmEnter enter) {
         log.info("多用户登录RequestId==={}", confirmRequestId);
         return new Response<>(userTokenService.loginConfirm(enter));
     }
@@ -65,6 +71,13 @@ public class UserTokenController {
     @RequestMapping(value = "/sendCode")
     public Response<GeneralResult> sendCode(@ModelAttribute BaseSendMailEnter enter) {
         return new Response<>(tokenService.sendCode(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "设置密码", response = GeneralResult.class)
+    @RequestMapping(value = "/setPassword/{requestId}")
+    public Response<GeneralResult> sendCode(@PathVariable("requestId") String requestId, @ModelAttribute SetPasswordEnter enter) {
+        return new Response<>(tokenService.setPassword(enter));
     }
 }
 

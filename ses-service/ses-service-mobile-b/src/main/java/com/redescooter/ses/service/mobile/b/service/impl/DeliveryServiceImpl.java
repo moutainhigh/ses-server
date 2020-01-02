@@ -1,5 +1,7 @@
 package com.redescooter.ses.service.mobile.b.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryResultEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
@@ -38,6 +40,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -45,6 +48,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @ClassName:DeliveryList
@@ -66,6 +71,9 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Autowired
     private DeliveryTraceService deliveryTraceService;
 
+    @Autowired
+    private JedisCluster jedisCluster;
+
     @Reference
     private TenantBaseService tenantBaseService;
 
@@ -74,6 +82,14 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Reference
     private ScooterIotService scooterIotService;
+
+    // 创建 开始订单锁
+    private Lock startDeliveryLock = new ReentrantLock();
+    // 拒绝 开始订单锁
+    private Lock refuseDeliveryLock = new ReentrantLock();
+    // 完成 开始订单锁
+    private Lock completeDeliveryLock = new ReentrantLock();
+
 
     /**
      * delviery 列表
@@ -86,6 +102,9 @@ public class DeliveryServiceImpl implements DeliveryService {
     public DeliveryListResult list(GeneralEnter enter) {
         // 查询订单状态及数量统计
         List<CountByStatusResult> list = deliveryServiceMapper.countByStatus(enter);
+
+        int count = deliveryServiceMapper.refuseDelivery(enter.getUserId(), DeliveryStatusEnums.REJECTED.getValue());
+        list.add(CountByStatusResult.builder().status(DeliveryStatusEnums.REJECTED.getValue()).totalCount(count).build());
 
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : list) {
@@ -110,9 +129,15 @@ public class DeliveryServiceImpl implements DeliveryService {
      */
     @Override
     public DeliveryDetailResult detail(IdEnter enter) {
-        CorDelivery delivery = corDeliveryMapper.selectById(enter.getId());
+        CorDelivery delivery = null;
+
+        delivery = JSONObject.parseObject(jedisCluster.get(enter.getId().toString()), CorDelivery.class);
+
         if (delivery == null) {
-            throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+            delivery = corDeliveryMapper.selectById(enter.getId());
+            if (delivery == null) {
+                throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+            }
         }
         DeliveryDetailResult result = new DeliveryDetailResult();
         BeanUtils.copyProperties(delivery, result);
@@ -142,9 +167,18 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Transactional
     @Override
     public GeneralResult start(StartEnter enter) {
-        CorDelivery delivery = corDeliveryMapper.selectById(enter.getId());
+        // 上锁
+//        startDeliveryLock.lock();
+//        try {
+        CorDelivery delivery = null;
+
+        delivery = JSONObject.parseObject(jedisCluster.get(enter.getId().toString()), CorDelivery.class);
+
         if (delivery == null) {
-            throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+            delivery = corDeliveryMapper.selectById(enter.getId());
+            if (delivery == null) {
+                throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+            }
         }
         if (!StringUtils.equals(DeliveryStatusEnums.PENDING.getValue(), delivery.getStatus())) {
             throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
@@ -152,6 +186,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         // 开启导航
         navugation(enter.getBluetoothCommunication(), enter.getLat(), enter.getLng(), enter, delivery, CommonEvent.START.getValue());
         // 修改状态
+        delivery.setId(enter.getId());
         delivery.setStatus(DeliveryStatusEnums.DELIVERING.getValue());
         delivery.setAtd(new Date());
         delivery.setEta(DateUtil.change(DateUtil.pay30()));
@@ -161,6 +196,14 @@ public class DeliveryServiceImpl implements DeliveryService {
         corDeliveryMapper.updateById(delivery);
         // 记录日志
         saveDelivertTrace(enter, delivery, DeliveryEventEnums.START.getValue());
+        // 更新最新的状态到 redis
+        jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
+        jedisCluster.expire(enter.getId().toString(), 86400);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            startDeliveryLock.unlock();
+//        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -173,9 +216,15 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Transactional
     @Override
     public GeneralResult refuse(RefuseEnter enter) {
-        CorDelivery delivery = corDeliveryMapper.selectById(enter.getId());
+        CorDelivery delivery = null;
+
+        delivery = JSONObject.parseObject(jedisCluster.get(enter.getId().toString()), CorDelivery.class);
+
         if (delivery == null) {
-            throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+            delivery = corDeliveryMapper.selectById(enter.getId());
+            if (delivery == null) {
+                throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+            }
         }
         if (!StringUtils.equals(DeliveryStatusEnums.PENDING.getValue(), delivery.getStatus())) {
             throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
@@ -188,6 +237,10 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         // 订单日志
         saveDelivertTrace(enter, delivery, DeliveryEventEnums.REJECT.getValue());
+
+        // 更新最新的状态到 redis
+        jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
+        jedisCluster.expire(enter.getId().toString(), 86400);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -205,10 +258,17 @@ public class DeliveryServiceImpl implements DeliveryService {
         deliveryStatus.add(DeliveryStatusEnums.TIME_OUT.getValue());
         deliveryStatus.add(DeliveryStatusEnums.TIMEOUT_WARNING.getValue());
 
-        CorDelivery delivery = corDeliveryMapper.selectById(enter.getId());
+        CorDelivery delivery = null;
+
+        delivery = JSONObject.parseObject(jedisCluster.get(enter.getId().toString()), CorDelivery.class);
+
         if (delivery == null) {
-            throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+            delivery = corDeliveryMapper.selectById(enter.getId());
+            if (delivery == null) {
+                throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+            }
         }
+
         if (!deliveryStatus.contains(delivery.getStatus())) {
             throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
@@ -226,9 +286,13 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setUpdatedBy(enter.getUserId());
         delivery.setUpdatedTime(new Date());
         corDeliveryMapper.updateById(delivery);
-        // 记录日志
 
+        // 记录日志
         saveDelivertTrace(enter, delivery, DeliveryEventEnums.COMPLETED.getValue());
+
+        // 更新最新的状态到 redis
+        jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
+        jedisCluster.expire(enter.getId().toString(), 86400);
         return new CompleteResult(delivery.getDrivenMileage().toString(),
                 StatisticalUtil.percentageUtil(delivery.getDrivenMileage().intValue(), delivery.getDrivenDuration().intValue() > 0 ? delivery.getDrivenDuration().intValue() : 1, 2)
                 , delivery.getCo2().toString()

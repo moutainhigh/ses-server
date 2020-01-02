@@ -1,14 +1,23 @@
 package com.redescooter.ses.service.mobile.b.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
+import com.redescooter.ses.api.hub.common.UserProfileService;
+import com.redescooter.ses.api.hub.service.customer.ConsumerUserProfileService;
+import com.redescooter.ses.api.hub.vo.QueryUserProfileResult;
+import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.api.mobile.b.service.UserProfileMobileService;
 import com.redescooter.ses.api.mobile.b.vo.SaveUserProfileEnter;
 import com.redescooter.ses.api.mobile.b.vo.UserProfileResult;
 import com.redescooter.ses.service.mobile.b.dao.base.CorUserProfileMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +37,15 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
     @Autowired
     private CorUserProfileMapper corUserProfileMapper;
 
+    @Reference
+    private ConsumerUserProfileService consumerUserProfileService;
+
+    @Reference
+    private AccountBaseService accountBaseService;
+
+    @Reference
+    private UserProfileService userProfileService;
+
     /**
      * 个人信息
      *
@@ -36,12 +54,24 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
      */
     @Override
     public UserProfileResult userProfile(GeneralEnter enter) {
-        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
-        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
-        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
-        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
-        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
 
+        IdEnter idEnter = new IdEnter();
+        BeanUtils.copyProperties(enter, idEnter);
+
+        CorUserProfile corUserProfile = null;
+
+        QueryUserResult queryUserResult = accountBaseService.queryUserById(enter);
+        if (queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType() || queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType()) {
+            QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+            corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+            corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+            corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
+            corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+        } else {
+            QueryUserProfileResult queryUserProfileResult = consumerUserProfileService.queryUserProfile(idEnter);
+            corUserProfile = new CorUserProfile();
+            BeanUtils.copyProperties(queryUserProfileResult, corUserProfile);
+        }
         UserProfileResult result = new UserProfileResult();
         BeanUtils.copyProperties(corUserProfile, result);
         return result;
@@ -55,19 +85,31 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
      */
     @Override
     public GeneralResult saveUserProfile(SaveUserProfileEnter enter) {
-        CorUserProfile corUserProfile = null;
-        if (enter.getId() != null || enter.getId() != 0) {
-            QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
-            corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
-            corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
-            corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
-            corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
-            checkUserProfile(enter, corUserProfile);
-        } else {
-            //保存
-        }
 
-        corUserProfileMapper.insertOrUpdate(corUserProfile);
+        QueryUserResult queryUserResult = accountBaseService.queryUserById(enter);
+
+        CorUserProfile corUserProfile = null;
+        // 保存TOC 信息
+        if (queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType() || queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType()) {
+            if (null != enter.getId() && 0 != enter.getId()) {
+                QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+                corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+                corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+                corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
+                corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+                checkUserProfile(enter, corUserProfile);
+            } else {
+                //保存
+            }
+            if (corUserProfile != null) {
+                corUserProfileMapper.insertOrUpdate(corUserProfile);
+            }
+        } else {
+            // 保存、修改TO B 人信息
+            SaveUserProfileHubEnter saveUserProfileHubEnter = new SaveUserProfileHubEnter();
+            BeanUtils.copyProperties(enter, saveUserProfileHubEnter);
+            userProfileService.saveUserProfile2C(saveUserProfileHubEnter);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 

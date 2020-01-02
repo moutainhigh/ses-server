@@ -16,4 +16,11 @@
         and delivery.status in ('1', '4', '2', '8')
         and delivery.deliverer_id=#{userId}
     </select>
+    <select id="refuseDelivery" resultType="java.lang.Integer">
+        select count(*)
+        from cor_delivery_trace
+        where dr=0
+        and status = #{status}
+        and user_id=#{userId}
+    </select>
 </mapper>

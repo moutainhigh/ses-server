@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.mobile.b;
 
+import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -12,11 +13,14 @@ import com.redescooter.ses.api.mobile.b.vo.StartEnter;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -112,6 +116,20 @@ public class SesServiceMobileBApplicationTests {
         List<SaveDeliveryStatEnter> saveDeliveryStatEnterList = new ArrayList<>();
         saveDeliveryStatEnterList.add(enter);
         statisticalDataService.saveScooterRideStat(saveDeliveryStatEnterList);
+    }
+
+    @Autowired
+    private JedisCluster jedisCluster;
+
+    @Test
+    public void test() {
+        String json = "{\"systemId\":\"REDE_SAAS\",\"requestId\":\"9fa2764feb9e4fde8821ca2dff8a7029\",\"appId\":\"2\",\"name\":\"bill\",\"userId\":\"1069386\",\"email\":\"bill@redescooter.com\"," +
+                "\"verificationCode\":\"41014\"}";
+        Map<String, String> map = (Map) JSON.parse(json);
+
+        String key = "9fa2764feb9e4fde8821ca2dff8a7029";
+        jedisCluster.hmset(key, map);
+        jedisCluster.expire(key, 10);
     }
 
 }

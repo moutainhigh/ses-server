@@ -1,6 +1,10 @@
 package com.redescooter.ses.api.foundation.service.base;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import com.redescooter.ses.api.foundation.vo.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
@@ -148,6 +152,6 @@ public interface UserTokenService {
      * @param enter
      * @return
      */
-    UserToken getAppUser(GetUserEnter enter);
+    List<UserToken> getAppUser(GetUserEnter enter);
 
 }

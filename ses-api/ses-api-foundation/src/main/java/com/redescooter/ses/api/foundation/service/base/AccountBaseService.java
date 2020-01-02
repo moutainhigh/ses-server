@@ -1,8 +1,15 @@
 package com.redescooter.ses.api.foundation.service.base;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
+import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 
 import java.util.List;
 import java.util.Map;
@@ -93,5 +100,13 @@ public interface AccountBaseService {
      * @return
      */
     GeneralResult deleteUserbyTenantId(IdEnter enter);
+
+    /**
+     * 查询user
+     *
+     * @param enter
+     * @return
+     */
+    QueryUserResult queryUserById(GeneralEnter enter);
 
 }

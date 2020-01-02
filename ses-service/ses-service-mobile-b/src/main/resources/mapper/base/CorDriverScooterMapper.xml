@@ -7,9 +7,8 @@
     <id column="id" property="id" />
     <result column="dr" property="dr" />
     <result column="tenant_id" property="tenantId" />
-    <result column="user_id" property="userId" />
+    <result column="driver_id" property="driverId" />
     <result column="scooter_id" property="scooterId" />
-    <result column="rfid" property="rfid" />
     <result column="begin_time" property="beginTime" />
     <result column="end_time" property="endTime" />
     <result column="status" property="status" />
@@ -26,7 +25,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, tenant_id, user_id, scooter_id, rfid, begin_time, end_time, `status`, mileage, 
+    id, dr, tenant_id, driver_id, scooter_id, begin_time, end_time, `status`, mileage, 
     created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
@@ -43,19 +42,14 @@
           when id = #{item.id} then #{item.tenantId}
         </foreach>
       </trim>
-      <trim prefix="user_id = case" suffix="end,">
+      <trim prefix="driver_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.userId}
+          when id = #{item.id} then #{item.driverId}
         </foreach>
       </trim>
       <trim prefix="scooter_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.scooterId}
-        </foreach>
-      </trim>
-      <trim prefix="rfid = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.rfid}
         </foreach>
       </trim>
       <trim prefix="begin_time = case" suffix="end,">
@@ -132,34 +126,33 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into cor_driver_scooter
-    (id, dr, tenant_id, user_id, scooter_id, rfid, begin_time, end_time, `status`, mileage, 
+    (id, dr, tenant_id, driver_id, scooter_id, begin_time, end_time, `status`, mileage, 
       created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
       )
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.userId}, #{item.scooterId}, #{item.rfid}, 
-        #{item.beginTime}, #{item.endTime}, #{item.status}, #{item.mileage}, #{item.createdBy}, 
-        #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, 
-        #{item.def3}, #{item.def5}, #{item.def6})
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.driverId}, #{item.scooterId}, #{item.beginTime}, 
+        #{item.endTime}, #{item.status}, #{item.mileage}, #{item.createdBy}, #{item.createdTime}, 
+        #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, 
+        #{item.def5}, #{item.def6})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter">
     <!--@mbg.generated-->
     insert into cor_driver_scooter
-    (id, dr, tenant_id, user_id, scooter_id, rfid, begin_time, end_time, `status`, mileage, 
+    (id, dr, tenant_id, driver_id, scooter_id, begin_time, end_time, `status`, mileage, 
       created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
       )
     values
-    (#{id}, #{dr}, #{tenantId}, #{userId}, #{scooterId}, #{rfid}, #{beginTime}, #{endTime}, 
+    (#{id}, #{dr}, #{tenantId}, #{driverId}, #{scooterId}, #{beginTime}, #{endTime}, 
       #{status}, #{mileage}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
       #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
     on duplicate key update 
     id = #{id}, 
     dr = #{dr}, 
     tenant_id = #{tenantId}, 
-    user_id = #{userId}, 
+    driver_id = #{driverId}, 
     scooter_id = #{scooterId}, 
-    rfid = #{rfid}, 
     begin_time = #{beginTime}, 
     end_time = #{endTime}, 
     `status` = #{status}, 
@@ -187,14 +180,11 @@
       <if test="tenantId != null">
         tenant_id,
       </if>
-      <if test="userId != null">
-        user_id,
+      <if test="driverId != null">
+        driver_id,
       </if>
       <if test="scooterId != null">
         scooter_id,
-      </if>
-      <if test="rfid != null">
-        rfid,
       </if>
       <if test="beginTime != null">
         begin_time,
@@ -247,14 +237,11 @@
       <if test="tenantId != null">
         #{tenantId},
       </if>
-      <if test="userId != null">
-        #{userId},
+      <if test="driverId != null">
+        #{driverId},
       </if>
       <if test="scooterId != null">
         #{scooterId},
-      </if>
-      <if test="rfid != null">
-        #{rfid},
       </if>
       <if test="beginTime != null">
         #{beginTime},
@@ -307,14 +294,11 @@
       <if test="tenantId != null">
         tenant_id = #{tenantId},
       </if>
-      <if test="userId != null">
-        user_id = #{userId},
+      <if test="driverId != null">
+        driver_id = #{driverId},
       </if>
       <if test="scooterId != null">
         scooter_id = #{scooterId},
-      </if>
-      <if test="rfid != null">
-        rfid = #{rfid},
       </if>
       <if test="beginTime != null">
         begin_time = #{beginTime},

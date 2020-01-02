@@ -32,3 +32,4 @@ public class CorDriverScooterServiceImpl extends ServiceImpl<CorDriverScooterMap
     }
 }
 
+

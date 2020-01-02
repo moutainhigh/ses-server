@@ -3,6 +3,7 @@ package com.redescooter.ses.service.mobile.b.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -27,4 +28,13 @@ public interface DeliveryServiceMapper {
      * @return
      */
     List<DeliveryDetailResult> deliveryList(GeneralEnter enter);
+
+    /**
+     * 拒绝的订单 统计
+     *
+     * @param userId
+     * @param status
+     * @return
+     */
+    int refuseDelivery(@Param("userId") Long userId, @Param("status") String status);
 }

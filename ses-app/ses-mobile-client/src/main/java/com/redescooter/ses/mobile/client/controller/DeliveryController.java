@@ -43,7 +43,7 @@ public class DeliveryController {
     @ApiOperation(value = "订单列表")
     @RequestMapping(value = "/list")
     public Response<DeliveryListResult> list(@ModelAttribute GeneralEnter enter) {
-        enter.setUserId(1060938L);
+        enter.setUserId(1071493L);
         enter.setTenantId(0L);
         return new Response<>(deliveryService.list(enter));
     }
@@ -52,7 +52,7 @@ public class DeliveryController {
     @ApiOperation(value = "订单详情")
     @RequestMapping(value = "/detail")
     public Response<DeliveryDetailResult> detail(@ModelAttribute IdEnter enter) {
-        enter.setUserId(1060938L);
+        enter.setUserId(1071493L);
         enter.setTenantId(0L);
         return new Response<>(deliveryService.detail(enter));
     }
@@ -61,7 +61,7 @@ public class DeliveryController {
     @ApiOperation(value = "开始订单")
     @RequestMapping(value = "/start")
     public Response<GeneralResult> start(@ModelAttribute StartEnter enter) {
-        enter.setUserId(1060938L);
+        enter.setUserId(1071493L);
         enter.setTenantId(0L);
         return new Response<>(deliveryService.start(enter));
     }
@@ -70,7 +70,7 @@ public class DeliveryController {
     @ApiOperation(value = "完成订单")
     @RequestMapping(value = "/complete")
     public Response<CompleteResult> complete(@ModelAttribute CompleteEnter enter) {
-        enter.setUserId(1060938L);
+        enter.setUserId(1071493L);
         enter.setTenantId(0L);
         return new Response<>(deliveryService.complete(enter));
     }
@@ -79,7 +79,7 @@ public class DeliveryController {
     @ApiOperation(value = "拒绝订单")
     @RequestMapping(value = "/refuse")
     public Response<GeneralResult> refuse(@ModelAttribute RefuseEnter enter) {
-        enter.setUserId(1060938L);
+        enter.setUserId(1071493L);
         enter.setTenantId(0L);
         return new Response<>(deliveryService.refuse(enter));
     }

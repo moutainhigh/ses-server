@@ -13,6 +13,7 @@ import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
@@ -22,6 +23,7 @@ import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
+import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
@@ -44,6 +46,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
@@ -509,5 +512,25 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         plaUserPermissionMapper.insert(plaUserPermission);
         return plaUser.getId();
+    }
+
+    /**
+     * 查询user
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public QueryUserResult queryUserById(GeneralEnter enter) {
+
+        PlaUser plaUser = userMapper.selectById(enter.getUserId());
+        if (plaUser == null) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+
+        QueryUserResult queryUserResult = new QueryUserResult();
+        BeanUtils.copyProperties(plaUser, queryUserResult);
+
+        return queryUserResult;
     }
 }

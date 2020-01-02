@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.StatisticalDataServiceMapper">
+
+    <select id="mobileBScooterChart"
+            resultType="com.redescooter.ses.api.mobile.b.vo.MonthlyScooterChartResult">
+        select sum(drsd.mileage) as mileage,
+        sum(drsd.svg_speed)as svgSpeed,
+        sum(drsd.co2_increment) as co2,
+        sum(drsd.saved_money) as moeny,
+        DATE_FORMAT(drsd.update_time, '%Y-%m-%d') as times
+        from cor_driver_ride_stat_detail drsd
+        where drsd.driver_id=#{driverId}
+        and drsd.tenant_id=#{tenantId}
+        group by times;
+    </select>
+</mapper>

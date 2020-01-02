@@ -1,13 +1,18 @@
 package com.redescooter.ses.service.mobile.b.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
 import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
 import com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult;
+import com.redescooter.ses.api.mobile.b.vo.MonthlyScooterChartResult;
 import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryStatEnter;
 import com.redescooter.ses.service.mobile.b.constant.SequenceName;
+import com.redescooter.ses.service.mobile.b.dao.DeliveryServiceMapper;
+import com.redescooter.ses.service.mobile.b.dao.StatisticalDataServiceMapper;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDriverMapper;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDriverRideStatDetailMapper;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDriverRideStatMapper;
@@ -22,14 +27,19 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStatDetail;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
+import com.redescooter.ses.tool.utils.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:StatisticalDataServiceImpl
@@ -61,6 +71,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
 
     @Autowired
     private CorScooterRideStatDetailMapper corScooterRideStatDetailMapper;
+
+    @Autowired
+    private DeliveryServiceMapper deliveryServiceMapper;
+
+    @Autowired
+    private StatisticalDataServiceMapper statisticalDataServiceMapper;
 
     /**
      * 保存司机骑行数据
@@ -138,10 +154,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                 // 查询司机之前是否存在有统计数据
                 QueryWrapper<CorDriverScooter> driverScooterQueryWrapper = new QueryWrapper<>();
                 driverScooterQueryWrapper.eq(CorDriverScooter.COL_USER_ID, item.getInputUserId());
+                driverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
                 driverScooterQueryWrapper.in(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
                 CorDriverScooter driverScooter = corDriverScooterMapper.selectOne(driverScooterQueryWrapper);
 
                 QueryWrapper<CorScooterRideStat> scooterRideStatQueryWrapper = new QueryWrapper<>();
+                scooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_DR, 0);
                 scooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_SCOOTER_ID, driverScooter.getScooterId());
                 CorScooterRideStat scooterRideStat = corScooterRideStatMapper.selectOne(scooterRideStatQueryWrapper);
 
@@ -174,6 +192,28 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      */
     @Override
     public MobileBDeliveryChartResult mobileBDeliveryChart(GeneralEnter enter) {
+        // 获取指定 日期格式
+        ArrayList<String> dayList = DateUtil.getDayList(30, DateUtil.DEFAULT_DATE_FORMAT);
+
+        // 状态统计
+        List<CountByStatusResult> list = deliveryServiceMapper.countByStatus(enter);
+
+        // 拒绝的订单
+        int count = deliveryServiceMapper.refuseDelivery(enter.getUserId(), DeliveryStatusEnums.REJECTED.getValue());
+        list.add(CountByStatusResult.builder().status(DeliveryStatusEnums.REJECTED.getValue()).totalCount(count).build());
+        Map<String, Integer> statusMap = new HashMap<>();
+        for (CountByStatusResult item : list) {
+            statusMap.put(item.getStatus(), item.getTotalCount());
+        }
+        for (DeliveryStatusEnums status : DeliveryStatusEnums.values()) {
+            if (!statusMap.containsKey(status.getValue())) {
+                statusMap.put(status.getValue(), 0);
+            }
+        }
+
+        // 查询每天的订单数据
+
+
         return null;
     }
 
@@ -185,7 +225,50 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      */
     @Override
     public MobileBScooterChartResult mobileBScooterChart(GeneralEnter enter) {
-        return null;
+
+        // 获取指定 日期格式
+        ArrayList<String> dayList = DateUtil.getDayList(30, DateUtil.DEFAULT_DATE_FORMAT);
+
+        // 查询司机Id
+        QueryWrapper<CorDriver> corDriverQueryWrapper = new QueryWrapper<>();
+        corDriverQueryWrapper.eq(CorDriver.COL_USER_ID, enter.getUserId());
+        corDriverQueryWrapper.eq(CorDriver.COL_DR, 0);
+        CorDriver corDriver = corDriverMapper.selectOne(corDriverQueryWrapper);
+
+        QueryWrapper<CorDriverRideStat> corDriverRideStatQueryWrapper = new QueryWrapper<>();
+        corDriverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DR, 0);
+        corDriverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DRIVER_ID, corDriver.getId());
+        CorDriverRideStat corDriverRideStat = corDriverRideStatMapper.selectOne(corDriverRideStatQueryWrapper);
+        if (corDriverRideStat == null) {
+            return new MobileBScooterChartResult();
+        }
+
+        // 查询每天的骑行数据
+        List<MonthlyScooterChartResult> monthlyScooterChartResultList = statisticalDataServiceMapper.mobileBScooterChart(corDriver.getId(), enter.getTenantId());
+        if (CollectionUtils.isEmpty(monthlyScooterChartResultList)) {
+            return new MobileBScooterChartResult();
+        }
+
+        Map<String, MonthlyScooterChartResult> resultMap = new LinkedHashMap<>();
+        for (String item : dayList) {
+            Boolean map = Boolean.FALSE;
+            for (MonthlyScooterChartResult chart : monthlyScooterChartResultList) {
+                if (StringUtils.equals(item, chart.getTimes())) {
+                    MonthlyScooterChartResult chartResult = chart;
+                    resultMap.put(item, chartResult);
+                    map = Boolean.TRUE;
+                }
+            }
+            if (!map) {
+                resultMap.put(item, new MonthlyScooterChartResult());
+            }
+        }
+        return MobileBScooterChartResult.builder()
+                .totalCo2(corDriverRideStat.getCo2Total().toString())
+                .totalMileage(corDriverRideStat.getTotalMileage().toString())
+                .totalMoney(corDriverRideStat.getSavedMoney().toString())
+                .monthlyScooterResults(resultMap)
+                .build();
     }
 
     private CorScooterRideStat buildScooterRideStat(SaveDeliveryStatEnter enter, CorDriverScooter driverScooter, CorScooterRideStatDetail scooterRideStatDetail) {
@@ -217,7 +300,8 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         scooterRideStatDetail.setDuration(enter.getDuration());
         scooterRideStatDetail.setCo2HistoryTotal(scooterRideStat == null ? new BigDecimal(0d) : scooterRideStat.getCo2Total());
         scooterRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
-        scooterRideStatDetail.setSvgSpeed(new BigDecimal(enter.getMileage() / (enter.getDuration() > 0 ? enter.getDuration() : 1)));
+        String avg = Double.toString(enter.getMileage() / (enter.getDuration() > 0 ? enter.getDuration() : 1));
+        scooterRideStatDetail.setSvgSpeed(new BigDecimal(avg));
         scooterRideStatDetail.setMileage(new BigDecimal(enter.getMileage()));
         scooterRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
         scooterRideStatDetail.setCreateTime(enter.getLastUpdateTime());
@@ -275,7 +359,9 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         driverRideStatDetail.setDuration(enter.getDuration());
         driverRideStatDetail.setCo2HistoryTotal(driverRideStat == null ? new BigDecimal(0) : driverRideStat.getCo2Total());
         driverRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
-        driverRideStatDetail.setSvgSpeed(new BigDecimal(enter.getMileage() / enter.getDuration()));
+
+        String avg = Double.toString(enter.getMileage() / (enter.getDuration() > 0 ? enter.getDuration() : 1));
+        driverRideStatDetail.setSvgSpeed(new BigDecimal(avg));
         driverRideStatDetail.setMileage(new BigDecimal(enter.getMileage()));
         driverRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
         driverRideStatDetail.setCreateTime(enter.getLastUpdateTime());
