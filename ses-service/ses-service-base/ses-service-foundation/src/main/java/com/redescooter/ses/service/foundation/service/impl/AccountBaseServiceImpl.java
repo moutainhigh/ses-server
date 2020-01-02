@@ -8,15 +8,7 @@ import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
@@ -52,12 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -88,10 +75,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     private PlaUserMapper plaUserMapper;
 
     @Autowired
-    private PlaUserPasswordMapper plaUserPasswordMapper;
+    private PlaUserPasswordMapper userPasswordMapper;
 
     @Autowired
-    private PlaUserPermissionMapper plaUserPermissionMapper;
+    private PlaUserPermissionMapper userPermissionMapper;
 
     @Autowired
     private PlaTenantMapper plaTenantMapper;
@@ -270,7 +257,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         QueryWrapper<PlaUserPermission> plaUserPermissionQueryWrapper = new QueryWrapper<>();
         plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_USER_ID, plaUser.getId());
         plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID, appId);
-        PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
+        PlaUserPermission plaUserPermission = userPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
         if (plaUserPermission == null) {
             throw new FoundationException(ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USERPERMISSION_IS_NOT_EXIST.getMessage());
@@ -282,7 +269,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermission.setStatus(UserStatusEnum.LOCK.getValue());
         plaUserPermission.setUpdatedBy(enter.getUserId());
         plaUserPermission.setUpdatedTime(new Date());
-        plaUserPermissionMapper.updateById(plaUserPermission);
+        userPermissionMapper.updateById(plaUserPermission);
 
         // 账户节点
         tenantBaseService.saveTenantNode(enter, TenanNodeEventEnum.FROZEN.getValue());
@@ -336,14 +323,14 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         QueryWrapper<PlaUserPermission> plaUserPermissionQueryWrapper = new QueryWrapper<>();
         plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_USER_ID, plaUser.getId());
         plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_APP_ID, appId);
-        PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
+        PlaUserPermission plaUserPermission = userPermissionMapper.selectOne(plaUserPermissionQueryWrapper);
         if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(), plaUserPermission.getStatus())) {
             throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         Objects.requireNonNull(plaUserPermission).setStatus(UserStatusEnum.NORMAL.getValue());
         plaUserPermission.setUpdatedBy(enter.getUserId());
         plaUserPermission.setUpdatedTime(new Date());
-        plaUserPermissionMapper.updateById(plaUserPermission);
+        userPermissionMapper.updateById(plaUserPermission);
 
         // 账户节点
         tenantBaseService.saveTenantNode(enter, TenanNodeEventEnum.UNFREEZE.getValue());
@@ -412,7 +399,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     public GeneralResult setPassword(SetPasswordEnter<BaseCustomerResult> enter) {
         QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
         plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getT().getEmail());
-        PlaUserPassword plaUserPassword = plaUserPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
+        PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
         if (plaUserPassword == null) {
             throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
@@ -421,7 +408,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPassword.setPassword(DigestUtils.md5Hex(enter.getConfirmPassword() + plaUserPassword.getSalt()));
         plaUserPassword.setUpdatedBy(enter.getUserId());
         plaUserPassword.setUpdatedTime(new Date());
-        plaUserPasswordMapper.updateById(plaUserPassword);
+        userPasswordMapper.updateById(plaUserPassword);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -499,7 +486,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         savePassWord.setUpdatedBy(dto.getUserId());
         savePassWord.setUpdatedTime(new Date());
         //②.①、用户激活时，有客户输入密码进行设置密码流程
-        plaUserPasswordMapper.insert(savePassWord);
+        userPasswordMapper.insert(savePassWord);
 
         //③、开通权限
         PlaUserPermission plaUserPermission = new PlaUserPermission();
@@ -513,7 +500,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermission.setUpdatedBy(dto.getUserId());
         plaUserPermission.setUpdatedTime(new Date());
 
-        plaUserPermissionMapper.insert(plaUserPermission);
+        userPermissionMapper.insert(plaUserPermission);
 
         //④、组织结果返回
         BaseUserResult result = new BaseUserResult();
@@ -538,12 +525,32 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Transactional
     @Override
     public GeneralResult cancelDriver2BAccout(IdEnter enter) {
-        PlaUser cancel = new PlaUser();
-        cancel.setId(enter.getId());
-        cancel.setStatus(UserStatusEnum.CANCEL.getValue());
-        cancel.setUpdatedBy(enter.getUserId());
-        cancel.setUpdatedTime(new Date());
-        userMapper.updateById(cancel);
+        PlaUser plaUser = userMapper.selectById(enter.getId());
+
+        if (plaUser == null) {
+            return new GeneralResult(enter.getRequestId());
+        }
+        userMapper.deleteById(enter.getId());
+
+        QueryWrapper<PlaUserPassword> query = new QueryWrapper<>();
+        query.eq(PlaUserPassword.COL_LOGIN_NAME, plaUser.getLoginName());
+        query.eq(PlaUserPassword.COL_DR, 0);
+        PlaUserPassword userPassword = userPasswordMapper.selectOne(query);
+        if (userPassword == null) {
+            return new GeneralResult(enter.getRequestId());
+        }
+        userPasswordMapper.deleteById(userPassword.getId());
+
+        QueryWrapper<PlaUserPermission> wrapper = new QueryWrapper<>();
+        wrapper.eq(PlaUserPermission.COL_USER_ID, plaUser.getId());
+        wrapper.eq(PlaUserPermission.COL_DR, 0);
+        PlaUserPermission permission = userPermissionMapper.selectOne(wrapper);
+
+        if (permission == null) {
+            return new GeneralResult(enter.getRequestId());
+        }
+        userPermissionMapper.deleteById(permission.getId());
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -617,7 +624,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         // 保存密码
         QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
         plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getT().getEmail());
-        PlaUserPassword plaUserPassword = plaUserPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
+        PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
 
         // 密码不存在创建，已存在 跳过
         if (plaUserPassword == null) {
@@ -631,7 +638,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             savePassWord.setUpdatedBy(enter.getUserId());
             savePassWord.setUpdatedTime(new Date());
             // 2.2用户激活时，有客户输入密码进行设置密码流程
-            plaUserPasswordMapper.insert(savePassWord);
+            userPasswordMapper.insert(savePassWord);
         }
 
         // 开通权限
@@ -646,7 +653,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermission.setUpdatedBy(enter.getUserId());
         plaUserPermission.setUpdatedTime(new Date());
 
-        plaUserPermissionMapper.insert(plaUserPermission);
+        userPermissionMapper.insert(plaUserPermission);
         return plaUser.getId();
     }
 

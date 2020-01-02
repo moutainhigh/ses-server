@@ -3,12 +3,10 @@ package com.redescooter.ses.web.delivery.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.driver.RoleEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
+import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.scooter.service.ScooterService;
@@ -17,32 +15,27 @@ import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorDriverMapper;
+import com.redescooter.ses.web.delivery.dao.base.CorDriverScooterMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorUserProfileMapper;
 import com.redescooter.ses.web.delivery.dm.CorDriver;
+import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.dm.CorUserProfile;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.DriverService;
-import com.redescooter.ses.web.delivery.vo.DriverDetailsResult;
-import com.redescooter.ses.web.delivery.vo.ListDriverPage;
-import com.redescooter.ses.web.delivery.vo.ListDriverResult;
-import com.redescooter.ses.web.delivery.vo.ListScooterResult;
-import com.redescooter.ses.web.delivery.vo.SaveDriverEnter;
+import com.redescooter.ses.web.delivery.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Mr.lijiating
@@ -63,6 +56,10 @@ public class DriverServiceImpl implements DriverService {
     private CorUserProfileMapper profileMapper;
     @Autowired
     private DriverServiceMapper driverServiceMapper;
+    @Autowired
+    private CorDriverScooterMapper driverScooterMapper;
+    @Autowired
+    private CorTenantScooterMapper tenantScooterMapper;
     @Reference
     private IdAppService idAppService;
     @Reference
@@ -97,6 +94,7 @@ public class DriverServiceImpl implements DriverService {
             driverSave.setTenantId(user.getTenantId());
             driverSave.setDrivingLicense(enter.getDriverLicense());
             driverSave.setStatus(DriverStatusEnum.OFFWORK.getValue());
+            driverSave.setDef1(Boolean.FALSE.toString());
             driverSave.setCreatedBy(enter.getUserId());
             driverSave.setCreatedTime(new Date());
             driverSave.setUpdatedBy(enter.getUserId());
@@ -296,10 +294,22 @@ public class DriverServiceImpl implements DriverService {
         driver.setStatus(DriverStatusEnum.DEPARTURE.getValue());
         driver.setUpdatedBy(enter.getUserId());
         driver.setUpdatedTime(new Date());
+        driverMapper.deleteById(driver.getId());
+
+        QueryWrapper<CorUserProfile> profileQueryWrapper = new QueryWrapper<>();
+        profileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+        profileQueryWrapper.eq(CorUserProfile.COL_USER_ID, driver.getUserId());
+        CorUserProfile userProfile = profileMapper.selectOne(profileQueryWrapper);
+
+        if (userProfile == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+        }
+
+        profileMapper.deleteById(userProfile.getId());
 
         GeneralResult result = accountBaseService.cancelDriver2BAccout(new IdEnter(driver.getUserId()));
 
-        driverMapper.deleteById(driver.getId());
+
         return result;
     }
 
@@ -355,5 +365,115 @@ public class DriverServiceImpl implements DriverService {
         });
 
         return resultList;
+    }
+
+    /**
+     * 司机车辆分配
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult assignScooter(AssignScooterEnter enter) {
+
+        CorDriver driver = driverMapper.selectById(enter.getDriverId());
+
+        if (driver == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+        }
+
+        if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.DEPARTURE.getCode())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_DEPARTURE.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_DEPARTURE.getMessage());
+        }
+        if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.WORKING.getCode())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getMessage());
+        }
+
+        QueryWrapper<CorDriverScooter> wrapper = new QueryWrapper<>();
+        wrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
+        wrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
+        wrapper.in(CorDriverScooter.COL_STATUS, ScooterStatusEnums.USED.getValue(), ScooterStatusEnums.ALLOCATION.getValue());
+        Integer count = driverScooterMapper.selectCount(wrapper);
+
+        if (count > 0) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getMessage());
+        }
+
+        driver.setStatus(DriverStatusEnum.WORKING.getValue());
+        driver.setUpdatedTime(new Date());
+        driver.setUpdatedBy(enter.getUserId());
+        driverMapper.updateById(driver);
+
+        CorTenantScooter update = new CorTenantScooter();
+        update.setStatus(TenantScooterStatusEnums.USEING.getValue());
+        update.setUpdatedBy(enter.getUserId());
+        update.setUpdatedTime(new Date());
+
+        QueryWrapper<CorTenantScooter> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(CorTenantScooter.COL_DR, 0);
+        queryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
+        queryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, enter.getScooterId());
+        tenantScooterMapper.update(update, queryWrapper);
+
+        CorDriverScooter insertDriverScooter = new CorDriverScooter();
+        insertDriverScooter.setId(idAppService.getId(SequenceName.COR_DRIVER_SCOOTER));
+        insertDriverScooter.setDr(0);
+        insertDriverScooter.setTenantId(enter.getTenantId());
+        insertDriverScooter.setDriverId(enter.getDriverId());
+        insertDriverScooter.setScooterId(enter.getScooterId());
+        insertDriverScooter.setBeginTime(new Date());
+        insertDriverScooter.setStatus(ScooterStatusEnums.ALLOCATION.getValue());
+        insertDriverScooter.setCreatedBy(enter.getUserId());
+        insertDriverScooter.setCreatedTime(new Date());
+        insertDriverScooter.setUpdatedBy(enter.getDriverId());
+        insertDriverScooter.setUpdatedTime(new Date());
+        driverScooterMapper.insert(insertDriverScooter);
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 司机归还车辆
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult removeScooter(IdEnter enter) {
+
+        CorDriver driver = driverMapper.selectById(enter.getId());
+
+        if (driver == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+        }
+        if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.OFFWORK.getCode())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_OFFWORK.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_OFFWORK.getMessage());
+        }
+
+        QueryWrapper<CorDriverScooter> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getId());
+        queryWrapper.in(CorDriverScooter.COL_STATUS, ScooterStatusEnums.USED.getValue(), ScooterStatusEnums.ALLOCATION.getValue());
+        queryWrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
+        CorDriverScooter driverScooter = driverScooterMapper.selectOne(queryWrapper);
+        if (driverScooter == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
+        }
+        /**
+         * TODO 验证订单是否已完成，目前没有，暂时空缺
+         */
+        driverScooter.setStatus(ScooterStatusEnums.FINSH.getValue());
+        driverScooter.setEndTime(new Date());
+        driverScooter.setUpdatedBy(enter.getUserId());
+        driverScooter.setUpdatedTime(new Date());
+        driverScooterMapper.updateById(driverScooter);
+
+        driver.setStatus(DriverStatusEnum.OFFWORK.getCode());
+        driver.setUpdatedBy(enter.getUserId());
+        driver.setUpdatedTime(new Date());
+        driverMapper.updateById(driver);
+
+        return new GeneralResult(enter.getRequestId());
     }
 }
