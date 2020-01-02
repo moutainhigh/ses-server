@@ -56,6 +56,9 @@ public enum ExceptionCodeEnums {
 
     COUNTRY_CANNOT_EMPTY(10019, "国家为空"),
 
+
+    DRIVER_IS_NOT_EXIST(10030, "司机不存在"),
+
     ;
 
     private int code;

@@ -2,15 +2,15 @@ package com.redescooter.ses.web.ros.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.customer.*;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.enums.ros.customer.*;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
-import com.redescooter.ses.api.foundation.vo.QueryTenantNodeResult;
+import com.redescooter.ses.api.foundation.vo.account.QueryTenantNodeResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
@@ -737,9 +737,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (enter.getCity() == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CITY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CITY_CANNOT_EMPTY.getMessage());
         }
-//        if (enter.getDistrust() == null) {
-//            throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.DISTRUST_CANNOT_EMPTY.getMessage());
-//        }
         if (enter.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
 
             if (StringUtils.isBlank(enter.getCustomerFirstName())) {

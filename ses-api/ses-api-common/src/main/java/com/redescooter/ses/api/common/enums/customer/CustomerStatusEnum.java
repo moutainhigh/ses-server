@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.ros.customer;
+package com.redescooter.ses.api.common.enums.customer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

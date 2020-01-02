@@ -2,8 +2,8 @@ package com.redescooter.ses.tool.utils.bussinessutils;
 
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
-import com.redescooter.ses.api.common.enums.ros.customer.CustomerIndustryEnums;
-import com.redescooter.ses.api.common.enums.ros.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
+import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 
 /**

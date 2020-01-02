@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.foundation.service.base;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 
@@ -93,5 +94,30 @@ public interface AccountBaseService {
      * @return
      */
     GeneralResult deleteUserbyTenantId(IdEnter enter);
+
+
+    /**
+     * 开通2B司机账户
+     *
+     * @param dto
+     * @return
+     */
+    BaseUserResult openDriver2BAccout(SaveDriverAccountDto dto);
+
+    /**
+     * 关闭2B司机账号
+     *
+     * @return
+     */
+    GeneralResult cancelDriver2BAccout(IdEnter enter);
+
+    /**
+     * 再次发生激活邮件
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult sendEmailAgian(IdEnter enter);
+
 
 }

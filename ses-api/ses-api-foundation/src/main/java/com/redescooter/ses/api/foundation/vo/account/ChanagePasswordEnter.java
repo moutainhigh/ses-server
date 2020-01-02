@@ -1,7 +1,6 @@
-package com.redescooter.ses.api.foundation.vo;
+package com.redescooter.ses.api.foundation.vo.account;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;

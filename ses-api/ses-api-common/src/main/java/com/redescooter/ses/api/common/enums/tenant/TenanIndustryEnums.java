@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.ros.customer;
+package com.redescooter.ses.api.common.enums.tenant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum CustomerIndustryEnums {
-    RESTAURANT("RESTAURANT", "餐厅","1"),
-    EXPRESS_DELIVERY("EXPRESS_DELIVERY","快递","2");
+public enum TenanIndustryEnums {
+    RESTAURANT("RESTAURANT", "餐厅", "1"),
+    EXPRESS_DELIVERY("EXPRESS_DELIVERY", "快递", "2");
 
     private String code;
 
@@ -24,8 +24,8 @@ public enum CustomerIndustryEnums {
 
     private String value;
 
-    public static CustomerIndustryEnums getIndustryEnumByCode(String code) {
-        for (CustomerIndustryEnums item : CustomerIndustryEnums.values()) {
+    public static TenanIndustryEnums getIndustryEnumByCode(String code) {
+        for (TenanIndustryEnums item : TenanIndustryEnums.values()) {
             if (item.getCode().equals(code)) {
                 return item;
             }
