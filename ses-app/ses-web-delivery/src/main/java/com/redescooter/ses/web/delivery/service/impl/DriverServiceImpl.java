@@ -105,8 +105,8 @@ public class DriverServiceImpl implements DriverService {
             profileSave.setPlaceBirth(enter.getAddress());
             profileSave.setBirthday(DateUtil.timaConversion(enter.getBirthday()));
             profileSave.setCertificateType(enter.getCertificateType());
-            profileSave.setCertificatePositiveAnnex(enter.getDriverLicenseUpAnnex());
-            profileSave.setCertificateNegativeAnnex(enter.getDriverLicenseDownAnnex());
+            profileSave.setCertificatePositiveAnnex(enter.getDriverLicenseDownAnnex());
+            profileSave.setCertificateNegativeAnnex(enter.getDriverLicenseUpAnnex());
             profileSave.setRole(RoleEnums.DRIVER.getValue());
             profileSave.setJoinDate(new Date());
             profileSave.setTimeZone(enter.getTimeZone());
@@ -120,12 +120,10 @@ public class DriverServiceImpl implements DriverService {
             idEnter.setId(driverSave.getUserId());
             accountBaseService.sendEmailAgian(idEnter);
         } else {
-
             CorDriver driver = driverMapper.selectById(enter.getId());
             if (driver == null) {
-                throw new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+                new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
             }
-
             CorDriver driverUpdate = new CorDriver();
             driverUpdate.setId(enter.getId());
             if (enter.getDriverLicense() != null) {
@@ -151,6 +149,13 @@ public class DriverServiceImpl implements DriverService {
             if (enter.getBirthday() != null) {
                 profile.setBirthday(DateUtil.timaConversion(enter.getBirthday()));
             }
+            if (enter.getCertificateType() != null &&
+                    enter.getDriverLicenseUpAnnex() != null &&
+                    enter.getDriverLicenseDownAnnex() != null) {
+                profile.setCertificateType(enter.getCertificateType());
+                profile.setCertificatePositiveAnnex(enter.getDriverLicenseDownAnnex());
+                profile.setCertificateNegativeAnnex(enter.getDriverLicenseUpAnnex());
+            }
             profile.setUpdatedBy(enter.getUserId());
             profile.setUpdatedTime(new Date());
             profileMapper.updateById(profile);
@@ -165,7 +170,6 @@ public class DriverServiceImpl implements DriverService {
      * @param enter
      * @return
      */
-    @Transactional
     @Override
     public BaseUserResult openDriver2BAccout(SaveDriverEnter enter) {
         SaveDriverAccountDto dto = new SaveDriverAccountDto();
