@@ -1,7 +1,7 @@
 package com.redescooter.ses.api.foundation.service.base;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.api.foundation.vo.ChanagePasswordEnter;
+import com.redescooter.ses.api.foundation.vo.account.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;

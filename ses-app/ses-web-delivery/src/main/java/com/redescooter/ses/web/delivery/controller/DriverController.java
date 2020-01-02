@@ -83,6 +83,6 @@ public class DriverController {
     @PostMapping(value = "/againSendEmail")
     @ApiOperation(value = "重发邮件", response = GeneralResult.class)
     public Response<GeneralResult> againSendEmail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>();
+        return new Response<>(driverService.againSendEmail(enter));
     }
 }

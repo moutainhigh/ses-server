@@ -3,7 +3,7 @@ package com.redescooter.ses.web.delivery.controller;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
-import com.redescooter.ses.api.foundation.vo.ChanagePasswordEnter;
+import com.redescooter.ses.api.foundation.vo.account.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import io.swagger.annotations.Api;

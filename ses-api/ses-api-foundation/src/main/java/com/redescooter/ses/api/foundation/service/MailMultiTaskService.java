@@ -2,9 +2,9 @@ package com.redescooter.ses.api.foundation.service;
 
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.foundation.vo.FreezeWarnWebTaskEnter;
-import com.redescooter.ses.api.foundation.vo.NnfreezeWarnWebTaskEnter;
-import com.redescooter.ses.api.foundation.vo.RenewalWarnWebTaskEnter;
+import com.redescooter.ses.api.foundation.vo.account.FreezeWarnWebTaskEnter;
+import com.redescooter.ses.api.foundation.vo.account.NnfreezeWarnWebTaskEnter;
+import com.redescooter.ses.api.foundation.vo.account.RenewalWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
 
 /**
