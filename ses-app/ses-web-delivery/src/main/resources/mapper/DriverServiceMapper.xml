@@ -53,8 +53,8 @@
             <if test="status != null and status != ''">
                 and cdr.status = #{status}
             </if>
-            and cdr.status !='3'
         </where>
+        order by cdr.updated_time desc
         limit #{startRow},#{pageSize}
     </select>
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
