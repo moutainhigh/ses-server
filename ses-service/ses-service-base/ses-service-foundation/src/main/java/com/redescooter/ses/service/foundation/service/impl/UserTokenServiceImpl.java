@@ -8,12 +8,7 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
 import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
-import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
@@ -45,11 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Mr.lijiating
@@ -665,6 +656,11 @@ public class UserTokenServiceImpl implements UserTokenService {
         BeanUtils.copyProperties(enter, getUser);
         getUser.setEmail(enter.getMail());
         PlaUser limitOne = userTokenMapper.getUserLimitOne(getUser);
+
+        if (limitOne == null) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
 
         BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
         baseMailTaskEnter.setEvent(MailTemplateEventEnum.WEB_ACTIVATE.getEvent());

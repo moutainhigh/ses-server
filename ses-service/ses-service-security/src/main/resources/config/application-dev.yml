@@ -30,12 +30,12 @@ dubbo:
 # 多注册中心配置
 #    reg2:
 #      group: hdg2
-#      address: zookeeper://zk1.t.xqcx.com:2181?backup=zk2.t.xqcx.com:2181,zk3.t.xqcx.com:2181
+#      address: zookeeper://zk1.t.xqcx.com:32181?backup=zk2.t.xqcx.com:32181,zk3.t.xqcx.com:32181
 
 
 # sentinel 规则文件位置，以下依次是：流控规则，降级规则，系统规则文件位置
 #sentinel:
-#  zk-address: zk1.t.xqcx.com:2181,zk2.t.xqcx.com:2181,zk3.t.xqcx.com:2181
+#  zk-address: zk1.t.xqcx.com:32181,zk2.t.xqcx.com:32181,zk3.t.xqcx.com:32181
 #  groupid: hdg_sentinel
 #  flow-dataid: @project.artifactId@-flow
 #  degra-dedataid: @project.artifactId@-degra

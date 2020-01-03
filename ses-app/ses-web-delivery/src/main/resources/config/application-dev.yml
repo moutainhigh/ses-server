@@ -8,11 +8,11 @@ log:
 ## DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://10.211.55.5:12181?backup=10.211.55.5:22181,10.211.55.5:32181
+    address: zookeeper://10.211.55.5:132181?backup=10.211.55.5:32181,10.211.55.5:32181
   metadata-report:
-    address: zookeeper://10.211.55.5:12181?backup=10.211.55.5:22181,10.211.55.5:32181
+    address: zookeeper://10.211.55.5:132181?backup=10.211.55.5:32181,10.211.55.5:32181
   config-center:
-    address: zookeeper://10.211.55.5:12181?backup=10.211.55.5:22181,10.211.55.5:32181
+    address: zookeeper://10.211.55.5:132181?backup=10.211.55.5:32181,10.211.55.5:32181
 
 
 spring:                                                                                                                 #spring config

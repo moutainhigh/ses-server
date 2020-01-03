@@ -5,6 +5,11 @@ log:                                                                            
     max-size: 128MB
     max-history: 180
 
+
+dubbo:                                                                                                                  #DUBBO 配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://192.168.2.200:2181
+
 spring:
   datasource:                                                                                                           #数据库连接
     url: jdbc:mysql://192.168.2.200:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
@@ -25,22 +30,3 @@ spring:
         - 192.168.2.200:7003
         - 192.168.2.200:7004
         - 192.168.2.200:7005
-
-
-dubbo:                                                                                                                  #DUBBO 配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:2181
-
-
-# 多注册中心配置
-#    reg2:
-#      group: hdg2
-#      address: zookeeper://zk1.t.xqcx.com:2181?backup=zk2.t.xqcx.com:2181,zk3.t.xqcx.com:2181
-
-# sentinel 规则文件位置，以下依次是：流控规则，降级规则，系统规则文件位置
-#sentinel:
-#  zk-address: zk1.t.xqcx.com:2181,zk2.t.xqcx.com:2181,zk3.t.xqcx.com:2181
-#  groupid: hdg_sentinel
-#  flow-dataid: @project.artifactId@-flow
-#  degra-dedataid: @project.artifactId@-degra
-#  system-dataid: @project.artifactId@-sys

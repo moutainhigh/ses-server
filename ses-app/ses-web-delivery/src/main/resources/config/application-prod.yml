@@ -7,7 +7,7 @@ log:
 
 # secuity-component config
 rede.security.appName: rede_@project.artifactId@
-dubbo.security.register: zookeeper://127.0.0.1:2181
+dubbo.security.register: zookeeper://127.0.0.1:32181
 # secuity-component config
 
 # swagger配置
@@ -68,9 +68,9 @@ dubbo:
   registries:
     ses:
       group: ses
-      address: zookeeper://127.0.0.1:2181
+      address: zookeeper://127.0.0.1:32181
 # 多注册中心配置
 #    reg2:
 #      group: hdg2
-#      address: zookeeper://zk1.d.xqcx.com:2181?backup=zk2.d.xqcx.com:2181,zk3.d.xqcx.com:2181
+#      address: zookeeper://zk1.d.xqcx.com:32181?backup=zk2.d.xqcx.com:32181,zk3.d.xqcx.com:32181
 

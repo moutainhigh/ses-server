@@ -72,5 +72,5 @@ dubbo:
 # 多注册中心配置
 #    reg2:
 #      group: hdg2
-#      address: zookeeper://zk1.d.xqcx.com:2181?backup=zk2.d.xqcx.com:2181,zk3.d.xqcx.com:2181
+#      address: zookeeper://zk1.d.xqcx.com:32181?backup=zk2.d.xqcx.com:32181,zk3.d.xqcx.com:32181
 

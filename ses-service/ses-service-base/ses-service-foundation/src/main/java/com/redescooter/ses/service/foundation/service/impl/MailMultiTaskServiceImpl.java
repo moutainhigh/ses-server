@@ -463,16 +463,16 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
      * @return
      */
     private void pullResdis(PlaMailTask mailTask, int seconds) {
-        //int code = RandomUtils.nextInt(10000, 99999);
         String sendParameter = mailTask.getParameter();
         Map<String, String> map = JSONObject.parseObject(sendParameter, Map.class);
-        String key = map.get("requestId");
-        jedisCluster.hmset(key, map);
-//        jedisCluster.set(key, mailTask.getParameter());
-        //默认为72小时
-        jedisCluster.expire(key, seconds);
         map.forEach((k, v) -> {
             log.info("存放redis中对应的key【{}】==========================vlue【{}】", k, v);
         });
+
+        String key = map.get("requestId");
+        jedisCluster.hmset(key, map);
+        //默认为72小时
+        jedisCluster.expire(key, seconds);
+
     }
 }

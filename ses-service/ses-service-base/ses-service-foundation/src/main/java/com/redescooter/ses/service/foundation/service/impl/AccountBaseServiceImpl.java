@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.account.UserStatusEnum;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
@@ -459,6 +460,13 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         PlaTenant tenant = tenantMapper.selectById(dto.getTenantId());
 
         int accountType = AccountTypeUtils.getAccountType(tenant.getTenantType(), tenant.getTenantIndustry());
+
+        if (accountType == AccountTypeEnums.WEB_EXPRESS.getAccountType()) {
+            accountType = AccountTypeEnums.APP_EXPRESS.getAccountType();
+        } else {
+            accountType = AccountTypeEnums.APP_RESTAURANT.getAccountType();
+        }
+
         //①、创建user信息
         PlaUser user = new PlaUser();
         user.setId(idAppService.getId(SequenceName.PLA_USER));

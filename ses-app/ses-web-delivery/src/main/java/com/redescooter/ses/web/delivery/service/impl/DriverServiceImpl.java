@@ -85,6 +85,7 @@ public class DriverServiceImpl implements DriverService {
         }
 
         if (enter.getId() == null || enter.getId() == 0) {
+
             BaseUserResult user = openDriver2BAccout(enter);
 
             CorDriver driverSave = new CorDriver();

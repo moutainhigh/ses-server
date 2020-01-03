@@ -9,8 +9,6 @@ dubbo:                                                                          
   registry:                                                                                                             #注册中心
     address: zookeeper://192.168.2.200:2181
 
-
-
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -75,19 +73,5 @@ spring:                                                                         
           name: Jerry
           email: Jerry@redescooter.com
           url: https://github.com/mrjerryli
-
-
-
-
-
-
-#  registries:
-#    ses:
-#      group: ses
-#      address: zookeeper://192.168.2.200:2181
-# 多注册中心配置
-#    reg2:
-#      group: hdg2
-#      address: zookeeper://zk1.d.xqcx.com:2181?backup=zk2.d.xqcx.com:2181,zk3.d.xqcx.com:2181
 
 
