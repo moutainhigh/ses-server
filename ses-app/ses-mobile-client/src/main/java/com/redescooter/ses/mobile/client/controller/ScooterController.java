@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.client.controller;
 
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -34,21 +33,15 @@ public class ScooterController {
     @Reference
     private ScooterMobileService scooterMobileService;
 
-    @IgnoreLoginCheck
     @ApiOperation(value = "车辆信息")
     @RequestMapping(value = "/scooterInfor")
     public Response<BaseScooterResult> scooterInfor(@ModelAttribute GeneralEnter enter) {
-        enter.setUserId(1071493L);
-        enter.setTenantId(0L);
         return new Response<>(scooterMobileService.scooterInfor(enter));
     }
 
-    @IgnoreLoginCheck
     @ApiOperation(value = "车辆开关锁")
     @RequestMapping(value = "/lock")
     public Response<GeneralResult> lock(@ModelAttribute LockEnter enter) {
-        enter.setUserId(1071493L);
-        enter.setTenantId(0L);
         return new Response<>(scooterMobileService.lock(enter));
     }
 }

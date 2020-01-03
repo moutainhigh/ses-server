@@ -43,7 +43,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     public GeneralResult saveUserPofile(SaveUserProfileEnter enter) {
 
         ConUserProfile userProfile=new ConUserProfile();
-        if (enter.getId() != null && enter.getId() != 0) {
+        if (enter.getId() == null || enter.getId() == 0) {
             BeanUtils.copyProperties(enter, userProfile);
             userProfile.setId(idAppService.getId(SequenceName.CON_USER_PROFILE));
             userProfile.setTenantId(enter.getTenantId());

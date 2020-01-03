@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.client.controller;
 
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
@@ -34,21 +33,15 @@ public class StatisticalDataController {
     @Reference
     private StatisticalDataService statisticalDataService;
 
-    @IgnoreLoginCheck
     @ApiOperation(value = "车辆统计数据")
     @RequestMapping(value = "/mobileBScooter")
     public Response<MobileBScooterChartResult> mobileBScooterChart(@ModelAttribute GeneralEnter enter) {
-        enter.setUserId(1071493L);
-        enter.setTenantId(0L);
         return new Response<>(statisticalDataService.mobileBScooterChart(enter));
     }
 
-    @IgnoreLoginCheck
     @ApiOperation(value = "订单统计数据")
     @RequestMapping(value = "/mobileBDelivery")
     public Response<MobileBDeliveryChartResult> mobileBDeliveryChart(@ModelAttribute GeneralEnter enter) {
-        enter.setUserId(1071493L);
-        enter.setTenantId(0L);
         return new Response<>(statisticalDataService.mobileBDeliveryChart(enter));
     }
 }
