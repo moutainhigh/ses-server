@@ -91,11 +91,6 @@
             or cdy.house_info like concat("%",#{keyword},"%")
             )
         </if>
-        group by id, orderNo, status, label, recipient, recipientAddress, recipientEmail, recipientTel, countryCode,
-        parcelQuantity, latitude, longitude, createdTime, deliveredTime, driverId, driverLastName, driverFirstName,
-        licensePlate, scooterId
-        order by deliveredTime, createdTime desc
-        limit #{startRow},#{pageSize}
 
     </select>
     <select id="details" resultType="com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult">
