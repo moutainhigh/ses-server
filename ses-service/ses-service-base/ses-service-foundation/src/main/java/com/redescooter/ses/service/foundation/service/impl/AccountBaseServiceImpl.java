@@ -1,23 +1,15 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
+import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
@@ -54,12 +46,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -624,6 +611,38 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         jedisCluster.expire(key, 180);
 
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 根据邮箱获取用户信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<BaseUserResult> queryEmailInfo(StringEnter enter) {
+
+        List<BaseUserResult> resultList = new ArrayList<>();
+
+        if (StringUtils.isBlank(enter.getSt())) {
+            return resultList;
+        }
+
+        QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getSt());
+        queryWrapper.eq(PlaUser.COL_DR, 0);
+        List<PlaUser> plaUserList = userMapper.selectList(queryWrapper);
+
+        if (plaUserList == null) {
+            return resultList;
+        }
+        plaUserList.forEach(user -> {
+            BaseUserResult result = new BaseUserResult();
+            BeanUtils.copyProperties(user, result);
+            resultList.add(result);
+        });
+
+        return resultList;
     }
 
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {

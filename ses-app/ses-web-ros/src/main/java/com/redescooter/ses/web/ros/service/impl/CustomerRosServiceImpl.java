@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.*;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -18,6 +17,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.StatisticalUtil;
 import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
+import com.redescooter.ses.tool.utils.bussinessutils.AccountTypeUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
@@ -696,31 +696,42 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             return new BooleanResult(true);
         }
 
+        List<BaseUserResult> userList = accountBaseService.queryEmailInfo(new StringEnter(customer.getEmail()));
+
+        if (userList == null || userList.size() == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
         //验证是否可以再次发生邮件
         if (jedisCluster.exists(new StringBuffer().append("send::").append(customer.getEmail()).toString())) {
             return new BooleanResult(true);
         }
+        //获取账户类型
+        Integer accountType = AccountTypeUtils.getAccountType(customer.getCustomerType(), customer.getIndustryType());
+        long userId = 0;
+        for (BaseUserResult userResult : userList) {
+            if (userResult.getUserType() == accountType) {
+                userId = userResult.getId();
+                break;
+            }
+        }
 
         BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
-
         BeanUtils.copyProperties(enter, baseMailTaskEnter);
 
         if (StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), customer.getCustomerType())) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
-            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getValue());
-            baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
         }
         if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), customer.getCustomerType())) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
-            baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getValue());
-            baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_WEB.getSystemId());
         }
-        baseMailTaskEnter.setName(customer.getCustomerFullName());
-        baseMailTaskEnter.setToMail(customer.getEmail());
-        baseMailTaskEnter.setUserId(enter.getUserId());
-        baseMailTaskEnter.setToUserId(enter.getUserId());
+        baseMailTaskEnter.setMailAppId(AccountTypeUtils.getAppId(accountType));
+        baseMailTaskEnter.setMailSystemId(AccountTypeUtils.getSystemId(accountType));
         //此处是为了获取用户缓存
         baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+        baseMailTaskEnter.setName(customer.getCustomerFullName());
+        baseMailTaskEnter.setToMail(customer.getEmail());
+        baseMailTaskEnter.setToUserId(userId);
+
         mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
 
         //设置邮箱发送有效时间

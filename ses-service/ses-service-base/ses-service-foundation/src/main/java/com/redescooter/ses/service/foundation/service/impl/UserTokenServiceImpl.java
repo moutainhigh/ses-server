@@ -3,11 +3,11 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.account.LoginTypeEnum;
-import com.redescooter.ses.api.common.enums.account.UserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
 import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
+import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
@@ -569,9 +569,10 @@ public class UserTokenServiceImpl implements UserTokenService {
                 throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
                         ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
             }
-            getUser.setUserId(Long.parseLong(hash.get("userId")));
-            getUser.setAppId(hash.get("appId"));
-            getUser.setSystemId(hash.get("systemId"));
+            getUser.setUserId(Long.parseLong(StringUtils.isBlank(hash.get("userId")) ? "0" : hash.get("userId")) == 0 ? null : Long.parseLong(hash.get("userId")));
+            getUser.setEmail(StringUtils.isBlank(hash.get("email")) ? null : hash.get("email"));
+            getUser.setAppId(StringUtils.isBlank(hash.get("appId")) ? null : hash.get("appId"));
+            getUser.setSystemId(StringUtils.isBlank(hash.get("systemId")) ? null : hash.get("systemId"));
         }
 
         PlaUser emailUser = userTokenMapper.getUserLimitOne(getUser);

@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.account;
+package com.redescooter.ses.api.common.enums.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UserStatusEnum {
 
+    INACTIVATED("INACTIVATED", "未激活", "0"),
     NORMAL("NORMAL", "正常","1"),
     LOCK("LOCKED", "锁定","2"),
     CANCEL("CANCEL", "取消","3"),

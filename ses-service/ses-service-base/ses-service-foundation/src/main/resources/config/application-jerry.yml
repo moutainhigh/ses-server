@@ -5,11 +5,6 @@ log:
     max-size: 128MB
     max-history: 180
 
-## DUBBO 配置
-dubbo:
-  registry: #注册中心
-    address: zookeeper://192.168.2.200:32181
-
 spring:
   #数据库连接
   datasource:
@@ -31,3 +26,7 @@ spring:
         - 192.168.2.200:7003
         - 192.168.2.200:7004
         - 192.168.2.200:7005
+## DUBBO 配置
+dubbo:
+  registry: #注册中心
+    address: zookeeper://192.168.2.200:32181
