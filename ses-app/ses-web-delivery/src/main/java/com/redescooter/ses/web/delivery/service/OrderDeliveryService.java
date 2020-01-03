@@ -57,4 +57,12 @@ public interface OrderDeliveryService {
      */
     List<SelectDriverResult> selectDriverList(GeneralEnter enter);
 
+    /**
+     * 关闭订单
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult closed(IdEnter enter);
+
 }

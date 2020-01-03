@@ -75,7 +75,10 @@ public enum ExceptionCodeEnums {
 
     RECIPIENT_INFORMATION_IS_MISSING(10037, "收件方信息缺失"),
 
-    MISSING_LATITUDE_AND_LONGITUDE(10038, "经纬度信息缺失");
+    MISSING_LATITUDE_AND_LONGITUDE(10038, "经纬度信息缺失"),
+
+    ORDER_HAS_STARTED_AND_CANNOT_BE_CANCELLED(10037, "订单已开始，不能取消");
+
 
     private int code;
 

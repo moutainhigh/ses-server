@@ -89,7 +89,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         if (enter.getParcelQuantity() == null || enter.getParcelQuantity() == 0) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.PACKAGES_CANNOT_BE_EMPTY.getCode(), ExceptionCodeEnums.PACKAGES_CANNOT_BE_EMPTY.getMessage());
         }
-        if (StringUtils.isAnyBlank(enter.getRecipient(), enter.getRecipientEmail(), enter.getRecipientAddress(), enter.getRecipientTel(), enter.getCountryCode(), enter.getHouseInfo())) {
+        if (StringUtils.isAnyBlank(enter.getRecipient(), enter.getRecipientAddress(), enter.getRecipientTel(), enter.getCountryCode())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.RECIPIENT_INFORMATION_IS_MISSING.getCode(), ExceptionCodeEnums.RECIPIENT_INFORMATION_IS_MISSING.getMessage());
         }
 
@@ -255,7 +255,34 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         return selectDriverResults;
     }
 
-    private void saveDeliveryNode(CorDelivery dto, SaveOrderDeliveryEnter enter) {
+    /**
+     * 关闭订单
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult closed(IdEnter enter) {
+        if (enter.getId() == null || enter.getId() == 0) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
+        }
+        CorDelivery delivery = deliveryMapper.selectById(enter.getId());
+
+        if (!delivery.getStatus().equals(DeliveryStatusEnums.PENDING.getValue())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.ORDER_HAS_STARTED_AND_CANNOT_BE_CANCELLED.getCode(), ExceptionCodeEnums.ORDER_HAS_STARTED_AND_CANNOT_BE_CANCELLED.getMessage());
+        }
+
+        delivery.setStatus(DeliveryStatusEnums.CANCEL.getValue());
+        delivery.setUpdatedBy(enter.getUserId());
+        delivery.setUpdatedTime(new Date());
+
+        deliveryMapper.updateById(delivery);
+
+        saveDeliveryNode(delivery, enter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    private void saveDeliveryNode(CorDelivery dto, GeneralEnter enter) {
         CorDeliveryTrace deliveryTrace = new CorDeliveryTrace();
         deliveryTrace.setId(idAppService.getId(SequenceName.COR_DELIVERY_TRACE));
         deliveryTrace.setDr(0);
@@ -263,7 +290,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         deliveryTrace.setTenantId(dto.getTenantId());
         deliveryTrace.setUserId(dto.getDelivererId());
         deliveryTrace.setStatus(dto.getStatus());
-        deliveryTrace.setEvent(DeliveryEventEnums.CREATE.getValue());
+        deliveryTrace.setEvent(statusConversionEvent(dto.getStatus()));
         deliveryTrace.setLatitude(dto.getLatitude());
         deliveryTrace.setLongitude(dto.getLongitude());
         deliveryTrace.setGeohash(MapUtil.geoHash(dto.getLongitude().toString(), dto.getLatitude().toString()));
@@ -273,5 +300,34 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         deliveryTrace.setUpdatedBy(enter.getUserId());
         deliveryTrace.setUpdatedTime(new Date());
         deliveryTraceMapper.insert(deliveryTrace);
+    }
+
+    private String statusConversionEvent(String status) {
+
+        if (status.equals(DeliveryStatusEnums.PENDING.getValue())) {
+            return DeliveryEventEnums.CREATE.getValue();
+        }
+        if (status.equals(DeliveryStatusEnums.DELIVERING.getValue())) {
+            return DeliveryEventEnums.START.getValue();
+        }
+        if (status.equals(DeliveryStatusEnums.CHANGED.getValue())) {
+            return DeliveryEventEnums.REJECT.getValue();
+        }
+        if (status.equals(DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue())) {
+            return DeliveryEventEnums.CANCEL.getValue();
+        }
+        if (status.equals(DeliveryStatusEnums.PENDING.getValue())) {
+            return DeliveryEventEnums.TIMEOUT_COMPLETE.getValue();
+        }
+        if (status.equals(DeliveryStatusEnums.COMPLETED.getValue())) {
+            return DeliveryEventEnums.COMPLETED.getValue();
+        }
+        if (status.equals(DeliveryStatusEnums.CANCEL.getValue())) {
+            return DeliveryEventEnums.CANCEL.getValue();
+        }
+        if (status.equals(DeliveryStatusEnums.TIMEOUT_WARNING.getValue())) {
+            return DeliveryEventEnums.TIMEOUT.getValue();
+        }
+        return null;
     }
 }

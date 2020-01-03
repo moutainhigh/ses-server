@@ -46,6 +46,12 @@ public class OrderDeliveryController {
         return new Response<>(orderDeliveryService.save(enter));
     }
 
+    @PostMapping(value = "/closed")
+    @ApiOperation(value = "订单关闭", response = SelectDriverResult.class)
+    public Response<GeneralResult> closed(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(orderDeliveryService.closed(enter));
+    }
+
     @PostMapping(value = "/edit")
     @ApiOperation(value = "配送单编辑", response = GeneralResult.class)
     public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") SaveOrderDeliveryEnter enter) {
@@ -60,7 +66,7 @@ public class OrderDeliveryController {
 
 
     @PostMapping(value = "/selectDriver")
-    @ApiOperation(value = "选择上班司机", response = SelectDriverResult.class)
+    @ApiOperation(value = "司机列表选择", response = SelectDriverResult.class)
     public Response<List<SelectDriverResult>> selectDriver(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(orderDeliveryService.selectDriverList(enter));
     }

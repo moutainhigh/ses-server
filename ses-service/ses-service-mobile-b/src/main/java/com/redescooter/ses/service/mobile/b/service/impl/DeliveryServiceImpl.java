@@ -19,14 +19,7 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.api.mobile.b.service.DeliveryService;
 import com.redescooter.ses.api.mobile.b.service.DeliveryTraceService;
-import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
-import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryListResult;
-import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
-import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryTraceEnter;
-import com.redescooter.ses.api.mobile.b.vo.StartEnter;
+import com.redescooter.ses.api.mobile.b.vo.*;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.service.mobile.b.dao.DeliveryServiceMapper;
@@ -47,11 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -299,7 +288,6 @@ public class DeliveryServiceImpl implements DeliveryService {
     public CompleteResult complete(CompleteEnter enter) {
         List<String> deliveryStatus = new ArrayList<>();
         deliveryStatus.add(DeliveryStatusEnums.DELIVERING.getValue());
-        deliveryStatus.add(DeliveryStatusEnums.TIME_OUT.getValue());
         deliveryStatus.add(DeliveryStatusEnums.TIMEOUT_WARNING.getValue());
 
         CorDelivery delivery = null;
