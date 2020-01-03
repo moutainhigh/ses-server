@@ -11,7 +11,7 @@ public interface ValidationExceptionCode {
     int LAT_IS_EMPTY = 10001;
     // 纬度为空
     int LNG_IS_EMPTY = 10002;
-
+    // 原因为空
     int REASON_IS_EMPTY = 10003;
     // 事件为空
     int EVENT_IS_EMPTY = 10004;

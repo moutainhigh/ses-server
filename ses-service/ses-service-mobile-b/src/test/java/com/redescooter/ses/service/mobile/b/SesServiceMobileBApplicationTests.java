@@ -41,7 +41,7 @@ public class SesServiceMobileBApplicationTests {
         GeneralEnter enter = new GeneralEnter();
         enter.setUserId(1060938L);
         enter.setTenantId(1060980L);
-        System.out.println(deliveryService.list(enter));
+//        System.out.println(deliveryService.list(enter));
     }
 
     @Test

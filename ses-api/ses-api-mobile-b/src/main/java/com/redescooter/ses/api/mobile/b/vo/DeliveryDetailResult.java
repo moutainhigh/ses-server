@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.mobile.b.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -66,7 +68,7 @@ public class DeliveryDetailResult extends GeneralResult {
     @ApiModelProperty(value = "商品清单")
     private String goodsInventory;
 
-    @ApiModelProperty(value = "订单服务结果  按时、延迟、取消  ONTIME、DELAY、CANCEl")
+    @ApiModelProperty(value = "订单服务结果  1 按时、3 延迟、2 取消  ONTIME、DELAY、CANCEl")
     private String result;
 
     @ApiModelProperty(value = "订单状态1 待配送，2配送中，3拒单，4配送超时，5超时完成，6已送达，7失败（取消订单），8超时预警")
@@ -79,18 +81,28 @@ public class DeliveryDetailResult extends GeneralResult {
     private String timeoutExpectde;
 
     @ApiModelProperty(value = "超时预警时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date timeOut;
 
     @ApiModelProperty(value = "预计开始时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date etd;
 
     @ApiModelProperty(value = "实际开始时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date atd;
 
     @ApiModelProperty(value = "预计送达时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date eta;
 
     @ApiModelProperty(value = "实际送达时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date ata;
 
     @ApiModelProperty(value = "骑行里程 单位 米")
@@ -119,4 +131,17 @@ public class DeliveryDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "电量")
     private Integer battery;
+
+    @ApiModelProperty(value = "原因")
+    private String reason;
+
+    @ApiModelProperty(value = "更新时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date updatedTime;
+
+    @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date createdTime;
 }
