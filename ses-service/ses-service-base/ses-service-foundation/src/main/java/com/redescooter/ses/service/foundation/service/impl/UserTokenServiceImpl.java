@@ -319,7 +319,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         List<UserToken> plaUseList = new ArrayList<>();
 
         if (CollectionUtils.isEmpty(plaUser)) {
-            return plaUseList;
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
         plaUser.forEach(item -> {

@@ -26,12 +26,12 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStatDetail;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -84,6 +84,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public void saveDriverRideStat(List<SaveDeliveryStatEnter> enter) {
 
@@ -95,7 +96,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
 
         // 查询司机之前是否存在有统计数据
         if (CollectionUtils.isNotEmpty(enter)) {
-            enter.forEach(item -> {
+            for (SaveDeliveryStatEnter item : enter) {
                 QueryWrapper<CorDriver> queryDriverWrapper = new QueryWrapper<>();
                 queryDriverWrapper.eq(CorDriver.COL_USER_ID, item.getInputUserId());
                 CorDriver driver = corDriverMapper.selectOne(queryDriverWrapper);
@@ -104,16 +105,25 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                 driverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DRIVER_ID, driver.getId());
                 CorDriverRideStat driverRideStat = corDriverRideStatMapper.selectOne(driverRideStatQueryWrapper);
 
+
+                Boolean checkSaveDriverRideStatList = Boolean.FALSE;
+                if (CollectionUtils.isNotEmpty(saveDriverRideStatList)) {
+                    for (CorDriverRideStat corDriverRideStat : saveDriverRideStatList) {
+                        if (corDriverRideStat.getDriverId() == driver.getId()) {
+                            driverRideStat = corDriverRideStat;
+                            checkSaveDriverRideStatList = Boolean.TRUE;
+                            saveDriverRideStatList.remove(corDriverRideStat);
+                            break;
+                        }
+                    }
+                }
+
                 // 插入详情
                 CorDriverRideStatDetail driverRideStatDetail = buildCorDriverRideStatDetailSingle(item, driverRideStat, driver.getId());
                 saveDriverRideStatDetailList.add(driverRideStatDetail);
 
                 if (driverRideStat == null) {
-                    saveDriverRideStatList.forEach(driverRide -> {
-                        if (driverRide.getDriverId() != driver.getId()) {
-                            saveDriverRideStatList.add(buildCorDriverRideStat(item, driver, driverRideStatDetail));
-                        }
-                    });
+                    saveDriverRideStatList.add(buildCorDriverRideStat(item, driver, driverRideStatDetail));
                 } else {
                     driverRideStat.setCo2Total(driverRideStat.getCo2Total().add(driverRideStatDetail.getCo2Increment()));
                     driverRideStat.setCo2Increment(driverRideStatDetail.getCo2Increment());
@@ -123,9 +133,13 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                     driverRideStat.setTotalMileage(driverRideStat.getTotalMileage().add(driverRideStatDetail.getMileage()));
                     driverRideStat.setUpdateBy(item.getInputUserId());
                     driverRideStat.setUpdateTime(new Date());
-                    updateDriverRideStatList.add(driverRideStat);
+                    if (checkSaveDriverRideStatList) {
+                        saveDriverRideStatList.add(driverRideStat);
+                    } else {
+                        updateDriverRideStatList.add(driverRideStat);
+                    }
                 }
-            });
+            }
         }
         if (CollectionUtils.isNotEmpty(saveDriverRideStatDetailList)) {
             corDriverRideStatDetailMapper.batchInsert(saveDriverRideStatDetailList);
@@ -145,6 +159,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public void saveScooterRideStat(List<SaveDeliveryStatEnter> enter) {
         List<CorScooterRideStatDetail> saveCorScooterRideStatDetailList = new ArrayList<>();
@@ -154,10 +169,15 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         List<CorScooterRideStat> updateCorScooterRideStatList = new ArrayList<>();
 
         if (CollectionUtils.isNotEmpty(enter)) {
-            enter.forEach(item -> {
-                // 查询司机之前是否存在有统计数据
+            for (SaveDeliveryStatEnter item : enter) {// 查询司机之前是否存在有统计数据
+                QueryWrapper<CorDriver> corDriverMapperQueryWrapper = new QueryWrapper<>();
+                corDriverMapperQueryWrapper.eq(CorDriver.COL_USER_ID, item.getInputUserId());
+                corDriverMapperQueryWrapper.eq(CorDriver.COL_DR, 0);
+                CorDriver corDriver = corDriverMapper.selectOne(corDriverMapperQueryWrapper);
+
+
                 QueryWrapper<CorDriverScooter> driverScooterQueryWrapper = new QueryWrapper<>();
-                driverScooterQueryWrapper.eq(CorDriverScooter.COL_USER_ID, item.getInputUserId());
+                driverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, corDriver.getId());
                 driverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
                 driverScooterQueryWrapper.in(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
                 CorDriverScooter driverScooter = corDriverScooterMapper.selectOne(driverScooterQueryWrapper);
@@ -167,13 +187,24 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                 scooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_SCOOTER_ID, driverScooter.getScooterId());
                 CorScooterRideStat scooterRideStat = corScooterRideStatMapper.selectOne(scooterRideStatQueryWrapper);
 
+                Boolean checkSaveScooterRideStatList = Boolean.FALSE;
+                if (CollectionUtils.isNotEmpty(saveCorScooterRideStatList)) {
+                    for (CorScooterRideStat corScooterRideStat : saveCorScooterRideStatList) {
+                        if (corScooterRideStat.getScooterId() == driverScooter.getScooterId()) {
+                            scooterRideStat = corScooterRideStat;
+                            checkSaveScooterRideStatList = Boolean.TRUE;
+                            saveCorScooterRideStatList.remove(corScooterRideStat);
+                            break;
+                        }
+                    }
+                }
+
                 // 插入详情
                 CorScooterRideStatDetail scooterRideStatDetail = buildScooterRideStatDetail(item, driverScooter, scooterRideStat);
-                corScooterRideStatDetailMapper.insertOrUpdateSelective(scooterRideStatDetail);
+                saveCorScooterRideStatDetailList.add(scooterRideStatDetail);
 
                 if (scooterRideStat == null) {
-                    CorScooterRideStat insertScooterRideStat = buildScooterRideStat(item, driverScooter, scooterRideStatDetail);
-                    corScooterRideStatMapper.insertOrUpdateSelective(insertScooterRideStat);
+                    saveCorScooterRideStatList.add(buildScooterRideStat(item, driverScooter, scooterRideStatDetail));
                 } else {
                     scooterRideStat.setTotalDuration(scooterRideStat.getTotalDuration() + item.getDuration());
                     scooterRideStat.setCo2Total(scooterRideStat.getCo2Total().add(scooterRideStatDetail.getCo2Increment()));
@@ -181,10 +212,24 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                     scooterRideStat.setSavedMoney(scooterRideStat.getSavedMoney().add(scooterRideStatDetail.getSavedMoney()));
                     scooterRideStat.setSvgSpeed(scooterRideStat.getSvgSpeed().add(scooterRideStatDetail.getSvgSpeed()));
                     scooterRideStat.setTotalMileage(scooterRideStat.getTotalMileage().add(new BigDecimal(item.getMileage())));
-                    corScooterRideStatMapper.updateById(scooterRideStat);
+                    if (checkSaveScooterRideStatList) {
+                        saveCorScooterRideStatList.add(scooterRideStat);
+                    } else {
+                        updateCorScooterRideStatList.add(scooterRideStat);
+                    }
                 }
-            });
+            }
 
+        }
+
+        if (CollectionUtils.isNotEmpty(saveCorScooterRideStatDetailList)) {
+            corScooterRideStatDetailMapper.batchInsert(saveCorScooterRideStatDetailList);
+        }
+        if (CollectionUtils.isNotEmpty(saveCorScooterRideStatList)) {
+            corScooterRideStatMapper.batchInsert(saveCorScooterRideStatList);
+        }
+        if (CollectionUtils.isNotEmpty(updateCorScooterRideStatList)) {
+            corScooterRideStatMapper.updateBatch(updateCorScooterRideStatList);
         }
     }
 
@@ -302,12 +347,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         scooterRideStatDetail.setBizType(enter.getBizType());
         scooterRideStatDetail.setScooterId(driverScooter.getScooterId());
         scooterRideStatDetail.setDuration(enter.getDuration());
-        scooterRideStatDetail.setCo2HistoryTotal(scooterRideStat == null ? new BigDecimal(0d) : scooterRideStat.getCo2Total());
-        scooterRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
+        scooterRideStatDetail.setCo2HistoryTotal(enter.getCo2());
+        scooterRideStatDetail.setCo2Increment(enter.getCo2());
         String avg = Double.toString(enter.getMileage() / (enter.getDuration() > 0 ? enter.getDuration() : 1));
         scooterRideStatDetail.setSvgSpeed(new BigDecimal(avg));
         scooterRideStatDetail.setMileage(new BigDecimal(enter.getMileage()));
-        scooterRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
+        scooterRideStatDetail.setSavedMoney(enter.getMoney());
         scooterRideStatDetail.setCreateTime(enter.getLastUpdateTime());
         scooterRideStatDetail.setCreateBy(enter.getInputUserId());
         scooterRideStatDetail.setUpdateTime(enter.getLastUpdateTime());
@@ -362,12 +407,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         driverRideStatDetail.setDriverId(driverId);
         driverRideStatDetail.setDuration(enter.getDuration());
         driverRideStatDetail.setCo2HistoryTotal(driverRideStat == null ? new BigDecimal(0) : driverRideStat.getCo2Total());
-        driverRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
+        driverRideStatDetail.setCo2Increment(enter.getCo2());
 
         String avg = Double.toString(enter.getMileage() / (enter.getDuration() > 0 ? enter.getDuration() : 1));
         driverRideStatDetail.setSvgSpeed(new BigDecimal(avg));
         driverRideStatDetail.setMileage(new BigDecimal(enter.getMileage()));
-        driverRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
+        driverRideStatDetail.setSavedMoney(enter.getCo2());
         driverRideStatDetail.setCreateTime(enter.getLastUpdateTime());
         driverRideStatDetail.setCreateBy(enter.getInputUserId());
         driverRideStatDetail.setUpdateBy(enter.getInputUserId());
