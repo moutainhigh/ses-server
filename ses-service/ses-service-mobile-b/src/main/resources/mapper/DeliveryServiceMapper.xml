@@ -5,7 +5,14 @@
         select status, count(*) as totalCount
         from cor_delivery delivery
         where delivery.dr = 0
+        and delivery.tenant_id=#{tenantId}
         and delivery.deliverer_id=#{userId}
+        <if test="statusList != null and statusList.size() != 0">
+            and delivery.status in
+            <foreach collection="statusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
         group by delivery.status
     </select>
 
@@ -13,8 +20,14 @@
         select *
         from cor_delivery delivery
         where delivery.dr = 0
-        and delivery.status in ('1', '4', '2', '8')
         and delivery.deliverer_id=#{userId}
+        and delivery.tenant_id=#{tenantId}
+        <if test="statusList != null and statusList.size() != 0">
+            and delivery.status in
+            <foreach collection="statusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
     <select id="refuseDelivery" resultType="java.lang.Integer">
         select count(*)

@@ -1,8 +1,8 @@
 package com.redescooter.ses.service.mobile.b.dao;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult;
+import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -20,14 +20,14 @@ public interface DeliveryServiceMapper {
      *
      * @return
      */
-    List<CountByStatusResult> countByStatus(GeneralEnter enter);
+    List<CountByStatusResult> countByStatus(DeliveryListEnter enter);
 
     /**
      * 列表
      *
      * @return
      */
-    List<DeliveryDetailResult> deliveryList(GeneralEnter enter);
+    List<DeliveryDetailResult> deliveryList(DeliveryListEnter enter);
 
     /**
      * 拒绝的订单 统计

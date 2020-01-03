@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.client.controller;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -8,6 +7,7 @@ import com.redescooter.ses.api.mobile.b.service.DeliveryService;
 import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
 import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
 import com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult;
+import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
 import com.redescooter.ses.api.mobile.b.vo.DeliveryListResult;
 import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.StartEnter;
@@ -40,7 +40,7 @@ public class DeliveryController {
 
     @ApiOperation(value = "订单列表")
     @RequestMapping(value = "/list")
-    public Response<DeliveryListResult> list(@ModelAttribute GeneralEnter enter) {
+    public Response<DeliveryListResult> list(@ModelAttribute DeliveryListEnter enter) {
         return new Response<>(deliveryService.list(enter));
     }
 

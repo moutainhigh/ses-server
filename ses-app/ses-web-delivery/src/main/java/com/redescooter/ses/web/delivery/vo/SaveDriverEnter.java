@@ -1,9 +1,17 @@
 package com.redescooter.ses.web.delivery.vo;
 
+import com.redescooter.ses.api.common.annotation.MaximumLength;
+import com.redescooter.ses.api.common.annotation.MinimumLength;
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Mr.lijiating
@@ -24,12 +32,19 @@ public class SaveDriverEnter extends GeneralEnter {
     private Long id;
 
     @ApiModelProperty(value = "头像")
+    @NotNull(code = ValidationExceptionCode.PICTURE_IS_EMPTY, message = "头像为空")
     private String avatar;
 
     @ApiModelProperty(value = "司机姓氏")
+    @NotNull(code = ValidationExceptionCode.FIRST_NAME_IS_EMPTY, message = "名为空")
+    @MinimumLength(code = ValidationExceptionCode.FIRST_NAME_IS_UNAVAILABLE, message = "名字字符长度为2-20字符")
+    @MaximumLength(code = ValidationExceptionCode.FIRST_NAME_IS_UNAVAILABLE, message = "名字符长度为2-20字符")
     private String driverFirstName;
 
     @ApiModelProperty(value = "司机名字")
+    @NotNull(code = ValidationExceptionCode.LAST_NAME_IS_EMPTY, message = "姓为空")
+    @MinimumLength(code = ValidationExceptionCode.LAST_NAME_IS_UNAVAILABLE, message = "姓字符长度为2-20字符")
+    @MaximumLength(code = ValidationExceptionCode.LAST_NAME_IS_UNAVAILABLE, message = "姓字符长度为2-20字符")
     private String driverLastName;
 
     @ApiModelProperty(value = "司机性别")

@@ -2,6 +2,7 @@ package com.redescooter.ses.service.mobile.b.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryResultEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
@@ -21,6 +22,7 @@ import com.redescooter.ses.api.mobile.b.service.DeliveryTraceService;
 import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
 import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
 import com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult;
+import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
 import com.redescooter.ses.api.mobile.b.vo.DeliveryListResult;
 import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryTraceEnter;
@@ -29,7 +31,9 @@ import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.service.mobile.b.dao.DeliveryServiceMapper;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryMapper;
+import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryTraceMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDelivery;
+import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.DateUtil;
@@ -74,6 +78,9 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Autowired
     private JedisCluster jedisCluster;
 
+    @Autowired
+    private CorDeliveryTraceMapper corDeliveryTraceMapper;
+
     @Reference
     private TenantBaseService tenantBaseService;
 
@@ -99,7 +106,10 @@ public class DeliveryServiceImpl implements DeliveryService {
      */
     @Override
 
-    public DeliveryListResult list(GeneralEnter enter) {
+    public DeliveryListResult list(DeliveryListEnter enter) {
+
+        //判断当前时间是否
+
         // 查询订单状态及数量统计
         List<CountByStatusResult> list = deliveryServiceMapper.countByStatus(enter);
 
@@ -139,6 +149,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
             }
         }
+
         DeliveryDetailResult result = new DeliveryDetailResult();
         BeanUtils.copyProperties(delivery, result);
 
@@ -149,6 +160,14 @@ public class DeliveryServiceImpl implements DeliveryService {
         List<Long> scooterId = new ArrayList<>();
         scooterId.add(delivery.getScooterId());
         List<BaseScooterResult> scooter = scooterService.scooterInfor(scooterId);
+
+        QueryWrapper<CorDeliveryTrace> corDeliveryTraceQueryWrapper = new QueryWrapper<>();
+        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_DELIVERY_ID, delivery.getId());
+        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_STATUS, DeliveryStatusEnums.REJECTED.getValue());
+        CorDeliveryTrace deliveryTrace = corDeliveryTraceMapper.selectOne(corDeliveryTraceQueryWrapper);
+        if (deliveryTrace != null) {
+            result.setReason(deliveryTrace.getReason());
+        }
 
         result.setTenantLatitude(tenant.getLatitude());
         result.setTenantLongitude(tenant.getLongitude());

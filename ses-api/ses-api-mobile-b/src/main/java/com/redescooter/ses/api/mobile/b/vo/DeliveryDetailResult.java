@@ -119,4 +119,7 @@ public class DeliveryDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "电量")
     private Integer battery;
+
+    @ApiModelProperty(value = "原因")
+    private String reason;
 }

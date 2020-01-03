@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
+import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
 import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
 import com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult;
 import com.redescooter.ses.api.mobile.b.vo.MonthlyScooterChartResult;
@@ -30,6 +31,7 @@ import com.redescooter.ses.tool.utils.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -245,7 +247,9 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         ArrayList<String> dayList = DateUtil.getDayList(30, DateUtil.DEFAULT_DATE_FORMAT);
 
         // 状态统计
-        List<CountByStatusResult> list = deliveryServiceMapper.countByStatus(enter);
+        DeliveryListEnter deliveryListEnter = new DeliveryListEnter();
+        BeanUtils.copyProperties(enter, deliveryListEnter);
+        List<CountByStatusResult> list = deliveryServiceMapper.countByStatus(deliveryListEnter);
 
         // 拒绝的订单
         int count = deliveryServiceMapper.refuseDelivery(enter.getUserId(), DeliveryStatusEnums.REJECTED.getValue());
