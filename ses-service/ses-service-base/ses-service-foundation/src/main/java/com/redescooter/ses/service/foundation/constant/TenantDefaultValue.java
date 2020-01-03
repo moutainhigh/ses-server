@@ -20,4 +20,6 @@ public interface TenantDefaultValue {
     String TENANT_LONGITUDE = "";
 
     String TENANT_Latitude = "";
+
+    Long Default_MobileC_TenantId = 0L;
 }

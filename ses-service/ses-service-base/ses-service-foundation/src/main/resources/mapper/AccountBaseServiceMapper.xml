@@ -6,7 +6,7 @@
     <select id="queryAccountListCount"
             resultType="int">
         select count(*) from pla_tenant tenant
-        where tenant.dr = 0
+        where tenant.dr = 0 and tenant.id!=0
         <if test="status != null and status != ''">
             and  tenant.status = #{status}
         </if>
@@ -33,7 +33,7 @@
         tenant.activation_time as activationTime,
         tenant.expire_time     as expirationTime,
         tenant.status          as status
-        from pla_tenant tenant
+        from pla_tenant tenant and tenant.id!=0
         where tenant.dr = 0
         <if test="status != null and status != ''">
             and  tenant.status = #{status}
