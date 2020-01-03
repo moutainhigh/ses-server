@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.delivery.dao.OrderDeliveryServiceMapper">
+
+
+    <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+     select cdy.status, count(*) totalCount
+     from cor_delivery cdy
+     where cdy.dr = 0
+        and cd.tenant_id=#{tenantId}
+     group by cdy.status
+
+    </select>
+    <select id="list" resultType="com.redescooter.ses.web.delivery.vo.ListDeliveryResult">
+        select cdy.id,
+        cdy.order_no as orderNo,
+        cdy.status,
+        '' as label,
+        cdy.recipient,
+        cdy.recipient_address as recipientAddress,
+        cdy.recipient_email as recipientEmail,
+        cdy.recipient_tel as recipientTel,
+        cdy.country_code as countryCode,
+        cdy.parcel_quantity as parcelQuantity,
+        cdy.house_info as houseInfo,
+        cdy.goods_inventory as goodsInventory,
+        cdy.latitude,
+        cdy.longitude,
+        cdy.created_time as createdTime,
+        cdy.ata as deliveredTime,
+        cd.id as driverId,
+        cup.last_name as driverLastName,
+        cup.first_name as driverFirstName,
+        cts.license_plate as licensePlate,
+        cts.scooter_id as scooterId
+        from cor_delivery cdy
+        inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
+        inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
+        inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
+        where cdy.dr = 0
+        <if test="status != null and status != ''">
+            and cdy.status =#{status}
+        </if>
+        <if test="creatEndDateTime != null and creatStartDateTime != null">
+            and cdy.created_time between #{creatStartDateTime} and #{creatEndDateTime}
+        </if>
+        <if test="ataStartDateTime != null and ataEndDateTime != null">
+            and cdy.ata between #{ataStartDateTime} and #{ataEndDateTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            cdy.order_no like concat("%",#{keyword},"%")
+            or cdy.recipient like concat("%",#{keyword},"%")
+            or cdy.recipient_tel like concat("%",#{keyword},"%")
+            or cup.last_name like concat("%",#{keyword},"%")
+            or cup.first_name like concat("%",#{keyword},"%")
+            or cts.license_plate like concat("%",#{keyword},"%")
+            or cdy.house_info like concat("%",#{keyword},"%")
+            )
+        </if>
+        group by id, orderNo, status, label, recipient, recipientAddress, recipientEmail, recipientTel, countryCode,
+        parcelQuantity, latitude, longitude, createdTime, deliveredTime, driverId, driverLastName, driverFirstName,
+        licensePlate, scooterId
+        order by deliveredTime, createdTime desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="listCount" resultType="int">
+        select count(cdy.id)
+        from cor_delivery cdy
+        inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
+        inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
+        inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
+        where cdy.dr = 0
+        <if test="status != null and status != ''">
+            and cdy.status =#{status}
+        </if>
+        <if test="creatEndDateTime != null and creatStartDateTime != null">
+            and cdy.created_time between #{creatStartDateTime} and #{creatEndDateTime}
+        </if>
+        <if test="ataStartDateTime != null and ataEndDateTime != null">
+            and cdy.ata between #{ataStartDateTime} and #{ataEndDateTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            cdy.order_no like concat("%",#{keyword},"%")
+            or cdy.recipient like concat("%",#{keyword},"%")
+            or cdy.recipient_tel like concat("%",#{keyword},"%")
+            or cup.last_name like concat("%",#{keyword},"%")
+            or cup.first_name like concat("%",#{keyword},"%")
+            or cts.license_plate like concat("%",#{keyword},"%")
+            or cdy.house_info like concat("%",#{keyword},"%")
+            )
+        </if>
+        group by id, orderNo, status, label, recipient, recipientAddress, recipientEmail, recipientTel, countryCode,
+        parcelQuantity, latitude, longitude, createdTime, deliveredTime, driverId, driverLastName, driverFirstName,
+        licensePlate, scooterId
+        order by deliveredTime, createdTime desc
+        limit #{startRow},#{pageSize}
+
+    </select>
+    <select id="details" resultType="com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult">
+    select cdy.id,
+           cdy.order_no          as orderNo,
+           cdy.status,
+           ''                    as label,
+           cdy.recipient,
+           cdy.recipient_address as recipientAddress,
+           cdy.recipient_email   as recipientEmail,
+           cdy.recipient_tel     as recipientTel,
+           cdy.country_code      as countryCode,
+           cdy.parcel_quantity   as parcelQuantity,
+           cdy.house_info        as houseInfo,
+           cdy.goods_inventory   as goodsInventory,
+           cdy.latitude,
+           cdy.longitude,
+           cdy.created_time      as createdTime,
+           cdy.ata               as deliveredTime,
+           cd.id                 as driverId,
+           cup.last_name         as driverLastName,
+           cup.first_name        as driverFirstName,
+           cts.license_plate     as licensePlate,
+           cts.scooter_id        as scooterId
+    from cor_delivery cdy
+             inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
+             inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
+             inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
+    where cdy.dr = 0
+    and cdy.id=#{id}
+    </select>
+</mapper>

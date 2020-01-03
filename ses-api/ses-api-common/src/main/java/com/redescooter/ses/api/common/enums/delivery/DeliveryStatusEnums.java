@@ -24,8 +24,8 @@ public enum DeliveryStatusEnums {
     //拒单
     REJECTED("REJECTED", "rejected", "3"),
 
-    //配送超时
-    TIME_OUT("TIME_OUT", "timeout", "4"),
+    //已变更Changed 订单重新委培给某个骑手
+    CHANGED("CHANGED", "Changed", "4"),
 
     //超时完成
     TIMEOUT_COMPLETE("TIMEOUT_COMPLETE", "timeoutComplete", "5"),
