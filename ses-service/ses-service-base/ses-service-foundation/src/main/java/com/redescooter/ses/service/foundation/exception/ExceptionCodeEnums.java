@@ -68,6 +68,7 @@ public enum ExceptionCodeEnums {
 
     ACCESS_DENIED(10026, "非法登录，授权失败，禁止访问"),
 
+
     // 10030 之后业务异常
     RENEW_END_DATETIME_IS_NOT_AVAILABLE(10030, "续期结束时间不可用"),
 
