@@ -3,6 +3,7 @@ package com.redescooter.ses.web.delivery.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
+import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -103,7 +104,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             QueryWrapper<CorDriverScooter> wrapper = new QueryWrapper<>();
             wrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
             wrapper.eq(CorDriverScooter.COL_DR, 0);
-            wrapper.eq(CorDriverScooter.COL_STATUS, ScooterStatusEnums.USED.getValue());
+            wrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
             wrapper.isNotNull(CorDriverScooter.COL_END_TIME);
             CorDriverScooter driverScooter = driverScooterMapper.selectOne(wrapper);
 

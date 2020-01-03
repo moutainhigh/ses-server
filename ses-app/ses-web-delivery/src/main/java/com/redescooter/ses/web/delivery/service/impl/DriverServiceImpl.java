@@ -3,6 +3,7 @@ package com.redescooter.ses.web.delivery.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.driver.RoleEnums;
+import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -424,7 +425,7 @@ public class DriverServiceImpl implements DriverService {
         insertDriverScooter.setDriverId(enter.getDriverId());
         insertDriverScooter.setScooterId(enter.getScooterId());
         insertDriverScooter.setBeginTime(new Date());
-        insertDriverScooter.setStatus(ScooterStatusEnums.ALLOCATION.getValue());
+        insertDriverScooter.setStatus(DriverScooterStatusEnums.USED.getValue());
         insertDriverScooter.setCreatedBy(enter.getUserId());
         insertDriverScooter.setCreatedTime(new Date());
         insertDriverScooter.setUpdatedBy(enter.getDriverId());
@@ -464,7 +465,7 @@ public class DriverServiceImpl implements DriverService {
         /**
          * TODO 验证订单是否已完成，目前没有，暂时空缺
          */
-        driverScooter.setStatus(ScooterStatusEnums.FINSH.getValue());
+        driverScooter.setStatus(DriverScooterStatusEnums.FINSH.getValue());
         driverScooter.setEndTime(new Date());
         driverScooter.setUpdatedBy(enter.getUserId());
         driverScooter.setUpdatedTime(new Date());
