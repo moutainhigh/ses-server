@@ -10,5 +10,7 @@ public interface SequenceName {
     String COR_DRIVER = "COR_DRIVER";
     String COR_USER_PROFILE = "COR_USER_PROFILE";
     String COR_DRIVER_SCOOTER = "COR_DRIVER_SCOOTER";
+    String COR_DELIVERY = "COR_DELIVERY";
+    String COR_DELIVERY_TRACE = "COR_DELIVERY_TRACE";
 
 }

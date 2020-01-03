@@ -56,6 +56,8 @@ public enum ExceptionCodeEnums {
 
     COUNTRY_CANNOT_EMPTY(10019, "国家为空"),
 
+    PRIMARY_KEY_CANNOT_EMPTY(10020, "主键不能为空"),
+
 
     DRIVER_IS_NOT_EXIST(10030, "司机不存在"),
 
@@ -67,7 +69,13 @@ public enum ExceptionCodeEnums {
 
     DRIVER_STATUS_IS_OFFWORK(10034, "司机已下班"),
 
-    ;
+    DRIVER_CANNOT_EMPTY(10035, "司机不能为空"),
+
+    PACKAGES_CANNOT_BE_EMPTY(10036, "包裹数不能为空"),
+
+    RECIPIENT_INFORMATION_IS_MISSING(10037, "收件方信息缺失"),
+
+    MISSING_LATITUDE_AND_LONGITUDE(10038, "经纬度信息缺失");
 
     private int code;
 
