@@ -456,8 +456,9 @@ public class DriverServiceImpl implements DriverService {
 
         QueryWrapper<CorDriverScooter> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getId());
-        queryWrapper.in(CorDriverScooter.COL_STATUS, ScooterStatusEnums.USED.getValue(), ScooterStatusEnums.ALLOCATION.getValue());
+        queryWrapper.in(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
         queryWrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
+        queryWrapper.isNotNull(CorDriverScooter.COL_END_TIME);
         CorDriverScooter driverScooter = driverScooterMapper.selectOne(queryWrapper);
         if (driverScooter == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
