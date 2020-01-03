@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.client.controller;
 
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -34,21 +33,15 @@ public class UserProfileMobileController {
     @Reference
     private UserProfileMobileService userProfileMobileService;
 
-    @IgnoreLoginCheck
     @ApiOperation(value = "个人信息")
     @RequestMapping(value = "/detail")
     public Response<UserProfileResult> userProfile(@ModelAttribute GeneralEnter enter) {
-        enter.setUserId(1071493L);
-        enter.setTenantId(0L);
         return new Response<>(userProfileMobileService.userProfile(enter));
     }
 
-    @IgnoreLoginCheck
     @ApiOperation(value = "个人信息修改")
     @RequestMapping(value = "/updateUserProfile")
     public Response<GeneralResult> updateUserProfile(@ModelAttribute SaveUserProfileEnter enter) {
-        enter.setUserId(1071493L);
-        enter.setTenantId(0L);
         return new Response<>(userProfileMobileService.saveUserProfile(enter));
     }
 
