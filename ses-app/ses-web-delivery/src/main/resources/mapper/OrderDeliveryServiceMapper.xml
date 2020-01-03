@@ -38,6 +38,7 @@
         inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
         inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
         where cdy.dr = 0
+        and cdy.tenant_id=#{tenantId}
         <if test="status != null and status != ''">
             and cdy.status =#{status}
         </if>
@@ -71,6 +72,7 @@
         inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
         inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
         where cdy.dr = 0
+        and cdy.tenant_id=#{tenantId}
         <if test="status != null and status != ''">
             and cdy.status =#{status}
         </if>
@@ -121,5 +123,19 @@
              inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
     where cdy.dr = 0
     and cdy.id=#{id}
+    and cdy.tenant_id=#{tenantId}
+
+    </select>
+
+    <select id="selectDriverList" resultType="com.redescooter.ses.web.delivery.vo.SelectDriverResult">
+     select cd.id          as driverId,
+            cd.user_id     as userId,
+            cup.first_name as firstName,
+            cup.last_name  as lastName
+     from cor_driver cd
+              inner join cor_user_profile cup on cd.user_id = cup.user_id
+     where cd.tenant_id =#{tenantId}
+     and cd.status ='1'
+
     </select>
 </mapper>

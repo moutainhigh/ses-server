@@ -4,11 +4,9 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
-import com.redescooter.ses.web.delivery.vo.SaveOrderDeliveryEnter;
+import com.redescooter.ses.web.delivery.vo.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,5 +50,11 @@ public interface OrderDeliveryService {
      * @return
      */
     DeliveryDetailsResult details(IdEnter enter);
+
+    /**
+     * @param enter
+     * @return
+     */
+    List<SelectDriverResult> selectDriverList(GeneralEnter enter);
 
 }

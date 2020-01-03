@@ -2,16 +2,14 @@ package com.redescooter.ses.web.delivery.controller;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.delivery.service.OrderDeliveryService;
-import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
-import com.redescooter.ses.web.delivery.vo.SaveOrderDeliveryEnter;
+import com.redescooter.ses.web.delivery.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,4 +57,12 @@ public class OrderDeliveryController {
     public Response<DeliveryDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(orderDeliveryService.details(enter));
     }
+
+
+    @PostMapping(value = "/selectDriver")
+    @ApiOperation(value = "选择上班司机", response = SelectDriverResult.class)
+    public Response<List<SelectDriverResult>> selectDriver(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(orderDeliveryService.selectDriverList(enter));
+    }
+
 }
