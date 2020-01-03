@@ -12,7 +12,4 @@ public interface ValidationExceptionCode {
     int RECIPIENT_IS_EMPTY = 1002;
     //邮件内容为空
     int CONTENT_IS_EMPTY = 1003;
-
-
-
 }
