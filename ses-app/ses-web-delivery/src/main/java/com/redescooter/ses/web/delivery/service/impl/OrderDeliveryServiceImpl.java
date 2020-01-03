@@ -27,10 +27,7 @@ import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.OrderDeliveryService;
-import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
-import com.redescooter.ses.web.delivery.vo.SaveOrderDeliveryEnter;
+import com.redescooter.ses.web.delivery.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -225,6 +222,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         List<ListDeliveryResult> list = orderDeliveryServiceMapper.list(page);
 
         return PageResult.create(page, totalRows, list);
+
     }
 
     /**
@@ -243,6 +241,18 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         DeliveryDetailsResult details = orderDeliveryServiceMapper.details(enter);
 
         return details;
+    }
+
+    /**
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<SelectDriverResult> selectDriverList(GeneralEnter enter) {
+
+        List<SelectDriverResult> selectDriverResults = orderDeliveryServiceMapper.selectDriverList(enter);
+
+        return selectDriverResults;
     }
 
     private void saveDeliveryNode(CorDelivery dto, SaveOrderDeliveryEnter enter) {
