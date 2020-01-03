@@ -38,6 +38,7 @@ import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.StatisticalUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -128,6 +129,31 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         List<DeliveryDetailResult> deliveryList = deliveryServiceMapper.deliveryList(enter);
 
+        //查询拒绝的订单
+        QueryWrapper<CorDeliveryTrace> corDeliveryTraceQueryWrapper = new QueryWrapper<>();
+        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_USER_ID, enter.getUserId());
+        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_STATUS, DeliveryStatusEnums.REJECTED.getValue());
+        List<CorDeliveryTrace> deliveryTraceList = corDeliveryTraceMapper.selectList(corDeliveryTraceQueryWrapper);
+
+        List<Long> refuseDeliveryIdList = new ArrayList<>();
+        deliveryList.forEach(item -> {
+            refuseDeliveryIdList.add(item.getDelivererId());
+        });
+
+        // 将拒绝的订单 也放到 返回的集合中 返回
+        if (CollectionUtils.isNotEmpty(refuseDeliveryIdList)) {
+            List<CorDelivery> refuseDeliveryDetailList = corDeliveryMapper.selectBatchIds(refuseDeliveryIdList);
+            if (CollectionUtils.isNotEmpty(refuseDeliveryDetailList)) {
+                refuseDeliveryDetailList.forEach(item -> {
+                    DeliveryDetailResult result = new DeliveryDetailResult();
+                    item.setStatus(DeliveryStatusEnums.REJECTED.getValue());
+                    BeanUtils.copyProperties(item, result);
+                    deliveryList.add(result);
+                });
+
+            }
+        }
+        map.put(DeliveryStatusEnums.REJECTED.getValue(), deliveryTraceList.size());
         return new DeliveryListResult(map, deliveryList);
     }
 
