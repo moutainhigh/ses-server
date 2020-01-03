@@ -7,7 +7,7 @@
      select cdy.status, count(*) totalCount
      from cor_delivery cdy
      where cdy.dr = 0
-        and cd.tenant_id=#{tenantId}
+        and cdy.tenant_id=#{tenantId}
      group by cdy.status
 
     </select>
