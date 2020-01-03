@@ -294,7 +294,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
             if (customer.getDistrust() != null) {
                 customer.setDistrustName(cityBaseService
-                    .queryCityDeatliById(IdEnter.builder().id(customer.getDistrust()).build()).getName());
+                        .queryCityDeatliById(IdEnter.builder().id(customer.getDistrust()).build()).getName());
             }
         });
 
@@ -719,6 +719,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         baseMailTaskEnter.setToMail(customer.getEmail());
         baseMailTaskEnter.setUserId(enter.getUserId());
         baseMailTaskEnter.setToUserId(enter.getUserId());
+        //此处是为了获取用户缓存
         baseMailTaskEnter.setUserRequestId(enter.getRequestId());
         mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
 
