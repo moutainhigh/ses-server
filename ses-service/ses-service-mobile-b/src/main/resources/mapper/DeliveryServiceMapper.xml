@@ -22,6 +22,7 @@
         where delivery.dr = 0
         and delivery.deliverer_id=#{userId}
         and delivery.tenant_id=#{tenantId}
+        and delivery.status in('1','2','4','8')
         <if test="statusList != null and statusList.size() != 0">
             and delivery.status in
             <foreach collection="statusList" item="item" separator="," open="(" close=")">

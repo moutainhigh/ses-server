@@ -68,7 +68,7 @@ public class DeliveryDetailResult extends GeneralResult {
     @ApiModelProperty(value = "商品清单")
     private String goodsInventory;
 
-    @ApiModelProperty(value = "订单服务结果  按时、延迟、取消  ONTIME、DELAY、CANCEl")
+    @ApiModelProperty(value = "订单服务结果  1 按时、3 延迟、2 取消  ONTIME、DELAY、CANCEl")
     private String result;
 
     @ApiModelProperty(value = "订单状态1 待配送，2配送中，3拒单，4配送超时，5超时完成，6已送达，7失败（取消订单），8超时预警")
