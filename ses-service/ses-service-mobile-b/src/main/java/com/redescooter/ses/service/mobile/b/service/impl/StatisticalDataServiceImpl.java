@@ -26,7 +26,6 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStatDetail;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -348,12 +347,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         scooterRideStatDetail.setBizType(enter.getBizType());
         scooterRideStatDetail.setScooterId(driverScooter.getScooterId());
         scooterRideStatDetail.setDuration(enter.getDuration());
-        scooterRideStatDetail.setCo2HistoryTotal(scooterRideStat == null ? new BigDecimal(0d) : scooterRideStat.getCo2Total());
-        scooterRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
+        scooterRideStatDetail.setCo2HistoryTotal(enter.getCo2());
+        scooterRideStatDetail.setCo2Increment(enter.getCo2());
         String avg = Double.toString(enter.getMileage() / (enter.getDuration() > 0 ? enter.getDuration() : 1));
         scooterRideStatDetail.setSvgSpeed(new BigDecimal(avg));
         scooterRideStatDetail.setMileage(new BigDecimal(enter.getMileage()));
-        scooterRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
+        scooterRideStatDetail.setSavedMoney(enter.getMoney());
         scooterRideStatDetail.setCreateTime(enter.getLastUpdateTime());
         scooterRideStatDetail.setCreateBy(enter.getInputUserId());
         scooterRideStatDetail.setUpdateTime(enter.getLastUpdateTime());
@@ -408,12 +407,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         driverRideStatDetail.setDriverId(driverId);
         driverRideStatDetail.setDuration(enter.getDuration());
         driverRideStatDetail.setCo2HistoryTotal(driverRideStat == null ? new BigDecimal(0) : driverRideStat.getCo2Total());
-        driverRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
+        driverRideStatDetail.setCo2Increment(enter.getCo2());
 
         String avg = Double.toString(enter.getMileage() / (enter.getDuration() > 0 ? enter.getDuration() : 1));
         driverRideStatDetail.setSvgSpeed(new BigDecimal(avg));
         driverRideStatDetail.setMileage(new BigDecimal(enter.getMileage()));
-        driverRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
+        driverRideStatDetail.setSavedMoney(enter.getCo2());
         driverRideStatDetail.setCreateTime(enter.getLastUpdateTime());
         driverRideStatDetail.setCreateBy(enter.getInputUserId());
         driverRideStatDetail.setUpdateBy(enter.getInputUserId());

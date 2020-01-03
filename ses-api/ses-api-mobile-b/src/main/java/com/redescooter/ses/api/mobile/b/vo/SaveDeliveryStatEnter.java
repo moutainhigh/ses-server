@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -29,7 +30,12 @@ public class SaveDeliveryStatEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "总公里数")
     private Double mileage;
-    ;
+
+    @ApiModelProperty(value = "节省的co2")
+    private BigDecimal co2;
+
+    @ApiModelProperty(value = "节省的money")
+    private BigDecimal money;
 
     @ApiModelProperty(value = "业务类型")
     private String bizType;
