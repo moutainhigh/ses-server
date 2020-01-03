@@ -10,6 +10,7 @@
         left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr=0
         <where>
             cdr.dr=0
+            and cdr.tenant_id = #{tenantId}
             <if test="keyword != null and keyword != ''">
                 and (
                 cup.first_name like concat("%",#{keyword},"%")
@@ -40,7 +41,7 @@
         left join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr=0 and cds.status in ('2','3')
         left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr=0
         <where>
-            and cdr.tenant_id=#{tenantId}
+            cdr.tenant_id=#{tenantId}
             and cdr.dr=0
             <if test="keyword != null and keyword != ''">
                 and (
