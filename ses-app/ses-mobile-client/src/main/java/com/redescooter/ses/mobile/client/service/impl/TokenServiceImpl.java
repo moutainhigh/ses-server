@@ -1,16 +1,13 @@
 package com.redescooter.ses.mobile.client.service.impl;
 
-import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
@@ -46,13 +43,16 @@ public class TokenServiceImpl implements TokenService {
     private JedisCluster jedisCluster;
 
     @Reference
+    private MailMultiTaskService mailMultiTaskService;
+
+    @Reference
     private UserTokenService userTokenService;
 
     @Reference
     private AccountBaseService accountBaseService;
 
     @Reference
-    private MailMultiTaskService mailMultiTaskService;
+    private UserBaseService userBaseService;
 
     @Override
     public UserToken checkAndGetSession(GeneralEnter enter) {
@@ -62,9 +62,14 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public GeneralResult sendCode(BaseSendMailEnter enter) {
 
+        //1. 确定邮件是否存在
+
+        //3. 加入邮箱任务
+
+
         GetUserEnter getUserEnter = new GetUserEnter();
         getUserEnter.setLoginName(enter.getMail());
-        getUserEnter.setSystemId(AccountTypeEnums.APP_EXPRESS.getSystemId());
+        getUserEnter.setSystemId(SystemIDEnums.REDE_SAAS.getSystemId());
         getUserEnter.setAppId(AppIDEnums.SAAS_APP.getValue());
         List<UserToken> appUserList = userTokenService.getAppUser(getUserEnter);
 
@@ -106,7 +111,7 @@ public class TokenServiceImpl implements TokenService {
         }
 
         enter.setUserId(Long.valueOf(map.get("userId")));
-        QueryUserResult queryUserResult = accountBaseService.queryUserById(enter);
+        QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
         enter.setAppId(queryUserResult.getAppId());
         enter.setSystemId(queryUserResult.getSystemId());
         return userTokenService.setPassword(enter);

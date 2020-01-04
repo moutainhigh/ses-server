@@ -9,6 +9,7 @@ import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
+import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.account.QueryTenantNodeResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
@@ -68,6 +69,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private TenantBaseService tenantBaseService;
     @Reference
     private MailMultiTaskService mailMultiTaskService;
+    @Reference
+    private UserBaseService userBaseService;
 
 
     /**
@@ -479,7 +482,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public Map<String, Integer> accountCountStatus(GeneralEnter enter) {
-        return accountBaseService.accountCountStatus();
+        return tenantBaseService.accountCountStatus();
     }
 
     /**
@@ -696,7 +699,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             return new BooleanResult(true);
         }
 
-        List<BaseUserResult> userList = accountBaseService.queryEmailInfo(new StringEnter(customer.getEmail()));
+        List<BaseUserResult> userList = userBaseService.queryEmailInfo(new StringEnter(customer.getEmail()));
 
         if (userList == null || userList.size() == 0) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());

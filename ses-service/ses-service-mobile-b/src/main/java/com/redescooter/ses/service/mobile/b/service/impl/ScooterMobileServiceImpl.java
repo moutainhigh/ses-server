@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import com.redescooter.ses.api.hub.vo.QueryDriverScooterResult;
@@ -59,6 +60,9 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
     @Reference
     private CusotmerScooterService cusotmerScooterService;
 
+    @Reference
+    private UserBaseService userBaseService;
+
     /**
      * scooter 信息
      *
@@ -71,7 +75,7 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
         CorDriverScooter corDriverScooter = null;
 
         // 查询账户类型
-        QueryUserResult queryUserResult = accountBaseService.queryUserById(enter);
+        QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
         if (queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType() || queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType()) {
             // 获取车辆分配信息
             corDriverScooter = scooterMobileServiceMapper.driverScooterByUserId(enter.getUserId(), DriverScooterStatusEnums.USED.getValue());
@@ -104,7 +108,7 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
         CorDriverScooter corDriverScooter = null;
 
         // 查询账户类型
-        QueryUserResult queryUserResult = accountBaseService.queryUserById(enter);
+        QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
         if (queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType() || queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType()) {
             // 获取车辆分配信息
             corDriverScooter = scooterMobileServiceMapper.driverScooterByUserId(enter.getUserId(), DriverScooterStatusEnums.USED.getValue());

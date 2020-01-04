@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.service.customer.ConsumerUserProfileService;
@@ -46,6 +47,9 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
     @Reference
     private UserProfileService userProfileService;
 
+    @Reference
+    private UserBaseService userBaseService;
+
     /**
      * 个人信息
      *
@@ -60,7 +64,7 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
 
         CorUserProfile corUserProfile = null;
 
-        QueryUserResult queryUserResult = accountBaseService.queryUserById(enter);
+        QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
         if (queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType() || queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType()) {
             QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
             corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
@@ -86,7 +90,7 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
     @Override
     public GeneralResult saveUserProfile(SaveUserProfileEnter enter) {
 
-        QueryUserResult queryUserResult = accountBaseService.queryUserById(enter);
+        QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
 
         CorUserProfile corUserProfile = null;
         // 保存TOC 信息
