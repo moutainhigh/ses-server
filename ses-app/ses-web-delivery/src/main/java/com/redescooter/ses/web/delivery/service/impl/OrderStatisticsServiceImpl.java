@@ -111,7 +111,7 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
         List<ScooterMapResult> scooterMapResultList = new ArrayList<>();
         corTenantScooterList.forEach(item -> {
             ScooterMapResult scooter = ScooterMapResult.builder()
-                    .id(item.getId())
+                    .id(item.getScooterId())
                     .lat(item.getLatitude().toString())
                     .lng(item.getLongitule().toString())
                     .build();
