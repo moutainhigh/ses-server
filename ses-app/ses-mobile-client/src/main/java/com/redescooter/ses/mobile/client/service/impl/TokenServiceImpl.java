@@ -68,7 +68,7 @@ public class TokenServiceImpl implements TokenService {
         getUserEnter.setAppId(AppIDEnums.SAAS_APP.getValue());
         List<UserToken> appUserList = userTokenService.getAppUser(getUserEnter);
 
-        String code = String.valueOf(RandomUtils.nextInt(10000, 99999));
+        String code = String.valueOf(RandomUtils.nextInt(1000, 9999));
 
         BaseMailTaskEnter baseMailTask = new BaseMailTaskEnter();
         baseMailTask.setCode(code);
