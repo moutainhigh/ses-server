@@ -7,11 +7,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * @author Mr.lijiating
@@ -80,16 +76,8 @@ public class SaveDriverEnter extends GeneralEnter {
     @ApiModelProperty(value = "证件类型1身份证，2驾驶证，3护照")
     private String certificateType;
 
-    @ApiModelProperty(value = "驾驶证")
-    @NotNull(code = ValidationExceptionCode.DRIVER_LICENSE_IS_EMPTY, message = "驾驶证为空")
-    private String driverLicense;
-
     @ApiModelProperty(value = "驾驶证附件上")
     @NotNull(code = ValidationExceptionCode.DRIVER_LICENSE_UPANNEX_IS_EMPTY, message = "驾驶证附件为空")
     private String driverLicenseUpAnnex;
-
-    @ApiModelProperty(value = "驾驶证附件下")
-    @NotNull(code = ValidationExceptionCode.DRIVER_LICENSE_DOWNANNEX_IS_EMPTY, message = "生日为空")
-    private String driverLicenseDownAnnex;
 
 }
