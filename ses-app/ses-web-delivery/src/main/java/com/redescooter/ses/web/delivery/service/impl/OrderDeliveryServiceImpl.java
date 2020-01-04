@@ -125,7 +125,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             wrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
             wrapper.eq(CorDriverScooter.COL_DR, 0);
             wrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
-            wrapper.isNotNull(CorDriverScooter.COL_END_TIME);
+            wrapper.isNull(CorDriverScooter.COL_END_TIME);
             CorDriverScooter driverScooter = driverScooterMapper.selectOne(wrapper);
 
             if (driverScooter == null) {
@@ -149,7 +149,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             deliverySave.setStatus(DeliveryStatusEnums.PENDING.getValue());
             // todo 预计开始配送的时间,默认十分钟后开始配送
             deliverySave.setEtd(DateUtils.addMinutes(new Date(), Integer.parseInt("10")));
-            deliverySave.setDrivenMileage(new BigDecimal(MapUtil.getDistance(enter.getLatitude(), enter.getLongitude(), tenant.getLatitude().toString(), enter.getLongitude())));
+            BigDecimal drivenMileage = new BigDecimal(MapUtil.getDistance(enter.getLatitude(), enter.getLongitude(), tenant.getLatitude() == null ? "0" : String.valueOf(tenant.getLatitude()), tenant.getLongitude() == null ? "0" : String.valueOf(tenant.getLongitude())));
+            log.info(deliverySave.toString() + "=====================");
+            deliverySave.setDrivenMileage(drivenMileage);
             deliverySave.setScooterId(driverScooter.getScooterId());
             deliverySave.setTimeoutExpectde(enter.getTimeoutExpectde());
             //配送时长减去提前预警时长

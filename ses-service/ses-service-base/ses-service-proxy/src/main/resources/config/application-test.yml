@@ -31,4 +31,10 @@ spring:
         - 192.168.2.200:7003
         - 192.168.2.200:7004
         - 192.168.2.200:7005
-
+  # 邮件配置
+  mail:
+    from: 761291381@qq.com
+    username: 761291381@qq.com
+    host: smtp.qq.com
+    password: qdiuwjkubkfsbfhh
+    port: 587
