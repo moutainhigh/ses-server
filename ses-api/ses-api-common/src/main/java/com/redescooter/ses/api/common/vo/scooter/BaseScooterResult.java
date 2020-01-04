@@ -1,16 +1,15 @@
 package com.redescooter.ses.api.common.vo.scooter;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @ClassName:BaseScooterResult
@@ -32,13 +31,13 @@ public class BaseScooterResult extends GeneralResult {
     @ApiModelProperty(value="车辆编号")
     private String scooterNo;
 
-    @ApiModelProperty(value="状态:LOCKED;UNLOCKED")
+    @ApiModelProperty(value = "状态: 1 LOCKED; 2 UNLOCKED")
     private String status;
 
-    @ApiModelProperty(value="AVAILABLE;CHARGING;REPAIR;FAULT;USING")
+    @ApiModelProperty(value = "车辆状态，1 不存在，2 已分配，3 使用中，4 归还 ，5 维修中")
     private String availableStatus;
 
-    @ApiModelProperty(value="后备箱状态")
+    @ApiModelProperty(value = "后备箱状态 1 LOCKED; 2 UNLOCKED")
     private String boxStatus;
 
     @ApiModelProperty(value="型号")

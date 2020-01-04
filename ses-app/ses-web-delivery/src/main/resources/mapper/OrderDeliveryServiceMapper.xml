@@ -138,4 +138,34 @@
      and cd.status ='1'
 
     </select>
+    <select id="scooterMap" resultType="com.redescooter.ses.web.delivery.vo.ScooterMapResult">
+        select scooter.scooter_id as id,
+        scooter.latitude as lat,
+        scooter.longitule as lng,
+        driver.id as driverId,
+        profile.FIRST_NAME as driverFirstName,
+        profile.LAST_NAME as driverLastName,
+        profile.picture as avatar
+        from cor_tenant_scooter scooter
+        left join cor_driver_scooter cds on cds.scooter_id = scooter.scooter_id and cds.dr = 0
+        left join cor_driver driver on cds.driver_id = driver.id and driver.dr = 0 and driver.status in (1, 2)
+        left join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
+        where scooter.tenant_id = #{tenantId}
+        and cds.status = 1
+    </select>
+    <select id="driverDeliveryInfor" resultType="com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult">
+        select driver.id as id,
+        driver.user_id as userId,
+        profile.picture as avatar,
+        profile.first_name as driverFirstName,
+        profile.last_name as driverLastName,
+        cds.scooter_id as scooterId
+        from cor_driver driver
+        inner join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
+        left join cor_driver_scooter cds on driver.id = cds.driver_id and cds.dr = 0
+        where driver.status = 1
+        and driver.tenant_id = #{tenantId}
+        and driver.id=#{id}
+        and cds.status = 1
+    </select>
 </mapper>

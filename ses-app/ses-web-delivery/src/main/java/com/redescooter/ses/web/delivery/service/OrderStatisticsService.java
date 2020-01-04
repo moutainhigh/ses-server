@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.delivery.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.delivery.vo.MapResult;
 import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
 import com.redescooter.ses.web.delivery.vo.TopTenEnter;
 import com.redescooter.ses.web.delivery.vo.TopTenResult;
@@ -38,4 +39,12 @@ public interface OrderStatisticsService {
      * @return
      */
     ScooterRideDataResult scooterRideData(GeneralEnter enter);
+
+    /**
+     * dashboard 地图
+     *
+     * @param enter
+     * @return
+     */
+    MapResult map(GeneralEnter enter);
 }

@@ -3,7 +3,11 @@ package com.redescooter.ses.web.delivery.vo;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Mr.lijiating
@@ -24,4 +28,6 @@ public class ListDriverPage extends PageEnter {
     private String status;
     @ApiModelProperty(value = "关键字")
     private String keyword;
+    @ApiModelProperty(value = "是否在map 调用，默认false")
+    private Boolean map = Boolean.FALSE;
 }

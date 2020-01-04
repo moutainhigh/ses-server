@@ -1,16 +1,17 @@
 package com.redescooter.ses.service.scooter.service.impl;
 
-import java.util.List;
-
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+import com.redescooter.ses.api.scooter.exception.ScooterException;
+import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
+import com.redescooter.ses.service.scooter.exception.ExceptionCodeEnums;
+import lombok.extern.log4j.Log4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
-import com.redescooter.ses.api.scooter.service.ScooterService;
-import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
-
-import lombok.extern.log4j.Log4j;
+import java.util.List;
 
 /**
  * @ClassName:ScooterServiceImpl
@@ -28,7 +29,11 @@ public class ScooterServiceImpl implements ScooterService {
 
     @Override
     public List<BaseScooterResult> scooterInfor(List<Long> enter) {
-        return scooterServiceMapper.scooterInfor(enter);
+        List<BaseScooterResult> scooterResultList = scooterServiceMapper.scooterInfor(enter);
+        if (CollectionUtils.isEmpty(scooterResultList)) {
+            throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
+        }
+        return scooterResultList;
     }
 
     @Override

@@ -4,8 +4,10 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
+import com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult;
 import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
 import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
+import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
 import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
 
 import java.util.List;
@@ -50,4 +52,20 @@ public interface OrderDeliveryServiceMapper {
     DeliveryDetailsResult details(IdEnter enter);
 
     List<SelectDriverResult> selectDriverList(GeneralEnter enter);
+
+    /**
+     * 车辆地图统计
+     *
+     * @param enter
+     * @return
+     */
+    List<ScooterMapResult> scooterMap(GeneralEnter enter);
+
+    /**
+     * 司机订单信息
+     *
+     * @param enter
+     * @return
+     */
+    DriverOrderInfoResult driverDeliveryInfor(IdEnter enter);
 }

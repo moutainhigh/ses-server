@@ -3,7 +3,11 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.account.QueryTenantNodeResult;
@@ -174,6 +178,8 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         }
         QueryTenantResult result = new QueryTenantResult();
         BeanUtils.copyProperties(plaTenant, result);
+        result.setLongitude(plaTenant.getLongitude());
+        result.setLatitude(plaTenant.getLatitude());
         return result;
     }
 
