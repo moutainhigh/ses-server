@@ -3,6 +3,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
@@ -11,6 +12,7 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.foundation.vo.tenant.SaveTenantConfigEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.constant.TenantDefaultValue;
+import com.redescooter.ses.service.foundation.dao.AccountBaseServiceMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantConfigMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantNodeMapper;
@@ -25,9 +27,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassName:TenantBaseServiceImpl
@@ -50,6 +50,9 @@ public class TenantBaseServiceImpl implements TenantBaseService {
 
     @Autowired
     private PlaTenantConfigMapper plaTenantConfigMapper;
+
+    @Autowired
+    private AccountBaseServiceMapper accountBaseServiceMapper;
 
     /**
      * 保存租户
@@ -175,6 +178,26 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         QueryTenantResult result = new QueryTenantResult();
         BeanUtils.copyProperties(plaTenant, result);
         return result;
+    }
+
+    /**
+     * 查询租户状态
+     *
+     * @return
+     */
+    @Override
+    public Map<String, Integer> accountCountStatus() {
+        List<CountByStatusResult> countByStatusResult = accountBaseServiceMapper.accountCountStatus();
+        Map<String, Integer> map = new HashMap<>();
+        for (CountByStatusResult item : countByStatusResult) {
+            map.put(item.getStatus(), item.getTotalCount());
+        }
+        for (TenantStatusEnum status : TenantStatusEnum.values()) {
+            if (!map.containsKey(status.getValue())) {
+                map.put(status.getValue(), 0);
+            }
+        }
+        return map;
     }
 
     private PlaTenantConfig buildTenantConfigSingle(PlaTenantConfig tenantConfig, Long tennatId, GeneralEnter enter) {
