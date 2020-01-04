@@ -9,6 +9,7 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.foundation.vo.tenant.SaveTenantConfigEnter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:TenantBaseService
@@ -52,4 +53,11 @@ public interface TenantBaseService {
      * @return
      */
     QueryTenantResult queryTenantById(IdEnter enter);
+
+    /**
+     * 查询租户状态
+     *
+     * @return
+     */
+    Map<String, Integer> accountCountStatus();
 }

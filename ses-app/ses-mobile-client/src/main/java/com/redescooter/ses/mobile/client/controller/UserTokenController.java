@@ -1,11 +1,7 @@
 package com.redescooter.ses.mobile.client.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -16,12 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Mr.lijiating
@@ -39,7 +30,6 @@ public class UserTokenController {
 
     @Autowired
     private TokenService tokenService;
-
     @Reference
     private UserTokenService userTokenService;
 

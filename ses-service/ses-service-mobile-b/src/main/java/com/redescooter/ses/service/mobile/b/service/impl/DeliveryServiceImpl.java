@@ -312,6 +312,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setCo2(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(delivery.getDrivenMileage().longValue())));
         delivery.setSavings(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(delivery.getDrivenMileage().longValue())));
 
+        //TODO  完成时报超时完成
         String deliveryResult = DateUtil.timeComolete(delivery.getEta(), delivery.getAta()).intValue() > 0 ? DeliveryResultEnums.DELAY.getValue() : DeliveryResultEnums.ONTIME.getValue();
         delivery.setResult(deliveryResult);
         delivery.setStatus(StringUtils.equals(DeliveryResultEnums.DELAY.getValue(), deliveryResult) ? DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue() : DeliveryStatusEnums.COMPLETED.getValue());

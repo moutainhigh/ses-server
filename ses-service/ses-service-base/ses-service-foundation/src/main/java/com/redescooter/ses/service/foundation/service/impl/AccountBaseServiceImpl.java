@@ -8,7 +8,6 @@ import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
-import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
@@ -17,7 +16,6 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
-import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
@@ -46,7 +44,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -193,26 +194,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public List<QueryAccountListResult> tenantAccountRecords(QueryAccountListEnter enter) {
         return accountBaseServiceMapper.queryAccountList(enter);
-    }
-
-    /**
-     * 查询租户状态
-     *
-     * @return
-     */
-    @Override
-    public Map<String, Integer> accountCountStatus() {
-        List<CountByStatusResult> countByStatusResult = accountBaseServiceMapper.accountCountStatus();
-        Map<String, Integer> map = new HashMap<>();
-        for (CountByStatusResult item : countByStatusResult) {
-            map.put(item.getStatus(), item.getTotalCount());
-        }
-        for (TenantStatusEnum status : TenantStatusEnum.values()) {
-            if (!map.containsKey(status.getValue())) {
-                map.put(status.getValue(), 0);
-            }
-        }
-        return map;
     }
 
     /**
@@ -613,38 +594,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    /**
-     * 根据邮箱获取用户信息
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public List<BaseUserResult> queryEmailInfo(StringEnter enter) {
-
-        List<BaseUserResult> resultList = new ArrayList<>();
-
-        if (StringUtils.isBlank(enter.getSt())) {
-            return resultList;
-        }
-
-        QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getSt());
-        queryWrapper.eq(PlaUser.COL_DR, 0);
-        List<PlaUser> plaUserList = userMapper.selectList(queryWrapper);
-
-        if (plaUserList == null) {
-            return resultList;
-        }
-        plaUserList.forEach(user -> {
-            BaseUserResult result = new BaseUserResult();
-            BeanUtils.copyProperties(user, result);
-            resultList.add(result);
-        });
-
-        return resultList;
-    }
-
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {
         Integer accountType =
                 AccountTypeUtils.getAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
@@ -701,23 +650,4 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         return plaUser.getId();
     }
 
-    /**
-     * 查询user
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public QueryUserResult queryUserById(GeneralEnter enter) {
-
-        PlaUser plaUser = userMapper.selectById(enter.getUserId());
-        if (plaUser == null) {
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
-        }
-
-        QueryUserResult queryUserResult = new QueryUserResult();
-        BeanUtils.copyProperties(plaUser, queryUserResult);
-
-        return queryUserResult;
-    }
 }

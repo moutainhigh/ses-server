@@ -4,10 +4,8 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
-import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Mr.lijiating
@@ -19,6 +17,14 @@ import java.util.Map;
 public interface AccountBaseService {
 
     /**
+     * 租户验证邮箱
+     *
+     * @param mail
+     * @return
+     */
+    Boolean chectMail(String mail);
+
+    /**
      * 账号开通
      *
      * @param enter
@@ -27,12 +33,10 @@ public interface AccountBaseService {
     BaseUserResult open(DateTimeParmEnter<BaseCustomerResult> enter);
 
     /**
-     * 租户验证邮箱
-     *
-     * @param mail
+     * @param enter
      * @return
      */
-    Boolean chectMail(String mail);
+    GeneralResult setPassword(SetPasswordEnter<BaseCustomerResult> enter);
 
     /**
      * 查询已创建 的账户
@@ -49,13 +53,6 @@ public interface AccountBaseService {
      * @return
      */
     List<QueryAccountListResult> tenantAccountRecords(QueryAccountListEnter enter);
-
-    /**
-     * 查询租户状态
-     *
-     * @return
-     */
-    Map<String, Integer> accountCountStatus();
 
     /**
      * 账户冻结
@@ -82,27 +79,12 @@ public interface AccountBaseService {
     GeneralResult renewAccont(DateTimeParmEnter<BaseCustomerResult> enter);
 
     /**
-     * @param enter
-     * @return
-     */
-    GeneralResult setPassword(SetPasswordEnter<BaseCustomerResult> enter);
-
-
-    /**
      * 根据租户ID删除所有用户
      *
      * @param enter
      * @return
      */
     GeneralResult deleteUserbyTenantId(IdEnter enter);
-
-    /**
-     * 查询user
-     *
-     * @param enter
-     * @return
-     */
-    QueryUserResult queryUserById(GeneralEnter enter);
 
 
     /**
@@ -127,13 +109,5 @@ public interface AccountBaseService {
      * @return
      */
     GeneralResult sendEmailAgian(IdEnter enter);
-
-    /**
-     * 根据邮箱获取用户信息
-     *
-     * @param enter
-     * @return
-     */
-    List<BaseUserResult> queryEmailInfo(StringEnter enter);
 
 }
