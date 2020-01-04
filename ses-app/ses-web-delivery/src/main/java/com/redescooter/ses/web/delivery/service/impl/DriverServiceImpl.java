@@ -106,7 +106,6 @@ public class DriverServiceImpl implements DriverService {
             driverSave.setDr(0);
             driverSave.setUserId(user.getId());
             driverSave.setTenantId(user.getTenantId());
-            driverSave.setDrivingLicense(enter.getDriverLicense());
             driverSave.setStatus(DriverStatusEnum.OFFWORK.getValue());
             driverSave.setDef1(Boolean.FALSE.toString());
             driverSave.setCreatedBy(enter.getUserId());
@@ -131,7 +130,6 @@ public class DriverServiceImpl implements DriverService {
             profileSave.setPlaceBirth(enter.getAddress());
             profileSave.setBirthday(DateUtil.timaConversion(enter.getBirthday()));
             profileSave.setCertificateType(enter.getCertificateType());
-            profileSave.setCertificatePositiveAnnex(enter.getDriverLicenseDownAnnex());
             profileSave.setCertificateNegativeAnnex(enter.getDriverLicenseUpAnnex());
             profileSave.setRole(RoleEnums.DRIVER.getValue());
             profileSave.setJoinDate(new Date());
@@ -152,9 +150,6 @@ public class DriverServiceImpl implements DriverService {
             }
             CorDriver driverUpdate = new CorDriver();
             driverUpdate.setId(enter.getId());
-            if (enter.getDriverLicense() != null) {
-                driverUpdate.setDrivingLicense(enter.getDriverLicense());
-            }
             driverUpdate.setUpdatedBy(enter.getUserId());
             driverUpdate.setUpdatedTime(new Date());
             driverMapper.updateById(driverUpdate);
@@ -176,10 +171,8 @@ public class DriverServiceImpl implements DriverService {
                 profile.setBirthday(DateUtil.timaConversion(enter.getBirthday()));
             }
             if (enter.getCertificateType() != null &&
-                    enter.getDriverLicenseUpAnnex() != null &&
-                    enter.getDriverLicenseDownAnnex() != null) {
+                    enter.getDriverLicenseUpAnnex() != null) {
                 profile.setCertificateType(enter.getCertificateType());
-                profile.setCertificatePositiveAnnex(enter.getDriverLicenseDownAnnex());
                 profile.setCertificateNegativeAnnex(enter.getDriverLicenseUpAnnex());
             }
             profile.setUpdatedBy(enter.getUserId());
@@ -412,7 +405,7 @@ public class DriverServiceImpl implements DriverService {
         wrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
         Integer count = driverScooterMapper.selectCount(wrapper);
 
-        if (count > 0) {
+        if (count != 0) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getMessage());
         }
 
