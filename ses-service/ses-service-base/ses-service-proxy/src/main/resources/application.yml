@@ -50,11 +50,11 @@ spring:
     time-zone: UTC
   # 邮件配置
   mail:
-    from: support@redescooter.com
-    username: support@redescooter.com
-    host: smtp.exmail.qq.com
-    password: RedE2019.scooter
-    port: 465
+    #    from: support@redescooter.com
+    #    username: support@redescooter.com
+    #    host: smtp.exmail.qq.com
+    #    password: RedE2019.scooter
+    #port: 465
     properties:
       mail:
         smtp:

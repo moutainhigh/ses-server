@@ -26,6 +26,13 @@ spring:
         - 192.168.2.200:7003
         - 192.168.2.200:7004
         - 192.168.2.200:7005
+  # 邮件配置
+  mail:
+    from: support@redescooter.com
+    username: support@redescooter.com
+    host: smtp.exmail.qq.com
+    password: RedE2019.scooter
+    port: 465
 
 # DUBBO 配置
 dubbo:

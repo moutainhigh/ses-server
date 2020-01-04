@@ -71,4 +71,9 @@ public class OrderDeliveryController {
         return new Response<>(orderDeliveryService.selectDriverList(enter));
     }
 
+    @PostMapping(value = "/nodelist")
+    @ApiOperation(value = "详情节点列表", response = GeneralResult.class)
+    public Response<List<SelectDriverResult>> detailsDodelist(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>();
+    }
 }
