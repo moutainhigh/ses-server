@@ -317,6 +317,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
             }
         }
         return MobileBScooterChartResult.builder()
+                .avgSpeed(corDriverRideStat.getSvgSpeed().toString())
                 .totalCo2(corDriverRideStat.getCo2Total().toString())
                 .totalMileage(corDriverRideStat.getTotalMileage().toString())
                 .totalMoney(corDriverRideStat.getSavedMoney().toString())
