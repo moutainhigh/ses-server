@@ -1,9 +1,9 @@
 package com.redescooter.ses.api.scooter.service;
 
-import java.util.List;
-
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+
+import java.util.List;
 
 /**
  * @ClassName:ScooterService

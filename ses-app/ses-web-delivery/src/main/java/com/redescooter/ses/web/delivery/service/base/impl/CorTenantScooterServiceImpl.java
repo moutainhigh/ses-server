@@ -38,3 +38,5 @@ public class CorTenantScooterServiceImpl extends ServiceImpl<CorTenantScooterMap
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+

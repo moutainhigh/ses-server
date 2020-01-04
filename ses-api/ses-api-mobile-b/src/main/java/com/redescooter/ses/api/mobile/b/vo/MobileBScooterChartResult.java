@@ -35,6 +35,9 @@ public class MobileBScooterChartResult extends GeneralResult {
     @ApiModelProperty(value = "总节省钱")
     private String totalMoney = "0";
 
+    @ApiModelProperty(value = "平均速度")
+    private String avgSpeed = "0";
+
     @ApiModelProperty(value = "图表数据")
     Map<String, MonthlyScooterChartResult> monthlyScooterResults;
 }

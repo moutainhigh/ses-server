@@ -1,14 +1,19 @@
 package com.redescooter.ses.web.delivery.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
-@ApiModel(value = "com.redescooter.ses.web.delivery.dm.CorTenantScooter")
+@ApiModel(value = "com-redescooter-ses-web-delivery-dm-CorTenantScooter")
 @Data
 @TableName(value = "cor_tenant_scooter")
 public class CorTenantScooter implements Serializable {
@@ -40,6 +45,20 @@ public class CorTenantScooter implements Serializable {
     @TableField(value = "scooter_id")
     @ApiModelProperty(value = "车辆ID")
     private Long scooterId;
+
+    /**
+     * 车辆经度
+     */
+    @TableField(value = "longitule")
+    @ApiModelProperty(value = "车辆经度")
+    private BigDecimal longitule;
+
+    /**
+     * 车辆纬度
+     */
+    @TableField(value = "latitude")
+    @ApiModelProperty(value = "车辆纬度")
+    private BigDecimal latitude;
 
     /**
      * 车牌号
@@ -93,20 +112,6 @@ public class CorTenantScooter implements Serializable {
     /**
      * 冗余字段
      */
-    @TableField(value = "def1")
-    @ApiModelProperty(value = "冗余字段")
-    private String def1;
-
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def2")
-    @ApiModelProperty(value = "冗余字段")
-    private String def2;
-
-    /**
-     * 冗余字段
-     */
     @TableField(value = "def3")
     @ApiModelProperty(value = "冗余字段")
     private String def3;
@@ -127,11 +132,17 @@ public class CorTenantScooter implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String COL_ID = "id";
+
     public static final String COL_DR = "dr";
 
     public static final String COL_TENANT_ID = "tenant_id";
 
     public static final String COL_SCOOTER_ID = "scooter_id";
+
+    public static final String COL_LONGITULE = "longitule";
+
+    public static final String COL_LATITUDE = "latitude";
 
     public static final String COL_LICENSE_PLATE = "license_plate";
 
@@ -146,10 +157,6 @@ public class CorTenantScooter implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
-
-    public static final String COL_DEF1 = "def1";
-
-    public static final String COL_DEF2 = "def2";
 
     public static final String COL_DEF3 = "def3";
 

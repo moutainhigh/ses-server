@@ -1,13 +1,29 @@
 package com.redescooter.ses.web.delivery.controller;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.OrderDeliveryService;
-import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
+import com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult;
+import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
+import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
+import com.redescooter.ses.web.delivery.vo.MapResult;
+import com.redescooter.ses.web.delivery.vo.SaveOrderDeliveryEnter;
+import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
+import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -71,6 +87,23 @@ public class OrderDeliveryController {
         return new Response<>(orderDeliveryService.selectDriverList(enter));
     }
 
+    @PostMapping(value = "/map")
+    @ApiOperation(value = "地图", response = MapResult.class)
+    public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(orderDeliveryService.map(enter));
+    }
+
+    @PostMapping(value = "/orderInfor")
+    @ApiOperation(value = "司机订单列表", response = DriverOrderInfoResult.class)
+    public Response<DriverOrderInfoResult> driverDeliveryInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(orderDeliveryService.driverDeliveryInfor(enter));
+    }
+
+    @PostMapping(value = "/scooterInfor")
+    @ApiOperation(value = "车辆信息", response = ScooterMapResult.class)
+    public Response<ScooterMapResult> scooterInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(orderDeliveryService.scooterInfor(enter));
+    }
     @PostMapping(value = "/nodelist")
     @ApiOperation(value = "详情节点列表", response = GeneralResult.class)
     public Response<List<SelectDriverResult>> detailsDodelist(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {

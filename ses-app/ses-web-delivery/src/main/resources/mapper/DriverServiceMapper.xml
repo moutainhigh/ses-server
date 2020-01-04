@@ -54,7 +54,14 @@
                 and cdr.status = #{status}
             </if>
         </where>
-        order by cdr.updated_time desc
+        <choose>
+            <when test="map==false">
+                order by cdr.updated_time asc
+            </when>
+            <when test="map==true">
+                order by cdr.status desc
+            </when>
+        </choose>
         limit #{startRow},#{pageSize}
     </select>
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">

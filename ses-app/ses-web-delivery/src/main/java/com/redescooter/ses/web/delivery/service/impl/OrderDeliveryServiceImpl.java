@@ -10,9 +10,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
+import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
@@ -21,15 +23,26 @@ import com.redescooter.ses.web.delivery.dao.base.CorDeliveryMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorDeliveryTraceMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorDriverMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorDriverScooterMapper;
+import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dm.CorDelivery;
 import com.redescooter.ses.web.delivery.dm.CorDeliveryTrace;
 import com.redescooter.ses.web.delivery.dm.CorDriver;
 import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
+import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.OrderDeliveryService;
-import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
+import com.redescooter.ses.web.delivery.vo.DeliveryMapResult;
+import com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult;
+import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
+import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
+import com.redescooter.ses.web.delivery.vo.MapResult;
+import com.redescooter.ses.web.delivery.vo.SaveOrderDeliveryEnter;
+import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
+import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -39,6 +52,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -65,12 +79,18 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
     private CorDeliveryTraceMapper deliveryTraceMapper;
     @Autowired
     private CorDriverMapper driverMapper;
+
+    @Autowired
+    private CorTenantScooterMapper corTenantScooterMapper;
+
     @Reference
     private TenantBaseService tenantBaseService;
     @Reference
     private IdAppService idAppService;
     @Reference
     private GenerateService generateService;
+    @Reference
+    private ScooterService scooterService;
 
     /**
      * 创建配送单
@@ -283,6 +303,133 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
         saveDeliveryNode(delivery, enter);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 订单地址
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public MapResult map(GeneralEnter enter) {
+        // 查询门店信息
+        QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
+
+        // 查询车辆信息
+        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+        List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
+
+        // 司机车辆分配数据
+        List<ScooterMapResult> scooterMapList = orderDeliveryServiceMapper.scooterMap(enter);
+
+        QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
+        List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
+
+        List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(deliveryList)) {
+            deliveryList.forEach(item -> {
+                DeliveryMapResult delivery = DeliveryMapResult.builder()
+                        .id(item.getId())
+                        .status(item.getStatus())
+                        .lng(item.getLongitude().toString())
+                        .lat(item.getLatitude().toString())
+                        .orderNo(item.getOrderNo())
+                        .eta(item.getEta())
+                        .parcelQuantity(item.getParcelQuantity())
+                        .recipient(item.getRecipient())
+                        .recipientAddress(item.getRecipientAddress())
+                        .recipientTel(item.getRecipientTel())
+                        .build();
+                deliveryMapResultList.add(delivery);
+            });
+        }
+
+        return MapResult.builder()
+                .tenantId(tenant.getId())
+                .tenantLng(tenant.getLongitude().toString())
+                .tenantLat(tenant.getLatitude().toString())
+                .scooterMapResultList(scooterMapList)
+                .deliveryMapList(deliveryMapResultList)
+                .build();
+    }
+
+    /**
+     * 订单信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public DriverOrderInfoResult driverDeliveryInfor(IdEnter enter) {
+
+        DriverOrderInfoResult result = orderDeliveryServiceMapper.driverDeliveryInfor(enter);
+
+        if (result == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
+        }
+        // 车辆数据
+        List<Long> scooterIdList = new ArrayList<>();
+        scooterIdList.add(result.getScooterId());
+        List<BaseScooterResult> scooterListResult = scooterService.scooterInfor(scooterIdList);
+
+        //订单数据
+        QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_DELIVERER_ID, result.getUserId());
+        List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
+
+        List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(deliveryList)) {
+            deliveryList.forEach(item -> {
+                DeliveryMapResult delivery = DeliveryMapResult.builder()
+                        .id(item.getId())
+                        .status(item.getStatus())
+                        .lng(item.getLongitude().toString())
+                        .lat(item.getLatitude().toString())
+                        .orderNo(item.getOrderNo())
+                        .eta(item.getEta())
+                        .parcelQuantity(item.getParcelQuantity())
+                        .recipient(item.getRecipient())
+                        .recipientAddress(item.getRecipientAddress())
+                        .recipientTel(item.getRecipientTel())
+                        .build();
+                deliveryMapResultList.add(delivery);
+            });
+        }
+
+        return DriverOrderInfoResult.builder()
+                .licensePlate(scooterListResult.get(0).getLicensePlate())
+                .battery(scooterListResult.get(0).getBattery())
+                .deliveryMapResultList(deliveryMapResultList)
+                .build();
+    }
+
+    /**
+     * 车辆信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public ScooterMapResult scooterInfor(IdEnter enter) {
+        List<Long> scooterId = new ArrayList<>();
+        scooterId.add(enter.getId());
+        List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterId);
+
+        return ScooterMapResult.builder()
+                .id(scooterResultList.get(0).getId())
+                .lng(scooterResultList.get(0).getLongitule().toString())
+                .lat(scooterResultList.get(0).getLatitude().toString())
+                .battery(scooterResultList.get(0).getBattery())
+                .licensePlate(scooterResultList.get(0).getLicensePlate())
+                .status(scooterResultList.get(0).getAvailableStatus())
+                .build();
     }
 
     private void saveDeliveryNode(CorDelivery dto, GeneralEnter enter) {

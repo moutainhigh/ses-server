@@ -2,9 +2,8 @@ package com.redescooter.ses.web.delivery.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface CorTenantScooterMapper extends BaseMapper<CorTenantScooter> {
     int updateBatch(List<CorTenantScooter> list);

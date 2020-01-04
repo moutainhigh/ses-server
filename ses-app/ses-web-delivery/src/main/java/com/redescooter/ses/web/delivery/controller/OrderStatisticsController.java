@@ -3,6 +3,7 @@ package com.redescooter.ses.web.delivery.controller;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.OrderStatisticsService;
+import com.redescooter.ses.web.delivery.vo.MapResult;
 import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
 import com.redescooter.ses.web.delivery.vo.TopTenEnter;
 import com.redescooter.ses.web.delivery.vo.TopTenResult;
@@ -53,4 +54,9 @@ public class OrderStatisticsController {
         return new Response<>(orderStatisticsService.scooterRideData(enter));
     }
 
+    @PostMapping(value = "/map")
+    @ApiOperation(value = "地图", response = MapResult.class)
+    public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(orderStatisticsService.map(enter));
+    }
 }
