@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.driver.RoleEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
-import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.scooter.service.ScooterService;
@@ -26,7 +29,12 @@ import com.redescooter.ses.web.delivery.dm.CorUserProfile;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.DriverService;
-import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.AssignScooterEnter;
+import com.redescooter.ses.web.delivery.vo.DriverDetailsResult;
+import com.redescooter.ses.web.delivery.vo.ListDriverPage;
+import com.redescooter.ses.web.delivery.vo.ListDriverResult;
+import com.redescooter.ses.web.delivery.vo.ListScooterResult;
+import com.redescooter.ses.web.delivery.vo.SaveDriverEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +44,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mr.lijiating
@@ -347,6 +359,7 @@ public class DriverServiceImpl implements DriverService {
         QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_STATUS, TenantScooterStatusEnums.AVAILABLE.getValue());
         List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
         if (CollectionUtils.isEmpty(corTenantScooterList)) {
             return new ArrayList<>();
@@ -385,17 +398,18 @@ public class DriverServiceImpl implements DriverService {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
 
-        if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.DEPARTURE.getCode())) {
+        if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.DEPARTURE.getValue())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_DEPARTURE.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_DEPARTURE.getMessage());
         }
-        if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.WORKING.getCode())) {
+        if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.WORKING.getValue())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getMessage());
         }
 
         QueryWrapper<CorDriverScooter> wrapper = new QueryWrapper<>();
         wrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
         wrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
-        wrapper.in(CorDriverScooter.COL_STATUS, ScooterStatusEnums.USED.getValue(), ScooterStatusEnums.ALLOCATION.getValue());
+        wrapper.eq(CorDriverScooter.COL_DR, 0);
+        wrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
         Integer count = driverScooterMapper.selectCount(wrapper);
 
         if (count > 0) {
@@ -458,7 +472,6 @@ public class DriverServiceImpl implements DriverService {
         queryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getId());
         queryWrapper.in(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
         queryWrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
-        queryWrapper.isNotNull(CorDriverScooter.COL_END_TIME);
         CorDriverScooter driverScooter = driverScooterMapper.selectOne(queryWrapper);
         if (driverScooter == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
@@ -472,10 +485,23 @@ public class DriverServiceImpl implements DriverService {
         driverScooter.setUpdatedTime(new Date());
         driverScooterMapper.updateById(driverScooter);
 
-        driver.setStatus(DriverStatusEnum.OFFWORK.getCode());
+        driver.setStatus(DriverStatusEnum.OFFWORK.getValue());
         driver.setUpdatedBy(enter.getUserId());
         driver.setUpdatedTime(new Date());
         driverMapper.updateById(driver);
+
+        // 更新 tenantScooter 表数据
+        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, driverScooter.getScooterId());
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, driverScooter.getTenantId());
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+        CorTenantScooter corTenantScooter = tenantScooterMapper.selectOne(corTenantScooterQueryWrapper);
+        if (corTenantScooter != null) {
+            corTenantScooter.setStatus(TenantScooterStatusEnums.AVAILABLE.getValue());
+            corTenantScooter.setUpdatedBy(enter.getUserId());
+            corTenantScooter.setUpdatedTime(new Date());
+            tenantScooterMapper.updateById(corTenantScooter);
+        }
 
         return new GeneralResult(enter.getRequestId());
     }
