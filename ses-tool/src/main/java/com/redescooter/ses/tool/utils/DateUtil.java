@@ -1183,7 +1183,7 @@ public class DateUtil {
      */
     public static Long timeComolete(Date dateA, Date dateB) {
         Long temp = dateB.getTime() - dateA.getTime();
-        return temp / 1000 / 60;
+        return temp / 1000;
     }
 
         public static Date timaConversion(String time) {
@@ -1198,7 +1198,6 @@ public class DateUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(DateUtil.getDayList(30, DateUtil.DEFAULT_DATE_FORMAT));
-
+        System.out.println(timeComolete(parse("2020-01-04 12:44:08", DEFAULT_DATETIME_FORMAT), parse("2020-01-04 12:44:09", DEFAULT_DATETIME_FORMAT)));
     }
 }

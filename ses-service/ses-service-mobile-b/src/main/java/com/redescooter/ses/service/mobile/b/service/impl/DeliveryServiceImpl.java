@@ -19,7 +19,14 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.api.mobile.b.service.DeliveryService;
 import com.redescooter.ses.api.mobile.b.service.DeliveryTraceService;
-import com.redescooter.ses.api.mobile.b.vo.*;
+import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
+import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
+import com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult;
+import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
+import com.redescooter.ses.api.mobile.b.vo.DeliveryListResult;
+import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
+import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryTraceEnter;
+import com.redescooter.ses.api.mobile.b.vo.StartEnter;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.service.mobile.b.dao.DeliveryServiceMapper;
@@ -40,7 +47,11 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -222,7 +233,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setId(enter.getId());
         delivery.setStatus(DeliveryStatusEnums.DELIVERING.getValue());
         delivery.setAtd(new Date());
-        delivery.setEta(DateUtil.change(DateUtil.pay30()));
+        delivery.setEta(DateUtil.parse(DateUtil.pay30(), DateUtil.DEFAULT_DATETIME_FORMAT));
         delivery.setDrivenMileage(new BigDecimal(enter.getMileage()));
         delivery.setUpdatedBy(enter.getUserId());
         delivery.setUpdatedTime(new Date());
@@ -308,7 +319,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         navugation(enter.getBluetoothCommunication(), enter.getLat(), enter.getLng(), enter, delivery, CommonEvent.END.getValue());
         // 修改状态
         delivery.setAta(new Date());
-        delivery.setDrivenDuration(DateUtil.timeComolete(delivery.getAta(), delivery.getAtd()).intValue() * 60);
+        delivery.setDrivenDuration(DateUtil.timeComolete(delivery.getAtd(), delivery.getAta()).intValue());
         delivery.setCo2(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(delivery.getDrivenMileage().longValue())));
         delivery.setSavings(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(delivery.getDrivenMileage().longValue())));
 
