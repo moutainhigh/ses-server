@@ -7,11 +7,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * @author Mr.lijiating
@@ -41,11 +37,11 @@ public class SaveOrderDeliveryEnter extends GeneralEnter {
     @MaximumLength(code = ValidationExceptionCode.RECIPIENT_IS_UNAVAILABLE, message = "姓字符长度为2-20字符")
     private String recipient;
 
-    @ApiModelProperty(value = "收件人邮箱")
-    @NotNull(code = ValidationExceptionCode.RECIPIENT_IS_EMPTY, message = "收件人为空")
-    @MinimumLength(code = ValidationExceptionCode.EMAIL_IS_UNAVAILABLE, message = "邮箱字符长度为2-20字符")
-    @MaximumLength(code = ValidationExceptionCode.EMAIL_IS_UNAVAILABLE, message = "邮箱字符长度为2-20字符")
-    private String recipientEmail;
+//    @ApiModelProperty(value = "收件人邮箱")
+//    @NotNull(code = ValidationExceptionCode.RECIPIENT_IS_EMPTY, message = "收件人邮箱")
+//    @MinimumLength(code = ValidationExceptionCode.EMAIL_IS_UNAVAILABLE, message = "邮箱字符长度为2-20字符")
+//    @MaximumLength(code = ValidationExceptionCode.EMAIL_IS_UNAVAILABLE, message = "邮箱字符长度为2-20字符")
+//    private String recipientEmail;
 
     @ApiModelProperty(value = "手机国家区号")
     @NotNull(code = ValidationExceptionCode.COUNTRY_CODE_IS_EMPTY, message = "手机国家区号为空")
