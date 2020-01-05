@@ -314,8 +314,6 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addMultiMailTask(String jsonStr) {
         Map<String, String> map = JSON.parseObject(jsonStr, Map.class);
-        log.info("==接收参数jsonStr={}", jsonStr);
-
         if (!map.containsKey("event") ||
                 !map.containsKey("requestId") ||
                 !map.containsKey("systemId") ||
@@ -384,7 +382,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     }
 
     private Map<String, String> getParameterMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email) {
-        log.info("********接受参数mailTemplateNo={},systemId={},appId={},userId={}", mailTemplateNo, systemId, appId, userId);
+
         List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
         Map<String, String> map = new HashMap();
         if (configList != null && configList.size() > 0) {
@@ -464,13 +462,8 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     private void pullResdis(PlaMailTask mailTask, int seconds) {
         String sendParameter = mailTask.getParameter();
         Map<String, String> map = JSONObject.parseObject(sendParameter, Map.class);
-        map.forEach((k, v) -> {
-            log.info("存放redis中对应的key【{}】==========================vlue【{}】", k, v);
-        });
-
         //String key = new StringBuffer().append("activation:::").append(map.get("email")).append("systemId").toString();
         String key = map.get("requestId");
-        log.info("*********邮件发送key***********{}", key);
         jedisCluster.hmset(key, map);
         //默认为72小时
         jedisCluster.expire(key, seconds);

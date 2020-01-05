@@ -41,7 +41,6 @@ public abstract class AbstractRequestFilter implements Filter {
         //String clientIp = getClientIp(request, true, "x-forwarded-for");
         parameterMap.put("clientIp", IpUtils.getIpAddr(request));
         parameterMap.put("timestamp", request.getAttribute("timestamp"));
-        log.info("*******appId===={}*************", getAppId().getValue());
         parameterMap.put("appId", getAppId().getValue());
         parameterMap.put("systemId", getAppId().getSystemId());
         commonHeaderProcess(request, parameterMap);

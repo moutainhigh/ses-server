@@ -84,14 +84,10 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Override
     public LoginResult login(LoginEnter enter) {
 
-        log.info("*********appId********{}", enter.getAppId());
-
         if (enter.getAppId().equals(AppIDEnums.SAAS_WEB.getValue())) {
-            log.info("****① PC端登录逻辑*****appId********{}", enter.getAppId());
             // ① PC端登录逻辑
             return signIn(checkDefaultUser(enter), enter);
         } else if (enter.getAppId().equals(AppIDEnums.SAAS_APP.getValue())) {
-            log.info("****② APP端登录逻辑*****appId********{}", enter.getAppId());
             // ② APP端登录逻辑
             List<AccountsDto> checkAppUser = checkAppUser(enter);
             if (checkAppUser.size() == 1) {
@@ -556,7 +552,6 @@ public class UserTokenServiceImpl implements UserTokenService {
             /**
              * 系统外部进行设置密码
              */
-            log.info("**************获取到的RequestId===={}*********", enter.getRequestId());
             Map<String, String> hash = jedisCluster.hgetAll(enter.getRequestId());
             if (hash == null || hash.isEmpty()) {
                 throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
@@ -693,9 +688,6 @@ public class UserTokenServiceImpl implements UserTokenService {
             throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
-        map.forEach((k, v) -> {
-            log.info("存放redis中对应的key【{}】==========================vlue【{}】", k, v);
-        });
         UserToken userToken = new UserToken();
         try {
             org.apache.commons.beanutils.BeanUtils.populate(userToken, map);

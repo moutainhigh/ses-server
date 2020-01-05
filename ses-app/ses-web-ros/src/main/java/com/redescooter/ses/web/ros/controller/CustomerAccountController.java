@@ -1,11 +1,6 @@
 package com.redescooter.ses.web.ros.controller;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
@@ -18,12 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -96,7 +86,7 @@ public class CustomerAccountController {
     @PostMapping(value = "/resetPassword/{confirmRequestId}")
     @ApiOperation(value = "重置密码", response = GeneralResult.class)
     public Response<GeneralResult> resetPassword(@ApiParam("请求参数") @PathVariable("confirmRequestId") String confirmRequestId, SetPasswordEnter enter) {
-        log.info("验证码RequestId==={}",confirmRequestId);
+        enter.setRequestId(confirmRequestId);
         return new Response<>(customerRosService.customerSetPassword(enter));
     }
 }

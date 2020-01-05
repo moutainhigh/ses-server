@@ -14,7 +14,6 @@ import com.redescooter.ses.api.proxy.constant.PushResultCode;
 import com.redescooter.ses.api.proxy.service.PushProxyService;
 import com.redescooter.ses.api.proxy.vo.jiguang.PushProxyEnter;
 import com.redescooter.ses.service.proxy.config.PushConfigs;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,8 +77,6 @@ public class PushProxyServiceImpl implements PushProxyService {
     public PushJgResult push(PushProxyEnter enter) {
 
         String type = enter.getType();
-
-        log.info("...........enter.getType()======{}", enter.getType());
         switch (type) {
             case "android":
                 return this.pushAndroid(enter, enter.getRegistids());

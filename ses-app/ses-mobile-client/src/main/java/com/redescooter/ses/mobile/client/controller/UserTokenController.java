@@ -52,7 +52,6 @@ public class UserTokenController {
     @RequestMapping(value = "/login/confirm/{confirmRequestId}")
     public Response<LoginResult> loginConfirm(@PathVariable("confirmRequestId") String confirmRequestId,
                                               LoginConfirmEnter enter) {
-        log.info("多用户登录RequestId==={}", confirmRequestId);
         enter.setConfirmRequestId(confirmRequestId);
         return new Response<>(userTokenService.loginConfirm(enter));
     }
