@@ -76,7 +76,7 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
      * @return
      */
     @Override
-    public TopTenResult topTen(TopTenEnter enter) {
+    public List<TopTenResult> topTen(TopTenEnter enter) {
         return orderStatisticsServiceMapper.topTen(enter);
     }
 
