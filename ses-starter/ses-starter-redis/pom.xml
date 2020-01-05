@@ -14,11 +14,16 @@
     <description>Demo project for Spring Boot</description>
 
     <dependencies>
-        <!-- 添加对redis支持的依赖 -->
+        <!-- 添加对redis支持的依赖 SpringBoot默认使用lettcuce作为redis客户端，在这里我们使用jedis替换lettcuce所以需要排除lettcuce依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
-            <version>${spring-boot-starter-data-redis.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.lettuce</groupId>
+                    <artifactId>lettuce-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>redis.clients</groupId>
