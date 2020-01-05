@@ -88,4 +88,12 @@ public interface OrderDeliveryService {
      * @return
      */
     ScooterMapResult scooterInfor(IdEnter enter);
+
+    /**
+     * 订单节点
+     *
+     * @param enter
+     * @return
+     */
+    List<DeliveryNodeResult> nodeList(IdEnter enter);
 }

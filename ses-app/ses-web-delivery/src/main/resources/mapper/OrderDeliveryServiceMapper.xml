@@ -116,8 +116,11 @@
            cup.last_name         as driverLastName,
            cup.first_name        as driverFirstName,
            cts.license_plate     as licensePlate,
-           cts.scooter_id        as scooterId
-    from cor_delivery cdy
+            cts.scooter_id        as scooterId,
+            cts.longitule         as scooterLng,
+       cts.latitude          as scooterLat,
+       cts.tenant_id         as tenantId
+       from cor_delivery cdy
              inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
              inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
              inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
@@ -172,5 +175,19 @@
         and driver.tenant_id = #{tenantId}
         and driver.id=#{id}
         and cds.status = 1
+    </select>
+    <select id="nodeList" resultType="com.redescooter.ses.web.delivery.vo.DeliveryNodeResult">
+        select node.id        as id,
+               node.event     as event,
+               node.status    as status,
+               cup.user_id    as driverUserId,
+               cup.first_name as driverFirstName,
+               cup.last_name  as driverLastName,
+               node.event_time as eventTime
+        from cor_delivery_trace node
+                 inner join cor_user_profile cup on node.created_by = cup.user_id
+        where node.delivery_id = #{id}
+          and node.tenant_id = #{tenantId}
+          and node.dr = 0
     </select>
 </mapper>

@@ -3,12 +3,7 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
-import com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
-import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
-import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
+import com.redescooter.ses.web.delivery.vo.*;
 
 import java.util.List;
 
@@ -68,4 +63,12 @@ public interface OrderDeliveryServiceMapper {
      * @return
      */
     DriverOrderInfoResult driverDeliveryInfor(IdEnter enter);
+
+    /**
+     * 订单 节点
+     *
+     * @param enter
+     * @return
+     */
+    List<DeliveryNodeResult> nodeList(IdEnter enter);
 }

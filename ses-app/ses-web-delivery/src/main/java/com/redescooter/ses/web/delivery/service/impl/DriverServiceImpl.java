@@ -31,6 +31,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.*;
 
@@ -44,9 +45,8 @@ import java.util.*;
 @Slf4j
 @Service
 public class DriverServiceImpl implements DriverService {
-
     @Autowired
-    private RedisLock redisLock;
+    private JedisCluster jedisCluster;
     @Autowired
     private CorDriverMapper driverMapper;
     @Autowired
@@ -421,7 +421,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public GeneralResult assignScooter(AssignScooterEnter enter) {
 
-        redisLock.lock(String.valueOf(enter.getScooterId()));
+        RedisLock.getInstance(jedisCluster).lock(String.valueOf(enter.getScooterId()));
         try {
             CorDriver driver = driverService.getById(enter.getDriverId());
 
@@ -487,10 +487,10 @@ public class DriverServiceImpl implements DriverService {
             driverMapper.updateById(driver);
 
         } catch (SesWebDeliveryException e) {
-            redisLock.unlock(String.valueOf(enter.getScooterId()));
+            RedisLock.getInstance(jedisCluster).unlock(String.valueOf(enter.getScooterId()));
             throw new SesWebDeliveryException(ExceptionCodeEnums.NON_REPEATABLE.getCode(), ExceptionCodeEnums.NON_REPEATABLE.getMessage());
         } finally {
-            redisLock.unlock(String.valueOf(enter.getScooterId()));
+            RedisLock.getInstance(jedisCluster).unlock(String.valueOf(enter.getScooterId()));
         }
         return new GeneralResult(enter.getRequestId());
     }
@@ -533,7 +533,8 @@ public class DriverServiceImpl implements DriverService {
 
         driverScooterOne.setStatus(DriverScooterStatusEnums.FINSH.getValue());
         driverScooterOne.setScooterId(new Long("0"));
-        driverScooterOne.setEndTime(new Date());
+        driverScooterOne.setEndTime(null);
+        driverScooterOne.setBeginTime(null);
         driverScooterOne.setUpdatedBy(enter.getUserId());
         driverScooterOne.setUpdatedTime(new Date());
         driverScooterService.updateById(driverScooterOne);
@@ -556,7 +557,7 @@ public class DriverServiceImpl implements DriverService {
 
 
         QueryWrapper<CorTenantScooter> tenantScooterQueryWrapper = new QueryWrapper<>();
-        tenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, driverScooterOne.getScooterId());
+        tenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, scooterId);
         tenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
         tenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
 

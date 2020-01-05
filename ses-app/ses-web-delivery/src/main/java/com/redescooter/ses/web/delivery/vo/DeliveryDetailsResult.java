@@ -28,6 +28,10 @@ public class DeliveryDetailsResult extends GeneralResult {
     private Long driverId;
     @ApiModelProperty(value = "车辆id")
     private Long scooterId;
+    @ApiModelProperty(value = "车辆经度")
+    private String scooterLng;
+    @ApiModelProperty(value = "车辆纬度")
+    private String scooterLat;
     @ApiModelProperty(value = "订单编号")
     private String orderNo;
     @ApiModelProperty(value = "订单状态")
@@ -72,4 +76,11 @@ public class DeliveryDetailsResult extends GeneralResult {
     private String mileage;
 
     private String battery;
+
+    private Long tenantId;
+
+    private String tenantLng;
+
+    private String tenantLat;
+
 }

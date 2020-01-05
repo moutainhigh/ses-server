@@ -90,8 +90,8 @@ public class OrderDeliveryController {
     }
 
     @PostMapping(value = "/nodelist")
-    @ApiOperation(value = "详情节点列表", response = GeneralResult.class)
-    public Response<List<SelectDriverResult>> detailsDodelist(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    @ApiOperation(value = "详情节点列表", response = DeliveryNodeResult.class)
+    public Response<List<DeliveryNodeResult>> nodeList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(orderDeliveryService.nodeList(enter));
     }
 }

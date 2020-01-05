@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
-import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -63,6 +62,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
     @Autowired
     private CorTenantScooterMapper corTenantScooterMapper;
 
+    @Autowired
+    private CorDeliveryTraceMapper corDeliveryTraceMapper;
+
     @Reference
     private TenantBaseService tenantBaseService;
     @Reference
@@ -84,6 +86,8 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         //系统默认30分钟
         String plannedTime = enter.getAppointment() == null ? "30" : enter.getAppointment();
         String timeoutExpectde = enter.getTimeoutExpectde() == null ? "15" : enter.getTimeoutExpectde();
+        int timeDifference = Integer.parseInt(plannedTime) - Integer.parseInt(timeoutExpectde);
+
         if (enter.getDriverId() == null || enter.getDriverId() == 0) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.DRIVER_CANNOT_EMPTY.getMessage());
         }
@@ -97,20 +101,19 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         if (StringUtils.isAnyBlank(enter.getLatitude(), enter.getLongitude())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.MISSING_LATITUDE_AND_LONGITUDE.getCode(), ExceptionCodeEnums.MISSING_LATITUDE_AND_LONGITUDE.getMessage());
         }
+        //创建配送单
+        QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
+
+        QueryWrapper<CorDriverScooter> wrapper = new QueryWrapper<>();
+        wrapper.eq(CorDriverScooter.COL_DR, 0);
+        wrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
+        wrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
+        wrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
+        CorDriverScooter driverScooter = driverScooterMapper.selectOne(wrapper);
+        if (driverScooter == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
+        }
         if (enter.getId() == null || enter.getId() == 0) {
-            //创建配送单
-            QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
-
-            QueryWrapper<CorDriverScooter> wrapper = new QueryWrapper<>();
-            wrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
-            wrapper.eq(CorDriverScooter.COL_DR, 0);
-            wrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
-            wrapper.isNull(CorDriverScooter.COL_END_TIME);
-            CorDriverScooter driverScooter = driverScooterMapper.selectOne(wrapper);
-
-            if (driverScooter == null) {
-                throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
-            }
 
             CorDriver driver = driverMapper.selectById(enter.getDriverId());
 
@@ -134,9 +137,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             deliverySave.setDrivenMileage(drivenMileage);
             deliverySave.setScooterId(driverScooter.getScooterId());
             deliverySave.setTimeoutExpectde(enter.getTimeoutExpectde());
-            //配送时长减去提前预警时长
-            int timeDifference = Integer.parseInt(plannedTime) - Integer.parseInt(timeoutExpectde);
-            //设置超时预警时间
+            //配送时长减去提前预警时长,设置超时预警时间
             deliverySave.setTimeOut(DateUtils.addMinutes(new Date(), timeDifference));
             deliverySave.setPlannedTime(plannedTime);
             deliverySave.setCreatedBy(enter.getUserId());
@@ -150,30 +151,18 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         } else {
             //编辑配送单
             CorDelivery oloDelivery = deliveryMapper.selectById(enter.getId());
+
             BeanUtils.copyProperties(enter, oloDelivery);
 
-            QueryWrapper<CorDriverScooter> wrapper = new QueryWrapper<>();
-            wrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
-            wrapper.eq(CorDriverScooter.COL_DR, 0);
-            wrapper.eq(CorDriverScooter.COL_STATUS, ScooterStatusEnums.USED.getValue());
-            wrapper.isNotNull(CorDriverScooter.COL_END_TIME);
-            CorDriverScooter driverScooter = driverScooterMapper.selectOne(wrapper);
-            if (driverScooter == null) {
-                throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
-            }
             CorDriver driver = driverMapper.selectById(enter.getDriverId());
-
             if (driver == null) {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
             }
-
             oloDelivery.setScooterId(driverScooter.getScooterId());
             oloDelivery.setLatitude(new BigDecimal(enter.getLatitude()));
             oloDelivery.setLongitude(new BigDecimal(enter.getLongitude()));
             oloDelivery.setGeohash(MapUtil.geoHash(enter.getLongitude(), enter.getLatitude()));
             oloDelivery.setTimeoutExpectde(enter.getTimeoutExpectde());
-            //配送时长减去提前预警时长
-            int timeDifference = Integer.parseInt(plannedTime) - Integer.parseInt(timeoutExpectde);
             //设置超时预警时间
             oloDelivery.setTimeOut(DateUtils.addMinutes(new Date(), timeDifference));
             oloDelivery.setPlannedTime(plannedTime);
@@ -242,6 +231,10 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
 
         DeliveryDetailsResult details = orderDeliveryServiceMapper.details(enter);
+
+        QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(details.getTenantId()));
+        details.setTenantLat(queryTenantResult.getLatitude().toString());
+        details.setTenantLng(queryTenantResult.getLongitude().toString());
 
         return details;
     }
@@ -412,6 +405,11 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
                 .build();
     }
 
+    @Override
+    public List<DeliveryNodeResult> nodeList(IdEnter enter) {
+
+        return orderDeliveryServiceMapper.nodeList(enter);
+    }
     /**
      * 保存订单节点
      *
