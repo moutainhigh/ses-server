@@ -88,6 +88,7 @@ public class OrderDeliveryController {
     public Response<ScooterMapResult> scooterInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(orderDeliveryService.scooterInfor(enter));
     }
+
     @PostMapping(value = "/nodelist")
     @ApiOperation(value = "详情节点列表", response = GeneralResult.class)
     public Response<List<SelectDriverResult>> detailsDodelist(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {

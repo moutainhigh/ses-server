@@ -1,17 +1,17 @@
 package com.redescooter.ses.mobile.client.service.impl;
 
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
+import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
+import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
+import java.util.List;
 import java.util.Map;
 
 /**

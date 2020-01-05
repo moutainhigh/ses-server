@@ -23,7 +23,7 @@ public interface OrderStatisticsServiceMapper {
      * @param enter
      * @return
      */
-    TopTenResult topTen(TopTenEnter enter);
+    List<TopTenResult> topTen(TopTenEnter enter);
 
     /**
      * 车辆统计数据

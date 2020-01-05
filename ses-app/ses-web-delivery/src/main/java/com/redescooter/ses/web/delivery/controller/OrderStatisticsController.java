@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,7 +45,7 @@ public class OrderStatisticsController {
 
     @PostMapping(value = "/topTen")
     @ApiOperation(value = "司机排行榜", response = TopTenResult.class)
-    public Response<TopTenResult> topTen(@ModelAttribute @ApiParam("请求参数") TopTenEnter enter) {
+    public Response<List<TopTenResult>> topTen(@ModelAttribute @ApiParam("请求参数") TopTenEnter enter) {
         return new Response<>(orderStatisticsService.topTen(enter));
     }
 

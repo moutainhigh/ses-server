@@ -6,6 +6,7 @@ import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
 import com.redescooter.ses.web.delivery.vo.TopTenEnter;
 import com.redescooter.ses.web.delivery.vo.TopTenResult;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,7 +31,7 @@ public interface OrderStatisticsService {
      * @param enter
      * @return
      */
-    TopTenResult topTen(TopTenEnter enter);
+    List<TopTenResult> topTen(TopTenEnter enter);
 
     /**
      * 车辆骑行数据
