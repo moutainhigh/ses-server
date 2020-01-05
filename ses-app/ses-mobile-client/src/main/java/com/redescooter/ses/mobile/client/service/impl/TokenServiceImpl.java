@@ -4,7 +4,11 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
@@ -62,11 +66,9 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public GeneralResult sendCode(BaseSendMailEnter enter) {
 
-        //1. 确定邮件是否存在
-
-        //3. 加入邮箱任务
-
-
+        if (StringUtils.isEmpty(enter.getMail())) {
+            throw new MobileBException(ExceptionCodeEnums.EMAIL_IS_EMPTY.getCode(), ExceptionCodeEnums.EMAIL_IS_EMPTY.getMessage());
+        }
         GetUserEnter getUserEnter = new GetUserEnter();
         getUserEnter.setLoginName(enter.getMail());
         getUserEnter.setSystemId(SystemIDEnums.REDE_SAAS.getSystemId());

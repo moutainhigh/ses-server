@@ -71,6 +71,9 @@ public enum ExceptionCodeEnums {
 
     CODE_IS_WRONG(10027, "验证码错误"),
 
+
+    EMAIL_IS_EMPTY(10031, "邮件为空"),
+
     ;
 
     private int code;
