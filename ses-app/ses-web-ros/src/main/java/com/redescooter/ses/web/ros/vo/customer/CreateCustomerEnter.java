@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
-import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -64,11 +66,11 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String placeId;
 
     @ApiModelProperty(value = "经度")
-    @NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY, message = "经度为空")
+//    @NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY, message = "经度为空")
     private BigDecimal longitude;
 
     @ApiModelProperty(value = "纬度")
-    @NotNull(code = ValidationExceptionCode.LAT_IS_EMPTY, message = "纬度为空")
+//    @NotNull(code = ValidationExceptionCode.LAT_IS_EMPTY, message = "纬度为空")
     private BigDecimal latitude;
 
     @ApiModelProperty(value = "联系人名字")
