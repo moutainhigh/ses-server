@@ -1,5 +1,6 @@
 package com.redescooter.ses.starter.redis;
 
+import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.Random;
@@ -11,6 +12,7 @@ import java.util.Random;
  * @ClassName: RedisLock
  * @Function: redis 锁机制
  */
+@Service
 public class RedisLock {
 
     /**

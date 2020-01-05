@@ -18,7 +18,7 @@ public enum DeliveryStatusEnums {
     //待配送
     PENDING("PENDING", "pending", "1"),
 
-    // 配送中
+    //配送中
     DELIVERING("DELIVERING", "delivering", "2"),
 
     //拒单

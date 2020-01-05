@@ -66,4 +66,10 @@ public class DeliveryDetailsResult extends GeneralResult {
     private Date createdTime;
     @ApiModelProperty(value = "订单完成时间")
     private Date deliveredTime;
+
+    private Date eatTime;
+
+    private String mileage;
+
+    private String battery;
 }

@@ -1,29 +1,13 @@
 package com.redescooter.ses.web.delivery.controller;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.delivery.service.OrderDeliveryService;
-import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
-import com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
-import com.redescooter.ses.web.delivery.vo.MapResult;
-import com.redescooter.ses.web.delivery.vo.SaveOrderDeliveryEnter;
-import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
-import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
+import com.redescooter.ses.web.delivery.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -64,7 +48,7 @@ public class OrderDeliveryController {
 
     @PostMapping(value = "/closed")
     @ApiOperation(value = "订单关闭", response = SelectDriverResult.class)
-    public Response<GeneralResult> closed(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<GeneralResult> closed(@ModelAttribute @ApiParam("请求参数") ClosedEnter enter) {
         return new Response<>(orderDeliveryService.closed(enter));
     }
 

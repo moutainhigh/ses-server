@@ -121,7 +121,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         if (!map.containsKey(key)) {
             map.put(key, enter.getCode());
         } else {
-            if (map.get(key).isEmpty()){
+            if (map.get(key).isEmpty()) {
                 map.put(key, enter.getCode());
             }
         }
@@ -198,7 +198,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         if (!map.containsKey(key)) {
             map.put(key, String.valueOf(enter.getFreezeDate()));
         } else {
-            if (map.get(key).isEmpty()){
+            if (map.get(key).isEmpty()) {
                 map.put(key, String.valueOf(enter.getFreezeDate()));
             }
         }
@@ -229,7 +229,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         if (!map.containsKey(key)) {
             map.put(key, String.valueOf(enter.getRenewalDate()));
         } else {
-            if (map.get(key).isEmpty()){
+            if (map.get(key).isEmpty()) {
                 map.put(key, String.valueOf(enter.getRenewalDate()));
             }
         }
@@ -260,7 +260,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         if (!map.containsKey(key1)) {
             map.put(key1, String.valueOf(enter.getUnfreezeStatDate()));
         } else {
-            if (map.get(key1).isEmpty()){
+            if (map.get(key1).isEmpty()) {
                 map.put(key1, String.valueOf(enter.getUnfreezeStatDate()));
             }
         }
@@ -268,7 +268,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         if (!map.containsKey(key2)) {
             map.put(key2, String.valueOf(enter.getUnfreezeEndDate()));
         } else {
-            if (map.get(key2).isEmpty()){
+            if (map.get(key2).isEmpty()) {
                 map.put(key2, String.valueOf(enter.getUnfreezeEndDate()));
             }
         }
@@ -390,7 +390,6 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         if (configList != null && configList.size() > 0) {
             map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
         }
-
         //默认必须有的参数
         map.put("requestId", requestId);
         map.put("name", name);
@@ -469,7 +468,9 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
             log.info("存放redis中对应的key【{}】==========================vlue【{}】", k, v);
         });
 
+        //String key = new StringBuffer().append("activation:::").append(map.get("email")).append("systemId").toString();
         String key = map.get("requestId");
+        log.info("*********邮件发送key***********{}", key);
         jedisCluster.hmset(key, map);
         //默认为72小时
         jedisCluster.expire(key, seconds);

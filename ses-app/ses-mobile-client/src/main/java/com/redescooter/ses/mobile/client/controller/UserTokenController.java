@@ -53,6 +53,7 @@ public class UserTokenController {
     public Response<LoginResult> loginConfirm(@PathVariable("confirmRequestId") String confirmRequestId,
                                               LoginConfirmEnter enter) {
         log.info("多用户登录RequestId==={}", confirmRequestId);
+        enter.setConfirmRequestId(confirmRequestId);
         return new Response<>(userTokenService.loginConfirm(enter));
     }
 
@@ -67,6 +68,7 @@ public class UserTokenController {
     @ApiOperation(value = "设置密码", response = GeneralResult.class)
     @RequestMapping(value = "/setPassword/{requestId}")
     public Response<GeneralResult> sendCode(@PathVariable("requestId") String requestId, @ModelAttribute SetPasswordEnter enter) {
+        enter.setRequestId(requestId);
         return new Response<>(tokenService.setPassword(enter));
     }
 }

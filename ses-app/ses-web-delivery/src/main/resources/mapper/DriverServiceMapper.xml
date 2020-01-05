@@ -5,9 +5,9 @@
     <select id="listCount" resultType="int">
         select count(cdr.id)
         from cor_driver cdr
-        inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr=0
-        left join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr=0 and cds.end_time is null
-        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr=0
+        inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr = 0
+        inner join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
+        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr = 0
         <where>
             cdr.dr=0
             and cdr.tenant_id = #{tenantId}
@@ -37,9 +37,9 @@
         cts.license_plate as plateNumber,
         cdr.def1 as activatBoolean
         from cor_driver cdr
-        inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr=0
-        left join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr=0 and cds.end_time is null
-        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr=0
+        inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr = 0
+        inner join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
+        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr = 0
         <where>
             cdr.tenant_id=#{tenantId}
             and cdr.dr=0

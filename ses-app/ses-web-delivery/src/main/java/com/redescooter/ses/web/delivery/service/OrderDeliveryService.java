@@ -4,14 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
-import com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
-import com.redescooter.ses.web.delivery.vo.MapResult;
-import com.redescooter.ses.web.delivery.vo.SaveOrderDeliveryEnter;
-import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
-import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
+import com.redescooter.ses.web.delivery.vo.*;
 
 import java.util.List;
 import java.util.Map;
@@ -70,7 +63,7 @@ public interface OrderDeliveryService {
      * @param enter
      * @return
      */
-    GeneralResult closed(IdEnter enter);
+    GeneralResult closed(ClosedEnter enter);
 
     /**
      * 订单地图

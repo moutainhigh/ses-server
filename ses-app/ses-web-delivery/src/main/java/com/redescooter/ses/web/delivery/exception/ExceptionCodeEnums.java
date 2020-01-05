@@ -58,6 +58,11 @@ public enum ExceptionCodeEnums {
 
     PRIMARY_KEY_CANNOT_EMPTY(10020, "主键不能为空"),
 
+    NON_REPEATABLE(10021, "不可重复操作"),
+
+    DATA_EXCEPTION(10022, "数据异常"),
+
+    /******************************************************************************************************/
 
     DRIVER_IS_NOT_EXIST(10030, "司机不存在"),
 
@@ -77,7 +82,11 @@ public enum ExceptionCodeEnums {
 
     MISSING_LATITUDE_AND_LONGITUDE(10038, "经纬度信息缺失"),
 
-    ORDER_HAS_STARTED_AND_CANNOT_BE_CANCELLED(10039, "订单已开始，不能取消");
+    ORDER_HAS_STARTED_AND_CANNOT_BE_CANCELLED(10039, "订单已开始，不能取消"),
+
+    PLEASE_OPERATE_AFTER_WORK(10040, "请下班后进行操作"),
+
+    YOU_HAVE_AN_ORDER_IN_PROGRESS(10041, "你有正在进行中的订单，不可还车下班");
 
 
     private int code;

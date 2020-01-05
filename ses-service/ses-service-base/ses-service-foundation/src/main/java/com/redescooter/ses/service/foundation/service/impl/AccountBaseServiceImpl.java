@@ -562,7 +562,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      */
     @Transactional
     @Override
-    public GeneralResult sendEmailAgian(IdEnter enter) {
+    public GeneralResult sendEmailActiv(IdEnter enter) {
 
         PlaUser user = userMapper.selectById(enter.getId());
 
@@ -584,11 +584,18 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (user.getLoginName().contains("@")) {
             String str = user.getLoginName().substring(0, user.getLoginName().indexOf("@"));
             baseMailTaskEnter.setName(str);
+        } else {
+            baseMailTaskEnter.setName(user.getLoginName());
         }
-        baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
-        baseMailTaskEnter.setName(user.getLoginName());
+        if (StringUtils.equalsAnyIgnoreCase(String.valueOf(user.getUserType()),
+                String.valueOf(AccountTypeEnums.APP_EXPRESS.getAccountType()),
+                String.valueOf(AccountTypeEnums.APP_EXPRESS.getAccountType()),
+                String.valueOf(AccountTypeEnums.APP_RESTAURANT.getAccountType()))) {
+            baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
+        } else {
+            baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
+        }
         baseMailTaskEnter.setToMail(user.getLoginName());
-        baseMailTaskEnter.setUserId(enter.getUserId());
         baseMailTaskEnter.setToUserId(enter.getUserId());
         baseMailTaskEnter.setUserRequestId(enter.getRequestId());
         mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);

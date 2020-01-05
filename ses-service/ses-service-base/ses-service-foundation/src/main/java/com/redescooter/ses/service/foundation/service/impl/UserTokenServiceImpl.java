@@ -542,6 +542,7 @@ public class UserTokenServiceImpl implements UserTokenService {
                     ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
         GetUserEnter getUser = new GetUserEnter();
+        getUser.setRequestId(enter.getRequestId());
         if (StringUtils.isNotBlank(enter.getToken())) {
             UserToken userToken = getUserToken(enter.getToken());
             if (userToken.getUserId() == null || userToken.getUserId() == 0) {

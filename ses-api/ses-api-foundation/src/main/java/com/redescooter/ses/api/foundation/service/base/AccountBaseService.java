@@ -108,6 +108,6 @@ public interface AccountBaseService {
      * @param enter
      * @return
      */
-    GeneralResult sendEmailAgian(IdEnter enter);
+    GeneralResult sendEmailActiv(IdEnter enter);
 
 }
