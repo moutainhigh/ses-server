@@ -12,8 +12,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum DriverScooterStatusEnums {
 
+    NORMAL("NORMAL", "未操作", "0"),
     USED("USED", "使用中", "1"),
     FINSH("END", "归还", "2");
+
 
     private String code;
 

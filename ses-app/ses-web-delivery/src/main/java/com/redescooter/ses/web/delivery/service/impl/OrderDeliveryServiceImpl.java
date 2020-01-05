@@ -19,28 +19,12 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.OrderDeliveryServiceMapper;
-import com.redescooter.ses.web.delivery.dao.base.CorDeliveryMapper;
-import com.redescooter.ses.web.delivery.dao.base.CorDeliveryTraceMapper;
-import com.redescooter.ses.web.delivery.dao.base.CorDriverMapper;
-import com.redescooter.ses.web.delivery.dao.base.CorDriverScooterMapper;
-import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
-import com.redescooter.ses.web.delivery.dm.CorDelivery;
-import com.redescooter.ses.web.delivery.dm.CorDeliveryTrace;
-import com.redescooter.ses.web.delivery.dm.CorDriver;
-import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
-import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
+import com.redescooter.ses.web.delivery.dao.base.*;
+import com.redescooter.ses.web.delivery.dm.*;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.OrderDeliveryService;
-import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
-import com.redescooter.ses.web.delivery.vo.DeliveryMapResult;
-import com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
-import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
-import com.redescooter.ses.web.delivery.vo.MapResult;
-import com.redescooter.ses.web.delivery.vo.SaveOrderDeliveryEnter;
-import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
-import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
+import com.redescooter.ses.web.delivery.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,11 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Mr.lijiating
@@ -165,7 +145,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             deliverySave.setUpdatedTime(new Date());
             deliveryMapper.insert(deliverySave);
 
-            saveDeliveryNode(deliverySave, enter);
+            saveDeliveryNode(deliverySave, enter, null);
 
         } else {
             //编辑配送单
@@ -285,7 +265,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      * @return
      */
     @Override
-    public GeneralResult closed(IdEnter enter) {
+    public GeneralResult closed(ClosedEnter enter) {
         if (enter.getId() == null || enter.getId() == 0) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
         }
@@ -301,7 +281,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
         deliveryMapper.updateById(delivery);
 
-        saveDeliveryNode(delivery, enter);
+        saveDeliveryNode(delivery, enter, enter.getReason());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -432,7 +412,14 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
                 .build();
     }
 
-    private void saveDeliveryNode(CorDelivery dto, GeneralEnter enter) {
+    /**
+     * 保存订单节点
+     *
+     * @param dto    配送单
+     * @param enter  入参
+     * @param reason 理由及其他字段
+     */
+    private void saveDeliveryNode(CorDelivery dto, GeneralEnter enter, String reason) {
         CorDeliveryTrace deliveryTrace = new CorDeliveryTrace();
         deliveryTrace.setId(idAppService.getId(SequenceName.COR_DELIVERY_TRACE));
         deliveryTrace.setDr(0);
@@ -440,6 +427,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         deliveryTrace.setTenantId(dto.getTenantId());
         deliveryTrace.setUserId(dto.getDelivererId());
         deliveryTrace.setStatus(dto.getStatus());
+        deliveryTrace.setReason(reason);
         deliveryTrace.setEvent(statusConversionEvent(dto.getStatus()));
         deliveryTrace.setLatitude(dto.getLatitude());
         deliveryTrace.setLongitude(dto.getLongitude());

@@ -1,17 +1,17 @@
 package com.redescooter.ses.mobile.client.service.impl;
 
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
-import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
-import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
-import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,19 +62,12 @@ public class TokenServiceImpl implements TokenService {
     public GeneralResult sendCode(BaseSendMailEnter enter) {
 
         //1. 确定邮件是否存在
-
+        Boolean aBoolean = accountBaseService.chectMail(enter.getMail());
         //3. 加入邮箱任务
-
-
-        GetUserEnter getUserEnter = new GetUserEnter();
-        getUserEnter.setLoginName(enter.getMail());
-        getUserEnter.setSystemId(SystemIDEnums.REDE_SAAS.getSystemId());
-        getUserEnter.setAppId(AppIDEnums.SAAS_APP.getValue());
-        List<UserToken> appUserList = userTokenService.getAppUser(getUserEnter);
-
         String code = String.valueOf(RandomUtils.nextInt(1000, 9999));
+        SetPasswordMobileUserTaskEnter baseMailTask = new SetPasswordMobileUserTaskEnter();
 
-        BaseMailTaskEnter baseMailTask = new BaseMailTaskEnter();
+        BeanUtils.copyProperties(enter, baseMailTask);
         baseMailTask.setCode(code);
         baseMailTask.setEvent(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent());
 
@@ -85,20 +77,19 @@ public class TokenServiceImpl implements TokenService {
             baseMailTask.setName(enter.getMail().split("@", 2)[0]);
         }
         baseMailTask.setToMail(enter.getMail());
-        baseMailTask.setToUserId(appUserList.get(0).getUserId());
+        baseMailTask.setToUserId(new Long("0"));
         baseMailTask.setUserRequestId(enter.getRequestId());
         baseMailTask.setEvent(MailTemplateEventEnum.MOBILE_PASSWORD.getEvent());
         baseMailTask.setMailAppId(AppIDEnums.SAAS_APP.getValue());
         baseMailTask.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
-        SetPasswordMobileUserTaskEnter setPasswordMobileUserTaskEnter = SetPasswordMobileUserTaskEnter.builder().code(code).build();
-        BeanUtils.copyProperties(baseMailTask, setPasswordMobileUserTaskEnter);
-        mailMultiTaskService.addSetPasswordMobileUserTask(setPasswordMobileUserTaskEnter);
+        mailMultiTaskService.addSetPasswordMobileUserTask(baseMailTask);
 
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public GeneralResult setPassword(SetPasswordEnter enter) {
+
         Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
         if (map == null) {
             throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
@@ -109,11 +100,6 @@ public class TokenServiceImpl implements TokenService {
         if (!StringUtils.equals(enter.getConfirmPassword(), enter.getNewPassword())) {
             throw new MobileBException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
-
-        enter.setUserId(Long.valueOf(map.get("userId")));
-        QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
-        enter.setAppId(queryUserResult.getAppId());
-        enter.setSystemId(queryUserResult.getSystemId());
         return userTokenService.setPassword(enter);
     }
 }
