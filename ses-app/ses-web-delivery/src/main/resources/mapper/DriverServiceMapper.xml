@@ -72,4 +72,39 @@
         and cd.status != '3'
      group by cd.status
         </select>
+    <select id="driverDeliveryCountByStatus"
+            resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select cdy.status, count(*) totalCount
+        from cor_delivery cdy
+        inner join cor_driver cd on cdy.deliverer_id = cd.user_id
+        where cdy.dr = 0
+        and cdy.tenant_id =#{tenantId}
+        and cdy.status in ('3', '5', '6', '7')
+        and cd.id =#{id}
+        group by cdy.status
+    </select>
+    <select id="deliveryHistroyCount" resultType="int">
+        select count(*)
+        from cor_delivery delivery
+        inner join cor_driver cd on delivery.deliverer_id = cd.user_id
+        where delivery.tenant_id = #{tenantId}
+        and delivery.dr = 0
+        and cd.id =#{id}
+        and delivery.status in ('3', '5', '6', '7')
+    </select>
+    <select id="deliveryHistroyList" resultType="com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult">
+        select delivery.id           as id,
+                delivery.order_no     as orderNo,
+                delivery.status       as status,
+                delivery.recipient    as recipient,
+                delivery.created_time as createdTime,
+                delivery.ata          as completeTime
+        from cor_delivery delivery
+                 inner join cor_driver cd on delivery.deliverer_id = cd.user_id
+        where delivery.tenant_id = #{tenantId}
+          and delivery.dr = 0
+          and cd.id =#{id}
+          and delivery.status in ('3', '5', '6', '7')
+        limit #{pageNo},#{pageSize}
+    </select>
 </mapper>

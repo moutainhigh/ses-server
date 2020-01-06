@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.scooter.service.ScooterService;
@@ -70,9 +71,15 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private CorDeliveryService deliveryService;
     @Autowired
-    private CorDriverScooterHistoryMapper corDriverScooterHistoryMapper;
+    private CorDeliveryTraceMapper corDeliveryTraceMapper;
+    @Autowired
+    private CorDriverMapper corDriverMapper;
     @Autowired
     private CorDriverScooterHistoryService driverScooterHistoryService;
+    @Autowired
+    private CorDriverScooterMapper corDriverScooterMapper;
+    @Autowired
+    private CorScooterRideStatMapper coreCorScooterRideStatMapper;
     @Reference
     private IdAppService idAppService;
     @Reference
@@ -580,4 +587,84 @@ public class DriverServiceImpl implements DriverService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 司机已配送订单状态统计
+     *
+     * @return
+     */
+    @Override
+    public Map<String, Integer> driverDeliveryCountByStatus(IdEnter enter) {
+        List<CountByStatusResult> countByStatusResults = driverServiceMapper.driverDeliveryCountByStatus(enter);
+
+        Map<String, Integer> map = new HashMap<>();
+        for (CountByStatusResult item : countByStatusResults) {
+            map.put(item.getStatus(), item.getTotalCount());
+        }
+        for (DeliveryStatusEnums status : DeliveryStatusEnums.values()) {
+            if (!map.containsKey(status.getValue())) {
+                map.put(status.getValue(), 0);
+            }
+        }
+
+        CorDriver corDriver = corDriverMapper.selectById(enter.getId());
+
+        QueryWrapper<CorDeliveryTrace> corDeliveryTraceQueryWrapper=new QueryWrapper<>();
+        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_USER_ID,corDriver.getUserId());
+        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_DR,0);
+        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_STATUS,DeliveryStatusEnums.REJECTED.getValue());
+        List<CorDeliveryTrace> corDeliveryTraceList = corDeliveryTraceMapper.selectList(corDeliveryTraceQueryWrapper);
+
+        map.put(DeliveryStatusEnums.REJECTED.getValue(),corDeliveryTraceList.size());
+        return map;
+    }
+
+    /**
+     * 车辆 信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public DriverScooterInforResult driverScooterInfor(IdEnter enter) {
+
+        QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper=new QueryWrapper<>();
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR,0);
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID,enter.getId());
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS,DriverScooterStatusEnums.USED.getValue());
+        CorDriverScooter corDriverScooter = corDriverScooterMapper.selectOne(corDriverScooterQueryWrapper);
+
+        List<Long> scooterIdList=new ArrayList<>();
+        scooterIdList.add(corDriverScooter.getScooterId());
+        List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterIdList);
+
+        QueryWrapper<CorScooterRideStat> corScooterRideStatQueryWrapper=new QueryWrapper<>();
+        corScooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_SCOOTER_ID,scooterResultList.get(0).getId());
+        corScooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_DR,0);
+        CorScooterRideStat corScooterRideStat = coreCorScooterRideStatMapper.selectOne(corScooterRideStatQueryWrapper);
+
+        return DriverScooterInforResult.builder()
+                .id(scooterResultList.get(0).getId())
+                .battery(scooterResultList.get(0).getBattery())
+                .licensePlate(scooterResultList.get(0).getLicensePlate())
+                .mileage(corScooterRideStat==null?"0":corScooterRideStat.getTotalMileage().toString())
+                .build();
+    }
+
+    /**
+     * 订单历史
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<DeliveryHistroyResult> deliveryHistroy(DeliveryHistroyEnter enter) {
+
+        int count=driverServiceMapper.deliveryHistroyCount(enter);
+        if (count==0){
+            return PageResult.createZeroRowResult(enter);
+        }
+       List<DeliveryHistroyResult>  deliveryHistroyList=driverServiceMapper.deliveryHistroyList(enter);
+
+        return PageResult.create(enter,count,deliveryHistroyList);
+    }
 }

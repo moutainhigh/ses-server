@@ -89,4 +89,22 @@ public class DriverController {
     public Response<List<ListScooterResult>> scooterList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(driverService.scooterList(enter));
     }
+
+    @PostMapping(value = "/deliveryCountByStatus")
+    @ApiOperation(value = "司机已配送的订单状态", response = Map.class)
+    public Response<Map<String, Integer>> driverDeliveryCountByStatus(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(driverService.driverDeliveryCountByStatus(enter));
+    }
+
+    @PostMapping(value = "/scooterInfor")
+    @ApiOperation(value = "司机详情车辆信息", response = DriverScooterInforResult.class)
+    public Response<DriverScooterInforResult> driverScooterInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(driverService.driverScooterInfor(enter));
+    }
+
+    @PostMapping(value = "/deliveryHistroy")
+    @ApiOperation(value = "司机详情历史订单", response = DeliveryHistroyResult.class)
+    public Response<PageResult<DeliveryHistroyResult>> deliveryHistroy(@ModelAttribute @ApiParam("请求参数") DeliveryHistroyEnter enter) {
+        return new Response<>(driverService.deliveryHistroy(enter));
+    }
 }
