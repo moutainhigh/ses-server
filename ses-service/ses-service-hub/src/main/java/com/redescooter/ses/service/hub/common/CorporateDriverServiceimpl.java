@@ -45,7 +45,7 @@ public class CorporateDriverServiceimpl implements CorporateDriverService {
                 updateWrapper.eq(CorDriver.COL_TENANT_ID, idEnter.getTenantId());
                 updateWrapper.eq(CorDriver.COL_USER_ID, idEnter.getUserId());
                 updateWrapper.eq(CorDriver.COL_DR, 0);
-                driverService.update(updateWrapper);
+                driverService.update(driver, updateWrapper);
             });
         }
 
