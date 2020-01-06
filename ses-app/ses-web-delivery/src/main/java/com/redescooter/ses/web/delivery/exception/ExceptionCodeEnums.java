@@ -88,7 +88,12 @@ public enum ExceptionCodeEnums {
 
     PLEASE_OPERATE_AFTER_WORK(10040, "请下班后进行操作"),
 
-    YOU_HAVE_AN_ORDER_IN_PROGRESS(10041, "你有正在进行中的订单，不可还车下班");
+    YOU_HAVE_AN_ORDER_IN_PROGRESS(10041, "你有正在进行中的订单，不可还车下班"),
+
+    DELIVERY_IS_NOT_EXIST(10042,"订单不存在"),
+
+    DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER(10043,"订单不能分给同一人"),
+    ;
 
 
     private int code;

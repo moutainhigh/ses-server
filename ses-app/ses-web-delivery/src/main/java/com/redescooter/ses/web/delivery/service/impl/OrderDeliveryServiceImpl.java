@@ -59,6 +59,8 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
     private CorDeliveryTraceMapper deliveryTraceMapper;
     @Autowired
     private CorDriverMapper driverMapper;
+    @Autowired
+    private CorDeliveryMapper corDeliveryMapper;
 
     @Autowired
     private CorTenantScooterMapper corTenantScooterMapper;
@@ -147,7 +149,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             deliverySave.setUpdatedTime(new Date());
             deliveryMapper.insert(deliverySave);
 
-            saveDeliveryNode(deliverySave, enter, null);
+            saveDeliveryNode(deliverySave, enter, null,statusConversionEvent(deliverySave.getStatus()));
 
         } else {
             //编辑配送单
@@ -279,7 +281,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
         deliveryMapper.updateById(delivery);
 
-        saveDeliveryNode(delivery, enter, enter.getReason());
+        saveDeliveryNode(delivery, enter, enter.getReason(),statusConversionEvent(delivery.getStatus()));
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -412,9 +414,44 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
     @Override
     public List<DeliveryNodeResult> nodeList(IdEnter enter) {
-
         return orderDeliveryServiceMapper.nodeList(enter);
     }
+
+    /**
+     * 订单重新分配
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult deliveryReset(DeliveryResetEnter enter) {
+
+        CorDelivery corDelivery = deliveryMapper.selectById(enter.getId());
+        if (corDelivery==null){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+        }
+
+        CorDriver corDriver = driverMapper.selectById(enter.getDriverId());
+        if (corDriver==null){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+        }
+        if (corDelivery.getDelivererId()==corDriver.getUserId()){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getCode(),ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
+        }
+
+        corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateUtil.DEFAULT_DATETIME_FORMAT));
+        corDelivery.setStatus(DeliveryStatusEnums.PENDING.getValue());
+        corDelivery.setDelivererId(corDriver.getUserId());
+        corDelivery.setUpdatedBy(enter.getUserId());
+        corDelivery.setUpdatedTime(new Date());
+        corDeliveryMapper.updateById(corDelivery);
+
+        // 保存日志
+        saveDeliveryNode(corDelivery,enter,null,DeliveryEventEnums.CHANAGE.getValue());
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
     /**
      * 保存订单节点
      *
@@ -422,7 +459,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      * @param enter  入参
      * @param reason 理由及其他字段
      */
-    private void saveDeliveryNode(CorDelivery dto, GeneralEnter enter, String reason) {
+    private void saveDeliveryNode(CorDelivery dto, GeneralEnter enter, String reason,String event) {
         CorDeliveryTrace deliveryTrace = new CorDeliveryTrace();
         deliveryTrace.setId(idAppService.getId(SequenceName.COR_DELIVERY_TRACE));
         deliveryTrace.setDr(0);
@@ -431,7 +468,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         deliveryTrace.setUserId(dto.getDelivererId());
         deliveryTrace.setStatus(dto.getStatus());
         deliveryTrace.setReason(reason);
-        deliveryTrace.setEvent(statusConversionEvent(dto.getStatus()));
+        deliveryTrace.setEvent(event);
         deliveryTrace.setEventTime(new Date());
         deliveryTrace.setLatitude(dto.getLatitude());
         deliveryTrace.setLongitude(dto.getLongitude());

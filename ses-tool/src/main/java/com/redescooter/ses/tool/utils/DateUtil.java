@@ -645,6 +645,16 @@ public class DateUtil {
         return etime;
     }
 
+    /**
+     * 加指定分钟数
+     */
+    public static String payDesignationTime(int minutes) {
+        long etime1 = System.currentTimeMillis() + minutes * 60 * 1000;//延时函数，单位毫秒，这里是延时了30分钟
+        SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
+        String etime = time2.format(new Date(etime1));
+        return etime;
+    }
+
 
     /**
      * 加15分钟

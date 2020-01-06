@@ -96,4 +96,12 @@ public interface OrderDeliveryService {
      * @return
      */
     List<DeliveryNodeResult> nodeList(IdEnter enter);
+
+    /**
+     * 订单重新分配
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult deliveryReset(DeliveryResetEnter enter);
 }

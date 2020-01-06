@@ -94,4 +94,10 @@ public class OrderDeliveryController {
     public Response<List<DeliveryNodeResult>> nodeList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(orderDeliveryService.nodeList(enter));
     }
+
+    @PostMapping(value = "/deliveryReset")
+    @ApiOperation(value = "订单再次分配", response = GeneralResult.class)
+    public Response<GeneralResult> deliveryReset(@ModelAttribute @ApiParam("请求参数") DeliveryResetEnter enter) {
+        return new Response<>(orderDeliveryService.deliveryReset(enter));
+    }
 }

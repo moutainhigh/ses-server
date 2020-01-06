@@ -29,7 +29,10 @@ public enum DeliveryEventEnums {
     //超时完成
     TIMEOUT_COMPLETE("TIMEOUT_COMPLETE", "超时完成", "6"),
     //失败（取消订单）
-    CANCEL("CANCEL", "取消", "7");
+    CANCEL("CANCEL", "取消", "7"),
+    // 重新分配
+    CHANAGE("CHANAGE", "重新分配", "8"),
+    ;
     private String code;
 
     private String message;
