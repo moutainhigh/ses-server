@@ -101,10 +101,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
             for (SaveDeliveryStatEnter item : enter) {
                 QueryWrapper<CorDriver> queryDriverWrapper = new QueryWrapper<>();
                 queryDriverWrapper.eq(CorDriver.COL_USER_ID, item.getInputUserId());
+                queryDriverWrapper.eq(CorDriver.COL_DR,0);
                 CorDriver driver = corDriverMapper.selectOne(queryDriverWrapper);
 
                 QueryWrapper<CorDriverRideStat> driverRideStatQueryWrapper = new QueryWrapper<>();
                 driverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DRIVER_ID, driver.getId());
+                driverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DR,0);
                 CorDriverRideStat driverRideStat = corDriverRideStatMapper.selectOne(driverRideStatQueryWrapper);
 
 

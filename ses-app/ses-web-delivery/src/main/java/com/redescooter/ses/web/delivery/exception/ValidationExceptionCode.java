@@ -62,4 +62,6 @@ public interface ValidationExceptionCode {
     int RECIPIENT_IS_EMPTY = 10046;
     // 收货人 姓名不可用
     int RECIPIENT_IS_UNAVAILABLE = 10047;
+    // 耗时为空
+    int DURATION_IS_EMPTY = 10048;
 }
