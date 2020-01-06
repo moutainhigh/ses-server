@@ -96,5 +96,5 @@ public interface DriverService {
      */
     GeneralResult removeScooter(IdEnter enter);
 
-    Map<String,Integer> driverDeliveryCountByStatus();
+    //Map<String,Integer> driverDeliveryCountByStatus();
 }
