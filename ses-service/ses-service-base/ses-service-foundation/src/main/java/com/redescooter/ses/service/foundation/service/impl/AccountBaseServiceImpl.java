@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.MaggessConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
@@ -463,6 +464,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         user.setLoginName(dto.getEmail());
         user.setUserType(accountType);
         user.setStatus(UserStatusEnum.INACTIVATED.getValue());
+        //标识账号尚未激活
+        user.setDef1(MaggessConstant.ACCOUNT_ACTIVAT_BEFORE);
         user.setCreatedBy(dto.getUserId());
         user.setCreatedTime(new Date());
         user.setUpdatedBy(dto.getUserId());
@@ -488,7 +491,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermission.setUserId(user.getId());
         plaUserPermission.setSystemId(AccountTypeUtils.getSystemId(accountType));
         plaUserPermission.setAppId(AccountTypeUtils.getAppId(accountType));
-        plaUserPermission.setStatus(UserStatusEnum.INACTIVATED.getValue());
+        //TODO 为了账户多平台通用，设置为正常
+        plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUserPermission.setCreatedBy(dto.getUserId());
         plaUserPermission.setCreatedTime(new Date());
         plaUserPermission.setUpdatedBy(dto.getUserId());

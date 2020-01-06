@@ -1,11 +1,14 @@
 package com.redescooter.ses.service.foundation.job.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.MaggessConstant;
+import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.jiguang.JobResult;
 import com.redescooter.ses.api.foundation.job.RunDriverActivationStatusTaskExecutorServiceJob;
 import com.redescooter.ses.api.hub.service.corporate.CorporateDriverService;
+import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.service.base.PlaUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +17,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,6 +33,8 @@ public class RunDriverActivationStatusTaskExecutorServiceJobimpl implements RunD
 
     @Autowired
     private PlaUserService userService;
+    @Autowired
+    private PlaUserMapper userMapper;
     @Reference
     private CorporateDriverService corporateDriverService;
 
@@ -41,8 +47,8 @@ public class RunDriverActivationStatusTaskExecutorServiceJobimpl implements RunD
 
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(PlaUser.COL_DR, 0);
-        queryWrapper.isNull(PlaUser.COL_LAST_LOGIN_TIME);
-        queryWrapper.isNull(PlaUser.COL_LAST_LOGIN_TOKEN);
+        queryWrapper.eq(PlaUser.COL_DEF1, MaggessConstant.ACCOUNT_ACTIVAT_BEFORE);
+        queryWrapper.eq(PlaUser.COL_STATUS, UserStatusEnum.NORMAL.getValue());
         List<PlaUser> list = userService.list(queryWrapper);
 
         if (list.size() > 0) {
@@ -52,8 +58,13 @@ public class RunDriverActivationStatusTaskExecutorServiceJobimpl implements RunD
                 idEnter.setUserId(user.getId());
                 idEnter.setTenantId(user.getTenantId());
                 idEnterList.add(idEnter);
+                user.setDef1(MaggessConstant.ACCOUNT_ACTIVAT_AFTER);
+                user.setUpdatedBy(enter.getUserId());
+                user.setUpdatedTime(new Date());
             });
             corporateDriverService.updateDriverDef1(idEnterList);
+
+            userService.updateBatch(list);
         }
         return JobResult.success();
     }

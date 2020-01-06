@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.redescooter.ses.api.common.enums.account.LoginTypeEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
@@ -587,6 +588,18 @@ public class UserTokenServiceImpl implements UserTokenService {
         updatePassword.setUpdatedBy(emailUser.getId());
         updatePassword.setUpdatedTime(new Date());
         userPasswordMapper.updateById(updatePassword);
+
+        //将用户状态修改为正常
+        PlaUser user = new PlaUser();
+        user.setStatus(UserStatusEnum.NORMAL.getValue());
+        user.setUpdatedBy(emailUser.getId());
+        user.setUpdatedTime(new Date());
+
+        UpdateWrapper<PlaUser> userUpdate = new UpdateWrapper<>();
+        userUpdate.eq(PlaUser.COL_DR, 0);
+        userUpdate.eq(PlaUser.COL_LOGIN_NAME, emailUser.getLoginName());
+        userUpdate.eq(PlaUser.COL_STATUS, UserStatusEnum.INACTIVATED.getValue());
+        userMapper.update(user, userUpdate);
 
         if (StringUtils.isNotBlank(emailUser.getLastLoginToken())) {
             // 清除原有token,重新登录
