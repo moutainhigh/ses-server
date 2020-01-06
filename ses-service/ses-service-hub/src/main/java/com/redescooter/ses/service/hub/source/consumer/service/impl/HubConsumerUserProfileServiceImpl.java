@@ -8,8 +8,8 @@ import com.redescooter.ses.api.hub.service.customer.ConsumerUserProfileService;
 import com.redescooter.ses.api.hub.vo.QueryUserProfileResult;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
-import com.redescooter.ses.service.hub.source.consumer.dao.ConUserProfileMapper;
-import com.redescooter.ses.service.hub.source.consumer.dm.ConUserProfile;
+import com.redescooter.ses.service.hub.source.consumer.dao.HubConUserProfileMapper;
+import com.redescooter.ses.service.hub.source.consumer.dm.HubConUserProfile;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -24,11 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @DS("consumer")
 @Service
-public class ConsumerUserProfileServiceImpl implements ConsumerUserProfileService {
+public class HubConsumerUserProfileServiceImpl implements ConsumerUserProfileService {
 
 
     @Autowired
-    private ConUserProfileMapper conUserProfileMapper;
+    private HubConUserProfileMapper hubConUserProfileMapper;
 
     @Reference
     private UserProfileProService userProfileProService;
@@ -42,19 +42,19 @@ public class ConsumerUserProfileServiceImpl implements ConsumerUserProfileServic
     @Override
     public QueryUserProfileResult queryUserProfile(IdEnter enter) {
 
-        QueryWrapper<ConUserProfile> conUserProfileQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<HubConUserProfile> conUserProfileQueryWrapper = new QueryWrapper<>();
         if (enter.getUserId() != null || enter.getUserId() != 0) {
-            conUserProfileQueryWrapper.eq(ConUserProfile.COL_USER_ID, enter.getUserId());
+            conUserProfileQueryWrapper.eq(HubConUserProfile.COL_USER_ID, enter.getUserId());
         }
         if (enter.getId() != null || enter.getId() != 0) {
             conUserProfileQueryWrapper.eq("ID", enter.getId());
         }
-        ConUserProfile conUserProfile = conUserProfileMapper.selectOne(conUserProfileQueryWrapper);
-        if (conUserProfile == null) {
+        HubConUserProfile hubConUserProfile = hubConUserProfileMapper.selectOne(conUserProfileQueryWrapper);
+        if (hubConUserProfile == null) {
             throw new SeSHubException(ExceptionCodeEnums.USER_PROFILE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_PROFILE_IS_NOT_EXIST.getMessage());
         }
         QueryUserProfileResult queryUserProfileResult = new QueryUserProfileResult();
-        BeanUtils.copyProperties(conUserProfile, queryUserProfileResult);
+        BeanUtils.copyProperties(hubConUserProfile, queryUserProfileResult);
         return queryUserProfileResult;
     }
 }

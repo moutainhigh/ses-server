@@ -1,18 +1,20 @@
 package com.redescooter.ses.service.hub.source.consumer.dm;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import com.baomidou.mybatisplus.annotation.*;
-
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel(value="com.redescooter.ses.service.hub.source.consumer.dm.ConUserProfile")
+import java.io.Serializable;
+import java.util.Date;
+
+@ApiModel(value = "com.redescooter.ses.service.hub.source.consumer.dm.HubConUserProfile")
 @Data
 @TableName(value = "con_user_profile")
-public class ConUserProfile implements Serializable {
+public class HubConUserProfile implements Serializable {
     /**
      * ID
      */
@@ -24,7 +26,6 @@ public class ConUserProfile implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
     private Integer dr;
 

@@ -3,7 +3,6 @@ package com.redescooter.ses.service.hub.source.consumer.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,10 +11,10 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value = "com-redescooter-ses-service-hub-source-consumer-dm-ConUserScooter")
+@ApiModel(value = "com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter")
 @Data
 @TableName(value = "con_user_scooter")
-public class ConUserScooter implements Serializable {
+public class HubConUserScooter implements Serializable {
     /**
      * ID
      */
@@ -27,7 +26,6 @@ public class ConUserScooter implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -39,10 +37,10 @@ public class ConUserScooter implements Serializable {
     private Long tenantId;
 
     /**
-     * 司机ID
+     * 用户id
      */
     @TableField(value = "USER_ID")
-    @ApiModelProperty(value = "司机ID")
+    @ApiModelProperty(value = "用户id")
     private Long userId;
 
     /**
@@ -51,13 +49,6 @@ public class ConUserScooter implements Serializable {
     @TableField(value = "SCOOTER_ID")
     @ApiModelProperty(value = "车辆ID")
     private Long scooterId;
-
-    /**
-     * RFID
-     */
-    @TableField(value = "RFID")
-    @ApiModelProperty(value = "RFID")
-    private Long rfid;
 
     /**
      * 车辆分配开始时间
@@ -152,8 +143,6 @@ public class ConUserScooter implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String COL_ID = "ID";
-
     public static final String COL_DR = "dr";
 
     public static final String COL_TENANT_ID = "TENANT_ID";
@@ -161,8 +150,6 @@ public class ConUserScooter implements Serializable {
     public static final String COL_USER_ID = "USER_ID";
 
     public static final String COL_SCOOTER_ID = "SCOOTER_ID";
-
-    public static final String COL_RFID = "RFID";
 
     public static final String COL_BEGIN_TIME = "BEGIN_TIME";
 

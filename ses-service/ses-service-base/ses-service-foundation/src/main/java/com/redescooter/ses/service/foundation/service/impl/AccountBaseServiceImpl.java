@@ -462,7 +462,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         user.setSystemId(AccountTypeUtils.getSystemId(accountType));
         user.setLoginName(dto.getEmail());
         user.setUserType(accountType);
-        user.setStatus(UserStatusEnum.NORMAL.getValue());
+        user.setStatus(UserStatusEnum.INACTIVATED.getValue());
         user.setCreatedBy(dto.getUserId());
         user.setCreatedTime(new Date());
         user.setUpdatedBy(dto.getUserId());
@@ -488,7 +488,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermission.setUserId(user.getId());
         plaUserPermission.setSystemId(AccountTypeUtils.getSystemId(accountType));
         plaUserPermission.setAppId(AccountTypeUtils.getAppId(accountType));
-        plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
+        plaUserPermission.setStatus(UserStatusEnum.INACTIVATED.getValue());
         plaUserPermission.setCreatedBy(dto.getUserId());
         plaUserPermission.setCreatedTime(new Date());
         plaUserPermission.setUpdatedBy(dto.getUserId());

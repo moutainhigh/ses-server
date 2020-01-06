@@ -9,6 +9,7 @@ import com.redescooter.ses.api.hub.service.corporate.CorporateDriverService;
 import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.service.base.PlaUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,7 +29,7 @@ public class RunDriverActivationStatusTaskExecutorServiceJobimpl implements RunD
 
     @Autowired
     private PlaUserService userService;
-    @Autowired
+    @Reference
     private CorporateDriverService corporateDriverService;
 
     /**
@@ -47,9 +48,10 @@ public class RunDriverActivationStatusTaskExecutorServiceJobimpl implements RunD
         if (list.size() > 0) {
             List<IdEnter> idEnterList = new ArrayList<>();
             list.forEach(user -> {
-                GeneralEnter general = new GeneralEnter();
-                general.setUserId(user.getId());
-                general.setTenantId(user.getTenantId());
+                IdEnter idEnter = new IdEnter();
+                idEnter.setUserId(user.getId());
+                idEnter.setTenantId(user.getTenantId());
+                idEnterList.add(idEnter);
             });
             corporateDriverService.updateDriverDef1(idEnterList);
         }
