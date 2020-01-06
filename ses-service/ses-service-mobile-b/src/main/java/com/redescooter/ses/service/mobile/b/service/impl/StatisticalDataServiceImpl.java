@@ -328,6 +328,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
     private CorScooterRideStat buildScooterRideStat(SaveDeliveryStatEnter enter, CorDriverScooter driverScooter, CorScooterRideStatDetail scooterRideStatDetail) {
         CorScooterRideStat insertScooterRideStat = new CorScooterRideStat();
         insertScooterRideStat.setId(idAppService.getId(SequenceName.COR_SCOOTER_RIDE_STAT));
+        insertScooterRideStat.setDr(0);
         insertScooterRideStat.setTenantId(enter.getInputTenantId());
         insertScooterRideStat.setScooterId(driverScooter.getScooterId());
         insertScooterRideStat.setTotalDuration(scooterRideStatDetail.getDuration());
@@ -347,6 +348,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
     private CorScooterRideStatDetail buildScooterRideStatDetail(SaveDeliveryStatEnter enter, CorDriverScooter driverScooter, CorScooterRideStat scooterRideStat) {
         CorScooterRideStatDetail scooterRideStatDetail = new CorScooterRideStatDetail();
         scooterRideStatDetail.setId(idAppService.getId(SequenceName.COR_SCOOTER_RIDE_STAT_DETAIL));
+        scooterRideStatDetail.setDr(0);
         scooterRideStatDetail.setTenantId(enter.getInputTenantId());
         scooterRideStatDetail.setBizId(enter.getBizId());
         scooterRideStatDetail.setBizType(enter.getBizType());

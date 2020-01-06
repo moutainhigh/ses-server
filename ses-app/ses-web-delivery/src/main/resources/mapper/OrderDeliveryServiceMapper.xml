@@ -119,7 +119,9 @@
             cts.scooter_id        as scooterId,
             cts.longitule         as scooterLng,
        cts.latitude          as scooterLat,
-       cts.tenant_id         as tenantId
+       cts.tenant_id         as tenantId,
+        cdy.driven_mileage    as mileage,
+        cdy.eta               as eatTime
        from cor_delivery cdy
              inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
              inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
