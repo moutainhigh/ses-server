@@ -118,6 +118,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         List<DeliveryDetailResult> deliveryList = deliveryServiceMapper.deliveryList(enter);
 
+        QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
+        deliveryList.forEach(item->{
+            item.setTenantLongitude(queryTenantResult.getLongitude());
+            item.setTenantLatitude(queryTenantResult.getLatitude());
+        });
+
 //        //查询拒绝的订单
 //        QueryWrapper<CorDeliveryTrace> corDeliveryTraceQueryWrapper = new QueryWrapper<>();
 //        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_USER_ID, enter.getUserId());

@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.delivery.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @author Mr.lijiating
@@ -64,5 +66,13 @@ public class DriverDetailsResult extends GeneralResult {
 
     @ApiModelProperty(value = "驾驶证附件下")
     private String driverLicenseDownAnnex;
+
+    @ApiModelProperty(value = "驾驶证附件下")
+    private int age;
+
+    @ApiModelProperty(value = "驾驶证附件下")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private String joinDate;
 
 }

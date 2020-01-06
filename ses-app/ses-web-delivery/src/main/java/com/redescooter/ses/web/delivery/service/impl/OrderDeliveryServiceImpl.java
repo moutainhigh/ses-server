@@ -430,6 +430,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         deliveryTrace.setStatus(dto.getStatus());
         deliveryTrace.setReason(reason);
         deliveryTrace.setEvent(statusConversionEvent(dto.getStatus()));
+        deliveryTrace.setEventTime(new Date());
         deliveryTrace.setLatitude(dto.getLatitude());
         deliveryTrace.setLongitude(dto.getLongitude());
         deliveryTrace.setGeohash(MapUtil.geoHash(dto.getLongitude().toString(), dto.getLatitude().toString()));

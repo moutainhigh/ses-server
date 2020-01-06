@@ -281,7 +281,8 @@ public class DriverServiceImpl implements DriverService {
         result.setDriverLicenseDownAnnex(profile.getCertificatePositiveAnnex());
         result.setDriverLicenseUpAnnex(profile.getCertificateNegativeAnnex());
         result.setRequestId(enter.getRequestId());
-
+        result.setJoinDate(DateUtil.format(profile.getJoinDate(),DateUtil.DEFAULT_DATE_FORMAT));
+        result.setAge(DateUtil.dateCompare(profile.getBirthday(),new Date(),1));
         return result;
     }
 

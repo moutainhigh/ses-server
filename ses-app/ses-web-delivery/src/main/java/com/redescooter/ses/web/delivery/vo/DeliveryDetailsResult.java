@@ -64,6 +64,8 @@ public class DeliveryDetailsResult extends GeneralResult {
     private String driverFirstName;
     @ApiModelProperty(value = "司机名字")
     private String driverLastName;
+    @ApiModelProperty(value = "司机电话")
+    private String driverTel;
     @ApiModelProperty(value = "车牌号")
     private String licensePlate;
     @ApiModelProperty(value = "包裹数量")
