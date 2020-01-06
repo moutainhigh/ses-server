@@ -604,6 +604,8 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (StringUtils.isNotBlank(emailUser.getLastLoginToken())) {
             // 清除原有token,重新登录
             jedisCluster.del(emailUser.getLastLoginToken());
+            jedisCluster.del(enter.getRequestId());
+
         }
 
         return new GeneralResult(enter.getRequestId());

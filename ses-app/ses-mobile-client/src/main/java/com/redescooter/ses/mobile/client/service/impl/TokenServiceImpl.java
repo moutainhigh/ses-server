@@ -98,7 +98,6 @@ public class TokenServiceImpl implements TokenService {
             throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(map.get("verificationCode"), enter.getCode())) {
-            jedisCluster.del(enter.getRequestId());
             throw new MobileBException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
         }
         if (!StringUtils.equals(enter.getConfirmPassword(), enter.getNewPassword())) {

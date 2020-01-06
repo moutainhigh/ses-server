@@ -453,7 +453,16 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         } else {
             accountType = AccountTypeEnums.APP_RESTAURANT.getAccountType();
         }
+        QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(PlaUser.COL_LOGIN_NAME, dto.getEmail());
+        queryWrapper.eq(PlaUser.COL_DR, 0);
+        queryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
+        int count = userMapper.selectCount(queryWrapper);
 
+        if (count > 0) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
+                    ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        }
         //①、创建user信息
         PlaUser user = new PlaUser();
         user.setId(idAppService.getId(SequenceName.PLA_USER));
