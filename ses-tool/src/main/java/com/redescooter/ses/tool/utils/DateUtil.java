@@ -1,5 +1,6 @@
 package com.redescooter.ses.tool.utils;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1197,7 +1198,47 @@ public class DateUtil {
         return date;
     }
 
+    public Integer age(Date birthday){
+
+        return null;
+    }
+
+    /**
+     * 计算2个日期之间相差的  以年、月、日为单位，各自计算结果是多少
+     * 比如：2011-02-02 到  2017-03-02
+     *                                以年为单位相差为：6年
+     *                                以月为单位相差为：73个月
+     *                                以日为单位相差为：2220天
+     * @param fromDate
+     * @param toDate
+     * @param Date 表示想要的 差值  1 年 2 月 3 天
+     * @return
+     */
+    public static Integer dateCompare(Date fromDate, Date toDate, int Date){
+        Calendar  from  =  Calendar.getInstance();
+        from.setTime(fromDate);
+        Calendar  to  =  Calendar.getInstance();
+        to.setTime(toDate);
+        //只要年月
+        int fromYear = from.get(Calendar.YEAR);
+        int fromMonth = from.get(Calendar.MONTH);
+        int toYear = to.get(Calendar.YEAR);
+        int toMonth = to.get(Calendar.MONTH);
+        int year = toYear  -  fromYear;
+        int month = toYear *  12  + toMonth  -  (fromYear  *  12  +  fromMonth);
+        int day = (int) ((to.getTimeInMillis()  -  from.getTimeInMillis())  /  (24  *  3600  *  1000));
+        switch (Date){
+            case 1:
+                return year;
+            case 2:
+                return month;
+            case 3:
+                return day;
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
-        System.out.println(timeComolete(parse("2020-01-04 12:44:08", DEFAULT_DATETIME_FORMAT), parse("2020-01-04 12:44:09", DEFAULT_DATETIME_FORMAT)));
+        System.out.println(dateCompare(parse("2000-01-05 11:59:41",DEFAULT_DATETIME_FORMAT),new Date(),1));
     }
 }

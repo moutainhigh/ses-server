@@ -95,4 +95,6 @@ public interface DriverService {
      * @return
      */
     GeneralResult removeScooter(IdEnter enter);
+
+    Map<String,Integer> driverDeliveryCountByStatus();
 }
