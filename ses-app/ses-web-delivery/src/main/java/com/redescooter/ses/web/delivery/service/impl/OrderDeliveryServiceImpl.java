@@ -15,6 +15,7 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.OrderDeliveryServiceMapper;
@@ -132,6 +133,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             deliverySave.setStatus(DeliveryStatusEnums.PENDING.getValue());
             // todo 预计开始配送的时间,默认十分钟后开始配送
             deliverySave.setEtd(DateUtils.addMinutes(new Date(), Integer.parseInt("10")));
+            deliverySave.setEta(DateUtil.parse(DateUtil.pay30(), DateUtil.DEFAULT_DATETIME_FORMAT));
             BigDecimal drivenMileage = new BigDecimal(MapUtil.getDistance(enter.getLatitude(), enter.getLongitude(), tenant.getLatitude() == null ? "0" : String.valueOf(tenant.getLatitude()), tenant.getLongitude() == null ? "0" : String.valueOf(tenant.getLongitude())));
             deliverySave.setDrivenMileage(drivenMileage);
             deliverySave.setScooterId(driverScooter.getScooterId());

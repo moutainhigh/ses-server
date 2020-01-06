@@ -229,7 +229,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setId(enter.getId());
         delivery.setStatus(DeliveryStatusEnums.DELIVERING.getValue());
         delivery.setAtd(new Date());
-        delivery.setEta(DateUtil.parse(DateUtil.pay30(), DateUtil.DEFAULT_DATETIME_FORMAT));
         delivery.setDrivenMileage(new BigDecimal(enter.getMileage()));
         delivery.setUpdatedBy(enter.getUserId());
         delivery.setUpdatedTime(new Date());
