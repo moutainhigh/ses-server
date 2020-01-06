@@ -104,7 +104,7 @@ public class DriverServiceImpl implements DriverService {
         if (driver.getStatus().equals(DriverStatusEnum.DEPARTURE.getValue())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
-        if (driver.getDef1() == "true") {
+        if (driver.getDef1().equals("true")) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
         enter.setId(driver.getUserId());
@@ -291,8 +291,8 @@ public class DriverServiceImpl implements DriverService {
         result.setDriverLicenseDownAnnex(profile.getCertificatePositiveAnnex());
         result.setDriverLicenseUpAnnex(profile.getCertificateNegativeAnnex());
         result.setRequestId(enter.getRequestId());
-        result.setJoinDate(DateUtil.format(profile.getJoinDate(),DateUtil.DEFAULT_DATE_FORMAT));
-        result.setAge(DateUtil.dateCompare(profile.getBirthday(),new Date(),1));
+        result.setJoinDate(DateUtil.format(profile.getJoinDate(), DateUtil.DEFAULT_DATE_FORMAT));
+        result.setAge(DateUtil.dateCompare(profile.getBirthday(), new Date(), 1));
         return result;
     }
 
@@ -608,13 +608,13 @@ public class DriverServiceImpl implements DriverService {
 
         CorDriver corDriver = corDriverMapper.selectById(enter.getId());
 
-        QueryWrapper<CorDeliveryTrace> corDeliveryTraceQueryWrapper=new QueryWrapper<>();
-        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_USER_ID,corDriver.getUserId());
-        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_DR,0);
-        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_STATUS,DeliveryStatusEnums.REJECTED.getValue());
+        QueryWrapper<CorDeliveryTrace> corDeliveryTraceQueryWrapper = new QueryWrapper<>();
+        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_USER_ID, corDriver.getUserId());
+        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_DR, 0);
+        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_STATUS, DeliveryStatusEnums.REJECTED.getValue());
         List<CorDeliveryTrace> corDeliveryTraceList = corDeliveryTraceMapper.selectList(corDeliveryTraceQueryWrapper);
 
-        map.put(DeliveryStatusEnums.REJECTED.getValue(),corDeliveryTraceList.size());
+        map.put(DeliveryStatusEnums.REJECTED.getValue(), corDeliveryTraceList.size());
         return map;
     }
 
@@ -627,26 +627,26 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverScooterInforResult driverScooterInfor(IdEnter enter) {
 
-        QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper=new QueryWrapper<>();
-        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR,0);
-        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID,enter.getId());
-        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS,DriverScooterStatusEnums.USED.getValue());
+        QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper = new QueryWrapper<>();
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getId());
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
         CorDriverScooter corDriverScooter = corDriverScooterMapper.selectOne(corDriverScooterQueryWrapper);
 
-        List<Long> scooterIdList=new ArrayList<>();
+        List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(corDriverScooter.getScooterId());
         List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterIdList);
 
-        QueryWrapper<CorScooterRideStat> corScooterRideStatQueryWrapper=new QueryWrapper<>();
-        corScooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_SCOOTER_ID,scooterResultList.get(0).getId());
-        corScooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_DR,0);
+        QueryWrapper<CorScooterRideStat> corScooterRideStatQueryWrapper = new QueryWrapper<>();
+        corScooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_SCOOTER_ID, scooterResultList.get(0).getId());
+        corScooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_DR, 0);
         CorScooterRideStat corScooterRideStat = coreCorScooterRideStatMapper.selectOne(corScooterRideStatQueryWrapper);
 
         return DriverScooterInforResult.builder()
                 .id(scooterResultList.get(0).getId())
                 .battery(scooterResultList.get(0).getBattery())
                 .licensePlate(scooterResultList.get(0).getLicensePlate())
-                .mileage(corScooterRideStat==null?"0":corScooterRideStat.getTotalMileage().toString())
+                .mileage(corScooterRideStat == null ? "0" : corScooterRideStat.getTotalMileage().toString())
                 .build();
     }
 
@@ -659,12 +659,12 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public PageResult<DeliveryHistroyResult> deliveryHistroy(DeliveryHistroyEnter enter) {
 
-        int count=driverServiceMapper.deliveryHistroyCount(enter);
-        if (count==0){
+        int count = driverServiceMapper.deliveryHistroyCount(enter);
+        if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-       List<DeliveryHistroyResult>  deliveryHistroyList=driverServiceMapper.deliveryHistroyList(enter);
+        List<DeliveryHistroyResult> deliveryHistroyList = driverServiceMapper.deliveryHistroyList(enter);
 
-        return PageResult.create(enter,count,deliveryHistroyList);
+        return PageResult.create(enter, count, deliveryHistroyList);
     }
 }
