@@ -231,10 +231,14 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
         DeliveryDetailsResult details = orderDeliveryServiceMapper.details(enter);
 
+        List<Long> scooterId = new ArrayList<>();
+        scooterId.add(details.getScooterId());
+        List<BaseScooterResult> scooter = scooterService.scooterInfor(scooterId);
+
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(details.getTenantId()));
         details.setTenantLat(queryTenantResult.getLatitude().toString());
         details.setTenantLng(queryTenantResult.getLongitude().toString());
-
+        details.setBattery(String.valueOf(scooter.get(0).getBattery()));
         return details;
     }
 

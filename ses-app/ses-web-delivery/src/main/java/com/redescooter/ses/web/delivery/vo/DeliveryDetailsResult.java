@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.delivery.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -67,20 +69,26 @@ public class DeliveryDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "包裹数量")
     private Integer parcelQuantity = 1;
     @ApiModelProperty(value = "订单创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createdTime;
     @ApiModelProperty(value = "订单完成时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date deliveredTime;
-
+    @ApiModelProperty(value = "预计送达时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date eatTime;
-
+    @ApiModelProperty(value = "骑行公里数")
     private String mileage;
-
+    @ApiModelProperty(value = "电量")
     private String battery;
-
+    @ApiModelProperty(value = "门店Id")
     private Long tenantId;
-
+    @ApiModelProperty(value = "门店经度")
     private String tenantLng;
-
+    @ApiModelProperty(value = "门店纬度")
     private String tenantLat;
 
 }
