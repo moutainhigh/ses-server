@@ -2,6 +2,10 @@ package com.redescooter.ses.web.delivery.dao;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.web.delivery.vo.DeliveryHistroyEnter;
+import com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult;
 import com.redescooter.ses.web.delivery.vo.ListDriverPage;
 import com.redescooter.ses.web.delivery.vo.ListDriverResult;
 
@@ -39,4 +43,28 @@ public interface DriverServiceMapper {
      * @return
      */
     List<CountByStatusResult> countStatus(GeneralEnter enter);
+
+    /**
+     * 司机已配送的订单状态
+     *
+     * @param enter
+     * @return
+     */
+    List<CountByStatusResult> driverDeliveryCountByStatus(IdEnter enter);
+
+    /**
+     * 司机历史订单
+     *
+     * @param enter
+     * @return
+     */
+    int deliveryHistroyCount(DeliveryHistroyEnter enter);
+
+    /**
+     * 司机历史订单
+     *
+     * @param enter
+     * @return
+     */
+    List<DeliveryHistroyResult> deliveryHistroyList(DeliveryHistroyEnter enter);
 }

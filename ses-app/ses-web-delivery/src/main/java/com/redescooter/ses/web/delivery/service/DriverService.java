@@ -96,5 +96,25 @@ public interface DriverService {
      */
     GeneralResult removeScooter(IdEnter enter);
 
-    //Map<String,Integer> driverDeliveryCountByStatus();
+    /**
+     * 司机已配送订单状态统计
+     *
+     * @return
+     */
+    Map<String, Integer> driverDeliveryCountByStatus(IdEnter enter);
+    /**
+     * 车辆 信息
+     *
+     * @param enter
+     * @return
+     */
+    DriverScooterInforResult driverScooterInfor(IdEnter enter);
+
+    /**
+     * 订单历史
+     *
+     * @param enter
+     * @return
+     */
+    PageResult<DeliveryHistroyResult> deliveryHistroy(DeliveryHistroyEnter enter);
 }
