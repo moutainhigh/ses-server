@@ -19,14 +19,7 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.api.mobile.b.service.DeliveryService;
 import com.redescooter.ses.api.mobile.b.service.DeliveryTraceService;
-import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
-import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryListResult;
-import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
-import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryTraceEnter;
-import com.redescooter.ses.api.mobile.b.vo.StartEnter;
+import com.redescooter.ses.api.mobile.b.vo.*;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.service.mobile.b.dao.DeliveryServiceMapper;
@@ -35,6 +28,7 @@ import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryTraceMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDelivery;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
+import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.StatisticalUtil;
@@ -47,11 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -242,7 +232,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         saveDelivertTrace(enter, delivery, DeliveryEventEnums.START.getValue());
         // 更新最新的状态到 redis
         jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
-        jedisCluster.expire(enter.getId().toString(), 86400);
+        jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        } finally {
@@ -284,7 +274,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         // 更新最新的状态到 redis
         jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
-        jedisCluster.expire(enter.getId().toString(), 86400);
+        jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -336,7 +326,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         // 更新最新的状态到 redis
         jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
-        jedisCluster.expire(enter.getId().toString(), 86400);
+        jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         return new CompleteResult(delivery.getDrivenMileage().toString(),
                 StatisticalUtil.percentageUtil(delivery.getDrivenMileage().intValue(), delivery.getDrivenDuration().intValue() > 0 ? delivery.getDrivenDuration().intValue() : 1, 2)
                 , delivery.getCo2().toString()

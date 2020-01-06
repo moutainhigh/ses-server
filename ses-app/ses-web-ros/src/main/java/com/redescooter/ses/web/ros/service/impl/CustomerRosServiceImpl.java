@@ -15,10 +15,11 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.StatisticalUtil;
 import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
-import com.redescooter.ses.tool.utils.bussinessutils.AccountTypeUtils;
+import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
@@ -420,7 +421,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         //设置邮箱发送有效时间
         String key = new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString();
         jedisCluster.set(key, DateUtil.getDate());
-        jedisCluster.expire(key, 180);
+        jedisCluster.expire(key, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -650,7 +651,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         // redis 存储
         jedisCluster.set(enter.getRequestId(), code);
         // 设置超时时间
-        jedisCluster.expire(enter.getRequestId(), 60);
+        jedisCluster.expire(enter.getRequestId(), new Long(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
         VerificationCodeResult result = VerificationCodeResult.builder().base64Img(vCode.base64String).build();
         result.setRequestId(enter.getRequestId());
         System.out.println(code);
@@ -740,7 +741,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         //设置邮箱发送有效时间
         String key = new StringBuffer().append("send::").append(customer.getEmail()).toString();
         jedisCluster.set(key, DateUtil.getDate());
-        jedisCluster.expire(key, 180);
+        jedisCluster.expire(key, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());
 
         return new BooleanResult(true);
     }

@@ -10,6 +10,7 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
@@ -87,7 +88,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         }
 
         //清除上次登录token信息
-        if(StringUtils.isNotBlank(sysUser.getLastLoginToken())){
+        if (StringUtils.isNotBlank(sysUser.getLastLoginToken())) {
             jedisCluster.del(sysUser.getLastLoginToken());
         }
 
@@ -300,7 +301,7 @@ public class TokenRosServiceImpl implements TokenRosService {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
             jedisCluster.hmset(token, map);
-            jedisCluster.expire(token,60 * 60 * 24 * 30);
+            jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         } catch (IllegalAccessException e) {
             log.error("setToken IllegalAccessException userSession:" + userToken, e);
         } catch (InvocationTargetException e) {

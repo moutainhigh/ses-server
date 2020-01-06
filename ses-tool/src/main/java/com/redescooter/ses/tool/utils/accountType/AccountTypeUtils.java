@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils.bussinessutils;
+package com.redescooter.ses.tool.utils.accountType;
 
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;

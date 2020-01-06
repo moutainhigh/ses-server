@@ -28,6 +28,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
+import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -102,7 +103,7 @@ public class UserTokenServiceImpl implements UserTokenService {
                 // 放入到redis缓存中
                 String userListJson = JSON.toJSONString(checkAppUser);
                 jedisCluster.set(enter.getRequestId(), userListJson);
-                jedisCluster.expire(enter.getRequestId(), 60 * 2);
+                jedisCluster.expire(enter.getRequestId(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
                 return result;
             }
         } else {
@@ -511,7 +512,7 @@ public class UserTokenServiceImpl implements UserTokenService {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
             jedisCluster.hmset(token, map);
-            jedisCluster.expire(token, 60 * 60 * 24 * 30);
+            jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         } catch (IllegalAccessException e) {
             log.error("setToken IllegalAccessException userSession:" + userToken, e);
         } catch (InvocationTargetException e) {
