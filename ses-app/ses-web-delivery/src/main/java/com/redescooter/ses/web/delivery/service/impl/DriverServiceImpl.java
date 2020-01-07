@@ -542,24 +542,16 @@ public class DriverServiceImpl implements DriverService {
 
         long scooterId = driverScooterOne.getScooterId() == null ? 0 : driverScooterOne.getScooterId();
 
-        driverScooterOne.setStatus(DriverScooterStatusEnums.FINSH.getValue());
-        driverScooterOne.setScooterId(new Long("0"));
-        driverScooterOne.setEndTime(null);
-        driverScooterOne.setBeginTime(null);
-        driverScooterOne.setUpdatedBy(enter.getUserId());
-        driverScooterOne.setUpdatedTime(new Date());
-        driverScooterService.updateById(driverScooterOne);
-
         //加入分车历史记录
         CorDriverScooterHistory driverScooterHistory = new CorDriverScooterHistory();
         driverScooterHistory.setId(idAppService.getId(SequenceName.COR_DRIVER_SCOOTER));
         driverScooterHistory.setDr(0);
-        driverScooterHistory.setStatus(driverScooterOne.getStatus());
+        driverScooterHistory.setStatus(DriverScooterStatusEnums.FINSH.getValue());
         driverScooterHistory.setTenantId(enter.getTenantId());
         driverScooterHistory.setDriverId(driver.getId());
         driverScooterHistory.setScooterId(scooterId);
         driverScooterHistory.setBeginTime(driverScooterOne.getBeginTime());
-        driverScooterHistory.setEndTime(driverScooterOne.getEndTime());
+        driverScooterHistory.setEndTime(new Date());
         driverScooterHistory.setCreatedBy(enter.getUserId());
         driverScooterHistory.setCreatedTime(new Date());
         driverScooterHistory.setUpdatedBy(enter.getId());
@@ -583,6 +575,14 @@ public class DriverServiceImpl implements DriverService {
         driver.setUpdatedBy(enter.getUserId());
         driver.setUpdatedTime(new Date());
         driverMapper.updateById(driver);
+
+        driverScooterOne.setStatus(DriverScooterStatusEnums.FINSH.getValue());
+        driverScooterOne.setScooterId(new Long("0"));
+        driverScooterOne.setEndTime(null);
+        driverScooterOne.setBeginTime(null);
+        driverScooterOne.setUpdatedBy(enter.getUserId());
+        driverScooterOne.setUpdatedTime(new Date());
+        driverScooterService.updateById(driverScooterOne);
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -633,6 +633,9 @@ public class DriverServiceImpl implements DriverService {
         corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
         CorDriverScooter corDriverScooter = corDriverScooterMapper.selectOne(corDriverScooterQueryWrapper);
 
+        if (corDriverScooter == null) {
+            return null;
+        }
         List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(corDriverScooter.getScooterId());
         List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterIdList);
@@ -665,6 +668,33 @@ public class DriverServiceImpl implements DriverService {
         }
         List<DeliveryHistroyResult> deliveryHistroyList = driverServiceMapper.deliveryHistroyList(enter);
 
+        if (count<enter.getPageSize()){
+            int total = enter.getPageSize() - count;
+            int pageSize = enter.getPageSize();
+            if (total > 0) {
+                //查询已拒绝的订单
+                enter.setPageSize(total);
+                List<DeliveryHistroyResult> deliveryRefuseHistroyList = driverServiceMapper.deliveryRefuseHistroyList(enter);
+                count = count + deliveryRefuseHistroyList.size();
+                deliveryHistroyList.addAll(deliveryRefuseHistroyList);
+            }
+            enter.setPageSize(pageSize);
+        }
         return PageResult.create(enter, count, deliveryHistroyList);
+    }
+
+    /**
+     * 司机车辆骑行分配记录
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<DriverScooterHistoryResult> driverscooterHistroy(DriverScooterHistroyEnter enter) {
+        int count = driverServiceMapper.driverscooterHistroyCount(enter);
+        if (count==0){
+            return PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter,count,driverServiceMapper.driverscooterHistroyList(enter));
     }
 }

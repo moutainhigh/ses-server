@@ -102,6 +102,7 @@ public interface DriverService {
      * @return
      */
     Map<String, Integer> driverDeliveryCountByStatus(IdEnter enter);
+
     /**
      * 车辆 信息
      *
@@ -117,4 +118,12 @@ public interface DriverService {
      * @return
      */
     PageResult<DeliveryHistroyResult> deliveryHistroy(DeliveryHistroyEnter enter);
+
+    /**
+     * 司机车辆骑行分配记录
+     *
+     * @param enter
+     * @return
+     */
+    PageResult<DriverScooterHistoryResult> driverscooterHistroy(DriverScooterHistroyEnter enter);
 }

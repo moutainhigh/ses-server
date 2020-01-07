@@ -16,6 +16,7 @@
                 cup.first_name like concat("%",#{keyword},"%")
                 or cup.last_name like concat("%",#{keyword},"%")
                 or cup.email_1 like concat("%",#{keyword},"%")
+                or cup.tel_number_1 like concat("%",#{keyword},"%")
                 )
             </if>
             <if test="status != null and status != ''">
@@ -48,6 +49,7 @@
                 cup.first_name like concat("%",#{keyword},"%")
                 or cup.last_name like concat("%",#{keyword},"%")
                 or cup.email_1 like concat("%",#{keyword},"%")
+                or cup.tel_number_1 like concat("%",#{keyword},"%")
                 )
             </if>
             <if test="status != null and status != ''">
@@ -65,13 +67,13 @@
         limit #{startRow},#{pageSize}
     </select>
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
-     select cd.status, count(*) totalCount
-     from cor_driver cd
-     where cd.dr = 0
+        select cd.status, count(*) totalCount
+        from cor_driver cd
+        where cd.dr = 0
         and cd.tenant_id=#{tenantId}
         and cd.status != '3'
-     group by cd.status
-        </select>
+        group by cd.status
+    </select>
     <select id="driverDeliveryCountByStatus"
             resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select cdy.status, count(*) totalCount
@@ -84,27 +86,86 @@
         group by cdy.status
     </select>
     <select id="deliveryHistroyCount" resultType="int">
-        select count(*)
+       select count(*)
         from cor_delivery delivery
-        inner join cor_driver cd on delivery.deliverer_id = cd.user_id
-        where delivery.tenant_id = #{tenantId}
-        and delivery.dr = 0
-        and cd.id =#{id}
-        and delivery.status in ('3', '5', '6', '7')
+         inner join cor_driver cd on delivery.deliverer_id = cd.user_id
+         where delivery.tenant_id = #{tenantId}
+          and delivery.dr = 0
+          and cd.id = #{id}
+          and delivery.status in (
+                                  '5', '6', '7'
+            );
     </select>
     <select id="deliveryHistroyList" resultType="com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult">
+    select
+            delivery.id as id,
+            delivery.order_no as orderNo,
+            delivery.status as status,
+            delivery.recipient as recipient,
+            delivery.created_time as createdTime,
+            delivery.ata as completeTime
+        from
+            cor_delivery delivery
+        inner join
+            cor_driver cd
+                on delivery.deliverer_id = cd.user_id
+            where delivery.tenant_id = #{tenantId}
+            and delivery.dr = 0
+            and cd.id = #{id}
+            and delivery.status in (
+                '5', '6', '7'
+            )
+            limit #{pageNo},#{pageSize}
+
+    </select>
+
+    <select id="deliveryRefuseHistroyList"
+            resultType="com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult">
         select delivery.id           as id,
-                delivery.order_no     as orderNo,
-                delivery.status       as status,
-                delivery.recipient    as recipient,
-                delivery.created_time as createdTime,
-                delivery.ata          as completeTime
-        from cor_delivery delivery
+               delivery.order_no     as orderNo,
+               delivery.status       as status,
+               delivery.recipient    as recipient,
+               delivery.created_time as createdTime,
+               trace.event_time          as completeTime
+        from cor_delivery_trace trace
+                 inner join cor_delivery delivery on trace.delivery_id = delivery.id
                  inner join cor_driver cd on delivery.deliverer_id = cd.user_id
         where delivery.tenant_id = #{tenantId}
           and delivery.dr = 0
           and cd.id =#{id}
-          and delivery.status in ('3', '5', '6', '7')
+          and trace.status =3
+          limit 0,#{pageSize}
+    </select>
+
+    <select id="driverscooterHistroyCount" resultType="int">
+        select
+        count(*)
+        from cor_driver_scooter_history cdsh
+        inner join cor_tenant_scooter cts on cdsh.scooter_id = cts.scooter_id and cts.dr = 0
+        left join cor_scooter_ride_stat_detail csrsd on cdsh.scooter_id = csrsd.scooter_id and csrsd.dr = 0
+        where cdsh.status = 2
+        and cdsh.tenant_id = #{tenantId}
+        and cdsh.driver_id = #{id}
+        and (csrsd.create_time between cdsh.begin_time and cdsh.end_time)
+    </select>
+
+    <select id="driverscooterHistroyList"
+            resultType="com.redescooter.ses.web.delivery.vo.DriverScooterHistoryResult">
+        select cdsh.driver_id     as id,
+        cts.license_plate  as licensePlate,
+        cdsh.begin_time    as beginTime,
+        cdsh.end_time      as endTime,
+        sum(csrsd.mileage) as mileage
+        from cor_driver_scooter_history cdsh
+        inner join cor_tenant_scooter cts on cdsh.scooter_id = cts.scooter_id and cts.dr = 0
+        left join cor_scooter_ride_stat_detail csrsd on cdsh.scooter_id = csrsd.scooter_id and csrsd.dr = 0
+        where cdsh.status = 2
+        and cdsh.tenant_id = #{tenantId}
+        and cdsh.driver_id = #{id}
+        and (csrsd.create_time between cdsh.begin_time and cdsh.end_time)
+        group by id, licensePlate, beginTime, endTime
+        order by beginTime desc
         limit #{pageNo},#{pageSize}
     </select>
+
 </mapper>

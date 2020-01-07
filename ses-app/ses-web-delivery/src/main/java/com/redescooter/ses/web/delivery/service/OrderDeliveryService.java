@@ -71,7 +71,15 @@ public interface OrderDeliveryService {
      * @param enter
      * @return
      */
-    MapResult map(GeneralEnter enter);
+    MapResult map(MapEnter enter);
+
+    /**
+     * 车牌号列表
+     *
+     * @param enter
+     * @return
+     */
+    List<ScooterLicensePlateResult> scooterLicensePlate(ScooterLicensePlateEnter enter);
 
     /**
      * 订单信息

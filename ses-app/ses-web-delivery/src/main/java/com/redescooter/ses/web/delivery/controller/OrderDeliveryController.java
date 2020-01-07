@@ -73,8 +73,14 @@ public class OrderDeliveryController {
 
     @PostMapping(value = "/map")
     @ApiOperation(value = "地图", response = MapResult.class)
-    public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") MapEnter enter) {
         return new Response<>(orderDeliveryService.map(enter));
+    }
+
+    @PostMapping(value = "/licensePlateList")
+    @ApiOperation(value = "车牌号列表", response = ScooterLicensePlateResult.class)
+    public Response<List<ScooterLicensePlateResult>> scooterLicensePlate(@ModelAttribute @ApiParam("请求参数") ScooterLicensePlateEnter enter) {
+        return new Response<>(orderDeliveryService.scooterLicensePlate(enter));
     }
 
     @PostMapping(value = "/orderInfor")

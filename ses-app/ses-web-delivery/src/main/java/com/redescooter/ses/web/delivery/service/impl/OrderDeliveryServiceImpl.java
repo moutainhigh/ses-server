@@ -1,8 +1,10 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
+import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -15,6 +17,7 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
@@ -34,6 +37,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -64,6 +68,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
     @Autowired
     private CorTenantScooterMapper corTenantScooterMapper;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
     @Autowired
     private CorDeliveryTraceMapper corDeliveryTraceMapper;
@@ -127,7 +134,6 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             BeanUtils.copyProperties(enter, deliverySave);
             deliverySave.setId(idAppService.getId(SequenceName.COR_DELIVERY));
             deliverySave.setDr(0);
-            //TODO 这里保存的是司机的用户ID
             deliverySave.setDelivererId(driver.getUserId());
             deliverySave.setOrderNo(generateService.getOrderNo());
             deliverySave.setLatitude(new BigDecimal(enter.getLatitude()));
@@ -137,7 +143,8 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             // todo 预计开始配送的时间,默认十分钟后开始配送
             deliverySave.setEtd(DateUtils.addMinutes(new Date(), Integer.parseInt("10")));
             deliverySave.setEta(DateUtil.parse(DateUtil.pay30(), DateUtil.DEFAULT_DATETIME_FORMAT));
-            BigDecimal drivenMileage = new BigDecimal(MapUtil.getDistance(enter.getLatitude(), enter.getLongitude(), tenant.getLatitude() == null ? "0" : String.valueOf(tenant.getLatitude()), tenant.getLongitude() == null ? "0" : String.valueOf(tenant.getLongitude())));
+            BigDecimal drivenMileage = new BigDecimal(MapUtil.getDistance(enter.getLatitude(), enter.getLongitude(), tenant.getLatitude() == null ? "0" : String.valueOf(tenant.getLatitude()),
+                    tenant.getLongitude() == null ? "0" : String.valueOf(tenant.getLongitude())));
             deliverySave.setDrivenMileage(drivenMileage);
             deliverySave.setScooterId(driverScooter.getScooterId());
             deliverySave.setTimeoutExpectde(enter.getTimeoutExpectde());
@@ -283,6 +290,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         deliveryMapper.updateById(delivery);
 
         saveDeliveryNode(delivery, enter, enter.getReason(), statusConversionEvent(delivery.getStatus()));
+
+        jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
+        jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -293,15 +303,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      * @return
      */
     @Override
-    public MapResult map(GeneralEnter enter) {
+    public MapResult map(MapEnter enter) {
         // 查询门店信息
         QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
-
-        // 查询车辆信息
-        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
-        List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
 
         // 司机车辆分配数据
         List<ScooterMapResult> scooterMapList = orderDeliveryServiceMapper.scooterMap(enter);
@@ -309,6 +313,17 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
         corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
+        if (CollectionUtils.isNotEmpty(enter.getStatusList())) {
+            for (int i = 0; i < enter.getStatusList().size(); i++) {
+                if (i == 0) {
+                    corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, enter.getStatusList().get(i));
+                } else {
+                    corDeliveryQueryWrapper.or().eq(CorDelivery.COL_STATUS, enter.getStatusList().get(i));
+                }
+            }
+        } else {
+            corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, null);
+        }
         List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
 
         List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
@@ -337,6 +352,19 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
                 .scooterMapResultList(scooterMapList)
                 .deliveryMapList(deliveryMapResultList)
                 .build();
+    }
+
+
+    /**
+     * 车牌号列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ScooterLicensePlateResult> scooterLicensePlate(ScooterLicensePlateEnter enter) {
+        List<ScooterLicensePlateResult> scooterLicensePlateResults = orderDeliveryServiceMapper.scooterLicensePlateList(enter);
+        return scooterLicensePlateResults;
     }
 
     /**
@@ -399,18 +427,32 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      */
     @Override
     public ScooterMapResult scooterInfor(IdEnter enter) {
+        if (null == enter.getId() || 0 == enter.getId()) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.ID_IS_EMPTY.getCode(), ExceptionCodeEnums.ID_IS_EMPTY.getMessage());
+        }
         List<Long> scooterId = new ArrayList<>();
         scooterId.add(enter.getId());
         List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterId);
 
-        return ScooterMapResult.builder()
-                .id(scooterResultList.get(0).getId())
-                .lng(scooterResultList.get(0).getLongitule().toString())
-                .lat(scooterResultList.get(0).getLatitude().toString())
-                .battery(scooterResultList.get(0).getBattery())
-                .licensePlate(scooterResultList.get(0).getLicensePlate())
-                .status(scooterResultList.get(0).getAvailableStatus())
-                .build();
+        ScooterMapResult scooterMapResult = orderDeliveryServiceMapper.driverInfo(enter);
+        if (scooterMapResult != null) {
+            scooterMapResult.setId(scooterResultList.get(0).getId());
+            scooterMapResult.setLng(scooterResultList.get(0).getLongitule().toString());
+            scooterMapResult.setLat(scooterResultList.get(0).getLatitude().toString());
+            scooterMapResult.setBattery(scooterResultList.get(0).getBattery());
+            scooterMapResult.setLicensePlate(scooterResultList.get(0).getLicensePlate());
+            scooterMapResult.setStatus(scooterResultList.get(0).getAvailableStatus());
+        } else {
+            scooterMapResult = ScooterMapResult.builder()
+                    .id(scooterResultList.get(0).getId())
+                    .lng(scooterResultList.get(0).getLongitule().toString())
+                    .lat(scooterResultList.get(0).getLatitude().toString())
+                    .battery(scooterResultList.get(0).getBattery())
+                    .licensePlate(scooterResultList.get(0).getLicensePlate())
+                    .status(scooterResultList.get(0).getAvailableStatus())
+                    .build();
+        }
+        return scooterMapResult;
     }
 
     @Override
@@ -431,6 +473,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         if (corDelivery == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
+        if (!StringUtils.equals(corDelivery.getStatus(), DeliveryStatusEnums.REJECTED.getValue())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+        }
 
         CorDriver corDriver = driverMapper.selectById(enter.getDriverId());
         if (corDriver == null) {
@@ -438,6 +483,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
         if (corDelivery.getDelivererId() == corDriver.getUserId()) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getCode(), ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
+        }
+        if (!StringUtils.equals(corDriver.getStatus(), DriverStatusEnum.WORKING.getValue())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
 
         corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateUtil.DEFAULT_DATETIME_FORMAT));
@@ -449,6 +497,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
         // 保存日志
         saveDeliveryNode(corDelivery, enter, null, DeliveryEventEnums.CHANAGE.getValue());
+
+        jedisCluster.set(enter.getId().toString(), JSON.toJSONString(corDelivery));
+        jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -490,7 +541,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         if (status.equals(DeliveryStatusEnums.DELIVERING.getValue())) {
             return DeliveryEventEnums.START.getValue();
         }
-        if (status.equals(DeliveryStatusEnums.REJECTED.getValue())) {
+        if (status.equals(DeliveryStatusEnums.CHANGED.getValue())) {
             return DeliveryEventEnums.REJECT.getValue();
         }
         if (status.equals(DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue())) {
@@ -504,6 +555,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
         if (status.equals(DeliveryStatusEnums.CANCEL.getValue())) {
             return DeliveryEventEnums.CANCEL.getValue();
+        }
+        if (status.equals(DeliveryStatusEnums.TIMEOUT_WARNING.getValue())) {
+            return DeliveryEventEnums.TIMEOUT.getValue();
         }
         return null;
     }

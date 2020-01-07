@@ -107,4 +107,10 @@ public class DriverController {
     public Response<PageResult<DeliveryHistroyResult>> deliveryHistroy(@ModelAttribute @ApiParam("请求参数") DeliveryHistroyEnter enter) {
         return new Response<>(driverService.deliveryHistroy(enter));
     }
+
+    @PostMapping(value = "/driverScooterHistroy")
+    @ApiOperation(value = "车辆分配历史列表", response = DriverScooterHistoryResult.class)
+    public Response<PageResult<DriverScooterHistoryResult>> driverscooterHistroy(@ModelAttribute @ApiParam("请求参数") DriverScooterHistroyEnter enter) {
+        return new Response<>(driverService.driverscooterHistroy(enter));
+    }
 }

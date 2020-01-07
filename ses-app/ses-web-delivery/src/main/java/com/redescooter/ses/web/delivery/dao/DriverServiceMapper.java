@@ -4,8 +4,11 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.delivery.vo.DeliveryHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult;
+import com.redescooter.ses.web.delivery.vo.DriverScooterHistoryResult;
+import com.redescooter.ses.web.delivery.vo.DriverScooterHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.ListDriverPage;
 import com.redescooter.ses.web.delivery.vo.ListDriverResult;
 
@@ -67,4 +70,29 @@ public interface DriverServiceMapper {
      * @return
      */
     List<DeliveryHistroyResult> deliveryHistroyList(DeliveryHistroyEnter enter);
+
+    /**
+     * 查询拒绝订单历史
+     *
+     * @param enter
+     * @return
+     */
+    List<DeliveryHistroyResult> deliveryRefuseHistroyList(DeliveryHistroyEnter enter);
+
+    /**
+     * 司机车辆分配表
+     *
+     * @param enter
+     * @return
+     */
+    int driverscooterHistroyCount(DriverScooterHistroyEnter enter);
+
+    /**
+     * 司机车辆分配表
+     *
+     * @param enter
+     * @return
+     */
+    List<DriverScooterHistoryResult> driverscooterHistroyList(DriverScooterHistroyEnter enter);
+
 }
