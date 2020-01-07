@@ -105,7 +105,7 @@ public class DriverServiceImpl implements DriverService {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
         if (driver.getDef1().equals("true")) {
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+            throw new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_IS_ACTIVATED.getCode(), ExceptionCodeEnums.ACCOUNT_IS_ACTIVATED.getMessage());
         }
         enter.setId(driver.getUserId());
         GeneralResult result = accountBaseService.sendEmailActiv(enter);
