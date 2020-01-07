@@ -119,7 +119,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         List<DeliveryDetailResult> deliveryList = deliveryServiceMapper.deliveryList(enter);
 
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
-        deliveryList.forEach(item->{
+        deliveryList.forEach(item -> {
             item.setTenantLongitude(queryTenantResult.getLongitude());
             item.setTenantLatitude(queryTenantResult.getLatitude());
         });
@@ -210,8 +210,17 @@ public class DeliveryServiceImpl implements DeliveryService {
         // 上锁
 //        startDeliveryLock.lock();
 //        try {
-        CorDelivery delivery = null;
 
+        // 查询 该用户是否有配送中的订单
+        QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, DeliveryStatusEnums.DELIVERING.getValue());
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_DELIVERER_ID, enter.getUserId());
+        Integer count = corDeliveryMapper.selectCount(corDeliveryQueryWrapper);
+        if (count > 0) {
+            throw new MobileBException(ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getCode(), ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getMessage());
+        }
+
+        CorDelivery delivery = null;
         delivery = JSONObject.parseObject(jedisCluster.get(enter.getId().toString()), CorDelivery.class);
 
         if (delivery == null) {
@@ -255,6 +264,16 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Transactional
     @Override
     public GeneralResult refuse(RefuseEnter enter) {
+
+        // 查询 该用户是否有配送中的订单
+        QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, DeliveryStatusEnums.DELIVERING.getValue());
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_DELIVERER_ID, enter.getUserId());
+        Integer count = corDeliveryMapper.selectCount(corDeliveryQueryWrapper);
+        if (count > 0) {
+            throw new MobileBException(ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getCode(), ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getMessage());
+        }
+
         CorDelivery delivery = null;
 
         delivery = JSONObject.parseObject(jedisCluster.get(enter.getId().toString()), CorDelivery.class);

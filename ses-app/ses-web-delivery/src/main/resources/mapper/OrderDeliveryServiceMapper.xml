@@ -162,7 +162,6 @@
         left join cor_driver driver on cds.driver_id = driver.id and driver.dr = 0 and driver.status in (1, 2)
         left join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
         where scooter.tenant_id = #{tenantId}
-        and cds.status = 1
     </select>
     <select id="driverDeliveryInfor" resultType="com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult">
         select driver.id as id,
@@ -198,6 +197,8 @@
     <select id="scooterLicensePlateList" resultType="com.redescooter.ses.web.delivery.vo.ScooterLicensePlateResult">
         select scooter.scooter_id    as scooterId,
                scooter.license_plate as scooterLicensePlate,
+                scooter.longitule     as lng,
+                scooter.latitude      as lat,
                cd.id                 as driverId,
                profile.FIRST_NAME    as driverFirstName,
                profile.LAST_NAME     as driverLastName,
@@ -207,5 +208,8 @@
                  left join cor_driver cd on cd.id = cds.driver_id and cd.dr = 0 and cd.status = 1
                  left join cor_user_profile profile on cd.user_id = profile.USER_ID and profile.dr = 0
         where scooter.tenant_id = #{tenantId}
+        <if test="licensePlate != null and licensePlate != ''">
+            and scooter.license_plate=#{licensePlate}
+        </if>
     </select>
 </mapper>

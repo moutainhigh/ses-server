@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.delivery.vo;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class DeliveryHistroyResult extends PageResult {
+public class DeliveryHistroyResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;

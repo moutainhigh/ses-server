@@ -322,6 +322,8 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
                     corDeliveryQueryWrapper.or().eq(CorDelivery.COL_STATUS,enter.getStatusList().get(i));
                 }
             }
+        }else {
+            corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS,null);
         }
         List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
 
@@ -361,7 +363,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      * @return
      */
     @Override
-    public List<ScooterLicensePlateResult> scooterLicensePlate(GeneralEnter enter) {
+    public List<ScooterLicensePlateResult> scooterLicensePlate(ScooterLicensePlateEnter enter) {
         List<ScooterLicensePlateResult> scooterLicensePlateResults = orderDeliveryServiceMapper.scooterLicensePlateList(enter);
         return scooterLicensePlateResults;
     }

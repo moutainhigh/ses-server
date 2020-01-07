@@ -79,6 +79,8 @@ public enum ExceptionCodeEnums {
 
     DRIVER_NOT_ASSIGNED_VEHICLE(10033, "司机未分配车辆"),
 
+    DRIVER_HAS_AN_DELIVERY_IN_PROGRESS(10034,"司机有正在配送中的订单不可重复开启");
+
     ;
     private int code;
 

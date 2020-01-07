@@ -79,7 +79,7 @@ public interface OrderDeliveryService {
      * @param enter
      * @return
      */
-    List<ScooterLicensePlateResult> scooterLicensePlate(GeneralEnter enter);
+    List<ScooterLicensePlateResult> scooterLicensePlate(ScooterLicensePlateEnter enter);
 
     /**
      * 订单信息

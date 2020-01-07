@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
 
+import java.math.BigDecimal;
+
 /**
  * @ClassName:ScooterLicensePlateResult
  * @description: ScooterLicensePlateResult
@@ -25,6 +27,12 @@ public class ScooterLicensePlateResult extends GeneralResult {
 
     @ApiModelProperty(value = "车牌号")
     private String scooterLicensePlate;
+
+    @ApiModelProperty(value = "维度")
+    private BigDecimal lat;
+
+    @ApiModelProperty(value = "经度")
+    private BigDecimal lng;
 
     @ApiModelProperty(value = "司机Id")
     private Long driverId;

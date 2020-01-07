@@ -79,7 +79,7 @@ public class OrderDeliveryController {
 
     @PostMapping(value = "/licensePlateList")
     @ApiOperation(value = "车牌号列表", response = ScooterLicensePlateResult.class)
-    public Response<List<ScooterLicensePlateResult>> scooterLicensePlate(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<ScooterLicensePlateResult>> scooterLicensePlate(@ModelAttribute @ApiParam("请求参数") ScooterLicensePlateEnter enter) {
         return new Response<>(orderDeliveryService.scooterLicensePlate(enter));
     }
 

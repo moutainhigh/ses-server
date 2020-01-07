@@ -77,5 +77,5 @@ public interface OrderDeliveryServiceMapper {
      * @param enter
      * @return
      */
-    List<ScooterLicensePlateResult> scooterLicensePlateList(GeneralEnter enter);
+    List<ScooterLicensePlateResult> scooterLicensePlateList(ScooterLicensePlateEnter enter);
 }

@@ -15,14 +15,18 @@ public class CO2MoneyConversionUtil {
     private static double savingMoney;
 
     /**
-     * CO2转换
+     * CO2转换 为了业务需要 默认距离最小值为100
      *
      * @param distance
      * @return
      */
     public static String cO2Conversion(long distance) {
 
-        String zero = "0.00";
+        if (distance < 100) {
+            distance = 100;
+        }
+
+        String zero = "0.0000";
         //CO2比例 没 m 产生 co2
         cO2Proportion = 0.000071;
         DecimalFormat df = new DecimalFormat("#0.00");
@@ -34,12 +38,15 @@ public class CO2MoneyConversionUtil {
     }
 
     /**
-     * SavingMoney转换
+     * SavingMoney转换 为了业务需要 默认距离最小值为100
      *
      * @param distance
      * @return
      */
     public static String savingMoneyConversion(long distance) {
+        if (distance < 100) {
+            distance = 100;
+        }
         String zero = "0.00";
         DecimalFormat df = new DecimalFormat("#.00");
         //每m节省的钱
@@ -73,4 +80,7 @@ public class CO2MoneyConversionUtil {
         return (int) ArithUtils.div(co2, 500);
     }
 
+    public static void main(String[] args) {
+        System.out.println(CO2MoneyConversionUtil.cO2Conversion((long) 50));
+    }
 }

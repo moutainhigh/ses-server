@@ -7,7 +7,7 @@
         select sum(drsd.mileage) as mileage,
         sum(drsd.svg_speed)as svgSpeed,
         sum(drsd.co2_increment) as co2,
-        sum(drsd.saved_money) as moeny,
+        sum(drsd.saved_money) as money,
         DATE_FORMAT(drsd.update_time, '%Y-%m-%d') as times
         from cor_driver_ride_stat_detail drsd
         where drsd.driver_id=#{driverId}
