@@ -192,5 +192,6 @@
         where node.delivery_id = #{id}
           and node.tenant_id = #{tenantId}
           and node.dr = 0
+        order by node.event_time asc
     </select>
 </mapper>

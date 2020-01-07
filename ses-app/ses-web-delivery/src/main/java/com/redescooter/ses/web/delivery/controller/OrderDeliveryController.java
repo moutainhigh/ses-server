@@ -71,11 +71,11 @@ public class OrderDeliveryController {
         return new Response<>(orderDeliveryService.selectDriverList(enter));
     }
 
-    @PostMapping(value = "/map")
-    @ApiOperation(value = "地图", response = MapResult.class)
-    public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(orderDeliveryService.map(enter));
-    }
+//    @PostMapping(value = "/map")
+//    @ApiOperation(value = "地图", response = MapResult.class)
+//    public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+//        return new Response<>(orderDeliveryService.map(enter));
+//    }
 
     @PostMapping(value = "/orderInfor")
     @ApiOperation(value = "司机订单列表", response = DriverOrderInfoResult.class)

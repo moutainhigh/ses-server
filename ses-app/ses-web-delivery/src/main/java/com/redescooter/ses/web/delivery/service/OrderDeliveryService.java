@@ -71,7 +71,7 @@ public interface OrderDeliveryService {
      * @param enter
      * @return
      */
-    MapResult map(GeneralEnter enter);
+    MapResult map(MapEnter enter);
 
     /**
      * 订单信息

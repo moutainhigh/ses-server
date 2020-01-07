@@ -3,6 +3,7 @@ package com.redescooter.ses.web.delivery.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
+import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -285,57 +286,70 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         return new GeneralResult(enter.getRequestId());
     }
 
+
+//    /**
+//     * 订单地址
+//     *
+//     * @param enter
+//     * @return
+//     */
+//    @Override
+//    public MapResult map(GeneralEnter enter) {
+//        // 查询门店信息
+//        QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
+//
+//        // 查询车辆信息
+//        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
+//        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
+//        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+//        List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
+//
+//        // 司机车辆分配数据
+//        List<ScooterMapResult> scooterMapList = orderDeliveryServiceMapper.scooterMap(enter);
+//
+//        QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
+//        corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
+//        corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
+//        List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
+//
+//        List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
+//        if (CollectionUtils.isNotEmpty(deliveryList)) {
+//            deliveryList.forEach(item -> {
+//                DeliveryMapResult delivery = DeliveryMapResult.builder()
+//                        .id(item.getId())
+//                        .status(item.getStatus())
+//                        .lng(item.getLongitude().toString())
+//                        .lat(item.getLatitude().toString())
+//                        .orderNo(item.getOrderNo())
+//                        .eta(item.getEta())
+//                        .parcelQuantity(item.getParcelQuantity())
+//                        .recipient(item.getRecipient())
+//                        .recipientAddress(item.getRecipientAddress())
+//                        .recipientTel(item.getRecipientTel())
+//                        .build();
+//                deliveryMapResultList.add(delivery);
+//            });
+//        }
+//
+//        return MapResult.builder()
+//                .tenantId(tenant.getId())
+//                .tenantLng(tenant.getLongitude().toString())
+//                .tenantLat(tenant.getLatitude().toString())
+//                .scooterMapResultList(scooterMapList)
+//                .deliveryMapList(deliveryMapResultList)
+//                .build();
+//    }
+
+
     /**
-     * 订单地址
+     * 订单地图
      *
      * @param enter
      * @return
      */
     @Override
-    public MapResult map(GeneralEnter enter) {
-        // 查询门店信息
-        QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
-
-        // 查询车辆信息
-        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
-        List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
-
-        // 司机车辆分配数据
-        List<ScooterMapResult> scooterMapList = orderDeliveryServiceMapper.scooterMap(enter);
-
-        QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
-        corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
-        corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
-        List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
-
-        List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(deliveryList)) {
-            deliveryList.forEach(item -> {
-                DeliveryMapResult delivery = DeliveryMapResult.builder()
-                        .id(item.getId())
-                        .status(item.getStatus())
-                        .lng(item.getLongitude().toString())
-                        .lat(item.getLatitude().toString())
-                        .orderNo(item.getOrderNo())
-                        .eta(item.getEta())
-                        .parcelQuantity(item.getParcelQuantity())
-                        .recipient(item.getRecipient())
-                        .recipientAddress(item.getRecipientAddress())
-                        .recipientTel(item.getRecipientTel())
-                        .build();
-                deliveryMapResultList.add(delivery);
-            });
-        }
-
-        return MapResult.builder()
-                .tenantId(tenant.getId())
-                .tenantLng(tenant.getLongitude().toString())
-                .tenantLat(tenant.getLatitude().toString())
-                .scooterMapResultList(scooterMapList)
-                .deliveryMapList(deliveryMapResultList)
-                .build();
+    public MapResult map(MapEnter enter) {
+        return null;
     }
 
     /**
@@ -430,6 +444,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         if (corDelivery==null){
             throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
+        if(!StringUtils.equals(corDelivery.getStatus(),DeliveryStatusEnums.REJECTED.getValue())){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+        }
 
         CorDriver corDriver = driverMapper.selectById(enter.getDriverId());
         if (corDriver==null){
@@ -437,6 +454,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
         if (corDelivery.getDelivererId()==corDriver.getUserId()){
             throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getCode(),ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
+        }
+        if (!StringUtils.equals(corDriver.getStatus(), DriverStatusEnum.WORKING.getValue())){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
 
         corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateUtil.DEFAULT_DATETIME_FORMAT));

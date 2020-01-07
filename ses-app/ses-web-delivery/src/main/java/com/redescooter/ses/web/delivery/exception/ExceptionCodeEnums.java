@@ -64,6 +64,8 @@ public enum ExceptionCodeEnums {
 
     ACCOUNT_IS_ACTIVATED(10023, "账户已激活"),
 
+    STATUS_IS_UNAVAILABLE(10024,"状态不可用"),
+
     /******************************************************************************************************/
 
     DRIVER_IS_NOT_EXIST(10030, "司机不存在"),
