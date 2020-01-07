@@ -3,13 +3,7 @@ package com.redescooter.ses.api.mobile.b.vo;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import java.util.Map;
+import lombok.*;
 
 /**
  * @ClassName:MobileBScooterChartResult
@@ -38,6 +32,6 @@ public class MobileBScooterChartResult extends GeneralResult {
     @ApiModelProperty(value = "平均速度")
     private String avgSpeed = "0";
 
-    @ApiModelProperty(value = "图表数据")
-    Map<String, MonthlyScooterChartResult> monthlyScooterResults;
+    @ApiModelProperty(value = "时间")
+    private String times;
 }

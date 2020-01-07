@@ -24,9 +24,6 @@ public enum DeliveryStatusEnums {
     //拒单
     REJECTED("REJECTED", "rejected", "3"),
 
-    //已变更Changed 订单重新委培给某个骑手
-    CHANGED("CHANGED", "Changed", "4"),
-
     //超时完成
     TIMEOUT_COMPLETE("TIMEOUT_COMPLETE", "timeoutComplete", "5"),
 
@@ -34,10 +31,7 @@ public enum DeliveryStatusEnums {
     COMPLETED("COMPLETED", "completed", "6"),
 
     //失败（取消订单）
-    CANCEL("CANCEL", "cancel", "7"),
-
-    // 超时预警 （和订单业务无关 主要是为了推送消息定义的订单状态）
-    TIMEOUT_WARNING("TIMEOUT_WARNING", "timeout warning", "8");
+    CANCEL("CANCEL", "cancel", "7");
 
 
     private String code;

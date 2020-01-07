@@ -3,15 +3,26 @@
 <mapper namespace="com.redescooter.ses.service.mobile.b.dao.StatisticalDataServiceMapper">
 
     <select id="mobileBScooterChart"
-            resultType="com.redescooter.ses.api.mobile.b.vo.MonthlyScooterChartResult">
-        select sum(drsd.mileage) as mileage,
-        sum(drsd.svg_speed)as svgSpeed,
-        sum(drsd.co2_increment) as co2,
-        sum(drsd.saved_money) as moeny,
-        DATE_FORMAT(drsd.update_time, '%Y-%m-%d') as times
+            resultType="com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult">
+        select ifnull(sum(drsd.svg_speed), 0) as avgSpeed,
+        ifnull(sum(drsd.saved_money), 0) as totalMileage,
+        ifnull(sum(drsd.mileage), 0) as svgSpeed,
+        ifnull(sum(drsd.co2_increment), 0) as totalCo2,
+        DATE_FORMAT(drsd.create_time, '%Y-%m-%d') as times
         from cor_driver_ride_stat_detail drsd
-        where drsd.driver_id=#{driverId}
-        and drsd.tenant_id=#{tenantId}
-        group by times;
+        where drsd.dr = 0
+        and drsd.tenant_id = #{tenantId}
+        and drsd.driver_id = #{userId}
+        <if test="dateTime == null">
+            and (DATE_FORMAT(drsd.create_time, '%Y-%m-%d') between DATE_FORMAT(SUBDATE(now(), INTERVAL 1 month),
+            '%Y-%m-%d')
+            and DATE_FORMAT(now(), '%Y-%m-%d'))
+        </if>
+        <if test="dateTime != null">
+            and (DATE_FORMAT(drsd.create_time, '%Y-%m-%d') between DATE_FORMAT(SUBDATE(#{dateTime} , INTERVAL 1
+            month),'%Y-%m-%d')
+            and DATE_FORMAT(#{dateTime}, '%Y-%m-%d'))
+        </if>
+        group by times
     </select>
 </mapper>

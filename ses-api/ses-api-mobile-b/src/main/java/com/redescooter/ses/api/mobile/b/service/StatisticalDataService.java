@@ -1,11 +1,13 @@
 package com.redescooter.ses.api.mobile.b.service;
 
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
 import com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult;
 import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryStatEnter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:StatisticalDataService
@@ -37,7 +39,7 @@ public interface StatisticalDataService {
      * @param enter
      * @return
      */
-    MobileBDeliveryChartResult mobileBDeliveryChart(GeneralEnter enter);
+    MobileBDeliveryChartResult mobileBDeliveryChart(DateTimeParmEnter enter);
 
     /**
      * 车辆图表数据统计
@@ -45,6 +47,22 @@ public interface StatisticalDataService {
      * @param enter
      * @return
      */
-    MobileBScooterChartResult mobileBScooterChart(GeneralEnter enter);
+    List<MobileBScooterChartResult> mobileBScooterChart(DateTimeParmEnter enter);
+
+    /**
+     * 司机全部订单统计
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> allDriverDeliveryStatusCount(GeneralEnter enter);
+
+    /**
+     * 司机骑行总统计
+     *
+     * @param enter
+     * @return
+     */
+    MobileBScooterChartResult mobileBAllScooterChart(GeneralEnter enter);
 
 }

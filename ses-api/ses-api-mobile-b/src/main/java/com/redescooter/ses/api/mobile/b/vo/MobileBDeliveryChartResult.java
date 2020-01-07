@@ -3,13 +3,9 @@ package com.redescooter.ses.api.mobile.b.vo;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @ClassName:QueryMobileBOrderChartResult
@@ -26,10 +22,10 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class MobileBDeliveryChartResult extends GeneralResult {
 
-    @ApiModelProperty(value = "状态统计")
-    Map<String, Integer> countByStatus;
+    @ApiModelProperty(value = "非零统计")
+    private List<MonthlyDeliveryChartResult> list;
 
-    @ApiModelProperty(value = "图表统计")
-    private Map<String, MonthlyDeliveryChartResult> monthlyOrderResults;
+    @ApiModelProperty(value = "全部统计")
+    private List<MonthlyDeliveryChartResult> allList;
 
 }

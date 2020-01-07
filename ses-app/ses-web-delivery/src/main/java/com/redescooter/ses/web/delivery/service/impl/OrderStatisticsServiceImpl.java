@@ -11,11 +11,7 @@ import com.redescooter.ses.web.delivery.dao.OrderStatisticsServiceMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.service.OrderStatisticsService;
-import com.redescooter.ses.web.delivery.vo.MapResult;
-import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
-import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
-import com.redescooter.ses.web.delivery.vo.TopTenEnter;
-import com.redescooter.ses.web.delivery.vo.TopTenResult;
+import com.redescooter.ses.web.delivery.vo.*;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,8 +60,6 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
                 map.put(status.getValue(), 0);
             }
         }
-        map.remove(DeliveryStatusEnums.TIMEOUT_WARNING.getValue());
-        map.remove(DeliveryStatusEnums.CHANGED.getValue());
         return map;
     }
 

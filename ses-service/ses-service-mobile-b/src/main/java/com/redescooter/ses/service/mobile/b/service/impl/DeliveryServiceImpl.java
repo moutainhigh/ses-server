@@ -101,7 +101,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         //判断当前时间是否
 
         // 查询订单状态及数量统计
-        List<CountByStatusResult> list = deliveryServiceMapper.countByStatus(enter);
+        List<CountByStatusResult> list = deliveryServiceMapper.doingCountByStatus(enter);
 
         int count = deliveryServiceMapper.refuseDelivery(enter.getUserId(), DeliveryStatusEnums.REJECTED.getValue());
         list.add(CountByStatusResult.builder().status(DeliveryStatusEnums.REJECTED.getValue()).totalCount(count).build());
@@ -294,7 +294,6 @@ public class DeliveryServiceImpl implements DeliveryService {
     public CompleteResult complete(CompleteEnter enter) {
         List<String> deliveryStatus = new ArrayList<>();
         deliveryStatus.add(DeliveryStatusEnums.DELIVERING.getValue());
-        deliveryStatus.add(DeliveryStatusEnums.TIMEOUT_WARNING.getValue());
 
         CorDelivery delivery = null;
 

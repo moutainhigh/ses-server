@@ -1,8 +1,11 @@
 package com.redescooter.ses.service.mobile.b.dao;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult;
 import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
+import com.redescooter.ses.api.mobile.b.vo.MonthlyDeliveryChartResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -16,11 +19,20 @@ import java.util.List;
  */
 public interface DeliveryServiceMapper {
     /**
-     * 状态统计
+     * 查询进行中订单状态统计
      *
      * @return
      */
-    List<CountByStatusResult> countByStatus(DeliveryListEnter enter);
+    List<CountByStatusResult> doingCountByStatus(DeliveryListEnter enter);
+
+
+    /**
+     * 查询司机订单所有状态
+     *
+     * @param enter
+     * @return
+     */
+    List<CountByStatusResult> allDriverDeliveryStatusCount(GeneralEnter enter);
 
     /**
      * 列表
@@ -28,6 +40,15 @@ public interface DeliveryServiceMapper {
      * @return
      */
     List<DeliveryDetailResult> deliveryList(DeliveryListEnter enter);
+
+
+    /**
+     * 司机订单图表展示
+     *
+     * @param enter
+     * @return
+     */
+    List<MonthlyDeliveryChartResult> mobileBDeliveryChart(DateTimeParmEnter enter);
 
     /**
      * 拒绝的订单 统计

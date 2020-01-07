@@ -1,14 +1,11 @@
 package com.redescooter.ses.tool.utils;
 
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import static java.util.Calendar.getInstance;
 
 /**
  * description: DateUtil 时间工具类
@@ -54,7 +51,7 @@ public class DateUtil {
     /**
      * 默认标准时区
      */
-    public static final String UTC="UTC";
+    public static final String UTC = "UTC";
     /**
      * 当前时间
      */
@@ -122,9 +119,9 @@ public class DateUtil {
      * @param dateTimeStr
      * @return
      */
-    public static boolean isValidDefaultFormat(String dateTimeStr,String pattern) {
-        if(pattern==null){
-            pattern=DEFAULT_CONVERT_PATTERN;
+    public static boolean isValidDefaultFormat(String dateTimeStr, String pattern) {
+        if (pattern == null) {
+            pattern = DEFAULT_CONVERT_PATTERN;
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
         try {
@@ -580,41 +577,6 @@ public class DateUtil {
         return getDateTime(YMDHMSS);
     }
 
-    /**
-     * @param time
-     * @return java.lang.Long
-     * @Description 转换10位时间戳加1天
-     * @author jerry
-     * @date 2018/8/23 15:10
-     */
-    public static Long ten(Date time) {
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date date = calendar.getTime();
-        Long s = date.getTime() / 1000;
-        String timestamp = String.format("%010d", s);
-        Long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-    /**
-     * @param time
-     * @return java.lang.Long
-     * @Description Date类型转long类型  10位
-     * @author jerry
-     * @date 2018/8/28 15:25
-     */
-    public static Long changeTen(Date time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        Date date = calendar.getTime();
-        Long s = date.getTime() / 1000;
-        String timestamp = String.format("%010d", s);
-        Long ss = Long.valueOf(timestamp);
-        return ss;
-    }
 
     /**
      * 时间戳，格式:yyyy-MM-dd HH:mm(年-月-日 时：分)
@@ -626,26 +588,6 @@ public class DateUtil {
     }
 
     /**
-     * 加15分钟
-     */
-    public static String pay() {
-        long etime1 = System.currentTimeMillis() + 15 * 60 * 1000;//延时函数，单位毫秒，这里是延时了15分钟
-        SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));
-        return etime;
-    }
-
-    /**
-     * 加30分钟
-     */
-    public static String pay30() {
-        long etime1 = System.currentTimeMillis() + 30 * 60 * 1000;//延时函数，单位毫秒，这里是延时了30分钟
-        SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));
-        return etime;
-    }
-
-    /**
      * 加指定分钟数
      */
     public static String payDesignationTime(int minutes) {
@@ -653,96 +595,6 @@ public class DateUtil {
         SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
         String etime = time2.format(new Date(etime1));
         return etime;
-    }
-
-
-    /**
-     * 加15分钟
-     *
-     * @param time
-     * @return
-     */
-    public static Long payFive(Date time) {
-        long etime1 = (time.getTime() + 15 * 60 * 1000) / 1000;//延时函数，单位毫秒，这里是延时了15分钟
-        /*SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));*/
-        String timestamp = String.format("%010d", etime1);
-        Long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-    /**
-     * 减15分钟
-     *
-     * @param time
-     * @return
-     */
-    public static Long lessFive(Date time) {
-        long etime1 = (time.getTime() - 15 * 60 * 1000) / 1000;//延时函数，单位毫秒，这里是延时了15分钟
-        /*SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));*/
-        String timestamp = String.format("%010d", etime1);
-        Long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-    /**
-     * 加15分钟返回时分秒
-     */
-    public static String dateFive(Date time) {
-        long etime1 = (time.getTime() + 15 * 60 * 1000);//延时函数，单位毫秒，这里是延时了15分钟
-        /*SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));*/
-       /* String timestamp = String.format("%010d", etime1);
-        Long ss = Long.valueOf(timestamp);*/
-
-        SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));
-        return etime;
-    }
-
-    public static String LessTenFive(Date time) {
-        long etime1 = (time.getTime() - 15 * 60 * 1000);//延时函数，单位毫秒，这里是延时了15分钟
-        /*SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));*/
-       /* String timestamp = String.format("%010d", etime1);
-        Long ss = Long.valueOf(timestamp);*/
-
-        SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));
-        return etime;
-    }
-
-    /**
-     * 加7天
-     *
-     * @param time
-     * @return
-     */
-    public static Long SevenDay(Date time) {
-        long etime1 = (time.getTime() + 7 * 24 * 60 * 60 * 1000) / 1000;//延时函数，单位毫秒，这里是延时了7天
-        /*SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));*/
-        String timestamp = String.format("%010d", etime1);
-        Long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-    /**
-     * 加15分钟转成时间戳10位
-     */
-    public static Long payTen() {
-        long etime1 = (System.currentTimeMillis() + 15 * 60 * 1000) / 1000;//延时函数，单位毫秒，这里是延时了15分钟
-        String timestamp = String.format("%010d", etime1);
-        Long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-    public static Long payTenFive(Date time) {
-        long etime1 = (time.getTime() + 15 * 60 * 1000) / 1000;//延时函数，单位毫秒，这里是延时了15分钟
-        String timestamp = String.format("%010d", etime1);
-        Long ss = Long.valueOf(timestamp);
-        return ss;
     }
 
     /**
@@ -762,17 +614,6 @@ public class DateUtil {
         return date;
     }
 
-
-    /**
-     * 10
-     */
-    public static Long tenten() {
-        Long time1 = System.currentTimeMillis() / 1000;
-        String time = String.format("%010d", time1);
-        Long ss = Long.valueOf(time);
-        return ss;
-    }
-
     /**
      * 转换13位
      *
@@ -786,65 +627,6 @@ public class DateUtil {
         Long s = date.getTime();
         return s;
     }
-
-    /**
-     * 转换10位（预约时间  减1个小时）
-     */
-    public static Long changeString(String time) {
-        Date date = changeYMDHM(time);
-        long sss = (date.getTime() - 60 * 60 * 1000) / 1000;
-        String timestamp = String.format("%010d", sss);
-        long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-    /**
-     * 转换10位（学习培训    时间减12个小时）
-     */
-    public static Long LearnTrain_code(String time) {
-        Date date = changeYMDHM(time);
-        long sss = (date.getTime() + 60 * 12 * 60 * 1000) / 1000;
-        String timestamp = String.format("%010d", sss);
-        long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-
-    /**
-     * 加两2个小时
-     */
-    public static Long AddTwoHours(Date time) {
-        long etime1 = (time.getTime() + 120 * 60 * 1000) / 1000;//延时函数，单位毫秒，这里是延时了15分钟
-        /*SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));*/
-        String timestamp = String.format("%010d", etime1);
-        Long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-
-    public static Date plus30() {
-        /*long etime1 = System.currentTimeMillis() + 30 * 60 * 1000;//延时函数，单位毫秒，这里是延时了30分钟
-        SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));
-        *//*SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");*//*
-        Date dateTime = null;
-        try {
-            dateTime = time2.parse(etime);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return dateTime;*/
-        /*Calendar nowTime = Calendar.getInstance();
-        nowTime.add(Calendar.MINUTE, 30);//30分钟后的时间
-        return nowTime;*/
-        long time = 30 * 60 * 1000;//30分钟
-        Date now = new Date();
-        Date afterDate = new Date(now.getTime() + time);//30分钟后的时间
-
-        return afterDate;
-    }
-
 
     /**
      * @param time
@@ -1106,30 +888,17 @@ public class DateUtil {
         return week;
     }
 
-
     /**
-     * 获取指定时间内的日期数组
+     * 获取过去N天内的日期数组
      *
-     * @param start
-     * @param end
-     * @param dateFormat
-     * @return
+     * @param intervals intervals天内
+     * @return 日期数组
      */
-    public static ArrayList<String> getDayList(String start, String end, String dateFormat) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat == null ? "yyyy-MM-dd" : dateFormat);
-        Calendar st = getInstance();
-        Calendar ed = getInstance();
+    public static ArrayList<String> getDayList(int intervals, String dateFormat) {
         ArrayList<String> pastDaysList = new ArrayList<>();
-        try {
-            st.setTime(sdf.parse(start));
-            ed.setTime(sdf.parse(end));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        while (!st.after(ed)) {
-            pastDaysList.add(sdf.format(st.getTime()));
-            st.add(Calendar.DAY_OF_YEAR, 1);
+        Calendar c = Calendar.getInstance();
+        for (int i = intervals - 1; i >= 0; i--) {
+            pastDaysList.add(getPastDate(i, dateFormat));
         }
         return pastDaysList;
     }
@@ -1140,12 +909,29 @@ public class DateUtil {
      * @param intervals intervals天内
      * @return 日期数组
      */
-    public static ArrayList<String> getDayList(int intervals, String dateFormat) {
+    public static ArrayList<String> getDayList(Date date, int intervals, String dateFormat) {
         ArrayList<String> pastDaysList = new ArrayList<>();
         for (int i = intervals - 1; i >= 0; i--) {
-            pastDaysList.add(getPastDate(i, dateFormat));
+            pastDaysList.add(getTimeStr(getFrontDay(date, i), dateFormat == null ? DEFAULT_DATE_FORMAT : dateFormat));
         }
+
         return pastDaysList;
+    }
+
+    //返回某个日期前几天的日期
+    public static Date getFrontDay(Date date, int i) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.DATE, cal.get(Calendar.DATE) - i);
+        return cal.getTime();
+    }
+
+    //返回某个日期下几天的日期
+    public static Date getNextDay(Date date, int i) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.DATE, cal.get(Calendar.DATE) + i);
+        return cal.getTime();
     }
 
     /**
@@ -1197,7 +983,7 @@ public class DateUtil {
         return temp / 1000;
     }
 
-        public static Date timaConversion(String time) {
+    public static Date timaConversion(String time) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
         Date date = null;
         try {
@@ -1208,7 +994,7 @@ public class DateUtil {
         return date;
     }
 
-    public Integer age(Date birthday){
+    public Integer age(Date birthday) {
 
         return null;
     }
@@ -1216,28 +1002,29 @@ public class DateUtil {
     /**
      * 计算2个日期之间相差的  以年、月、日为单位，各自计算结果是多少
      * 比如：2011-02-02 到  2017-03-02
-     *                                以年为单位相差为：6年
-     *                                以月为单位相差为：73个月
-     *                                以日为单位相差为：2220天
+     * 以年为单位相差为：6年
+     * 以月为单位相差为：73个月
+     * 以日为单位相差为：2220天
+     *
      * @param fromDate
      * @param toDate
-     * @param Date 表示想要的 差值  1 年 2 月 3 天
+     * @param Date     表示想要的 差值  1 年 2 月 3 天
      * @return
      */
-    public static Integer dateCompare(Date fromDate, Date toDate, int Date){
-        Calendar  from  =  Calendar.getInstance();
+    public static Integer dateCompare(Date fromDate, Date toDate, int Date) {
+        Calendar from = Calendar.getInstance();
         from.setTime(fromDate);
-        Calendar  to  =  Calendar.getInstance();
+        Calendar to = Calendar.getInstance();
         to.setTime(toDate);
         //只要年月
         int fromYear = from.get(Calendar.YEAR);
         int fromMonth = from.get(Calendar.MONTH);
         int toYear = to.get(Calendar.YEAR);
         int toMonth = to.get(Calendar.MONTH);
-        int year = toYear  -  fromYear;
-        int month = toYear *  12  + toMonth  -  (fromYear  *  12  +  fromMonth);
-        int day = (int) ((to.getTimeInMillis()  -  from.getTimeInMillis())  /  (24  *  3600  *  1000));
-        switch (Date){
+        int year = toYear - fromYear;
+        int month = toYear * 12 + toMonth - (fromYear * 12 + fromMonth);
+        int day = (int) ((to.getTimeInMillis() - from.getTimeInMillis()) / (24 * 3600 * 1000));
+        switch (Date) {
             case 1:
                 return year;
             case 2:
@@ -1248,7 +1035,40 @@ public class DateUtil {
         return 0;
     }
 
+    /**
+     * 加15分钟
+     */
+    public static String pay() {
+        long etime1 = System.currentTimeMillis() + 15 * 60 * 1000;//延时函数，单位毫秒，这里是延时了15分钟
+        SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
+        String etime = time2.format(new Date(etime1));
+        return etime;
+    }
+
+    /**
+     * 加30分钟
+     */
+    public static String pay30() {
+        long etime1 = System.currentTimeMillis() + 30 * 60 * 1000;//延时函数，单位毫秒，这里是延时了30分钟
+        SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
+        String etime = time2.format(new Date(etime1));
+        return etime;
+    }
+
     public static void main(String[] args) {
-        System.out.println(dateCompare(parse("2000-01-05 11:59:41",DEFAULT_DATETIME_FORMAT),new Date(),1));
+        System.out.println(getDateTime(addDays(-30), null));
+        System.out.println("------------");
+        ArrayList<String> dayList = getDayList(addDays(-30), 30, null);
+        System.out.println(dayList);
+
+        String dateTimeStamp = getDateTimeStamp(getFrontDay(new Date(), 30));
+        System.out.println("------------");
+        System.out.println(dateTimeStamp);
+
+        System.out.println("------------");
+        String dateTimeStamp2 = getDateTimeStamp(getNextDay(new Date(), 30));
+        System.out.println(dateTimeStamp2);
+        String dateTime = getDateTime(dateAddDays(new Date(), -30), null);
+        System.out.println(dateTime);
     }
 }

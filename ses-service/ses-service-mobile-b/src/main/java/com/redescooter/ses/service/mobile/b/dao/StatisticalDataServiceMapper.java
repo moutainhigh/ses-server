@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.mobile.b.dao;
 
-import com.redescooter.ses.api.mobile.b.vo.MonthlyScooterChartResult;
-import org.apache.ibatis.annotations.Param;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ import java.util.List;
 public interface StatisticalDataServiceMapper {
 
 
-    List<MonthlyScooterChartResult> mobileBScooterChart(@Param("driverId") Long driverId, @Param("tenantId") Long tenantId);
+    List<MobileBScooterChartResult> mobileBScooterChart(DateTimeParmEnter enter);
 }

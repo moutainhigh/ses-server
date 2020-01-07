@@ -127,6 +127,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             BeanUtils.copyProperties(enter, deliverySave);
             deliverySave.setId(idAppService.getId(SequenceName.COR_DELIVERY));
             deliverySave.setDr(0);
+            //TODO 这里保存的是司机的用户ID
             deliverySave.setDelivererId(driver.getUserId());
             deliverySave.setOrderNo(generateService.getOrderNo());
             deliverySave.setLatitude(new BigDecimal(enter.getLatitude()));
@@ -149,7 +150,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             deliverySave.setUpdatedTime(new Date());
             deliveryMapper.insert(deliverySave);
 
-            saveDeliveryNode(deliverySave, enter, null,statusConversionEvent(deliverySave.getStatus()));
+            saveDeliveryNode(deliverySave, enter, null, statusConversionEvent(deliverySave.getStatus()));
 
         } else {
             //编辑配送单
@@ -281,7 +282,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
         deliveryMapper.updateById(delivery);
 
-        saveDeliveryNode(delivery, enter, enter.getReason(),statusConversionEvent(delivery.getStatus()));
+        saveDeliveryNode(delivery, enter, enter.getReason(), statusConversionEvent(delivery.getStatus()));
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -427,16 +428,16 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
     public GeneralResult deliveryReset(DeliveryResetEnter enter) {
 
         CorDelivery corDelivery = deliveryMapper.selectById(enter.getId());
-        if (corDelivery==null){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+        if (corDelivery == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
 
         CorDriver corDriver = driverMapper.selectById(enter.getDriverId());
-        if (corDriver==null){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+        if (corDriver == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
-        if (corDelivery.getDelivererId()==corDriver.getUserId()){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getCode(),ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
+        if (corDelivery.getDelivererId() == corDriver.getUserId()) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getCode(), ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
         }
 
         corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateUtil.DEFAULT_DATETIME_FORMAT));
@@ -447,7 +448,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         corDeliveryMapper.updateById(corDelivery);
 
         // 保存日志
-        saveDeliveryNode(corDelivery,enter,null,DeliveryEventEnums.CHANAGE.getValue());
+        saveDeliveryNode(corDelivery, enter, null, DeliveryEventEnums.CHANAGE.getValue());
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -459,7 +460,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      * @param enter  入参
      * @param reason 理由及其他字段
      */
-    private void saveDeliveryNode(CorDelivery dto, GeneralEnter enter, String reason,String event) {
+    private void saveDeliveryNode(CorDelivery dto, GeneralEnter enter, String reason, String event) {
         CorDeliveryTrace deliveryTrace = new CorDeliveryTrace();
         deliveryTrace.setId(idAppService.getId(SequenceName.COR_DELIVERY_TRACE));
         deliveryTrace.setDr(0);
@@ -489,7 +490,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         if (status.equals(DeliveryStatusEnums.DELIVERING.getValue())) {
             return DeliveryEventEnums.START.getValue();
         }
-        if (status.equals(DeliveryStatusEnums.CHANGED.getValue())) {
+        if (status.equals(DeliveryStatusEnums.REJECTED.getValue())) {
             return DeliveryEventEnums.REJECT.getValue();
         }
         if (status.equals(DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue())) {
@@ -503,9 +504,6 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
         if (status.equals(DeliveryStatusEnums.CANCEL.getValue())) {
             return DeliveryEventEnums.CANCEL.getValue();
-        }
-        if (status.equals(DeliveryStatusEnums.TIMEOUT_WARNING.getValue())) {
-            return DeliveryEventEnums.TIMEOUT.getValue();
         }
         return null;
     }

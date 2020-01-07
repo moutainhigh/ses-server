@@ -3,11 +3,7 @@ package com.redescooter.ses.api.mobile.b.vo;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * @description: MonthlyOrderResult
@@ -23,19 +19,19 @@ import lombok.NoArgsConstructor;
 public class MonthlyDeliveryChartResult extends GeneralResult {
 
     @ApiModelProperty(value = "完成总计")
-    private int completeTotal;
+    private int completed = 0;
 
     @ApiModelProperty(value = "超时完成总计")
-    private int delayeCompleteTotal;
+    private int timeoutComplete = 0;
 
     @ApiModelProperty(value = "拒绝总计总计")
-    private int declined;
+    private int rejected = 0;
 
     @ApiModelProperty(value = "取消总计")
-    private int cancelTotal;
+    private int cancel = 0;
 
     @ApiModelProperty(value = "当天总计订单")
-    private int total;
+    private int total = 0;
 
     @ApiModelProperty(value = "日期")
     private String times;

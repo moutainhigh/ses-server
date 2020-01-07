@@ -1,7 +1,9 @@
 package com.redescooter.ses.api.common.vo.base;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -20,12 +22,18 @@ import java.util.Date;
 public class DateTimeParmEnter<T> extends GeneralEnter {
 
     @ApiModelProperty(value = "日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date dateTime;
 
     @ApiModelProperty(value = "开始日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date startDateTime;
 
     @ApiModelProperty(value = "结束日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date endDateTime;
 
     private T t;

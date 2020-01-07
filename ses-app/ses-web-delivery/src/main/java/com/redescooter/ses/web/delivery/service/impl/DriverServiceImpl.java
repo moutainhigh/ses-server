@@ -526,7 +526,7 @@ public class DriverServiceImpl implements DriverService {
         queryWrapper.eq(CorDelivery.COL_DELIVERER_ID, driver.getUserId());
         queryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
         queryWrapper.eq(CorDelivery.COL_DR, 0);
-        queryWrapper.in(CorDelivery.COL_STATUS, DeliveryStatusEnums.PENDING.getValue(), DeliveryStatusEnums.DELIVERING.getValue(), DeliveryStatusEnums.TIMEOUT_WARNING.getValue());
+        queryWrapper.in(CorDelivery.COL_STATUS, DeliveryStatusEnums.PENDING.getValue(), DeliveryStatusEnums.DELIVERING.getValue());
         int count = deliveryService.count(queryWrapper);
         if (count != 0) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.YOU_HAVE_AN_ORDER_IN_PROGRESS.getCode(), ExceptionCodeEnums.YOU_HAVE_AN_ORDER_IN_PROGRESS.getMessage());

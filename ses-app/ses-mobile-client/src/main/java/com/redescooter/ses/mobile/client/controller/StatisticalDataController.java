@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.client.controller;
 
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
@@ -9,11 +10,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:StatisticalDataController
@@ -29,19 +29,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/data", method = RequestMethod.POST)
 public class StatisticalDataController {
 
-
     @Reference
     private StatisticalDataService statisticalDataService;
 
+    @ApiOperation(value = "司机骑行总统计")
+    @RequestMapping(value = "/mobileBAllScooterChart")
+    public Response<MobileBScooterChartResult> mobileBAllScooterChart(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(statisticalDataService.mobileBAllScooterChart(enter));
+    }
+
     @ApiOperation(value = "车辆统计数据")
     @RequestMapping(value = "/mobileBScooter")
-    public Response<MobileBScooterChartResult> mobileBScooterChart(@ModelAttribute GeneralEnter enter) {
+    public Response<List<MobileBScooterChartResult>> mobileBScooterChart(@ModelAttribute DateTimeParmEnter enter) {
         return new Response<>(statisticalDataService.mobileBScooterChart(enter));
     }
 
     @ApiOperation(value = "订单统计数据")
     @RequestMapping(value = "/mobileBDelivery")
-    public Response<MobileBDeliveryChartResult> mobileBDeliveryChart(@ModelAttribute GeneralEnter enter) {
+    public Response<MobileBDeliveryChartResult> mobileBDeliveryChart(@ModelAttribute DateTimeParmEnter enter) {
         return new Response<>(statisticalDataService.mobileBDeliveryChart(enter));
     }
+
+    @ApiOperation(value = "配送单状态统计")
+    @RequestMapping(value = "/mobileBDeliveryStatusCount")
+    public Response<Map<String, Integer>> mobileBDeliveryStatusCount(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(statisticalDataService.allDriverDeliveryStatusCount(enter));
+    }
+
 }

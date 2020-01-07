@@ -4,44 +4,27 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
 import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
 import com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult;
-import com.redescooter.ses.api.mobile.b.vo.MonthlyScooterChartResult;
+import com.redescooter.ses.api.mobile.b.vo.MonthlyDeliveryChartResult;
 import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryStatEnter;
 import com.redescooter.ses.service.mobile.b.constant.SequenceName;
 import com.redescooter.ses.service.mobile.b.dao.DeliveryServiceMapper;
 import com.redescooter.ses.service.mobile.b.dao.StatisticalDataServiceMapper;
-import com.redescooter.ses.service.mobile.b.dao.base.CorDriverMapper;
-import com.redescooter.ses.service.mobile.b.dao.base.CorDriverRideStatDetailMapper;
-import com.redescooter.ses.service.mobile.b.dao.base.CorDriverRideStatMapper;
-import com.redescooter.ses.service.mobile.b.dao.base.CorDriverScooterMapper;
-import com.redescooter.ses.service.mobile.b.dao.base.CorScooterRideStatDetailMapper;
-import com.redescooter.ses.service.mobile.b.dao.base.CorScooterRideStatMapper;
-import com.redescooter.ses.service.mobile.b.dm.base.CorDriver;
-import com.redescooter.ses.service.mobile.b.dm.base.CorDriverRideStat;
-import com.redescooter.ses.service.mobile.b.dm.base.CorDriverRideStatDetail;
-import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
-import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat;
-import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStatDetail;
+import com.redescooter.ses.service.mobile.b.dao.base.*;
+import com.redescooter.ses.service.mobile.b.dm.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName:StatisticalDataServiceImpl
@@ -101,12 +84,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
             for (SaveDeliveryStatEnter item : enter) {
                 QueryWrapper<CorDriver> queryDriverWrapper = new QueryWrapper<>();
                 queryDriverWrapper.eq(CorDriver.COL_USER_ID, item.getInputUserId());
-                queryDriverWrapper.eq(CorDriver.COL_DR,0);
+                queryDriverWrapper.eq(CorDriver.COL_DR, 0);
                 CorDriver driver = corDriverMapper.selectOne(queryDriverWrapper);
 
                 QueryWrapper<CorDriverRideStat> driverRideStatQueryWrapper = new QueryWrapper<>();
                 driverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DRIVER_ID, driver.getId());
-                driverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DR,0);
+                driverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DR, 0);
                 CorDriverRideStat driverRideStat = corDriverRideStatMapper.selectOne(driverRideStatQueryWrapper);
 
 
@@ -223,7 +206,6 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                     }
                 }
             }
-
         }
 
         if (CollectionUtils.isNotEmpty(saveCorScooterRideStatDetailList)) {
@@ -244,32 +226,41 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @return
      */
     @Override
-    public MobileBDeliveryChartResult mobileBDeliveryChart(GeneralEnter enter) {
-        // 获取指定 日期格式
-        ArrayList<String> dayList = DateUtil.getDayList(30, DateUtil.DEFAULT_DATE_FORMAT);
+    public MobileBDeliveryChartResult mobileBDeliveryChart(DateTimeParmEnter enter) {
 
-        // 状态统计
-        DeliveryListEnter deliveryListEnter = new DeliveryListEnter();
-        BeanUtils.copyProperties(enter, deliveryListEnter);
-        List<CountByStatusResult> list = deliveryServiceMapper.countByStatus(deliveryListEnter);
+        MobileBDeliveryChartResult result = new MobileBDeliveryChartResult();
+        List<MonthlyDeliveryChartResult> alllist = new ArrayList<>();
+        // 获取指定日期格式向前N天时间集合
+        ArrayList<String> dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
 
-        // 拒绝的订单
-        int count = deliveryServiceMapper.refuseDelivery(enter.getUserId(), DeliveryStatusEnums.REJECTED.getValue());
-        list.add(CountByStatusResult.builder().status(DeliveryStatusEnums.REJECTED.getValue()).totalCount(count).build());
-        Map<String, Integer> statusMap = new HashMap<>();
-        for (CountByStatusResult item : list) {
-            statusMap.put(item.getStatus(), item.getTotalCount());
-        }
-        for (DeliveryStatusEnums status : DeliveryStatusEnums.values()) {
-            if (!statusMap.containsKey(status.getValue())) {
-                statusMap.put(status.getValue(), 0);
+        List<MonthlyDeliveryChartResult> list = deliveryServiceMapper.mobileBDeliveryChart(enter);
+
+        if (list.size() > 0) {
+            for (String time : dayList) {
+                for (MonthlyDeliveryChartResult chartResult : list) {
+                    if (time.equals(chartResult.getTimes())) {
+                        alllist.add(chartResult);
+                        break;
+                    } else {
+                        MonthlyDeliveryChartResult deliveryChartResult = new MonthlyDeliveryChartResult();
+                        deliveryChartResult.setTimes(time);
+                        alllist.add(deliveryChartResult);
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (String time : dayList) {
+                MonthlyDeliveryChartResult deliveryChartResult = new MonthlyDeliveryChartResult();
+                deliveryChartResult.setTimes(time);
+                alllist.add(deliveryChartResult);
             }
         }
 
-        // 查询每天的订单数据
-
-
-        return null;
+        result.setList(list);
+        result.setAllList(alllist);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**
@@ -279,52 +270,111 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @return
      */
     @Override
-    public MobileBScooterChartResult mobileBScooterChart(GeneralEnter enter) {
+    public List<MobileBScooterChartResult> mobileBScooterChart(DateTimeParmEnter enter) {
+        List<MobileBScooterChartResult> listResult = new ArrayList<>();
+        MobileBScooterChartResult chartResult = null;
 
-        // 获取指定 日期格式
-        ArrayList<String> dayList = DateUtil.getDayList(30, DateUtil.DEFAULT_DATE_FORMAT);
+        // 获取指定日期格式向前N天时间集合
+        ArrayList<String> dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
 
         // 查询司机Id
         QueryWrapper<CorDriver> corDriverQueryWrapper = new QueryWrapper<>();
         corDriverQueryWrapper.eq(CorDriver.COL_USER_ID, enter.getUserId());
         corDriverQueryWrapper.eq(CorDriver.COL_DR, 0);
+        corDriverQueryWrapper.last("LIMIT 1");
         CorDriver corDriver = corDriverMapper.selectOne(corDriverQueryWrapper);
 
         QueryWrapper<CorDriverRideStat> corDriverRideStatQueryWrapper = new QueryWrapper<>();
         corDriverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DR, 0);
         corDriverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DRIVER_ID, corDriver.getId());
+        corDriverRideStatQueryWrapper.last("LIMIT 1");
+        CorDriverRideStat corDriverRideStat = corDriverRideStatMapper.selectOne(corDriverRideStatQueryWrapper);
+        if (corDriverRideStat == null) {
+            for (String time : dayList) {
+                chartResult = new MobileBScooterChartResult();
+                chartResult.setTimes(time);
+                listResult.add(new MobileBScooterChartResult());
+            }
+            return listResult;
+        }
+
+        enter.setUserId(corDriver.getId());
+        List<MobileBScooterChartResult> list = statisticalDataServiceMapper.mobileBScooterChart(enter);
+
+        if (list.size() > 0) {
+            for (String time : dayList) {
+                for (MobileBScooterChartResult chart : list) {
+                    if (time.equals(chart.getTimes())) {
+                        listResult.add(chart);
+                        break;
+                    } else {
+                        chartResult = new MobileBScooterChartResult();
+                        chartResult.setTimes(time);
+                        listResult.add(chartResult);
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (String time : dayList) {
+                chartResult = new MobileBScooterChartResult();
+                chartResult.setTimes(time);
+                listResult.add(chartResult);
+            }
+        }
+        return listResult;
+    }
+
+    @Override
+    public Map<String, Integer> allDriverDeliveryStatusCount(GeneralEnter enter) {
+
+        List<CountByStatusResult> countByStatusResults = deliveryServiceMapper.allDriverDeliveryStatusCount(enter);
+
+        Map<String, Integer> map = new HashMap<>();
+        for (CountByStatusResult item : countByStatusResults) {
+            map.put(item.getStatus(), item.getTotalCount());
+        }
+        for (DeliveryStatusEnums status : DeliveryStatusEnums.values()) {
+            if (!map.containsKey(status.getValue())) {
+                map.put(status.getValue(), 0);
+            }
+        }
+        map.remove("1");
+        map.remove("2");
+        return map;
+    }
+
+    /**
+     * 司机骑行总统计
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public MobileBScooterChartResult mobileBAllScooterChart(GeneralEnter enter) {
+        MobileBScooterChartResult result = new MobileBScooterChartResult();
+        // 查询司机Id
+        QueryWrapper<CorDriver> corDriverQueryWrapper = new QueryWrapper<>();
+        corDriverQueryWrapper.eq(CorDriver.COL_USER_ID, enter.getUserId());
+        corDriverQueryWrapper.eq(CorDriver.COL_TENANT_ID, enter.getTenantId());
+        corDriverQueryWrapper.eq(CorDriver.COL_DR, 0);
+        corDriverQueryWrapper.last("LIMIT 1");
+        CorDriver corDriver = corDriverMapper.selectOne(corDriverQueryWrapper);
+
+        QueryWrapper<CorDriverRideStat> corDriverRideStatQueryWrapper = new QueryWrapper<>();
+        corDriverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DR, 0);
+        corDriverRideStatQueryWrapper.eq(CorDriverRideStat.COL_TENANT_ID, enter.getTenantId());
+        corDriverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DRIVER_ID, corDriver.getId());
+        corDriverRideStatQueryWrapper.last("LIMIT 1");
         CorDriverRideStat corDriverRideStat = corDriverRideStatMapper.selectOne(corDriverRideStatQueryWrapper);
         if (corDriverRideStat == null) {
             return new MobileBScooterChartResult();
         }
-
-        // 查询每天的骑行数据
-        List<MonthlyScooterChartResult> monthlyScooterChartResultList = statisticalDataServiceMapper.mobileBScooterChart(corDriver.getId(), enter.getTenantId());
-        if (CollectionUtils.isEmpty(monthlyScooterChartResultList)) {
-            return new MobileBScooterChartResult();
-        }
-
-        Map<String, MonthlyScooterChartResult> resultMap = new LinkedHashMap<>();
-        for (String item : dayList) {
-            Boolean map = Boolean.FALSE;
-            for (MonthlyScooterChartResult chart : monthlyScooterChartResultList) {
-                if (StringUtils.equals(item, chart.getTimes())) {
-                    MonthlyScooterChartResult chartResult = chart;
-                    resultMap.put(item, chartResult);
-                    map = Boolean.TRUE;
-                }
-            }
-            if (!map) {
-                resultMap.put(item, new MonthlyScooterChartResult());
-            }
-        }
-        return MobileBScooterChartResult.builder()
-                .avgSpeed(corDriverRideStat.getSvgSpeed().toString())
-                .totalCo2(corDriverRideStat.getCo2Total().toString())
-                .totalMileage(corDriverRideStat.getTotalMileage().toString())
-                .totalMoney(corDriverRideStat.getSavedMoney().toString())
-                .monthlyScooterResults(resultMap)
-                .build();
+        result.setAvgSpeed(String.valueOf(corDriverRideStat.getSvgSpeed()));
+        result.setTotalMileage(String.valueOf(corDriverRideStat.getTotalMileage()));
+        result.setTotalCo2(String.valueOf(corDriverRideStat.getCo2Total()));
+        result.setTotalMoney(String.valueOf(corDriverRideStat.getSavedMoney()));
+        return result;
     }
 
     private CorScooterRideStat buildScooterRideStat(SaveDeliveryStatEnter enter, CorDriverScooter driverScooter, CorScooterRideStatDetail scooterRideStatDetail) {
