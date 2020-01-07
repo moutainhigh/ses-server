@@ -214,7 +214,7 @@
     </select>
 
     <select id="driverInfo" resultType="com.redescooter.ses.web.delivery.vo.ScooterMapResult">
-        select cd.id          as id,
+        select cd.id          as driverId,
                cup.first_name as driverFirstName,
                cup.last_name  as driverLastName,
                cup.picture    as avatar
