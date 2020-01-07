@@ -16,7 +16,6 @@ import java.util.List;
 @Transactional
 public interface CorDriverService extends IService<CorDriver> {
 
-
     int updateBatch(List<CorDriver> list);
 
     int batchInsert(List<CorDriver> list);

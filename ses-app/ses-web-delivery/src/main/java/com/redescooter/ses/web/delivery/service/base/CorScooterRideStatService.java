@@ -1,8 +1,12 @@
 package com.redescooter.ses.web.delivery.service.base;
 
-import java.util.List;
-import com.redescooter.ses.web.delivery.dm.CorScooterRideStat;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.redescooter.ses.web.delivery.dm.CorScooterRideStat;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Transactional
 public interface CorScooterRideStatService extends IService<CorScooterRideStat>{
 
 

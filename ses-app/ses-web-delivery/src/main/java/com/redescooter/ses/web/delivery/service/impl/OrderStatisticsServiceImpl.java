@@ -8,9 +8,9 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.web.delivery.dao.OrderStatisticsServiceMapper;
-import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.service.OrderStatisticsService;
+import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
 import com.redescooter.ses.web.delivery.vo.*;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -35,7 +35,7 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
     private OrderStatisticsServiceMapper orderStatisticsServiceMapper;
 
     @Autowired
-    private CorTenantScooterMapper corTenantScooterMapper;
+    private CorTenantScooterService tenantScooterService;
 
     @Reference
     private TenantBaseService tenantBaseService;
@@ -100,7 +100,7 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
         QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
-        List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
+        List<CorTenantScooter> corTenantScooterList = tenantScooterService.list(corTenantScooterQueryWrapper);
 
         List<ScooterMapResult> scooterMapResultList = new ArrayList<>();
         corTenantScooterList.forEach(item -> {

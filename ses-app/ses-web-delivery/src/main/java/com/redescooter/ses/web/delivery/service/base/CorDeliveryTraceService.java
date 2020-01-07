@@ -2,6 +2,7 @@ package com.redescooter.ses.web.delivery.service.base;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.web.delivery.dm.CorDeliveryTrace;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @ClassName: ${NAME}
  * @Function: TODO
  */
+@Transactional
 public interface CorDeliveryTraceService extends IService<CorDeliveryTrace> {
 
 

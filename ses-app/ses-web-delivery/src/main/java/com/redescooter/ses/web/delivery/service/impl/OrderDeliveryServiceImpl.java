@@ -22,11 +22,17 @@ import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.OrderDeliveryServiceMapper;
-import com.redescooter.ses.web.delivery.dao.base.*;
-import com.redescooter.ses.web.delivery.dm.*;
+import com.redescooter.ses.web.delivery.dm.CorDelivery;
+import com.redescooter.ses.web.delivery.dm.CorDeliveryTrace;
+import com.redescooter.ses.web.delivery.dm.CorDriver;
+import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.OrderDeliveryService;
+import com.redescooter.ses.web.delivery.service.base.CorDeliveryService;
+import com.redescooter.ses.web.delivery.service.base.CorDeliveryTraceService;
+import com.redescooter.ses.web.delivery.service.base.CorDriverScooterService;
+import com.redescooter.ses.web.delivery.service.base.CorDriverService;
 import com.redescooter.ses.web.delivery.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -56,24 +62,15 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
     @Autowired
     private OrderDeliveryServiceMapper orderDeliveryServiceMapper;
     @Autowired
-    private CorDeliveryMapper deliveryMapper;
+    private CorDeliveryService deliveryService;
     @Autowired
-    private CorDriverScooterMapper driverScooterMapper;
+    private CorDriverScooterService driverScooterService;
     @Autowired
-    private CorDeliveryTraceMapper deliveryTraceMapper;
+    private CorDeliveryTraceService deliveryTraceService;
     @Autowired
-    private CorDriverMapper driverMapper;
-    @Autowired
-    private CorDeliveryMapper corDeliveryMapper;
-
-    @Autowired
-    private CorTenantScooterMapper corTenantScooterMapper;
-
+    private CorDriverService driverService;
     @Autowired
     private JedisCluster jedisCluster;
-
-    @Autowired
-    private CorDeliveryTraceMapper corDeliveryTraceMapper;
 
     @Reference
     private TenantBaseService tenantBaseService;
@@ -119,13 +116,13 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         wrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
         wrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
         wrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
-        CorDriverScooter driverScooter = driverScooterMapper.selectOne(wrapper);
+        CorDriverScooter driverScooter = driverScooterService.getOne(wrapper);
         if (driverScooter == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
         }
         if (enter.getId() == null || enter.getId() == 0) {
 
-            CorDriver driver = driverMapper.selectById(enter.getDriverId());
+            CorDriver driver = driverService.getById(enter.getDriverId());
 
             if (driver == null) {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
@@ -155,17 +152,17 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             deliverySave.setCreatedTime(new Date());
             deliverySave.setUpdatedBy(enter.getUserId());
             deliverySave.setUpdatedTime(new Date());
-            deliveryMapper.insert(deliverySave);
+            deliveryService.save(deliverySave);
 
             saveDeliveryNode(deliverySave, enter, null, statusConversionEvent(deliverySave.getStatus()));
 
         } else {
             //编辑配送单
-            CorDelivery oloDelivery = deliveryMapper.selectById(enter.getId());
+            CorDelivery oloDelivery = deliveryService.getById(enter.getId());
 
             BeanUtils.copyProperties(enter, oloDelivery);
 
-            CorDriver driver = driverMapper.selectById(enter.getDriverId());
+            CorDriver driver = driverService.getById(enter.getDriverId());
             if (driver == null) {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
             }
@@ -179,7 +176,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             oloDelivery.setPlannedTime(plannedTime);
             oloDelivery.setUpdatedBy(enter.getUserId());
             oloDelivery.setUpdatedTime(new Date());
-            deliveryMapper.updateById(oloDelivery);
+            deliveryService.updateById(oloDelivery);
         }
 
         return new GeneralResult(enter.getRequestId());
@@ -277,7 +274,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         if (enter.getId() == null || enter.getId() == 0) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
         }
-        CorDelivery delivery = deliveryMapper.selectById(enter.getId());
+        CorDelivery delivery = deliveryService.getById(enter.getId());
 
         if (!delivery.getStatus().equals(DeliveryStatusEnums.PENDING.getValue())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.ORDER_HAS_STARTED_AND_CANNOT_BE_CANCELLED.getCode(), ExceptionCodeEnums.ORDER_HAS_STARTED_AND_CANNOT_BE_CANCELLED.getMessage());
@@ -287,7 +284,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         delivery.setUpdatedBy(enter.getUserId());
         delivery.setUpdatedTime(new Date());
 
-        deliveryMapper.updateById(delivery);
+        deliveryService.updateById(delivery);
 
         saveDeliveryNode(delivery, enter, enter.getReason(), statusConversionEvent(delivery.getStatus()));
 
@@ -324,7 +321,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         } else {
             corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, null);
         }
-        List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
+        List<CorDelivery> deliveryList = deliveryService.list(corDeliveryQueryWrapper);
 
         List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(deliveryList)) {
@@ -391,7 +388,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
         corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DELIVERER_ID, result.getUserId());
-        List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
+        List<CorDelivery> deliveryList = deliveryService.list(corDeliveryQueryWrapper);
 
         List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(deliveryList)) {
@@ -469,7 +466,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
     @Override
     public GeneralResult deliveryReset(DeliveryResetEnter enter) {
 
-        CorDelivery corDelivery = deliveryMapper.selectById(enter.getId());
+        CorDelivery corDelivery = deliveryService.getById(enter.getId());
         if (corDelivery == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
@@ -477,7 +474,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
 
-        CorDriver corDriver = driverMapper.selectById(enter.getDriverId());
+        CorDriver corDriver = driverService.getById(enter.getDriverId());
         if (corDriver == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
@@ -493,7 +490,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         corDelivery.setDelivererId(corDriver.getUserId());
         corDelivery.setUpdatedBy(enter.getUserId());
         corDelivery.setUpdatedTime(new Date());
-        corDeliveryMapper.updateById(corDelivery);
+        deliveryService.updateById(corDelivery);
 
         // 保存日志
         saveDeliveryNode(corDelivery, enter, null, DeliveryEventEnums.CHANAGE.getValue());
@@ -530,7 +527,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         deliveryTrace.setCreatedTime(new Date());
         deliveryTrace.setUpdatedBy(enter.getUserId());
         deliveryTrace.setUpdatedTime(new Date());
-        deliveryTraceMapper.insert(deliveryTrace);
+        deliveryTraceService.save(deliveryTrace);
     }
 
     private String statusConversionEvent(String status) {
@@ -540,9 +537,6 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
         if (status.equals(DeliveryStatusEnums.DELIVERING.getValue())) {
             return DeliveryEventEnums.START.getValue();
-        }
-        if (status.equals(DeliveryStatusEnums.CHANGED.getValue())) {
-            return DeliveryEventEnums.REJECT.getValue();
         }
         if (status.equals(DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue())) {
             return DeliveryEventEnums.CANCEL.getValue();
@@ -555,9 +549,6 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
         if (status.equals(DeliveryStatusEnums.CANCEL.getValue())) {
             return DeliveryEventEnums.CANCEL.getValue();
-        }
-        if (status.equals(DeliveryStatusEnums.TIMEOUT_WARNING.getValue())) {
-            return DeliveryEventEnums.TIMEOUT.getValue();
         }
         return null;
     }

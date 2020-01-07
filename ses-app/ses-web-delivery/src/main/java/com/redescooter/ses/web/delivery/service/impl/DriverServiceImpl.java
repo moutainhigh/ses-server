@@ -17,7 +17,7 @@ import com.redescooter.ses.starter.redis.RedisLock;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
-import com.redescooter.ses.web.delivery.dao.base.*;
+import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dm.*;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
@@ -49,37 +49,25 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private JedisCluster jedisCluster;
     @Autowired
-    private CorDriverMapper driverMapper;
-    @Autowired
     private CorDriverService driverService;
     @Autowired
     private CorTenantScooterMapper corTenantScooterMapper;
     @Autowired
-    private CorUserProfileMapper profileMapper;
-    @Autowired
-    private DriverServiceMapper driverServiceMapper;
-    @Autowired
-    private CorDriverScooterMapper driverScooterMapper;
+    private CorUserProfileService userProfileService;
     @Autowired
     private CorDriverScooterService driverScooterService;
     @Autowired
-    private CorTenantScooterMapper tenantScooterMapper;
-    @Autowired
     private CorTenantScooterService tenantScooterService;
-    @Autowired
-    private CorDeliveryMapper deliveryMapper;
     @Autowired
     private CorDeliveryService deliveryService;
     @Autowired
-    private CorDeliveryTraceMapper corDeliveryTraceMapper;
-    @Autowired
-    private CorDriverMapper corDriverMapper;
+    private CorDeliveryTraceService deliveryTraceService;
     @Autowired
     private CorDriverScooterHistoryService driverScooterHistoryService;
     @Autowired
-    private CorDriverScooterMapper corDriverScooterMapper;
+    private CorScooterRideStatService scooterRideStatService;
     @Autowired
-    private CorScooterRideStatMapper coreCorScooterRideStatMapper;
+    private DriverServiceMapper driverServiceMapper;
     @Reference
     private IdAppService idAppService;
     @Reference
@@ -96,7 +84,7 @@ public class DriverServiceImpl implements DriverService {
      */
     @Override
     public GeneralResult againSendEmail(IdEnter enter) {
-        CorDriver driver = driverMapper.selectById(enter.getId());
+        CorDriver driver = driverService.getById(enter.getId());
 
         if (driver == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
@@ -157,7 +145,7 @@ public class DriverServiceImpl implements DriverService {
             driverScooterSave.setCreatedTime(new Date());
             driverScooterSave.setUpdatedBy(enter.getUserId());
             driverScooterSave.setUpdatedTime(new Date());
-            driverScooterMapper.insert(driverScooterSave);
+            driverScooterService.save(driverScooterSave);
 
             //保存司机信息
             CorUserProfile profileSave = new CorUserProfile();
@@ -184,7 +172,7 @@ public class DriverServiceImpl implements DriverService {
             profileSave.setCreatedTime(new Date());
             profileSave.setUpdatedBy(enter.getUserId());
             profileSave.setUpdatedTime(new Date());
-            profileMapper.insert(profileSave);
+            userProfileService.save(profileSave);
 
             //发送激活邮件
             IdEnter idEnter = new IdEnter();
@@ -192,7 +180,7 @@ public class DriverServiceImpl implements DriverService {
             idEnter.setId(driverSave.getUserId());
             accountBaseService.sendEmailActiv(idEnter);
         } else {
-            CorDriver driver = driverMapper.selectById(enter.getId());
+            CorDriver driver = driverService.getById(enter.getId());
             if (driver == null) {
                 new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
             }
@@ -200,13 +188,13 @@ public class DriverServiceImpl implements DriverService {
             driverUpdate.setId(enter.getId());
             driverUpdate.setUpdatedBy(enter.getUserId());
             driverUpdate.setUpdatedTime(new Date());
-            driverMapper.updateById(driverUpdate);
+            driverService.updateById(driverUpdate);
 
             QueryWrapper<CorUserProfile> wrapper = new QueryWrapper<>();
             wrapper.eq(CorUserProfile.COL_USER_ID, driver.getUserId());
             wrapper.eq(CorUserProfile.COL_DR, 0);
 
-            CorUserProfile profile = profileMapper.selectOne(wrapper);
+            CorUserProfile profile = userProfileService.getOne(wrapper);
             if (enter.getAvatar() != null) {
                 profile.setPicture(enter.getAvatar());
             }
@@ -225,7 +213,7 @@ public class DriverServiceImpl implements DriverService {
             }
             profile.setUpdatedBy(enter.getUserId());
             profile.setUpdatedTime(new Date());
-            profileMapper.updateById(profile);
+            userProfileService.updateById(profile);
         }
         return new GeneralResult(enter.getRequestId());
     }
@@ -259,7 +247,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverDetailsResult details(IdEnter enter) {
 
-        CorDriver driver = driverMapper.selectById(enter.getId());
+        CorDriver driver = driverService.getById(enter.getId());
 
         if (driver == null) {
             return new DriverDetailsResult();
@@ -268,7 +256,7 @@ public class DriverServiceImpl implements DriverService {
         QueryWrapper<CorUserProfile> wrapper = new QueryWrapper<>();
         wrapper.eq(CorUserProfile.COL_USER_ID, driver.getUserId());
         wrapper.eq(CorUserProfile.COL_DR, 0);
-        CorUserProfile profile = profileMapper.selectOne(wrapper);
+        CorUserProfile profile = userProfileService.getOne(wrapper);
 
         if (profile == null) {
             return new DriverDetailsResult();
@@ -369,10 +357,10 @@ public class DriverServiceImpl implements DriverService {
         QueryWrapper<CorUserProfile> profileQueryWrapper = new QueryWrapper<>();
         profileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
         profileQueryWrapper.eq(CorUserProfile.COL_USER_ID, driver.getUserId());
-        CorUserProfile userProfile = profileMapper.selectOne(profileQueryWrapper);
+        CorUserProfile userProfile = userProfileService.getOne(profileQueryWrapper);
 
         if (userProfile != null) {
-            profileMapper.deleteById(userProfile.getId());
+            userProfileService.removeById(userProfile.getId());
         }
 
         QueryWrapper<CorDriverScooter> queryWrapper = new QueryWrapper<>();
@@ -463,7 +451,7 @@ public class DriverServiceImpl implements DriverService {
             driverScooterOne.setEndTime(null);
             driverScooterOne.setUpdatedBy(enter.getDriverId());
             driverScooterOne.setUpdatedTime(new Date());
-            driverScooterMapper.updateById(driverScooterOne);
+            driverScooterService.updateById(driverScooterOne);
 
             //加入分车历史记录
             CorDriverScooterHistory driverScooterHistory = new CorDriverScooterHistory();
@@ -495,7 +483,7 @@ public class DriverServiceImpl implements DriverService {
             driver.setStatus(DriverStatusEnum.WORKING.getValue());
             driver.setUpdatedTime(new Date());
             driver.setUpdatedBy(enter.getUserId());
-            driverMapper.updateById(driver);
+            driverService.updateById(driver);
 
         } catch (SesWebDeliveryException e) {
             RedisLock.getInstance(jedisCluster).unlock(String.valueOf(enter.getScooterId()));
@@ -574,7 +562,7 @@ public class DriverServiceImpl implements DriverService {
         driver.setStatus(DriverStatusEnum.OFFWORK.getValue());
         driver.setUpdatedBy(enter.getUserId());
         driver.setUpdatedTime(new Date());
-        driverMapper.updateById(driver);
+        driverService.updateById(driver);
 
         driverScooterOne.setStatus(DriverScooterStatusEnums.FINSH.getValue());
         driverScooterOne.setScooterId(new Long("0"));
@@ -606,13 +594,13 @@ public class DriverServiceImpl implements DriverService {
             }
         }
 
-        CorDriver corDriver = corDriverMapper.selectById(enter.getId());
+        CorDriver corDriver = driverService.getById(enter.getId());
 
         QueryWrapper<CorDeliveryTrace> corDeliveryTraceQueryWrapper = new QueryWrapper<>();
         corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_USER_ID, corDriver.getUserId());
         corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_DR, 0);
         corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_STATUS, DeliveryStatusEnums.REJECTED.getValue());
-        List<CorDeliveryTrace> corDeliveryTraceList = corDeliveryTraceMapper.selectList(corDeliveryTraceQueryWrapper);
+        List<CorDeliveryTrace> corDeliveryTraceList = deliveryTraceService.list(corDeliveryTraceQueryWrapper);
 
         map.put(DeliveryStatusEnums.REJECTED.getValue(), corDeliveryTraceList.size());
         return map;
@@ -631,7 +619,7 @@ public class DriverServiceImpl implements DriverService {
         corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
         corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getId());
         corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
-        CorDriverScooter corDriverScooter = corDriverScooterMapper.selectOne(corDriverScooterQueryWrapper);
+        CorDriverScooter corDriverScooter = driverScooterService.getOne(corDriverScooterQueryWrapper);
 
         if (corDriverScooter == null) {
             return null;
@@ -643,7 +631,7 @@ public class DriverServiceImpl implements DriverService {
         QueryWrapper<CorScooterRideStat> corScooterRideStatQueryWrapper = new QueryWrapper<>();
         corScooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_SCOOTER_ID, scooterResultList.get(0).getId());
         corScooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_DR, 0);
-        CorScooterRideStat corScooterRideStat = coreCorScooterRideStatMapper.selectOne(corScooterRideStatQueryWrapper);
+        CorScooterRideStat corScooterRideStat = scooterRideStatService.getOne(corScooterRideStatQueryWrapper);
 
         return DriverScooterInforResult.builder()
                 .id(scooterResultList.get(0).getId())
