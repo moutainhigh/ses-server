@@ -31,6 +31,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.foundation.service.base.PlaUserPasswordService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
@@ -69,7 +70,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     private PlaUserMapper userMapper;
     @Autowired
     private PlaUserPasswordMapper passwordMapper;
-
+    @Autowired
+    private PlaUserPasswordService userPasswordService;
     @Autowired
     private TenantBaseService tenantBaseService;
 
@@ -482,17 +484,24 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserMapper.insert(user);
 
         //②、创建密码记录
-        PlaUserPassword savePassWord = new PlaUserPassword();
-        savePassWord.setId(idAppService.getId(SequenceName.PLA_USER_PASSWORD));
-        savePassWord.setLoginName(dto.getEmail());
-        savePassWord.setSalt(String.valueOf(RandomUtils.nextInt(10000, 99999)));
-        savePassWord.setPassword(null);
-        savePassWord.setCreatedBy(dto.getUserId());
-        savePassWord.setCreatedTime(new Date());
-        savePassWord.setUpdatedBy(dto.getUserId());
-        savePassWord.setUpdatedTime(new Date());
-        //②.①、用户激活时，有客户输入密码进行设置密码流程
-        userPasswordMapper.insert(savePassWord);
+        QueryWrapper<PlaUserPassword> queryPassWord = new QueryWrapper<>();
+        queryPassWord.eq(PlaUserPassword.COL_LOGIN_NAME, dto.getEmail());
+        queryPassWord.eq(PlaUserPassword.COL_DR, 0);
+        PlaUserPassword passwordServiceOne = userPasswordService.getOne(queryPassWord);
+
+        if (passwordServiceOne == null) {
+            PlaUserPassword savePassWord = new PlaUserPassword();
+            savePassWord.setId(idAppService.getId(SequenceName.PLA_USER_PASSWORD));
+            savePassWord.setLoginName(dto.getEmail());
+            savePassWord.setSalt(String.valueOf(RandomUtils.nextInt(10000, 99999)));
+            savePassWord.setPassword(null);
+            savePassWord.setCreatedBy(dto.getUserId());
+            savePassWord.setCreatedTime(new Date());
+            savePassWord.setUpdatedBy(dto.getUserId());
+            savePassWord.setUpdatedTime(new Date());
+            //②.①、用户激活时，有客户输入密码进行设置密码流程
+            userPasswordMapper.insert(savePassWord);
+        }
 
         //③、开通权限
         PlaUserPermission plaUserPermission = new PlaUserPermission();

@@ -59,7 +59,7 @@ public class RunDriverActivationStatusTaskExecutorServiceJobimpl implements RunD
                 idEnter.setTenantId(user.getTenantId());
                 idEnterList.add(idEnter);
                 user.setDef1(MaggessConstant.ACCOUNT_ACTIVAT_AFTER);
-                user.setUpdatedBy(enter.getUserId());
+                user.setUpdatedBy(new Long("0"));
                 user.setUpdatedTime(new Date());
             });
             corporateDriverService.updateDriverDef1(idEnterList);

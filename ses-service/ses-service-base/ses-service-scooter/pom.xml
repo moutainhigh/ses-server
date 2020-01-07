@@ -22,13 +22,19 @@
 	<!--环境配置-->
 	<profiles>
 		<profile>
-			<id>local</id>
+			<id>jerry</id>
 			<properties>
-				<profile-active>local</profile-active>
+				<profile-active>jerry</profile-active>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
+		</profile>
+		<profile>
+			<id>local</id>
+			<properties>
+				<profile-active>local</profile-active>
+			</properties>
 		</profile>
 		<profile>
 			<id>dev</id>
