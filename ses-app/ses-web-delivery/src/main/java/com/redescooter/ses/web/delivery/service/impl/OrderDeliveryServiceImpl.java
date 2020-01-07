@@ -314,16 +314,16 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
         corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
-        if (CollectionUtils.isNotEmpty(enter.getStatusList())){
+        if (CollectionUtils.isNotEmpty(enter.getStatusList())) {
             for (int i = 0; i < enter.getStatusList().size(); i++) {
-                if (i==0){
-                    corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS,enter.getStatusList().get(i));
-                }else {
-                    corDeliveryQueryWrapper.or().eq(CorDelivery.COL_STATUS,enter.getStatusList().get(i));
+                if (i == 0) {
+                    corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, enter.getStatusList().get(i));
+                } else {
+                    corDeliveryQueryWrapper.or().eq(CorDelivery.COL_STATUS, enter.getStatusList().get(i));
                 }
             }
-        }else {
-            corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS,null);
+        } else {
+            corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, null);
         }
         List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
 
@@ -428,20 +428,31 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      */
     @Override
     public ScooterMapResult scooterInfor(IdEnter enter) {
-        if (null==enter.getId() || 0==enter.getId()){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.ID_IS_EMPTY.getCode(),ExceptionCodeEnums.ID_IS_EMPTY.getMessage());
+        if (null == enter.getId() || 0 == enter.getId()) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.ID_IS_EMPTY.getCode(), ExceptionCodeEnums.ID_IS_EMPTY.getMessage());
         }
         List<Long> scooterId = new ArrayList<>();
         scooterId.add(enter.getId());
         List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterId);
 
-        ScooterMapResult scooterMapResult=orderDeliveryServiceMapper.driverInfo(enter);
-        scooterMapResult.setId(scooterResultList.get(0).getId());
-        scooterMapResult.setLng(scooterResultList.get(0).getLongitule().toString());
-        scooterMapResult.setLat(scooterResultList.get(0).getLatitude().toString());
-        scooterMapResult.setBattery(scooterResultList.get(0).getBattery());
-        scooterMapResult.setLicensePlate(scooterResultList.get(0).getLicensePlate());
-        scooterMapResult.setStatus(scooterResultList.get(0).getAvailableStatus());
+        ScooterMapResult scooterMapResult = orderDeliveryServiceMapper.driverInfo(enter);
+        if (scooterMapResult != null) {
+            scooterMapResult.setId(scooterResultList.get(0).getId());
+            scooterMapResult.setLng(scooterResultList.get(0).getLongitule().toString());
+            scooterMapResult.setLat(scooterResultList.get(0).getLatitude().toString());
+            scooterMapResult.setBattery(scooterResultList.get(0).getBattery());
+            scooterMapResult.setLicensePlate(scooterResultList.get(0).getLicensePlate());
+            scooterMapResult.setStatus(scooterResultList.get(0).getAvailableStatus());
+        } else {
+            scooterMapResult = ScooterMapResult.builder()
+                    .id(scooterResultList.get(0).getId())
+                    .lng(scooterResultList.get(0).getLongitule().toString())
+                    .lat(scooterResultList.get(0).getLatitude().toString())
+                    .battery(scooterResultList.get(0).getBattery())
+                    .licensePlate(scooterResultList.get(0).getLicensePlate())
+                    .status(scooterResultList.get(0).getAvailableStatus())
+                    .build();
+        }
         return scooterMapResult;
     }
 
