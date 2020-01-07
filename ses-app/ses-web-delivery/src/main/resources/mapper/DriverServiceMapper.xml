@@ -16,6 +16,7 @@
                 cup.first_name like concat("%",#{keyword},"%")
                 or cup.last_name like concat("%",#{keyword},"%")
                 or cup.email_1 like concat("%",#{keyword},"%")
+                or cup.tel_number_1 like concat("%",#{keyword},"%")
                 )
             </if>
             <if test="status != null and status != ''">
@@ -48,6 +49,7 @@
                 cup.first_name like concat("%",#{keyword},"%")
                 or cup.last_name like concat("%",#{keyword},"%")
                 or cup.email_1 like concat("%",#{keyword},"%")
+                or cup.tel_number_1 like concat("%",#{keyword},"%")
                 )
             </if>
             <if test="status != null and status != ''">

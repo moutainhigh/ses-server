@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
@@ -16,6 +17,7 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
@@ -35,6 +37,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -65,6 +68,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
     @Autowired
     private CorTenantScooterMapper corTenantScooterMapper;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
     @Autowired
     private CorDeliveryTraceMapper corDeliveryTraceMapper;
@@ -137,7 +143,8 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             // todo 预计开始配送的时间,默认十分钟后开始配送
             deliverySave.setEtd(DateUtils.addMinutes(new Date(), Integer.parseInt("10")));
             deliverySave.setEta(DateUtil.parse(DateUtil.pay30(), DateUtil.DEFAULT_DATETIME_FORMAT));
-            BigDecimal drivenMileage = new BigDecimal(MapUtil.getDistance(enter.getLatitude(), enter.getLongitude(), tenant.getLatitude() == null ? "0" : String.valueOf(tenant.getLatitude()), tenant.getLongitude() == null ? "0" : String.valueOf(tenant.getLongitude())));
+            BigDecimal drivenMileage = new BigDecimal(MapUtil.getDistance(enter.getLatitude(), enter.getLongitude(), tenant.getLatitude() == null ? "0" : String.valueOf(tenant.getLatitude()),
+                    tenant.getLongitude() == null ? "0" : String.valueOf(tenant.getLongitude())));
             deliverySave.setDrivenMileage(drivenMileage);
             deliverySave.setScooterId(driverScooter.getScooterId());
             deliverySave.setTimeoutExpectde(enter.getTimeoutExpectde());
@@ -150,7 +157,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             deliverySave.setUpdatedTime(new Date());
             deliveryMapper.insert(deliverySave);
 
-            saveDeliveryNode(deliverySave, enter, null,statusConversionEvent(deliverySave.getStatus()));
+            saveDeliveryNode(deliverySave, enter, null, statusConversionEvent(deliverySave.getStatus()));
 
         } else {
             //编辑配送单
@@ -282,74 +289,81 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
         deliveryMapper.updateById(delivery);
 
-        saveDeliveryNode(delivery, enter, enter.getReason(),statusConversionEvent(delivery.getStatus()));
+        saveDeliveryNode(delivery, enter, enter.getReason(), statusConversionEvent(delivery.getStatus()));
+
+        jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
+        jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         return new GeneralResult(enter.getRequestId());
     }
 
 
-//    /**
-//     * 订单地址
-//     *
-//     * @param enter
-//     * @return
-//     */
-//    @Override
-//    public MapResult map(GeneralEnter enter) {
-//        // 查询门店信息
-//        QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
-//
-//        // 查询车辆信息
-//        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
-//        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
-//        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
-//        List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
-//
-//        // 司机车辆分配数据
-//        List<ScooterMapResult> scooterMapList = orderDeliveryServiceMapper.scooterMap(enter);
-//
-//        QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
-//        corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
-//        corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
-//        List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
-//
-//        List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
-//        if (CollectionUtils.isNotEmpty(deliveryList)) {
-//            deliveryList.forEach(item -> {
-//                DeliveryMapResult delivery = DeliveryMapResult.builder()
-//                        .id(item.getId())
-//                        .status(item.getStatus())
-//                        .lng(item.getLongitude().toString())
-//                        .lat(item.getLatitude().toString())
-//                        .orderNo(item.getOrderNo())
-//                        .eta(item.getEta())
-//                        .parcelQuantity(item.getParcelQuantity())
-//                        .recipient(item.getRecipient())
-//                        .recipientAddress(item.getRecipientAddress())
-//                        .recipientTel(item.getRecipientTel())
-//                        .build();
-//                deliveryMapResultList.add(delivery);
-//            });
-//        }
-//
-//        return MapResult.builder()
-//                .tenantId(tenant.getId())
-//                .tenantLng(tenant.getLongitude().toString())
-//                .tenantLat(tenant.getLatitude().toString())
-//                .scooterMapResultList(scooterMapList)
-//                .deliveryMapList(deliveryMapResultList)
-//                .build();
-//    }
-
-
     /**
-     * 订单地图
+     * 订单地址
      *
      * @param enter
      * @return
      */
     @Override
     public MapResult map(MapEnter enter) {
-        return null;
+        // 查询门店信息
+        QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
+
+        // 司机车辆分配数据
+        List<ScooterMapResult> scooterMapList = orderDeliveryServiceMapper.scooterMap(enter);
+
+        QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
+        if (CollectionUtils.isNotEmpty(enter.getStatusList())){
+            for (int i = 0; i < enter.getStatusList().size(); i++) {
+                if (i==0){
+                    corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS,enter.getStatusList().get(i));
+                }else {
+                    corDeliveryQueryWrapper.or().eq(CorDelivery.COL_STATUS,enter.getStatusList().get(i));
+                }
+            }
+        }
+        List<CorDelivery> deliveryList = deliveryMapper.selectList(corDeliveryQueryWrapper);
+
+        List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(deliveryList)) {
+            deliveryList.forEach(item -> {
+                DeliveryMapResult delivery = DeliveryMapResult.builder()
+                        .id(item.getId())
+                        .status(item.getStatus())
+                        .lng(item.getLongitude().toString())
+                        .lat(item.getLatitude().toString())
+                        .orderNo(item.getOrderNo())
+                        .eta(item.getEta())
+                        .parcelQuantity(item.getParcelQuantity())
+                        .recipient(item.getRecipient())
+                        .recipientAddress(item.getRecipientAddress())
+                        .recipientTel(item.getRecipientTel())
+                        .build();
+                deliveryMapResultList.add(delivery);
+            });
+        }
+
+        return MapResult.builder()
+                .tenantId(tenant.getId())
+                .tenantLng(tenant.getLongitude().toString())
+                .tenantLat(tenant.getLatitude().toString())
+                .scooterMapResultList(scooterMapList)
+                .deliveryMapList(deliveryMapResultList)
+                .build();
+    }
+
+
+    /**
+     * 车牌号列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ScooterLicensePlateResult> scooterLicensePlate(GeneralEnter enter) {
+        List<ScooterLicensePlateResult> scooterLicensePlateResults = orderDeliveryServiceMapper.scooterLicensePlateList(enter);
+        return scooterLicensePlateResults;
     }
 
     /**
@@ -441,22 +455,22 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
     public GeneralResult deliveryReset(DeliveryResetEnter enter) {
 
         CorDelivery corDelivery = deliveryMapper.selectById(enter.getId());
-        if (corDelivery==null){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+        if (corDelivery == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
-        if(!StringUtils.equals(corDelivery.getStatus(),DeliveryStatusEnums.REJECTED.getValue())){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+        if (!StringUtils.equals(corDelivery.getStatus(), DeliveryStatusEnums.REJECTED.getValue())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
 
         CorDriver corDriver = driverMapper.selectById(enter.getDriverId());
-        if (corDriver==null){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+        if (corDriver == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
-        if (corDelivery.getDelivererId()==corDriver.getUserId()){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getCode(),ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
+        if (corDelivery.getDelivererId() == corDriver.getUserId()) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getCode(), ExceptionCodeEnums.DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
         }
-        if (!StringUtils.equals(corDriver.getStatus(), DriverStatusEnum.WORKING.getValue())){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+        if (!StringUtils.equals(corDriver.getStatus(), DriverStatusEnum.WORKING.getValue())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
 
         corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateUtil.DEFAULT_DATETIME_FORMAT));
@@ -467,7 +481,10 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         corDeliveryMapper.updateById(corDelivery);
 
         // 保存日志
-        saveDeliveryNode(corDelivery,enter,null,DeliveryEventEnums.CHANAGE.getValue());
+        saveDeliveryNode(corDelivery, enter, null, DeliveryEventEnums.CHANAGE.getValue());
+
+        jedisCluster.set(enter.getId().toString(), JSON.toJSONString(corDelivery));
+        jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -479,7 +496,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      * @param enter  入参
      * @param reason 理由及其他字段
      */
-    private void saveDeliveryNode(CorDelivery dto, GeneralEnter enter, String reason,String event) {
+    private void saveDeliveryNode(CorDelivery dto, GeneralEnter enter, String reason, String event) {
         CorDeliveryTrace deliveryTrace = new CorDeliveryTrace();
         deliveryTrace.setId(idAppService.getId(SequenceName.COR_DELIVERY_TRACE));
         deliveryTrace.setDr(0);

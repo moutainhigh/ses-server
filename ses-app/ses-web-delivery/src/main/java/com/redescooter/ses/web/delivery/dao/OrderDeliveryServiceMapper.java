@@ -54,7 +54,7 @@ public interface OrderDeliveryServiceMapper {
      * @param enter
      * @return
      */
-    List<ScooterMapResult> scooterMap(GeneralEnter enter);
+    List<ScooterMapResult> scooterMap(MapEnter enter);
 
     /**
      * 司机订单信息
@@ -71,4 +71,11 @@ public interface OrderDeliveryServiceMapper {
      * @return
      */
     List<DeliveryNodeResult> nodeList(IdEnter enter);
+
+    /**
+     * 门店车牌号列表
+     * @param enter
+     * @return
+     */
+    List<ScooterLicensePlateResult> scooterLicensePlateList(GeneralEnter enter);
 }
