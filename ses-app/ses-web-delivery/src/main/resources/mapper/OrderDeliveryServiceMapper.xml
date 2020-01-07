@@ -212,4 +212,17 @@
             and scooter.license_plate=#{licensePlate}
         </if>
     </select>
+
+    <select id="driverInfo" resultType="com.redescooter.ses.web.delivery.vo.ScooterMapResult">
+        select cd.id          as id,
+               cup.first_name as driverFirstName,
+               cup.last_name  as driverLastName,
+               cup.picture    as avatar
+        from cor_driver_scooter scooter
+                 inner join cor_driver cd on scooter.driver_id = cd.id and cd.dr = 0
+                 inner join cor_user_profile cup on cd.user_id = cup.user_id and cup.dr = 0
+        where scooter.scooter_id = #{id}
+          and scooter.status = 1
+          and scooter.tenant_id = #{tenantId}
+    </select>
 </mapper>

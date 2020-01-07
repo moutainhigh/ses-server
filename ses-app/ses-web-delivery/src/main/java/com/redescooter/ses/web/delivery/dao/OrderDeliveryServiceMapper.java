@@ -74,8 +74,17 @@ public interface OrderDeliveryServiceMapper {
 
     /**
      * 门店车牌号列表
+     *
      * @param enter
      * @return
      */
     List<ScooterLicensePlateResult> scooterLicensePlateList(ScooterLicensePlateEnter enter);
+
+    /**
+     * 司机信息
+     *
+     * @param enter
+     * @return
+     */
+    ScooterMapResult driverInfo(IdEnter enter);
 }

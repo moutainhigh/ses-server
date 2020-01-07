@@ -66,6 +66,9 @@ public enum ExceptionCodeEnums {
 
     STATUS_IS_UNAVAILABLE(10024,"状态不可用"),
 
+    ID_IS_EMPTY (10025,"Id 为空"),
+
+
     /******************************************************************************************************/
 
     DRIVER_IS_NOT_EXIST(10030, "司机不存在"),
@@ -95,6 +98,7 @@ public enum ExceptionCodeEnums {
     DELIVERY_IS_NOT_EXIST(10042,"订单不存在"),
 
     DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER(10043,"订单不能分给同一人"),
+
     ;
 
 

@@ -428,18 +428,21 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      */
     @Override
     public ScooterMapResult scooterInfor(IdEnter enter) {
+        if (null==enter.getId() || 0==enter.getId()){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.ID_IS_EMPTY.getCode(),ExceptionCodeEnums.ID_IS_EMPTY.getMessage());
+        }
         List<Long> scooterId = new ArrayList<>();
         scooterId.add(enter.getId());
         List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterId);
 
-        return ScooterMapResult.builder()
-                .id(scooterResultList.get(0).getId())
-                .lng(scooterResultList.get(0).getLongitule().toString())
-                .lat(scooterResultList.get(0).getLatitude().toString())
-                .battery(scooterResultList.get(0).getBattery())
-                .licensePlate(scooterResultList.get(0).getLicensePlate())
-                .status(scooterResultList.get(0).getAvailableStatus())
-                .build();
+        ScooterMapResult scooterMapResult=orderDeliveryServiceMapper.driverInfo(enter);
+        scooterMapResult.setId(scooterResultList.get(0).getId());
+        scooterMapResult.setLng(scooterResultList.get(0).getLongitule().toString());
+        scooterMapResult.setLat(scooterResultList.get(0).getLatitude().toString());
+        scooterMapResult.setBattery(scooterResultList.get(0).getBattery());
+        scooterMapResult.setLicensePlate(scooterResultList.get(0).getLicensePlate());
+        scooterMapResult.setStatus(scooterResultList.get(0).getAvailableStatus());
+        return scooterMapResult;
     }
 
     @Override
