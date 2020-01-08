@@ -113,4 +113,10 @@ public class DriverController {
     public Response<PageResult<DriverScooterHistoryResult>> driverscooterHistroy(@ModelAttribute @ApiParam("请求参数") DriverScooterHistroyEnter enter) {
         return new Response<>(driverService.driverscooterHistroy(enter));
     }
+
+    @PostMapping(value = "/driverDeliveryChartList")
+    @ApiOperation(value = "仪表盘订单柱状图", response = DeliveryChartResult.class)
+    public Response<DeliveryChartListResult> driverDeliveryChartList(@ModelAttribute @ApiParam("请求参数") DeliveryChartEnter enter) {
+        return new Response<>(driverService.driverDeliveryChartList(enter));
+    }
 }

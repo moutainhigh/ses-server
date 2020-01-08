@@ -5,7 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:QueryMobileBOrderChartResult
@@ -23,9 +25,8 @@ import java.util.List;
 public class MobileBDeliveryChartResult extends GeneralResult {
 
     @ApiModelProperty(value = "非零统计")
-    private List<MonthlyDeliveryChartResult> list;
-
+    private Map<String, MonthlyDeliveryChartResult> listMap = new HashMap<>();
     @ApiModelProperty(value = "全部统计")
-    private List<MonthlyDeliveryChartResult> allList;
+    private Map<String, MonthlyDeliveryChartResult> allMap = new HashMap<>();
 
 }

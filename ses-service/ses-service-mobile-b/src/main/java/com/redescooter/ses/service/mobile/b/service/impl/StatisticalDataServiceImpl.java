@@ -7,10 +7,7 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
-import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
-import com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult;
-import com.redescooter.ses.api.mobile.b.vo.MonthlyDeliveryChartResult;
-import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryStatEnter;
+import com.redescooter.ses.api.mobile.b.vo.*;
 import com.redescooter.ses.service.mobile.b.constant.SequenceName;
 import com.redescooter.ses.service.mobile.b.dao.DeliveryServiceMapper;
 import com.redescooter.ses.service.mobile.b.dao.StatisticalDataServiceMapper;
@@ -96,7 +93,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                 Boolean checkSaveDriverRideStatList = Boolean.FALSE;
                 if (CollectionUtils.isNotEmpty(saveDriverRideStatList)) {
                     for (CorDriverRideStat corDriverRideStat : saveDriverRideStatList) {
-                        if (corDriverRideStat.getDriverId() == driver.getId()) {
+                        if (corDriverRideStat.getDriverId().equals(driver.getId())) {
                             driverRideStat = corDriverRideStat;
                             checkSaveDriverRideStatList = Boolean.TRUE;
                             saveDriverRideStatList.remove(corDriverRideStat);
@@ -177,7 +174,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                 Boolean checkSaveScooterRideStatList = Boolean.FALSE;
                 if (CollectionUtils.isNotEmpty(saveCorScooterRideStatList)) {
                     for (CorScooterRideStat corScooterRideStat : saveCorScooterRideStatList) {
-                        if (corScooterRideStat.getScooterId() == driverScooter.getScooterId()) {
+                        if (corScooterRideStat.getScooterId().equals(driverScooter.getScooterId())) {
                             scooterRideStat = corScooterRideStat;
                             checkSaveScooterRideStatList = Boolean.TRUE;
                             saveCorScooterRideStatList.remove(corScooterRideStat);
@@ -229,23 +226,31 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
     public MobileBDeliveryChartResult mobileBDeliveryChart(DateTimeParmEnter enter) {
 
         MobileBDeliveryChartResult result = new MobileBDeliveryChartResult();
-        List<MonthlyDeliveryChartResult> alllist = new ArrayList<>();
+        Map<String, MonthlyDeliveryChartResult> allMap = new HashMap<>();
+        Map<String, MonthlyDeliveryChartResult> listMap = new HashMap<>();
+
         // 获取指定日期格式向前N天时间集合
         ArrayList<String> dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
 
         List<MonthlyDeliveryChartResult> list = deliveryServiceMapper.mobileBDeliveryChart(enter);
 
         if (list.size() > 0) {
-            for (String time : dayList) {
+            for (String str : dayList) {
                 for (MonthlyDeliveryChartResult chartResult : list) {
-                    if (time.equals(chartResult.getTimes())) {
-                        alllist.add(chartResult);
-                        break;
-                    } else {
-                        MonthlyDeliveryChartResult deliveryChartResult = new MonthlyDeliveryChartResult();
-                        deliveryChartResult.setTimes(time);
-                        alllist.add(deliveryChartResult);
-                        break;
+                    if (chartResult.getTimes().equals(str)) {
+                        allMap.put(str, chartResult);
+                        listMap.put(str, chartResult);
+                        continue;
+                    }
+                }
+            }
+
+            for (String str : dayList) {
+                for (MonthlyDeliveryChartResult chartResult : list) {
+                    if (!allMap.containsKey(str)) {
+                        MonthlyDeliveryChartResult newChartResult = new MonthlyDeliveryChartResult();
+                        newChartResult.setTimes(str);
+                        allMap.put(str, newChartResult);
                     }
                 }
             }
@@ -253,12 +258,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
             for (String time : dayList) {
                 MonthlyDeliveryChartResult deliveryChartResult = new MonthlyDeliveryChartResult();
                 deliveryChartResult.setTimes(time);
-                alllist.add(deliveryChartResult);
+                allMap.put(time, deliveryChartResult);
             }
         }
 
-        result.setList(list);
-        result.setAllList(alllist);
+        result.setAllMap(allMap);
+        result.setListMap(listMap);
         result.setRequestId(enter.getRequestId());
         return result;
     }
@@ -270,10 +275,10 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @return
      */
     @Override
-    public List<MobileBScooterChartResult> mobileBScooterChart(DateTimeParmEnter enter) {
-        List<MobileBScooterChartResult> listResult = new ArrayList<>();
-        MobileBScooterChartResult chartResult = null;
+    public AllMobileBScooterChartResult mobileBScooterChart(DateTimeParmEnter enter) {
 
+        MobileBScooterChartResult chartResult = null;
+        Map<String, MobileBScooterChartResult> allMap = new HashMap<>();
         // 获取指定日期格式向前N天时间集合
         ArrayList<String> dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
 
@@ -293,36 +298,41 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
             for (String time : dayList) {
                 chartResult = new MobileBScooterChartResult();
                 chartResult.setTimes(time);
-                listResult.add(new MobileBScooterChartResult());
+                allMap.put(time, chartResult);
             }
-            return listResult;
+            return new AllMobileBScooterChartResult(allMap);
         }
 
         enter.setUserId(corDriver.getId());
         List<MobileBScooterChartResult> list = statisticalDataServiceMapper.mobileBScooterChart(enter);
 
         if (list.size() > 0) {
-            for (String time : dayList) {
+
+            for (String str : dayList) {
                 for (MobileBScooterChartResult chart : list) {
-                    if (time.equals(chart.getTimes())) {
-                        listResult.add(chart);
-                        break;
-                    } else {
-                        chartResult = new MobileBScooterChartResult();
-                        chartResult.setTimes(time);
-                        listResult.add(chartResult);
-                        break;
+                    if (chart.getTimes().equals(str)) {
+                        allMap.put(str, chart);
+                        continue;
                     }
                 }
             }
+
+            for (String str : dayList) {
+                if (!allMap.containsKey(str)) {
+                    chartResult = new MobileBScooterChartResult();
+                    chartResult.setTimes(str);
+                    allMap.put(str, chartResult);
+                }
+            }
+
         } else {
             for (String time : dayList) {
                 chartResult = new MobileBScooterChartResult();
                 chartResult.setTimes(time);
-                listResult.add(chartResult);
+                allMap.put(time, chartResult);
             }
         }
-        return listResult;
+        return new AllMobileBScooterChartResult(allMap);
     }
 
     @Override
@@ -377,7 +387,8 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         return result;
     }
 
-    private CorScooterRideStat buildScooterRideStat(SaveDeliveryStatEnter enter, CorDriverScooter driverScooter, CorScooterRideStatDetail scooterRideStatDetail) {
+    private CorScooterRideStat buildScooterRideStat(SaveDeliveryStatEnter enter, CorDriverScooter
+            driverScooter, CorScooterRideStatDetail scooterRideStatDetail) {
         CorScooterRideStat insertScooterRideStat = new CorScooterRideStat();
         insertScooterRideStat.setId(idAppService.getId(SequenceName.COR_SCOOTER_RIDE_STAT));
         insertScooterRideStat.setDr(0);
@@ -397,7 +408,8 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         return insertScooterRideStat;
     }
 
-    private CorScooterRideStatDetail buildScooterRideStatDetail(SaveDeliveryStatEnter enter, CorDriverScooter driverScooter, CorScooterRideStat scooterRideStat) {
+    private CorScooterRideStatDetail buildScooterRideStatDetail(SaveDeliveryStatEnter enter, CorDriverScooter
+            driverScooter, CorScooterRideStat scooterRideStat) {
         CorScooterRideStatDetail scooterRideStatDetail = new CorScooterRideStatDetail();
         scooterRideStatDetail.setId(idAppService.getId(SequenceName.COR_SCOOTER_RIDE_STAT_DETAIL));
         scooterRideStatDetail.setDr(0);
@@ -427,7 +439,8 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @param driverRideStatDetail
      * @return
      */
-    private CorDriverRideStat buildCorDriverRideStat(SaveDeliveryStatEnter enter, CorDriver driver, CorDriverRideStatDetail driverRideStatDetail) {
+    private CorDriverRideStat buildCorDriverRideStat(SaveDeliveryStatEnter enter, CorDriver
+            driver, CorDriverRideStatDetail driverRideStatDetail) {
         CorDriverRideStat insertDriverRideStat = new CorDriverRideStat();
         insertDriverRideStat.setId(idAppService.getId(SequenceName.COR_DRIVER_RIDE_STAT));
         insertDriverRideStat.setDr(0);
@@ -456,7 +469,8 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @param driverId
      * @return
      */
-    private CorDriverRideStatDetail buildCorDriverRideStatDetailSingle(SaveDeliveryStatEnter enter, CorDriverRideStat driverRideStat, Long driverId) {
+    private CorDriverRideStatDetail buildCorDriverRideStatDetailSingle(SaveDeliveryStatEnter
+                                                                               enter, CorDriverRideStat driverRideStat, Long driverId) {
         CorDriverRideStatDetail driverRideStatDetail = new CorDriverRideStatDetail();
         driverRideStatDetail.setId(idAppService.getId(SequenceName.COR_DRIVER_RIDE_STAT_DETAIL));
         driverRideStatDetail.setDr(0);

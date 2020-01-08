@@ -126,4 +126,12 @@ public interface DriverService {
      * @return
      */
     PageResult<DriverScooterHistoryResult> driverscooterHistroy(DriverScooterHistroyEnter enter);
+
+    /**
+     * 司机仪表盘订单柱状图
+     *
+     * @param enter
+     * @return
+     */
+    DeliveryChartListResult driverDeliveryChartList(DeliveryChartEnter enter);
 }

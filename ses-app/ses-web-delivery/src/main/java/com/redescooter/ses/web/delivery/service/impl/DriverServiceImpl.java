@@ -656,7 +656,7 @@ public class DriverServiceImpl implements DriverService {
         }
         List<DeliveryHistroyResult> deliveryHistroyList = driverServiceMapper.deliveryHistroyList(enter);
 
-        if (count<enter.getPageSize()){
+        if (count < enter.getPageSize()) {
             int total = enter.getPageSize() - count;
             int pageSize = enter.getPageSize();
             if (total > 0) {
@@ -680,9 +680,139 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public PageResult<DriverScooterHistoryResult> driverscooterHistroy(DriverScooterHistroyEnter enter) {
         int count = driverServiceMapper.driverscooterHistroyCount(enter);
-        if (count==0){
+        if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter,count,driverServiceMapper.driverscooterHistroyList(enter));
+        return PageResult.create(enter, count, driverServiceMapper.driverscooterHistroyList(enter));
     }
+
+    /**
+     * 司机仪表盘订单柱状图
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public DeliveryChartListResult driverDeliveryChartList(DeliveryChartEnter enter) {
+        if (enter.getId() == 0) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.ID_IS_EMPTY.getCode(), ExceptionCodeEnums.ID_IS_EMPTY.getMessage());
+        }
+        Map<String, DeliveryChartResult> map = new HashMap<>();
+        List<DeliveryChartResult> deliveryChartResults = new ArrayList<>();
+        //天数
+        int heaven = enter.getHeaven();
+        enter.setDateTimes(enter.getDateTimes() == null ? new Date() : enter.getDateTimes());
+        switch (heaven) {
+            case 1:
+                //今日Today（单位为小时，显示今日配送数据）
+                DeliveryChartDto dateTimeParmToday = new DeliveryChartDto();
+
+                BeanUtils.copyProperties(enter, dateTimeParmToday);
+                dateTimeParmToday.setEndDateTime(enter.getDateTimes());
+                deliveryChartResults = driverServiceMapper.driverDeliveryChartToday(dateTimeParmToday);
+                break;
+
+            case 7:
+                //近七日<7Day（单位为日，显示近7天配送数据，点击某一日可查看该日数据，并且时间筛选变更为返回）
+                Date start7 = DateUtil.addDays(enter.getDateTimes(), -7);
+                DeliveryChartDto dateTimeParm7 = new DeliveryChartDto();
+
+                BeanUtils.copyProperties(enter, dateTimeParm7);
+                dateTimeParm7.setEndDateTime(enter.getDateTimes());
+                dateTimeParm7.setStartDateTime(start7);
+
+                deliveryChartResults = driverServiceMapper.driverDeliveryChart7Day(dateTimeParm7);
+                break;
+
+            case 30:
+                //近30日<30Day（单位为日，显示近30天配送数据，点击某一日可查看该日数据，并且时间筛选变更为返回）
+                Date start30 = DateUtil.addDays(enter.getDateTimes(), -30);
+                DeliveryChartDto dateTimeParm30 = new DeliveryChartDto();
+
+                BeanUtils.copyProperties(enter, dateTimeParm30);
+                dateTimeParm30.setEndDateTime(enter.getDateTimes());
+                dateTimeParm30.setStartDateTime(start30);
+                deliveryChartResults = driverServiceMapper.driverDeliveryChart30Day(dateTimeParm30);
+                break;
+
+            case 365:
+                //年Year（单位为月，显示截止至今所有数据，点击某一月可查看该月数据，点击某一日可查看该日数据
+                Date start365 = DateUtil.addDays(enter.getDateTimes(), -365);
+                DeliveryChartDto dateTimeParm365 = new DeliveryChartDto();
+
+                BeanUtils.copyProperties(enter, dateTimeParm365);
+                dateTimeParm365.setEndDateTime(enter.getDateTimes());
+                dateTimeParm365.setStartDateTime(start365);
+                deliveryChartResults = driverServiceMapper.driverDeliveryChart365Day(dateTimeParm365);
+                break;
+
+            default:
+                throw new SesWebDeliveryException(ExceptionCodeEnums.OPERATION_ERROR.getCode(), ExceptionCodeEnums.OPERATION_ERROR.getMessage());
+
+        }
+
+        List<String> dateList = getDateList(enter.getHeaven(), enter.getDateTimes());
+
+        if (deliveryChartResults.size() > 0) {
+            for (String str : dateList) {
+                for (DeliveryChartResult chart : deliveryChartResults) {
+                    if (chart.getTimes().equals(str)) {
+                        map.put(str, chart);
+                        continue;
+                    }
+                }
+            }
+
+            for (String str : dateList) {
+                if (!map.containsKey(str)) {
+                    DeliveryChartResult result = new DeliveryChartResult();
+                    result.setTimes(str);
+                    map.put(str, result);
+                }
+            }
+
+        } else {
+            for (String time : dateList) {
+                DeliveryChartResult result = new DeliveryChartResult();
+                result.setTimes(time);
+                map.put(time, result);
+            }
+        }
+
+        return new DeliveryChartListResult(map);
+    }
+
+    private List<String> getDateList(int heaven, Date date) {
+        ArrayList<String> list = new ArrayList<>();
+        switch (heaven) {
+            case 1:
+                list = DateUtil.get24HourList(DateUtil.getDateTimeStamp(date));
+                break;
+            case 7:
+                list = DateUtil.getDayList(date, 7, null);
+                break;
+            case 30:
+                list = DateUtil.getDayList(date, 30, null);
+                break;
+            case 365:
+                list = DateUtil.getDayList(date, 365, DateUtil.DEFAULT_YYMM_FORMAT);
+                break;
+        }
+
+        return checkDayResultSingle(list);
+    }
+
+    //去除重复的时间，只供柱状图使用。
+    private ArrayList<String> checkDayResultSingle(ArrayList<String> dayList) {
+        ArrayList<String> temp = new ArrayList<String>();
+        Iterator<String> iterator = dayList.iterator();
+        while (iterator.hasNext()) {
+            String str = iterator.next();
+            if (!temp.contains(str)) {
+                temp.add(str);
+            }
+        }
+        return temp;
+    }
+
 }

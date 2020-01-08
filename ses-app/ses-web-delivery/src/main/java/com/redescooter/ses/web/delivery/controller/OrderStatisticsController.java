@@ -3,10 +3,7 @@ package com.redescooter.ses.web.delivery.controller;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.OrderStatisticsService;
-import com.redescooter.ses.web.delivery.vo.MapResult;
-import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
-import com.redescooter.ses.web.delivery.vo.TopTenEnter;
-import com.redescooter.ses.web.delivery.vo.TopTenResult;
+import com.redescooter.ses.web.delivery.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -59,5 +56,11 @@ public class OrderStatisticsController {
     @ApiOperation(value = "地图", response = MapResult.class)
     public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(orderStatisticsService.map(enter));
+    }
+
+    @PostMapping(value = "/deliveryChartList")
+    @ApiOperation(value = "仪表盘订单柱状图", response = DeliveryChartResult.class)
+    public Response<DeliveryChartListResult> deliveryChartList(@ModelAttribute @ApiParam("请求参数") DeliveryChartEnter enter) {
+        return new Response<>(orderStatisticsService.deliveryChartList(enter));
     }
 }

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaJpushUserMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaJpushUser">
+    <!--@mbg.generated-->
+    <!--@Table pla_jpush_user-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="user_id" property="userId" />
+    <result column="registration_id" property="registrationId" />
+    <result column="tag" property="tag" />
+    <result column="alias" property="alias" />
+    <result column="platform_type" property="platformType" />
+    <result column="audience_type" property="audienceType" />
+    <result column="push_time" property="pushTime" />
+    <result column="status" property="status" />
+    <result column="status_code" property="statusCode" />
+    <result column="update_time" property="updateTime" />
+    <result column="update_by" property="updateBy" />
+    <result column="create_time" property="createTime" />
+    <result column="create_by" property="createBy" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, user_id, registration_id, tag, `alias`, platform_type, audience_type, push_time, 
+    `status`, status_code, update_time, update_by, create_time, create_by, def1, def2, 
+    def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update pla_jpush_user
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.userId}
+        </foreach>
+      </trim>
+      <trim prefix="registration_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.registrationId}
+        </foreach>
+      </trim>
+      <trim prefix="tag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tag}
+        </foreach>
+      </trim>
+      <trim prefix="`alias` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.alias}
+        </foreach>
+      </trim>
+      <trim prefix="platform_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.platformType}
+        </foreach>
+      </trim>
+      <trim prefix="audience_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.audienceType}
+        </foreach>
+      </trim>
+      <trim prefix="push_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.pushTime}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="status_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.statusCode}
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updateTime}
+        </foreach>
+      </trim>
+      <trim prefix="update_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updateBy}
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createTime}
+        </foreach>
+      </trim>
+      <trim prefix="create_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createBy}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into pla_jpush_user
+    (id, dr, user_id, registration_id, tag, `alias`, platform_type, audience_type, push_time, 
+      `status`, status_code, update_time, update_by, create_time, create_by, def1, def2, 
+      def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.userId}, #{item.registrationId}, #{item.tag}, #{item.alias}, 
+        #{item.platformType}, #{item.audienceType}, #{item.pushTime}, #{item.status}, #{item.statusCode}, 
+        #{item.updateTime}, #{item.updateBy}, #{item.createTime}, #{item.createBy}, #{item.def1}, 
+        #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaJpushUser">
+    <!--@mbg.generated-->
+    insert into pla_jpush_user
+    (id, dr, user_id, registration_id, tag, `alias`, platform_type, audience_type, push_time, 
+      `status`, status_code, update_time, update_by, create_time, create_by, def1, def2, 
+      def3, def5, def6)
+    values
+    (#{id}, #{dr}, #{userId}, #{registrationId}, #{tag}, #{alias}, #{platformType}, #{audienceType}, 
+      #{pushTime}, #{status}, #{statusCode}, #{updateTime}, #{updateBy}, #{createTime}, 
+      #{createBy}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    user_id = #{userId}, 
+    registration_id = #{registrationId}, 
+    tag = #{tag}, 
+    `alias` = #{alias}, 
+    platform_type = #{platformType}, 
+    audience_type = #{audienceType}, 
+    push_time = #{pushTime}, 
+    `status` = #{status}, 
+    status_code = #{statusCode}, 
+    update_time = #{updateTime}, 
+    update_by = #{updateBy}, 
+    create_time = #{createTime}, 
+    create_by = #{createBy}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaJpushUser">
+    <!--@mbg.generated-->
+    insert into pla_jpush_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="registrationId != null">
+        registration_id,
+      </if>
+      <if test="tag != null">
+        tag,
+      </if>
+      <if test="alias != null">
+        `alias`,
+      </if>
+      <if test="platformType != null">
+        platform_type,
+      </if>
+      <if test="audienceType != null">
+        audience_type,
+      </if>
+      <if test="pushTime != null">
+        push_time,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="statusCode != null">
+        status_code,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="userId != null">
+        #{userId},
+      </if>
+      <if test="registrationId != null">
+        #{registrationId},
+      </if>
+      <if test="tag != null">
+        #{tag},
+      </if>
+      <if test="alias != null">
+        #{alias},
+      </if>
+      <if test="platformType != null">
+        #{platformType},
+      </if>
+      <if test="audienceType != null">
+        #{audienceType},
+      </if>
+      <if test="pushTime != null">
+        #{pushTime},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="statusCode != null">
+        #{statusCode},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy},
+      </if>
+      <if test="createTime != null">
+        #{createTime},
+      </if>
+      <if test="createBy != null">
+        #{createBy},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId},
+      </if>
+      <if test="registrationId != null">
+        registration_id = #{registrationId},
+      </if>
+      <if test="tag != null">
+        tag = #{tag},
+      </if>
+      <if test="alias != null">
+        `alias` = #{alias},
+      </if>
+      <if test="platformType != null">
+        platform_type = #{platformType},
+      </if>
+      <if test="audienceType != null">
+        audience_type = #{audienceType},
+      </if>
+      <if test="pushTime != null">
+        push_time = #{pushTime},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="statusCode != null">
+        status_code = #{statusCode},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>

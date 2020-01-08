@@ -2,6 +2,7 @@ package com.redescooter.ses.api.mobile.b.service;
 
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.mobile.b.vo.AllMobileBScooterChartResult;
 import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
 import com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult;
 import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryStatEnter;
@@ -47,7 +48,7 @@ public interface StatisticalDataService {
      * @param enter
      * @return
      */
-    List<MobileBScooterChartResult> mobileBScooterChart(DateTimeParmEnter enter);
+    AllMobileBScooterChartResult mobileBScooterChart(DateTimeParmEnter enter);
 
     /**
      * 司机全部订单统计

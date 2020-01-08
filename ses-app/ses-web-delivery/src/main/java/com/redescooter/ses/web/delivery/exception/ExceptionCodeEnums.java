@@ -64,9 +64,11 @@ public enum ExceptionCodeEnums {
 
     ACCOUNT_IS_ACTIVATED(10023, "账户已激活"),
 
-    STATUS_IS_UNAVAILABLE(10024,"状态不可用"),
+    STATUS_IS_UNAVAILABLE(10024, "状态不可用"),
 
-    ID_IS_EMPTY (10025,"Id 为空"),
+    ID_IS_EMPTY(10025, "Id 为空"),
+
+    OPERATION_ERROR(10026, "错误操作"),
 
 
     /******************************************************************************************************/
@@ -95,9 +97,10 @@ public enum ExceptionCodeEnums {
 
     YOU_HAVE_AN_ORDER_IN_PROGRESS(10041, "你有正在进行中的订单，不可还车下班"),
 
-    DELIVERY_IS_NOT_EXIST(10042,"订单不存在"),
+    DELIVERY_IS_NOT_EXIST(10042, "订单不存在"),
 
-    DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER(10043,"订单不能分给同一人"),
+    DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER(10043, "订单不能分给同一人"),
+
 
     ;
 

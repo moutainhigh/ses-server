@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
+import com.redescooter.ses.api.mobile.b.vo.AllMobileBScooterChartResult;
 import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
 import com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult;
 import io.swagger.annotations.Api;
@@ -40,7 +41,7 @@ public class StatisticalDataController {
 
     @ApiOperation(value = "车辆统计数据")
     @RequestMapping(value = "/mobileBScooter")
-    public Response<List<MobileBScooterChartResult>> mobileBScooterChart(@ModelAttribute DateTimeParmEnter enter) {
+    public Response<AllMobileBScooterChartResult> mobileBScooterChart(@ModelAttribute DateTimeParmEnter enter) {
         return new Response<>(statisticalDataService.mobileBScooterChart(enter));
     }
 

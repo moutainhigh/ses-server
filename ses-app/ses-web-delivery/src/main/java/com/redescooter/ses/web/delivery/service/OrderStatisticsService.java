@@ -1,10 +1,7 @@
 package com.redescooter.ses.web.delivery.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.web.delivery.vo.MapResult;
-import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
-import com.redescooter.ses.web.delivery.vo.TopTenEnter;
-import com.redescooter.ses.web.delivery.vo.TopTenResult;
+import com.redescooter.ses.web.delivery.vo.*;
 
 import java.util.List;
 import java.util.Map;
@@ -48,4 +45,14 @@ public interface OrderStatisticsService {
      * @return
      */
     MapResult map(GeneralEnter enter);
+
+    /**
+     * 仪表盘订单柱状图
+     * @param enter
+     * @return
+     */
+    DeliveryChartListResult deliveryChartList(DeliveryChartEnter enter);
+
+
+
 }

@@ -5,12 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.delivery.vo.DeliveryHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult;
-import com.redescooter.ses.web.delivery.vo.DriverScooterHistoryResult;
-import com.redescooter.ses.web.delivery.vo.DriverScooterHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.ListDriverPage;
-import com.redescooter.ses.web.delivery.vo.ListDriverResult;
+import com.redescooter.ses.web.delivery.vo.*;
 
 import java.util.List;
 
@@ -94,5 +89,35 @@ public interface DriverServiceMapper {
      * @return
      */
     List<DriverScooterHistoryResult> driverscooterHistroyList(DriverScooterHistroyEnter enter);
+
+    /**
+     * 今日Today（单位为小时，显示今日配送数据）
+     * @param enter
+     * @return
+     */
+    List<DeliveryChartResult> driverDeliveryChartToday(DeliveryChartDto enter);
+
+    /**
+     * 近七日<7Day（单位为日，显示近7天配送数据，点击某一日可查看该日数据，并且时间筛选变更为返回）
+     * @param enter
+     * @return
+     */
+    List<DeliveryChartResult> driverDeliveryChart7Day(DeliveryChartDto enter);
+
+    /**
+     * 近30日<30Day（单位为日，显示近30天配送数据，点击某一日可查看该日数据，并且时间筛选变更为返回）
+     * @param enter
+     * @return
+     */
+    List<DeliveryChartResult> driverDeliveryChart30Day(DeliveryChartDto enter);
+
+    /**
+     * 年Year（单位为月，显示截止至今所有数据，点击某一月可查看该月数据，点击某一日可查看该日数据
+     * @param enter
+     * @return
+     */
+    List<DeliveryChartResult> driverDeliveryChart365Day(DeliveryChartDto enter);
+
+
 
 }
