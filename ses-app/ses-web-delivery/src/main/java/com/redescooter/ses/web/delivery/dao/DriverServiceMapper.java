@@ -72,14 +72,6 @@ public interface DriverServiceMapper {
     List<DeliveryHistroyResult> deliveryHistroyList(DeliveryHistroyEnter enter);
 
     /**
-     * 查询拒绝订单历史
-     *
-     * @param enter
-     * @return
-     */
-    List<DeliveryHistroyResult> deliveryRefuseHistroyList(DeliveryHistroyEnter enter);
-
-    /**
      * 司机车辆分配表
      *
      * @param enter

@@ -582,6 +582,13 @@ public class DriverServiceImpl implements DriverService {
      */
     @Override
     public Map<String, Integer> driverDeliveryCountByStatus(IdEnter enter) {
+
+        CorDriver corDriver = driverService.getById(enter.getId());
+
+        if (corDriver==null){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+        }
+
         List<CountByStatusResult> countByStatusResults = driverServiceMapper.driverDeliveryCountByStatus(enter);
 
         Map<String, Integer> map = new HashMap<>();
@@ -593,16 +600,15 @@ public class DriverServiceImpl implements DriverService {
                 map.put(status.getValue(), 0);
             }
         }
-
-        CorDriver corDriver = driverService.getById(enter.getId());
+        map.remove(DeliveryStatusEnums.REJECTED.getValue());
 
         QueryWrapper<CorDeliveryTrace> corDeliveryTraceQueryWrapper = new QueryWrapper<>();
         corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_USER_ID, corDriver.getUserId());
         corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_DR, 0);
         corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_STATUS, DeliveryStatusEnums.REJECTED.getValue());
-        List<CorDeliveryTrace> corDeliveryTraceList = deliveryTraceService.list(corDeliveryTraceQueryWrapper);
 
-        map.put(DeliveryStatusEnums.REJECTED.getValue(), corDeliveryTraceList.size());
+        int count = deliveryTraceService.count(corDeliveryTraceQueryWrapper);
+        map.put(DeliveryStatusEnums.REJECTED.getValue(),count);
         return map;
     }
 
@@ -656,18 +662,6 @@ public class DriverServiceImpl implements DriverService {
         }
         List<DeliveryHistroyResult> deliveryHistroyList = driverServiceMapper.deliveryHistroyList(enter);
 
-        if (count<enter.getPageSize()){
-            int total = enter.getPageSize() - count;
-            int pageSize = enter.getPageSize();
-            if (total > 0) {
-                //查询已拒绝的订单
-                enter.setPageSize(total);
-                List<DeliveryHistroyResult> deliveryRefuseHistroyList = driverServiceMapper.deliveryRefuseHistroyList(enter);
-                count = count + deliveryRefuseHistroyList.size();
-                deliveryHistroyList.addAll(deliveryRefuseHistroyList);
-            }
-            enter.setPageSize(pageSize);
-        }
         return PageResult.create(enter, count, deliveryHistroyList);
     }
 

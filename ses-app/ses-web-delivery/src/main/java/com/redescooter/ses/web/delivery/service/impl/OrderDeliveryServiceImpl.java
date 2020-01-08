@@ -388,6 +388,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
         corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DELIVERER_ID, result.getUserId());
+        corDeliveryQueryWrapper.in(CorDelivery.COL_STATUS,DeliveryStatusEnums.DELIVERING.getValue(),DeliveryStatusEnums.PENDING.getValue());
         List<CorDelivery> deliveryList = deliveryService.list(corDeliveryQueryWrapper);
 
         List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
@@ -410,6 +411,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
 
         return DriverOrderInfoResult.builder()
+                .scooterId(scooterListResult.get(0).getId())
                 .licensePlate(scooterListResult.get(0).getLicensePlate())
                 .battery(scooterListResult.get(0).getBattery())
                 .deliveryMapResultList(deliveryMapResultList)
