@@ -225,43 +225,35 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
     @Override
     public MobileBDeliveryChartResult mobileBDeliveryChart(DateTimeParmEnter enter) {
 
-        MobileBDeliveryChartResult result = new MobileBDeliveryChartResult();
-        Map<String, MonthlyDeliveryChartResult> allMap = new HashMap<>();
-        Map<String, MonthlyDeliveryChartResult> listMap = new HashMap<>();
-
-        // 获取指定日期格式向前N天时间集合
-        ArrayList<String> dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+        Map<String, MonthlyDeliveryChartResult> allMap = new LinkedHashMap<>();
+        Map<String, MonthlyDeliveryChartResult> listMap = new LinkedHashMap<>();
 
         List<MonthlyDeliveryChartResult> list = deliveryServiceMapper.mobileBDeliveryChart(enter);
 
-        if (list.size() > 0) {
-            for (String str : dayList) {
-                for (MonthlyDeliveryChartResult chartResult : list) {
-                    if (chartResult.getTimes().equals(str)) {
-                        allMap.put(str, chartResult);
-                        listMap.put(str, chartResult);
-                        continue;
-                    }
-                }
-            }
+        if (list.size() == 0) {
+            return new MobileBDeliveryChartResult();
+        } else {
+            MonthlyDeliveryChartResult result = null;
+            List<String> dayList = new LinkedList();
+            // 获取指定日期格式向前N天时间集合
+            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
 
             for (String str : dayList) {
-                for (MonthlyDeliveryChartResult chartResult : list) {
-                    if (!allMap.containsKey(str)) {
-                        MonthlyDeliveryChartResult newChartResult = new MonthlyDeliveryChartResult();
-                        newChartResult.setTimes(str);
-                        allMap.put(str, newChartResult);
+                for (MonthlyDeliveryChartResult chart : list) {
+                    if (chart.getTimes().equals(str)) {
+                        allMap.put(str, chart);
+                        listMap.put(str, chart);
                     }
                 }
-            }
-        } else {
-            for (String time : dayList) {
-                MonthlyDeliveryChartResult deliveryChartResult = new MonthlyDeliveryChartResult();
-                deliveryChartResult.setTimes(time);
-                allMap.put(time, deliveryChartResult);
+                if (!allMap.containsKey(str)) {
+                    result = new MonthlyDeliveryChartResult();
+                    result.setTimes(str);
+                    allMap.put(str, result);
+                }
             }
         }
 
+        MobileBDeliveryChartResult result = new MobileBDeliveryChartResult();
         result.setAllMap(allMap);
         result.setListMap(listMap);
         result.setRequestId(enter.getRequestId());
@@ -277,11 +269,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
     @Override
     public AllMobileBScooterChartResult mobileBScooterChart(DateTimeParmEnter enter) {
 
-        MobileBScooterChartResult chartResult = null;
-        Map<String, MobileBScooterChartResult> allMap = new HashMap<>();
-        // 获取指定日期格式向前N天时间集合
-        ArrayList<String> dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
-
+        Map<String, MobileBScooterChartResult> map = new LinkedHashMap<>();
         // 查询司机Id
         QueryWrapper<CorDriver> corDriverQueryWrapper = new QueryWrapper<>();
         corDriverQueryWrapper.eq(CorDriver.COL_USER_ID, enter.getUserId());
@@ -294,45 +282,35 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         corDriverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DRIVER_ID, corDriver.getId());
         corDriverRideStatQueryWrapper.last("LIMIT 1");
         CorDriverRideStat corDriverRideStat = corDriverRideStatMapper.selectOne(corDriverRideStatQueryWrapper);
+
         if (corDriverRideStat == null) {
-            for (String time : dayList) {
-                chartResult = new MobileBScooterChartResult();
-                chartResult.setTimes(time);
-                allMap.put(time, chartResult);
-            }
-            return new AllMobileBScooterChartResult(allMap);
+            return new AllMobileBScooterChartResult(map);
         }
 
         enter.setUserId(corDriver.getId());
         List<MobileBScooterChartResult> list = statisticalDataServiceMapper.mobileBScooterChart(enter);
 
+        // 获取指定日期格式向前N天时间集合
+        List<String> dayList = new LinkedList();
+        dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+
         if (list.size() > 0) {
+            MobileBScooterChartResult result = null;
 
             for (String str : dayList) {
                 for (MobileBScooterChartResult chart : list) {
                     if (chart.getTimes().equals(str)) {
-                        allMap.put(str, chart);
-                        continue;
+                        map.put(str, chart);
                     }
                 }
-            }
-
-            for (String str : dayList) {
-                if (!allMap.containsKey(str)) {
-                    chartResult = new MobileBScooterChartResult();
-                    chartResult.setTimes(str);
-                    allMap.put(str, chartResult);
+                if (!map.containsKey(str)) {
+                    result = new MobileBScooterChartResult();
+                    result.setTimes(str);
+                    map.put(str, result);
                 }
             }
-
-        } else {
-            for (String time : dayList) {
-                chartResult = new MobileBScooterChartResult();
-                chartResult.setTimes(time);
-                allMap.put(time, chartResult);
-            }
         }
-        return new AllMobileBScooterChartResult(allMap);
+        return new AllMobileBScooterChartResult(map);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class DeliveryChartEnter extends GeneralEnter {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date dateTimes;
     @ApiModelProperty(value = "天数")
-    private int heaven;
+    private int heavens;
     @ApiModelProperty(value = "状态")
     private String status;
     @ApiModelProperty(value = "司机的userId")
