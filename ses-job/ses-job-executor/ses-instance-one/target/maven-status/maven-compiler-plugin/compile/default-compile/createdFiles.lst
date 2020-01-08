@@ -1,6 +1,0 @@
-com/redescooter/ses/instance/one/run/delivery/CountDeliveryTasks.class
-com/redescooter/ses/instance/one/run/example/SampleXxlJob.class
-com/redescooter/ses/instance/one/run/tasks/DriverActivationStatusTask.class
-com/redescooter/ses/instance/one/config/XxlJobConfig.class
-com/redescooter/ses/instance/one/SeSInstanceOneApplication.class
-com/redescooter/ses/instance/one/run/tasks/SendMailTasks.class
