@@ -3,7 +3,7 @@ spring:
   application:
     name: ses-instance-one
   profiles:
-    active: test
+    active: local
   messages:
     basename: i18n/messages
     fallback-to-system-locale: false

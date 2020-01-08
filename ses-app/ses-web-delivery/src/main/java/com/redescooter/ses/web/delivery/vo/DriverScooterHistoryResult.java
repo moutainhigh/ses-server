@@ -35,10 +35,10 @@ public class DriverScooterHistoryResult extends GeneralResult {
     private String licensePlate;
 
     @ApiModelProperty(value = "开始时间")
-    private Date beginTime;
+    private Date assignTime;
 
     @ApiModelProperty(value = "结束时间")
-    private Date endTime;
+    private Date removeTime;
 
     @ApiModelProperty(value = "骑行公里数")
     private String mileage="0";

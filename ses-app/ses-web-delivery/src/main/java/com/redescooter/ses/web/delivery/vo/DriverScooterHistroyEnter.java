@@ -26,4 +26,19 @@ import io.swagger.annotations.*;
 public class DriverScooterHistroyEnter extends PageEnter {
     @ApiModelProperty(value = "司机Id")
     private Long id;
+
+    @ApiModelProperty(value = "分车开始时间")
+    private String assignBeginTime;
+
+    @ApiModelProperty(value = "分车结束时间")
+    private String assignEndTime;
+
+    @ApiModelProperty(value = "换车开始时间")
+    private String removeBeginTime;
+
+    @ApiModelProperty(value = "换车结束时间")
+    private String removeEndTime;
+
+    @ApiModelProperty(value = "关键字")
+    private String keyword;
 }
