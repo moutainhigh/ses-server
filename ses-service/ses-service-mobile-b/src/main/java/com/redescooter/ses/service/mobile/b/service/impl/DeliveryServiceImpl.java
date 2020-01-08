@@ -27,6 +27,7 @@ import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryMapper;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryTraceMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDelivery;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
+import com.redescooter.ses.service.mobile.b.dm.base.CorTenantScooter;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
@@ -98,8 +99,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     public DeliveryListResult list(DeliveryListEnter enter) {
 
-        //判断当前时间是否
-
         // 查询订单状态及数量统计
         List<CountByStatusResult> list = deliveryServiceMapper.doingCountByStatus(enter);
 
@@ -116,39 +115,18 @@ public class DeliveryServiceImpl implements DeliveryService {
             }
         }
 
+        CorTenantScooter corTenantScooter=deliveryServiceMapper.queryTenantScooterByUserId(enter);
+
         List<DeliveryDetailResult> deliveryList = deliveryServiceMapper.deliveryList(enter);
 
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
         deliveryList.forEach(item -> {
+            item.setScooterId(corTenantScooter.getScooterId());
+            item.setScooterLongitude(corTenantScooter.getLongitule());
+            item.setScooterLatitude(corTenantScooter.getLatitude());
             item.setTenantLongitude(queryTenantResult.getLongitude());
             item.setTenantLatitude(queryTenantResult.getLatitude());
         });
-
-//        //查询拒绝的订单
-//        QueryWrapper<CorDeliveryTrace> corDeliveryTraceQueryWrapper = new QueryWrapper<>();
-//        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_USER_ID, enter.getUserId());
-//        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_STATUS, DeliveryStatusEnums.REJECTED.getValue());
-//        List<CorDeliveryTrace> deliveryTraceList = corDeliveryTraceMapper.selectList(corDeliveryTraceQueryWrapper);
-//
-//        List<Long> refuseDeliveryIdList = new ArrayList<>();
-//        deliveryList.forEach(item -> {
-//            refuseDeliveryIdList.add(item.getDelivererId());
-//        });
-//
-//        // 将拒绝的订单 也放到 返回的集合中 返回
-//        if (CollectionUtils.isNotEmpty(refuseDeliveryIdList)) {
-//            List<CorDelivery> refuseDeliveryDetailList = corDeliveryMapper.selectBatchIds(refuseDeliveryIdList);
-//            if (CollectionUtils.isNotEmpty(refuseDeliveryDetailList)) {
-//                refuseDeliveryDetailList.forEach(item -> {
-//                    DeliveryDetailResult result = new DeliveryDetailResult();
-//                    item.setStatus(DeliveryStatusEnums.REJECTED.getValue());
-//                    BeanUtils.copyProperties(item, result);
-//                    deliveryList.add(result);
-//                });
-//
-//            }
-//        }
-//        map.put(DeliveryStatusEnums.REJECTED.getValue(), deliveryTraceList.size());
         return new DeliveryListResult(map, deliveryList);
     }
 

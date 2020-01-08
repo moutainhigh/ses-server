@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface CorTenantScooterMapper extends BaseMapper<CorTenantScooter> {
     int updateBatch(List<CorTenantScooter> list);
 
+    int updateBatchSelective(List<CorTenantScooter> list);
+
     int batchInsert(@Param("list") List<CorTenantScooter> list);
 
     int insertOrUpdate(CorTenantScooter record);
