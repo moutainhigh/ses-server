@@ -128,18 +128,21 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
      */
     @Override
     public DeliveryChartListResult deliveryChartList(DeliveryChartEnter enter) {
-        Map<String, DeliveryChartResult> map = new HashMap<>();
+        Map<String, DeliveryChartResult> map = new LinkedHashMap<>();
         List<DeliveryChartResult> deliveryChartResults = new ArrayList<>();
+        Double max = 0.00, avg = 0.00, min = 0.00;
+
         //天数
-        int heaven = enter.getHeaven();
+        int heavens = enter.getHeavens() == 0 ? 1 : enter.getHeavens();
+        enter.setHeavens(heavens);
         enter.setDateTimes(enter.getDateTimes() == null ? new Date() : enter.getDateTimes());
-        switch (heaven) {
+        switch (heavens) {
             case 1:
                 //今日Today（单位为小时，显示今日配送数据）
                 DeliveryChartDto dateTimeParmToday = new DeliveryChartDto();
 
                 BeanUtils.copyProperties(enter, dateTimeParmToday);
-                dateTimeParmToday.setEndDateTime(enter.getDateTimes());
+                dateTimeParmToday.setDateTime(enter.getDateTimes());
                 deliveryChartResults = orderStatisticsServiceMapper.deliveryChartToday(dateTimeParmToday);
                 break;
 
@@ -182,40 +185,46 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
 
         }
 
-        List<String> dateList = getDateList(enter.getHeaven(), enter.getDateTimes());
+        List<String> dateList = new LinkedList();
+        dateList = getDateList(heavens, enter.getDateTimes());
 
         if (deliveryChartResults.size() > 0) {
+
+            //获取最大值
+            max = deliveryChartResults.stream().mapToDouble(DeliveryChartResult::getTotal).max().getAsDouble();
+            //获取平均值
+            avg = deliveryChartResults.stream().mapToDouble(DeliveryChartResult::getTotal).average().getAsDouble();
+            //取最小值
+            min = deliveryChartResults.stream().mapToDouble(DeliveryChartResult::getTotal).min().getAsDouble();
+
+            DeliveryChartResult result = null;
+
             for (String str : dateList) {
                 for (DeliveryChartResult chart : deliveryChartResults) {
                     if (chart.getTimes().equals(str)) {
                         map.put(str, chart);
-                        continue;
                     }
                 }
-            }
-
-            for (String str : dateList) {
                 if (!map.containsKey(str)) {
-                    DeliveryChartResult result = new DeliveryChartResult();
+                    result = new DeliveryChartResult();
                     result.setTimes(str);
                     map.put(str, result);
                 }
             }
-
-        } else {
-            for (String time : dateList) {
-                DeliveryChartResult result = new DeliveryChartResult();
-                result.setTimes(time);
-                map.put(time, result);
-            }
         }
 
-        return new DeliveryChartListResult(map);
+        DeliveryChartListResult result = new DeliveryChartListResult();
+        result.setMap(map);
+        result.setAvg(avg);
+        result.setMax(max);
+        result.setMin(min);
+
+        return result;
     }
 
-    private List<String> getDateList(int heaven, Date date) {
+    private List<String> getDateList(int heavens, Date date) {
         ArrayList<String> list = new ArrayList<>();
-        switch (heaven) {
+        switch (heavens) {
             case 1:
                 list = DateUtil.get24HourList(DateUtil.getDateTimeStamp(date));
                 break;

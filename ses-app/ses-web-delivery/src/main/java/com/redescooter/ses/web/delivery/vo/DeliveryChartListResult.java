@@ -23,6 +23,8 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class DeliveryChartListResult extends GeneralResult {
 
+    @ApiModelProperty(value = "最大值/最小值/平均值")
+    private Double max = 0.00, avg = 0.00, min = 0.00;
     @ApiModelProperty(value = "全部统计")
     private Map<String, DeliveryChartResult> map;
 
