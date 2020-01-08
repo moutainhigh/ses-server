@@ -17,6 +17,7 @@ import com.redescooter.ses.starter.redis.RedisLock;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
+import com.redescooter.ses.web.delivery.dao.base.CorDeliveryMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dm.*;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -68,6 +70,8 @@ public class DriverServiceImpl implements DriverService {
     private CorScooterRideStatService scooterRideStatService;
     @Autowired
     private DriverServiceMapper driverServiceMapper;
+    @Autowired
+    private CorDeliveryMapper corDeliveryMapper;
     @Reference
     private IdAppService idAppService;
     @Reference
@@ -195,17 +199,15 @@ public class DriverServiceImpl implements DriverService {
             wrapper.eq(CorUserProfile.COL_DR, 0);
 
             CorUserProfile profile = userProfileService.getOne(wrapper);
-            if (enter.getAvatar() != null) {
-                profile.setPicture(enter.getAvatar());
-            }
-            if (enter.getDriverFirstName() != null && enter.getDriverLastName() != null) {
-                profile.setFirstName(enter.getDriverFirstName());
-                profile.setLastName(enter.getDriverLastName());
-                profile.setFullName(new StringBuffer().append(enter.getDriverFirstName()).append(" ").append(enter.getDriverLastName()).toString());
-            }
-            if (enter.getBirthday() != null) {
-                profile.setBirthday(DateUtil.timaConversion(enter.getBirthday()));
-            }
+            profile.setPicture(enter.getAvatar());
+            profile.setGender(enter.getGender());
+            profile.setTelNumber1(enter.getDriverPhone());
+            profile.setBirthday(DateUtil.parse(enter.getBirthday(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            profile.setPlaceBirth(enter.getAddress());
+            profile.setFirstName(enter.getDriverFirstName());
+            profile.setLastName(enter.getDriverLastName());
+            profile.setFullName(new StringBuffer().append(enter.getDriverFirstName()).append(" ").append(enter.getDriverLastName()).toString());
+            profile.setBirthday(DateUtil.timaConversion(enter.getBirthday()));
             if (enter.getCertificateType() != null &&
                     enter.getDriverLicenseUpAnnex() != null) {
                 profile.setCertificateType(enter.getCertificateType());
@@ -530,6 +532,8 @@ public class DriverServiceImpl implements DriverService {
 
         long scooterId = driverScooterOne.getScooterId() == null ? 0 : driverScooterOne.getScooterId();
 
+        // 统计配送订单的行驶里程
+//        BigDecimal mileage=driverServiceMapper.queryScooterMileage(enter,driverScooterOne.getBeginTime());
         //加入分车历史记录
         CorDriverScooterHistory driverScooterHistory = new CorDriverScooterHistory();
         driverScooterHistory.setId(idAppService.getId(SequenceName.COR_DRIVER_SCOOTER));
@@ -540,6 +544,7 @@ public class DriverServiceImpl implements DriverService {
         driverScooterHistory.setScooterId(scooterId);
         driverScooterHistory.setBeginTime(driverScooterOne.getBeginTime());
         driverScooterHistory.setEndTime(new Date());
+//        driverScooterHistory.setMileage();
         driverScooterHistory.setCreatedBy(enter.getUserId());
         driverScooterHistory.setCreatedTime(new Date());
         driverScooterHistory.setUpdatedBy(enter.getId());
@@ -585,8 +590,8 @@ public class DriverServiceImpl implements DriverService {
 
         CorDriver corDriver = driverService.getById(enter.getId());
 
-        if (corDriver==null){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
+        if (corDriver == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
 
         List<CountByStatusResult> countByStatusResults = driverServiceMapper.driverDeliveryCountByStatus(enter);
@@ -608,7 +613,7 @@ public class DriverServiceImpl implements DriverService {
         corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_STATUS, DeliveryStatusEnums.REJECTED.getValue());
 
         int count = deliveryTraceService.count(corDeliveryTraceQueryWrapper);
-        map.put(DeliveryStatusEnums.REJECTED.getValue(),count);
+        map.put(DeliveryStatusEnums.REJECTED.getValue(), count);
         return map;
     }
 
@@ -674,9 +679,9 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public PageResult<DriverScooterHistoryResult> driverscooterHistroy(DriverScooterHistroyEnter enter) {
         int count = driverServiceMapper.driverscooterHistroyCount(enter);
-        if (count==0){
+        if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter,count,driverServiceMapper.driverscooterHistroyList(enter));
+        return PageResult.create(enter, count, driverServiceMapper.driverscooterHistroyList(enter));
     }
 }

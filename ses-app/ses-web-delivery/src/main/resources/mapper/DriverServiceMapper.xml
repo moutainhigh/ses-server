@@ -147,5 +147,8 @@
         order by beginTime desc
         limit #{pageNo},#{pageSize}
     </select>
+    <select id="queryScooterMileage" resultType="java.math.BigDecimal">
+
+    </select>
 
 </mapper>

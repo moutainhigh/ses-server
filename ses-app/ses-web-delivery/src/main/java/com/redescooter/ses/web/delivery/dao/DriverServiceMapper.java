@@ -11,7 +11,10 @@ import com.redescooter.ses.web.delivery.vo.DriverScooterHistoryResult;
 import com.redescooter.ses.web.delivery.vo.DriverScooterHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.ListDriverPage;
 import com.redescooter.ses.web.delivery.vo.ListDriverResult;
+import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -87,4 +90,12 @@ public interface DriverServiceMapper {
      */
     List<DriverScooterHistoryResult> driverscooterHistroyList(DriverScooterHistroyEnter enter);
 
+    /**
+     * 司机派送订单时的骑行距离
+     *
+     * @param enter
+     * @param beginTime
+     * @return
+     */
+    BigDecimal queryScooterMileage(@Param("enter") IdEnter enter, @Param("beginTime") Date beginTime);
 }
