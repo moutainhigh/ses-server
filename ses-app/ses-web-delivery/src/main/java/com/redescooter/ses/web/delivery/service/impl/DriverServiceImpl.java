@@ -202,7 +202,7 @@ public class DriverServiceImpl implements DriverService {
             profile.setPicture(enter.getAvatar());
             profile.setGender(enter.getGender());
             profile.setTelNumber1(enter.getDriverPhone());
-            profile.setBirthday(DateUtil.parse(enter.getBirthday(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            profile.setBirthday(DateUtil.parse(enter.getBirthday(), DateUtil.DEFAULT_DATETIME_FORMAT));
             profile.setPlaceBirth(enter.getAddress());
             profile.setFirstName(enter.getDriverFirstName());
             profile.setLastName(enter.getDriverLastName());
@@ -533,7 +533,6 @@ public class DriverServiceImpl implements DriverService {
         long scooterId = driverScooterOne.getScooterId() == null ? 0 : driverScooterOne.getScooterId();
 
         // 统计配送订单的行驶里程
-//        BigDecimal mileage=driverServiceMapper.queryScooterMileage(enter,driverScooterOne.getBeginTime());
         //加入分车历史记录
         CorDriverScooterHistory driverScooterHistory = new CorDriverScooterHistory();
         driverScooterHistory.setId(idAppService.getId(SequenceName.COR_DRIVER_SCOOTER));
@@ -544,7 +543,7 @@ public class DriverServiceImpl implements DriverService {
         driverScooterHistory.setScooterId(scooterId);
         driverScooterHistory.setBeginTime(driverScooterOne.getBeginTime());
         driverScooterHistory.setEndTime(new Date());
-//        driverScooterHistory.setMileage();
+        driverScooterHistory.setMileage(driverServiceMapper.queryScooterMileage(enter, driverScooterOne.getBeginTime()).toString());
         driverScooterHistory.setCreatedBy(enter.getUserId());
         driverScooterHistory.setCreatedTime(new Date());
         driverScooterHistory.setUpdatedBy(enter.getId());

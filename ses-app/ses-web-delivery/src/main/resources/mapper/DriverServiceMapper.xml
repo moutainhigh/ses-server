@@ -118,37 +118,42 @@
     </select>
 
     <select id="driverscooterHistroyCount" resultType="int">
-        select
-        count(*)
-        from cor_driver_scooter_history cdsh
-        inner join cor_tenant_scooter cts on cdsh.scooter_id = cts.scooter_id and cts.dr = 0
-        left join cor_scooter_ride_stat_detail csrsd on cdsh.scooter_id = csrsd.scooter_id and csrsd.dr = 0
-        where cdsh.status = 2
-        and cdsh.tenant_id = #{tenantId}
-        and cdsh.driver_id = #{id}
-        and (csrsd.create_time between cdsh.begin_time and cdsh.end_time)
+         select
+            count(*)
+            from cor_driver_scooter_history cdsh
+            inner join cor_tenant_scooter cts on cdsh.scooter_id = cts.scooter_id and cts.dr = 0
+            where cdsh.status = 2
+            and cdsh.dr=0
+            and cdsh.tenant_id=#{tenantId}
+            and cdsh.driver_id=#{id}
+
     </select>
 
     <select id="driverscooterHistroyList"
             resultType="com.redescooter.ses.web.delivery.vo.DriverScooterHistoryResult">
-        select cdsh.driver_id     as id,
+        select
+        cdsh.driver_id     as id,
         cts.license_plate  as licensePlate,
         cdsh.begin_time    as beginTime,
         cdsh.end_time      as endTime,
-        sum(csrsd.mileage) as mileage
+        cdsh.mileage as mileage
         from cor_driver_scooter_history cdsh
         inner join cor_tenant_scooter cts on cdsh.scooter_id = cts.scooter_id and cts.dr = 0
-        left join cor_scooter_ride_stat_detail csrsd on cdsh.scooter_id = csrsd.scooter_id and csrsd.dr = 0
         where cdsh.status = 2
-        and cdsh.tenant_id = #{tenantId}
-        and cdsh.driver_id = #{id}
-        and (csrsd.create_time between cdsh.begin_time and cdsh.end_time)
-        group by id, licensePlate, beginTime, endTime
+        and cdsh.dr=0
+        and cdsh.tenant_id=#{tenantId}
+        and cdsh.driver_id=#{id}
         order by beginTime desc
-        limit #{pageNo},#{pageSize}
+        limit #{startRow},#{pageSize}
     </select>
     <select id="queryScooterMileage" resultType="java.math.BigDecimal">
-
+        select sum(delivery.driven_mileage)
+        from cor_delivery delivery
+                 left join cor_driver driver on delivery.deliverer_id = driver.user_id
+        where delivery.status in (5,6)
+        and delivery.updated_time between #{beginTime} and NOW()
+        and delivery.tenant_id=#{enter.tenantId}
+        and driver.id=#{enter.id}
     </select>
 
 </mapper>

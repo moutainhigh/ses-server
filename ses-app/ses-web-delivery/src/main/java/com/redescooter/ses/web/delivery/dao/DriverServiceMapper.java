@@ -3,8 +3,6 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.delivery.vo.DeliveryHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult;
 import com.redescooter.ses.web.delivery.vo.DriverScooterHistoryResult;
