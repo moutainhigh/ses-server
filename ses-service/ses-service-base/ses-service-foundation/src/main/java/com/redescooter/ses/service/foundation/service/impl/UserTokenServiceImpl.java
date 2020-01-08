@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
+import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.account.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
@@ -73,6 +74,9 @@ public class UserTokenServiceImpl implements UserTokenService {
 
     @Autowired
     private PlaUserMapper plaUserMapper;
+
+    @Autowired
+    private PlaTenantMapper plaTenantMapper;
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
@@ -606,6 +610,16 @@ public class UserTokenServiceImpl implements UserTokenService {
             jedisCluster.del(emailUser.getLastLoginToken());
             jedisCluster.del(enter.getRequestId());
 
+        }
+        // 更新租户账户的激活时间
+        QueryWrapper<PlaTenant> plaTenantQueryWrapper=new QueryWrapper<>();
+        plaTenantQueryWrapper.eq(PlaTenant.COL_DR,0);
+        plaTenantQueryWrapper.eq(PlaTenant.COL_EMAIL,emailUser.getLoginName());
+        PlaTenant plaTenant = plaTenantMapper.selectOne(plaTenantQueryWrapper);
+        if (plaTenant==null){
+            plaTenant.setActivationTime(new Date());
+            plaTenant.setUpdatedTime(new Date());
+            plaTenantMapper.updateById(plaTenant);
         }
 
         return new GeneralResult(enter.getRequestId());

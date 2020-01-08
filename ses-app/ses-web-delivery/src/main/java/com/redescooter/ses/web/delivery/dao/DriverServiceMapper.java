@@ -3,10 +3,11 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.delivery.vo.*;
+import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -67,14 +68,6 @@ public interface DriverServiceMapper {
     List<DeliveryHistroyResult> deliveryHistroyList(DeliveryHistroyEnter enter);
 
     /**
-     * 查询拒绝订单历史
-     *
-     * @param enter
-     * @return
-     */
-    List<DeliveryHistroyResult> deliveryRefuseHistroyList(DeliveryHistroyEnter enter);
-
-    /**
      * 司机车辆分配表
      *
      * @param enter
@@ -118,6 +111,5 @@ public interface DriverServiceMapper {
      */
     List<DeliveryChartResult> driverDeliveryChart365Day(DeliveryChartDto enter);
 
-
-
+    BigDecimal queryScooterMileage(@Param("enter") IdEnter enter, @Param("beginTime") Date beginTime);
 }
