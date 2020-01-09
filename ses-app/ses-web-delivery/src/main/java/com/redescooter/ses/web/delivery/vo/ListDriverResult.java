@@ -24,6 +24,9 @@ public class ListDriverResult extends GeneralResult {
     @ApiModelProperty(value = "司机主键")
     private Long id;
 
+    @ApiModelProperty(value = "用户主键")
+    private Long userId;
+
     @ApiModelProperty(value = "头像")
     private String avatar;
 
@@ -54,3 +57,4 @@ public class ListDriverResult extends GeneralResult {
     @ApiModelProperty(value = "账号是否激活")
     private Boolean activatBoolean;
 }
+
