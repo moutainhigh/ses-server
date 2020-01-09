@@ -57,3 +57,4 @@ public class ListDriverResult extends GeneralResult {
     @ApiModelProperty(value = "账号是否激活")
     private Boolean activatBoolean;
 }
+

@@ -243,6 +243,11 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUser.setUpdatedBy(enter.getUserId());
         plaUser.setUpdatedTime(new Date());
         plaUserMapper.updateById(plaUser);
+
+        // 若token存在 清空Token
+        if (StringUtils.isNotBlank(plaUser.getLastLoginToken())){
+            jedisCluster.del(plaUser.getLastLoginToken());
+        }
         // 权限
         QueryWrapper<PlaUserPermission> plaUserPermissionQueryWrapper = new QueryWrapper<>();
         plaUserPermissionQueryWrapper.eq(PlaUserPermission.COL_USER_ID, plaUser.getId());

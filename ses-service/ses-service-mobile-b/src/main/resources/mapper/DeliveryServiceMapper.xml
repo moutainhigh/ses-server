@@ -73,4 +73,15 @@
         </if>
         group by times
     </select>
+    <select id="queryTenantScooterByUserId"
+            resultType="com.redescooter.ses.service.mobile.b.dm.base.CorTenantScooter">
+        select tenantScooter.*
+        from cor_driver_scooter scooter
+                 inner join cor_driver driver on driver.id = scooter.driver_id and driver.dr = 0
+                 inner join cor_tenant_scooter tenantScooter
+                            on tenantScooter.scooter_id = scooter.scooter_id and tenantScooter.dr = 0
+        where scooter.tenant_id = #{tenantId}
+          and driver.user_id = #{userId}
+          and scooter.status = 1
+    </select>
 </mapper>

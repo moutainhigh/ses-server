@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult;
 import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
 import com.redescooter.ses.api.mobile.b.vo.MonthlyDeliveryChartResult;
+import com.redescooter.ses.service.mobile.b.dm.base.CorTenantScooter;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -58,4 +59,12 @@ public interface DeliveryServiceMapper {
      * @return
      */
     int refuseDelivery(@Param("userId") Long userId, @Param("status") String status);
+
+    /**
+     * 查询车辆数据
+     *
+     * @param enter
+     * @return
+     */
+    CorTenantScooter queryTenantScooterByUserId(DeliveryListEnter enter);
 }

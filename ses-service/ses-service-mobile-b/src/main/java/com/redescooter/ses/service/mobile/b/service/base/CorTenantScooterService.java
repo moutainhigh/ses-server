@@ -1,4 +1,4 @@
-package com.redescooter.ses.service.mobile.b.service.base.impl;
+package com.redescooter.ses.service.mobile.b.service.base;
 
 import java.util.List;
 import com.redescooter.ses.service.mobile.b.dm.base.CorTenantScooter;
@@ -7,6 +7,8 @@ public interface CorTenantScooterService extends IService<CorTenantScooter>{
 
 
     int updateBatch(List<CorTenantScooter> list);
+
+    int updateBatchSelective(List<CorTenantScooter> list);
 
     int batchInsert(List<CorTenantScooter> list);
 
