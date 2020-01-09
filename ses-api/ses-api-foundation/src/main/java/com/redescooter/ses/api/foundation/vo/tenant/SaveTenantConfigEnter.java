@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.foundation.vo.tenant;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -25,8 +26,20 @@ public class SaveTenantConfigEnter extends GeneralEnter {
     @ApiModelProperty(value = "租户配置主键")
     private Long tenantConfigId;
 
-    @ApiModelProperty(value = "超时预期值,单位分钟")
-    private Long timeoutExpectde;
+    @ApiModelProperty(value = "租户行业")
+    private  String industry;
+
+    @ApiModelProperty(value = "开始日期，传 周一至周日 对应 1-7 编号 ")
+    private String beginWeek;
+
+    @ApiModelProperty(value = "结束日期，传 周一至周日 对应 1-7 编号 ")
+    private String endWeek;
+
+    @ApiModelProperty(value = "开始时间")
+    private String beginTime;
+
+    @ApiModelProperty(value = "结束时间")
+    private String endTime;
 
     @ApiModelProperty(value = "估计持续时间,单位分钟")
     private Long estimatedDuration;
@@ -38,6 +51,6 @@ public class SaveTenantConfigEnter extends GeneralEnter {
     private Long inputTenantId;
 
     @ApiModelProperty(value = "租户Id，生成默认配置使用",hidden=true)
-    private Boolean tenantDefaultConfig;
+    private Boolean tenantDefaultConfig=Boolean.FALSE;
 
 }

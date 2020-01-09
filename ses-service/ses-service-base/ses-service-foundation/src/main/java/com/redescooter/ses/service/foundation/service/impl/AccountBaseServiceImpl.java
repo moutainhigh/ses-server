@@ -119,7 +119,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         BaseUserResult result = new BaseUserResult();
         // 开通账户
         // 1、 创建租户
-        Long tenantId = TenantDefaultValue.Default_MobileC_TenantId;
+        Long tenantId = TenantDefaultValue.DEFAULT_MOBILEC_TENANTID;
         if (!StringUtils.equals(enter.getT().getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
             tenantId = tenantBaseService.saveTenant(enter);
         }

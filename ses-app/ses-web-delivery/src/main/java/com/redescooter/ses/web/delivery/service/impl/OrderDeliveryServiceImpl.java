@@ -239,6 +239,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
 
         DeliveryDetailsResult details = orderDeliveryServiceMapper.details(enter);
+        if (details==null){
+            return new DeliveryDetailsResult();
+        }
 
         List<Long> scooterId = new ArrayList<>();
         scooterId.add(details.getScooterId());

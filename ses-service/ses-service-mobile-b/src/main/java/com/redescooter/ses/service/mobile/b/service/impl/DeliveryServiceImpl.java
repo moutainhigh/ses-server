@@ -115,18 +115,30 @@ public class DeliveryServiceImpl implements DeliveryService {
             }
         }
 
-        CorTenantScooter corTenantScooter=deliveryServiceMapper.queryTenantScooterByUserId(enter);
-
         List<DeliveryDetailResult> deliveryList = deliveryServiceMapper.deliveryList(enter);
 
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
+
+        List<Long> scooterIdList = new ArrayList<> ();
         deliveryList.forEach(item -> {
-            item.setScooterId(corTenantScooter.getScooterId());
-            item.setScooterLongitude(corTenantScooter.getLongitule());
-            item.setScooterLatitude(corTenantScooter.getLatitude());
+            scooterIdList.add(item.getScooterId());
             item.setTenantLongitude(queryTenantResult.getLongitude());
             item.setTenantLatitude(queryTenantResult.getLatitude());
         });
+
+        // 查询车辆信息
+        List<BaseScooterResult> scooter = scooterService.scooterInfor(scooterIdList);
+        scooter.forEach(item->{
+            for (DeliveryDetailResult delivery : deliveryList) {
+                if (item.getId().equals(delivery.getScooterId())) {
+                    delivery.setScooterId(item.getId());
+                    delivery.setScooterLongitude(item.getLongitule());
+                    delivery.setScooterLatitude(item.getLatitude());
+                    continue;
+                }
+            }
+        });
+
         return new DeliveryListResult(map, deliveryList);
     }
 
@@ -323,7 +335,8 @@ public class DeliveryServiceImpl implements DeliveryService {
         corDeliveryMapper.updateById(delivery);
 
         // 记录日志
-        saveDelivertTrace(enter, delivery, DeliveryEventEnums.COMPLETED.getValue());
+        saveDelivertTrace(enter, delivery, StringUtils.equals(delivery.getStatus(), DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue()) == true ? DeliveryEventEnums.TIMEOUT_COMPLETE.getValue() :
+                DeliveryEventEnums.COMPLETED.getValue());
 
         // 更新最新的状态到 redis
         jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));

@@ -63,8 +63,9 @@ public interface DeliveryServiceMapper {
     /**
      * 查询车辆数据
      *
-     * @param enter
+     * @param tenantId
+     * @param userId
      * @return
      */
-    CorTenantScooter queryTenantScooterByUserId(DeliveryListEnter enter);
+    CorTenantScooter queryTenantScooterByUserId(@Param("tenantId") Long tenantId, @Param("userId") Long userId);
 }

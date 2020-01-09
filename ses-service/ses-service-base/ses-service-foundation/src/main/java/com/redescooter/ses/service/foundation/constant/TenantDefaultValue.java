@@ -21,5 +21,12 @@ public interface TenantDefaultValue {
 
     String TENANT_Latitude = "";
 
-    Long Default_MobileC_TenantId = 0L;
+    Long DEFAULT_MOBILEC_TENANTID = 0L;
+
+    String BEGIN_TIME ="2020-1-10 10:00:00";
+
+    String END_TIME ="2020-1-10 16:00:00";
+
+    // 1 表示营业 2、 表示打烊
+    String BUSSINESS_STATUS="1";
 }

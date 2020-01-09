@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface PlaTenantMapper extends BaseMapper<PlaTenant> {
     int updateBatch(List<PlaTenant> list);
 
+    int updateBatchSelective(List<PlaTenant> list);
+
     int batchInsert(@Param("list") List<PlaTenant> list);
 
     int insertOrUpdate(PlaTenant record);

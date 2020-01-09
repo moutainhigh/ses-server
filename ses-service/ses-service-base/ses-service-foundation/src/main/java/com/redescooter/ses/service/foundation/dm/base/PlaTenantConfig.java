@@ -1,6 +1,10 @@
 package com.redescooter.ses.service.foundation.dm.base;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -23,8 +27,8 @@ public class PlaTenantConfig implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -63,8 +67,43 @@ public class PlaTenantConfig implements Serializable {
     private BigDecimal latitude;
 
     @TableField(value = "address")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private String address;
+
+    /**
+     * 状态 OPEN、CLOSE 营业中、打烊
+     */
+    @TableField(value = "status")
+    @ApiModelProperty(value = "状态 OPEN、CLOSE 营业中、打烊")
+    private String status;
+
+    /**
+     * 从周几开始
+     */
+    @TableField(value = "start_week")
+    @ApiModelProperty(value = "从周几开始")
+    private String startWeek;
+
+    /**
+     * 从周几结束
+     */
+    @TableField(value = "end_week")
+    @ApiModelProperty(value = "从周几结束")
+    private String endWeek;
+
+    /**
+     * 开始时间
+     */
+    @TableField(value = "begin_time")
+    @ApiModelProperty(value = "开始时间")
+    private Date beginTime;
+
+    /**
+     * 结束时间
+     */
+    @TableField(value = "end_time")
+    @ApiModelProperty(value = "结束时间")
+    private Date endTime;
 
     /**
      * 超时预期值,单位min
@@ -167,6 +206,16 @@ public class PlaTenantConfig implements Serializable {
     public static final String COL_LATITUDE = "latitude";
 
     public static final String COL_ADDRESS = "address";
+
+    public static final String COL_STATUS = "status";
+
+    public static final String COL_START_WEEK = "start_week";
+
+    public static final String COL_END_WEEK = "end_week";
+
+    public static final String COL_BEGIN_TIME = "begin_time";
+
+    public static final String COL_END_TIME = "end_time";
 
     public static final String COL_TIMEOUT_EXPECTDE = "timeout_expectde";
 

@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -83,6 +84,11 @@ public enum ExceptionCodeEnums {
     USERTOKEN_SERVICE_CODE_EXPIRED(10035, "验证码不存在"),
 
     USERTOKEN_SERVICE_CODE_WRONG(10036, "验证码错误"),
+
+    DISTRIBUTIONRANGE_IS_EMPTY(10037,"配送范围 为空"),
+
+    ESTIMATEDDURATION_IS_EMPTY(10038,"配送时间 为空"),
+
 
     ;
 

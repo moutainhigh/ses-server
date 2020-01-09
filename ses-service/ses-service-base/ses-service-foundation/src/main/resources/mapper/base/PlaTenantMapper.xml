@@ -3,6 +3,7 @@
 <mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaTenant">
     <!--@mbg.generated-->
+    <!--@Table pla_tenant-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="p_id" jdbcType="BIGINT" property="pId" />
@@ -45,10 +46,10 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, p_id, tenant_name, email, `status`, country_id, city_id, distrust_id, driver_counts,
-    sales_id, tenant_source, tenant_type, tenant_industry, address, contact, `position`,
-    tenant_code, longitude, latitude, tel_1, tel_2, tel_3, email_1, email_2, email_3,
-    time_zone, effective_time, activation_time, expire_time, created_by, created_time,
+    id, dr, p_id, tenant_name, email, `status`, country_id, city_id, distrust_id, driver_counts, 
+    sales_id, tenant_source, tenant_type, tenant_industry, address, contact, `position`, 
+    tenant_code, longitude, latitude, tel_1, tel_2, tel_3, email_1, email_2, email_3, 
+    time_zone, effective_time, activation_time, expire_time, created_by, created_time, 
     updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
@@ -251,93 +252,369 @@
       #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update pla_tenant
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="p_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.pId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.pId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.email != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.email,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.status != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="country_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.countryId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.countryId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="city_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.cityId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.cityId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="distrust_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.distrustId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.distrustId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="driver_counts = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.driverCounts != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.driverCounts,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sales_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.salesId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.salesId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_source = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantSource != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantSource,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantType,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_industry = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantIndustry != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantIndustry,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.address != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.address,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="contact = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.contact != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.contact,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`position` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.position != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.position,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.longitude != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.longitude,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.latitude != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.latitude,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tel_1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tel1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tel1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tel_2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tel2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tel2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tel_3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tel3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tel3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="email_1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.email1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.email1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="email_2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.email2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.email2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="email_3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.email3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.email3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="time_zone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.timeZone != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.timeZone,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="effective_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.effectiveTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.effectiveTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="activation_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.activationTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.activationTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="expire_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.expireTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.expireTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into pla_tenant
-    (id, dr, p_id, tenant_name, email, `status`, country_id, city_id, distrust_id, driver_counts,
-    sales_id, tenant_source, tenant_type, tenant_industry, address, contact, `position`,
-    tenant_code, longitude, latitude, tel_1, tel_2, tel_3, email_1, email_2, email_3,
-    time_zone, effective_time, activation_time, expire_time, created_by, created_time,
-    updated_by, updated_time, def1, def2, def3, def5, def6)
+    (id, dr, p_id, tenant_name, email, `status`, country_id, city_id, distrust_id, driver_counts, 
+      sales_id, tenant_source, tenant_type, tenant_industry, address, contact, `position`, 
+      tenant_code, longitude, latitude, tel_1, tel_2, tel_3, email_1, email_2, email_3, 
+      time_zone, effective_time, activation_time, expire_time, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT},
-      #{item.tenantName,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR},
-      #{item.countryId,jdbcType=BIGINT}, #{item.cityId,jdbcType=BIGINT}, #{item.distrustId,jdbcType=BIGINT},
-      #{item.driverCounts,jdbcType=INTEGER}, #{item.salesId,jdbcType=BIGINT}, #{item.tenantSource,jdbcType=VARCHAR},
-      #{item.tenantType,jdbcType=VARCHAR}, #{item.tenantIndustry,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR},
-      #{item.contact,jdbcType=VARCHAR}, #{item.position,jdbcType=VARCHAR}, #{item.tenantCode,jdbcType=VARCHAR},
-      #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL}, #{item.tel1,jdbcType=VARCHAR},
-      #{item.tel2,jdbcType=VARCHAR}, #{item.tel3,jdbcType=VARCHAR}, #{item.email1,jdbcType=VARCHAR},
-      #{item.email2,jdbcType=VARCHAR}, #{item.email3,jdbcType=VARCHAR}, #{item.timeZone,jdbcType=VARCHAR},
-      #{item.effectiveTime,jdbcType=TIMESTAMP}, #{item.activationTime,jdbcType=TIMESTAMP},
-      #{item.expireTime,jdbcType=TIMESTAMP}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
-      #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
-      #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
-      #{item.def6,jdbcType=DOUBLE})
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT}, 
+        #{item.tenantName,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR}, 
+        #{item.countryId,jdbcType=BIGINT}, #{item.cityId,jdbcType=BIGINT}, #{item.distrustId,jdbcType=BIGINT}, 
+        #{item.driverCounts,jdbcType=INTEGER}, #{item.salesId,jdbcType=BIGINT}, #{item.tenantSource,jdbcType=VARCHAR}, 
+        #{item.tenantType,jdbcType=VARCHAR}, #{item.tenantIndustry,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, 
+        #{item.contact,jdbcType=VARCHAR}, #{item.position,jdbcType=VARCHAR}, #{item.tenantCode,jdbcType=VARCHAR}, 
+        #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL}, #{item.tel1,jdbcType=VARCHAR}, 
+        #{item.tel2,jdbcType=VARCHAR}, #{item.tel3,jdbcType=VARCHAR}, #{item.email1,jdbcType=VARCHAR}, 
+        #{item.email2,jdbcType=VARCHAR}, #{item.email3,jdbcType=VARCHAR}, #{item.timeZone,jdbcType=VARCHAR}, 
+        #{item.effectiveTime,jdbcType=TIMESTAMP}, #{item.activationTime,jdbcType=TIMESTAMP}, 
+        #{item.expireTime,jdbcType=TIMESTAMP}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
+        #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaTenant">
     <!--@mbg.generated-->
     insert into pla_tenant
-    (id, dr, p_id, tenant_name, email, `status`, country_id, city_id, distrust_id, driver_counts,
-    sales_id, tenant_source, tenant_type, tenant_industry, address, contact, `position`,
-    tenant_code, longitude, latitude, tel_1, tel_2, tel_3, email_1, email_2, email_3,
-    time_zone, effective_time, activation_time, expire_time, created_by, created_time,
-    updated_by, updated_time, def1, def2, def3, def5, def6)
+    (id, dr, p_id, tenant_name, email, `status`, country_id, city_id, distrust_id, driver_counts, 
+      sales_id, tenant_source, tenant_type, tenant_industry, address, contact, `position`, 
+      tenant_code, longitude, latitude, tel_1, tel_2, tel_3, email_1, email_2, email_3, 
+      time_zone, effective_time, activation_time, expire_time, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{pId,jdbcType=BIGINT}, #{tenantName,jdbcType=VARCHAR},
-    #{email,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{countryId,jdbcType=BIGINT},
-    #{cityId,jdbcType=BIGINT}, #{distrustId,jdbcType=BIGINT}, #{driverCounts,jdbcType=INTEGER},
-    #{salesId,jdbcType=BIGINT}, #{tenantSource,jdbcType=VARCHAR}, #{tenantType,jdbcType=VARCHAR},
-    #{tenantIndustry,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR},
-    #{position,jdbcType=VARCHAR}, #{tenantCode,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL},
-    #{latitude,jdbcType=DECIMAL}, #{tel1,jdbcType=VARCHAR}, #{tel2,jdbcType=VARCHAR},
-    #{tel3,jdbcType=VARCHAR}, #{email1,jdbcType=VARCHAR}, #{email2,jdbcType=VARCHAR},
-    #{email3,jdbcType=VARCHAR}, #{timeZone,jdbcType=VARCHAR}, #{effectiveTime,jdbcType=TIMESTAMP},
-    #{activationTime,jdbcType=TIMESTAMP}, #{expireTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT},
-    #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
-    #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
-    #{def6,jdbcType=DOUBLE})
-    on duplicate key update
-    id = #{id,jdbcType=BIGINT},
-    dr = #{dr,jdbcType=INTEGER},
-    p_id = #{pId,jdbcType=BIGINT},
-    tenant_name = #{tenantName,jdbcType=VARCHAR},
-    email = #{email,jdbcType=VARCHAR},
-    `status` = #{status,jdbcType=VARCHAR},
-    country_id = #{countryId,jdbcType=BIGINT},
-    city_id = #{cityId,jdbcType=BIGINT},
-    distrust_id = #{distrustId,jdbcType=BIGINT},
-    driver_counts = #{driverCounts,jdbcType=INTEGER},
-    sales_id = #{salesId,jdbcType=BIGINT},
-    tenant_source = #{tenantSource,jdbcType=VARCHAR},
-    tenant_type = #{tenantType,jdbcType=VARCHAR},
-    tenant_industry = #{tenantIndustry,jdbcType=VARCHAR},
-    address = #{address,jdbcType=VARCHAR},
-    contact = #{contact,jdbcType=VARCHAR},
-    `position` = #{position,jdbcType=VARCHAR},
-    tenant_code = #{tenantCode,jdbcType=VARCHAR},
-    longitude = #{longitude,jdbcType=DECIMAL},
-    latitude = #{latitude,jdbcType=DECIMAL},
-    tel_1 = #{tel1,jdbcType=VARCHAR},
-    tel_2 = #{tel2,jdbcType=VARCHAR},
-    tel_3 = #{tel3,jdbcType=VARCHAR},
-    email_1 = #{email1,jdbcType=VARCHAR},
-    email_2 = #{email2,jdbcType=VARCHAR},
-    email_3 = #{email3,jdbcType=VARCHAR},
-    time_zone = #{timeZone,jdbcType=VARCHAR},
-    effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
-    activation_time = #{activationTime,jdbcType=TIMESTAMP},
-    expire_time = #{expireTime,jdbcType=TIMESTAMP},
-    created_by = #{createdBy,jdbcType=BIGINT},
-    created_time = #{createdTime,jdbcType=TIMESTAMP},
-    updated_by = #{updatedBy,jdbcType=BIGINT},
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-    def1 = #{def1,jdbcType=VARCHAR},
-    def2 = #{def2,jdbcType=VARCHAR},
-    def3 = #{def3,jdbcType=VARCHAR},
-    def5 = #{def5,jdbcType=VARCHAR},
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{pId,jdbcType=BIGINT}, #{tenantName,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{countryId,jdbcType=BIGINT}, 
+      #{cityId,jdbcType=BIGINT}, #{distrustId,jdbcType=BIGINT}, #{driverCounts,jdbcType=INTEGER}, 
+      #{salesId,jdbcType=BIGINT}, #{tenantSource,jdbcType=VARCHAR}, #{tenantType,jdbcType=VARCHAR}, 
+      #{tenantIndustry,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, 
+      #{position,jdbcType=VARCHAR}, #{tenantCode,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, 
+      #{latitude,jdbcType=DECIMAL}, #{tel1,jdbcType=VARCHAR}, #{tel2,jdbcType=VARCHAR}, 
+      #{tel3,jdbcType=VARCHAR}, #{email1,jdbcType=VARCHAR}, #{email2,jdbcType=VARCHAR}, 
+      #{email3,jdbcType=VARCHAR}, #{timeZone,jdbcType=VARCHAR}, #{effectiveTime,jdbcType=TIMESTAMP}, 
+      #{activationTime,jdbcType=TIMESTAMP}, #{expireTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DOUBLE})
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    p_id = #{pId,jdbcType=BIGINT}, 
+    tenant_name = #{tenantName,jdbcType=VARCHAR}, 
+    email = #{email,jdbcType=VARCHAR}, 
+    `status` = #{status,jdbcType=VARCHAR}, 
+    country_id = #{countryId,jdbcType=BIGINT}, 
+    city_id = #{cityId,jdbcType=BIGINT}, 
+    distrust_id = #{distrustId,jdbcType=BIGINT}, 
+    driver_counts = #{driverCounts,jdbcType=INTEGER}, 
+    sales_id = #{salesId,jdbcType=BIGINT}, 
+    tenant_source = #{tenantSource,jdbcType=VARCHAR}, 
+    tenant_type = #{tenantType,jdbcType=VARCHAR}, 
+    tenant_industry = #{tenantIndustry,jdbcType=VARCHAR}, 
+    address = #{address,jdbcType=VARCHAR}, 
+    contact = #{contact,jdbcType=VARCHAR}, 
+    `position` = #{position,jdbcType=VARCHAR}, 
+    tenant_code = #{tenantCode,jdbcType=VARCHAR}, 
+    longitude = #{longitude,jdbcType=DECIMAL}, 
+    latitude = #{latitude,jdbcType=DECIMAL}, 
+    tel_1 = #{tel1,jdbcType=VARCHAR}, 
+    tel_2 = #{tel2,jdbcType=VARCHAR}, 
+    tel_3 = #{tel3,jdbcType=VARCHAR}, 
+    email_1 = #{email1,jdbcType=VARCHAR}, 
+    email_2 = #{email2,jdbcType=VARCHAR}, 
+    email_3 = #{email3,jdbcType=VARCHAR}, 
+    time_zone = #{timeZone,jdbcType=VARCHAR}, 
+    effective_time = #{effectiveTime,jdbcType=TIMESTAMP}, 
+    activation_time = #{activationTime,jdbcType=TIMESTAMP}, 
+    expire_time = #{expireTime,jdbcType=TIMESTAMP}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
     def6 = #{def6,jdbcType=DOUBLE}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaTenant">
@@ -582,7 +859,7 @@
         #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
-    on duplicate key update
+    on duplicate key update 
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},

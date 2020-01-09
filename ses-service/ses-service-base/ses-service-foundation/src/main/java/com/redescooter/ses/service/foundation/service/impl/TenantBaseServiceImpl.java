@@ -2,6 +2,8 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
+import com.redescooter.ses.api.common.enums.tenant.TenantBussinessStatus;
+import com.redescooter.ses.api.common.enums.tenant.TenantBussinessWeek;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
@@ -10,6 +12,7 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.account.QueryTenantNodeResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.foundation.vo.tenant.SaveTenantConfigEnter;
+import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.constant.TenantDefaultValue;
 import com.redescooter.ses.service.foundation.dao.AccountBaseServiceMapper;
@@ -21,6 +24,8 @@ import com.redescooter.ses.service.foundation.dm.base.PlaTenantConfig;
 import com.redescooter.ses.service.foundation.dm.base.PlaTenantNode;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -134,15 +139,15 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             buildTenantConfigSingle(save, enter.getInputTenantId(), enter);
         } else {
             // 参数校验
-//            if (enter.getTimeoutExpectde() == null || enter.getTimeoutExpectde() == 0) {
-//                throw new FoundationException(ExceptionCodeEnums.TIMEOUTEXPECTDE_IS_EMPTY.getCode(), ExceptionCodeEnums.TIMEOUTEXPECTDE_IS_EMPTY.getMessage());
-//            }
-//            if (enter.getDistributionRange() == null || enter.getDistributionRange() == 0) {
-//                throw new FoundationException(ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getCode(), ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getMessage());
-//            }
-//            if (enter.getEstimatedDuration() == null || enter.getEstimatedDuration() == 0) {
-//                throw new FoundationException(ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getCode(), ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getMessage());
-//            }
+            if (enter.getDistributionRange() == null || enter.getDistributionRange() == 0) {
+                throw new FoundationException(ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getCode(), ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getMessage());
+            }
+            if (enter.getEstimatedDuration() == null || enter.getEstimatedDuration() == 0) {
+                throw new FoundationException(ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getCode(), ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getMessage());
+            }
+            if (StringUtils.isBlank(enter.getIndustry())) {
+                throw new FoundationException(ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getCode(), ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getMessage());
+            }
 
             //根据租户id查看租户配置是否存在
             BeanUtils.copyProperties(enter, save);
@@ -161,6 +166,20 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         plaTenantConfigMapper.insertOrUpdateSelective(save);
 
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public TenantConfigInfoResult tenantConfigInfo(GeneralEnter enter) {
+        QueryWrapper<PlaTenantConfig> plaTenantConfigQueryWrapper=new QueryWrapper<>();
+        plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_TENANT_ID,enter.getTenantId());
+        plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_DR,0);
+        PlaTenantConfig plaTenantConfig = plaTenantConfigMapper.selectOne(plaTenantConfigQueryWrapper);
+        if (plaTenantConfig != null) {
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+        }
+        TenantConfigInfoResult tenantConfigInfoResult = new TenantConfigInfoResult();
+        BeanUtils.copyProperties(plaTenantConfig,tenantConfigInfoResult);
+        return tenantConfigInfoResult;
     }
 
     /**
@@ -209,6 +228,13 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         tenantConfig.setDr(0);
         tenantConfig.setAddress(tenant.getAddress());
         //配送范围10KM 配送时间30min 超时预警时间15min
+
+        tenantConfig.setStartWeek(TenantBussinessWeek.MON.getValue());
+        tenantConfig.setEndWeek(TenantBussinessWeek.SUN.getValue());
+        tenantConfig.setBeginTime(DateUtil.parse(TenantDefaultValue.BEGIN_TIME,DateUtil.DEFAULT_DATETIME_FORMAT));
+        tenantConfig.setEndTime(DateUtil.parse(TenantDefaultValue.END_TIME,DateUtil.DEFAULT_DATETIME_FORMAT));
+        tenantConfig.setStatus(TenantBussinessStatus.OPEN.getValue());
+
         tenantConfig.setDistributionRange(TenantDefaultValue.DISTRIBUTION_RANGE);
         tenantConfig.setEstimatedDuration(TenantDefaultValue.ESTIMATED_DURATION);
         tenantConfig.setLanguage(enter.getLanguage());
