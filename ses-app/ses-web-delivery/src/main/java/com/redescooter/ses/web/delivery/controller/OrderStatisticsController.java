@@ -63,4 +63,10 @@ public class OrderStatisticsController {
     public Response<DeliveryChartListResult> deliveryChartList(@ModelAttribute @ApiParam("请求参数") DeliveryChartEnter enter) {
         return new Response<>(orderStatisticsService.deliveryChartList(enter));
     }
+
+    @PostMapping(value = "/deliveryCountByStatus")
+    @ApiOperation(value = "总订单状态统计", response = Map.class)
+    public Response<Map<String, Integer>> deliveryCountByStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(orderStatisticsService.deliveryCountByStatus(enter));
+    }
 }

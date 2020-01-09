@@ -48,11 +48,19 @@ public interface OrderStatisticsService {
 
     /**
      * 仪表盘订单柱状图
+     *
      * @param enter
      * @return
      */
     DeliveryChartListResult deliveryChartList(DeliveryChartEnter enter);
 
+    /**
+     * 状态统计
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> deliveryCountByStatus(GeneralEnter enter);
 
 
 }

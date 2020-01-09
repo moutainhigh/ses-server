@@ -67,4 +67,11 @@ public interface OrderStatisticsServiceMapper {
      * @return
      */
     List<DeliveryChartResult> deliveryChart365Day(DeliveryChartDto enter);
+
+    /**
+     * 所有订单状态统计
+     * @param enter
+     * @return
+     */
+    List<CountByStatusResult> deliveryCountByStatus(GeneralEnter enter);
 }

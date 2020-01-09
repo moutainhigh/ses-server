@@ -222,6 +222,24 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
         return result;
     }
 
+    @Override
+    public Map<String, Integer> deliveryCountByStatus(GeneralEnter enter) {
+
+        List<CountByStatusResult> countByStatusResultList = orderStatisticsServiceMapper.deliveryCountByStatus(enter);
+
+        Map<String, Integer> map = new HashMap<>();
+        for (CountByStatusResult item : countByStatusResultList) {
+            map.put(item.getStatus(), item.getTotalCount());
+        }
+        for (DeliveryStatusEnums status : DeliveryStatusEnums.values()) {
+            if (!map.containsKey(status.getValue())) {
+                map.put(status.getValue(), 0);
+            }
+        }
+
+        return map;
+    }
+
     private List<String> getDateList(int heavens, Date date) {
         ArrayList<String> list = new ArrayList<>();
         switch (heavens) {
