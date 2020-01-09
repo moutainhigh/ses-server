@@ -26,17 +26,18 @@
 
     </select>
     <select id="list" resultType="com.redescooter.ses.web.delivery.vo.ListDriverResult">
-        select cdr.id,
-        cdr.status,
-        cup.picture as avatar,
-        cup.place_birth as address,
-        cup.first_name as driverFirstName,
-        cup.last_name as driverLastName,
-        cup.email_1 as email,
+        select cdr.id      as id,
+        cdr.status         as status,
+        cdr.user_id        as userId,
+        cup.picture        as avatar,
+        cup.place_birth    as address,
+        cup.first_name     as driverFirstName,
+        cup.last_name      as driverLastName,
+        cup.email_1        as email,
         cup.country_code_1 as countryCodel,
-        cup.tel_number_1 as driverPhone,
-        cts.license_plate as plateNumber,
-        cdr.def1 as activatBoolean
+        cup.tel_number_1   as driverPhone,
+        cts.license_plate  as plateNumber,
+        cdr.def1           as activatBoolean
         from cor_driver cdr
         inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr = 0
         inner join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
@@ -56,6 +57,17 @@
                 and cdr.status = #{status}
             </if>
         </where>
+        group by id,
+        status,
+        userId,
+        avatar,
+        address,
+        driverFirstName, driverLastName,
+        email,
+        countryCodel,
+        driverPhone,
+        plateNumber,
+        activatBoolean
         <choose>
             <when test="map==false">
                 order by cdr.status asc
