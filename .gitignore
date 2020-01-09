@@ -111,11 +111,10 @@ target/
 
 ### common
 *~
-*/.DS_Store
 *.
 .idea
+*/.DS_Store
 */.idea/*
-*.
-*.
 *.cmd
+*/.iml
 /logs/*
