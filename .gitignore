@@ -111,9 +111,10 @@ target/
 
 ### common
 *~
-.DS_Store
+*/.DS_Store
 *.
 .idea
+*/.idea/*
 *.
 *.
 *.cmd
