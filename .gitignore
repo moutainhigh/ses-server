@@ -109,3 +109,12 @@ target/
 .settings/
 .classpath
 
+### common
+*~
+.DS_Store
+*.
+.idea
+*.
+*.
+*.cmd
+/logs/*

@@ -115,7 +115,7 @@ public class DriverController {
     }
 
     @PostMapping(value = "/driverDeliveryChartList")
-    @ApiOperation(value = "仪表盘订单柱状图", response = DeliveryChartResult.class)
+    @ApiOperation(value = "司机订单柱状图", response = DeliveryChartResult.class)
     public Response<DeliveryChartListResult> driverDeliveryChartList(@ModelAttribute @ApiParam("请求参数") DeliveryChartEnter enter) {
         return new Response<>(driverService.driverDeliveryChartList(enter));
     }
