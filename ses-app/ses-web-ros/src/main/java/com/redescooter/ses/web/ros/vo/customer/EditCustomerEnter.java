@@ -64,7 +64,7 @@ public class EditCustomerEnter extends GeneralEnter {
     private String address;
 
     @ApiModelProperty(value = "地点编号")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
+//    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
     private String placeId;
 
     @ApiModelProperty(value = "经度")

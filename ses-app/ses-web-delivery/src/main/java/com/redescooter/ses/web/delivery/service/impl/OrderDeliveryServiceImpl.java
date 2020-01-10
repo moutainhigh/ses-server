@@ -331,11 +331,10 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
                 deliveryMapResultList.add(delivery);
             });
         }
-
         return MapResult.builder()
                 .tenantId(tenant.getId())
-                .tenantLng(tenant.getLongitude().toString())
-                .tenantLat(tenant.getLatitude().toString())
+                .tenantLng(null==tenant.getLongitude()?BigDecimal.ZERO.toString():tenant.getLongitude().toString())
+                .tenantLat(null==tenant.getLatitude()?BigDecimal.ZERO.toString():tenant.getLatitude().toString())
                 .scooterMapResultList(scooterMapList)
                 .deliveryMapList(deliveryMapResultList)
                 .build();
