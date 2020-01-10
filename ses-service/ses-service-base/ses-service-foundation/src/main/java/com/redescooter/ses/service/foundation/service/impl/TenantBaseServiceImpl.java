@@ -145,9 +145,6 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             if (enter.getEstimatedDuration() == null || enter.getEstimatedDuration() == 0) {
                 throw new FoundationException(ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getCode(), ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getMessage());
             }
-            if (StringUtils.isBlank(enter.getIndustry())) {
-                throw new FoundationException(ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getCode(), ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getMessage());
-            }
 
             //根据租户id查看租户配置是否存在
             BeanUtils.copyProperties(enter, save);
