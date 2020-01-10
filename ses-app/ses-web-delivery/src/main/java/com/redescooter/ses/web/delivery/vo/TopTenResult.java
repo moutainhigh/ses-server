@@ -27,6 +27,9 @@ public class TopTenResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "userId")
+    private Long userId;
+
     @ApiModelProperty(value = "头像")
     private String avatar;
 
