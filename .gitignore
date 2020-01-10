@@ -67,6 +67,8 @@ Icon
 */*.iml/
 */.idea/
 .idea/
+*/.idea/*
+.idea/*
 
 ### Java class files
 *.class
