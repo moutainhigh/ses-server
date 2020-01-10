@@ -39,7 +39,7 @@ public class BaseCustomerEnter extends GeneralEnter {
     private String timeZone;
 
     @ApiModelProperty(value = "国家")
-    private Long inputCountry;
+    private Long countryId;
 
     @ApiModelProperty(value = "国家名称")
     private String countryName;
@@ -73,9 +73,6 @@ public class BaseCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "企业名称")
     private String companyName;
-
-    @ApiModelProperty(value = "客户头像")
-    private String picture;
 
     @ApiModelProperty(value = "客户来源渠道,SYSTEM-系统-1, WEBSITE-官网-2")
     private String customerSource;
