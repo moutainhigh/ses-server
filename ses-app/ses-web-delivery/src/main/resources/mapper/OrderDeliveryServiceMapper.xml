@@ -225,4 +225,21 @@
           and scooter.status = 1
           and scooter.tenant_id = #{tenantId}
     </select>
+    <select id="mapDeliveryList" resultType="com.redescooter.ses.web.delivery.dm.CorDelivery">
+        select * from cor_delivery
+        where  tenant_id=#{tenantId}
+        and dr=0
+        <choose>
+            <when test="statusList != null and statusList.size() != 0">
+                and status in
+                <foreach collection="statusList" open="(" separator="," close=")" item="item">
+                    #{item}
+                </foreach>
+            </when>
+            <when test="statusList == null or statusList.size() == 0">
+                and status = null
+            </when>
+
+        </choose>
+    </select>
 </mapper>

@@ -239,7 +239,8 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
 
         DeliveryDetailsResult details = orderDeliveryServiceMapper.details(enter);
-        if (details==null){
+
+        if (details == null) {
             return new DeliveryDetailsResult();
         }
 
@@ -262,7 +263,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
     public List<SelectDriverResult> selectDriverList(GeneralEnter enter) {
 
         List<SelectDriverResult> selectDriverResults = orderDeliveryServiceMapper.selectDriverList(enter);
-
+        System.out.println(selectDriverResults);
         return selectDriverResults;
     }
 
@@ -310,21 +311,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         // 司机车辆分配数据
         List<ScooterMapResult> scooterMapList = orderDeliveryServiceMapper.scooterMap(enter);
 
-        QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
-        corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
-        corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
-        if (CollectionUtils.isNotEmpty(enter.getStatusList())) {
-            for (int i = 0; i < enter.getStatusList().size(); i++) {
-                if (i == 0) {
-                    corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, enter.getStatusList().get(i));
-                } else {
-                    corDeliveryQueryWrapper.or().eq(CorDelivery.COL_STATUS, enter.getStatusList().get(i));
-                }
-            }
-        } else {
-            corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, null);
-        }
-        List<CorDelivery> deliveryList = deliveryService.list(corDeliveryQueryWrapper);
+        List<CorDelivery> deliveryList = orderDeliveryServiceMapper.mapDeliveryList(enter);
 
         List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(deliveryList)) {
@@ -391,7 +378,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
         corDeliveryQueryWrapper.eq(CorDelivery.COL_TENANT_ID, enter.getTenantId());
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DELIVERER_ID, result.getUserId());
-        corDeliveryQueryWrapper.in(CorDelivery.COL_STATUS,DeliveryStatusEnums.DELIVERING.getValue(),DeliveryStatusEnums.PENDING.getValue());
+        corDeliveryQueryWrapper.in(CorDelivery.COL_STATUS, DeliveryStatusEnums.DELIVERING.getValue(), DeliveryStatusEnums.PENDING.getValue());
         List<CorDelivery> deliveryList = deliveryService.list(corDeliveryQueryWrapper);
 
         List<DeliveryMapResult> deliveryMapResultList = new ArrayList<>();

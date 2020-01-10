@@ -13,6 +13,11 @@ import lombok.*;
  * @Function: TODO
  */
 @ApiModel(value = "司机选择列表", description = "配送单列表")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class SelectDriverResult extends GeneralResult {
 
     @ApiModelProperty(value = "司机主键")

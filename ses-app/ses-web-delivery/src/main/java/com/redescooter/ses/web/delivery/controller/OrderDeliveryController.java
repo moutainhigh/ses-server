@@ -65,11 +65,14 @@ public class OrderDeliveryController {
     }
 
 
+
     @PostMapping(value = "/selectDriver")
     @ApiOperation(value = "司机列表选择", response = SelectDriverResult.class)
     public Response<List<SelectDriverResult>> selectDriver(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(orderDeliveryService.selectDriverList(enter));
+        List<SelectDriverResult> selectDriverResults = orderDeliveryService.selectDriverList(enter);
+        return new Response<>(selectDriverResults);
     }
+
 
     @PostMapping(value = "/map")
     @ApiOperation(value = "地图", response = MapResult.class)

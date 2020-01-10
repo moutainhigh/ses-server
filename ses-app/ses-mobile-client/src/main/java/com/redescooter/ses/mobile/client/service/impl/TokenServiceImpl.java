@@ -15,6 +15,7 @@ import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnte
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.client.exception.SesMobileClientException;
 import com.redescooter.ses.mobile.client.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
@@ -64,7 +65,7 @@ public class TokenServiceImpl implements TokenService {
         //1. 确定邮件是否存在
         Boolean aBoolean = accountBaseService.chectMail(enter.getMail());
         if (!aBoolean) {
-            throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            throw new SesMobileClientException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         //2. 加入邮箱任务
         String code = String.valueOf(RandomUtils.nextInt(1000, 9999));
@@ -95,13 +96,13 @@ public class TokenServiceImpl implements TokenService {
 
         Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
         if (map == null) {
-            throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            throw new SesMobileClientException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(map.get("verificationCode"), enter.getCode())) {
-            throw new MobileBException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
+            throw new SesMobileClientException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
         }
         if (!StringUtils.equals(enter.getConfirmPassword(), enter.getNewPassword())) {
-            throw new MobileBException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+            throw new SesMobileClientException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
         return userTokenService.setPassword(enter);
     }
