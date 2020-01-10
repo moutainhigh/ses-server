@@ -20,6 +20,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -112,10 +113,11 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
                     .build();
             scooterMapResultList.add(scooter);
         });
+
         return MapResult.builder()
                 .tenantId(tenant.getId())
-                .tenantLat(tenant.getLatitude().toString())
-                .tenantLng(tenant.getLongitude().toString())
+                .tenantLat(tenant.getLatitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLatitude()))
+                .tenantLng(tenant.getLongitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLongitude()))
                 .scooterMapResultList(scooterMapResultList)
                 .build();
     }
@@ -211,6 +213,8 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
                     map.put(str, result);
                 }
             }
+        }else{
+            map=null;
         }
 
         DeliveryChartListResult result = new DeliveryChartListResult();

@@ -779,13 +779,15 @@ public class DriverServiceImpl implements DriverService {
                 }
             }
 
+        }else {
+            map=null;
         }
-
         DeliveryChartListResult result = new DeliveryChartListResult();
         result.setMap(map);
         result.setAvg(avg);
         result.setMax(max);
         result.setMin(min);
+
 
         return result;
     }
