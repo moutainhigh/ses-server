@@ -711,7 +711,7 @@ public class DriverServiceImpl implements DriverService {
                 DeliveryChartDto dateTimeParmToday = new DeliveryChartDto();
 
                 BeanUtils.copyProperties(enter, dateTimeParmToday);
-                dateTimeParmToday.setEndDateTime(enter.getDateTimes());
+                dateTimeParmToday.setDateTime(enter.getDateTimes());
                 deliveryChartResults = driverServiceMapper.driverDeliveryChartToday(dateTimeParmToday);
                 break;
 

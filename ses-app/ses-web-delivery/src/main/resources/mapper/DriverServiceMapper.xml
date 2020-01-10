@@ -193,7 +193,7 @@
     </select>
     <select id="driverDeliveryChartToday" resultType="com.redescooter.ses.web.delivery.vo.DeliveryChartResult">
         select
-        DATE_FORMAT(cdy.updated_time, '%H') as times,
+        DATE_FORMAT(cdy.updated_time, '%Y-%m-%d %H')   as times,
         ifnull(sum(case when cdy.status = '3' then 1 end), 0) as rejected,
         ifnull(sum(case when cdy.status = '5' then 1 end), 0) as timeoutComplete,
         ifnull(sum(case when cdy.status = '6' then 1 end), 0) as completed,
@@ -275,8 +275,8 @@
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
         and cdy.deliverer_id=#{id}
-        and (DATE_FORMAT(cdy.updated_time, '%Y-%m') between DATE_FORMAT(#{startDateTime}, '%Y-%m-%d') and
-        DATE_FORMAT(#{endDateTime}, '%Y-%m-%d'))
+        and (DATE_FORMAT(cdy.updated_time, '%Y-%m') between DATE_FORMAT(#{startDateTime}, '%Y-%m') and
+        DATE_FORMAT(#{endDateTime}, '%Y-%m'))
         <if test="status != null and status != ''">
             and cdy.status=#{status}
         </if>
