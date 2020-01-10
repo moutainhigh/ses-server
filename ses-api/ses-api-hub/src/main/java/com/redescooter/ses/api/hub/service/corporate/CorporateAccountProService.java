@@ -11,10 +11,4 @@ import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
  * @create: 2019/12/23 15:15
  */
 public interface CorporateAccountProService {
-    /**
-     * 保存个人信息
-     * @param enter
-     * @return
-     */
-    GeneralResult saveUserProfileHub(SaveUserProfileHubEnter enter);
 }

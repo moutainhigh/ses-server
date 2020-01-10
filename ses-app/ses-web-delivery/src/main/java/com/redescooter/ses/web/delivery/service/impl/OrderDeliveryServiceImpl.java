@@ -334,7 +334,6 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
                 deliveryMapResultList.add(delivery);
             });
         }
-
         return MapResult.builder()
                 .tenantId(tenant.getId())
                 .tenantLat(tenant.getLatitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLatitude()))

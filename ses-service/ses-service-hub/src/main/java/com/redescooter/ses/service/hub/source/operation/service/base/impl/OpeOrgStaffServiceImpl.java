@@ -1,18 +1,15 @@
-package com.redescooter.ses.service.hub.source.operation.service.impl;
+package com.redescooter.ses.service.hub.source.operation.service.base.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import java.util.List;
-
 import com.redescooter.ses.service.hub.source.operation.dao.OpeOrgStaffMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeOrgStaff;
-import com.redescooter.ses.service.hub.source.operation.service.OpeOrgStaffService;
+import com.redescooter.ses.service.hub.source.operation.service.base.OpeOrgStaffService;
 
 /**
  * @author Mr.lijiating

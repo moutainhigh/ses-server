@@ -616,7 +616,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         plaTenantQueryWrapper.eq(PlaTenant.COL_DR, 0);
         plaTenantQueryWrapper.eq(PlaTenant.COL_EMAIL, emailUser.getLoginName());
         PlaTenant plaTenant = plaTenantMapper.selectOne(plaTenantQueryWrapper);
-        if (plaTenant == null) {
+        if (plaTenant != null) {
             plaTenant.setActivationTime(new Date());
             plaTenant.setUpdatedTime(new Date());
             plaTenantMapper.updateById(plaTenant);

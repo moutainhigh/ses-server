@@ -25,9 +25,11 @@ public interface ValidationExceptionCode {
     int EMAIL_IS_EMPTY = 10007;
     // id 为空
     int ID_IS_EMPTY = 10008;
+
+    // 10030 为业务异常
     // 地址信息为空
-    int ADDRESS_INFO_IS_EMPTY = 10009;
+    int ADDRESS_INFO_IS_EMPTY = 10031;
 
     //客户信息不能为空
-    int CUSTOMER_INFO_IS_EMPTY = 10009;
+    int CUSTOMER_INFO_IS_EMPTY = 10032;
 }
