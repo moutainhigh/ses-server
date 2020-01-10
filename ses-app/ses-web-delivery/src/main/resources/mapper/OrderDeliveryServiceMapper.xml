@@ -209,7 +209,7 @@
                  left join cor_user_profile profile on cd.user_id = profile.USER_ID and profile.dr = 0
         where scooter.tenant_id = #{tenantId}
         <if test="licensePlate != null and licensePlate != ''">
-            and scooter.license_plate=#{licensePlate}
+            and scooter.license_plate like concat("%",#{licensePlate},"%")
         </if>
     </select>
 

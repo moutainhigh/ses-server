@@ -108,4 +108,13 @@ target/
 .project
 .settings/
 .classpath
-!/.gitignore
+
+### common
+*~
+*.
+.idea
+*/.DS_Store
+*/.idea/*
+*.cmd
+*/.iml
+/logs/*

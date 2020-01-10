@@ -612,11 +612,11 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         }
         // 更新租户账户的激活时间
-        QueryWrapper<PlaTenant> plaTenantQueryWrapper=new QueryWrapper<>();
-        plaTenantQueryWrapper.eq(PlaTenant.COL_DR,0);
-        plaTenantQueryWrapper.eq(PlaTenant.COL_EMAIL,emailUser.getLoginName());
+        QueryWrapper<PlaTenant> plaTenantQueryWrapper = new QueryWrapper<>();
+        plaTenantQueryWrapper.eq(PlaTenant.COL_DR, 0);
+        plaTenantQueryWrapper.eq(PlaTenant.COL_EMAIL, emailUser.getLoginName());
         PlaTenant plaTenant = plaTenantMapper.selectOne(plaTenantQueryWrapper);
-        if (plaTenant==null){
+        if (plaTenant == null) {
             plaTenant.setActivationTime(new Date());
             plaTenant.setUpdatedTime(new Date());
             plaTenantMapper.updateById(plaTenant);
@@ -690,8 +690,19 @@ public class UserTokenServiceImpl implements UserTokenService {
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
+        QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
+        wrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getMail());
+        wrapper.eq(PlaUserPassword.COL_DR, 0);
+        wrapper.isNull(PlaUserPassword.COL_PASSWORD);
+        Integer count = userPasswordMapper.selectCount(wrapper);
+
         BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
-        baseMailTaskEnter.setEvent(MailTemplateEventEnum.WEB_ACTIVATE.getEvent());
+
+        if (count == 0) {
+            baseMailTaskEnter.setEvent(MailTemplateEventEnum.WEB_PASSWORD.getEvent());
+        } else {
+            baseMailTaskEnter.setEvent(MailTemplateEventEnum.WEB_ACTIVATE.getEvent());
+        }
 
         if (enter.getMail().indexOf("@") == (-1)) {
             baseMailTaskEnter.setName(enter.getMail());

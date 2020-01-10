@@ -702,7 +702,8 @@ public class DriverServiceImpl implements DriverService {
         Double max = 0.00, avg = 0.00, min = 0.00;
 
         //天数
-        int heavens = enter.getHeavens() == 0 ? 30 : enter.getHeavens();
+        int heavens = enter.getHeavens() == 0 ? 1 : enter.getHeavens();
+        enter.setHeavens(heavens);
         enter.setDateTimes(enter.getDateTimes() == null ? new Date() : enter.getDateTimes());
         switch (heavens) {
             case 1:
