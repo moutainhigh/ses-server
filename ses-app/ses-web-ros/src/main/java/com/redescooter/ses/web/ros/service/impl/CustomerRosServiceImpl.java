@@ -231,9 +231,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         result.setUpdatedName(sysUserProfileMapper.selectOne(updated).getFullName());
 
         result.setRequestId(enter.getRequestId());
-        if (opeCustomer.getCity() != null || opeCustomer.getDistrust() != null) {
+        if (opeCustomer.getCity() != null) {
             result.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getCity()).build()).getName());
-            result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
+            if(opeCustomer.getDistrust() != null){
+                result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
+            }
         }
 
         //验证是否可以再次发生邮件
