@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantBussinessStatus;
 import com.redescooter.ses.api.common.enums.tenant.TenantBussinessWeek;
@@ -133,49 +134,32 @@ public class TenantBaseServiceImpl implements TenantBaseService {
     @Transactional
     @Override
     public GeneralResult saveTenantConfig(SaveTenantConfigEnter enter) {
-        PlaTenantConfig save = new PlaTenantConfig();
-        //生成默认配置
-        if (enter.getTenantDefaultConfig()) {
-            buildTenantConfigSingle(save, enter.getInputTenantId(), enter);
+
+        PlaTenantConfig plaTenantConfig = buildTenantConfigSingle(enter.getInputTenantId(), enter);
+        // 保存
+        if ((enter.getTenantConfigId() == null) || (enter.getTenantConfigId() == 0)) {
+            plaTenantConfig.setId((idAppService.getId(SequenceName.PLA_TENANT_CONFIG)));
+            plaTenantConfig.setCreatedBy(enter.getUserId());
+            plaTenantConfig.setCreatedTime(new Date());
         } else {
-            // 参数校验
-            if (enter.getDistributionRange() == null || enter.getDistributionRange() == 0) {
-                throw new FoundationException(ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getCode(), ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getMessage());
-            }
-            if (enter.getEstimatedDuration() == null || enter.getEstimatedDuration() == 0) {
-                throw new FoundationException(ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getCode(), ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getMessage());
-            }
-
-            //根据租户id查看租户配置是否存在
-            BeanUtils.copyProperties(enter, save);
-            // 保存
-            if ((enter.getTenantConfigId() == null) || (enter.getTenantConfigId() == 0)) {
-                save.setId((idAppService.getId(SequenceName.PLA_TENANT_CONFIG)));
-                save.setCreatedBy(enter.getUserId());
-                save.setCreatedTime(new Date());
-            } else {
-                // 修改
-                save.setId(enter.getTenantConfigId());
-            }
-            save.setUpdatedBy(enter.getUserId());
-            save.setUpdatedTime(new Date());
+            // 修改
+            plaTenantConfig.setId(enter.getTenantConfigId());
         }
-        plaTenantConfigMapper.insertOrUpdateSelective(save);
-
+        plaTenantConfigMapper.insertOrUpdate(plaTenantConfig);
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public TenantConfigInfoResult tenantConfigInfo(GeneralEnter enter) {
-        QueryWrapper<PlaTenantConfig> plaTenantConfigQueryWrapper=new QueryWrapper<>();
-        plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_TENANT_ID,enter.getTenantId());
-        plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_DR,0);
+        QueryWrapper<PlaTenantConfig> plaTenantConfigQueryWrapper = new QueryWrapper<>();
+        plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_TENANT_ID, enter.getTenantId());
+        plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_DR, 0);
         PlaTenantConfig plaTenantConfig = plaTenantConfigMapper.selectOne(plaTenantConfigQueryWrapper);
         if (plaTenantConfig != null) {
-            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
         TenantConfigInfoResult tenantConfigInfoResult = new TenantConfigInfoResult();
-        BeanUtils.copyProperties(plaTenantConfig,tenantConfigInfoResult);
+        BeanUtils.copyProperties(plaTenantConfig, tenantConfigInfoResult);
         return tenantConfigInfoResult;
     }
 
@@ -216,32 +200,51 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         return map;
     }
 
-    private PlaTenantConfig buildTenantConfigSingle(PlaTenantConfig tenantConfig, Long tennatId, GeneralEnter enter) {
+    private PlaTenantConfig buildTenantConfigSingle(Long tennatId, SaveTenantConfigEnter enter) {
+        // 餐厅 配送范围 配送时间 参数过滤
+        if (!enter.getTenantDefaultConfig() && StringUtils.equals(enter.getIndustry(), CustomerIndustryEnums.RESTAURANT.getValue())) {
+            // 参数校验
+            if (enter.getDistributionRange() == null || enter.getDistributionRange() == 0) {
+                throw new FoundationException(ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getCode(), ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getMessage());
+            }
+            if (enter.getEstimatedDuration() == null || enter.getEstimatedDuration() == 0) {
+                throw new FoundationException(ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getCode(), ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getMessage());
+            }
+        }
+
+        PlaTenantConfig tenantConfig = new PlaTenantConfig();
+
         PlaTenant tenant = plaTenantMapper.selectById(tennatId);
         if (tenant == null) {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
-        tenantConfig.setId(idAppService.getId(SequenceName.PLA_TENANT_CONFIG));
         tenantConfig.setDr(0);
         tenantConfig.setAddress(tenant.getAddress());
         //配送范围10KM 配送时间30min 超时预警时间15min
-
-        tenantConfig.setStartWeek(TenantBussinessWeek.MON.getValue());
-        tenantConfig.setEndWeek(TenantBussinessWeek.SUN.getValue());
-        tenantConfig.setBeginTime(DateUtil.parse(TenantDefaultValue.BEGIN_TIME,DateUtil.DEFAULT_DATETIME_FORMAT));
-        tenantConfig.setEndTime(DateUtil.parse(TenantDefaultValue.END_TIME,DateUtil.DEFAULT_DATETIME_FORMAT));
+        if (enter.getTenantDefaultConfig()) {
+            tenantConfig.setStartWeek(TenantBussinessWeek.MON.getValue());
+            tenantConfig.setEndWeek(TenantBussinessWeek.SUN.getValue());
+            tenantConfig.setBeginTime(DateUtil.parse(TenantDefaultValue.BEGIN_TIME, DateUtil.DEFAULT_DATETIME_FORMAT));
+            tenantConfig.setEndTime(DateUtil.parse(TenantDefaultValue.END_TIME, DateUtil.DEFAULT_DATETIME_FORMAT));
+            tenantConfig.setDistributionRange(TenantDefaultValue.DISTRIBUTION_RANGE);
+            tenantConfig.setEstimatedDuration(TenantDefaultValue.ESTIMATED_DURATION);
+        } else {
+            tenantConfig.setStartWeek(enter.getStartWeek());
+            tenantConfig.setEndWeek(enter.getEndWeek());
+            tenantConfig.setBeginTime(DateUtil.parse(enter.getBeginTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
+            tenantConfig.setEndTime(DateUtil.parse(enter.getEndTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
+            if (StringUtils.equals(enter.getIndustry(), CustomerIndustryEnums.RESTAURANT.getValue())) {
+                tenantConfig.setDistributionRange(enter.getDistributionRange());
+                tenantConfig.setEstimatedDuration(enter.getEstimatedDuration());
+            }
+        }
         tenantConfig.setStatus(TenantBussinessStatus.OPEN.getValue());
-
-        tenantConfig.setDistributionRange(TenantDefaultValue.DISTRIBUTION_RANGE);
-        tenantConfig.setEstimatedDuration(TenantDefaultValue.ESTIMATED_DURATION);
         tenantConfig.setLanguage(enter.getLanguage());
         tenantConfig.setLatitude(tenant.getLatitude());
         tenantConfig.setLongitude(tenant.getLongitude());
         tenantConfig.setTenantId(tenant.getId());
         tenantConfig.setTimeoutExpectde(TenantDefaultValue.TIMEOUT_EXPECTDE);
         tenantConfig.setTimeZone(tenant.getTimeZone());
-        tenantConfig.setCreatedBy(enter.getUserId());
-        tenantConfig.setCreatedTime(new Date());
         tenantConfig.setUpdatedBy(enter.getUserId());
         tenantConfig.setUpdatedTime(new Date());
         return tenantConfig;

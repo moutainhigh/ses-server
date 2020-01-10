@@ -30,7 +30,7 @@ public class SaveTenantConfigEnter extends GeneralEnter {
     private  String industry;
 
     @ApiModelProperty(value = "开始日期，传 周一至周日 对应 1-7 编号 ")
-    private String beginWeek;
+    private String startWeek;
 
     @ApiModelProperty(value = "结束日期，传 周一至周日 对应 1-7 编号 ")
     private String endWeek;
