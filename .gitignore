@@ -64,10 +64,10 @@ Icon
 *.iml
 */*.iml
 */*.iml/
-*/.idea/
-.idea/
-*/.idea/*
+*.idea
 .idea/*
+*/.idea/
+
 
 ### Java class files
 /target/
