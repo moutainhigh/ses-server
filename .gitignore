@@ -110,6 +110,7 @@ target/*
 .project
 .settings/
 .classpath
+*./.iml/*
 
 ### common
 *~
