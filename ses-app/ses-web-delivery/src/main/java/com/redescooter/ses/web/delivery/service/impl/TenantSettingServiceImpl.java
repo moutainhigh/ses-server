@@ -81,6 +81,10 @@ public class TenantSettingServiceImpl implements TenantSettingService {
         if (null != tenantConfigInfoResult.getDistributionRange() && 0 != tenantConfigInfoResult.getDistributionRange()) {
             tenantInforResult.setAround(tenantConfigInfoResult.getEstimatedDuration());
         }
+        tenantInforResult.setEmail(queryTenantResult.getEmail());
+        tenantInforResult.setAvatar(corUserProfile.getPicture());
+        tenantInforResult.setPageBootTips(corUserProfile.getPageBootTips());
+        tenantInforResult.setIndustry(queryTenantResult.getTenantIndustry());
         return tenantInforResult;
     }
 
@@ -90,6 +94,7 @@ public class TenantSettingServiceImpl implements TenantSettingService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult updateTenantConfig(UpdateTenantConfigEnter enter) {
         SaveTenantConfigEnter saveTenantConfigEnter = new SaveTenantConfigEnter();

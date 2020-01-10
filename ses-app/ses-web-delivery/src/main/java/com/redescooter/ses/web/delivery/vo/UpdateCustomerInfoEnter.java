@@ -33,9 +33,6 @@ public class UpdateCustomerInfoEnter extends GeneralEnter {
     @ApiModelProperty(value = "客户姓氏")
     private String customerLastName;
 
-    @ApiModelProperty(value = "客户全名")
-    private String customerFullName;
-
     @ApiModelProperty(value = "头像")
     private String avatar;
 

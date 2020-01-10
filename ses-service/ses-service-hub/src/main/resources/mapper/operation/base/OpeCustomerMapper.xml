@@ -10,7 +10,7 @@
         <result column="time_zone" jdbcType="VARCHAR" property="timeZone"/>
         <result column="country" jdbcType="BIGINT" property="country"/>
         <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
-        <result column="city" jdbcType="BIGINT" property="city"/>
+        <result column="city" jdbcType="INTEGER" property="city"/>
         <result column="distrust" jdbcType="BIGINT" property="distrust"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
         <result column="sales_id" jdbcType="BIGINT" property="salesId"/>
@@ -95,7 +95,7 @@
             </trim>
             <trim prefix="city = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.city,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.city,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="distrust = case" suffix="end,">
@@ -351,7 +351,7 @@
             <trim prefix="city = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     <if test="item.city != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.city,jdbcType=BIGINT}
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.city,jdbcType=INTEGER}
                     </if>
                 </foreach>
             </trim>
@@ -663,7 +663,7 @@
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
             #{item.timeZone,jdbcType=VARCHAR}, #{item.country,jdbcType=BIGINT}, #{item.countryCode,jdbcType=VARCHAR},
-            #{item.city,jdbcType=BIGINT}, #{item.distrust,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR},
+            #{item.city,jdbcType=INTEGER}, #{item.distrust,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR},
             #{item.salesId,jdbcType=BIGINT}, #{item.customerCode,jdbcType=VARCHAR},
             #{item.customerFirstName,jdbcType=VARCHAR},
             #{item.customerLastName,jdbcType=VARCHAR}, #{item.customerFullName,jdbcType=VARCHAR},
@@ -701,7 +701,7 @@
         def5, def6)
         values
         (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{timeZone,jdbcType=VARCHAR},
-        #{country,jdbcType=BIGINT}, #{countryCode,jdbcType=VARCHAR}, #{city,jdbcType=BIGINT},
+        #{country,jdbcType=BIGINT}, #{countryCode,jdbcType=VARCHAR}, #{city,jdbcType=INTEGER},
         #{distrust,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{salesId,jdbcType=BIGINT},
         #{customerCode,jdbcType=VARCHAR}, #{customerFirstName,jdbcType=VARCHAR}, #{customerLastName,jdbcType=VARCHAR},
         #{customerFullName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR},
@@ -724,7 +724,7 @@
         time_zone = #{timeZone,jdbcType=VARCHAR},
         country = #{country,jdbcType=BIGINT},
         country_code = #{countryCode,jdbcType=VARCHAR},
-        city = #{city,jdbcType=BIGINT},
+        city = #{city,jdbcType=INTEGER},
         distrust = #{distrust,jdbcType=BIGINT},
         `status` = #{status,jdbcType=VARCHAR},
         sales_id = #{salesId,jdbcType=BIGINT},
@@ -938,7 +938,7 @@
                 #{countryCode,jdbcType=VARCHAR},
             </if>
             <if test="city != null">
-                #{city,jdbcType=BIGINT},
+                #{city,jdbcType=INTEGER},
             </if>
             <if test="distrust != null">
                 #{distrust,jdbcType=BIGINT},
@@ -1085,7 +1085,7 @@
                 country_code = #{countryCode,jdbcType=VARCHAR},
             </if>
             <if test="city != null">
-                city = #{city,jdbcType=BIGINT},
+                city = #{city,jdbcType=INTEGER},
             </if>
             <if test="distrust != null">
                 distrust = #{distrust,jdbcType=BIGINT},

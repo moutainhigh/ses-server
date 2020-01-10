@@ -85,9 +85,11 @@ public enum ExceptionCodeEnums {
 
     USERTOKEN_SERVICE_CODE_WRONG(10036, "验证码错误"),
 
-    DISTRIBUTIONRANGE_IS_EMPTY(10037,"配送范围 为空"),
+    DISTRIBUTIONRANGE_IS_EMPTY(10037, "配送范围 为空"),
 
-    ESTIMATEDDURATION_IS_EMPTY(10038,"配送时间 为空"),
+    ESTIMATEDDURATION_IS_EMPTY(10038, "配送时间 为空"),
+
+    TENANT_INDUSTRY_IS_WRONG(10039, "租户行业是错误的"),
 
     ;
 

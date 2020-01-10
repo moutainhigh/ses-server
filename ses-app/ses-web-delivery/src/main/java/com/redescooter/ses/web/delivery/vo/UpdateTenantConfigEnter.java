@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
+import org.springframework.data.annotation.Id;
 
 /**
  * @ClassName:UpdateTenantConfigEnter
@@ -27,32 +28,33 @@ import io.swagger.annotations.*;
 public class UpdateTenantConfigEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "租户配置Id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id  为空")
-    private Long Id;
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id  为空")
+    private Long tenantConfigId;
 
-    @NotNull(code = ValidationExceptionCode.INDUSTRY_IS_EMPTY,message = "租户行业  为空，1 餐厅 2快递")
+    @ApiModelProperty(value = "行业 ，1 餐厅 2快递")
+    @NotNull(code = ValidationExceptionCode.INDUSTRY_IS_EMPTY, message = "租户行业  为空")
     private String industry;
 
     @ApiModelProperty(value = "开始日期，传 周一至周日 对应 1-7 编号 ")
-    @NotNull(code = ValidationExceptionCode.BEGIN_WEEK_IS_EMPTY,message = "营业开始日期为空")
-    private String beginWeek;
+    @NotNull(code = ValidationExceptionCode.BEGIN_WEEK_IS_EMPTY, message = "营业开始日期为空")
+    private String startWeek;
 
     @ApiModelProperty(value = "结束日期，传 周一至周日 对应 1-7 编号 ")
-    @NotNull(code = ValidationExceptionCode.END_WEEK_IS_EMPTY,message = "营业结束日期为空")
+    @NotNull(code = ValidationExceptionCode.END_WEEK_IS_EMPTY, message = "营业结束日期为空")
     private String endWeek;
 
     @ApiModelProperty(value = "开始时间")
-    @NotNull(code = ValidationExceptionCode.BEGIN_TIME_IS_EMPTY,message = "营业开始时间为空")
+    @NotNull(code = ValidationExceptionCode.BEGIN_TIME_IS_EMPTY, message = "营业开始时间为空")
     private String beginTime;
 
     @ApiModelProperty(value = "结束时间")
-    @NotNull(code = ValidationExceptionCode.END_TIME_IS_EMPTY,message = "营业结束时间为空")
+    @NotNull(code = ValidationExceptionCode.END_TIME_IS_EMPTY, message = "营业结束时间为空")
     private String endTime;
 
-    @ApiModelProperty(value = "超时时间")
-    private Integer duration;
+    @ApiModelProperty(value = "估计持续时间,单位分钟")
+    private Long estimatedDuration;
 
-    @ApiModelProperty(value = "配送范围")
-    private Integer around;
+    @ApiModelProperty(value = "配送范围,单位km")
+    private Long distributionRange;
 
 }
