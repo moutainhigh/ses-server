@@ -10,6 +10,7 @@ import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
 import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryStatEnter;
 import com.redescooter.ses.api.mobile.b.vo.StartEnter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,10 +39,8 @@ public class SesServiceMobileBApplicationTests {
 
     @Test
     public void list() {
-        GeneralEnter enter = new GeneralEnter();
-        enter.setUserId(1060938L);
-        enter.setTenantId(1060980L);
-//        System.out.println(deliveryService.list(enter));
+
+      System.out.println(StringUtils.isAllBlank(String.valueOf(null), String.valueOf(null)));
     }
 
     @Test

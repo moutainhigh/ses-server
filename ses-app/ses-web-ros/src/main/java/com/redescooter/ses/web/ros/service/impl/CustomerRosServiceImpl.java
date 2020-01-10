@@ -715,7 +715,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         Integer accountType = AccountTypeUtils.getAccountType(customer.getCustomerType(), customer.getIndustryType());
         long userId = 0;
         for (BaseUserResult userResult : userList) {
-            if (userResult.getUserType() == accountType) {
+            if (userResult.getUserType().equals(accountType)) {
                 userId = userResult.getId();
                 break;
             }
