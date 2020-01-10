@@ -2,7 +2,6 @@
 # Ignore redis binary dump (dump.rdb) files
 *.rdb
 ### maven
-target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -65,18 +64,17 @@ Icon
 *.iml
 */*.iml
 */*.iml/
-*/target
 */.idea/
 .idea/
+*/.idea/*
+.idea/*
 
 ### Java class files
-*.class
 /target/
-*/target/*/*
+target/
 .project
 .project/
 .settings
-.settings/
 .classpath
 .classpath/
 
@@ -90,15 +88,7 @@ Icon
 */*/.project
 */*/.settings
 
-*/.factorypath
-*/.classpath
-*/.project
-*/.settings
-
 .factorypath
-.classpath
-.project
-.settings
 
 ### Gradle files
 .gradle/
@@ -111,13 +101,18 @@ gradlew.bat
 /logs/
 *./logs/
 */logs/
-*.log
 
 Thumbs.db
 
-### common
+### Common
 *.tem
 *.temp
 #.swp
 *.*~
 ~*.*
+
+### Target
+/*/target/
+/*/*/target/
+/*/*/*/target/
+
