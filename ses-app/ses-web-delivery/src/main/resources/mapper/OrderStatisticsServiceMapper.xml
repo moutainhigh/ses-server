@@ -2,10 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.delivery.dao.OrderStatisticsServiceMapper">
     <select id="topTen" resultType="com.redescooter.ses.web.delivery.vo.TopTenResult">
-        select driver.id as id,
-        profile.first_name as driverFirstName,
-        profile.last_name as driverLastName,
-        profile.picture as avatar,
+        select driver.id                     as id,
+        driver.user_id                as userId,
+        profile.first_name            as driverFirstName,
+        profile.last_name             as driverLastName,
+        profile.picture               as avatar,
         ifnull(count(delivery.id), 0) as count
         from cor_driver driver
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
