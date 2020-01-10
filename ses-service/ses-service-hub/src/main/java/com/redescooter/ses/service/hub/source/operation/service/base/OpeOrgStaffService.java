@@ -1,4 +1,4 @@
-package com.redescooter.ses.service.hub.source.operation.service;
+package com.redescooter.ses.service.hub.source.operation.service.base;
 
 import java.util.List;
 

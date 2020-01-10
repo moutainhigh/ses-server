@@ -24,15 +24,21 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 public class UpdateCustomerInfoEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "姓名")
-    private String firstName;
+    @ApiModelProperty(value = "CustomerId")
+    private Long id;
 
-    @ApiModelProperty(value = "姓名")
-    private String lastName;
+    @ApiModelProperty(value = "客户名字")
+    private String customerFirstName;
 
-    @ApiModelProperty(value = "电话")
-    private String phone;
+    @ApiModelProperty(value = "客户姓氏")
+    private String customerLastName;
+
+    @ApiModelProperty(value = "客户全名")
+    private String customerFullName;
 
     @ApiModelProperty(value = "头像")
     private String avatar;
+
+    @ApiModelProperty(value = "电话")
+    private String telephone;
 }

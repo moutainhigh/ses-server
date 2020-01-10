@@ -1,6 +1,8 @@
 package com.redescooter.ses.api.hub.service.operation;
 
+import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 
 /**
@@ -18,4 +20,12 @@ public interface CustomerService {
      * @return
      */
     BaseCustomerResult customerInfo(IdEnter enter);
+
+    /**
+     * 更新 客户信息
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult updateCustomerInfo(BaseCustomerEnter enter);
 }

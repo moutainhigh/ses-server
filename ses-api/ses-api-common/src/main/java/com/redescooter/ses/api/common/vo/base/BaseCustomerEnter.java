@@ -1,50 +1,71 @@
-package com.redescooter.ses.web.ros.vo.customer;
+package com.redescooter.ses.api.common.vo.base;
 
-import java.math.BigDecimal;
-
-import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-
-import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
- * @ClassName:SaveCustomerEnter
- * @description: CreateCustomerEnter
- * @author: Alex
- * @Version：1.3
- * @create: 2019/12/18 15:31
+ * @author Mr.lijiating
+ * @version V1.0
+ * @Date: 20/12/2019 2:28 下午
+ * @ClassName: BaseCustomerResult
+ * @Function: TODO
  */
-@ApiModel(value = "编辑客户", description = "编辑客户")
+@ApiModel(value = "客户基础信息", description = "客户基础信息")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class EditCustomerEnter extends GeneralEnter {
+public class BaseCustomerEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "主键")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
+    @ApiModelProperty(value = "id")
     private Long id;
+
+    @ApiModelProperty(value = "逻辑删除标识,0正常 1删除")
+    private Integer dr;
+
+    @ApiModelProperty(value = "租户id")
+    private Long tenantId;
+
+    @ApiModelProperty(value = "时区")
+    private String timeZone;
+
+    @ApiModelProperty(value = "国家")
+    private Long country;
+
+    @ApiModelProperty(value = "国家名称")
+    private String countryName;
 
     @ApiModelProperty(value = "城市")
     private Long city;
 
+    @ApiModelProperty(value = "城市名称")
+    private String cityName;
+
     @ApiModelProperty(value = "区域")
     private Long distrust;
 
-    @ApiModelProperty(value = "邮箱")
-    @NotNull(code = ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
-    private String email;
+    @ApiModelProperty(value = "区域名称")
+    private String distrustName;
+
+    @ApiModelProperty(value = "状态")
+    private String status;
+
+    @ApiModelProperty(value = "销售")
+    private Long salesId;
 
     @ApiModelProperty(value = "客户名字")
-    @NotNull(code = ValidationExceptionCode.CUSTOMER_INFO_IS_EMPTY, message = "客户基本信息不能为空")
     private String customerFirstName;
 
     @ApiModelProperty(value = "客户姓氏")
-    @NotNull(code = ValidationExceptionCode.CUSTOMER_INFO_IS_EMPTY, message = "客户基本信息不能为空")
     private String customerLastName;
 
     @ApiModelProperty(value = "客户全名")
@@ -53,6 +74,9 @@ public class EditCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "企业名称")
     private String companyName;
 
+    @ApiModelProperty(value = "客户来源渠道,SYSTEM-系统-1, WEBSITE-官网-2")
+    private String customerSource;
+
     @ApiModelProperty(value = "客户类型,ENTERPRISE-公司-1, PERSONAL-个人-2")
     private String customerType;
 
@@ -60,19 +84,15 @@ public class EditCustomerEnter extends GeneralEnter {
     private String industryType;
 
     @ApiModelProperty(value = "地址")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
     private String address;
 
     @ApiModelProperty(value = "地点编号")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
     private String placeId;
 
     @ApiModelProperty(value = "经度")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
     private BigDecimal longitude;
 
     @ApiModelProperty(value = "纬度")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
     private BigDecimal latitude;
 
     @ApiModelProperty(value = "联系人名字")
@@ -84,28 +104,28 @@ public class EditCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "联系人全名")
     private String contactFullName;
 
-    @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
-    private String countryCode;
-
     @ApiModelProperty(value = "电话")
     private String telephone;
+
+    @ApiModelProperty(value = "邮件")
+    private String email;
 
     @ApiModelProperty(value = "车辆数量")
     private Integer scooterQuantity;
 
-    @ApiModelProperty(value = "证件类型1身份证，2驾驶证，3护照")
+    @ApiModelProperty(value = "证件类型:ID_CARD-身份证-1,DRIVER_LICENSE-驾驶证2，PASSPORT-护照-3")
     private String certificateType;
 
-    @ApiModelProperty(value = "证件正面附件")
+    @ApiModelProperty(value = "证件正面图片")
     private String certificatePositiveAnnex;
 
-    @ApiModelProperty(value = "证件反面附件")
+    @ApiModelProperty(value = "证件反面图片")
     private String certificateNegativeAnnex;
 
     @ApiModelProperty(value = "营业执照编号")
     private String businessLicenseNum;
 
-    @ApiModelProperty(value = "营业执照附件")
+    @ApiModelProperty(value = "营业执照图片")
     private String businessLicenseAnnex;
 
     @ApiModelProperty(value = "发票编号")
@@ -117,4 +137,12 @@ public class EditCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "合同附件")
     private String contractAnnex;
 
+    @ApiModelProperty(value = "账号使用标识，激活使用-1，未激活未使用-2")
+    private Integer accountFlag;
+
+    @ApiModelProperty(value = "创建人")
+    private Long createdBy;
+
+    @ApiModelProperty(value = "创建时间")
+    private Date createdTime;
 }
