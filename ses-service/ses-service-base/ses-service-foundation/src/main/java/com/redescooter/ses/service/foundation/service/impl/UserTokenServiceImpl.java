@@ -376,8 +376,7 @@ public class UserTokenServiceImpl implements UserTokenService {
             }
             String password = DigestUtils.md5Hex(enter.getPassword() + userPassword.getSalt());
             if (!userPassword.getPassword().equals(password)) {
-                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(),
-                        ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
         } else {
             // 验证码登录逻辑 todo 待测试

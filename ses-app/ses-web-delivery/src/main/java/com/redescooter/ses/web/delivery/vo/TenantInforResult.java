@@ -85,9 +85,6 @@ public class TenantInforResult extends GeneralResult {
     @ApiModelProperty(value="电话")
     private String tel1;
 
-    @ApiModelProperty(value="邮件")
-    private String email1;
-
     @ApiModelProperty(value="时区")
     private String timeZone;
 

@@ -16,7 +16,7 @@ import com.redescooter.ses.web.delivery.dao.base.CorUserProfileMapper;
 import com.redescooter.ses.web.delivery.dm.CorUserProfile;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
-import com.redescooter.ses.web.delivery.service.TenantService;
+import com.redescooter.ses.web.delivery.service.TenantSettingService;
 import com.redescooter.ses.web.delivery.vo.TenantInforResult;
 import com.redescooter.ses.web.delivery.vo.UpdateCustomerInfoEnter;
 import com.redescooter.ses.web.delivery.vo.UpdateTenantConfigEnter;
@@ -24,6 +24,9 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 
 /**
  * @ClassName:TenantService
@@ -33,7 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @create: 2020/01/09 16:51
  */
 @Service
-public class TenantServiceImpl implements TenantService {
+public class TenantSettingServiceImpl implements TenantSettingService {
 
     @Autowired
     private CorUserProfileMapper corUserProfileMapper;
@@ -78,6 +81,10 @@ public class TenantServiceImpl implements TenantService {
         if (null != tenantConfigInfoResult.getDistributionRange() && 0 != tenantConfigInfoResult.getDistributionRange()) {
             tenantInforResult.setAround(tenantConfigInfoResult.getEstimatedDuration());
         }
+        tenantInforResult.setEmail(queryTenantResult.getEmail());
+        tenantInforResult.setAvatar(corUserProfile.getPicture());
+        tenantInforResult.setPageBootTips(corUserProfile.getPageBootTips());
+        tenantInforResult.setIndustry(queryTenantResult.getTenantIndustry());
         return tenantInforResult;
     }
 
@@ -87,6 +94,7 @@ public class TenantServiceImpl implements TenantService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult updateTenantConfig(UpdateTenantConfigEnter enter) {
         SaveTenantConfigEnter saveTenantConfigEnter = new SaveTenantConfigEnter();
@@ -100,9 +108,10 @@ public class TenantServiceImpl implements TenantService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult updateCustomerInfo(UpdateCustomerInfoEnter enter) {
-
+        // 更新客户信息
         BaseCustomerEnter baseCustomerEnter = new BaseCustomerEnter();
 //        baseCustomerEnter.setCustomerFirstName(enter.getCustomerFirstName());
 //        baseCustomerEnter.setCustomerLastName(enter.getCustomerLastName());
@@ -112,7 +121,26 @@ public class TenantServiceImpl implements TenantService {
         baseCustomerEnter.setContactLastName(enter.getCustomerLastName());
         baseCustomerEnter.setContactFullName(new StringBuffer().append(enter.getCustomerLastName()).append(" ").append(enter.getCustomerLastName()).toString());
 
-        return customerService.updateCustomerInfo(baseCustomerEnter);
+        customerService.updateCustomerInfo(baseCustomerEnter);
+
+        // 更新个人信息
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
+        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+        if (corUserProfile == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        corUserProfile.setFirstName(enter.getCustomerFirstName());
+        corUserProfile.setLastName(enter.getCustomerLastName());
+        corUserProfile.setFullName(new StringBuffer().append(enter.getCustomerLastName()).append(" ").append(enter.getCustomerLastName()).toString());
+        corUserProfile.setPicture(enter.getAvatar());
+        corUserProfile.setUpdatedBy(enter.getUserId());
+        corUserProfile.setUpdatedTime(new Date());
+        corUserProfileMapper.updateById(corUserProfile);
+
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**

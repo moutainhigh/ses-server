@@ -14,7 +14,7 @@ import com.redescooter.ses.web.delivery.vo.UpdateTenantConfigEnter;
  * @Version：1.3
  * @create: 2020/01/09 14:35
  */
-public interface TenantService {
+public interface TenantSettingService {
     /**
      * 店铺详细信息
      *

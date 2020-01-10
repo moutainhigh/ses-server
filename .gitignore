@@ -81,6 +81,26 @@ target/
 .classpath
 .classpath/
 
+*/.factorypath
+*/.classpath
+*/.project
+*/.settings
+
+*/*/.factorypath
+*/*/.classpath
+*/*/.project
+*/*/.settings
+
+*/.factorypath
+*/.classpath
+*/.project
+*/.settings
+
+.factorypath
+.classpath
+.project
+.settings
+
 ### Gradle files
 .gradle/
 build/

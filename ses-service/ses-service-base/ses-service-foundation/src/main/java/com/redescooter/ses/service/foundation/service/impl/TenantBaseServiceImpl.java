@@ -145,7 +145,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             // 修改
             plaTenantConfig.setId(enter.getTenantConfigId());
         }
-        plaTenantConfigMapper.insertOrUpdate(plaTenantConfig);
+        plaTenantConfigMapper.insertOrUpdateSelective(plaTenantConfig);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -155,7 +155,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_TENANT_ID, enter.getTenantId());
         plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_DR, 0);
         PlaTenantConfig plaTenantConfig = plaTenantConfigMapper.selectOne(plaTenantConfigQueryWrapper);
-        if (plaTenantConfig != null) {
+        if (plaTenantConfig == null) {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
         TenantConfigInfoResult tenantConfigInfoResult = new TenantConfigInfoResult();
@@ -212,16 +212,18 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             }
         }
 
+
         PlaTenantConfig tenantConfig = new PlaTenantConfig();
 
-        PlaTenant tenant = plaTenantMapper.selectById(tennatId);
-        if (tenant == null) {
-            throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
-        }
-        tenantConfig.setDr(0);
-        tenantConfig.setAddress(tenant.getAddress());
+        PlaTenant tenant = null;
+
+
         //配送范围10KM 配送时间30min 超时预警时间15min
         if (enter.getTenantDefaultConfig()) {
+            tenant = plaTenantMapper.selectById(tennatId);
+            if (tenant == null) {
+                throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+            }
             tenantConfig.setStartWeek(TenantBussinessWeek.MON.getValue());
             tenantConfig.setEndWeek(TenantBussinessWeek.SUN.getValue());
             tenantConfig.setBeginTime(DateUtil.parse(TenantDefaultValue.BEGIN_TIME, DateUtil.DEFAULT_DATETIME_FORMAT));
@@ -229,6 +231,10 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             tenantConfig.setDistributionRange(TenantDefaultValue.DISTRIBUTION_RANGE);
             tenantConfig.setEstimatedDuration(TenantDefaultValue.ESTIMATED_DURATION);
         } else {
+            tenant = plaTenantMapper.selectById(enter.getTenantId());
+            if (tenant == null) {
+                throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
+            }
             tenantConfig.setStartWeek(enter.getStartWeek());
             tenantConfig.setEndWeek(enter.getEndWeek());
             tenantConfig.setBeginTime(DateUtil.parse(enter.getBeginTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
@@ -238,6 +244,11 @@ public class TenantBaseServiceImpl implements TenantBaseService {
                 tenantConfig.setEstimatedDuration(enter.getEstimatedDuration());
             }
         }
+        if (!StringUtils.equals(enter.getIndustry(), tenant.getTenantIndustry())) {
+            throw new FoundationException(ExceptionCodeEnums.TENANT_INDUSTRY_IS_WRONG.getCode(), ExceptionCodeEnums.TENANT_INDUSTRY_IS_WRONG.getMessage());
+        }
+        tenantConfig.setDr(0);
+        tenantConfig.setAddress(tenant.getAddress());
         tenantConfig.setStatus(TenantBussinessStatus.OPEN.getValue());
         tenantConfig.setLanguage(enter.getLanguage());
         tenantConfig.setLatitude(tenant.getLatitude());

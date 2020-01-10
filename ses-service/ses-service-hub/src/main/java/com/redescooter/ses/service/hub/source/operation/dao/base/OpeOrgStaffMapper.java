@@ -1,4 +1,4 @@
-package com.redescooter.ses.service.hub.source.operation.dao;
+package com.redescooter.ses.service.hub.source.operation.dao.base;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

@@ -1,25 +1,20 @@
-package com.redescooter.ses.service.hub.source.operation.service.base;
-
-import java.util.List;
+package com.redescooter.ses.service.hub.source.operation.dao.base;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
-import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 @DS("operation")
-public interface OpeCustomerService extends IService<OpeCustomer> {
-
-
+public interface OpeCustomerMapper extends BaseMapper<OpeCustomer> {
     int updateBatch(List<OpeCustomer> list);
 
     int updateBatchSelective(List<OpeCustomer> list);
 
-    int batchInsert(List<OpeCustomer> list);
+    int batchInsert(@Param("list") List<OpeCustomer> list);
 
     int insertOrUpdate(OpeCustomer record);
 
     int insertOrUpdateSelective(OpeCustomer record);
-
 }
-
-

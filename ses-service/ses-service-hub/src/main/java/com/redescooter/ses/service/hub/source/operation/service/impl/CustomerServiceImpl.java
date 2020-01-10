@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @create: 2020/01/10 13:28
  */
 @Service
-public class OpeCustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
@@ -40,7 +40,7 @@ public class OpeCustomerServiceImpl implements CustomerService {
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_TENANT_ID, enter.getId());
         OpeCustomer opeCustomer = opeCustomerMapper.selectOne(opeCustomerQueryWrapper);
         if (opeCustomer == null) {
-            throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_EXIST.getMessage());
+            throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
         }
         BaseCustomerResult baseCustomerResult = new BaseCustomerResult();
         BeanUtils.copyProperties(opeCustomer, baseCustomerResult);
@@ -55,9 +55,21 @@ public class OpeCustomerServiceImpl implements CustomerService {
      */
     @Override
     public GeneralResult updateCustomerInfo(BaseCustomerEnter enter) {
-        OpeCustomer opeCustomer = new OpeCustomer();
-        BeanUtils.copyProperties(enter, opeCustomer);
-        opeCustomerMapper.insertOrUpdateSelective(opeCustomer);
+
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
+        if (opeCustomer == null) {
+            throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
+        }
+        opeCustomer.setCustomerFirstName(enter.getCustomerFirstName());
+        opeCustomer.setCustomerLastName(enter.getCustomerLastName());
+        opeCustomer.setCustomerFullName(enter.getCustomerFullName());
+        opeCustomer.setContactFirstName(enter.getContactFirstName());
+        opeCustomer.setContactLastName(enter.getContactLastName());
+        opeCustomer.setContactFullName(enter.getContactFullName());
+        opeCustomer.setPicture(enter.getPicture());
+        opeCustomer.setTelephone(enter.getTelephone());
+
+        opeCustomerMapper.updateById(opeCustomer);
         return new GeneralResult(enter.getRequestId());
     }
 }
