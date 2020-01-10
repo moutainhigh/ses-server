@@ -20,7 +20,6 @@ import com.redescooter.ses.web.delivery.service.TenantService;
 import com.redescooter.ses.web.delivery.vo.TenantInforResult;
 import com.redescooter.ses.web.delivery.vo.UpdateCustomerInfoEnter;
 import com.redescooter.ses.web.delivery.vo.UpdateTenantConfigEnter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;

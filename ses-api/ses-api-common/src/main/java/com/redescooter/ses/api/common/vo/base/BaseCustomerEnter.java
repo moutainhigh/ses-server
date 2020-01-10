@@ -38,9 +38,6 @@ public class BaseCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "时区")
     private String timeZone;
 
-    @ApiModelProperty(value = "国家")
-    private Long country;
-
     @ApiModelProperty(value = "国家名称")
     private String countryName;
 

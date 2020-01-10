@@ -8,8 +8,6 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
-import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
-import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
