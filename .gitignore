@@ -102,7 +102,7 @@ Temporary Items
 ### IDEA
 */target
 *.iml
-#.idea/*
+.idea/
 *.class
 target/
 .project
@@ -114,7 +114,6 @@ target/
 *.
 .idea
 */.DS_Store
-*/.idea/*
 *.cmd
 */.iml
 /logs/*
