@@ -65,14 +65,13 @@ Icon
 *.iml
 */*.iml
 */*.iml/
-*/target
 */.idea/
 .idea/
 
 ### Java class files
 *.class
 /target/
-*/target/*/*
+target/
 .project
 .project/
 .settings
@@ -95,9 +94,15 @@ gradlew.bat
 
 Thumbs.db
 
-### common
+### Common
 *.tem
 *.temp
 #.swp
 *.*~
 ~*.*
+
+### Target
+/*/target/
+/*/*/target/
+/*/*/*/target/
+
