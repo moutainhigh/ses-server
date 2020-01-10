@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @create: 2020/01/10 13:28
  */
 @Service
-public class OpeCustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
