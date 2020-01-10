@@ -103,16 +103,18 @@ Temporary Items
 */target
 *.iml
 .idea/
+.idea/*
 *.class
-target/
+target/*
+*./target/*
 .project
 .settings/
 .classpath
+*./.iml/*
 
 ### common
 *~
 *.
-.idea
 */.DS_Store
 .DS_Store/
 .DS_Store/*

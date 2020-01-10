@@ -308,6 +308,9 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         // 查询门店信息
         QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
 
+        if(tenant==null){
+            return  new MapResult();
+        }
         // 司机车辆分配数据
         List<ScooterMapResult> scooterMapList = orderDeliveryServiceMapper.scooterMap(enter);
 
@@ -333,8 +336,8 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         }
         return MapResult.builder()
                 .tenantId(tenant.getId())
-                .tenantLng(null==tenant.getLongitude()?BigDecimal.ZERO.toString():tenant.getLongitude().toString())
-                .tenantLat(null==tenant.getLatitude()?BigDecimal.ZERO.toString():tenant.getLatitude().toString())
+                .tenantLat(tenant.getLatitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLatitude()))
+                .tenantLng(tenant.getLongitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLongitude()))
                 .scooterMapResultList(scooterMapList)
                 .deliveryMapList(deliveryMapResultList)
                 .build();

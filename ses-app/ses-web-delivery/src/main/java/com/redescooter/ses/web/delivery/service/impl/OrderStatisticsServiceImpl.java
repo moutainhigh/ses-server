@@ -113,10 +113,11 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
                     .build();
             scooterMapResultList.add(scooter);
         });
+
         return MapResult.builder()
                 .tenantId(tenant.getId())
-                .tenantLng(null==tenant.getLongitude()? BigDecimal.ZERO.toString():tenant.getLongitude().toString())
-                .tenantLat(null==tenant.getLatitude()?BigDecimal.ZERO.toString():tenant.getLatitude().toString())
+                .tenantLat(tenant.getLatitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLatitude()))
+                .tenantLng(tenant.getLongitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLongitude()))
                 .scooterMapResultList(scooterMapResultList)
                 .build();
     }
@@ -212,6 +213,8 @@ public class OrderStatisticsServiceImpl implements OrderStatisticsService {
                     map.put(str, result);
                 }
             }
+        }else{
+            map=null;
         }
 
         DeliveryChartListResult result = new DeliveryChartListResult();
