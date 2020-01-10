@@ -59,8 +59,6 @@ local.properties
 .factorypath
 # PDT-specific (PHP Development Tools)
 .buildpath
-# sbteclipse plugin
-.target
 # Tern plugin
 .tern-project
 # TeXlipse plugin
@@ -77,6 +75,8 @@ local.properties
 ### macOS
 # General
 *.DS_Store
+*.DS_Store/
+/*.DS_Store/
 .AppleDouble
 .LSOverride
 # Icon must end with two \r
@@ -100,28 +100,42 @@ Temporary Items
 .apdisk
 
 ### IDEA
-*/target
 *.iml
+*/*.iml
+*/*.iml/
+*/target
+*/.idea/
 .idea/
-.idea/*
-.idea/*/*
 
+### Java class files
 *.class
-.target/*
-**/target/*
+/target/
+*/target/*/*
 .project
+.project/
+.settings
 .settings/
 .classpath
-*./.iml/*
-*/.iml
+.classpath/
+
+### Gradle files
+.gradle/
+build/
+*/build/
+gradlew
+gradlew.bat
+
+### Log Files
+/logs/
+*./logs/
+*/logs/
+*.log
+
+Thumbs.db
 
 ### common
-*~
-*.
-*/.DS_Store
-.DS_Store/
-.DS_Store/*
-*.cmd
-/logs/*
-*./logs/*
-*/logs/*
+*.tem
+*.temp
+#.swp
+*.*~
+~*.*
