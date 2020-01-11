@@ -2,16 +2,22 @@ package com.redescooter.ses.web.delivery.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
+import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.message.PushMsgBo;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+import com.redescooter.ses.api.foundation.service.PushService;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
@@ -22,10 +28,12 @@ import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.OrderDeliveryServiceMapper;
+import com.redescooter.ses.web.delivery.dao.base.CorUserProfileMapper;
 import com.redescooter.ses.web.delivery.dm.CorDelivery;
 import com.redescooter.ses.web.delivery.dm.CorDeliveryTrace;
 import com.redescooter.ses.web.delivery.dm.CorDriver;
 import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
+import com.redescooter.ses.web.delivery.dm.CorUserProfile;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.OrderDeliveryService;
@@ -71,6 +79,8 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
     private CorDriverService driverService;
     @Autowired
     private JedisCluster jedisCluster;
+    @Autowired
+    private CorUserProfileMapper corUserProfileMapper;
 
     @Reference
     private TenantBaseService tenantBaseService;
@@ -80,6 +90,8 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
     private GenerateService generateService;
     @Reference
     private ScooterService scooterService;
+    @Reference
+    private PushService pushService;
 
     /**
      * 创建配送单
@@ -273,6 +285,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult closed(ClosedEnter enter) {
         if (enter.getId() == null || enter.getId() == 0) {
@@ -294,6 +307,26 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
         jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
         jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
+
+//        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+//        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+//        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID,enter.getTenantId());
+//        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+//        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
+//
+//        PushMsgBo pushMsg = PushMsgBo.builder()
+//                .enter(enter)
+//                .pushType(PlatformTypeEnum.ANDROID.getValue())
+//                .bizId(delivery.getId())
+//                .bizType(BizType.DELIVERY.getValue())
+//                .status(DeliveryStatusEnums.CANCEL.getValue())
+//                .args(args)
+//                .belongId(delivery.getDelivererId())
+//                .systemId(AppIDEnums.SAAS_APP.getSystemId())
+//                .appId(AppIDEnums.SAAS_APP.getAppId())
+//                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+//                .build();
+//        pushMsg(pushMsg);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -308,8 +341,8 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         // 查询门店信息
         QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
 
-        if(tenant==null){
-            return  new MapResult();
+        if (tenant == null) {
+            return new MapResult();
         }
         // 司机车辆分配数据
         List<ScooterMapResult> scooterMapList = orderDeliveryServiceMapper.scooterMap(enter);
@@ -457,6 +490,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult deliveryReset(DeliveryResetEnter enter) {
 
@@ -491,6 +525,26 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
 
         jedisCluster.set(enter.getId().toString(), JSON.toJSONString(corDelivery));
         jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
+
+//        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+//        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+//        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID,enter.getTenantId());
+//        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+//        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
+//
+//        PushMsgBo pushMsg = PushMsgBo.builder()
+//                .enter(enter)
+//                .pushType(PlatformTypeEnum.ANDROID.getValue())
+//                .bizId(corDelivery.getId())
+//                .bizType(BizType.DELIVERY.getValue())
+//                .status(DeliveryStatusEnums.PENDING.getValue())
+//                .args(args)
+//                .belongId(corDelivery.getDelivererId())
+//                .systemId(AppIDEnums.SAAS_APP.getSystemId())
+//                .appId(AppIDEnums.SAAS_APP.getAppId())
+//                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+//                .build();
+//        pushMsg(pushMsg);
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -545,5 +599,48 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
             return DeliveryEventEnums.CANCEL.getValue();
         }
         return null;
+    }
+
+
+    private void pushMsg(PushMsgBo pushMsg) {
+
+        String generalEnter = JSON.toJSONString(pushMsg.getEnter());
+        Map<String, String> pushParameter = new HashMap<>();
+
+
+        StringBuffer argsString = new StringBuffer();
+        if (pushMsg.getArgs() != null) {
+            for (int i = 0; i < pushMsg.getArgs().length; i++) {
+                argsString.append(pushMsg.getArgs()[i]);
+                if (i < pushMsg.getArgs().length - 1) {
+                    argsString.append(",");
+                }
+            }
+        } else {
+            argsString.append("0");
+        }
+
+        String title = pushMsg.getBizType() + "_" + pushMsg.getSystemId() + "_" + pushMsg.getAppId() + "_" + pushMsg.getStatus() + "_TITLE";
+        String content = pushMsg.getBizType() + "_" + pushMsg.getSystemId() + "_" + pushMsg.getAppId() + "_" + pushMsg.getStatus() + "_CONTENT";
+
+
+        pushParameter.put("BizType", pushMsg.getBizType());
+        pushParameter.put("Id", String.valueOf(pushMsg.getBizId()));
+        pushParameter.put("Type", pushMsg.getStatus());
+        pushParameter.put("args", argsString.toString());
+        pushParameter.put("title", title);
+        pushParameter.put("content", content);
+        pushParameter.put("bussinessStatus", pushMsg.getStatus());
+        pushParameter.put("messagePriority", pushMsg.getMessagePriority());
+
+        pushParameter.put("generalEnter", generalEnter);
+
+        // 消息所推对象参数
+        pushParameter.put("userIds", String.valueOf(pushMsg.getBelongId()));
+        pushParameter.put("createUser", pushMsg.getEnter().getUserId().toString());
+        pushParameter.put("appId", pushMsg.getAppId());
+        pushParameter.put("systemId", pushMsg.getSystemId());
+        pushParameter.put("pushType", pushMsg.getPushType());
+        pushService.pushMessage(JSON.toJSONString(pushParameter));
     }
 }

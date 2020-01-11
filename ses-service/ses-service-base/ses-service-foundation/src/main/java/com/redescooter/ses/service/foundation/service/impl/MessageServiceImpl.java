@@ -10,6 +10,7 @@ import com.redescooter.ses.api.foundation.vo.message.MessageListEnter;
 import com.redescooter.ses.api.foundation.vo.message.MessageResult;
 import com.redescooter.ses.api.foundation.vo.message.MessageSaveEnter;
 import com.redescooter.ses.api.foundation.vo.message.ReadMessageEnter;
+import com.redescooter.ses.service.common.i18n.I18nServiceMessage;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.MessageServiceMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaMessageMapper;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @ClassName:MessageServiceImpl
@@ -43,6 +45,8 @@ public class MessageServiceImpl implements MessageService {
     private MessageServiceMapper messageServiceMapper;
     @Autowired
     private PlaMessageMapper plaMessageMapper;
+    @Autowired
+    private I18nServiceMessage i18nServiceMessage;
     @Reference
     private IdAppService idAppService;
 
@@ -54,11 +58,21 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public PageResult<MessageResult> messageList(MessageListEnter enter) {
+
         int count = messageServiceMapper.messageListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, count, messageServiceMapper.messageList(enter));
+        Locale locale = new Locale(enter.getLanguage(), enter.getCountry());
+        List<MessageResult> messageResultList = messageServiceMapper.messageList(enter);
+        if (CollectionUtils.isNotEmpty(messageResultList)) {
+            messageResultList.forEach(item -> {
+                Object[] args = StringUtils.isBlank(item.getMemo()) == true ? null : item.getMemo().split(",");
+                item.setTitle(i18nServiceMessage.getMessage(item.getTitle(), locale));
+                item.setContent(i18nServiceMessage.getMessage(item.getContent(), args, locale));
+            });
+        }
+        return PageResult.create(enter, count, messageResultList);
     }
 
     /**
@@ -74,8 +88,17 @@ public class MessageServiceImpl implements MessageService {
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
+        Locale locale = new Locale(enter.getLanguage(), enter.getCountry());
+        List<MessageResult> messageResults = messageServiceMapper.recentMessageList(enter);
+        if (CollectionUtils.isNotEmpty(messageResults)) {
+            messageResults.forEach(item -> {
+                Object[] args = StringUtils.isBlank(item.getMemo()) == true ? null : item.getMemo().split(",");
+                item.setTitle(i18nServiceMessage.getMessage(item.getTitle(), locale));
+                item.setContent(i18nServiceMessage.getMessage(item.getContent(), args, locale));
+            });
+        }
 
-        return PageResult.create(enter, count, messageServiceMapper.recentMessageList(enter));
+        return PageResult.create(enter, count, messageResults);
     }
 
     /**
@@ -120,6 +143,7 @@ public class MessageServiceImpl implements MessageService {
         BeanUtils.copyProperties(enter, record);
         record.setId(idAppService.getId(SequenceName.PLA_MESSAGE));
         record.setDr(0);
+        record.setTenantId(enter.getTenantId());
         record.setMessagePriority(enter.getMessagePriority());
         record.setBusinessStatus(enter.getBussinessStatus());
         record.setStatus(MessageStatus.UNREAD.getValue());

@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryResultEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -271,9 +272,10 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.DELIVERING.getValue())
                 .args(args)
-                .belongId(1094485L)
-                .systemId(AppIDEnums.SAAS_APP.getSystemId())
-                .appId(AppIDEnums.SAAS_APP.getAppId())
+                .belongId(delivery.getCreatedBy())
+                .systemId(AppIDEnums.SAAS_WEB.getSystemId())
+                .appId(AppIDEnums.SAAS_WEB.getAppId())
+                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
                 .build();
         pushMsg(pushMsg);
         return new GeneralResult(enter.getRequestId());
@@ -323,6 +325,30 @@ public class DeliveryServiceImpl implements DeliveryService {
         // 更新最新的状态到 redis
         jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
         jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
+
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, delivery.getDelivererId());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+        if (corUserProfile == null) {
+            throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString(), enter.getReason()};
+        // 消息推送
+        PushMsgBo pushMsg = PushMsgBo.builder()
+                .enter(enter)
+                .pushType(PlatformTypeEnum.PC.getValue())
+                .bizId(delivery.getId())
+                .bizType(BizType.DELIVERY.getValue())
+                .status(DeliveryStatusEnums.REJECTED.getValue())
+                .args(args)
+                .belongId(delivery.getCreatedBy())
+                .systemId(AppIDEnums.SAAS_WEB.getSystemId())
+                .appId(AppIDEnums.SAAS_WEB.getAppId())
+                .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
+                .build();
+        pushMsg(pushMsg);
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -375,6 +401,29 @@ public class DeliveryServiceImpl implements DeliveryService {
         // 更新最新的状态到 redis
         jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
         jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
+
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, delivery.getDelivererId());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+        if (corUserProfile == null) {
+            throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        // 消息推送
+        PushMsgBo pushMsg = PushMsgBo.builder()
+                .enter(enter)
+                .pushType(PlatformTypeEnum.PC.getValue())
+                .bizId(delivery.getId())
+                .bizType(BizType.DELIVERY.getValue())
+                .status(delivery.getStatus())
+                .args(null)
+                .belongId(delivery.getCreatedBy())
+                .systemId(AppIDEnums.SAAS_WEB.getSystemId())
+                .appId(AppIDEnums.SAAS_WEB.getAppId())
+                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+                .build();
+        pushMsg(pushMsg);
+
         return new CompleteResult(delivery.getDrivenMileage().toString(),
                 StatisticalUtil.percentageUtil(delivery.getDrivenMileage().intValue(), delivery.getDrivenDuration().intValue() > 0 ? delivery.getDrivenDuration().intValue() : 1, 2)
                 , delivery.getCo2().toString()

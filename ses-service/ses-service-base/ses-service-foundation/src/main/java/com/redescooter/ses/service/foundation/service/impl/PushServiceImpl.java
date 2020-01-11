@@ -197,6 +197,7 @@ public class PushServiceImpl implements PushService {
         extras.put("args", map.get("args"));
         extras.put("title", map.get("title"));
         extras.put("content", map.get("content"));
+        extras.put("messagePriority", map.get("messagePriority"));
         extras.put("bussinessStatus", map.get("bussinessStatus"));
         if (map.containsKey("TenantId")) {
             extras.put("TenantId", map.get("TenantId"));
@@ -209,10 +210,8 @@ public class PushServiceImpl implements PushService {
         String[] userIds = map.get("userIds").toString().split(",");
 
         MessagePushEnter push = MessagePushEnter.builder()
-//                .alert(i18nServiceMessage.getMessage(extras.get("content").toString(), args, locale))
-//                .title(i18nServiceMessage.getMessage(extras.get("title").toString(), locale))
-                .alert(extras.get("content").toString())
-                .title(extras.get("title").toString())
+                .alert(i18nServiceMessage.getMessage(extras.get("content").toString(), args, locale))
+                .title(i18nServiceMessage.getMessage(extras.get("title").toString(), locale))
                 .userIds(userIds)
                 .extras(extras)
                 .createUser(Long.valueOf(map.get("createUser").toString()))
@@ -277,6 +276,7 @@ public class PushServiceImpl implements PushService {
         messageSaveEnter.setContent((String) extras.get("content"));
         messageSaveEnter.setBussinessStatus((String) extras.get("bussinessStatus"));
         messageSaveEnter.setMemo(StringUtils.isNotBlank(map.get("args").toString()) == true ? map.get("args").toString() : null);
+        messageSaveEnter.setMessagePriority((String) extras.get("messagePriority"));
 
         if (StringUtils.equals(push.getAppId(), AppIDEnums.SAAS_REPAIR_WEB.getAppId())) {
 
