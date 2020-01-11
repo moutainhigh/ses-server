@@ -1,26 +1,29 @@
 package com.redescooter.ses.service.foundation.dm.base;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import lombok.Data;
 
 @ApiModel(value = "com-redescooter-ses-service-foundation-dm-base-PlaJpushUser")
 @Data
 @TableName(value = "pla_jpush_user")
 public class PlaJpushUser implements Serializable {
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private Long id;
 
     /**
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -56,7 +59,7 @@ public class PlaJpushUser implements Serializable {
      * 推送平台:支持 Android, iOS, Windows Phone 三个平台的推送。其关键字分别为："android", "ios", "winphone"。
      */
     @TableField(value = "platform_type")
-    @ApiModelProperty(value = "推送平台:支持 Android, iOS, Windows Phone 三个平台的推送。其关键字分别为：'android', 'ios', 'winphone'。")
+    @ApiModelProperty(value = "推送平台:支持 Android, iOS, Windows Phone 三个平台的推送。其关键字分别为：android, ios, winphone。")
     private String platformType;
 
     /**

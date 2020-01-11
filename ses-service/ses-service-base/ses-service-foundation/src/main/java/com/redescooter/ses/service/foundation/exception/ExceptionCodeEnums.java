@@ -93,6 +93,8 @@ public enum ExceptionCodeEnums {
 
     MESSAGE_IS_NOT_EXIST(10040, "消息不存在"),
 
+    MESSAGE_ABNORMAL_PARAMETER(10041, "消息参数不完整"),
+
     ;
 
     private int code;

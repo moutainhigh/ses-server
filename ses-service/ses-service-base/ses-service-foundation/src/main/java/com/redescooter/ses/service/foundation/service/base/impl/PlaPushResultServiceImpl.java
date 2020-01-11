@@ -8,23 +8,33 @@ import java.util.List;
 import com.redescooter.ses.service.foundation.dm.base.PlaPushResult;
 import com.redescooter.ses.service.foundation.dao.base.PlaPushResultMapper;
 import com.redescooter.ses.service.foundation.service.base.PlaPushResultService;
+
 @Service
-public class PlaPushResultServiceImpl extends ServiceImpl<PlaPushResultMapper, PlaPushResult> implements PlaPushResultService{
+public class PlaPushResultServiceImpl extends ServiceImpl<PlaPushResultMapper, PlaPushResult> implements PlaPushResultService {
 
     @Override
     public int updateBatch(List<PlaPushResult> list) {
         return baseMapper.updateBatch(list);
     }
+
     @Override
     public int batchInsert(List<PlaPushResult> list) {
         return baseMapper.batchInsert(list);
     }
+
     @Override
     public int insertOrUpdate(PlaPushResult record) {
         return baseMapper.insertOrUpdate(record);
     }
+
     @Override
     public int insertOrUpdateSelective(PlaPushResult record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<PlaPushResult> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+

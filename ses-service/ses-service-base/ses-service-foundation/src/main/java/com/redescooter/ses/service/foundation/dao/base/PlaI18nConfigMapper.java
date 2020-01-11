@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface PlaI18nConfigMapper extends BaseMapper<PlaI18nConfig> {
     int updateBatch(List<PlaI18nConfig> list);
 
+    int updateBatchSelective(List<PlaI18nConfig> list);
+
     int batchInsert(@Param("list") List<PlaI18nConfig> list);
 
     int insertOrUpdate(PlaI18nConfig record);

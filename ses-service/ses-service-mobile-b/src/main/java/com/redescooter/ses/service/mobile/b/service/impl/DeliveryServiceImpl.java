@@ -3,17 +3,22 @@ package com.redescooter.ses.service.mobile.b.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryResultEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
+import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.delivery.BaseDeliveryEnter;
+import com.redescooter.ses.api.common.vo.message.PushMsgBo;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
+import com.redescooter.ses.api.foundation.service.PushService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
@@ -25,9 +30,12 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.service.mobile.b.dao.DeliveryServiceMapper;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryMapper;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryTraceMapper;
+import com.redescooter.ses.service.mobile.b.dao.base.CorUserProfileMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDelivery;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
+import com.redescooter.ses.service.mobile.b.dm.base.CorDriver;
 import com.redescooter.ses.service.mobile.b.dm.base.CorTenantScooter;
+import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
@@ -65,6 +73,8 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Autowired
     private DeliveryTraceService deliveryTraceService;
+    @Autowired
+    private CorUserProfileMapper corUserProfileMapper;
 
     @Autowired
     private JedisCluster jedisCluster;
@@ -80,6 +90,9 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Reference
     private ScooterIotService scooterIotService;
+
+    @Reference
+    private PushService pushService;
 
     // 创建 开始订单锁
     private Lock startDeliveryLock = new ReentrantLock();
@@ -242,6 +255,27 @@ public class DeliveryServiceImpl implements DeliveryService {
 //        } finally {
 //            startDeliveryLock.unlock();
 //        }
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, delivery.getDelivererId());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+        if (corUserProfile == null) {
+            throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
+        // 消息推送
+        PushMsgBo pushMsg = PushMsgBo.builder()
+                .enter(enter)
+                .pushType(PlatformTypeEnum.PC.getValue())
+                .bizId(delivery.getId())
+                .bizType(BizType.DELIVERY.getValue())
+                .status(DeliveryStatusEnums.DELIVERING.getValue())
+                .args(args)
+                .belongId(1094485L)
+                .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                .appId(AppIDEnums.SAAS_APP.getAppId())
+                .build();
+        pushMsg(pushMsg);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -388,5 +422,48 @@ public class DeliveryServiceImpl implements DeliveryService {
         List<SaveDeliveryTraceEnter<BaseDeliveryEnter>> saveDeliveryTraceEnterList = new ArrayList<>();
         saveDeliveryTraceEnterList.add(saveDeliveryTraceEnter);
         deliveryTraceService.saveDeliveryTrace(saveDeliveryTraceEnterList);
+    }
+
+
+    private void pushMsg(PushMsgBo pushMsg) {
+
+        String generalEnter = JSON.toJSONString(pushMsg.getEnter());
+        Map<String, String> pushParameter = new HashMap<>();
+
+
+        StringBuffer argsString = new StringBuffer();
+        if (pushMsg.getArgs() != null) {
+            for (int i = 0; i < pushMsg.getArgs().length; i++) {
+                argsString.append(pushMsg.getArgs()[i]);
+                if (i < pushMsg.getArgs().length - 1) {
+                    argsString.append(",");
+                }
+            }
+        } else {
+            argsString.append("0");
+        }
+
+        String title = pushMsg.getBizType() + "_" + pushMsg.getSystemId() + "_" + pushMsg.getAppId() + "_" + pushMsg.getStatus() + "_TITLE";
+        String content = pushMsg.getBizType() + "_" + pushMsg.getSystemId() + "_" + pushMsg.getAppId() + "_" + pushMsg.getStatus() + "_CONTENT";
+
+
+        pushParameter.put("BizType", pushMsg.getBizType());
+        pushParameter.put("Id", String.valueOf(pushMsg.getBizId()));
+        pushParameter.put("Type", pushMsg.getStatus());
+        pushParameter.put("args", argsString.toString());
+        pushParameter.put("title", title);
+        pushParameter.put("content", content);
+        pushParameter.put("bussinessStatus", pushMsg.getStatus());
+        pushParameter.put("messagePriority", pushMsg.getMessagePriority());
+
+        pushParameter.put("generalEnter", generalEnter);
+
+        // 消息所推对象参数
+        pushParameter.put("userIds", String.valueOf(pushMsg.getBelongId()));
+        pushParameter.put("createUser", pushMsg.getEnter().getUserId().toString());
+        pushParameter.put("appId", pushMsg.getAppId());
+        pushParameter.put("systemId", pushMsg.getSystemId());
+        pushParameter.put("pushType", pushMsg.getPushType());
+        pushService.pushMessage(JSON.toJSONString(pushParameter));
     }
 }

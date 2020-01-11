@@ -1,8 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.mesage.MessageStatus;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -10,15 +8,20 @@ import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MessageService;
 import com.redescooter.ses.api.foundation.vo.message.MessageListEnter;
 import com.redescooter.ses.api.foundation.vo.message.MessageResult;
+import com.redescooter.ses.api.foundation.vo.message.MessageSaveEnter;
 import com.redescooter.ses.api.foundation.vo.message.ReadMessageEnter;
+import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.MessageServiceMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaMessageMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaMessage;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,8 @@ public class MessageServiceImpl implements MessageService {
     private MessageServiceMapper messageServiceMapper;
     @Autowired
     private PlaMessageMapper plaMessageMapper;
+    @Reference
+    private IdAppService idAppService;
 
     /**
      * 消息分页
@@ -62,6 +67,7 @@ public class MessageServiceImpl implements MessageService {
      * @param enter
      * @return
      */
+    @Override
     public PageResult<MessageResult> recentMessages(PageEnter enter) {
         //todo 缺少国家化配置
         int count = messageServiceMapper.recentMessagesCount(enter);
@@ -99,5 +105,31 @@ public class MessageServiceImpl implements MessageService {
 
         plaMessageMapper.updateBatch(plaMessages);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 消息保存
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public void save(MessageSaveEnter enter) {
+        PlaMessage record = new PlaMessage();
+
+        BeanUtils.copyProperties(enter, record);
+        record.setId(idAppService.getId(SequenceName.PLA_MESSAGE));
+        record.setDr(0);
+        record.setMessagePriority(enter.getMessagePriority());
+        record.setBusinessStatus(enter.getBussinessStatus());
+        record.setStatus(MessageStatus.UNREAD.getValue());
+        record.setCreatedTime(new Date());
+        record.setCreatedBy(enter.getUserId());
+        record.setUpdatedBy(enter.getUserId());
+        record.setUpdatedTime(new Date());
+        //发送时间
+        record.setSendTime(new Date());
+
+        plaMessageMapper.insert(record);
     }
 }

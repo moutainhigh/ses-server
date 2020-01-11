@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.vo.message.MessageListEnter;
 import com.redescooter.ses.api.foundation.vo.message.MessageResult;
+import com.redescooter.ses.api.foundation.vo.message.MessageSaveEnter;
 import com.redescooter.ses.api.foundation.vo.message.ReadMessageEnter;
 
 import java.util.List;
@@ -42,4 +43,11 @@ public interface MessageService {
      * @return
      */
     GeneralResult readMessage(ReadMessageEnter enter);
+
+    /**
+     * 消息保存
+     *
+     * @param enter
+     */
+    void save(MessageSaveEnter enter);
 }
