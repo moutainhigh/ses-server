@@ -57,17 +57,15 @@ local.properties
 
 # Icon must end with two \r
 Icon
-# Thumbnails
-._*
 
 ### IDEA
 *.iml
 */*.iml
 */*.iml/
-*/.idea/
-.idea/
-*/.idea/*
+.idea
 .idea/*
+*.idea
+*/.idea/
 
 ### Java class files
 /target/
@@ -108,6 +106,7 @@ Thumbs.db
 *.tem
 *.temp
 #.swp
+._*
 *.*~
 ~*.*
 
