@@ -235,6 +235,9 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             if (tenant == null) {
                 throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
             }
+            if (!StringUtils.equals(enter.getIndustry(), tenant.getTenantIndustry())) {
+                throw new FoundationException(ExceptionCodeEnums.TENANT_INDUSTRY_IS_WRONG.getCode(), ExceptionCodeEnums.TENANT_INDUSTRY_IS_WRONG.getMessage());
+            }
             tenantConfig.setStartWeek(enter.getStartWeek());
             tenantConfig.setEndWeek(enter.getEndWeek());
             tenantConfig.setBeginTime(DateUtil.parse(enter.getBeginTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
@@ -244,9 +247,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
                 tenantConfig.setEstimatedDuration(enter.getEstimatedDuration());
             }
         }
-        if (!StringUtils.equals(enter.getIndustry(), tenant.getTenantIndustry())) {
-            throw new FoundationException(ExceptionCodeEnums.TENANT_INDUSTRY_IS_WRONG.getCode(), ExceptionCodeEnums.TENANT_INDUSTRY_IS_WRONG.getMessage());
-        }
+
         tenantConfig.setDr(0);
         tenantConfig.setAddress(tenant.getAddress());
         tenantConfig.setStatus(TenantBussinessStatus.OPEN.getValue());
