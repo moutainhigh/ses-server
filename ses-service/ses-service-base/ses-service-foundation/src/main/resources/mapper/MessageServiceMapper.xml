@@ -14,8 +14,7 @@
         </if>
     </select>
     <select id="messageList" resultType="com.redescooter.ses.api.foundation.vo.message.MessageResult">
-
-        select count(*)
+        select *
         from pla_message message
         where message.tenant_id = #{tenantId}
         and message.dr = 0
@@ -25,11 +24,11 @@
         <if test="messageType != null and messageType != ''">
             and message.biz_type = #{messageType}
         </if>
-        order by send_time desc
+        order by message.send_time desc
         limit #{startRow},#{pageSize}
     </select>
     <select id="recentMessagesCount" resultType="java.lang.Integer">
-        select count (*)
+        select count(*)
         from pla_message message
         where message.tenant_id = #{tenantId}
         and message.dr = 0

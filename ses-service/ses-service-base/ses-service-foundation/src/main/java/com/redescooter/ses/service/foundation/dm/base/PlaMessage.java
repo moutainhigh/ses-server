@@ -52,7 +52,7 @@ public class PlaMessage implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户ID")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 用户ID
