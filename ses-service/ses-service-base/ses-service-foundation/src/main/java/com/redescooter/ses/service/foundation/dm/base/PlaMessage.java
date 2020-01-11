@@ -1,16 +1,23 @@
 package com.redescooter.ses.service.foundation.dm.base;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 @ApiModel(value = "com-redescooter-ses-service-foundation-dm-base-PlaMessage")
 @Data
 @TableName(value = "pla_message")
 public class PlaMessage implements Serializable {
+    public static final String COL_DEF1 = "def1";
     /**
      * ID
      */
@@ -45,7 +52,7 @@ public class PlaMessage implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户ID")
-    private Long tenantId;
+    private Integer tenantId;
 
     /**
      * 用户ID
@@ -88,6 +95,13 @@ public class PlaMessage implements Serializable {
     @TableField(value = "title")
     @ApiModelProperty(value = "消息标题")
     private String title;
+
+    /**
+     * 0 无需提示 1 小红点 2 强提醒
+     */
+    @TableField(value = "message_priority")
+    @ApiModelProperty(value = "0 无需提示 1 小红点 2 强提醒")
+    private String messagePriority;
 
     /**
      * 消息内容
@@ -148,13 +162,6 @@ public class PlaMessage implements Serializable {
     /**
      * 冗余字段
      */
-    @TableField(value = "def1")
-    @ApiModelProperty(value = "冗余字段")
-    private String def1;
-
-    /**
-     * 冗余字段
-     */
     @TableField(value = "def2")
     @ApiModelProperty(value = "冗余字段")
     private String def2;
@@ -211,6 +218,8 @@ public class PlaMessage implements Serializable {
 
     public static final String COL_TITLE = "title";
 
+    public static final String COL_MESSAGE_PRIORITY = "message_priority";
+
     public static final String COL_CONTENT = "content";
 
     public static final String COL_MEMO = "memo";
@@ -226,8 +235,6 @@ public class PlaMessage implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
-
-    public static final String COL_DEF1 = "def1";
 
     public static final String COL_DEF2 = "def2";
 

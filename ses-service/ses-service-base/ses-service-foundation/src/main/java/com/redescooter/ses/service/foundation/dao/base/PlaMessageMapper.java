@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface PlaMessageMapper extends BaseMapper<PlaMessage> {
     int updateBatch(List<PlaMessage> list);
 
+    int updateBatchSelective(List<PlaMessage> list);
+
     int batchInsert(@Param("list") List<PlaMessage> list);
 
     int insertOrUpdate(PlaMessage record);

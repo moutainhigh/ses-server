@@ -38,6 +38,7 @@ public class DeliveryChartResult extends GeneralResult {
     private int total = 0;
 
     @ApiModelProperty(value = "日期")
+
     private String times;
 
 }

@@ -91,6 +91,8 @@ public enum ExceptionCodeEnums {
 
     TENANT_INDUSTRY_IS_WRONG(10039, "租户行业是错误的"),
 
+    MESSAGE_IS_NOT_EXIST(10040, "消息不存在"),
+
     ;
 
     private int code;

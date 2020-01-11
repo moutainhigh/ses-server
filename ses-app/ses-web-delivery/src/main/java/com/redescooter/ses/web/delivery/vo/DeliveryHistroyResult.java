@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.delivery.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:DeliveryHistroyResult
@@ -38,8 +40,12 @@ public class DeliveryHistroyResult extends GeneralResult {
     private String recipient;
 
     @ApiModelProperty(value = "下单时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private String createdTime;
 
     @ApiModelProperty(value = "完成时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private String completeTime;
 }

@@ -1,9 +1,11 @@
 package com.redescooter.ses.service.foundation.service.base;
 
 import java.util.List;
+
 import com.redescooter.ses.service.foundation.dm.base.PlaMessage;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface PlaMessageService extends IService<PlaMessage>{
+
+public interface PlaMessageService extends IService<PlaMessage> {
 
 
     int updateBatch(List<PlaMessage> list);
@@ -16,4 +18,7 @@ public interface PlaMessageService extends IService<PlaMessage>{
 
     int insertOrUpdateWithBLOBs(PlaMessage record);
 
+    int updateBatchSelective(List<PlaMessage> list);
 }
+
+

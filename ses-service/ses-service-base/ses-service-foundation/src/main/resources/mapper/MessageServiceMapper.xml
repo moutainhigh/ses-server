@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.MessageServiceMapper">
+    <select id="messageListCount" resultType="java.lang.Integer">
+        select count(*)
+        from pla_message message
+        where message.tenant_id = #{tenantId}
+        and message.dr = 0
+        <if test="sendStartTime != null and sendStartTime != '' and  sendEndTime != null and sendEndTime != ''">
+            and message.send_time between #{sendStartTime} and #{sendEndTime}
+        </if>
+        <if test="messageType != null and messageType != ''">
+            and message.biz_type = #{messageType}
+        </if>
+    </select>
+    <select id="messageList" resultType="com.redescooter.ses.api.foundation.vo.message.MessageResult">
+
+        select count(*)
+        from pla_message message
+        where message.tenant_id = #{tenantId}
+        and message.dr = 0
+        <if test="sendStartTime != null and sendStartTime != '' and  sendEndTime != null and sendEndTime != ''">
+            and message.send_time between #{sendStartTime} and #{sendEndTime}
+        </if>
+        <if test="messageType != null and messageType != ''">
+            and message.biz_type = #{messageType}
+        </if>
+        order by send_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="recentMessagesCount" resultType="java.lang.Integer">
+        select count (*)
+        from pla_message message
+        where message.tenant_id = #{tenantId}
+        and message.dr = 0
+    </select>
+    <select id="recentMessageList" resultType="com.redescooter.ses.api.foundation.vo.message.MessageResult">
+        select *
+        from pla_message message
+        where message.tenant_id =#{tenantId}
+        and message.dr = 0
+        order by message.status desc, message.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+</mapper>
