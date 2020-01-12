@@ -1,10 +1,15 @@
 package com.redescooter.ses.service.foundation.dm.base;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 @ApiModel(value = "com-redescooter-ses-service-foundation-dm-base-PlaI18nConfig")
@@ -12,51 +17,50 @@ import lombok.Data;
 @TableName(value = "pla_i18n_config")
 public class PlaI18nConfig implements Serializable {
     @TableId(value = "ID", type = IdType.INPUT)
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private Long id;
 
     /**
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     @TableField(value = "group")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private String group;
 
     @TableField(value = "key")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private String key;
 
     @TableField(value = "type")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private String type;
 
     @TableField(value = "country")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private String country;
 
     @TableField(value = "value")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private String value;
 
     @TableField(value = "desc")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private String desc;
 
     @TableField(value = "update_time")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private Date updateTime;
 
     @TableField(value = "created_time")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private Date createdTime;
 
     @TableField(value = "deleted")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "")
     private Boolean deleted;
 
     /**

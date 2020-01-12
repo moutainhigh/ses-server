@@ -25,4 +25,8 @@ public interface ValidationExceptionCode {
     int EMAIL_IS_EMPTY = 10007;
     // id 为空
     int ID_IS_EMPTY = 10008;
+    // 注册Id 为空
+    int REGISTRATIONID_EMPTY = 10009;
+    // I18 配置为空
+    int I18NCONFIG_ID_NOTZERO = 10010;
 }

@@ -24,4 +24,12 @@ public interface SequenceName {
     String PLA_MAIL_CONFIG = "PLA_MAIL_CONFIG";
 
     String PLA_MAIL_TASK = "PLA_MAIL_TASK";
+
+    String PLA_PUSHR_RESULT = "PLA_PUSHR_RESULT";
+
+    String PLA_MESSAGE = "PLA_MESSAGE";
+
+    String PLA_JPUSHUSER = "PLA_JPUSHUSER";
+
+    String PLA_I18NCONFIG = "PLA_I18NCONFIG";
 }

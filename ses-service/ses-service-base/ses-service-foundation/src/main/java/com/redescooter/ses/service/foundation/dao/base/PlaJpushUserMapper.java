@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface PlaJpushUserMapper extends BaseMapper<PlaJpushUser> {
     int updateBatch(List<PlaJpushUser> list);
 
+    int updateBatchSelective(List<PlaJpushUser> list);
+
     int batchInsert(@Param("list") List<PlaJpushUser> list);
 
     int insertOrUpdate(PlaJpushUser record);

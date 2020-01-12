@@ -2,7 +2,9 @@ package com.redescooter.ses.starter.redis.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import sun.applet.resources.MsgAppletViewer_sv;
 
+import javax.validation.constraints.Min;
 import java.util.concurrent.TimeUnit;
 
 /**

@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.delivery.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -36,5 +38,7 @@ public class DeliveryNodeResult extends GeneralResult {
     @ApiModelProperty(value = "司机名字")
     private String driverLastName;
     @ApiModelProperty(value = "事件时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date eventTime;
 }

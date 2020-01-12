@@ -1,9 +1,11 @@
 package com.redescooter.ses.service.foundation.service.base;
 
 import java.util.List;
+
 import com.redescooter.ses.service.foundation.dm.base.PlaI18nConfig;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface PlaI18nConfigService extends IService<PlaI18nConfig>{
+
+public interface PlaI18nConfigService extends IService<PlaI18nConfig> {
 
 
     int updateBatch(List<PlaI18nConfig> list);
@@ -14,4 +16,6 @@ public interface PlaI18nConfigService extends IService<PlaI18nConfig>{
 
     int insertOrUpdateSelective(PlaI18nConfig record);
 
+    int updateBatchSelective(List<PlaI18nConfig> list);
 }
+
