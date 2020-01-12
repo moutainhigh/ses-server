@@ -58,7 +58,6 @@ public class SaveUserProfileHubEnter extends GeneralEnter {
     @ApiModelProperty(value="邮箱")
     private String email1;
 
-
     /**
      * 电话号
      */
@@ -88,4 +87,10 @@ public class SaveUserProfileHubEnter extends GeneralEnter {
      */
     @ApiModelProperty(value="居住地址")
     private String address;
+
+    /**
+     * 用户类型
+     */
+    @ApiModelProperty(value="用户类型", hidden = true)
+    private String userType;
 }

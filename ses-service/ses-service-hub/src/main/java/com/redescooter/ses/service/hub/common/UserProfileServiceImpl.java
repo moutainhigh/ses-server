@@ -8,6 +8,7 @@ import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.corporate.dao.CorUserProfileMapper;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -22,6 +23,7 @@ import java.util.Date;
  * @Version：1.3
  * @create: 2019/12/26 15:58
  */
+@Slf4j
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
 
@@ -63,5 +65,27 @@ public class UserProfileServiceImpl implements UserProfileService {
         userProfile.setUpdatedBy(enter.getUserId());
         userProfile.setUpdatedTime(new Date());
         corUserProfileMapper.insert(userProfile);
+    }
+
+    /**
+     * Toc 删除个人信息
+     *
+     * @param enter
+     */
+    @Override
+    public void deleteUserProfile2C(SaveUserProfileHubEnter enter) {
+
+
+
+    }
+
+    /**
+     * Tob 删除个人信息
+     *
+     * @param enter
+     */
+    @Override
+    public void deleteUserProfile2B(SaveUserProfileHubEnter enter) {
+
     }
 }

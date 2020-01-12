@@ -14,6 +14,8 @@ import com.redescooter.ses.api.foundation.vo.account.QueryTenantNodeResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
+import com.redescooter.ses.api.hub.common.UserProfileService;
+import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
@@ -72,6 +74,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private MailMultiTaskService mailMultiTaskService;
     @Reference
     private UserBaseService userBaseService;
+    @Reference
+    private UserProfileService userProfileService;
 
 
     /**
@@ -338,12 +342,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public GeneralResult trash(TrashCustomerEnter enter) {
 
         //验证客户是否开通SaaS账户等信息
-        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION.getValue())) {
+        OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
+        if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
-        if (opeCustomer.getAccountFlag().equals(CustomerAccountFlagEnum.INACTIVATED.getValue())) {
-            accountBaseService.deleteUserbyTenantId(IdEnter.builder().id(opeCustomer.getTenantId()).build());
+        if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.INACTIVATED.getValue())) {
+            accountBaseService.deleteUserbyTenantId(IdEnter.builder().id(customer.getTenantId()).build());
         }
         OpeCustomer update = new OpeCustomer();
         update.setId(enter.getId());

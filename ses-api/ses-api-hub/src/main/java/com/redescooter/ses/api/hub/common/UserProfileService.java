@@ -23,4 +23,19 @@ public interface UserProfileService {
      * @param enter
      */
     void saveUserProfile2B(SaveUserProfileHubEnter enter);
+
+    /**
+     * Toc 保存个人信息
+     *
+     * @param enter
+     */
+    void deleteUserProfile2C(SaveUserProfileHubEnter enter);
+
+    /**
+     * Tob 保存个人信息
+     *
+     * @param enter
+     */
+    void deleteUserProfile2B(SaveUserProfileHubEnter enter);
+
 }
