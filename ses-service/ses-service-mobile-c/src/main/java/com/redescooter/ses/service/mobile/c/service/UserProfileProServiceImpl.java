@@ -1,8 +1,10 @@
 package com.redescooter.ses.service.mobile.c.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
+import com.redescooter.ses.service.hub.source.consumer.service.base.ConUserProfileService;
 import com.redescooter.ses.service.mobile.c.constant.SequenceName;
 import com.redescooter.ses.service.mobile.c.dao.base.ConUserProfileMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName:test
@@ -29,6 +32,8 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     @Autowired
     private ConUserProfileMapper conUserProfileMapper;
 
+    @Autowired
+    private ConUserProfileService userProfileService;
     @Reference
     private IdAppService idAppService;
 
@@ -61,6 +66,28 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             conUserProfileMapper.insertOrUpdate(userProfile);
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 删除用户信息
+     *
+     * @param longs
+     */
+    @Override
+    public GeneralResult deleteUserProfile2C(List<Long> longs) {
+
+        QueryWrapper<ConUserProfile> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(ConUserProfile.COL_DR,0);
+        queryWrapper.in(ConUserProfile.COL_USER_ID,longs);
+        List<ConUserProfile> list = userProfileService.list(queryWrapper);
+
+        if (list.size()>0){
+            list.forEach(userProfile -> {
+                userProfileService.removeById(userProfile.getId());
+            });
+        }
+
+        return new GeneralResult();
     }
 
 

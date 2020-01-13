@@ -1,5 +1,9 @@
 package com.redescooter.ses.service.hub.common;
+import	java.util.LinkedList;
+import	java.util.Queue;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
@@ -7,6 +11,7 @@ import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.corporate.dao.CorUserProfileMapper;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile;
+import com.redescooter.ses.service.hub.source.corporate.service.base.CorUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
@@ -15,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName:UserProfileServiceImpl
@@ -35,6 +41,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Autowired
     private CorUserProfileMapper corUserProfileMapper;
+
+    @Autowired
+    private CorUserProfileService userProfileService;
 
     /**
      * Toc 保存个人信息
@@ -64,28 +73,39 @@ public class UserProfileServiceImpl implements UserProfileService {
         userProfile.setCreatedTime(new Date());
         userProfile.setUpdatedBy(enter.getUserId());
         userProfile.setUpdatedTime(new Date());
-        corUserProfileMapper.insert(userProfile);
+        userProfileService.save(userProfile);
     }
 
     /**
      * Toc 删除个人信息
      *
-     * @param enter
+     * @param longs
      */
     @Override
-    public void deleteUserProfile2C(SaveUserProfileHubEnter enter) {
+    public void deleteUserProfile2C(List<Long> longs) {
 
-
+    userProfileProService.deleteUserProfile2C(longs);
 
     }
 
     /**
      * Tob 删除个人信息
      *
-     * @param enter
+     * @param longs
      */
     @Override
-    public void deleteUserProfile2B(SaveUserProfileHubEnter enter) {
+    public void deleteUserProfile2B(List<Long> longs) {
+
+        QueryWrapper<CorUserProfile> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(CorUserProfile.COL_DR,0);
+        queryWrapper.in(CorUserProfile.COL_USER_ID,longs);
+        List<CorUserProfile> corUserProfiles = userProfileService.list(queryWrapper);
+
+        if (corUserProfiles.size()>0){
+         corUserProfiles.forEach(corUserProfile -> {
+             userProfileService.removeById(corUserProfile.getId());
+         });
+        }
 
     }
 }

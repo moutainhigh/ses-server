@@ -3,6 +3,8 @@ package com.redescooter.ses.api.mobile.c.service;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 
+import java.util.List;
+
 /**
  * @ClassName:UserProfileProService
  * @description: UserProfileProService
@@ -17,4 +19,10 @@ public interface UserProfileProService {
      * @return
      */
     GeneralResult saveUserPofile(SaveUserProfileEnter enter);
+
+    /**
+     * 删除用户信息
+     */
+    GeneralResult  deleteUserProfile2C(List<Long> longs);
+
 }

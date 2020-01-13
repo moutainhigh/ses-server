@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface ConUserProfileMapper extends BaseMapper<ConUserProfile> {
     int updateBatch(List<ConUserProfile> list);

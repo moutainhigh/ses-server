@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.redis;
 
-import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import redis.clients.jedis.JedisCluster;
 
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,5 +43,10 @@ public class RedisOne {
         System.out.println("查看键username所存储的值的类型：" + jedis.type("username"));
 
     }
+
+    public void test1(){
+
+    }
+
 
 }

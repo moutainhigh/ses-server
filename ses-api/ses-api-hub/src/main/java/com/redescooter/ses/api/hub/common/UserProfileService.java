@@ -1,6 +1,10 @@
 package com.redescooter.ses.api.hub.common;
 
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
+
+import java.util.List;
 
 /**
  * @author Mr.lijiating
@@ -25,17 +29,17 @@ public interface UserProfileService {
     void saveUserProfile2B(SaveUserProfileHubEnter enter);
 
     /**
-     * Toc 保存个人信息
+     * Toc 删除个人信息
      *
-     * @param enter
+     * @param longs
      */
-    void deleteUserProfile2C(SaveUserProfileHubEnter enter);
+    void deleteUserProfile2C(List<Long> longs);
 
     /**
-     * Tob 保存个人信息
+     * Tob 删除个人信息
      *
-     * @param enter
+     * @param longs
      */
-    void deleteUserProfile2B(SaveUserProfileHubEnter enter);
+    void deleteUserProfile2B(List<Long> longs);
 
 }

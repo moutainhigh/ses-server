@@ -419,6 +419,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
          */
         PlaTenant tenant = plaTenantMapper.selectById(enter.getId());
         PlaUser selectOne =null;
+        List<Long> idList = new ArrayList<>();
+
         if(tenant.getId()==0){
             QueryWrapper<PlaUser> wrapper= new QueryWrapper<>();
             wrapper.eq(PlaUser.COL_LOGIN_NAME,tenant.getEmail());
@@ -426,27 +428,24 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             wrapper.eq(PlaUser.COL_USER_TYPE,AccountTypeUtils.getAccountType(tenant.getTenantType(),tenant.getTenantIndustry()));
             wrapper.eq(PlaUser.COL_TENANT_ID,tenant.getId());
              selectOne = plaUserMapper.selectOne(wrapper);
+             idList.add(selectOne.getId());
         }else{
-
+            QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
+            wrapper.eq(PlaUser.COL_TENANT_ID, tenant.getId());
+            wrapper.eq(PlaUser.COL_DR, 0);
+            List<PlaUser> userList = plaUserMapper.selectList(wrapper);
+            idList = userList.stream().map(user -> user.getId()).collect(Collectors.toList());
         }
-        QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
-        wrapper.eq(PlaUser.COL_TENANT_ID, tenant.getId());
-        wrapper.eq(PlaUser.COL_DR, 0);
-        List<PlaUser> userList = plaUserMapper.selectList(wrapper);
-        List<Long> idList = new ArrayList<>();
-        idList = userList.stream().map(user -> user.getId()).collect(Collectors.toList());
+
         plaUserMapper.deleteBatchIds(idList);
-        tenantMapper.deleteById(tenant.getId());
 
         if (tenant.getTenantType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
-            // 删除公司--2B信息 TODO
-            SaveUserProfileHubEnter dto = new SaveUserProfileHubEnter();
-            dto.setEmail1(tenant.getEmail());
-            dto.setUserId(selectOne.getId());
-            //删除C端客户信息
-            userProfileService.deleteUserProfile2C(dto);
+            //删除公司--2B信息 TODO
+            userProfileService.deleteUserProfile2B(idList);
+            tenantMapper.deleteById(tenant.getId());
         } else {
             // 删除个人--2C信息 TODO
+            userProfileService.deleteUserProfile2C(idList);
         }
 
         return new GeneralResult(enter.getRequestId());
