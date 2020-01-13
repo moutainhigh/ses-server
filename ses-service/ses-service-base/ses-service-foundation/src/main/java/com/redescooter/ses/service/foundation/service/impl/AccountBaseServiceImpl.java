@@ -243,7 +243,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserMapper.updateById(plaUser);
 
         // 若token存在 清空Token
-        if (StringUtils.isNotBlank(plaUser.getLastLoginToken())){
+        if (StringUtils.isNotBlank(plaUser.getLastLoginToken())) {
             jedisCluster.del(plaUser.getLastLoginToken());
         }
         // 权限
@@ -418,21 +418,21 @@ public class AccountBaseServiceImpl implements AccountBaseService {
          * 1.租户删除 2.用户删除 3.用户信息删除
          */
         PlaTenant tenant = plaTenantMapper.selectById(enter.getId());
-        PlaUser selectOne =null;
+        PlaUser selectOne = null;
         List<Long> idList = new ArrayList<>();
 
-        if(tenant.getId()==0){
-            QueryWrapper<PlaUser> wrapper= new QueryWrapper<>();
-            wrapper.eq(PlaUser.COL_LOGIN_NAME,tenant.getEmail());
-            wrapper.eq(PlaUser.COL_DR,0);
-            wrapper.eq(PlaUser.COL_USER_TYPE,AccountTypeUtils.getAccountType(tenant.getTenantType(),tenant.getTenantIndustry()));
-            wrapper.eq(PlaUser.COL_TENANT_ID,tenant.getId());
-             selectOne = plaUserMapper.selectOne(wrapper);
-             if(selectOne==null){
-                 return new GeneralResult(enter.getRequestId());
-             }
-             idList.add(selectOne.getId());
-        }else{
+        if (tenant.getId() == 0) {
+            QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
+            wrapper.eq(PlaUser.COL_LOGIN_NAME, tenant.getEmail());
+            wrapper.eq(PlaUser.COL_DR, 0);
+            wrapper.eq(PlaUser.COL_USER_TYPE, AccountTypeUtils.getAccountType(tenant.getTenantType(), tenant.getTenantIndustry()));
+            wrapper.eq(PlaUser.COL_TENANT_ID, tenant.getId());
+            selectOne = plaUserMapper.selectOne(wrapper);
+            if (selectOne == null) {
+                return new GeneralResult(enter.getRequestId());
+            }
+            idList.add(selectOne.getId());
+        } else {
             QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
             wrapper.eq(PlaUser.COL_TENANT_ID, tenant.getId());
             wrapper.eq(PlaUser.COL_DR, 0);
@@ -645,28 +645,38 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {
         Integer accountType =
                 AccountTypeUtils.getAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
-        // 保存 user 信息
-        PlaUser plaUser = new PlaUser();
-        plaUser.setId(idAppService.getId(SequenceName.PLA_USER));
-        plaUser.setDr(0);
-        plaUser.setTenantId(tenantId);
-        plaUser.setAppId(AccountTypeUtils.getAppId(accountType));
-        plaUser.setSystemId(AccountTypeUtils.getSystemId(accountType));
-        plaUser.setLoginName(enter.getT().getEmail());
-        plaUser.setUserType(accountType);
-        plaUser.setStatus(UserStatusEnum.NORMAL.getValue());
-        plaUser.setCreatedBy(enter.getUserId());
-        plaUser.setCreatedTime(new Date());
-        plaUser.setUpdatedBy(enter.getUserId());
-        plaUser.setUpdatedTime(new Date());
 
-        plaUserMapper.insert(plaUser);
+        QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getT().getEmail());
+        queryWrapper.eq(PlaUser.COL_DR, 0);
+        queryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
+        queryWrapper.last("LIMIT 1");
+        PlaUser user = userMapper.selectOne(queryWrapper);
+
+        if (user == null) {
+            // 保存 user 信息
+            user = new PlaUser();
+            user.setId(idAppService.getId(SequenceName.PLA_USER));
+            user.setDr(0);
+            user.setTenantId(tenantId);
+            user.setAppId(AccountTypeUtils.getAppId(accountType));
+            user.setSystemId(AccountTypeUtils.getSystemId(accountType));
+            user.setLoginName(enter.getT().getEmail());
+            user.setUserType(accountType);
+            user.setStatus(UserStatusEnum.NORMAL.getValue());
+            user.setCreatedBy(enter.getUserId());
+            user.setCreatedTime(new Date());
+            user.setUpdatedBy(enter.getUserId());
+            user.setUpdatedTime(new Date());
+
+            plaUserMapper.insert(user);
+        }
 
         // 保存密码
         QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
         plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getT().getEmail());
+        plaUserPasswordQueryWrapper.last("LIMIT 1");
         PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
-
         // 密码不存在创建，已存在 跳过
         if (plaUserPassword == null) {
             PlaUserPassword savePassWord = new PlaUserPassword();
@@ -682,20 +692,28 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             userPasswordMapper.insert(savePassWord);
         }
 
-        // 开通权限
-        PlaUserPermission plaUserPermission = new PlaUserPermission();
-        plaUserPermission.setId(idAppService.getId(SequenceName.PLA_USER_PERMISSION));
-        plaUserPermission.setUserId(plaUser.getId());
-        plaUserPermission.setSystemId(AccountTypeUtils.getSystemId(accountType));
-        plaUserPermission.setAppId(AccountTypeUtils.getAppId(accountType));
-        plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
-        plaUserPermission.setCreatedBy(enter.getUserId());
-        plaUserPermission.setCreatedTime(new Date());
-        plaUserPermission.setUpdatedBy(enter.getUserId());
-        plaUserPermission.setUpdatedTime(new Date());
+        QueryWrapper<PlaUserPermission> queryuserPermission = new QueryWrapper<>();
+        queryuserPermission.eq(PlaUserPermission.COL_USER_ID, user.getId());
+        queryuserPermission.eq(PlaUserPermission.COL_SYSTEM_ID, AccountTypeUtils.getSystemId(accountType));
+        queryuserPermission.eq(PlaUserPermission.COL_APP_ID, AccountTypeUtils.getAppId(accountType));
+        queryuserPermission.last("LIMIT 1");
+        PlaUserPermission userPermission = userPermissionMapper.selectOne(queryuserPermission);
+        if (userPermission == null) {
+            // 开通权限
+            userPermission = new PlaUserPermission();
+            userPermission.setId(idAppService.getId(SequenceName.PLA_USER_PERMISSION));
+            userPermission.setUserId(user.getId());
+            userPermission.setSystemId(AccountTypeUtils.getSystemId(accountType));
+            userPermission.setAppId(AccountTypeUtils.getAppId(accountType));
+            userPermission.setStatus(UserStatusEnum.NORMAL.getValue());
+            userPermission.setCreatedBy(enter.getUserId());
+            userPermission.setCreatedTime(new Date());
+            userPermission.setUpdatedBy(enter.getUserId());
+            userPermission.setUpdatedTime(new Date());
+            userPermissionMapper.insert(userPermission);
+        }
 
-        userPermissionMapper.insert(plaUserPermission);
-        return plaUser.getId();
+        return user.getId();
     }
 
 }
