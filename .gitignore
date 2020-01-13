@@ -115,15 +115,3 @@ Thumbs.db
 /*/*/target/
 /*/*/*/target/
 
-
-.rebel.xml
-*.rebel.xml
-/*/.rebel.xml
-/*/*/.rebel.xml
-/*/*/*/.rebel.xml
-
-.rebel-remote.xml.bak
-*.rebel-remote.xml.bak
-/*/rebel-remote.xml.bak
-/*/*/.rebel-remote.xml.bak
-/*/*/*/.rebel-remote.xml.bak
