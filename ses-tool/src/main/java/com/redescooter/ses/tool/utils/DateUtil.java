@@ -59,17 +59,11 @@ public class DateUtil {
 
     private static final String DEFAULT_CONVERT_PATTERN = "yyyyMMddHHmmssSSS";
 
-
-    public static Date stringToDate(String time, String format) {
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        try {
-            return sdf.parse(time);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    /**
+     * 私有构造方法，禁止对该类进行实例化
+     */
+    private DateUtil() {
     }
-
 
     /**
      * 获取当前时间字符串(默认格式:yyyyMMddHHmmssSSS)
@@ -133,11 +127,6 @@ public class DateUtil {
         }
     }
 
-    /**
-     * 私有构造方法，禁止对该类进行实例化
-     */
-    private DateUtil() {
-    }
 
     /**
      * 获取开始时间
@@ -441,6 +430,13 @@ public class DateUtil {
         return calendar.getTime();
     }
 
+    /**
+     * 判断时间大小
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
     public static int compareDate(Date date1, Date date2) {
 
         if (null == date1 && date2 == null) {
@@ -503,7 +499,7 @@ public class DateUtil {
     public static Date dateAddDays(Date date, int days) {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
-        calendar.add(calendar.DATE, days);
+        calendar.add(Calendar.DATE, days);
         return calendar.getTime();
     }
 
@@ -614,38 +610,6 @@ public class DateUtil {
         return date;
     }
 
-    /**
-     * 转换13位
-     *
-     * @param time
-     * @return
-     */
-    public static Long change13(Date time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        Date date = calendar.getTime();
-        Long s = date.getTime();
-        return s;
-    }
-
-    /**
-     * @param time
-     * @return java.lang.Long
-     * @Title chaneNow
-     * @Description 预约时间
-     * @author QiMing Feng
-     * @date 2019/1/4 18:04
-     */
-    public static Long chaneNow(String time) {
-
-        Date date = changeYMDHM(time);
-        long sss = (date.getTime()) / 1000;
-        String timestamp = String.format("%010d", sss);
-        long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-
 
 
     /*————————————————————————————————————时间转——————————————*/
@@ -654,8 +618,8 @@ public class DateUtil {
      * @param time
      * @return java.utils.Date
      * @Title stringToDate
-     * @Description String转date  为发套餐准备的
-     * @author QiMing Feng
+     * @Description String转date
+     * @author Jerry
      * @date 2018/12/28 12:29
      */
     public static Date stringToDate(String time) {
@@ -668,150 +632,7 @@ public class DateUtil {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
         return date;
-    }
-
-    /**
-     * 转换10位
-     */
-    public static Long tenNow(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        Date date = new Date();
-        try {
-            date = sdf.parse(time);
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        long sss = (date.getTime()) / 1000;
-        String timestamp = String.format("%010d", sss);
-        long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-    /**
-     * 转换10位（旅游    时间减48个小时）
-     */
-    public static Long Tourism_code(String time) {
-        Date date = changeYMDHM(time);
-        long sss = (date.getTime() + 60 * 48 * 60 * 1000) / 1000;
-        String timestamp = String.format("%010d", sss);
-        long ss = Long.valueOf(timestamp);
-        return ss;
-    }
-
-    /**
-     * String类型转换Date类型
-     *
-     * @param time
-     * @return date
-     */
-    public static Date change(String time) {
-        Date date = null;
-        SimpleDateFormat sdf = new SimpleDateFormat(YMDHMS);
-        try {
-            date = sdf.parse(time);
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return date;
-    }
-
-    /**
-     * 字符串转Date
-     *
-     * @param str
-     * @return
-     */
-    public static Date getDateByString(String str) {
-        SimpleDateFormat sim = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        Date dateTime = null;
-        try {
-            dateTime = sim.parse(str);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return dateTime;
-    }
-
-
-    /**
-     * 加一天时间
-     *
-     * @return
-     */
-    public static Date changeOne() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date date = calendar.getTime();
-        return date;
-    }
-
-    /**
-     * 自身时间加一天
-     *
-     * @param time
-     * @return
-     */
-    public static Date plusOne(Date time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date date = calendar.getTime();
-        return date;
-    }
-
-    /**
-     * 自身时间减一天
-     *
-     * @param time
-     * @return
-     */
-    public static Date minusOne(Date time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
-        Date date = calendar.getTime();
-        return date;
-    }
-
-    /**
-     * @param time, now
-     * @return java.lang.Long
-     * @Description 获取时间戳加一天差集
-     * @author jerry
-     * @date 2018/8/22 14:09
-     */
-    public static Long plustime(Date time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date date = calendar.getTime();
-        Date now = new Date();
-        long t = date.getTime();
-        long n = now.getTime();
-        long s = t - n;
-        return s;
-    }
-
-    /**
-     * @param time
-     * @return java.lang.Long
-     * @Description 转换时间戳加一天
-     * @author jerry
-     * @date 2018/8/22 14:47
-     */
-    public static Long Onetime(Date time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date date = calendar.getTime();
-        Long s = date.getTime();
-        return s;
     }
 
     /**
@@ -849,24 +670,6 @@ public class DateUtil {
             e.printStackTrace();
         }
         return Boolean.FALSE;
-    }
-
-    /**
-     * 根据 string时间格式 拆分出来时间 返回
-     *
-     * @param time
-     * @return
-     */
-    public static String splitTimeAccordingToDate(String time) {
-        Date date = parse(time, DEFAULT_DATETIME_FORMAT);
-        StringBuilder sb = new StringBuilder();
-        int hour = date.getHours();
-        sb.append(String.valueOf(hour).length() < 2 ? "0" + String.valueOf(hour) + ":" : String.valueOf(hour) + ":");
-        int min = date.getMinutes();
-        sb.append(String.valueOf(min).length() < 2 ? "0" + String.valueOf(min) + ":" : String.valueOf(min) + ":");
-        int sec = date.getSeconds();
-        sb.append(String.valueOf(sec).length() < 2 ? "0" + String.valueOf(sec) : String.valueOf(sec));
-        return sb.toString();
     }
 
     /**
@@ -918,7 +721,13 @@ public class DateUtil {
         return pastDaysList;
     }
 
-    //返回某个日期前几天的日期
+    /**
+     * 返回某个日期前几天的日期
+     *
+     * @param date
+     * @param i
+     * @return
+     */
     public static Date getFrontDay(Date date, int i) {
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
@@ -926,7 +735,13 @@ public class DateUtil {
         return cal.getTime();
     }
 
-    //返回某个日期下几天的日期
+    /**
+     * 返回某个日期下几天的日期
+     *
+     * @param date
+     * @param i
+     * @return
+     */
     public static Date getNextDay(Date date, int i) {
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
@@ -949,7 +764,12 @@ public class DateUtil {
         return result;
     }
 
-    //获取给定时间内的24小时集合
+    /**
+     * 获取给定时间内的24小时集合
+     *
+     * @param datetime
+     * @return
+     */
     public static ArrayList<String> get24HourList(String datetime) {
         ArrayList<String> strList = new ArrayList<>();
         String now = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
@@ -983,6 +803,12 @@ public class DateUtil {
         return temp / 1000;
     }
 
+    /**
+     * 时间转换为年月日
+     *
+     * @param time
+     * @return
+     */
     public static Date timaConversion(String time) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
         Date date = null;
@@ -992,11 +818,6 @@ public class DateUtil {
             e.printStackTrace();
         }
         return date;
-    }
-
-    public Integer age(Date birthday) {
-
-        return null;
     }
 
     /**
@@ -1036,16 +857,6 @@ public class DateUtil {
     }
 
     /**
-     * 加15分钟
-     */
-    public static String pay() {
-        long etime1 = System.currentTimeMillis() + 15 * 60 * 1000;//延时函数，单位毫秒，这里是延时了15分钟
-        SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
-        String etime = time2.format(new Date(etime1));
-        return etime;
-    }
-
-    /**
      * 加30分钟
      */
     public static String pay30() {
@@ -1053,22 +864,5 @@ public class DateUtil {
         SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
         String etime = time2.format(new Date(etime1));
         return etime;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getDateTime(addDays(-30), null));
-        System.out.println("------------");
-        ArrayList<String> dayList = getDayList(addDays(-30), 30, null);
-        System.out.println(dayList);
-
-        String dateTimeStamp = getDateTimeStamp(getFrontDay(new Date(), 30));
-        System.out.println("------------");
-        System.out.println(dateTimeStamp);
-
-        System.out.println("------------");
-        String dateTimeStamp2 = getDateTimeStamp(getNextDay(new Date(), 30));
-        System.out.println(dateTimeStamp2);
-        String dateTime = getDateTime(dateAddDays(new Date(), -30), null);
-        System.out.println(dateTime);
     }
 }
