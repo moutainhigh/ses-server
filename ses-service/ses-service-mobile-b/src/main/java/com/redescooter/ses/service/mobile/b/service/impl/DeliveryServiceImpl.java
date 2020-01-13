@@ -263,7 +263,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (corUserProfile == null) {
             throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
+        String[] args = new String[]{delivery.getOrderNo(), new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
         // 消息推送
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
@@ -333,7 +333,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (corUserProfile == null) {
             throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString(), enter.getReason()};
+        String[] args = new String[]{delivery.getOrderNo(), new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString(), enter.getReason()};
         // 消息推送
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
@@ -409,6 +409,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (corUserProfile == null) {
             throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
+        String[] args = new String[]{delivery.getOrderNo()};
         // 消息推送
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
@@ -416,7 +417,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(delivery.getStatus())
-                .args(null)
+                .args(args)
                 .belongId(delivery.getCreatedBy())
                 .systemId(AppIDEnums.SAAS_WEB.getSystemId())
                 .appId(AppIDEnums.SAAS_WEB.getAppId())

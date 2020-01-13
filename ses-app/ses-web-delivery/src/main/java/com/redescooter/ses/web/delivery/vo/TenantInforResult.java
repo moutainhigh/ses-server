@@ -133,10 +133,10 @@ public class TenantInforResult extends GeneralResult {
     @ApiModelProperty(value = "租户配置Id")
     private Long tenantConfigId;
 
-    @ApiModelProperty(value = "开始日期，传 周一至周日 对应 1-7 编号 ")
+    @ApiModelProperty(value = "开始日期，传 周日至周六 对应 0-6 编号  ")
     private String startWeek;
 
-    @ApiModelProperty(value = "结束日期，传 周一至周日 对应 1-7 编号 ")
+    @ApiModelProperty(value = "结束日期，传 周日至周六 对应 0-6 编号 ")
     private String endWeek;
 
     @ApiModelProperty(value = "开始时间")

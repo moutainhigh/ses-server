@@ -31,11 +31,11 @@ public class UpdateTenantConfigEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id  为空")
     private Long tenantConfigId;
 
-    @ApiModelProperty(value = "开始日期，传 周一至周日 对应 1-7 编号 ")
+    @ApiModelProperty(value = "开始日期，传 周日至周六 对应 0-6 编号 ")
     @NotNull(code = ValidationExceptionCode.BEGIN_WEEK_IS_EMPTY, message = "营业开始日期为空")
     private String startWeek;
 
-    @ApiModelProperty(value = "结束日期，传 周一至周日 对应 1-7 编号 ")
+    @ApiModelProperty(value = "结束日期，传 周日至周六 对应 0-6 编号 ")
     @NotNull(code = ValidationExceptionCode.END_WEEK_IS_EMPTY, message = "营业结束日期为空")
     private String endWeek;
 

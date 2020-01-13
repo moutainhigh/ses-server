@@ -22,7 +22,7 @@ public enum TenantBussinessWeek {
     THU("THU","周四","4"),
     FRI("FRI","周五","5"),
     SAT("SAT","周六","6"),
-    SUN("SUN","周日","7")
+    SUN("SUN", "周日", "0")
     ;
 
 

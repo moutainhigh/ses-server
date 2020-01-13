@@ -211,7 +211,7 @@ public class PushServiceImpl implements PushService {
 
         MessagePushEnter push = MessagePushEnter.builder()
                 .alert(i18nServiceMessage.getMessage(extras.get("content").toString(), args, locale))
-                .title(i18nServiceMessage.getMessage(extras.get("title").toString(), locale))
+                .title(i18nServiceMessage.getMessage(extras.get("title").toString(), args, locale))
                 .userIds(userIds)
                 .extras(extras)
                 .createUser(Long.valueOf(map.get("createUser").toString()))
