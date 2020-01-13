@@ -61,7 +61,7 @@ public abstract class AbstractRequestFilter implements Filter {
                     parameterMap.put("token", reqHeader.getToken());
                     processCountry(parameterMap, reqHeader);
                     parameterMap.put("timeZone", reqHeader.getTimeZone());
-                    parameterMap.put("clientType", reqHeader.getClientType()==null ? "PC" : reqHeader.getClientType());
+                    parameterMap.put("clientType", reqHeader.getClientType() == null ? "PC" : reqHeader.getClientType());
                     parameterMap.put("version", reqHeader.getVersion());
                     if ((!parameterMap.containsKey("lat")) ||
                             (parameterMap.get("lat") == null) ||
