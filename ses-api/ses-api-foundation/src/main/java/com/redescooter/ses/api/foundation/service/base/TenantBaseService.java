@@ -75,4 +75,12 @@ public interface TenantBaseService {
      * @return
      */
     Map<String, Integer> accountCountStatus();
+
+    /**
+     * 创建司机账户对租户中司机的个数进行累计
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult updateDriverCount(GeneralEnter enter);
 }

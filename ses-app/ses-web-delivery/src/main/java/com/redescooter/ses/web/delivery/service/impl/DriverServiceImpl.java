@@ -10,6 +10,7 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -70,6 +71,8 @@ public class DriverServiceImpl implements DriverService {
     private CorScooterRideStatService scooterRideStatService;
     @Autowired
     private DriverServiceMapper driverServiceMapper;
+    @Autowired
+    private TenantBaseService tenantBaseService;
     @Autowired
     private CorDeliveryMapper corDeliveryMapper;
     @Reference
@@ -183,10 +186,13 @@ public class DriverServiceImpl implements DriverService {
             BeanUtils.copyProperties(enter, idEnter);
             idEnter.setId(driverSave.getUserId());
             accountBaseService.sendEmailActiv(idEnter);
+
+            //维护租户的司机数量
+            tenantBaseService.updateDriverCount(enter);
         } else {
             CorDriver driver = driverService.getById(enter.getId());
             if (driver == null) {
-                new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+                throw new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
             }
             CorDriver driverUpdate = new CorDriver();
             driverUpdate.setId(enter.getId());
@@ -779,8 +785,8 @@ public class DriverServiceImpl implements DriverService {
                 }
             }
 
-        }else {
-            map=null;
+        } else {
+            map = null;
         }
         DeliveryChartListResult result = new DeliveryChartListResult();
         result.setMap(map);

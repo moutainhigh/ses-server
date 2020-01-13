@@ -20,6 +20,7 @@ import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.constant.TenantDefaultValue;
 import com.redescooter.ses.service.foundation.dao.AccountBaseServiceMapper;
+import com.redescooter.ses.service.foundation.dao.TenantBaseServiceMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantConfigMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantNodeMapper;
@@ -65,6 +66,9 @@ public class TenantBaseServiceImpl implements TenantBaseService {
 
     @Autowired
     private UserBaseService userBaseService;
+
+    @Autowired
+    private TenantBaseServiceMapper tenantBaseServiceMapper;
 
     /**
      * 保存租户
@@ -204,6 +208,18 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             }
         }
         return map;
+    }
+
+    /**
+     * 创建司机账户对租户中司机的个数进行累计
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult updateDriverCount(GeneralEnter enter) {
+        tenantBaseServiceMapper.updateDriverCount(enter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     private PlaTenantConfig buildTenantConfigSingle(Long tennatId, SaveTenantConfigEnter enter) {
