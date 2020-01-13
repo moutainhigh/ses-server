@@ -128,9 +128,7 @@ public class ControllerAspect {
         if (StringUtils.isBlank(enter.getCountry())) {
             throw new SesMobileClientException(ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getMessage());
         }
-//        if (StringUtils.isBlank(enter.getLanguage())) {
-//            throw new SesMobileClientException(ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getMessage());
-//        }
+
         if (StringUtils.isBlank(enter.getClientType())) {
             throw new SesMobileClientException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
         }
