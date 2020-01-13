@@ -5,9 +5,11 @@ import com.redescooter.ses.service.hub.source.consumer.service.base.ConUserProfi
 import com.redescooter.ses.service.mobile.c.dao.base.ConUserProfileMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @Service
 public class ConUserProfileServiceImpl extends ServiceImpl<ConUserProfileMapper, ConUserProfile> implements ConUserProfileService {
 

@@ -67,11 +67,11 @@ public class CustomerController {
         return new Response<>(customerRosService.trash(enter));
     }
 
-    @PostMapping(value = "/delete")
-    @ApiOperation(value = "删除", response = GeneralResult.class)
-    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(customerRosService.delete(enter));
-    }
+//    @PostMapping(value = "/delete")
+//    @ApiOperation(value = "删除", response = GeneralResult.class)
+//    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(customerRosService.delete(enter));
+//    }
 
     @PostMapping(value = "/change")
     @ApiOperation(value = "客户转换", response = GeneralResult.class)
