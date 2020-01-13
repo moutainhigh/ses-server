@@ -89,7 +89,7 @@ public enum ExceptionCodeEnums {
 
     ESTIMATEDDURATION_IS_EMPTY(10038, "配送时间 为空"),
 
-    TENANT_INDUSTRY_IS_WRONG(10039, "租户行业是错误的"),
+    TENANT_CONFIG_IS_NOT_EXIST(10039, "租户配置不存在"),
 
     MESSAGE_IS_NOT_EXIST(10040, "消息不存在"),
 

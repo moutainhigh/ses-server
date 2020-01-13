@@ -49,14 +49,14 @@ public class CustomerServiceImpl implements CustomerService {
         }
         BaseCustomerResult baseCustomerResult = new BaseCustomerResult();
         BeanUtils.copyProperties(opeCustomer, baseCustomerResult);
-        if (null != opeCustomer.getCity() || 0 != opeCustomer.getCity()) {
+        if (null != opeCustomer.getCity() && 0 != opeCustomer.getCity()) {
             baseCustomerResult.setCity(opeCustomer.getCity());
             String cityNameById = cityAppService.getCityNameById(opeCustomer.getCity());
             if (StringUtils.isNotBlank(cityNameById)) {
                 baseCustomerResult.setCityName(cityNameById);
             }
         }
-        if (null != opeCustomer.getDistrust() || 0 != opeCustomer.getDistrust()) {
+        if (null != opeCustomer.getDistrust() && 0 != opeCustomer.getDistrust()) {
             baseCustomerResult.setDistrust(opeCustomer.getDistrust());
             String cityNameById = cityAppService.getCityNameById(opeCustomer.getDistrust());
             if (StringUtils.isNotBlank(cityNameById)) {

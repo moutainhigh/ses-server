@@ -222,29 +222,12 @@ public class TenantBaseServiceImpl implements TenantBaseService {
                     throw new FoundationException(ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getCode(), ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getMessage());
                 }
             }
-            // 进行租户配置的查询
-            PlaTenantConfig plaTenantConfig = plaTenantConfigMapper.selectById(enter.getTenantConfigId());
-            if (plaTenantConfig == null) {
-                tenantConfig = new PlaTenantConfig();
-                // 租户信息初始化
-                tenantConfig.setDr(0);
-                tenantConfig.setAddress(tenant.getAddress());
-                tenantConfig.setStatus(TenantBussinessStatus.OPEN.getValue());
-                tenantConfig.setLanguage(enter.getLanguage());
-                tenantConfig.setLatitude(tenant.getLatitude());
-                tenantConfig.setLongitude(tenant.getLongitude());
-                tenantConfig.setTenantId(tenant.getId());
-                tenantConfig.setTimeoutExpectde(TenantDefaultValue.TIMEOUT_EXPECTDE);
-                tenantConfig.setTimeZone(tenant.getTimeZone());
-                tenantConfig.setUpdatedBy(enter.getUserId());
-                tenantConfig.setUpdatedTime(new Date());
-            } else {
-                tenantConfig = plaTenantConfig;
-            }
         }
 
         //配送范围10KM 配送时间30min 超时预警时间15min
         if (enter.getTenantDefaultConfig()) {
+            tenantConfig = new PlaTenantConfig();
+
             tenant = plaTenantMapper.selectById(tennatId);
             if (tenant == null) {
                 throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
@@ -255,7 +238,26 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             tenantConfig.setEndTime(DateUtil.parse(TenantDefaultValue.END_TIME, DateUtil.DEFAULT_DATETIME_FORMAT));
             tenantConfig.setDistributionRange(TenantDefaultValue.DISTRIBUTION_RANGE);
             tenantConfig.setEstimatedDuration(TenantDefaultValue.ESTIMATED_DURATION);
+            // 租户信息初始化
+            tenantConfig.setDr(0);
+            tenantConfig.setAddress(tenant.getAddress());
+            tenantConfig.setStatus(TenantBussinessStatus.OPEN.getValue());
+            tenantConfig.setLanguage(enter.getLanguage());
+            tenantConfig.setLatitude(tenant.getLatitude());
+            tenantConfig.setLongitude(tenant.getLongitude());
+            tenantConfig.setTenantId(tenant.getId());
+            tenantConfig.setTimeoutExpectde(TenantDefaultValue.TIMEOUT_EXPECTDE);
+            tenantConfig.setTimeZone(tenant.getTimeZone());
+            tenantConfig.setUpdatedBy(enter.getUserId());
+            tenantConfig.setUpdatedTime(new Date());
         } else {
+            // 进行租户配置的查询
+            PlaTenantConfig plaTenantConfig = plaTenantConfigMapper.selectById(enter.getTenantConfigId());
+            if (plaTenantConfig == null) {
+                throw new FoundationException(ExceptionCodeEnums.TENANT_CONFIG_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_CONFIG_IS_NOT_EXIST.getMessage());
+            }
+            tenantConfig = plaTenantConfig;
+
             tenant = plaTenantMapper.selectById(enter.getTenantId());
             if (tenant == null) {
                 throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
