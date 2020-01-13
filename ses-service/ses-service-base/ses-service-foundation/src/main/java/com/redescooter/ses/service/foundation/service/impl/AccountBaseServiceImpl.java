@@ -428,6 +428,9 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             wrapper.eq(PlaUser.COL_USER_TYPE,AccountTypeUtils.getAccountType(tenant.getTenantType(),tenant.getTenantIndustry()));
             wrapper.eq(PlaUser.COL_TENANT_ID,tenant.getId());
              selectOne = plaUserMapper.selectOne(wrapper);
+             if(selectOne==null){
+                 return new GeneralResult(enter.getRequestId());
+             }
              idList.add(selectOne.getId());
         }else{
             QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
