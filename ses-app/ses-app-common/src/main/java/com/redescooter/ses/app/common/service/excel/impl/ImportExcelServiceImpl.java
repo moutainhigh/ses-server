@@ -32,6 +32,7 @@ public class ImportExcelServiceImpl<T> implements ImportExcelService<T> {
         return iExcelVerifyHandler;
     }
 
+    @Override
     public ImportExcelService setiExcelVerifyHandler(IExcelVerifyHandler iExcelVerifyHandler) {
         this.iExcelVerifyHandler = iExcelVerifyHandler;
         return this;
