@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantBussinessStatus;
@@ -10,10 +11,12 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
+import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.account.QueryTenantNodeResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.foundation.vo.tenant.SaveTenantConfigEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
+import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.constant.TenantDefaultValue;
 import com.redescooter.ses.service.foundation.dao.AccountBaseServiceMapper;
@@ -59,6 +62,9 @@ public class TenantBaseServiceImpl implements TenantBaseService {
 
     @Autowired
     private AccountBaseServiceMapper accountBaseServiceMapper;
+
+    @Autowired
+    private UserBaseService userBaseService;
 
     /**
      * 保存租户
@@ -201,8 +207,10 @@ public class TenantBaseServiceImpl implements TenantBaseService {
     }
 
     private PlaTenantConfig buildTenantConfigSingle(Long tennatId, SaveTenantConfigEnter enter) {
+
         // 餐厅 配送范围 配送时间 参数过滤
-        if (!enter.getTenantDefaultConfig() && StringUtils.equals(enter.getIndustry(), CustomerIndustryEnums.RESTAURANT.getValue())) {
+        QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
+        if (!enter.getTenantDefaultConfig() && AccountTypeEnums.WEB_RESTAURANT.getAccountType().equals(queryUserResult.getUserType())) {
             // 参数校验
             if (enter.getDistributionRange() == null || enter.getDistributionRange() == 0) {
                 throw new FoundationException(ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getCode(), ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getMessage());
@@ -235,14 +243,11 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             if (tenant == null) {
                 throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
             }
-            if (!StringUtils.equals(enter.getIndustry(), tenant.getTenantIndustry())) {
-                throw new FoundationException(ExceptionCodeEnums.TENANT_INDUSTRY_IS_WRONG.getCode(), ExceptionCodeEnums.TENANT_INDUSTRY_IS_WRONG.getMessage());
-            }
             tenantConfig.setStartWeek(enter.getStartWeek());
             tenantConfig.setEndWeek(enter.getEndWeek());
             tenantConfig.setBeginTime(DateUtil.parse(enter.getBeginTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
             tenantConfig.setEndTime(DateUtil.parse(enter.getEndTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
-            if (StringUtils.equals(enter.getIndustry(), CustomerIndustryEnums.RESTAURANT.getValue())) {
+            if (AccountTypeEnums.WEB_RESTAURANT.getAccountType().equals(queryUserResult.getUserType())) {
                 tenantConfig.setDistributionRange(enter.getDistributionRange());
                 tenantConfig.setEstimatedDuration(enter.getEstimatedDuration());
             }

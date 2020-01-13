@@ -26,9 +26,6 @@ public class SaveTenantConfigEnter extends GeneralEnter {
     @ApiModelProperty(value = "租户配置主键")
     private Long tenantConfigId;
 
-    @ApiModelProperty(value = "租户行业")
-    private  String industry;
-
     @ApiModelProperty(value = "开始日期，传 周一至周日 对应 1-7 编号 ")
     private String startWeek;
 

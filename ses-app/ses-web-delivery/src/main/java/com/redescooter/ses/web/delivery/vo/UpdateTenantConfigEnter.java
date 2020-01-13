@@ -31,10 +31,6 @@ public class UpdateTenantConfigEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id  为空")
     private Long tenantConfigId;
 
-    @ApiModelProperty(value = "行业 ，1 餐厅 2快递")
-    @NotNull(code = ValidationExceptionCode.INDUSTRY_IS_EMPTY, message = "租户行业  为空")
-    private String industry;
-
     @ApiModelProperty(value = "开始日期，传 周一至周日 对应 1-7 编号 ")
     @NotNull(code = ValidationExceptionCode.BEGIN_WEEK_IS_EMPTY, message = "营业开始日期为空")
     private String startWeek;

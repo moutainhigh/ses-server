@@ -25,7 +25,7 @@ import java.util.Date;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class MessageResult extends PageResult {
+public class MessageResult extends GeneralResult {
     @ApiModelProperty(value = "ID")
     private Long id;
 
@@ -60,7 +60,7 @@ public class MessageResult extends PageResult {
     @ApiModelProperty(value = "消息标题")
     private String title;
 
-    @ApiModelProperty(value = "0 无需提示 1 小红点 2 强提醒", allowableValues = "0,1,2")
+    @ApiModelProperty(value = "1 无需提示 2 小红点 3 强提醒", allowableValues = "1,2,3")
     private String messagePriority;
 
     @ApiModelProperty(value = "消息内容")

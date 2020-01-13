@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.delivery.vo;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +27,7 @@ import io.swagger.annotations.*;
 public class UpdateCustomerInfoEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "CustomerId")
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 不为空")
     private Long id;
 
     @ApiModelProperty(value = "客户名字")

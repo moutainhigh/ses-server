@@ -72,6 +72,4 @@ public interface ValidationExceptionCode {
     int BEGIN_TIME_IS_EMPTY = 10051;
     // 营业结束时间
     int END_TIME_IS_EMPTY = 10052;
-    // 行业为空
-    int INDUSTRY_IS_EMPTY = 10053;
 }

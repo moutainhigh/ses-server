@@ -1,15 +1,21 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
+import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
+import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.foundation.vo.tenant.SaveTenantConfigEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
+import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.dao.base.CorUserProfileMapper;
@@ -20,6 +26,7 @@ import com.redescooter.ses.web.delivery.service.TenantSettingService;
 import com.redescooter.ses.web.delivery.vo.TenantInforResult;
 import com.redescooter.ses.web.delivery.vo.UpdateCustomerInfoEnter;
 import com.redescooter.ses.web.delivery.vo.UpdateTenantConfigEnter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -46,6 +53,9 @@ public class TenantSettingServiceImpl implements TenantSettingService {
 
     @Reference
     private CustomerService customerService;
+
+    @Reference
+    private UserBaseService userBaseService;
 
     /**
      * 店铺详细信息
@@ -113,13 +123,21 @@ public class TenantSettingServiceImpl implements TenantSettingService {
     public GeneralResult updateCustomerInfo(UpdateCustomerInfoEnter enter) {
         // 更新客户信息
         BaseCustomerEnter baseCustomerEnter = new BaseCustomerEnter();
-//        baseCustomerEnter.setCustomerFirstName(enter.getCustomerFirstName());
-//        baseCustomerEnter.setCustomerLastName(enter.getCustomerLastName());
-        BeanUtils.copyProperties(enter, baseCustomerEnter);
-        baseCustomerEnter.setCustomerFullName(new StringBuffer().append(enter.getCustomerLastName()).append(" ").append(enter.getCustomerLastName()).toString());
-        baseCustomerEnter.setContactFirstName(enter.getCustomerFirstName());
-        baseCustomerEnter.setContactLastName(enter.getCustomerLastName());
-        baseCustomerEnter.setContactFullName(new StringBuffer().append(enter.getCustomerLastName()).append(" ").append(enter.getCustomerLastName()).toString());
+        baseCustomerEnter.setId(enter.getId());
+        if (StringUtils.isNotBlank(enter.getCustomerFirstName()) && StringUtils.isNotBlank(enter.getCustomerLastName())) {
+            baseCustomerEnter.setCustomerFirstName(enter.getCustomerFirstName());
+            baseCustomerEnter.setCustomerLastName(enter.getCustomerLastName());
+            baseCustomerEnter.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
+            baseCustomerEnter.setContactFirstName(enter.getCustomerFirstName());
+            baseCustomerEnter.setContactLastName(enter.getCustomerLastName());
+            baseCustomerEnter.setContactFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
+        }
+        if (StringUtils.isNotBlank(enter.getTelephone())) {
+            baseCustomerEnter.setTelephone(enter.getTelephone());
+        }
+        if (StringUtils.isNotBlank(enter.getAvatar())) {
+            baseCustomerEnter.setPicture(enter.getAvatar());
+        }
 
         customerService.updateCustomerInfo(baseCustomerEnter);
 
@@ -132,10 +150,17 @@ public class TenantSettingServiceImpl implements TenantSettingService {
         if (corUserProfile == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        corUserProfile.setFirstName(enter.getCustomerFirstName());
-        corUserProfile.setLastName(enter.getCustomerLastName());
-        corUserProfile.setFullName(new StringBuffer().append(enter.getCustomerLastName()).append(" ").append(enter.getCustomerLastName()).toString());
-        corUserProfile.setPicture(enter.getAvatar());
+        if (StringUtils.isNotBlank(enter.getCustomerFirstName()) && StringUtils.isNotBlank(enter.getCustomerLastName())) {
+            corUserProfile.setFirstName(enter.getCustomerFirstName());
+            corUserProfile.setLastName(enter.getCustomerLastName());
+            corUserProfile.setFullName(new StringBuffer().append(enter.getCustomerLastName()).append(" ").append(enter.getCustomerLastName()).toString());
+        }
+        if (StringUtils.isNotBlank(enter.getTelephone())) {
+            corUserProfile.setTelNumber1(enter.getTelephone());
+        }
+        if (StringUtils.isNotBlank(enter.getAvatar())) {
+            corUserProfile.setPicture(enter.getAvatar());
+        }
         corUserProfile.setUpdatedBy(enter.getUserId());
         corUserProfile.setUpdatedTime(new Date());
         corUserProfileMapper.updateById(corUserProfile);

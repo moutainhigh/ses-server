@@ -10,6 +10,7 @@ import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,14 +61,20 @@ public class CustomerServiceImpl implements CustomerService {
         if (opeCustomer == null) {
             throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
         }
-        opeCustomer.setCustomerFirstName(enter.getCustomerFirstName());
-        opeCustomer.setCustomerLastName(enter.getCustomerLastName());
-        opeCustomer.setCustomerFullName(enter.getCustomerFullName());
-        opeCustomer.setContactFirstName(enter.getContactFirstName());
-        opeCustomer.setContactLastName(enter.getContactLastName());
-        opeCustomer.setContactFullName(enter.getContactFullName());
-        opeCustomer.setPicture(enter.getPicture());
-        opeCustomer.setTelephone(enter.getTelephone());
+        if (StringUtils.isNotBlank(enter.getCustomerFirstName()) && StringUtils.isNotBlank(enter.getCustomerLastName())) {
+            opeCustomer.setCustomerFirstName(enter.getCustomerFirstName());
+            opeCustomer.setCustomerLastName(enter.getCustomerLastName());
+            opeCustomer.setCustomerFullName(enter.getCustomerFullName());
+            opeCustomer.setContactFirstName(enter.getContactFirstName());
+            opeCustomer.setContactLastName(enter.getContactLastName());
+            opeCustomer.setContactFullName(enter.getContactFullName());
+        }
+        if (StringUtils.isNotBlank(enter.getPicture())) {
+            opeCustomer.setPicture(enter.getPicture());
+        }
+        if (StringUtils.isNotBlank(enter.getTelephone())) {
+            opeCustomer.setTelephone(enter.getTelephone());
+        }
 
         opeCustomerMapper.updateById(opeCustomer);
         return new GeneralResult(enter.getRequestId());
