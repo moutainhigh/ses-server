@@ -308,25 +308,25 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
         jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
 
-//        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
-//        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
-//        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID,enter.getTenantId());
-//        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
-//        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
-//
-//        PushMsgBo pushMsg = PushMsgBo.builder()
-//                .enter(enter)
-//                .pushType(PlatformTypeEnum.ANDROID.getValue())
-//                .bizId(delivery.getId())
-//                .bizType(BizType.DELIVERY.getValue())
-//                .status(DeliveryStatusEnums.CANCEL.getValue())
-//                .args(args)
-//                .belongId(delivery.getDelivererId())
-//                .systemId(AppIDEnums.SAAS_APP.getSystemId())
-//                .appId(AppIDEnums.SAAS_APP.getAppId())
-//                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
-//                .build();
-//        pushMsg(pushMsg);
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
+        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
+
+        PushMsgBo pushMsg = PushMsgBo.builder()
+                .enter(enter)
+                .pushType(PlatformTypeEnum.ANDROID.getValue())
+                .bizId(delivery.getId())
+                .bizType(BizType.DELIVERY.getValue())
+                .status(DeliveryStatusEnums.CANCEL.getValue())
+                .args(args)
+                .belongId(delivery.getDelivererId())
+                .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                .appId(AppIDEnums.SAAS_APP.getAppId())
+                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+                .build();
+        pushMsg(pushMsg);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -526,25 +526,25 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         jedisCluster.set(enter.getId().toString(), JSON.toJSONString(corDelivery));
         jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
 
-//        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
-//        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
-//        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID,enter.getTenantId());
-//        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
-//        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
-//
-//        PushMsgBo pushMsg = PushMsgBo.builder()
-//                .enter(enter)
-//                .pushType(PlatformTypeEnum.ANDROID.getValue())
-//                .bizId(corDelivery.getId())
-//                .bizType(BizType.DELIVERY.getValue())
-//                .status(DeliveryStatusEnums.PENDING.getValue())
-//                .args(args)
-//                .belongId(corDelivery.getDelivererId())
-//                .systemId(AppIDEnums.SAAS_APP.getSystemId())
-//                .appId(AppIDEnums.SAAS_APP.getAppId())
-//                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
-//                .build();
-//        pushMsg(pushMsg);
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
+        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
+
+        PushMsgBo pushMsg = PushMsgBo.builder()
+                .enter(enter)
+                .pushType(PlatformTypeEnum.ANDROID.getValue())
+                .bizId(corDelivery.getId())
+                .bizType(BizType.DELIVERY.getValue())
+                .status(DeliveryStatusEnums.PENDING.getValue())
+                .args(args)
+                .belongId(corDelivery.getDelivererId())
+                .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                .appId(AppIDEnums.SAAS_APP.getAppId())
+                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+                .build();
+        pushMsg(pushMsg);
 
         return new GeneralResult(enter.getRequestId());
     }
