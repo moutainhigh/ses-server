@@ -64,7 +64,7 @@ public class OpeCustomer implements Serializable {
      */
     @TableField(value = "city")
     @ApiModelProperty(value = "城市")
-    private Integer city;
+    private Long city;
 
     /**
      * 区域

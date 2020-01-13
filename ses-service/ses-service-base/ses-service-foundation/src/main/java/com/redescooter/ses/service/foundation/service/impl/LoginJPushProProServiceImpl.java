@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 
+import com.redescooter.ses.api.common.enums.account.LoginPushStatusEnums;
 import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
 import com.redescooter.ses.api.common.enums.jiguang.PushTypeEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -41,7 +42,7 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
 
         BeanUtils.copyProperties(enter, jpushUserEnter);
         //由于是做登录操作，故设置值为0
-        jpushUserEnter.setStatus(0);
+        jpushUserEnter.setStatus(LoginPushStatusEnums.LOGIN_IN.getValue());
         if (enter.getClientType().equals(PlatformTypeEnum.ANDROID.getCode())) {
             jpushUserEnter.setPlatformType(PlatformTypeEnum.ANDROID.getValue());
         }
@@ -69,7 +70,7 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
         BeanUtils.copyProperties(enter, jpushUserEnter);
         //由于是做登出注销操作，故设置值为1
 
-        jpushUserEnter.setStatus(1);
+        jpushUserEnter.setStatus(LoginPushStatusEnums.LOGIN_OUT.getValue());
         jpushUserService.save(jpushUserEnter);
         return new GeneralResult(enter.getRequestId());
     }

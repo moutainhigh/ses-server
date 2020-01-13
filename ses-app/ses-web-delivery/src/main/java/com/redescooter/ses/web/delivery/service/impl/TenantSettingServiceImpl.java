@@ -89,7 +89,7 @@ public class TenantSettingServiceImpl implements TenantSettingService {
             tenantInforResult.setDuration(tenantConfigInfoResult.getEstimatedDuration());
         }
         if (null != tenantConfigInfoResult.getDistributionRange() && 0 != tenantConfigInfoResult.getDistributionRange()) {
-            tenantInforResult.setAround(tenantConfigInfoResult.getEstimatedDuration());
+            tenantInforResult.setAround(tenantConfigInfoResult.getDistributionRange());
         }
         tenantInforResult.setEmail(queryTenantResult.getEmail());
         tenantInforResult.setAvatar(corUserProfile.getPicture());

@@ -7,10 +7,12 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
+import com.redescooter.ses.service.common.service.CityAppService;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+    @Reference
+    private CityAppService cityAppService;
 
     /**
      * id 为 租户Id
@@ -45,6 +49,20 @@ public class CustomerServiceImpl implements CustomerService {
         }
         BaseCustomerResult baseCustomerResult = new BaseCustomerResult();
         BeanUtils.copyProperties(opeCustomer, baseCustomerResult);
+        if (null != opeCustomer.getCity() || 0 != opeCustomer.getCity()) {
+            baseCustomerResult.setCity(opeCustomer.getCity());
+            String cityNameById = cityAppService.getCityNameById(opeCustomer.getCity());
+            if (StringUtils.isNotBlank(cityNameById)) {
+                baseCustomerResult.setCityName(cityNameById);
+            }
+        }
+        if (null != opeCustomer.getDistrust() || 0 != opeCustomer.getDistrust()) {
+            baseCustomerResult.setDistrust(opeCustomer.getDistrust());
+            String cityNameById = cityAppService.getCityNameById(opeCustomer.getDistrust());
+            if (StringUtils.isNotBlank(cityNameById)) {
+                baseCustomerResult.setDistrustName(cityNameById);
+            }
+        }
         return baseCustomerResult;
     }
 

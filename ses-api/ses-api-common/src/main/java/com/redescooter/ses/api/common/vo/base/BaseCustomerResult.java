@@ -37,6 +37,9 @@ public class BaseCustomerResult extends GeneralResult {
     @ApiModelProperty(value = "国家")
     private Long country;
 
+    @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
+    private String countryCode;
+
     @ApiModelProperty(value = "国家名称")
     private String countryName;
 
