@@ -306,6 +306,7 @@ public class PushServiceImpl implements PushService {
                 throw new FoundationException(ExceptionCodeEnums.MESSAGE_ABNORMAL_PARAMETER.getCode(), ExceptionCodeEnums.MESSAGE_ABNORMAL_PARAMETER.getMessage());
             }
         });
+
         //验证几个必传字段
         if (!map.containsKey("userIds")
                 | !map.containsKey("generalEnter")

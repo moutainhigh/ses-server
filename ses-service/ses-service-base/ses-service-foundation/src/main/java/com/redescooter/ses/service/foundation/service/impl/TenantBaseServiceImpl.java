@@ -210,8 +210,9 @@ public class TenantBaseServiceImpl implements TenantBaseService {
 
         PlaTenantConfig tenantConfig = null;
         PlaTenant tenant = null;
-        QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
+        QueryUserResult queryUserResult = null;
         if (!enter.getTenantDefaultConfig()) {
+            queryUserResult = userBaseService.queryUserById(enter);
             // 餐厅 配送范围 配送时间 参数过滤 修改
             if (AccountTypeEnums.WEB_RESTAURANT.getAccountType().equals(queryUserResult.getUserType())) {
                 // 参数校验
