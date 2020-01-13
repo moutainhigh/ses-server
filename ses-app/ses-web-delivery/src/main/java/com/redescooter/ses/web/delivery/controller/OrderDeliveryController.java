@@ -73,7 +73,6 @@ public class OrderDeliveryController {
         return new Response<>(selectDriverResults);
     }
 
-
     @PostMapping(value = "/map")
     @ApiOperation(value = "地图", response = MapResult.class)
     public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") MapEnter enter) {

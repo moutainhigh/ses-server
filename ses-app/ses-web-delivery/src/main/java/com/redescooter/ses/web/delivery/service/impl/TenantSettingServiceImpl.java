@@ -25,6 +25,7 @@ import com.redescooter.ses.web.delivery.dm.CorUserProfile;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.TenantSettingService;
+import com.redescooter.ses.web.delivery.vo.PageBootTipResult;
 import com.redescooter.ses.web.delivery.vo.TenantInforResult;
 import com.redescooter.ses.web.delivery.vo.UpdateCustomerInfoEnter;
 import com.redescooter.ses.web.delivery.vo.UpdateTenantConfigEnter;
@@ -189,5 +190,52 @@ public class TenantSettingServiceImpl implements TenantSettingService {
     @Override
     public BaseCustomerResult customerInfor(GeneralEnter enter) {
         return customerService.customerInfo(new IdEnter(enter.getTenantId()));
+    }
+
+    /**
+     * 获取引导页 信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageBootTipResult pageBootTip(GeneralEnter enter) {
+        QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
+        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+        if (corUserProfile == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        return PageBootTipResult.builder()
+                .avatar(corUserProfile.getPicture())
+                .pageBootTips(corUserProfile.getPageBootTips())
+                .tenantName(queryTenantResult.getTenantName())
+                .build();
+    }
+
+    /**
+     * 关闭引导页
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult closePageBootTip(GeneralEnter enter) {
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
+        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+        if (corUserProfile == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        corUserProfile.setPageBootTips(Boolean.FALSE);
+        corUserProfile.setUpdatedBy(enter.getUserId());
+        corUserProfile.setUpdatedTime(new Date());
+        corUserProfileMapper.updateById(corUserProfile);
+        return new GeneralResult(enter.getRequestId());
     }
 }
