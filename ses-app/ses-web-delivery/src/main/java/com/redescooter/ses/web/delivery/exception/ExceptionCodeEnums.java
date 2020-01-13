@@ -101,6 +101,8 @@ public enum ExceptionCodeEnums {
 
     DELIVERY_CAN_NOT_ASSIGNED_THE_SAME_DRIVER(10043, "订单不能分给同一人"),
 
+    TENANT_BUSINESS_TIME_FORMAT_IS_WRONG(10044, "营业时间格式不正确"),
+
 
     ;
 

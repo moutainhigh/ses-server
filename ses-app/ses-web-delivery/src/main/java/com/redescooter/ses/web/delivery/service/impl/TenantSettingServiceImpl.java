@@ -4,6 +4,8 @@ import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
+import com.redescooter.ses.api.common.enums.tenant.TenantBussinessWeek;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -33,7 +35,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName:TenantService
@@ -107,6 +111,14 @@ public class TenantSettingServiceImpl implements TenantSettingService {
     @Transactional
     @Override
     public GeneralResult updateTenantConfig(UpdateTenantConfigEnter enter) {
+        List<String> weekList = new ArrayList<>();
+        for (TenantBussinessWeek item : TenantBussinessWeek.values()) {
+            weekList.add(item.getValue());
+        }
+        if (weekList.contains(enter.getStartWeek()) || weekList.contains(enter.getEndWeek())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.TENANT_BUSINESS_TIME_FORMAT_IS_WRONG.getCode(), ExceptionCodeEnums.TENANT_BUSINESS_TIME_FORMAT_IS_WRONG.getMessage());
+        }
+
         SaveTenantConfigEnter saveTenantConfigEnter = new SaveTenantConfigEnter();
         BeanUtils.copyProperties(enter, saveTenantConfigEnter);
         return tenantBaseService.saveTenantConfig(saveTenantConfigEnter);

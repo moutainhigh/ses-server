@@ -72,8 +72,6 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private DriverServiceMapper driverServiceMapper;
     @Autowired
-    private TenantBaseService tenantBaseService;
-    @Autowired
     private CorDeliveryMapper corDeliveryMapper;
     @Reference
     private IdAppService idAppService;
@@ -81,6 +79,8 @@ public class DriverServiceImpl implements DriverService {
     private AccountBaseService accountBaseService;
     @Reference
     private ScooterService scooterService;
+    @Reference
+    private TenantBaseService tenantBaseService;
 
 
     /**

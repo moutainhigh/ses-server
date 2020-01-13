@@ -68,7 +68,7 @@ public class MessageServiceImpl implements MessageService {
         if (CollectionUtils.isNotEmpty(messageResultList)) {
             messageResultList.forEach(item -> {
                 Object[] args = StringUtils.isBlank(item.getMemo()) == true ? null : item.getMemo().split(",");
-                item.setTitle(i18nServiceMessage.getMessage(item.getTitle(), locale));
+                item.setTitle(i18nServiceMessage.getMessage(item.getTitle(), args, locale));
                 item.setContent(i18nServiceMessage.getMessage(item.getContent(), args, locale));
             });
         }
@@ -93,7 +93,7 @@ public class MessageServiceImpl implements MessageService {
         if (CollectionUtils.isNotEmpty(messageResults)) {
             messageResults.forEach(item -> {
                 Object[] args = StringUtils.isBlank(item.getMemo()) == true ? null : item.getMemo().split(",");
-                item.setTitle(i18nServiceMessage.getMessage(item.getTitle(), locale));
+                item.setTitle(i18nServiceMessage.getMessage(item.getTitle(), args, locale));
                 item.setContent(i18nServiceMessage.getMessage(item.getContent(), args, locale));
             });
         }

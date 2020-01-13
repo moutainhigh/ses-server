@@ -312,7 +312,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
         CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
-        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
+        String[] args = new String[]{delivery.getOrderNo(), new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
 
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
@@ -530,7 +530,7 @@ public class OrderDeliveryServiceImpl implements OrderDeliveryService {
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
         CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
-        String[] args = new String[]{new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
+        String[] args = new String[]{corDelivery.getOrderNo(), new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString()};
 
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
