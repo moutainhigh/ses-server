@@ -1,7 +1,10 @@
 //package com.redescooter.ses.web.delivery.service;
 //
 //import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+//import com.redescooter.ses.api.common.vo.base.IdEnter;
+//import com.redescooter.ses.web.delivery.vo.mobile.MobileDetailResult;
 //import com.redescooter.ses.web.delivery.vo.mobile.MobileListEnter;
+//import com.redescooter.ses.web.delivery.vo.mobile.MobileListResult;
 //
 //import java.util.Map;
 //
@@ -13,8 +16,27 @@
 // * @create: 2020/01/13 18:24
 // */
 //public interface MobileService {
+//    /**
+//     * 状态分组
+//     *
+//     * @param enter
+//     * @return
+//     */
+//    Map<String, Integer> statusByCount(GeneralEnter enter);
 //
-//    Map<String,Integer> statusByCount(GeneralEnter enter);
+//    /**
+//     * 列表
+//     *
+//     * @param enter
+//     * @return
+//     */
+//    MobileListResult list(MobileListEnter enter);
 //
-//    list(MobileListEnter enter);
+//    /**
+//     * 车辆详情
+//     *
+//     * @param enter
+//     * @return
+//     */
+//    MobileDetailResult detail(IdEnter enter);
 //}

@@ -5,7 +5,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.TenantSettingService;
-import com.redescooter.ses.web.delivery.vo.PageBootTipResult;
 import com.redescooter.ses.web.delivery.vo.TenantInforResult;
 import com.redescooter.ses.web.delivery.vo.UpdateCustomerInfoEnter;
 import com.redescooter.ses.web.delivery.vo.UpdateTenantConfigEnter;
@@ -60,10 +59,10 @@ public class TenantSettingController {
         return new Response<>(tenantSettingService.updateCustomerInfo(enter));
     }
 
-    @PostMapping(value = "/pageBootTip")
-    @ApiOperation(value = "获取引导页信息", response = PageBootTipResult.class)
-    public Response<PageBootTipResult> pageBootTip(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(tenantSettingService.pageBootTip(enter));
+    @PostMapping(value = "/openPageBootTipAll")
+    @ApiOperation(value = "开启所有引导页", response = GeneralResult.class)
+    public Response<GeneralResult> openPageBootTipAll(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(tenantSettingService.openPageBootTipAll(enter));
     }
 
     @PostMapping(value = "/closePageBootTip")

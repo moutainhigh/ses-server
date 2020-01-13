@@ -3,7 +3,6 @@ package com.redescooter.ses.web.delivery.service;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.delivery.vo.PageBootTipResult;
 import com.redescooter.ses.web.delivery.vo.TenantInforResult;
 import com.redescooter.ses.web.delivery.vo.UpdateCustomerInfoEnter;
 import com.redescooter.ses.web.delivery.vo.UpdateTenantConfigEnter;
@@ -49,18 +48,18 @@ public interface TenantSettingService {
     BaseCustomerResult customerInfor(GeneralEnter enter);
 
     /**
-     * 获取引导页 信息
-     *
-     * @param enter
-     * @return
-     */
-    PageBootTipResult pageBootTip(GeneralEnter enter);
-
-    /**
      * 关闭引导页
      *
      * @param enter
      * @return
      */
     GeneralResult closePageBootTip(GeneralEnter enter);
+
+    /**
+     * 开启所有引导页
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult openPageBootTipAll(GeneralEnter enter);
 }
