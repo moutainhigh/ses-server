@@ -6,6 +6,6 @@
         set tenant.driver_counts=tenant.driver_counts + 1,
         tenant.updated_by=#{userId},
         tenant.updated_time=NOW()
-        where pla_tenant.id =#{tenantId}
+        where tenant.id =#{tenantId}
     </update>
 </mapper>
