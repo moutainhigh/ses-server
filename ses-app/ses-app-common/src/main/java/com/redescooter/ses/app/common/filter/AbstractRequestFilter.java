@@ -75,6 +75,8 @@ public abstract class AbstractRequestFilter implements Filter {
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
+                log.error("header CHP invalid:" + chp, e.getMessage());
+                throw new HttpHeaderException("parse CHP header failure:", e);
             } catch (Exception e) {
                 log.error("header CHP invalid:" + chp, e);
                 throw new HttpHeaderException("parse CHP header failure:", e);
