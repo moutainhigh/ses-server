@@ -4,9 +4,13 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.web.delivery.service.express.OrderService;
+import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
+import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -23,11 +27,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/express/orders", method = RequestMethod.POST)
 public class OrderController {
 
+    @Autowired
+    private OrderService orderService;
 
     @PostMapping(value = "/importOrders")
     @ApiOperation(value = "订单导入", response = GeneralResult.class)
-    public Response<GeneralResult> importOrders(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    public Response<ImportExcelOrderResult> importOrders(@ModelAttribute @ApiParam("请求参数") ImportExcelOrderEnter enter) {
+        return new Response<>(orderService.importOrders(enter));
     }
 
     @PostMapping(value = "/list")
