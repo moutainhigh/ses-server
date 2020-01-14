@@ -54,4 +54,10 @@ public class MessageController {
     public Response<GeneralResult> readMessage(@ModelAttribute @ApiParam("请求参数") ReadMessageEnter enter) {
         return new Response<>(messageService.readMessage(enter));
     }
+
+    @PostMapping(value = "/unRead")
+    @ApiOperation(value = "未读消息", response = MessageResult.class)
+    public Response<PageResult<MessageResult>> readMessage(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
+        return new Response<>(messageService.unReadMessages(enter));
+    }
 }

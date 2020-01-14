@@ -50,4 +50,12 @@ public interface MessageService {
      * @param enter
      */
     void save(MessageSaveEnter enter);
+
+    /**
+     * 未读消息
+     *
+     * @param enter
+     * @return
+     */
+    PageResult<MessageResult> unReadMessages(PageEnter enter);
 }

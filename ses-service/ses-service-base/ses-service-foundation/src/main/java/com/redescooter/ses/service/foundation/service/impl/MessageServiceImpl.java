@@ -1,6 +1,8 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.redescooter.ses.api.common.enums.mesage.MessageStatus;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -27,6 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -171,5 +174,39 @@ public class MessageServiceImpl implements MessageService {
         record.setSendTime(new Date());
 
         plaMessageMapper.insert(record);
+    }
+
+    /**
+     * 未读消息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<MessageResult> unReadMessages(PageEnter enter) {
+        QueryWrapper<PlaMessage> plaMessageQueryWrapper = new QueryWrapper<>();
+        plaMessageQueryWrapper.eq(PlaMessage.COL_USER_ID, enter.getUserId());
+        plaMessageQueryWrapper.eq(PlaMessage.COL_TENANT_ID, enter.getTenantId());
+        plaMessageQueryWrapper.eq(PlaMessage.COL_STATUS, MessageStatus.UNREAD.getValue());
+
+        Page<PlaMessage> page = new Page<>(enter.getPageNo(), enter.getPageSize());
+        IPage<PlaMessage> messageIPage = plaMessageMapper.selectPage(page, plaMessageQueryWrapper);
+        Long count = messageIPage.getTotal();
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        Locale locale = new Locale(enter.getLanguage(), enter.getCountry());
+        List<PlaMessage> records = messageIPage.getRecords();
+        List<MessageResult> resultList = new ArrayList<>();
+        records.forEach(item -> {
+            Object[] args = StringUtils.isBlank(item.getMemo()) == true ? null : item.getMemo().split(",");
+            item.setTitle(i18nServiceMessage.getMessage(item.getTitle(), args, locale));
+            item.setContent(i18nServiceMessage.getMessage(item.getContent(), args, locale));
+            MessageResult messageResult = new MessageResult();
+            BeanUtils.copyProperties(item, messageResult);
+            resultList.add(messageResult);
+        });
+
+        return PageResult.create(enter, count.intValue(), resultList);
     }
 }
