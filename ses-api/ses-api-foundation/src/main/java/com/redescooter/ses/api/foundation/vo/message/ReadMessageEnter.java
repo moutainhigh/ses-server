@@ -29,6 +29,5 @@ import io.swagger.annotations.*;
 public class ReadMessageEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "消息id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 为空")
     private List<Long> ids;
 }

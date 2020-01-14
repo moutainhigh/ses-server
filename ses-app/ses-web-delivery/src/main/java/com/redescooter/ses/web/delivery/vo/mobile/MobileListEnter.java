@@ -23,9 +23,9 @@ import io.swagger.annotations.*;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class MobileListEnter extends PageEnter {
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "状态", required = true)
     private String status;
 
-    @ApiModelProperty(value = "关键字")
+    @ApiModelProperty(value = "关键字", required = true)
     private String keyword;
 }

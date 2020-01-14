@@ -1,6 +1,12 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.alibaba.druid.sql.visitor.functions.If;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.mesage.MessageStatus;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -10,6 +16,7 @@ import com.redescooter.ses.api.foundation.vo.message.MessageListEnter;
 import com.redescooter.ses.api.foundation.vo.message.MessageResult;
 import com.redescooter.ses.api.foundation.vo.message.MessageSaveEnter;
 import com.redescooter.ses.api.foundation.vo.message.ReadMessageEnter;
+import com.redescooter.ses.api.foundation.vo.message.UnReadMessageCountResult;
 import com.redescooter.ses.service.common.i18n.I18nServiceMessage;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.MessageServiceMapper;
@@ -26,6 +33,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -110,16 +118,31 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     @Override
     public GeneralResult readMessage(ReadMessageEnter enter) {
-        List<PlaMessage> plaMessages = plaMessageMapper.selectBatchIds(enter.getIds());
+        // enter 为空全部已读 不为空 指定读取
+        List<PlaMessage> plaMessages = null;
+        if (CollectionUtils.isNotEmpty(enter.getIds())) {
+            plaMessages = plaMessageMapper.selectBatchIds(enter.getIds());
+        }
+        if (CollectionUtils.isEmpty(enter.getIds())) {
+            QueryWrapper<PlaMessage> plaMessageQueryWrapper = new QueryWrapper<>();
+            plaMessageQueryWrapper.eq(PlaMessage.COL_TENANT_ID, enter.getTenantId());
+            plaMessageQueryWrapper.eq(PlaMessage.COL_USER_ID, enter.getUserId());
+            plaMessageQueryWrapper.eq(PlaMessage.COL_DR, 0);
+            plaMessageQueryWrapper.eq(PlaMessage.COL_STATUS, MessageStatus.UNREAD.getValue());
+            plaMessages = plaMessageMapper.selectList(plaMessageQueryWrapper);
+        }
+
         if (CollectionUtils.isEmpty(plaMessages)) {
             return new GeneralResult(enter.getRequestId());
         }
         plaMessages.forEach(item -> {
-            if (!enter.getIds().contains(item.getId())) {
-                throw new FoundationException(ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getMessage());
-            }
-            if (!StringUtils.equals(item.getStatus(), MessageStatus.UNREAD.getValue())) {
-                throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            if (CollectionUtils.isNotEmpty(enter.getIds())) {
+                if (!enter.getIds().contains(item.getId())) {
+                    throw new FoundationException(ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getMessage());
+                }
+                if (!StringUtils.equals(item.getStatus(), MessageStatus.UNREAD.getValue())) {
+                    throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+                }
             }
             item.setStatus(MessageStatus.READ.getValue());
             item.setUpdatedBy(enter.getUserId());
@@ -155,5 +178,43 @@ public class MessageServiceImpl implements MessageService {
         record.setSendTime(new Date());
 
         plaMessageMapper.insert(record);
+    }
+
+
+    /**
+     * 未读消息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public UnReadMessageCountResult unReadMessages(GeneralEnter enter) {
+
+        QueryWrapper<PlaMessage> plaMessageQueryWrapper = new QueryWrapper<>();
+        plaMessageQueryWrapper.eq(PlaMessage.COL_USER_ID, enter.getUserId());
+        plaMessageQueryWrapper.eq(PlaMessage.COL_TENANT_ID, enter.getTenantId());
+        plaMessageQueryWrapper.eq(PlaMessage.COL_STATUS, MessageStatus.UNREAD.getValue());
+
+        // 查询所有未读的消息总数
+        Integer unReadMessagesCount = plaMessageMapper.selectCount(plaMessageQueryWrapper);
+        plaMessageQueryWrapper.eq(PlaMessage.COL_MESSAGE_PRIORITY, MessagePriorityEnums.FORCED_REMIND.getValue());
+        plaMessageQueryWrapper.last("limit 1");
+        PlaMessage plaMessage = plaMessageMapper.selectOne(plaMessageQueryWrapper);
+
+        MessageResult messageResult = new MessageResult();
+        if (plaMessage != null) {
+            BeanUtils.copyProperties(plaMessage, messageResult);
+            // 消息国际化
+            Locale locale = new Locale(enter.getLanguage(), enter.getCountry());
+            Object[] args = StringUtils.isBlank(plaMessage.getMemo()) == true ? null : plaMessage.getMemo().split(",");
+
+            messageResult.setTitle(i18nServiceMessage.getMessage(plaMessage.getTitle(), args, locale));
+            messageResult.setContent(i18nServiceMessage.getMessage(plaMessage.getContent(), args, locale));
+        }
+
+        return UnReadMessageCountResult.builder()
+                .unReadTotal(unReadMessagesCount)
+                .message(messageResult)
+                .build();
     }
 }

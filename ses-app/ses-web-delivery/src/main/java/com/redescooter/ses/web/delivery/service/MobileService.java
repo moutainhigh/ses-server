@@ -2,6 +2,7 @@
 //
 //import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 //import com.redescooter.ses.api.common.vo.base.IdEnter;
+//import com.redescooter.ses.web.delivery.vo.mobile.AssignMobileHistroyEnter;
 //import com.redescooter.ses.web.delivery.vo.mobile.MobileDetailResult;
 //import com.redescooter.ses.web.delivery.vo.mobile.MobileListEnter;
 //import com.redescooter.ses.web.delivery.vo.mobile.MobileListResult;
@@ -39,4 +40,6 @@
 //     * @return
 //     */
 //    MobileDetailResult detail(IdEnter enter);
+//
+//    assignMobileHistroy(AssignMobileHistroyEnter enter);
 //}
