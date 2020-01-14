@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.mesage.MessageStatus;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -110,7 +111,20 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     @Override
     public GeneralResult readMessage(ReadMessageEnter enter) {
-        List<PlaMessage> plaMessages = plaMessageMapper.selectBatchIds(enter.getIds());
+        // enter 为空全部已读 不为空 指定读取
+        List<PlaMessage> plaMessages = null;
+        if (CollectionUtils.isEmpty(enter.getIds())) {
+            plaMessages = plaMessageMapper.selectBatchIds(enter.getIds());
+        }
+        if (CollectionUtils.isNotEmpty(enter.getIds())) {
+            QueryWrapper<PlaMessage> plaMessageQueryWrapper = new QueryWrapper<>();
+            plaMessageQueryWrapper.eq(PlaMessage.COL_TENANT_ID, PlaMessage.COL_TENANT_ID);
+            plaMessageQueryWrapper.eq(PlaMessage.COL_USER_ID, enter.getUserId());
+            plaMessageQueryWrapper.eq(PlaMessage.COL_DR, 0);
+            plaMessageQueryWrapper.eq(PlaMessage.COL_STATUS, MessageStatus.UNREAD.getValue());
+            plaMessages = plaMessageMapper.selectList(plaMessageQueryWrapper);
+        }
+
         if (CollectionUtils.isEmpty(plaMessages)) {
             return new GeneralResult(enter.getRequestId());
         }
