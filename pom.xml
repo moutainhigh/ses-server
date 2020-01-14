@@ -43,7 +43,7 @@
         <swagger.bootstrap.ui.version>1.9.6</swagger.bootstrap.ui.version>
         <guava.version>28.1-jre</guava.version>
         <!--swagger end-->
-        <hibernate.validator.version>6.0.16.Final</hibernate.validator.version>
+        <hibernate.validator.version>6.0.8.Final</hibernate.validator.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <commons-codec.version>1.12</commons-codec.version>
         <commons-collections.version>3.2.2</commons-collections.version>
@@ -189,6 +189,24 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
+            </dependency>
+            <!-- springboot配套的验证器 -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.validator.version}</version>
+            </dependency>
+            <!--引入糊涂工具-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <!--oss 文件上传-->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun-sdk-oss.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

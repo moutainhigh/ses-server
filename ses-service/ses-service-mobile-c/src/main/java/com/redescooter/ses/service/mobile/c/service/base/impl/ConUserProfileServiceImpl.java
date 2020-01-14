@@ -1,7 +1,7 @@
-package com.redescooter.ses.service.hub.source.consumer.service.base.impl;
+package com.redescooter.ses.service.mobile.c.service.base.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.service.hub.source.consumer.service.base.ConUserProfileService;
+import com.redescooter.ses.service.mobile.c.service.base.ConUserProfileService;
 import com.redescooter.ses.service.mobile.c.dao.base.ConUserProfileMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
 import org.springframework.stereotype.Service;

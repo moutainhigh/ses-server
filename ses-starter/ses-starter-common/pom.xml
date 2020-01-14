@@ -59,19 +59,11 @@
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
-            <version>${aliyun-sdk-oss.version}</version>
         </dependency>
         <!--引入糊涂工具-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>${hutool.version}</version>
-        </dependency>
-        <!-- springboot配套的验证器 -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate.validator.version}</version>
         </dependency>
     </dependencies>
 
