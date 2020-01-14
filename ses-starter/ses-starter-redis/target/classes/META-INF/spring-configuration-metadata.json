@@ -60,8 +60,7 @@
     {
       "name": "spring.redis.timeout",
       "type": "java.lang.Integer",
-      "sourceType": "com.redescooter.ses.starter.redis.config.RedisConfiguration",
-      "defaultValue": 0
+      "sourceType": "com.redescooter.ses.starter.redis.config.RedisConfiguration"
     }
   ],
   "hints": []

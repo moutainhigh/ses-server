@@ -15,17 +15,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum ScooterStatusEnums {
-    NOTEXIST("NOTEXIST", "Scooter is not exist", "车辆不存在", "1"),
-    ALLOCATION("ALLOCATION", "Allocation to scooter", "已分配", "2"),
-    USED("USED", "Use to scooter", "使用中", "3"),
-    FINSH("FINSH", "FINSH scooter", "归还车辆", "4"),
-    REPAIRING("REPAIRING", "repair scooter", "车辆维修中", "5");
+    //可用的
+    AVAILABLE("AVAILABLE", "AVAILABLE", "1"),
+    //充电中
+    CHARGING("CHARGING", "CHARGING", "2"),
+    //维修中
+    REPAIR("REPAIR", "REPAIR", "3"),
+    //故障损坏
+    FAULT("FAULT", "FAULT", "4"),
+    //使用中
+    USEING("USEING", "USEING", "5");
 
     private String code;
 
     private String message;
-
-    private String name;
 
     private String value;
 
