@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class AssignMobileHistroyEnter extends GeneralEnter {
+public class MobileHistroyEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "分配时间")
     private String assignStartTime;
@@ -30,13 +30,13 @@ public class AssignMobileHistroyEnter extends GeneralEnter {
     @ApiModelProperty(value = "分配时间")
     private String assignEndTime;
 
-    @ApiModelProperty(value = "时间")
+    @ApiModelProperty(value = "结束开始时间")
     private String removeStartTime;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "结束结束时间")
     private String removeEndTime;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "关键字 只支持司机搜索")
     private String keyword;
 
 }
