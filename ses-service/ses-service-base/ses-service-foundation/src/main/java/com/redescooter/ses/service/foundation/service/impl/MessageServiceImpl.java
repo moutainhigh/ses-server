@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -199,15 +200,17 @@ public class MessageServiceImpl implements MessageService {
         plaMessageQueryWrapper.eq(PlaMessage.COL_MESSAGE_PRIORITY, MessagePriorityEnums.FORCED_REMIND.getValue());
         plaMessageQueryWrapper.last("limit 1");
         PlaMessage plaMessage = plaMessageMapper.selectOne(plaMessageQueryWrapper);
+
         MessageResult messageResult = new MessageResult();
-        BeanUtils.copyProperties(plaMessage, messageResult);
+        if (plaMessage != null) {
+            BeanUtils.copyProperties(plaMessage, messageResult);
+            // 消息国际化
+            Locale locale = new Locale(enter.getLanguage(), enter.getCountry());
+            Object[] args = StringUtils.isBlank(plaMessage.getMemo()) == true ? null : plaMessage.getMemo().split(",");
 
-        // 消息国际化
-        Locale locale = new Locale(enter.getLanguage(), enter.getCountry());
-        Object[] args = StringUtils.isBlank(plaMessage.getMemo()) == true ? null : plaMessage.getMemo().split(",");
-
-        messageResult.setTitle(i18nServiceMessage.getMessage(plaMessage.getTitle(), args, locale));
-        messageResult.setContent(i18nServiceMessage.getMessage(plaMessage.getContent(), args, locale));
+            messageResult.setTitle(i18nServiceMessage.getMessage(plaMessage.getTitle(), args, locale));
+            messageResult.setContent(i18nServiceMessage.getMessage(plaMessage.getContent(), args, locale));
+        }
 
         return UnReadMessageCountResult.builder()
                 .unReadTotal(unReadMessagesCount)

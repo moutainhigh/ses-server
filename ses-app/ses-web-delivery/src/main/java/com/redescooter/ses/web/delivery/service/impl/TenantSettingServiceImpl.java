@@ -110,7 +110,7 @@ public class TenantSettingServiceImpl implements TenantSettingService {
         for (TenantBussinessWeek item : TenantBussinessWeek.values()) {
             weekList.add(item.getValue());
         }
-        if (weekList.contains(enter.getStartWeek()) || weekList.contains(enter.getEndWeek())) {
+        if (!weekList.contains(enter.getStartWeek()) || !weekList.contains(enter.getEndWeek())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.TENANT_BUSINESS_TIME_FORMAT_IS_WRONG.getCode(), ExceptionCodeEnums.TENANT_BUSINESS_TIME_FORMAT_IS_WRONG.getMessage());
         }
 
