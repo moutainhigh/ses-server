@@ -1,23 +1,17 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
-import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantBussinessWeek;
-import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.foundation.vo.tenant.SaveTenantConfigEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
-import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.dao.base.CorUserProfileMapper;
@@ -25,10 +19,10 @@ import com.redescooter.ses.web.delivery.dm.CorUserProfile;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.TenantSettingService;
-import com.redescooter.ses.web.delivery.vo.PageBootTipResult;
 import com.redescooter.ses.web.delivery.vo.TenantInforResult;
 import com.redescooter.ses.web.delivery.vo.UpdateCustomerInfoEnter;
 import com.redescooter.ses.web.delivery.vo.UpdateTenantConfigEnter;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -193,30 +187,6 @@ public class TenantSettingServiceImpl implements TenantSettingService {
     }
 
     /**
-     * 获取引导页 信息
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public PageBootTipResult pageBootTip(GeneralEnter enter) {
-        QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
-        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
-        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
-        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
-        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
-        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
-        if (corUserProfile == null) {
-            throw new SesWebDeliveryException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
-        }
-        return PageBootTipResult.builder()
-                .avatar(corUserProfile.getPicture())
-                .pageBootTips(corUserProfile.getPageBootTips())
-                .tenantName(queryTenantResult.getTenantName())
-                .build();
-    }
-
-    /**
      * 关闭引导页
      *
      * @param enter
@@ -236,6 +206,29 @@ public class TenantSettingServiceImpl implements TenantSettingService {
         corUserProfile.setUpdatedBy(enter.getUserId());
         corUserProfile.setUpdatedTime(new Date());
         corUserProfileMapper.updateById(corUserProfile);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 开启所有引导页
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult openPageBootTipAll(GeneralEnter enter) {
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_PAGE_BOOT_TIPS, Boolean.FALSE);
+        List<CorUserProfile> corUserProfileList = corUserProfileMapper.selectList(corUserProfileQueryWrapper);
+        if (CollectionUtils.isNotEmpty(corUserProfileList)) {
+            corUserProfileList.forEach(item -> {
+                item.setPageBootTips(Boolean.TRUE);
+                item.setUpdatedBy(enter.getUserId());
+                item.setUpdatedTime(new Date());
+            });
+        }
+        corUserProfileMapper.updateBatch(corUserProfileList);
         return new GeneralResult(enter.getRequestId());
     }
 }
