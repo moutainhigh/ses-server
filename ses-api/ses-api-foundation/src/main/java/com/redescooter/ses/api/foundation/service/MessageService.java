@@ -8,6 +8,7 @@ import com.redescooter.ses.api.foundation.vo.message.MessageListEnter;
 import com.redescooter.ses.api.foundation.vo.message.MessageResult;
 import com.redescooter.ses.api.foundation.vo.message.MessageSaveEnter;
 import com.redescooter.ses.api.foundation.vo.message.ReadMessageEnter;
+import com.redescooter.ses.api.foundation.vo.message.UnReadMessageCountResult;
 
 import java.util.List;
 
@@ -57,5 +58,6 @@ public interface MessageService {
      * @param enter
      * @return
      */
-    PageResult<MessageResult> unReadMessages(PageEnter enter);
+    UnReadMessageCountResult unReadMessages(GeneralEnter enter);
+
 }

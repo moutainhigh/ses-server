@@ -9,6 +9,7 @@ import com.redescooter.ses.api.foundation.service.MessageService;
 import com.redescooter.ses.api.foundation.vo.message.MessageListEnter;
 import com.redescooter.ses.api.foundation.vo.message.MessageResult;
 import com.redescooter.ses.api.foundation.vo.message.ReadMessageEnter;
+import com.redescooter.ses.api.foundation.vo.message.UnReadMessageCountResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -56,8 +57,8 @@ public class MessageController {
     }
 
     @PostMapping(value = "/unRead")
-    @ApiOperation(value = "未读消息", response = MessageResult.class)
-    public Response<PageResult<MessageResult>> readMessage(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
+    @ApiOperation(value = "未读消息", response = UnReadMessageCountResult.class)
+    public Response<UnReadMessageCountResult> readMessage(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(messageService.unReadMessages(enter));
     }
 }

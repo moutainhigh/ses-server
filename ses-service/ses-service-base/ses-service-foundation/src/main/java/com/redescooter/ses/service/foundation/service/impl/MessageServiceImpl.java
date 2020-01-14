@@ -3,7 +3,9 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.mesage.MessageStatus;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -13,6 +15,7 @@ import com.redescooter.ses.api.foundation.vo.message.MessageListEnter;
 import com.redescooter.ses.api.foundation.vo.message.MessageResult;
 import com.redescooter.ses.api.foundation.vo.message.MessageSaveEnter;
 import com.redescooter.ses.api.foundation.vo.message.ReadMessageEnter;
+import com.redescooter.ses.api.foundation.vo.message.UnReadMessageCountResult;
 import com.redescooter.ses.service.common.i18n.I18nServiceMessage;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.MessageServiceMapper;
@@ -176,6 +179,7 @@ public class MessageServiceImpl implements MessageService {
         plaMessageMapper.insert(record);
     }
 
+
     /**
      * 未读消息
      *
@@ -183,30 +187,31 @@ public class MessageServiceImpl implements MessageService {
      * @return
      */
     @Override
-    public PageResult<MessageResult> unReadMessages(PageEnter enter) {
+    public UnReadMessageCountResult unReadMessages(GeneralEnter enter) {
+
         QueryWrapper<PlaMessage> plaMessageQueryWrapper = new QueryWrapper<>();
         plaMessageQueryWrapper.eq(PlaMessage.COL_USER_ID, enter.getUserId());
         plaMessageQueryWrapper.eq(PlaMessage.COL_TENANT_ID, enter.getTenantId());
         plaMessageQueryWrapper.eq(PlaMessage.COL_STATUS, MessageStatus.UNREAD.getValue());
 
-        Page<PlaMessage> page = new Page<>(enter.getPageNo(), enter.getPageSize());
-        IPage<PlaMessage> messageIPage = plaMessageMapper.selectPage(page, plaMessageQueryWrapper);
-        Long count = messageIPage.getTotal();
-        if (count == 0) {
-            return PageResult.createZeroRowResult(enter);
-        }
-        Locale locale = new Locale(enter.getLanguage(), enter.getCountry());
-        List<PlaMessage> records = messageIPage.getRecords();
-        List<MessageResult> resultList = new ArrayList<>();
-        records.forEach(item -> {
-            Object[] args = StringUtils.isBlank(item.getMemo()) == true ? null : item.getMemo().split(",");
-            item.setTitle(i18nServiceMessage.getMessage(item.getTitle(), args, locale));
-            item.setContent(i18nServiceMessage.getMessage(item.getContent(), args, locale));
-            MessageResult messageResult = new MessageResult();
-            BeanUtils.copyProperties(item, messageResult);
-            resultList.add(messageResult);
-        });
+        // 查询所有未读的消息总数
+        Integer unReadMessagesCount = plaMessageMapper.selectCount(plaMessageQueryWrapper);
+        plaMessageQueryWrapper.eq(PlaMessage.COL_MESSAGE_PRIORITY, MessagePriorityEnums.FORCED_REMIND.getValue());
+        plaMessageQueryWrapper.last("limit 1");
+        PlaMessage plaMessage = plaMessageMapper.selectOne(plaMessageQueryWrapper);
+        MessageResult messageResult = new MessageResult();
+        BeanUtils.copyProperties(plaMessage, messageResult);
 
-        return PageResult.create(enter, count.intValue(), resultList);
+        // 消息国际化
+        Locale locale = new Locale(enter.getLanguage(), enter.getCountry());
+        Object[] args = StringUtils.isBlank(plaMessage.getMemo()) == true ? null : plaMessage.getMemo().split(",");
+
+        messageResult.setTitle(i18nServiceMessage.getMessage(plaMessage.getTitle(), args, locale));
+        messageResult.setContent(i18nServiceMessage.getMessage(plaMessage.getContent(), args, locale));
+
+        return UnReadMessageCountResult.builder()
+                .unReadTotal(unReadMessagesCount)
+                .message(messageResult)
+                .build();
     }
 }
