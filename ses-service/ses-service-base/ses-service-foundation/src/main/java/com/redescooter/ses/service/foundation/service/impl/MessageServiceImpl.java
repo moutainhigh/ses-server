@@ -113,12 +113,12 @@ public class MessageServiceImpl implements MessageService {
     public GeneralResult readMessage(ReadMessageEnter enter) {
         // enter 为空全部已读 不为空 指定读取
         List<PlaMessage> plaMessages = null;
-        if (CollectionUtils.isEmpty(enter.getIds())) {
+        if (CollectionUtils.isNotEmpty(enter.getIds())) {
             plaMessages = plaMessageMapper.selectBatchIds(enter.getIds());
         }
-        if (CollectionUtils.isNotEmpty(enter.getIds())) {
+        if (CollectionUtils.isEmpty(enter.getIds())) {
             QueryWrapper<PlaMessage> plaMessageQueryWrapper = new QueryWrapper<>();
-            plaMessageQueryWrapper.eq(PlaMessage.COL_TENANT_ID, PlaMessage.COL_TENANT_ID);
+            plaMessageQueryWrapper.eq(PlaMessage.COL_TENANT_ID, enter.getTenantId());
             plaMessageQueryWrapper.eq(PlaMessage.COL_USER_ID, enter.getUserId());
             plaMessageQueryWrapper.eq(PlaMessage.COL_DR, 0);
             plaMessageQueryWrapper.eq(PlaMessage.COL_STATUS, MessageStatus.UNREAD.getValue());
@@ -129,11 +129,13 @@ public class MessageServiceImpl implements MessageService {
             return new GeneralResult(enter.getRequestId());
         }
         plaMessages.forEach(item -> {
-            if (!enter.getIds().contains(item.getId())) {
-                throw new FoundationException(ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getMessage());
-            }
-            if (!StringUtils.equals(item.getStatus(), MessageStatus.UNREAD.getValue())) {
-                throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            if (CollectionUtils.isNotEmpty(enter.getIds())) {
+                if (!enter.getIds().contains(item.getId())) {
+                    throw new FoundationException(ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getMessage());
+                }
+                if (!StringUtils.equals(item.getStatus(), MessageStatus.UNREAD.getValue())) {
+                    throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+                }
             }
             item.setStatus(MessageStatus.READ.getValue());
             item.setUpdatedBy(enter.getUserId());
