@@ -31,15 +31,15 @@
             <properties>
                 <profile-active>jerry</profile-active>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>local</id>
             <properties>
                 <profile-active>local</profile-active>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <id>dev</id>

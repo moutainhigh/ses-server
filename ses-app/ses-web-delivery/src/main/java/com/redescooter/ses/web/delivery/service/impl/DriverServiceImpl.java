@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
@@ -255,6 +256,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverDetailsResult details(IdEnter enter) {
 
+        log.info("司机的主键为===={}", enter.getId());
         CorDriver driver = driverService.getById(enter.getId());
 
         if (driver == null) {

@@ -1,4 +1,4 @@
-package com.redescooter.ses.service.hub.source.consumer.service.base;
+package com.redescooter.ses.service.mobile.c.service.base;
 
 import java.util.List;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
