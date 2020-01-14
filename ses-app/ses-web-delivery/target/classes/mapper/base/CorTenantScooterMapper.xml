@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.delivery.dm.CorTenantScooter">
+    <!--@mbg.generated-->
+    <!--@Table cor_tenant_scooter-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="scooter_id" property="scooterId" />
+    <result column="longitule" property="longitule" />
+    <result column="latitude" property="latitude" />
+    <result column="license_plate" property="licensePlate" />
+    <result column="license_plate_picture" property="licensePlatePicture" />
+    <result column="status" property="status" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, scooter_id, longitule, latitude, license_plate, license_plate_picture, 
+    `status`, created_by, created_time, updated_by, updated_time, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update cor_tenant_scooter
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="scooter_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.scooterId}
+        </foreach>
+      </trim>
+      <trim prefix="longitule = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.longitule}
+        </foreach>
+      </trim>
+      <trim prefix="latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.latitude}
+        </foreach>
+      </trim>
+      <trim prefix="license_plate = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.licensePlate}
+        </foreach>
+      </trim>
+      <trim prefix="license_plate_picture = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.licensePlatePicture}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into cor_tenant_scooter
+    (id, dr, tenant_id, scooter_id, longitule, latitude, license_plate, license_plate_picture, 
+      `status`, created_by, created_time, updated_by, updated_time, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.scooterId}, #{item.longitule}, 
+        #{item.latitude}, #{item.licensePlate}, #{item.licensePlatePicture}, #{item.status}, 
+        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def3}, #{item.def5}, #{item.def6})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.delivery.dm.CorTenantScooter">
+    <!--@mbg.generated-->
+    insert into cor_tenant_scooter
+    (id, dr, tenant_id, scooter_id, longitule, latitude, license_plate, license_plate_picture, 
+      `status`, created_by, created_time, updated_by, updated_time, def3, def5, def6)
+    values
+    (#{id}, #{dr}, #{tenantId}, #{scooterId}, #{longitule}, #{latitude}, #{licensePlate}, 
+      #{licensePlatePicture}, #{status}, #{createdBy}, #{createdTime}, #{updatedBy}, 
+      #{updatedTime}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    tenant_id = #{tenantId}, 
+    scooter_id = #{scooterId}, 
+    longitule = #{longitule}, 
+    latitude = #{latitude}, 
+    license_plate = #{licensePlate}, 
+    license_plate_picture = #{licensePlatePicture}, 
+    `status` = #{status}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.delivery.dm.CorTenantScooter">
+    <!--@mbg.generated-->
+    insert into cor_tenant_scooter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="scooterId != null">
+        scooter_id,
+      </if>
+      <if test="longitule != null">
+        longitule,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="licensePlate != null">
+        license_plate,
+      </if>
+      <if test="licensePlatePicture != null">
+        license_plate_picture,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="scooterId != null">
+        #{scooterId},
+      </if>
+      <if test="longitule != null">
+        #{longitule},
+      </if>
+      <if test="latitude != null">
+        #{latitude},
+      </if>
+      <if test="licensePlate != null">
+        #{licensePlate},
+      </if>
+      <if test="licensePlatePicture != null">
+        #{licensePlatePicture},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="scooterId != null">
+        scooter_id = #{scooterId},
+      </if>
+      <if test="longitule != null">
+        longitule = #{longitule},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude},
+      </if>
+      <if test="licensePlate != null">
+        license_plate = #{licensePlate},
+      </if>
+      <if test="licensePlatePicture != null">
+        license_plate_picture = #{licensePlatePicture},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>

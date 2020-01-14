@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.CustomerServiceMapper">
+
+    <sql id="DetailsCustomerSQL">
+       opc.id,
+       opc.dr,
+       opc.tenant_id                  as tenantId,
+       opc.time_zone                  as timeZone,
+       opc.country,
+       opc.city,
+       opc.distrust,
+       opc.status,
+       opc.sales_id                   as salesId,
+       opc.customer_code              as customerCode,
+       opc.customer_first_name        as customerFirstName,
+       opc.customer_last_name         as customerLastName,
+       opc.customer_full_name         as customerFullName,
+       opc.company_name               as companyName,
+       opc.customer_source            as customerSource,
+       opc.customer_type              as customerType,
+       opc.industry_type              as industryType,
+       opc.address,
+       opc.place_id                   as placeId,
+       opc.longitude,
+       opc.latitude,
+       opc.contact_first_name         as contactFirstName,
+       opc.contact_last_name          as contactLastName,
+       opc.contact_full_name          as contactFullName,
+       opc.country_code               as countryCode,
+       opc.telephone,
+       opc.email,
+       opc.memo,
+       opc.scooter_quantity           as scooterQuantity,
+       opc.certificate_type           as certificateType,
+       opc.certificate_positive_annex as certificatePositiveAnnex,
+       opc.certificate_negative_annex as certificateNegativeAnnex,
+       opc.business_license_num       as businessLicenseNum,
+       opc.business_license_annex     as businessLicenseAnnex,
+       opc.invoice_num                as invoiceNum,
+       opc.invoice_annex              as invoiceAnnex,
+       opc.contract_annex             as contractAnnex,
+       opc.account_flag               as accountFlag,
+       opc.created_by                 as createdBy,
+       opc.created_time               as createdTime,
+       opc.updated_by                 as updatedBy,
+       opc.updated_time               as updatedTime
+    </sql>
+
+    <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+           select a.status, count(*) totalCount
+           from ope_customer a
+           where a.dr =0
+           group by a.status
+    </select>
+
+    <select id="customerAccountCount" resultType="int">
+        select count(*)
+        from ope_customer
+        where dr = 0 and tenant_id !=0
+        <if test="customerType != null and customerType != ''">
+            and customer_type =#{customerType}
+        </if>
+        <if test="industryType != null and industryType != ''">
+            and industry_type =#{industryType}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+               customer_full_name like concat("%",#{keyword},"%")
+            or contact_full_name like concat("%",#{keyword},"%")
+            or email like concat("%",#{keyword},"%")
+            )
+        </if>
+    </select>
+
+    <select id="queryAccountRecord" resultType="com.redescooter.ses.web.ros.vo.customer.AccountListResult">
+        select id as id,
+        tenant_id as tenantId,
+        customer_first_name as customerFirstName,
+        customer_last_name as customerLastName,
+        customer_full_name as customerFullName,
+        contact_first_name as contactFirstName,
+        contact_last_name as contactLastName,
+        contact_full_name as contactFullName,
+        email as email,
+        customer_type as customerType,
+        industry_type as industryType
+        from ope_customer
+        where dr = 0 and tenant_id !=0
+        <if test="customerType != null and customerType != ''">
+            and customer_type =#{customerType}
+        </if>
+        <if test="industryType != null and industryType != ''">
+            and industry_type =#{industryType}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+               customer_full_name like concat("%",#{keyword},"%")
+            or contact_full_name like concat("%",#{keyword},"%")
+            or email like concat("%",#{keyword},"%")
+            )
+            order by created_time desc
+        </if>
+    </select>
+    <select id="customerList" resultType="com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult">
+        select
+        <include refid="DetailsCustomerSQL"/>
+        from ope_customer opc
+        where 1=1
+        and opc.dr =0
+        <if test="status != null and status != ''">
+            and opc.status =#{status}
+        </if>
+        <if test="oneCityiD != null">
+            and opc.city =#{oneCityiD}
+            <if test="twoCityiD != null">
+                and opc.distrust =#{twoCityiD}
+            </if>
+        </if>
+        <if test="customerType != null and customerType != ''">
+            and opc.customer_type =#{customerType}
+        </if>
+        <if test="customerIndustry != null and customerIndustry != ''">
+            and opc.industry_type=#{customerIndustry}
+        </if>
+        <if test="customerSource != null and customerSource != ''">
+            and opc.customer_source =#{customerSource}
+        </if>
+        <if test="createEndDateTime != null and createStartDateTime != null">
+            <if test="status ==2 or status==3">
+                and (opc.updated_time between #{createStartDateTime} and #{createEndDateTime} )
+            </if>
+            <if test="status ==1  or status==''">
+                and (opc.created_time between #{createStartDateTime} and #{createEndDateTime} )
+            </if>
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+               opc.customer_full_name like concat("%",#{keyword},"%")
+            or opc.email like concat("%",#{keyword},"%")
+            or opc.contact_full_name like concat("%",#{keyword},"%")
+            )
+        </if>
+        <if test="status ==2 or status==3">
+            order by opc.updated_time desc
+        </if>
+        <if test="status ==1  or status==''">
+            order by opc.created_time desc
+        </if>
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="customerListCount" resultType="int">
+        select count(*)
+        from ope_customer opc
+        where 1=1
+        and opc.dr =0
+        <if test="status != null and status != ''">
+            and opc.status =#{status}
+        </if>
+        <if test="oneCityiD != null">
+            and opc.city =#{oneCityiD}
+            <if test="twoCityiD != null">
+                and opc.distrust =#{twoCityiD}
+            </if>
+        </if>
+        <if test="customerType != null and customerType != ''">
+            and opc.customer_type =#{customerType}
+        </if>
+        <if test="customerIndustry != null and customerIndustry != ''">
+            and opc.industry_type=#{customerIndustry}
+        </if>
+        <if test="customerSource != null and customerSource != ''">
+            and opc.customer_source =#{customerSource}
+        </if>
+        <if test="createEndDateTime != null and createStartDateTime != null">
+            <if test="status ==2 or status==3">
+                and (opc.updated_time between #{createStartDateTime} and #{createEndDateTime} )
+            </if>
+            <if test="status ==1  or status==''">
+                and (opc.created_time between #{createStartDateTime} and #{createEndDateTime} )
+            </if>
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+               opc.customer_full_name like concat("%",#{keyword},"%")
+            or opc.email like concat("%",#{keyword},"%")
+            or opc.contact_full_name like concat("%",#{keyword},"%")
+            )
+        </if>
+        <if test="status ==2 or status==3">
+            order by opc.updated_time desc
+        </if>
+        <if test="status ==1  or status==''">
+            order by opc.created_time desc
+        </if>
+    </select>
+</mapper>
