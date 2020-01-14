@@ -56,8 +56,8 @@ public class MessageController {
         return new Response<>(messageService.readMessage(enter));
     }
 
-    @PostMapping(value = "/unRead")
-    @ApiOperation(value = "未读消息", response = UnReadMessageCountResult.class)
+    @PostMapping(value = "/unReadCount")
+    @ApiOperation(value = "未读消息统计", response = UnReadMessageCountResult.class)
     public Response<UnReadMessageCountResult> readMessage(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(messageService.unReadMessages(enter));
     }
