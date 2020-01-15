@@ -46,7 +46,7 @@ public class MobileServiceImpl implements MobileService {
      * @return
      */
     @Override
-    public Map<String, Integer> statusByCount(GeneralEnter enter) {
+    public Map<String, Integer> countStatus(GeneralEnter enter) {
         List<CountByStatusResult> countByStatusResultList = mobileServiceMapper.statusByCount(enter);
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByStatusResultList) {
@@ -119,6 +119,24 @@ public class MobileServiceImpl implements MobileService {
      */
     @Override
     public PageResult<MobileHistroyResult> assignMobileHistroy(MobileHistroyEnter enter) {
+        int total = 0;
+        // 已还车 数量统计
+        int usedCount = mobileServiceMapper.assignMobileHistroyCount(enter);
+        // 使用中的 数量统计
+        int usingCount = mobileServiceMapper.usingAssignMobileHistroyCount(enter);
+
+        total = total + usedCount + usingCount;
+
+        if (total == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<MobileHistroyResult> result = new ArrayList<>();
+
+        List<MobileHistroyResult> usedList = mobileServiceMapper.assignMobileHistroyList(enter);
+
+        List<MobileHistroyResult> usingList = mobileServiceMapper.usingAssignMobileHistroyList(enter);
+
+
         return null;
     }
 }

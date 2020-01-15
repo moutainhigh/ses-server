@@ -65,7 +65,7 @@
         scooter.status as status,
         scooter.license_plate as licensePlate,
         driver.id as driverId,
-        profile.FIRST_NAME as driverFirstnName,
+        profile.FIRST_NAME as driverFirstName,
         profile.LAST_NAME as driverLastName,
         ifnull(csrs.co2_total, 0) as co2,
         ifnull(csrs.saved_money, 0) as monty
@@ -78,5 +78,10 @@
         left join cor_scooter_ride_stat csrs on csrs.scooter_id = scooter.scooter_id and csrs.dr = 0
         where scooter.scooter_id = #{id}
         and scooter.tenant_id = #{tenantId}
+    </select>
+    <select id="assignMobileHistroyCount" resultType="java.lang.Integer">
+        select id, scooter_id, begin_time, end_time
+         from cor_driver_scooter_history
+         where status = 2
     </select>
 </mapper>

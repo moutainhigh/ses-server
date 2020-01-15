@@ -3,6 +3,8 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyEnter;
+import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileListEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileResult;
 
@@ -47,4 +49,36 @@ public interface MobileServiceMapper {
      * @return
      */
     MobileResult detail(IdEnter enter);
+
+    /**
+     * 车辆已还车分配记录
+     *
+     * @param enter
+     * @return
+     */
+    int assignMobileHistroyCount(MobileHistroyEnter enter);
+
+    /**
+     * 使用中的分配记录
+     *
+     * @param enter
+     * @return
+     */
+    int usingAssignMobileHistroyCount(MobileHistroyEnter enter);
+
+    /**
+     * 车辆已还车分配记录
+     *
+     * @param enter
+     * @return
+     */
+    List<MobileHistroyResult> assignMobileHistroyList(MobileHistroyEnter enter);
+
+    /**
+     * 车辆 使用中的分配记录
+     *
+     * @param enter
+     * @return
+     */
+    List<MobileHistroyResult> usingAssignMobileHistroyList(MobileHistroyEnter enter);
 }

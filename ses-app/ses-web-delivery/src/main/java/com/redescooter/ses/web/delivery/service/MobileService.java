@@ -24,7 +24,7 @@ public interface MobileService {
      * @param enter
      * @return
      */
-    Map<String, Integer> statusByCount(GeneralEnter enter);
+    Map<String, Integer> countStatus(GeneralEnter enter);
 
     /**
      * 列表
