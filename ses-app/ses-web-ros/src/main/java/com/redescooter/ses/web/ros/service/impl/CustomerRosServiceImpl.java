@@ -193,6 +193,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (customer.getStatus().equals(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
             //客户验证
             checkCustomer(enter);
+            // 客户行业 类型不可修改
+            if (StringUtils.equals(enter.getCustomerType(), customer.getCustomerType())) {
+                throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TYPE_IS_NOT_EDIT.getCode(), ExceptionCodeEnums.CUSTOMER_TYPE_IS_NOT_EDIT.getMessage());
+            }
+            if (StringUtils.equals(enter.getIndustryType(), customer.getIndustryType())) {
+                throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_INDUSTRYTYPE_IS_NOT_EDIT.getCode(), ExceptionCodeEnums.CUSTOMER_INDUSTRYTYPE_IS_NOT_EDIT.getMessage());
+            }
         }
         if (!enter.getEmail().equals(customer.getEmail())) {
             //潜在客户允许编辑邮箱，但不允许重复
@@ -200,6 +207,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
             }
         }
+
 
         OpeCustomer update = new OpeCustomer();
         BeanUtils.copyProperties(enter, update);
@@ -237,7 +245,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         result.setRequestId(enter.getRequestId());
         if (opeCustomer.getCity() != null) {
             result.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getCity()).build()).getName());
-            if(opeCustomer.getDistrust() != null){
+            if (opeCustomer.getDistrust() != null) {
                 result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
             }
         }

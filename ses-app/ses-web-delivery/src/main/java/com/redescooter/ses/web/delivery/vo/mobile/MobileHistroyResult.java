@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.delivery.vo.mobile;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:MobileHistroyResult
@@ -46,8 +48,12 @@ public class MobileHistroyResult extends GeneralResult {
     private String mileage;
 
     @ApiModelProperty(value = "分配时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private String assignedTime;
 
     @ApiModelProperty(value = "结束时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private String removeTime;
 }

@@ -5,6 +5,7 @@
         select count(*)
         from pla_message message
         where message.tenant_id = #{tenantId}
+        and message.user_id=#{userId}
         and message.dr = 0
         <if test="sendStartTime != null and sendStartTime != '' and  sendEndTime != null and sendEndTime != ''">
             and message.send_time between #{sendStartTime} and #{sendEndTime}
@@ -17,6 +18,7 @@
         select *
         from pla_message message
         where message.tenant_id = #{tenantId}
+        and message.user_id=#{userId}
         and message.dr = 0
         <if test="sendStartTime != null and sendStartTime != '' and  sendEndTime != null and sendEndTime != ''">
             and message.send_time between #{sendStartTime} and #{sendEndTime}
@@ -31,12 +33,14 @@
         select count(*)
         from pla_message message
         where message.tenant_id = #{tenantId}
+        and message.user_id=#{userId}
         and message.dr = 0
     </select>
     <select id="recentMessageList" resultType="com.redescooter.ses.api.foundation.vo.message.MessageResult">
         select *
         from pla_message message
         where message.tenant_id =#{tenantId}
+        and message.user_id=#{userId}
         and message.dr = 0
         order by message.status desc, message.created_time desc
         limit #{startRow},#{pageSize}
