@@ -16,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hpsf.DocumentSummaryInformation;
 import org.apache.poi.hssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,25 +63,56 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void download(HttpServletResponse response, HttpServletRequest request) {
-        try {
 
-            String fileName = "ExpressOrder.xls";
-            response.reset();
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
-            String filePath = new File(ResourceUtils.getURL("classpath:excel").getPath()) + "/" + fileName;
-            FileInputStream input = null;
-            input = new FileInputStream(filePath);
-            OutputStream out = response.getOutputStream();
-            byte[] b = new byte[2048];
-            int len;
-            while ((len = input.read(b)) != -1) {
-                out.write(b, 0, len);
+        String filePath = "excel/ExpressOrder.xlsx";
+        Resource resource = new ClassPathResource(filePath);//用来读取resources下的文件
+        InputStream is = null;
+        BufferedInputStream bis = null;
+        OutputStream os = null;
+        try {
+            File file = resource.getFile();
+            if (!file.exists()) {
+                log.error("模板文件不存在");
             }
-            response.setHeader("Content-Length", String.valueOf(input.getChannel().size()));
-            input.close();
+            is = new FileInputStream(file);
+            os = response.getOutputStream();
+            bis = new BufferedInputStream(is);
+            //设置响应头信息
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/octet-stream; charset=UTF-8");
+            StringBuffer contentDisposition = new StringBuffer("attachment; filename=\"");
+            String fileName = new String(file.getName().getBytes(), "utf-8");
+            contentDisposition.append(fileName).append("\"");
+            response.setHeader("Content-disposition", contentDisposition.toString());
+            //边读边写
+            byte[] buffer = new byte[500];
+            int i;
+            while ((i = bis.read(buffer)) != -1) {
+                os.write(buffer, 0, i);
+            }
+            os.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            log.error("模板文件不存在");
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (os != null) {
+                    os.close();
+                }
+                if (bis != null) {
+                    bis.close();
+                }
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+
     }
 
     /**
