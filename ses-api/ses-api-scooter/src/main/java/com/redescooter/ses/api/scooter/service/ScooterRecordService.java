@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
+import com.redescooter.ses.api.scooter.vo.MobileRepairRecordEnter;
+import com.redescooter.ses.api.scooter.vo.MobileRepairRecordResult;
 import com.redescooter.ses.api.scooter.vo.SaveScooterRecordEnter;
 import com.redescooter.ses.api.scooter.vo.ScooterRecordListEnter;
 import com.redescooter.ses.api.scooter.vo.ScooterRecordListResult;
@@ -24,8 +26,18 @@ public interface ScooterRecordService {
 
     /**
      * 查询车辆操作记录
+     *
      * @param enter 为ScooterId
      */
     PageResult<ScooterRecordListResult> scooterRecordList(ScooterRecordListEnter enter);
+
+
+    /**
+     * 维修记录
+     *
+     * @param enter
+     * @return
+     */
+    PageResult<MobileRepairRecordResult> mobileRepairRecord(MobileRepairRecordEnter enter);
 
 }

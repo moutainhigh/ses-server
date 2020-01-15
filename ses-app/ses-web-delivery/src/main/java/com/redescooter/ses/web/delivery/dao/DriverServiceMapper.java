@@ -68,23 +68,42 @@ public interface DriverServiceMapper {
     List<DeliveryHistroyResult> deliveryHistroyList(DeliveryHistroyEnter enter);
 
     /**
-     * 司机车辆分配表
+     * 司机车辆已归还分配表
      *
      * @param enter
      * @return
      */
-    int driverscooterHistroyCount(DriverScooterHistroyEnter enter);
+    int driverScooterUsedHistroyCount(DriverScooterHistroyEnter enter);
 
     /**
-     * 司机车辆分配表
+     * 司机车辆使用中分配表
      *
      * @param enter
      * @return
      */
-    List<DriverScooterHistoryResult> driverscooterHistroyList(DriverScooterHistroyEnter enter);
+    int driverScooterUsingHistroyCount(DriverScooterHistroyEnter enter);
+
+
+    /**
+     * 司机车辆已归还分配表
+     *
+     * @param enter
+     * @return
+     */
+    List<DriverScooterHistoryResult> driverScooterUsedHistroyList(DriverScooterHistroyEnter enter);
+
+    /**
+     * 司机车辆使用中分配表
+     *
+     * @param enter
+     * @return
+     */
+    List<DriverScooterHistoryResult> driverScooterUsingHistroyList(DriverScooterHistroyEnter enter);
+
 
     /**
      * 今日Today（单位为小时，显示今日配送数据）
+     *
      * @param enter
      * @return
      */

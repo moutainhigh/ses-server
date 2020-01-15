@@ -25,6 +25,8 @@ public interface ValidationExceptionCode {
     int EMAIL_IS_EMPTY = 10007;
     // id 为空
     int ID_IS_EMPTY = 10008;
+    // 状态为空
+    int STATUS_IS_EMPTY = 10009;
 
     // 距离为空
     int MILEAGE_IS_EMPTY = 10031;

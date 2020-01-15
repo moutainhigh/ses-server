@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface ScoScooterMapper extends BaseMapper<ScoScooter> {
     int updateBatch(List<ScoScooter> list);
 
+    int updateBatchSelective(List<ScoScooter> list);
+
     int batchInsert(@Param("list") List<ScoScooter> list);
 
     int insertOrUpdate(ScoScooter record);

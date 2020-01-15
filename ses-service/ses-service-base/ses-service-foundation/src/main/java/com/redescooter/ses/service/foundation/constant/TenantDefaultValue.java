@@ -9,13 +9,13 @@ package com.redescooter.ses.service.foundation.constant;
  */
 public interface TenantDefaultValue {
     // 餐厅默认配送距离
-    Long DISTRIBUTION_RANGE = 10L;
+    Long DISTRIBUTION_RANGE = 5L;
 
     // 默认配送预警时间
-    Long ESTIMATED_DURATION = 30L;
+    Long ESTIMATED_DURATION = 45L;
 
     // 默认超时时间
-    Long TIMEOUT_EXPECTDE = 15L;
+    Long TIMEOUT_EXPECTDE = 45L;
 
     String TENANT_LONGITUDE = "";
 
@@ -26,7 +26,4 @@ public interface TenantDefaultValue {
     String BEGIN_TIME ="2020-1-10 10:00:00";
 
     String END_TIME ="2020-1-10 16:00:00";
-
-    // 1 表示营业 2、 表示打烊
-    String BUSSINESS_STATUS="1";
 }

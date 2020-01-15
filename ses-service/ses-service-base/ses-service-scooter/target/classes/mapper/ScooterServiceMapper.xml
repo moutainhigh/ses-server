@@ -4,6 +4,7 @@
 
     <select id="scooterInfor" resultType="com.redescooter.ses.api.common.vo.scooter.BaseScooterResult">
         select scooter.id as id,
+        scooter.picture as pictures,
         scooter.scooter_no as scooterNo,
         scooter.status as status,
         scooter.available_status as availableStatus,
@@ -19,11 +20,11 @@
         status.scooter_ecu_id as scooterEcuId,
         status.longitule as longitule,
         status.latitude as latitude,
-        status.battery as battery
+        status.battery as battery,
+        ifnull(scooter.total_mileage, 0) as totalmileage
         from sco_scooter scooter
         inner join sco_scooter_status status on scooter.id = status.scooter_id
         where scooter.dr = 0
-        and status.dr = 0
         <if test="list != null and list.size() != 0">
             and scooter.id in
             <foreach collection="list" open="(" separator="," close=")" item="item">

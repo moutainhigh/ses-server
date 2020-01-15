@@ -1,9 +1,11 @@
 package com.redescooter.ses.service.scooter.service.base;
 
 import java.util.List;
+
 import com.redescooter.ses.service.scooter.dm.base.ScoScooter;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface ScoScooterService extends IService<ScoScooter>{
+
+public interface ScoScooterService extends IService<ScoScooter> {
 
 
     int updateBatch(List<ScoScooter> list);
@@ -14,4 +16,6 @@ public interface ScoScooterService extends IService<ScoScooter>{
 
     int insertOrUpdateSelective(ScoScooter record);
 
+    int updateBatchSelective(List<ScoScooter> list);
 }
+

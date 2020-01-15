@@ -32,11 +32,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
+import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -687,11 +687,35 @@ public class DriverServiceImpl implements DriverService {
      */
     @Override
     public PageResult<DriverScooterHistoryResult> driverscooterHistroy(DriverScooterHistroyEnter enter) {
-        int count = driverServiceMapper.driverscooterHistroyCount(enter);
-        if (count == 0) {
+        int total = 0;
+
+        int usedCount = driverServiceMapper.driverScooterUsedHistroyCount(enter);
+
+        int usingCount = driverServiceMapper.driverScooterUsingHistroyCount(enter);
+
+        total = usedCount + usingCount;
+        if (total == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, count, driverServiceMapper.driverscooterHistroyList(enter));
+
+        List<DriverScooterHistoryResult> resultList = new ArrayList<>();
+
+        List<DriverScooterHistoryResult> driverScooterUsedHistoryList = driverServiceMapper.driverScooterUsedHistroyList(enter);
+
+        List<DriverScooterHistoryResult> driverScooterUsingHistoryList = driverServiceMapper.driverScooterUsingHistroyList(enter);
+
+        if (CollectionUtils.isNotEmpty(driverScooterUsedHistoryList)) {
+            resultList.addAll(driverScooterUsedHistoryList);
+        }
+        if (CollectionUtils.isNotEmpty(driverScooterUsingHistoryList)) {
+            if (CollectionUtils.isNotEmpty(resultList)) {
+                resultList.addAll(0, driverScooterUsingHistoryList);
+            }
+            if (CollectionUtils.isEmpty(resultList)) {
+                resultList.addAll(driverScooterUsingHistoryList);
+            }
+        }
+        return PageResult.create(enter, total, resultList);
     }
 
     /**
