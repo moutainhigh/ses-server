@@ -153,15 +153,15 @@
         limit #{startRow},#{pageSize}
     </select>
 
-    <select id="driverscooterHistroyCount" resultType="int">
-         select
-            count(*)
-            from cor_driver_scooter_history cdsh
-            inner join cor_tenant_scooter cts on cdsh.scooter_id = cts.scooter_id and cts.dr = 0
-            where cdsh.status = 2
-            and cdsh.dr=0
-            and cdsh.tenant_id=#{tenantId}
-            and cdsh.driver_id=#{id}
+    <select id="driverScooterUsedHistroyCount" resultType="int">
+        select
+        count(*)
+        from cor_driver_scooter_history cdsh
+        inner join cor_tenant_scooter cts on cdsh.scooter_id = cts.scooter_id and cts.dr = 0
+        where cdsh.status = 2
+        and cdsh.dr=0
+        and cdsh.tenant_id=#{tenantId}
+        and cdsh.driver_id=#{id}
         <if
                 test="assignBeginTime != null and assignBeginTime != '' and  assignEndTime != null and assignEndTime != ''">
             and cdsh.begin_time between #{assignBeginTime} and #{assignEndTime}
@@ -177,13 +177,68 @@
 
     </select>
 
-    <select id="driverscooterHistroyList"
+    <select id="driverScooterUsingHistroyCount" resultType="int">
+        select count(*)
+        from cor_driver_scooter scooter
+        inner join cor_driver_scooter_history histroy
+        on scooter.scooter_id = histroy.scooter_id and scooter.begin_time = histroy.begin_time
+        inner join cor_tenant_scooter tscooter on scooter.scooter_id = tscooter.scooter_id
+        where scooter.status = 1
+        and histroy.driver_id = #{id}
+        and histroy.tenant_id = #{tenantId}
+        <if
+                test="assignBeginTime != null and assignBeginTime != '' and assignEndTime != null and assignEndTime != '' ">
+            and histroy.begin_time between #{assignBeginTime} and #{assignEndTime}
+        </if>
+        <if
+                test="removeBeginTime != null and removeBeginTime != '' and  removeEndTime != null and removeEndTime != ''">
+            and histroy.end_time between #{removeBeginTime} and #{removeEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            scooter cts.license_plate like concat('%',#{keyword},'%')
+            )
+        </if>
+    </select>
+
+    <select id="driverScooterUsingHistroyList"
+            resultType="com.redescooter.ses.web.delivery.vo.DriverScooterHistoryResult">
+        select histroy.id as id,
+        histroy.begin_time as assignTime,
+        histroy.end_time as removeTime,
+        tscooter.license_plate as licensePlate,
+        ifnull(histroy.mileage, 0) as mileage
+        from cor_driver_scooter scooter
+        inner join cor_driver_scooter_history histroy
+        on scooter.scooter_id = histroy.scooter_id and scooter.begin_time = histroy.begin_time
+        inner join cor_tenant_scooter tscooter on scooter.scooter_id = tscooter.scooter_id
+        where scooter.sta
+        and histroy.scooter_id = #{id}
+        and histroy.tenant_id = #{tenantId}
+        <if
+                test="assignBeginTime != null and assignBeginTime != '' and assignEndTime != null and assignEndTime != ''">
+            and histroy.begin_time between #{assignBeginTime} and #{assignEndTime}
+        </if>
+        <if
+                test="removeBeginTime != null and removeBeginTime != '' and  removeEndTime != null and removeEndTime != ''">
+            and histroy.end_time between #{removeBeginTime} and #{removeEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            scooter cts.license_plate like concat('%',#{keyword},'%')
+            )
+        </if>
+        order by histroy.begin_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="driverScooterUsedHistroyList"
             resultType="com.redescooter.ses.web.delivery.vo.DriverScooterHistoryResult">
         select
-        cdsh.driver_id     as id,
-        cts.license_plate  as licensePlate,
-        cdsh.begin_time    as assignTime,
-        cdsh.end_time      as removeTime,
+        cdsh.driver_id as id,
+        cts.license_plate as licensePlate,
+        cdsh.begin_time as assignTime,
+        cdsh.end_time as removeTime,
         cdsh.mileage as mileage
         from cor_driver_scooter_history cdsh
         inner join cor_tenant_scooter cts on cdsh.scooter_id = cts.scooter_id and cts.dr = 0
@@ -306,5 +361,4 @@
         </if>
         group by times
     </select>
-
 </mapper>
