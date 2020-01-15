@@ -2,8 +2,8 @@ package com.redescooter.ses.web.delivery.service.impl;
 
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
+import com.redescooter.ses.starter.poi.EasyPoiUtils;
 import com.redescooter.ses.web.delivery.service.ExcelService;
 import com.redescooter.ses.web.delivery.verifyhandler.OrdersExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
@@ -11,19 +11,12 @@ import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.poi.hpsf.DocumentSummaryInformation;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.formula.functions.T;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -92,13 +85,23 @@ public class ExcelServiceImpl implements ExcelService {
     }
 
     /**
-     * 表格模板下载
+     * 快递订单模板下载
      *
-     * @param enter
+     * @param fileName
+     * @param path
+     * @param response
+     * @return
      */
     @Override
-    public ResponseEntity<byte[]> downloadExcelTemplate(GeneralEnter enter) {
-        return exportOrderExcel(enter);
+    public void download(String fileName, String path, HttpServletResponse response) {
+        List<ExpressOrderExcleData> list = new ArrayList<>();
+        try {
+            Workbook workbook = EasyPoiUtils.exportExcel(ExpressOrderExcleData.class, list, path, fileName);
+            EasyPoiUtils.downLoadExcel(fileName, workbook, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
 }

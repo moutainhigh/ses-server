@@ -47,7 +47,7 @@ public class EasyPoiTest {
 //            list.add(expressOrder);
 //            i++;
 //        }
-        EasyPoiUtils.exportExcel(ExpressOrderExcleData.class, list, "src/main/resources/excel/", "ExpressOrder.xls");
+        EasyPoiUtils.exportExcel(ExpressOrderExcleData.class, list, "src/main/resources/template/", "expressOrder.xls");
     }
 
     /**
@@ -68,7 +68,7 @@ public class EasyPoiTest {
     @Test
     public void path() throws FileNotFoundException, UnsupportedEncodingException {
         //获取跟目录
-        File path = new File(ResourceUtils.getURL("classpath:excel").getPath());
+        File path = new File(ResourceUtils.getURL("classpath:template").getPath());
         if (!path.exists()) path = new File("");
         System.out.println("path:" + path.getAbsolutePath());
 
