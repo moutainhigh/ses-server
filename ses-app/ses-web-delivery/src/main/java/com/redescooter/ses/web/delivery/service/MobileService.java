@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.delivery.service;
 
-import cn.hutool.db.PageResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.mobile.MobileDetailResult;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileListEnter;
-import com.redescooter.ses.web.delivery.vo.mobile.MobileListResult;
+import com.redescooter.ses.web.delivery.vo.mobile.MobileResult;
 
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public interface MobileService {
      * @param enter
      * @return
      */
-    MobileListResult list(MobileListEnter enter);
+    PageResult<MobileResult> list(MobileListEnter enter);
 
     /**
      * 车辆详情
@@ -41,7 +40,7 @@ public interface MobileService {
      * @param enter
      * @return
      */
-    MobileDetailResult detail(IdEnter enter);
+    MobileResult detail(IdEnter enter);
 
     /**
      * 分配记录
@@ -50,14 +49,4 @@ public interface MobileService {
      * @return
      */
     PageResult<MobileHistroyResult> assignMobileHistroy(MobileHistroyEnter enter);
-
-    /**
-     * 维修记录
-     *
-     * @param enter
-     * @return
-     */
-    PageResult<MobileHistroyResult> repairnMobileHistroy(MobileHistroyEnter enter);
-
-
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.delivery.dao.MobileServiceMapper">
+
+
+    <select id="statusByCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select count(*) totalCount, scooter.status
+        from cor_tenant_scooter scooter
+        where scooter.tenant_id = #{tenantId}
+        and scooter.dr = 0
+        group by status
+    </select>
+    <select id="listCount" resultType="java.lang.Integer">
+        select count(*)
+        from cor_tenant_scooter scooter
+        left join cor_driver_scooter driverScooter
+        on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0 and driverScooter.status = 1
+        left join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
+        left join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
+        where scooter.tenant_id = #{tenantId}
+        and scooter.dr = 0
+        <if test="status != null and status != ''">
+            and scooter.status=#{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            profile.FIRST_NAME like concat('%',#{keyword},'%') or
+            profile.LAST_NAME like concat('%',#{keyword},'%') or
+            profile.FULL_NAME like concat('%',#{keyword},'%') or
+            scooter.license_plate like concat('%',#{keyword},'%')
+            )
+        </if>
+    </select>
+    <select id="list" resultType="com.redescooter.ses.web.delivery.vo.mobile.MobileResult">
+        select scooter.scooter_id as id,
+        scooter.status as status,
+        scooter.license_plate as licensePlate,
+        driver.id as driverId,
+        profile.FIRST_NAME as driverFirstnName,
+        profile.LAST_NAME as driverLastName
+        from cor_tenant_scooter scooter
+        left join cor_driver_scooter driverScooter
+        on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0 and driverScooter.status = 1
+        left join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
+        left join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
+        where scooter.tenant_id = #{tenantId}
+        and scooter.dr = 0
+        <if test="status != null and status != ''">
+            and scooter.status=#{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            profile.FIRST_NAME like concat('%',#{keyword},'%') or
+            profile.LAST_NAME like concat('%',#{keyword},'%') or
+            profile.FULL_NAME like concat('%',#{keyword},'%') or
+            scooter.license_plate like concat('%',#{keyword},'%')
+            )
+        </if>
+        order by scooter.status desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detail" resultType="com.redescooter.ses.web.delivery.vo.mobile.MobileResult">
+        select scooter.scooter_id as id,
+        scooter.status as status,
+        scooter.license_plate as licensePlate,
+        driver.id as driverId,
+        profile.FIRST_NAME as driverFirstnName,
+        profile.LAST_NAME as driverLastName,
+        ifnull(csrs.co2_total, 0) as co2,
+        ifnull(csrs.saved_money, 0) as monty
+        from cor_tenant_scooter scooter
+        left join cor_driver_scooter driverScooter
+        on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0 and
+        driverScooter.status = 1
+        left join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
+        left join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
+        left join cor_scooter_ride_stat csrs on csrs.scooter_id = scooter.scooter_id and csrs.dr = 0
+        where scooter.scooter_id = #{id}
+        and scooter.tenant_id = #{tenantId}
+    </select>
+</mapper>

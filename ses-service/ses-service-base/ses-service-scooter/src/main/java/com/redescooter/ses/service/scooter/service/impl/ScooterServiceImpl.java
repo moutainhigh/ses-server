@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.service.scooter.constant.ScooterDefaultData;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.service.scooter.exception.ExceptionCodeEnums;
 import lombok.extern.log4j.Log4j;
@@ -33,6 +34,9 @@ public class ScooterServiceImpl implements ScooterService {
         if (CollectionUtils.isEmpty(scooterResultList)) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
+        scooterResultList.forEach(item -> {
+            item.setNextMaintenanceKm(ScooterDefaultData.MAINTENANCE_KM.subtract(item.getTotalmileage()));
+        });
         return scooterResultList;
     }
 

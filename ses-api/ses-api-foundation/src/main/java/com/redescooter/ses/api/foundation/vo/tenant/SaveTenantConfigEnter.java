@@ -1,6 +1,5 @@
 package com.redescooter.ses.api.foundation.vo.tenant;
 
-import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.redescooter.ses.api.scooter.vo.MobileRepairRecordEnter;
+import com.redescooter.ses.api.scooter.vo.MobileRepairRecordResult;
+import com.redescooter.ses.service.scooter.dao.ScooterRecordServiceMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,9 @@ public class ScooterRecordsImpl implements ScooterRecordService {
     @Autowired
     private IdAppService idAppService;
 
+    @Autowired
+    private ScooterRecordServiceMapper scooterRecordServiceMapper;
+
     /**
      * 保存车辆操作记录
      *
@@ -46,7 +52,7 @@ public class ScooterRecordsImpl implements ScooterRecordService {
     @Transactional
     @Override
     public void saveScooterRecords(List<SaveScooterRecordEnter<BaseScooterEnter>> enter) {
-        if (CollectionUtils.isEmpty(enter)){
+        if (CollectionUtils.isEmpty(enter)) {
             return;
         }
         List<ScoScooterActionTrace> scoScooterActionTraceList=new ArrayList<>();
@@ -67,8 +73,26 @@ public class ScooterRecordsImpl implements ScooterRecordService {
         return null;
     }
 
+    /**
+     * 维修记录
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<MobileRepairRecordResult> mobileRepairRecord(MobileRepairRecordEnter enter) {
+        int count = scooterRecordServiceMapper.mobileRepairRecordCount(enter);
+
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<MobileRepairRecordResult> result = scooterRecordServiceMapper.mobileRepairRecordList(enter);
+
+        return null;
+    }
+
     private ScoScooterActionTrace buildScoScooterActionTraceSingle(SaveScooterRecordEnter<BaseScooterEnter> item) {
-        ScoScooterActionTrace scoScooterActionTrace=new ScoScooterActionTrace();
+        ScoScooterActionTrace scoScooterActionTrace = new ScoScooterActionTrace();
         scoScooterActionTrace.setId(idAppService.getId(SequenceName.SCO_SCOOTER_ACTION_TRACE));
         scoScooterActionTrace.setDr(0);
         scoScooterActionTrace.setTenantId(item.getTenantId());
