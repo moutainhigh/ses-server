@@ -49,4 +49,13 @@ public interface MobileService {
      * @return
      */
     PageResult<MobileHistroyResult> assignMobileHistroy(MobileHistroyEnter enter);
+
+    /**
+     * todo 暂无数据 暂时不做
+     *
+     * @param enter
+     * @return
+     */
+    PageResult<MobileHistroyResult> repairMobileHistroy(MobileHistroyEnter enter);
+
 }

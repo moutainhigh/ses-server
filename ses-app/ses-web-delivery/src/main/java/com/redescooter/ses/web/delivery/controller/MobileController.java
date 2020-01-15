@@ -5,6 +5,8 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.MobileService;
+import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyEnter;
+import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileListEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileResult;
 import io.swagger.annotations.Api;
@@ -53,5 +55,12 @@ public class MobileController {
     public Response<MobileResult> detail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(mobileService.detail(enter));
     }
+
+    @PostMapping(value = "/assignMobileHistroy")
+    @ApiOperation(value = "车辆分配记录", response = MobileHistroyResult.class)
+    public Response<PageResult<MobileHistroyResult>> assignMobileHistroy(@ModelAttribute @ApiParam("请求参数") MobileHistroyEnter enter) {
+        return new Response<>(mobileService.assignMobileHistroy(enter));
+    }
+
 
 }

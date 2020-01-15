@@ -36,6 +36,9 @@ public class MobileHistroyResult extends GeneralResult {
     @ApiModelProperty(value = "司机姓名")
     private String driverLastName;
 
+    @ApiModelProperty(value = "车辆Id")
+    private Long scooterId;
+
     @ApiModelProperty(value = "电量")
     private Integer battery;
 

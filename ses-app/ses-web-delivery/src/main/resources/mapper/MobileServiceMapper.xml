@@ -80,8 +80,123 @@
         and scooter.tenant_id = #{tenantId}
     </select>
     <select id="assignMobileHistroyCount" resultType="java.lang.Integer">
-        select id, scooter_id, begin_time, end_time
-         from cor_driver_scooter_history
-         where status = 2
+        select count(*)
+        from cor_driver_scooter_history histroy
+        inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
+        inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
+        where histroy.status = 2
+        and histroy.scooter_id = #{id}
+        and histroy.tenant_id = #{tenantId}
+        <if
+                test="assignStartTime != null and assignStartTime != '' and  assignEndTime != null and assignEndTime != ''">
+            and histroy.begin_time between #{assignStartTime} and #{assignEndTime}
+        </if>
+        <if
+                test="removeStartTime != null and removeStartTime != '' and  removeEndTime != null and removeEndTime != ''">
+            and histroy.end_time between #{removeStartTime} and #{removeEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            profile.first_name like concat('%',#{keyword},'%') or
+            profile.last_name like concat('%',#{keyword},'%') or
+            profile.full_name like concat('%',#{keyword},'%')
+            )
+        </if>
+    </select>
+    <select id="usingAssignMobileHistroyCount" resultType="java.lang.Integer">
+        select count(*)
+        from cor_driver_scooter scooter
+        inner join cor_driver_scooter_history histroy
+        on scooter.scooter_id = histroy.scooter_id and scooter.begin_time = histroy.begin_time
+        inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
+        inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
+        where scooter.status = 1
+        and histroy.scooter_id = #{id}
+        and histroy.tenant_id = #{tenantId}
+        <if
+                test="assignStartTime != null and assignStartTime != '' and  assignEndTime != null and assignEndTime != ''">
+            and histroy.begin_time between #{assignStartTime} and #{assignEndTime}
+        </if>
+        <if
+                test="removeStartTime != null and removeStartTime != '' and  removeEndTime != null and removeEndTime != ''">
+            and histroy.end_time between #{removeStartTime} and #{removeEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            profile.first_name like concat('%',#{keyword},'%') or
+            profile.last_name like concat('%',#{keyword},'%') or
+            profile.full_name like concat('%',#{keyword},'%')
+            )
+        </if>
+    </select>
+    <select id="assignMobileHistroyList"
+            resultType="com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult">
+        select histroy.id as id,
+        histroy.scooter_id as scooterId,
+        histroy.begin_time as assignedTime,
+        histroy.end_time as removeTime,
+        histroy.driver_id as driverId,
+        profile.first_name as driverFirstName,
+        profile.last_name as driverLastName,
+        ifnull(histroy.mileage,0) as mileage
+        from cor_driver_scooter_history histroy
+        inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
+        inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
+        where histroy.status = 2
+        and histroy.scooter_id = #{id}
+        and histroy.tenant_id = #{tenantId}
+        <if
+                test="assignStartTime != null and assignStartTime != '' and  assignEndTime != null and assignEndTime != ''">
+            and histroy.begin_time between #{assignStartTime} and #{assignEndTime}
+        </if>
+        <if
+                test="removeStartTime != null and removeStartTime != '' and  removeEndTime != null and removeEndTime != ''">
+            and histroy.end_time between #{removeStartTime} and #{removeEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            profile.first_name like concat('%',#{keyword},'%') or
+            profile.last_name like concat('%',#{keyword},'%') or
+            profile.full_name like concat('%',#{keyword},'%')
+            )
+        </if>
+        order by histroy.begin_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="usingAssignMobileHistroyList"
+            resultType="com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult">
+        select histroy.id as id,
+        histroy.scooter_id as scooterId,
+        histroy.begin_time as assignedTime,
+        histroy.end_time as removeTime,
+        histroy.driver_id as driverId,
+        profile.first_name as driverFirstName,
+        profile.last_name as driverLastName,
+        ifnull(histroy.mileage,0) as mileage
+        from cor_driver_scooter scooter
+        inner join cor_driver_scooter_history histroy
+        on scooter.scooter_id = histroy.scooter_id and scooter.begin_time = histroy.begin_time
+        inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
+        inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
+        where scooter.status = 1
+        and histroy.scooter_id = #{id}
+        and histroy.tenant_id = #{tenantId}
+        <if
+                test="assignStartTime != null and assignStartTime != '' and  assignEndTime != null and assignEndTime != ''">
+            and histroy.begin_time between #{assignStartTime} and #{assignEndTime}
+        </if>
+        <if
+                test="removeStartTime != null and removeStartTime != '' and  removeEndTime != null and removeEndTime != ''">
+            and histroy.end_time between #{removeStartTime} and #{removeEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            profile.first_name like concat('%',#{keyword},'%') or
+            profile.last_name like concat('%',#{keyword},'%') or
+            profile.full_name like concat('%',#{keyword},'%')
+            )
+        </if>
+        order by histroy.begin_time desc
+        limit #{startRow},#{pageSize}
     </select>
 </mapper>

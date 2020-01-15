@@ -14,6 +14,7 @@ import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileListEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,8 +136,42 @@ public class MobileServiceImpl implements MobileService {
         List<MobileHistroyResult> usedList = mobileServiceMapper.assignMobileHistroyList(enter);
 
         List<MobileHistroyResult> usingList = mobileServiceMapper.usingAssignMobileHistroyList(enter);
+        if (CollectionUtils.isNotEmpty(usedList)) {
+            result.addAll(usedList);
+        }
+        if (CollectionUtils.isNotEmpty(usingList)) {
+            if (CollectionUtils.isNotEmpty(result)) {
+                result.addAll(0, usingList);
+            } else {
+                result.addAll(usingList);
+            }
+        }
+
+        List<Long> scooterIds = new ArrayList<>();
+        // 获取车辆数据
+        result.forEach(item -> {
+            scooterIds.add(item.getScooterId());
+        });
+        List<BaseScooterResult> baseScooterResultList = scooterService.scooterInfor(scooterIds);
+
+        result.forEach(item -> {
+            baseScooterResultList.forEach(scooter -> {
+                item.setBattery(scooter.getBattery());
+            });
+        });
 
 
+        return PageResult.create(enter, total, result);
+    }
+
+    /**
+     * todo 暂无数据 暂时不做
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<MobileHistroyResult> repairMobileHistroy(MobileHistroyEnter enter) {
         return null;
     }
 }
