@@ -5,7 +5,7 @@ spring:
   application:
     name: ses-service-foundation
   profiles:
-    active: jerry
+    active: local
   messages:
     basename: i18n/messages
     fallback-to-system-locale: false

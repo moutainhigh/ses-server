@@ -5,12 +5,26 @@ import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.web.delivery.service.ExcelService;
+import com.redescooter.ses.web.delivery.verifyhandler.OrdersExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.hpsf.DocumentSummaryInformation;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 /**
  * @author Mr.lijiating
@@ -33,18 +47,48 @@ public class ExcelServiceImpl implements ExcelService {
      * @return
      */
     @Override
-    public ImportExcelOrderResult importExcelByOrder(ImportExcelOrderEnter enter) {
+    public ImportExcelOrderResult readExcelDataByOrder(ImportExcelOrderEnter enter) {
 
         ImportExcelOrderResult result = new ImportExcelOrderResult();
 
-        ExcelImportResult<ExpressOrderExcleData> excelList = importExcelService.setiExcelVerifyHandler(null).importOssExcel(enter.getUrl(), ExpressOrderExcleData.class, new ImportParams());
+        ExcelImportResult<ExpressOrderExcleData> excelImportResult = importExcelService.setiExcelVerifyHandler(new OrdersExcelVerifyHandlerImpl()).importOssExcel(enter.getUrl(), ExpressOrderExcleData.class, new ImportParams());
 
-        excelList.getList().forEach(date -> {
-            System.out.println(date.toString());
-            System.out.println("-------------");
-        });
+        List<ExpressOrderExcleData> successList = excelImportResult.getList();
+        List<ExpressOrderExcleData> failList = excelImportResult.getFailList();
+        //验证是否有不合法的Eecel数据
+        if (failList.size() > 0) {
+            Map<String, String> map = null;
+            List<Map<String, String>> errorMsgList = new ArrayList<>();
+            result.setSuccess(Boolean.FALSE);
+            result.setSuccessNum(successList.size());
+            result.setFailNum(failList.size());
+            for (ExpressOrderExcleData excle : failList) {
+                map = new HashMap<>();
+                map.put(String.valueOf(excle.getRowNum()), excle.getErrorMsg());
+                errorMsgList.add(map);
+            }
+            result.setErrorMsgList(errorMsgList);
+            return result;
+        }
+        //表格数据为空 做逻辑判断
+        if (CollectionUtils.isEmpty(successList)) {
+            result.setSuccess(Boolean.FALSE);
+            Map<String, String> map = new TreeMap<>();
+            map.put("msg", "The table data is empty and the import failed.");
+            List<Map<String, String>> mapList = new ArrayList<>();
+            mapList.add(map);
+            result.setSuccessNum(0);
+            result.setFailNum(successList.size());
+            result.setErrorMsgList(mapList);
+            return result;
+        }
 
-        return null;
+        //数据返回
+        result.setSuccess(Boolean.TRUE);
+        result.setSuccessNum(successList.size());
+        result.setFailNum(failList.size());
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**
@@ -53,7 +97,8 @@ public class ExcelServiceImpl implements ExcelService {
      * @param enter
      */
     @Override
-    public void downloadExcelTemplate(GeneralEnter enter) {
-
+    public ResponseEntity<byte[]> downloadExcelTemplate(GeneralEnter enter) {
+        return exportOrderExcel(enter);
     }
+
 }

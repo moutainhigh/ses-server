@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.delivery.controller.express;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -11,7 +12,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -29,6 +35,21 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @IgnoreLoginCheck
+    @GetMapping(value = "/downloadTemplate")
+    @ApiOperation(value = "模板下载", response = String.class)
+    public ResponseEntity<byte[]> downloadTemplate() {
+        return orderService.downloadTemplate();
+    }
+
+    @IgnoreLoginCheck
+    @GetMapping(value = "/test")
+    @ApiOperation(value = "模板下载", response = String.class)
+    public void test(HttpServletResponse response,HttpServletRequest request) throws Exception {
+        orderService.download(response,request);
+    }
+
 
     @PostMapping(value = "/importOrders")
     @ApiOperation(value = "订单导入", response = GeneralResult.class)
