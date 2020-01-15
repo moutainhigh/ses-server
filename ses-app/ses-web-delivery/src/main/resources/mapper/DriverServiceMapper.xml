@@ -212,8 +212,8 @@
         inner join cor_driver_scooter_history histroy
         on scooter.scooter_id = histroy.scooter_id and scooter.begin_time = histroy.begin_time
         inner join cor_tenant_scooter tscooter on scooter.scooter_id = tscooter.scooter_id
-        where scooter.sta
-        and histroy.scooter_id = #{id}
+        where scooter.status = 1
+        and histroy.driver_id = #{id}
         and histroy.tenant_id = #{tenantId}
         <if
                 test="assignBeginTime != null and assignBeginTime != '' and assignEndTime != null and assignEndTime != ''">
