@@ -1,8 +1,10 @@
 package com.redescooter.ses.web.delivery.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.delivery.vo.mobile.ChanageStatusEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileListEnter;
@@ -51,11 +53,18 @@ public interface MobileService {
     PageResult<MobileHistroyResult> assignMobileHistroy(MobileHistroyEnter enter);
 
     /**
-     * todo 暂无数据 暂时不做
+     * todo 暂无数据 暂时不写
      *
      * @param enter
      * @return
      */
     PageResult<MobileHistroyResult> repairMobileHistroy(MobileHistroyEnter enter);
 
+    /**
+     * 修改车辆状态
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult chanageScooterStatus(ChanageStatusEnter enter);
 }

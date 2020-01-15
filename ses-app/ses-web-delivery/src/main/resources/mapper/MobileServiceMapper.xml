@@ -36,7 +36,7 @@
         scooter.status as status,
         scooter.license_plate as licensePlate,
         driver.id as driverId,
-        profile.FIRST_NAME as driverFirstnName,
+        profile.FIRST_NAME as driverFirstName,
         profile.LAST_NAME as driverLastName
         from cor_tenant_scooter scooter
         left join cor_driver_scooter driverScooter

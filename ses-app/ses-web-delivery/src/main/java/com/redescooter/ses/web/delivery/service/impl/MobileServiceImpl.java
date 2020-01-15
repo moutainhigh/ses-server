@@ -1,25 +1,36 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
 import com.redescooter.ses.web.delivery.dao.MobileServiceMapper;
+import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
+import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.service.MobileService;
+import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
+import com.redescooter.ses.web.delivery.vo.mobile.ChanageStatusEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileListEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileResult;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +47,9 @@ public class MobileServiceImpl implements MobileService {
 
     @Autowired
     private MobileServiceMapper mobileServiceMapper;
+
+    @Autowired
+    private CorTenantScooterService corTenantScooterService;
 
     @Reference
     private ScooterService scooterService;
@@ -173,5 +187,34 @@ public class MobileServiceImpl implements MobileService {
     @Override
     public PageResult<MobileHistroyResult> repairMobileHistroy(MobileHistroyEnter enter) {
         return null;
+    }
+
+    /**
+     * 修改车辆状态
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult chanageScooterStatus(ChanageStatusEnter enter) {
+        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, enter.getId());
+        CorTenantScooter corTenantScooter = corTenantScooterService.query().eq(CorTenantScooter.COL_SCOOTER_ID, enter.getId()).one();
+        if (StringUtils.equals(enter.getStatus(), corTenantScooter.getStatus())) {
+            return new GeneralResult(enter.getRequestId());
+        }
+        corTenantScooter.setStatus(enter.getStatus());
+        corTenantScooter.setUpdatedBy(enter.getUserId());
+        corTenantScooter.setUpdatedTime(new Date());
+        corTenantScooterService.updateById(corTenantScooter);
+
+        // 更新车辆数据
+        UpdateStatusEnter updateStatusEnter = new UpdateStatusEnter();
+        BeanUtils.copyProperties(enter, updateStatusEnter);
+        updateStatusEnter.setId(enter.getId());
+        updateStatusEnter.setAvailableStatus(enter.getStatus());
+        scooterService.updateStatus(updateStatusEnter);
+
+        return new GeneralResult(enter.getRequestId());
     }
 }

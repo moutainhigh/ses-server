@@ -36,22 +36,22 @@ public class MobileResult extends GeneralResult {
     private String mobilePicture;
 
     @ApiModelProperty(value = "电量")
-    private Integer battery;
+    private Integer battery = 0;
 
     @ApiModelProperty(value = "公里数")
-    private String mileage;
+    private String mileage = "0";
 
     @ApiModelProperty(value = "未读")
-    private String nextMaintenanceKm;
+    private String nextMaintenanceKm = "0";
 
     @ApiModelProperty(value = "型号")
     private String model;
 
     @ApiModelProperty(value = "节省的co2")
-    private String co2;
+    private String co2 = "0";
 
     @ApiModelProperty(value = "节省的钱")
-    private String money;
+    private String money = "0";
 
     @ApiModelProperty(value = "司机Id")
     private Long driverId;
