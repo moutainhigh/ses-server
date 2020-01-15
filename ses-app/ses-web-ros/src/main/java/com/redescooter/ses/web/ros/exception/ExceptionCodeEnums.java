@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -112,9 +113,14 @@ public enum ExceptionCodeEnums {
 
     TRASH_CAN_NOT_BE_EDITED(10050, "垃圾箱资源不能编辑"),
 
-    CUSTOMER_NOT_EXIST(10051,"客户不存在"),
+    CUSTOMER_NOT_EXIST(10051, "客户不存在"),
 
-    CODE_IS_WRONG(10052,"验证码错误"),
+    CODE_IS_WRONG(10052, "验证码错误"),
+
+    CUSTOMER_TYPE_IS_NOT_EDIT(10053, "正式客户客户类型不可编辑"),
+
+    CUSTOMER_INDUSTRYTYPE_IS_NOT_EDIT(10054, "正式客户客户行业不可编辑"),
+
 
     ;
 
