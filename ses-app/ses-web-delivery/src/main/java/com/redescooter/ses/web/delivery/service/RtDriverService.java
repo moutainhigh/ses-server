@@ -10,10 +10,10 @@ import java.util.Map;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 2/1/2020 6:54 上午
- * @ClassName: DriverService
+ * @ClassName: RtDriverService
  * @Function: TODO
  */
-public interface DriverService {
+public interface RtDriverService {
 
     /**
      * 创建司机

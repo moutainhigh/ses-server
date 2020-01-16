@@ -1,11 +1,10 @@
 package com.redescooter.ses.web.delivery.controller.express;
 
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.web.delivery.service.express.OrderService;
+import com.redescooter.ses.web.delivery.service.express.EdOrderService;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import io.swagger.annotations.Api;
@@ -20,29 +19,28 @@ import javax.servlet.http.HttpServletResponse;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 14/1/2020 10:52 上午
- * @ClassName: OrderController
+ * @ClassName: EdOrderController
  * @Function: TODO
  */
-@Api(tags = {"OrderController"})
+@Api(tags = {"快递订单"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/express/orders", method = RequestMethod.POST)
-public class OrderController {
+@RequestMapping(value = "/rd/orders", method = RequestMethod.POST)
+public class EdOrderController {
 
     @Autowired
-    private OrderService orderService;
+    private EdOrderService edOrderService;
 
     @GetMapping(value = "/download")
     @ApiOperation(value = "模板下载")
     public void download(HttpServletResponse response) {
-       orderService.download(response);
+       edOrderService.download(response);
     }
-
 
     @PostMapping(value = "/importOrders")
     @ApiOperation(value = "订单导入", response = GeneralResult.class)
     public Response<ImportExcelOrderResult> importOrders(@ModelAttribute @ApiParam("请求参数") ImportExcelOrderEnter enter) {
-        return new Response<>(orderService.importOrders(enter));
+        return new Response<>(edOrderService.importOrders(enter));
     }
 
     @PostMapping(value = "/list")

@@ -23,7 +23,7 @@ import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dm.*;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
-import com.redescooter.ses.web.delivery.service.DriverService;
+import com.redescooter.ses.web.delivery.service.RtDriverService;
 import com.redescooter.ses.web.delivery.service.base.*;
 import com.redescooter.ses.web.delivery.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -44,12 +43,12 @@ import java.util.*;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 2/1/2020 6:57 上午
- * @ClassName: DriverServiceImpl
+ * @ClassName: RtDriverServiceImpl
  * @Function: TODO
  */
 @Slf4j
 @Service
-public class DriverServiceImpl implements DriverService {
+public class RtDriverServiceImpl implements RtDriverService {
     @Autowired
     private JedisCluster jedisCluster;
     @Autowired

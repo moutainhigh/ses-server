@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.delivery.controller;
+package com.redescooter.ses.web.delivery.controller.restaurant;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 31/12/2019 11:21 上午
- * @ClassName: ScooterController
+ * @ClassName: RtScooterController
  * @Function: TODO
  */
-@Api(tags = {"ScooterController"})
+@Api(tags = {"餐厅车辆"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/scooter", method = RequestMethod.POST)
-public class ScooterController {
+@RequestMapping(value = "/rt/scooter", method = RequestMethod.POST)
+public class RtScooterController {
 
     @PostMapping(value = "/countStatus")
     @ApiOperation(value = "状态统计", response = GeneralResult.class)

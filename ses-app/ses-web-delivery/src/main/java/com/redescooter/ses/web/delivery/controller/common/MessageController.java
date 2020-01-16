@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.delivery.controller;
+package com.redescooter.ses.web.delivery.controller.common;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -30,10 +30,10 @@ import java.util.Map;
  * @Version：1.3
  * @create: 2020/01/11 10:43
  */
-@Api(tags = {"MessageController"})
+@Api(tags = {"公共消息"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/message", method = RequestMethod.POST)
+@RequestMapping(value = "/common/message", method = RequestMethod.POST)
 public class MessageController {
     @Reference
     private MessageService messageService;

@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.delivery.controller;
+package com.redescooter.ses.web.delivery.controller.common;
 
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version：1.3
  * @create: 2020/01/10 15:01
  */
-@Api(tags = {"店铺设置"})
+@Api(tags = {"公共配置"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/setting", method = RequestMethod.POST)
+@RequestMapping(value = "/common/setting", method = RequestMethod.POST)
 public class TenantSettingController {
 
     @Autowired

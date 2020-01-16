@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletResponse;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 14/1/2020 4:26 下午
- * @ClassName: OrderService
+ * @ClassName: EdOrderService
  * @Function: TODO
  */
-public interface OrderService {
+public interface EdOrderService {
 
 
     /**

@@ -1,8 +1,8 @@
-package com.redescooter.ses.web.delivery.controller;
+package com.redescooter.ses.web.delivery.controller.restaurant;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.web.delivery.service.OrderStatisticsService;
+import com.redescooter.ses.web.delivery.service.RtDashboardService;
 import com.redescooter.ses.web.delivery.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,53 +20,53 @@ import java.util.Map;
 
 /**
  * @ClassName:OrderStatisticsController
- * @description: OrderStatisticsController
+ * @description: RtDashboardController
  * @author: Alex
  * @Version：1.3
  * @create: 2020/01/04 14:01
  */
-@Api(tags = {"订单统计模块"})
+@Api(tags = {"仪表统计"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/order/statistics", method = RequestMethod.POST)
-public class OrderStatisticsController {
+@RequestMapping(value = "/rt/dashboard", method = RequestMethod.POST)
+public class RtDashboardController {
 
     @Reference
-    private OrderStatisticsService orderStatisticsService;
+    private RtDashboardService rtDashboardService;
 
     @PostMapping(value = "/countByStatus")
     @ApiOperation(value = "今天订单状态统计", response = Map.class)
     public Response<Map<String, Integer>> todayCountByStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(orderStatisticsService.todayCountByStatus(enter));
+        return new Response<>(rtDashboardService.todayCountByStatus(enter));
     }
 
     @PostMapping(value = "/topTen")
     @ApiOperation(value = "司机排行榜", response = TopTenResult.class)
     public Response<List<TopTenResult>> topTen(@ModelAttribute @ApiParam("请求参数") TopTenEnter enter) {
-        return new Response<>(orderStatisticsService.topTen(enter));
+        return new Response<>(rtDashboardService.topTen(enter));
     }
 
     @PostMapping(value = "/scooterRideData")
     @ApiOperation(value = "车辆数据", response = TopTenResult.class)
     public Response<ScooterRideDataResult> scooterRideData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(orderStatisticsService.scooterRideData(enter));
+        return new Response<>(rtDashboardService.scooterRideData(enter));
     }
 
     @PostMapping(value = "/map")
     @ApiOperation(value = "地图", response = MapResult.class)
     public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(orderStatisticsService.map(enter));
+        return new Response<>(rtDashboardService.map(enter));
     }
 
     @PostMapping(value = "/deliveryChartList")
     @ApiOperation(value = "仪表盘订单柱状图", response = DeliveryChartResult.class)
     public Response<DeliveryChartListResult> deliveryChartList(@ModelAttribute @ApiParam("请求参数") DeliveryChartEnter enter) {
-        return new Response<>(orderStatisticsService.deliveryChartList(enter));
+        return new Response<>(rtDashboardService.deliveryChartList(enter));
     }
 
     @PostMapping(value = "/deliveryCountByStatus")
     @ApiOperation(value = "总订单状态统计", response = Map.class)
     public Response<Map<String, Integer>> deliveryCountByStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(orderStatisticsService.deliveryCountByStatus(enter));
+        return new Response<>(rtDashboardService.deliveryCountByStatus(enter));
     }
 }

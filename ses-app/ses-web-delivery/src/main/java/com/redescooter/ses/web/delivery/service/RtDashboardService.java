@@ -8,12 +8,12 @@ import java.util.Map;
 
 /**
  * @ClassName:OrderStatisticsService
- * @description: OrderStatisticsService
+ * @description: RtDashboardService
  * @author: Alex
  * @Version：1.3
  * @create: 2020/01/04 11:43
  */
-public interface OrderStatisticsService {
+public interface RtDashboardService {
     /**
      * 今日订单状态统计
      *

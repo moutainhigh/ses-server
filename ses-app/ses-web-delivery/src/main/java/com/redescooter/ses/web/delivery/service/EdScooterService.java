@@ -14,12 +14,12 @@ import java.util.Map;
 
 /**
  * @ClassName:MobileService
- * @description: MobileService
+ * @description: EdScooterService
  * @author: Alex
  * @Version：1.3
  * @create: 2020/01/13 18:24
  */
-public interface MobileService {
+public interface EdScooterService {
     /**
      * 状态分组
      *
