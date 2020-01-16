@@ -3,8 +3,10 @@ package com.redescooter.ses.web.delivery.service.express;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
+import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
 import com.redescooter.ses.web.delivery.vo.task.OrderResult;
 import com.redescooter.ses.web.delivery.vo.task.SaveTaskEnter;
 import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
@@ -63,11 +65,11 @@ public interface TaskService {
     DriverListResult driverList(GeneralEnter enter);
 
     /**
-     * 小定单列表
+     * 未分配小定单列表
      *
      * @param enter
      */
-    PageResult<OrderResult> orderList(GeneralEnter enter);
+    PageResult<OrderResult> orderList(OrderListEnter enter);
 
     /**
      * 大订单 保存

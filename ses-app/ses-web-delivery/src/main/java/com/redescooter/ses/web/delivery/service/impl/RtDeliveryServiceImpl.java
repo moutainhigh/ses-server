@@ -273,10 +273,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      */
     @Override
     public List<SelectDriverResult> selectDriverList(GeneralEnter enter) {
-
-        List<SelectDriverResult> selectDriverResults = orderDeliveryServiceMapper.selectDriverList(enter);
-        System.out.println(selectDriverResults);
-        return selectDriverResults;
+        return orderDeliveryServiceMapper.selectDriverList(enter);
     }
 
     /**
@@ -385,8 +382,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      */
     @Override
     public List<ScooterLicensePlateResult> scooterLicensePlate(ScooterLicensePlateEnter enter) {
-        List<ScooterLicensePlateResult> scooterLicensePlateResults = orderDeliveryServiceMapper.scooterLicensePlateList(enter);
-        return scooterLicensePlateResults;
+        return orderDeliveryServiceMapper.scooterLicensePlateList(enter);
     }
 
     /**

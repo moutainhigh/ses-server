@@ -9,18 +9,26 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.web.delivery.dao.TaskServiceMapper;
+import com.redescooter.ses.web.delivery.dm.CorDriver;
+import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
+import com.redescooter.ses.web.delivery.service.base.CorDriverService;
+import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryService;
+import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.service.express.TaskService;
 import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
+import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
 import com.redescooter.ses.web.delivery.vo.task.OrderResult;
 import com.redescooter.ses.web.delivery.vo.task.SaveTaskEnter;
 import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
 import com.redescooter.ses.web.delivery.vo.task.TaskResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,8 +49,18 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskServiceMapper taskServiceMapper;
 
+    @Autowired
+    private CorExpressDeliveryService corExpressDeliveryService;
+
+    @Autowired
+    private CorExpressOrderService corExpressOrderService;
+
+    @Autowired
+    private CorDriverService corDriverService;
+
     @Reference
     private ScooterService scooterService;
+
 
     /**
      * 状态
@@ -108,7 +126,11 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public List<OrderResult> detailOrderList(IdEnter enter) {
-        return null;
+        List<OrderResult> orderResultList = taskServiceMapper.detailOrderList(enter);
+        if (orderResultList == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.TASK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TASK_IS_NOT_EXIST.getMessage());
+        }
+        return orderResultList;
     }
 
     /**
@@ -119,17 +141,22 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public DriverListResult driverList(GeneralEnter enter) {
-        return null;
+        return taskServiceMapper.driverList(enter);
     }
 
     /**
-     * 小定单列表
+     * 未分配小定单列表
      *
      * @param enter
      */
     @Override
-    public PageResult<OrderResult> orderList(GeneralEnter enter) {
-        return null;
+    public PageResult<OrderResult> orderList(OrderListEnter enter) {
+        int count = taskServiceMapper.orderListCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<OrderResult> orderResultList = taskServiceMapper.orderList(enter);
+        return PageResult.create(enter, count, orderResultList);
     }
 
     /**
@@ -138,8 +165,17 @@ public class TaskServiceImpl implements TaskService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult save(SaveTaskEnter enter) {
+        CorDriver corDriver = corDriverService.getById(enter.getDiverId());
+        if (corDriver == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+        }
+        List<CorExpressOrder> corExpressOrderList = taskServiceMapper.queryExpressOrderByIds(enter.getIds());
+        if (CollectionUtils.isEmpty(corExpressOrderList)) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+        }
         return null;
     }
 }

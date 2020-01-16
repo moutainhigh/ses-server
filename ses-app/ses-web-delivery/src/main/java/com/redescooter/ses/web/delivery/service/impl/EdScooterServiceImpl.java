@@ -15,17 +15,18 @@ import com.redescooter.ses.web.delivery.dao.MobileServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.service.EdScooterService;
 import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
-import com.redescooter.ses.web.delivery.vo.mobile.ChanageStatusEnter;
-import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult;
-import com.redescooter.ses.web.delivery.vo.mobile.MobileListEnter;
-import com.redescooter.ses.web.delivery.vo.mobile.MobileResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.ChanageStatusEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.MobileListEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.MobileResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -193,6 +194,7 @@ public class EdScooterServiceImpl implements EdScooterService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult chanageScooterStatus(ChanageStatusEnter enter) {
         QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();

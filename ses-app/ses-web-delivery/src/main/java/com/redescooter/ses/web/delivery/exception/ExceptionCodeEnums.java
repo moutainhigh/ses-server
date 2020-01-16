@@ -105,6 +105,8 @@ public enum ExceptionCodeEnums {
 
     TASK_IS_NOT_EXIST(10045, "任务不存在"),
 
+    EXPRESS_ORDER_IS_NOT_EXIST(10046, "快递订单不存在"),
+
     ;
 
 

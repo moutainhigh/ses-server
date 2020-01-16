@@ -4,11 +4,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.delivery.vo.mobile.ChanageStatusEnter;
-import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult;
-import com.redescooter.ses.web.delivery.vo.mobile.MobileListEnter;
-import com.redescooter.ses.web.delivery.vo.mobile.MobileResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.ChanageStatusEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.MobileListEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.MobileResult;
 
 import java.util.Map;
 
