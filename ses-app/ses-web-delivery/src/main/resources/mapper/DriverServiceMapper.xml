@@ -282,10 +282,10 @@
         when cdy.status = '5' then 1
         when cdy.status = '6' then 1
         when cdy.status = '7' then 1 end), 0) as total
-        from cor_delivery cdy
+        from cor_delivery_trace cdy
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
-        and cdy.deliverer_id=#{id}
+        and cdy.user_id=#{id}
         and DATE_FORMAT(cdy.updated_time, '%Y-%m-%d') = DATE_FORMAT(#{dateTime}, '%Y-%m-%d')
         <if test="status != null and status != ''">
             and cdy.status=#{status}
@@ -304,9 +304,9 @@
         when cdy.status = '5' then 1
         when cdy.status = '6' then 1
         when cdy.status = '7' then 1 end), 0)  as total
-        from cor_delivery cdy
+        from cor_delivery_trace cdy
         where cdy.dr = 0
-        and cdy.deliverer_id=#{id}
+        and cdy.user_id=#{id}
         and cdy.tenant_id=#{tenantId}
         and (DATE_FORMAT(cdy.updated_time, '%Y-%m-%d') between  DATE_FORMAT(#{startDateTime}, '%Y-%m-%d')  and DATE_FORMAT(#{endDateTime}, '%Y-%m-%d'))
         <if test="status != null and status != ''">
@@ -326,10 +326,10 @@
         when cdy.status = '5' then 1
         when cdy.status = '6' then 1
         when cdy.status = '7' then 1 end), 0) as total
-        from cor_delivery cdy
+        from cor_delivery_trace cdy
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
-        and cdy.deliverer_id=#{id}
+        and cdy.user_id=#{id}
         and (DATE_FORMAT(cdy.updated_time,'%Y-%m-%d') between DATE_FORMAT(#{startDateTime}, '%Y-%m-%d') and
         DATE_FORMAT(#{endDateTime}, '%Y-%m-%d'))
         <if test="status != null and status != ''">
@@ -350,10 +350,10 @@
         when cdy.status = '5' then 1
         when cdy.status = '6' then 1
         when cdy.status = '7' then 1 end), 0) as total
-        from cor_delivery cdy
+        from cor_delivery_trace cdy
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
-        and cdy.deliverer_id=#{id}
+        and cdy.user_id=#{id}
         and (DATE_FORMAT(cdy.updated_time, '%Y-%m') between DATE_FORMAT(#{startDateTime}, '%Y-%m') and
         DATE_FORMAT(#{endDateTime}, '%Y-%m'))
         <if test="status != null and status != ''">
