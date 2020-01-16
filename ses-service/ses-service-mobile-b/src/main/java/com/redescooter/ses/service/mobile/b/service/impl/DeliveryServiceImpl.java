@@ -199,7 +199,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         result.setScooterLatitude(scooter.get(0).getLatitude());
         result.setScooterLongitude(scooter.get(0).getLongitule());
         result.setBattery(scooter.get(0).getBattery());
-        result.setLabel(DateUtil.timeComolete(delivery.getAta(), new Date()) > 0 ? "1" : "0");
+        result.setLabel(DateUtil.timeComolete(delivery.getAta(), new Date()) > 0 ? "1" : null);
         return result;
     }
 
