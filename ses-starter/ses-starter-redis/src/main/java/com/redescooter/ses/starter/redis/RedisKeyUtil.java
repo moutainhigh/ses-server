@@ -1,33 +1,48 @@
-//package com.redescooter.ses.starter.redis;
-//
-///**
-// * @author Mr.lijiating
-// * @version V1.0
-// * @Date: 15/1/2020 9:14 下午
-// * @ClassName: RedisKeyUtil
-// * @Function: 为了防止生成的key有冲突
-// */
-//
-//public class RedisKeyUtil {
-//    private static String SPLIT = ":";
-//    private static String BIZ_LIKE = "LIKE";
-//    private static String BIZ_DISLIKE = "DISLIKE";
-//    private static String BIZ_EVENTQUEUE = "EVENTQUEUE";
-//
-//    //获取点赞的key
-//    public static String getLikeKey(int entityType, int entityId){
-//        return BIZ_LIKE + SPLIT + String.valueOf(entityType) + SPLIT +String.valueOf(entityId);
-//    }
-//
-//    //获取点踩的key
-//    public static String getDislikeKey(int entityType, int entityId){
-//        return BIZ_DISLIKE +SPLIT + String.valueOf(entityType) + SPLIT + String.valueOf(entityId);
-//    }
-//
-//    public static  String  getEventQueueKey(){
-//        return BIZ_EVENTQUEUE;
-//    }
-//
-//
-//
-//}
+package com.redescooter.ses.starter.redis;
+
+/**
+ * @author Mr.lijiating
+ * @version V1.0
+ * @Date: 16/1/2020 6:24 下午
+ * @ClassName: RedisKeyUtil
+ * @Function: redisKey设计
+ */
+public class RedisKeyUtil {
+
+    /**
+     * redis的key
+     * 形式为：
+     * 表名:主键名:主键值:列名
+     *
+     * @param tableName 表名
+     * @param majorKey 主键名
+     * @param majorKeyValue 主键值
+     * @param column 列名
+     * @return
+     */
+    public static String getKeyWithColumn(String tableName,String majorKey,String majorKeyValue,String column){
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(tableName).append(":");
+        buffer.append(majorKey).append(":");
+        buffer.append(majorKeyValue).append(":");
+        buffer.append(column);
+        return buffer.toString();
+    }
+    /**
+     * redis的key
+     * 形式为：
+     * 表名:主键名:主键值
+     *
+     * @param tableName 表名
+     * @param majorKey 主键名
+     * @param majorKeyValue 主键值
+     * @return
+     */
+    public static String getKey(String tableName,String majorKey,String majorKeyValue){
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(tableName).append(":");
+        buffer.append(majorKey).append(":");
+        buffer.append(majorKeyValue).append(":");
+        return buffer.toString();
+    }
+}

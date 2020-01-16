@@ -142,7 +142,7 @@ spring:                                                                         
 
       Message-api:                                                                                                       #用户组api，可以配置多个组
         group-name: 7.Message管理API                                                                                   #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: Message API                                                                                            #api组的标题，会在swagger-ui的标题处显示
+        title: QueueMessage API                                                                                            #api组的标题，会在swagger-ui的标题处显示
         description: Message管理API                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
         path-regex: /common/message/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式

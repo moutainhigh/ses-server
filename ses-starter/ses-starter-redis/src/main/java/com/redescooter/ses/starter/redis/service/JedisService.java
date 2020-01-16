@@ -2,6 +2,8 @@ package com.redescooter.ses.starter.redis.service;
 import java.util.List;
 import java.util.Map;
 import redis.clients.jedis.GeoRadiusResponse;
+import redis.clients.jedis.GeoUnit;
+
 /**
  * @author Mr.lijiating
  * @version V1.0
@@ -63,7 +65,7 @@ public interface JedisService {
      * @Author:
      * @Date: 2018/5/16
      */
-    List<GeoRadiusResponse> georadius(String key, double longitude, double latitude);
+    List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius,  GeoUnit unit);
 
     /**
      * @Description: 删除key

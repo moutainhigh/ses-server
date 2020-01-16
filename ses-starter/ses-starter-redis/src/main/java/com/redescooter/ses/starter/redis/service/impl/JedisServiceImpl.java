@@ -8,6 +8,7 @@ import com.redescooter.ses.starter.redis.service.JedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.GeoRadiusResponse;
+import redis.clients.jedis.GeoUnit;
 import redis.clients.jedis.JedisCluster;
 
 /**
@@ -54,12 +55,12 @@ public class JedisServiceImpl implements JedisService {
 
     @Override
     public Long geoadd(String key, double longitude, double latitude, byte[] obj) {
-        return null;
+        return jedisCluster.geoadd(key, longitude, latitude, String.valueOf(obj));
     }
 
     @Override
-    public List<GeoRadiusResponse> georadius(String key, double longitude, double latitude) {
-        return null;
+    public List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius,  GeoUnit unit) {
+        return jedisCluster.georadius(key,longitude, latitude,radius, unit);
     }
 
     @Override

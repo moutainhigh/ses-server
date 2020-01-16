@@ -208,7 +208,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             }
         }
 
-
         OpeCustomer update = new OpeCustomer();
         BeanUtils.copyProperties(enter, update);
         opeCustomerMapper.updateById(update);

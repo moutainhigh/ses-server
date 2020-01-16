@@ -7,6 +7,7 @@ import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -42,11 +43,6 @@ public class EdOrderServiceImpl implements EdOrderService {
     @Override
     public ImportExcelOrderResult importOrders(ImportExcelOrderEnter enter) {
         ImportExcelOrderResult orderResult = excelService.readExcelDataByOrder(enter);
-
-        //解析成功后，进行数据的保存
-        if (orderResult.getSuccess()) {
-        }
-
         return orderResult;
     }
 
