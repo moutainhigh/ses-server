@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.delivery.vo.task;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class TaskListEnter extends GeneralEnter {
+public class TaskListEnter extends PageEnter {
 
     @ApiModelProperty(value = "状态")
     private String status;

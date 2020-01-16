@@ -41,6 +41,9 @@ public class TaskResult extends GeneralResult {
     @ApiModelProperty(value = "司机名字")
     private String driverLastName;
 
+    @ApiModelProperty(value = "车辆Id")
+    private Long scooterId;
+
     @ApiModelProperty(value = "车牌")
     private String licensePlate;
 

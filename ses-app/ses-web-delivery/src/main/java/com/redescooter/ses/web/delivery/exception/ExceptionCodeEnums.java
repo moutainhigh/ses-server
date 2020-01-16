@@ -103,6 +103,7 @@ public enum ExceptionCodeEnums {
 
     TENANT_BUSINESS_TIME_FORMAT_IS_WRONG(10044, "营业时间格式不正确"),
 
+    TASK_IS_NOT_EXIST(10045, "任务不存在"),
 
     ;
 
