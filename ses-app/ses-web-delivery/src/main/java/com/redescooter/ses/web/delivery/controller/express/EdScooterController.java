@@ -1,11 +1,11 @@
-package com.redescooter.ses.web.delivery.controller;
+package com.redescooter.ses.web.delivery.controller.express;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.web.delivery.service.MobileService;
+import com.redescooter.ses.web.delivery.service.EdScooterService;
 import com.redescooter.ses.web.delivery.vo.mobile.ChanageStatusEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyResult;
@@ -26,48 +26,48 @@ import java.util.Map;
 
 /**
  * @ClassName:MobileController
- * @description: MobileController
+ * @description: EdScooterController
  * @author: Alex
  * @Version：1.3
  * @create: 2020/01/15 09:54
  */
-@Api(tags = {"Mobile模块"})
+@Api(tags = {"快递车辆"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/mobile", method = RequestMethod.POST)
-public class MobileController {
+@RequestMapping(value = "/ed/scooter", method = RequestMethod.POST)
+public class EdScooterController {
 
     @Autowired
-    private MobileService mobileService;
+    private EdScooterService edScooterService;
 
     @PostMapping(value = "/countStatus")
     @ApiOperation(value = "状态统计", response = Map.class)
     public Response<Map<String, Integer>> countStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(mobileService.countStatus(enter));
+        return new Response<>(edScooterService.countStatus(enter));
     }
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "车辆列表", response = MobileResult.class)
     public Response<PageResult<MobileResult>> list(@ModelAttribute @ApiParam("请求参数") MobileListEnter enter) {
-        return new Response<>(mobileService.list(enter));
+        return new Response<>(edScooterService.list(enter));
     }
 
     @PostMapping(value = "/detail")
     @ApiOperation(value = "车辆详情", response = MobileResult.class)
     public Response<MobileResult> detail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(mobileService.detail(enter));
+        return new Response<>(edScooterService.detail(enter));
     }
 
     @PostMapping(value = "/assignMobileHistroy")
     @ApiOperation(value = "车辆分配记录", response = MobileHistroyResult.class)
     public Response<PageResult<MobileHistroyResult>> assignMobileHistroy(@ModelAttribute @ApiParam("请求参数") MobileHistroyEnter enter) {
-        return new Response<>(mobileService.assignMobileHistroy(enter));
+        return new Response<>(edScooterService.assignMobileHistroy(enter));
     }
 
     @PostMapping(value = "/chanageScooterStatus")
     @ApiOperation(value = "更改车辆状态", response = GeneralResult.class)
     public Response<GeneralResult> chanageScooterStatus(@ModelAttribute @ApiParam("请求参数") ChanageStatusEnter enter) {
-        return new Response<>(mobileService.chanageScooterStatus(enter));
+        return new Response<>(edScooterService.chanageScooterStatus(enter));
     }
 
 

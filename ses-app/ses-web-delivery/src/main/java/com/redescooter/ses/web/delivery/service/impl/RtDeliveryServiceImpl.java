@@ -36,7 +36,7 @@ import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
 import com.redescooter.ses.web.delivery.dm.CorUserProfile;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
-import com.redescooter.ses.web.delivery.service.OrderDeliveryService;
+import com.redescooter.ses.web.delivery.service.RtDeliveryService;
 import com.redescooter.ses.web.delivery.service.base.CorDeliveryService;
 import com.redescooter.ses.web.delivery.service.base.CorDeliveryTraceService;
 import com.redescooter.ses.web.delivery.service.base.CorDriverScooterService;
@@ -60,12 +60,12 @@ import java.util.*;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 3/1/2020 3:42 下午
- * @ClassName: OrderDeliveryServiceImpl
+ * @ClassName: RtDeliveryServiceImpl
  * @Function: TODO
  */
 @Slf4j
 @Service
-public class OrderDeliveryServiceImpl implements OrderDeliveryService {
+public class RtDeliveryServiceImpl implements RtDeliveryService {
 
     @Autowired
     private OrderDeliveryServiceMapper orderDeliveryServiceMapper;

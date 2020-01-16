@@ -13,10 +13,10 @@ import java.util.Map;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 3/1/2020 3:40 下午
- * @ClassName: OrderDeliveryService
+ * @ClassName: RtDeliveryService
  * @Function: TODO
  */
-public interface OrderDeliveryService {
+public interface RtDeliveryService {
 
     /**
      * 创建配送单

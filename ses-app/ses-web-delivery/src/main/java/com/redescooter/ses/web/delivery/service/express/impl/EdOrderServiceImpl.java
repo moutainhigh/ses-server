@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
 import com.redescooter.ses.web.delivery.service.ExcelService;
-import com.redescooter.ses.web.delivery.service.express.OrderService;
+import com.redescooter.ses.web.delivery.service.express.EdOrderService;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import lombok.extern.slf4j.Slf4j;
@@ -13,15 +13,16 @@ import javax.servlet.http.HttpServletResponse;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 14/1/2020 4:34 下午
- * @ClassName: OrderServiceImpl
+ * @ClassName: EdOrderServiceImpl
  * @Function: TODO
  */
 @Slf4j
 @Service
-public class OrderServiceImpl implements OrderService {
+public class EdOrderServiceImpl implements EdOrderService {
 
     @Autowired
     private ExcelService excelService;
+
 
     @Override
     public void download(HttpServletResponse response) {
@@ -44,7 +45,6 @@ public class OrderServiceImpl implements OrderService {
 
         //解析成功后，进行数据的保存
         if (orderResult.getSuccess()) {
-
         }
 
         return orderResult;

@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
@@ -84,7 +86,7 @@ public class RedisBeanConfig extends CachingConfigurerSupport {
         return cacheErrorHandler;
     }
 
-    @org.springframework.context.annotation.Bean
+    @Bean
     @Override
     public KeyGenerator keyGenerator() {
         //  设置自动key的生成规则，配置spring boot的注解，进行方法级别的缓存
@@ -104,7 +106,7 @@ public class RedisBeanConfig extends CachingConfigurerSupport {
         };
     }
 
-    @org.springframework.context.annotation.Bean
+    @Bean
     public CacheManager cacheManager(JedisConnectionFactory jedisConnectionFactory) {
         // 初始化缓存管理器，在这里我们可以缓存的整体过期时间什么的，我这里默认没有配置
         log.info("初始化 -> [{}]", "CacheManager RedisCacheManager Start");
@@ -115,14 +117,14 @@ public class RedisBeanConfig extends CachingConfigurerSupport {
     }
 
     @Bean
-    public org.springframework.data.redis.core.RedisTemplate<String, Object> redisTemplate(JedisConnectionFactory jedisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(JedisConnectionFactory jedisConnectionFactory) {
         //设置序列化
         FastJson2JsonRedisSerializer fastJson2JsonRedisSerializer = new FastJson2JsonRedisSerializer(Object.class);
 
         // 配置redisTemplate
-        org.springframework.data.redis.core.RedisTemplate<String, Object> redisTemplate = new org.springframework.data.redis.core.RedisTemplate<String, Object>();
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory);
-        org.springframework.data.redis.serializer.RedisSerializer stringSerializer = new StringRedisSerializer();
+        RedisSerializer stringSerializer = new StringRedisSerializer();
         redisTemplate.setKeySerializer(stringSerializer); // key序列化
         redisTemplate.setValueSerializer(fastJson2JsonRedisSerializer); // value序列化
         redisTemplate.setHashKeySerializer(stringSerializer); // Hash key序列化
@@ -131,14 +133,4 @@ public class RedisBeanConfig extends CachingConfigurerSupport {
         return redisTemplate;
     }
 
-
-//    @Bean
-//    public JedisPoolConfig jedisPool() {
-//        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-//        jedisPoolConfig.setMaxIdle(redisConfiguration.getRedisJedisPoolConfiguration().getMaxIdle());
-//        jedisPoolConfig.setMaxWaitMillis(redisConfiguration.getRedisJedisPoolConfiguration().getMaxWait());
-//        jedisPoolConfig.setMaxTotal(redisConfiguration.getRedisJedisPoolConfiguration().getMaxActive());
-//        jedisPoolConfig.setMinIdle(redisConfiguration.getRedisJedisPoolConfiguration().getMinIdle());
-//        return jedisPoolConfig;
-//    }
 }

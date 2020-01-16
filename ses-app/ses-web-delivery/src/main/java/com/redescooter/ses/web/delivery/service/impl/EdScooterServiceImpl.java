@@ -2,7 +2,6 @@ package com.redescooter.ses.web.delivery.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -13,9 +12,8 @@ import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
 import com.redescooter.ses.web.delivery.dao.MobileServiceMapper;
-import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
-import com.redescooter.ses.web.delivery.service.MobileService;
+import com.redescooter.ses.web.delivery.service.EdScooterService;
 import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
 import com.redescooter.ses.web.delivery.vo.mobile.ChanageStatusEnter;
 import com.redescooter.ses.web.delivery.vo.mobile.MobileHistroyEnter;
@@ -37,13 +35,13 @@ import java.util.Map;
 
 /**
  * @ClassName:MobileServiceImpl
- * @description: MobileServiceImpl
+ * @description: EdScooterServiceImpl
  * @author: Alex
  * @Version：1.3
  * @create: 2020/01/14 16:01
  */
 @Service
-public class MobileServiceImpl implements MobileService {
+public class EdScooterServiceImpl implements EdScooterService {
 
     @Autowired
     private MobileServiceMapper mobileServiceMapper;

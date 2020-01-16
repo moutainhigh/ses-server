@@ -12,7 +12,7 @@ import com.redescooter.ses.web.delivery.dao.OrderStatisticsServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
-import com.redescooter.ses.web.delivery.service.OrderStatisticsService;
+import com.redescooter.ses.web.delivery.service.RtDashboardService;
 import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
 import com.redescooter.ses.web.delivery.vo.*;
 import org.apache.dubbo.config.annotation.Reference;
@@ -25,13 +25,13 @@ import java.util.*;
 
 /**
  * @ClassName:OrderStatisticsServiceImpl
- * @description: OrderStatisticsServiceImpl
+ * @description: RtDashboardServiceImpl
  * @author: Alex
  * @Version：1.3
  * @create: 2020/01/04 12:01
  */
 @Service
-public class OrderStatisticsServiceImpl implements OrderStatisticsService {
+public class RtDashboardServiceImpl implements RtDashboardService {
 
     @Autowired
     private OrderStatisticsServiceMapper orderStatisticsServiceMapper;

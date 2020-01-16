@@ -9,10 +9,10 @@ import static org.junit.Assert.*;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 15/1/2020 3:33 下午
- * @ClassName: OrderServiceImplTest
+ * @ClassName: EdOrderServiceImplTest
  * @Function: TODO
  */
-public class OrderServiceImplTest {
+public class EdOrderServiceImplTest {
 
 
     @Test
