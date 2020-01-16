@@ -7,5 +7,7 @@ package com.redescooter.ses.service.hub.constant;
  */
 public interface SequenceName {
 
-    String COR_USER_PROFILE="COR_USER_PROFILE";
+    String COR_USER_PROFILE = "COR_USER_PROFILE";
+
+    String COR_DELIVERY_TRACE = "COR_DELIVERY_TRACE";
 }
