@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.delivery.vo.task;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

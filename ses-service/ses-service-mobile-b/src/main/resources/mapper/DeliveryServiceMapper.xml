@@ -17,7 +17,12 @@
     </select>
 
     <select id="deliveryList" resultType="com.redescooter.ses.api.mobile.b.vo.DeliveryDetailResult">
-        select *
+        select delivery.*,
+        (case
+        when delivery.status=5 or delivery.status=6 or delivery.status=7 then false
+        when TIMESTAMPDIFF(SECOND, NOW(), delivery.eta) <![CDATA[ >= ]]> 0 then false
+        when TIMESTAMPDIFF(SECOND, NOW(), delivery.eta) <![CDATA[ < ]]> 0 then true
+        end) as label
         from cor_delivery delivery
         where delivery.dr = 0
         and delivery.deliverer_id=#{userId}
