@@ -18,9 +18,14 @@ import io.swagger.annotations.*;
  * @create: 2020/01/15 15:14
  */
 @ApiModel(value = "任务列表", description = "任务列表")
-@Data //生成getter,setter等函数
-@AllArgsConstructor //生成全参数构造函数
-@NoArgsConstructor//生成无参构造函数
+/**
+ *生成getter,setter等函数
+ * 生成全参数构造函数
+ * 生成无参构造函数
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class TaskListEnter extends PageEnter {

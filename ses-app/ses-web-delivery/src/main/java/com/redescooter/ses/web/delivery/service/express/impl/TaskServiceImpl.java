@@ -53,7 +53,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Map<String, Integer> countByStatus(GeneralEnter enter) {
         List<CountByStatusResult> countByStatusResultList = taskServiceMapper.countByStatus(enter);
-        Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = new HashMap<>(10);
         for (CountByStatusResult item : countByStatusResultList) {
             map.put(item.getStatus(), item.getTotalCount());
         }

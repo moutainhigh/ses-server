@@ -18,10 +18,16 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @Version：1.3
  * @create: 2020/01/15 15:21
  */
+
+/**
+ * 生成getter,setter等函数
+ * 生成全参数构造函数
+ * 生成无参构造函数
+ */
 @ApiModel(value = "", description = "")
-@Data //生成getter,setter等函数
-@AllArgsConstructor //生成全参数构造函数
-@NoArgsConstructor//生成无参构造函数
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class TaskResult extends GeneralResult {
