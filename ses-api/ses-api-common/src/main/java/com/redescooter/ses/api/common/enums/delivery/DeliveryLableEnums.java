@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum DeliveryLableEnums {
 
+    // 暂无
+    NONE("NONE", "none", "0"),
     // 超时预警 （和订单业务无关 主要是为了推送消息定义的订单状态）
     TIMEOUT_WARNING("TIMEOUT_WARNING", "timeout warning", "1");
 

@@ -45,9 +45,9 @@ spring:                                                                         
     enabled: true                                                                                                       #是否启用swagger
     group:
       sign-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 1.鉴权管理API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: 1.公共鉴权API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: ROS Sign API                                                                                          #api组的标题，会在swagger-ui的标题处显示
-        description: 用户登录注销创建操作                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        description: 登录注销                                                                               #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
         path-regex: /sign/token/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
@@ -61,11 +61,11 @@ spring:                                                                         
           url: https://github.com/mrjerryli                                                                             #联系地址
 
       delivery-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 2.配送单管理API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: 2.餐厅配送API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: Order Delivery API                                                                                           #api组的标题，会在swagger-ui的标题处显示
-        description: 配送单服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        description: 餐厅配送服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
-        path-regex: /order/delivery/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-regex: /rt/delivery/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.2.0                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
@@ -77,11 +77,11 @@ spring:                                                                         
           url: https://github.com/mrjerryli                                                                             #联系地址
 
       driver-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 3.司机管理API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: 3.餐厅司机API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: Driver API                                                                                              #api组的标题，会在swagger-ui的标题处显示
-        description: 司机管理服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        description: 餐厅司机管理服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
-        path-regex: /driver/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-regex: /rt/driver/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.2.0                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
@@ -93,11 +93,11 @@ spring:                                                                         
           url: https://github.com/mrjerryli                                                                             #联系地址
 
       scooter-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 4.车辆管理API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: 4.快递车辆API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: Scooter API                                                                                            #api组的标题，会在swagger-ui的标题处显示
-        description: 车辆管理服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        description: 快递车辆管理服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
-        path-regex: /scooter/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-regex: /ed/scooter/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.2.0                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
@@ -110,11 +110,11 @@ spring:                                                                         
 
 
       OrderStatistics-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 5.订单统计管理API                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: 5.餐厅仪表盘API                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: Scooter API                                                                                            #api组的标题，会在swagger-ui的标题处显示
-        description: 订单统计管理API                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        description: 餐厅仪表盘服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
-        path-regex: /order/statistics/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-regex: /rt/dashboard/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.2.0                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
@@ -126,11 +126,11 @@ spring:                                                                         
           url: https://github.com/mrjerryli
 
       Setting-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 6.Setting管理API                                                                                      #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: 6.公共配置API                                                                                      #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: Setting API                                                                                            #api组的标题，会在swagger-ui的标题处显示
-        description: Setting管理API                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        description: 公共配置服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
-        path-regex: /setting/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-regex: /common/setting/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.2.0                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
@@ -142,11 +142,11 @@ spring:                                                                         
           url: https://github.com/mrjerryli
 
       Message-api:                                                                                                       #用户组api，可以配置多个组
-        group-name: 7.Message管理API                                                                                   #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: 7.公共消息API                                                                                   #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: Message API                                                                                            #api组的标题，会在swagger-ui的标题处显示
-        description: Message管理API                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        description: 公共消息服务                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.web.delivery
-        path-regex: /message/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-regex: /common/message/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.2.0                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议

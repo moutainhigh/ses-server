@@ -34,7 +34,7 @@ public class ListDeliveryResult extends GeneralResult {
     private String orderNo;
     @ApiModelProperty(value = "订单状态")
     private String status;
-    @ApiModelProperty(value = "状态标签")
+    @ApiModelProperty(value = "状态标签,0没有，1超时")
     private String label;
     @ApiModelProperty(value = "收件人")
     private String recipient;

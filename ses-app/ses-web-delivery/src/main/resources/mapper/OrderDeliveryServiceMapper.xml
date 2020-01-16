@@ -203,18 +203,18 @@
     </select>
 
     <select id="scooterLicensePlateList" resultType="com.redescooter.ses.web.delivery.vo.ScooterLicensePlateResult">
-        select scooter.scooter_id    as scooterId,
-               scooter.license_plate as scooterLicensePlate,
-                scooter.longitule     as lng,
-                scooter.latitude      as lat,
-               cd.id                 as driverId,
-               profile.FIRST_NAME    as driverFirstName,
-               profile.LAST_NAME     as driverLastName,
-               profile.PICTURE       as driverPicture
+        select scooter.scooter_id as scooterId,
+        scooter.license_plate as scooterLicensePlate,
+        scooter.longitule as lng,
+        scooter.latitude as lat,
+        cd.id as driverId,
+        profile.FIRST_NAME as driverFirstName,
+        profile.LAST_NAME as driverLastName,
+        profile.PICTURE as driverPicture
         from cor_tenant_scooter scooter
-                 left join cor_driver_scooter cds on cds.scooter_id = scooter.scooter_id and cds.dr = 0 and cds.status = 1
-                 left join cor_driver cd on cd.id = cds.driver_id and cd.dr = 0 and cd.status = 1
-                 left join cor_user_profile profile on cd.user_id = profile.USER_ID and profile.dr = 0
+        left join cor_driver_scooter cds on cds.scooter_id = scooter.scooter_id and cds.dr = 0 and cds.status = 1
+        left join cor_driver cd on cd.id = cds.driver_id and cd.dr = 0 and cd.status = 1
+        left join cor_user_profile profile on cd.user_id = profile.USER_ID and profile.dr = 0
         where scooter.tenant_id = #{tenantId}
         <if test="licensePlate != null and licensePlate != ''">
             and scooter.license_plate like concat("%",#{licensePlate},"%")
@@ -235,7 +235,7 @@
     </select>
     <select id="mapDeliveryList" resultType="com.redescooter.ses.web.delivery.dm.CorDelivery">
         select * from cor_delivery
-        where  tenant_id=#{tenantId}
+        where tenant_id=#{tenantId}
         and dr=0
         <choose>
             <when test="statusList != null and statusList.size() != 0">
