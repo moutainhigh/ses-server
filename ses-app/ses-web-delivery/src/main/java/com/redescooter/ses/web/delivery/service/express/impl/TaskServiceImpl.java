@@ -8,8 +8,11 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.TaskServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorDriver;
+import com.redescooter.ses.web.delivery.dm.CorExpressDeliveryDetail;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
@@ -57,6 +60,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private CorDriverService corDriverService;
+
+    @Autowired
+    private IdAppService idAppService;
 
     @Reference
     private ScooterService scooterService;
@@ -176,6 +182,19 @@ public class TaskServiceImpl implements TaskService {
         if (CollectionUtils.isEmpty(corExpressOrderList)) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
+
+        List<CorExpressDeliveryDetail> corExpressDeliveryDetailList = new ArrayList<>();
+
+        corExpressOrderList.forEach(item -> {
+            if (!enter.getIds().contains(item.getId())) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+            }
+// todo 未完成
+            //            CorExpressDeliveryDetail corExpressDeliveryDetail=new CorExpressDeliveryDetail();
+//            corExpressDeliveryDetail.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY_DETAIL));
+//            corExpressDeliveryDetail.set
+            // 创建 任务详情
+        });
         return null;
     }
 }
