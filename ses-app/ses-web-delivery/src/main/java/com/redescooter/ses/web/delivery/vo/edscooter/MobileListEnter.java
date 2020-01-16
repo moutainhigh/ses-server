@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.delivery.vo.mobile;
+package com.redescooter.ses.web.delivery.vo.edscooter;
 
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.delivery.vo.mobile;
+package com.redescooter.ses.web.delivery.vo.edscooter;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;

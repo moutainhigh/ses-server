@@ -110,4 +110,103 @@
         and express.dr = 0
         and express.id =#{id}
     </select>
+    <select id="detailOrderList" resultType="com.redescooter.ses.web.delivery.vo.task.OrderResult">
+        select expressDetail.express_order_id as id,
+        expressDetail.status as status,
+        eorder.recipient_country as recipientCountry,
+        eorder.recipient_province as recipientProvince,
+        eorder.recipient_postcode as recipientPostcode,
+        eorder.recipient_address as recipientAddress,
+        eorder.expect_time_begin as expectTimeBegin,
+        eorder.expect_time_end as expectTimeEnd
+        from cor_express_delivery_detail expressDetail
+        inner join cor_express_order eorder on eorder.id = expressDetail.express_order_id and eorder.dr = 0
+        where expressDetail.tenant_id = #{tenantId}
+        and expressDetail.dr = 0
+        and expressDetail.express_delivery_id = #{id}
+    </select>
+    <select id="driverList" resultType="com.redescooter.ses.web.delivery.vo.task.DriverListResult">
+        select driver.id as id,
+        profile.FIRST_NAME as driverFirstName,
+        profile.LAST_NAME as driverLastName,
+        profile.PICTURE as avatar,
+        count(detail.status = 2) as total
+        from cor_driver driver
+        inner join con_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
+        left join cor_express_delivery delivery
+        on delivery.driver_id = driver.id and delivery.dr = 0 and delivery.status in (1, 2)
+        left join cor_express_delivery_detail detail
+        on detail.express_delivery_id = delivery.id and detail.dr = 0 and detail.status = 2
+        where driver.tenant_id = #{tenantId}
+        and driver.status = 1
+        and driver.dr = 0
+    </select>
+    <select id="orderListCount" resultType="int">
+        select count(*)
+        from cor_express_order eorder
+        where eorder.dr = 0
+        and eorder.tenant_id = #{tenantId}
+        and eorder.status = 1
+        <if test="recipientCity != null and recipientCity != ''">
+            and eorder.recipient_city=#{recipientCity}
+        </if>
+        <if test="recipientPostcode != null and recipientPostcode != ''">
+            and eorder.recipient_postcode = #{recipientPostcode}
+        </if>
+        <if
+                test="createdStartTime != null and createdStartTime != '' and createdEndTime != null and createdEndTime != ''">
+            and (eorder.created_time between #{createdStartTime} and #{createdEndTime})
+        </if>
+        <if
+                test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
+            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end
+            <![CDATA[ > ]]> #{expectTimeEnd} )
+        </if>
+    </select>
+    <select id="orderList" resultType="com.redescooter.ses.web.delivery.vo.task.OrderResult">
+        select eorder.id as id,
+        eorder.status as status,
+        eorder.recipient_country as recipientCountry,
+        eorder.recipient_province as recipientProvince,
+        eorder.recipient_city as recipientCity,
+        eorder.recipient_postcode as recipientPostcode,
+        eorder.recipient_address as recipientAddress,
+        eorder.expect_time_begin as expectTimeStart,
+        eorder.expect_time_end as expectTimeEnd
+        from cor_express_order eorder
+        where eorder.dr = 0
+        and eorder.tenant_id = #{tenantId}
+        and eorder.status = 1
+        <if test="recipientCity != null and recipientCity != ''">
+            and eorder.recipient_city=#{recipientCity}
+        </if>
+        <if test="recipientPostcode != null and recipientPostcode != ''">
+            and eorder.recipient_postcode = #{recipientPostcode}
+        </if>
+        <if
+                test="createdStartTime != null and createdStartTime != '' and createdEndTime != null and createdEndTime != ''">
+            and (eorder.created_time between #{createdStartTime} and #{createdEndTime})
+        </if>
+        <if
+                test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
+            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end
+            <![CDATA[ > ]]> #{expectTimeEnd} )
+        </if>
+        order by eorder.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+    、
+    <select id="queryExpressOrderByIds" resultType="com.redescooter.ses.web.delivery.dm.CorExpressOrder">
+        select *
+        from cor_express_order
+        where dr=0
+        <if test="collection != null and collection.size() != 0">
+            and id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
 </mapper>

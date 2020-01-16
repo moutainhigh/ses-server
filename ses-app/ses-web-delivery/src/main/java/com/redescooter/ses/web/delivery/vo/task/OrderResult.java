@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.scheduling.support.SimpleTriggerContext;
 
 /**
  * @ClassName:OrderResult
@@ -38,6 +39,9 @@ public class OrderResult extends GeneralResult {
     @ApiModelProperty(value = "收货方省份")
     private String recipientProvince;
 
+    @ApiModelProperty(value = "收货方城市")
+    private String recipientCity;
+
     @ApiModelProperty(value = "收货方邮编")
     private String recipientPostcode;
 
@@ -47,7 +51,7 @@ public class OrderResult extends GeneralResult {
     @ApiModelProperty(value = "EDT")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    private String expectTimeBegin;
+    private String expectTimeStart;
 
     @ApiModelProperty(value = "EDT")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

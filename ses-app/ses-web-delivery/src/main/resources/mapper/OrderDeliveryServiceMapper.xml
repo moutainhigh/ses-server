@@ -33,8 +33,8 @@
         cts.license_plate as licensePlate,
         cts.scooter_id as scooterId,
         (case
-        when cdy.status=5 or cdy.status=6 or cdy.status=7 then false
-        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ >= ]]> 0 then false
+        when cdy.status=5 or cdy.status=6 or cdy.status=7 then null
+        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ >= ]]> 0 then null
         when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ < ]]> 0 then true
         end) as label
         from cor_delivery cdy
@@ -127,8 +127,8 @@
         cdy.driven_mileage as mileage,
         cdy.eta as eatTime,
         (case
-        when cdy.status=5 or cdy.status=6 or cdy.status=7 then false
-        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ >= ]]> 0 then false
+        when cdy.status=5 or cdy.status=6 or cdy.status=7 then null
+        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ >= ]]> 0 then null
         when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ < ]]> 0 then true
         end) as label
         from cor_delivery cdy

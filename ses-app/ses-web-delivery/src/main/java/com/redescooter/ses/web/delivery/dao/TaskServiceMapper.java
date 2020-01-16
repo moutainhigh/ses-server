@@ -3,6 +3,10 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
+import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
+import com.redescooter.ses.web.delivery.vo.task.OrderResult;
 import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
 import com.redescooter.ses.web.delivery.vo.task.TaskResult;
 
@@ -48,4 +52,44 @@ public interface TaskServiceMapper {
      * @return
      */
     TaskResult detail(IdEnter enter);
+
+    /**
+     * task 详情小定单列表
+     *
+     * @param enter
+     * @return
+     */
+    List<OrderResult> detailOrderList(IdEnter enter);
+
+    /**
+     * 快递司机列表
+     *
+     * @param enter
+     * @return
+     */
+    DriverListResult driverList(GeneralEnter enter);
+
+    /**
+     * 添加任务小定单列表
+     *
+     * @param enter
+     * @return
+     */
+    int orderListCount(OrderListEnter enter);
+
+    /**
+     * 添加任务小定单列表
+     *
+     * @param enter
+     * @return
+     */
+    List<OrderResult> orderList(OrderListEnter enter);
+
+    /**
+     * 查询快递订单
+     *
+     * @param ids
+     * @return
+     */
+    List<CorExpressOrder> queryExpressOrderByIds(List<Long> ids);
 }
