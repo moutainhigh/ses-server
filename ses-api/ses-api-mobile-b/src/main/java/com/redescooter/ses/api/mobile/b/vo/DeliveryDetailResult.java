@@ -144,4 +144,7 @@ public class DeliveryDetailResult extends GeneralResult {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createdTime;
+
+    @ApiModelProperty(value = "超时标签是否显示，true显示，false 不显示")
+    private Boolean label;
 }

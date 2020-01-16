@@ -15,7 +15,6 @@
         select cdy.id,
         cdy.order_no as orderNo,
         cdy.status,
-        '' as label,
         cdy.recipient,
         cdy.recipient_address as recipientAddress,
         cdy.recipient_email as recipientEmail,
@@ -32,7 +31,12 @@
         cup.last_name as driverLastName,
         cup.first_name as driverFirstName,
         cts.license_plate as licensePlate,
-        cts.scooter_id as scooterId
+        cts.scooter_id as scooterId,
+        (case
+        when cdy.status=5 or cdy.status=6 or cdy.status=7 then false
+        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ >= ]]> 0 then false
+        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ < ]]> 0 then true
+        end) as label
         from cor_delivery cdy
         inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
         inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
@@ -99,7 +103,6 @@
         select cdy.id,
         cdy.order_no          as orderNo,
         cdy.status,
-        ''                    as label,
         cdy.recipient,
         cdy.recipient_address as recipientAddress,
         cdy.recipient_email   as recipientEmail,
@@ -112,24 +115,29 @@
         cdy.longitude,
         cdy.created_time      as createdTime,
         cdy.ata               as deliveredTime,
-        cd.id                 as driverId,
-        cup.last_name         as driverLastName,
-        cup.first_name        as driverFirstName,
-        cup.tel_number_1      as driverTel,
-        cts.license_plate     as licensePlate,
-        cts.scooter_id        as scooterId,
-        cts.longitule         as scooterLng,
-        cts.latitude          as scooterLat,
-        cts.tenant_id         as tenantId,
-        cdy.driven_mileage    as mileage,
-        cdy.eta               as eatTime
-       from cor_delivery cdy
-             inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
-             inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
-             inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
-    where cdy.dr = 0
-    and cdy.id=#{id}
-    and cdy.tenant_id=#{tenantId}
+        cd.id as driverId,
+        cup.last_name as driverLastName,
+        cup.first_name as driverFirstName,
+        cup.tel_number_1 as driverTel,
+        cts.license_plate as licensePlate,
+        cts.scooter_id as scooterId,
+        cts.longitule as scooterLng,
+        cts.latitude as scooterLat,
+        cts.tenant_id as tenantId,
+        cdy.driven_mileage as mileage,
+        cdy.eta as eatTime,
+        (case
+        when cdy.status=5 or cdy.status=6 or cdy.status=7 then false
+        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ >= ]]> 0 then false
+        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ < ]]> 0 then true
+        end) as label
+        from cor_delivery cdy
+        inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
+        inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
+        inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
+        where cdy.dr = 0
+        and cdy.id=#{id}
+        and cdy.tenant_id=#{tenantId}
 
     </select>
 
