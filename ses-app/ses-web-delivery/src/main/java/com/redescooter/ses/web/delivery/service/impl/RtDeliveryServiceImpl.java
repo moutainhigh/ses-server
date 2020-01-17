@@ -512,6 +512,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
         corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateUtil.DEFAULT_DATETIME_FORMAT));
         corDelivery.setStatus(DeliveryStatusEnums.PENDING.getValue());
         corDelivery.setDelivererId(corDriver.getUserId());
+        corDelivery.setLabel(null);
         corDelivery.setUpdatedBy(enter.getUserId());
         corDelivery.setUpdatedTime(new Date());
         deliveryService.updateById(corDelivery);

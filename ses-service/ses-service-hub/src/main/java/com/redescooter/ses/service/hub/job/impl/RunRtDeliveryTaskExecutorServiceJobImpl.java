@@ -65,7 +65,7 @@ public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTas
         corDeliveryQueryWrapper.le(CorDelivery.COL_ETA, new Date());
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
         corDeliveryQueryWrapper.eq(CorDelivery.COL_LABEL, null);
-        corDeliveryQueryWrapper.in(CorDelivery.COL_STATUS, DeliveryStatusEnums.DELIVERING.getValue(), DeliveryStatusEnums.REJECTED.getValue(), DeliveryStatusEnums.PENDING.getValue());
+        corDeliveryQueryWrapper.in(CorDelivery.COL_STATUS, DeliveryStatusEnums.DELIVERING.getValue(), DeliveryStatusEnums.PENDING.getValue());
 
         List<CorDelivery> corDeliveryList = corDeliveryService.list(corDeliveryQueryWrapper);
 
