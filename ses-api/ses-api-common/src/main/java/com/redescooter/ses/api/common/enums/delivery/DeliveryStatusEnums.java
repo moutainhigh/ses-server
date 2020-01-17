@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum DeliveryStatusEnums {
+
     //待配送
     PENDING("PENDING", "pending", "1"),
 
@@ -32,7 +33,6 @@ public enum DeliveryStatusEnums {
 
     //失败（取消订单）
     CANCEL("CANCEL", "cancel", "7");
-
 
     private String code;
 
