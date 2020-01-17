@@ -151,7 +151,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             deliverySave.setStatus(DeliveryStatusEnums.PENDING.getValue());
             // todo 预计开始配送的时间,默认十分钟后开始配送
             deliverySave.setEtd(DateUtils.addMinutes(new Date(), Integer.parseInt("10")));
-            deliverySave.setEta(DateUtil.parse(DateUtil.pay30(), DateUtil.DEFAULT_DATETIME_FORMAT));
+            deliverySave.setEta(DateUtils.addMinutes(new Date(), Integer.parseInt(enter.getTimeoutExpectde())));
             BigDecimal drivenMileage = new BigDecimal(MapUtil.getDistance(enter.getLatitude(), enter.getLongitude(), tenant.getLatitude() == null ? "0" : String.valueOf(tenant.getLatitude()),
                     tenant.getLongitude() == null ? "0" : String.valueOf(tenant.getLongitude())));
             deliverySave.setDrivenMileage(drivenMileage);

@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -78,18 +79,16 @@ public class SesWebDeliveryApplicationTests {
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
         List<CorDelivery> corDeliveryList = corDeliveryMapper.selectList(corDeliveryQueryWrapper);
 
-        Double count = 0.001d;
         Long deliveryId = null;
 
         for (CorDelivery item : corDeliveryList) {
             deliveryId = item.getId();
-            count = count + 0.005;
             item.setId(idAppService.getId(SequenceName.COR_DELIVERY));
             item.setDelivererId(userId);
             item.setTenantId(tenantId);
             item.setOrderNo(generateService.getOrderNo());
-            item.setLongitude(item.getLongitude().add(new BigDecimal(count)));
-            item.setLatitude(item.getLatitude().add(new BigDecimal(count)));
+            item.setLongitude(new BigDecimal(randomLonLat("Lon")));
+            item.setLatitude(new BigDecimal(randomLonLat("Lng")));
             item.setGeohash(MapUtil.geoHash(item.getLongitude().toString(), item.getLatitude().toString()));
             item.setTimeoutExpectde("18");
             item.setTimeOut(DateUtil.parse(timePastTenSecond(time, 1000), "yyyy-MM-dd HH:mm:ss"));
@@ -156,6 +155,24 @@ public class SesWebDeliveryApplicationTests {
         }
         if (CollectionUtils.isNotEmpty(corDeliveryList)) {
             corDeliveryMapper.batchInsert(corDeliveryList);
+        }
+    }
+
+    private String randomLonLat(String type) {
+
+        Double MinLon = 1.5152710000d;
+        Double MaxLon = 4.0150030000d;
+        Double MinLat = 47.4174040000d;
+        Double MaxLat = 49.5093090000d;
+        Random random = new Random();
+        BigDecimal db = new BigDecimal(Math.random() * (MaxLon - MinLon) + MinLon);
+        String lon = db.setScale(6, BigDecimal.ROUND_HALF_UP).toString();// 小数后6位
+        db = new BigDecimal(Math.random() * (MaxLat - MinLat) + MinLat);
+        String lat = db.setScale(6, BigDecimal.ROUND_HALF_UP).toString();
+        if (type.equals("Lon")) {
+            return lon;
+        } else {
+            return lat;
         }
     }
 }
