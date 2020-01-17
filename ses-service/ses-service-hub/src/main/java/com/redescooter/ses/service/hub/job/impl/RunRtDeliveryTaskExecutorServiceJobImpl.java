@@ -56,36 +56,23 @@ public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTas
         updaCorDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
         updaCorDeliveryQueryWrapper.eq(CorDelivery.COL_LABEL, DeliveryLableEnums.TIMEOUT_WARNING.getValue());
         List<CorDelivery> updateCorDeliveryList = corDeliveryService.list(updaCorDeliveryQueryWrapper);
+        updateCorDeliveryList.forEach(item -> {
+            item.setLabel(null);
+        });
 
 
         QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
         corDeliveryQueryWrapper.le(CorDelivery.COL_ETA, new Date());
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
+        corDeliveryQueryWrapper.eq(CorDelivery.COL_LABEL, null);
         corDeliveryQueryWrapper.in(CorDelivery.COL_STATUS, DeliveryStatusEnums.DELIVERING.getValue(), DeliveryStatusEnums.REJECTED.getValue(), DeliveryStatusEnums.PENDING.getValue());
 
         List<CorDelivery> corDeliveryList = corDeliveryService.list(corDeliveryQueryWrapper);
 
-        //查询所有已拒绝的订单
-        QueryWrapper<CorDeliveryTrace> corDeliveryTraceQueryWrapper = new QueryWrapper<>();
-        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_EVENT, DeliveryEventEnums.TIMEOUT.getValue());
-        corDeliveryTraceQueryWrapper.eq(CorDeliveryTrace.COL_DR, 0);
-        List<CorDeliveryTrace> corDeliveryTraceList = corDeliveryTraceService.list(corDeliveryTraceQueryWrapper);
-
-        List<Long> timeOutDeliveryIds = new ArrayList<>();
         List<CorDelivery> updateCorDelivery = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(corDeliveryTraceList)) {
-            corDeliveryTraceList.forEach(item -> {
-                timeOutDeliveryIds.add(item.getDeliveryId());
-            });
-        }
-
         List<CorDeliveryTrace> saveDeliveryTraceList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(corDeliveryList)) {
             for (CorDelivery item : corDeliveryList) {
-                // 若 该订单的超时事件已经 保存过了 就剔除掉
-                if (CollectionUtils.isNotEmpty(timeOutDeliveryIds) && timeOutDeliveryIds.contains(item.getId())) {
-                    continue;
-                }
                 item.setLabel(DeliveryLableEnums.TIMEOUT_WARNING.getValue());
                 updateCorDelivery.add(item);
                 CorDeliveryTrace trace = buildCorDeliveryTrace(item);
