@@ -7,10 +7,10 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.EdScooterService;
 import com.redescooter.ses.web.delivery.vo.edscooter.ChanageStatusEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyResult;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileListEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterListEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -47,20 +47,20 @@ public class EdScooterController {
     }
 
     @PostMapping(value = "/list")
-    @ApiOperation(value = "车辆列表", response = MobileResult.class)
-    public Response<PageResult<MobileResult>> list(@ModelAttribute @ApiParam("请求参数") MobileListEnter enter) {
+    @ApiOperation(value = "车辆列表", response = EdScooterResult.class)
+    public Response<PageResult<EdScooterResult>> list(@ModelAttribute @ApiParam("请求参数") EdScooterListEnter enter) {
         return new Response<>(edScooterService.list(enter));
     }
 
     @PostMapping(value = "/detail")
-    @ApiOperation(value = "车辆详情", response = MobileResult.class)
-    public Response<MobileResult> detail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    @ApiOperation(value = "车辆详情", response = EdScooterResult.class)
+    public Response<EdScooterResult> detail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(edScooterService.detail(enter));
     }
 
     @PostMapping(value = "/assignMobileHistroy")
-    @ApiOperation(value = "车辆分配记录", response = MobileHistroyResult.class)
-    public Response<PageResult<MobileHistroyResult>> assignMobileHistroy(@ModelAttribute @ApiParam("请求参数") MobileHistroyEnter enter) {
+    @ApiOperation(value = "车辆分配记录", response = EdScooterHistroyResult.class)
+    public Response<PageResult<EdScooterHistroyResult>> assignMobileHistroy(@ModelAttribute @ApiParam("请求参数") EdScooterHistroyEnter enter) {
         return new Response<>(edScooterService.assignMobileHistroy(enter));
     }
 

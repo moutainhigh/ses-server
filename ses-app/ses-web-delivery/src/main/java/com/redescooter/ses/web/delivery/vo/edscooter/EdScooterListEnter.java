@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class MobileListEnter extends PageEnter {
+public class EdScooterListEnter extends PageEnter {
     @ApiModelProperty(value = "状态")
     private String status;
 

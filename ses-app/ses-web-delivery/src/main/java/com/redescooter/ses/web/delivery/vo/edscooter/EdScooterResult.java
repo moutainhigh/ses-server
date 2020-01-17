@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class MobileResult extends GeneralResult {
+public class EdScooterResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 

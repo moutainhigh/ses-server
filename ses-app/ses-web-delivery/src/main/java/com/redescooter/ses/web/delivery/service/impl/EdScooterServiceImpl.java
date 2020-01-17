@@ -11,15 +11,15 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
-import com.redescooter.ses.web.delivery.dao.MobileServiceMapper;
+import com.redescooter.ses.web.delivery.dao.EdScooterServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.service.EdScooterService;
 import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
 import com.redescooter.ses.web.delivery.vo.edscooter.ChanageStatusEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyResult;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileListEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterListEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -45,7 +45,7 @@ import java.util.Map;
 public class EdScooterServiceImpl implements EdScooterService {
 
     @Autowired
-    private MobileServiceMapper mobileServiceMapper;
+    private EdScooterServiceMapper edScooterServiceMapper;
 
     @Autowired
     private CorTenantScooterService corTenantScooterService;
@@ -61,7 +61,7 @@ public class EdScooterServiceImpl implements EdScooterService {
      */
     @Override
     public Map<String, Integer> countStatus(GeneralEnter enter) {
-        List<CountByStatusResult> countByStatusResultList = mobileServiceMapper.statusByCount(enter);
+        List<CountByStatusResult> countByStatusResultList = edScooterServiceMapper.countByStatus(enter);
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByStatusResultList) {
             map.put(item.getStatus(), item.getTotalCount());
@@ -81,12 +81,12 @@ public class EdScooterServiceImpl implements EdScooterService {
      * @return
      */
     @Override
-    public PageResult<MobileResult> list(MobileListEnter enter) {
-        Integer count = mobileServiceMapper.listCount(enter);
+    public PageResult<EdScooterResult> list(EdScooterListEnter enter) {
+        Integer count = edScooterServiceMapper.listCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<MobileResult> resultList = mobileServiceMapper.list(enter);
+        List<EdScooterResult> resultList = edScooterServiceMapper.list(enter);
         List<Long> scooterIdList = new ArrayList<>();
         resultList.forEach(item -> {
             scooterIdList.add(item.getId());
@@ -111,8 +111,8 @@ public class EdScooterServiceImpl implements EdScooterService {
      * @return
      */
     @Override
-    public MobileResult detail(IdEnter enter) {
-        MobileResult result = mobileServiceMapper.detail(enter);
+    public EdScooterResult detail(IdEnter enter) {
+        EdScooterResult result = edScooterServiceMapper.detail(enter);
         List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(result.getId());
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
@@ -132,23 +132,23 @@ public class EdScooterServiceImpl implements EdScooterService {
      * @return
      */
     @Override
-    public PageResult<MobileHistroyResult> assignMobileHistroy(MobileHistroyEnter enter) {
+    public PageResult<EdScooterHistroyResult> assignMobileHistroy(EdScooterHistroyEnter enter) {
         int total = 0;
         // 已还车 数量统计
-        int usedCount = mobileServiceMapper.assignMobileHistroyCount(enter);
+        int usedCount = edScooterServiceMapper.assignEdScooterHistroyCount(enter);
         // 使用中的 数量统计
-        int usingCount = mobileServiceMapper.usingAssignMobileHistroyCount(enter);
+        int usingCount = edScooterServiceMapper.usingAssignEdScooterHistroyCount(enter);
 
         total = total + usedCount + usingCount;
 
         if (total == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<MobileHistroyResult> result = new ArrayList<>();
+        List<EdScooterHistroyResult> result = new ArrayList<>();
 
-        List<MobileHistroyResult> usedList = mobileServiceMapper.assignMobileHistroyList(enter);
+        List<EdScooterHistroyResult> usedList = edScooterServiceMapper.assignEdScooterHistroyList(enter);
 
-        List<MobileHistroyResult> usingList = mobileServiceMapper.usingAssignMobileHistroyList(enter);
+        List<EdScooterHistroyResult> usingList = edScooterServiceMapper.usingAssignEdScooterHistroyList(enter);
         if (CollectionUtils.isNotEmpty(usedList)) {
             result.addAll(usedList);
         }
@@ -184,7 +184,7 @@ public class EdScooterServiceImpl implements EdScooterService {
      * @return
      */
     @Override
-    public PageResult<MobileHistroyResult> repairMobileHistroy(MobileHistroyEnter enter) {
+    public PageResult<EdScooterHistroyResult> repairMobileHistroy(EdScooterHistroyEnter enter) {
         return null;
     }
 

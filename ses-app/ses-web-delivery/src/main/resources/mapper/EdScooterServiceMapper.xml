@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.delivery.dao.MobileServiceMapper">
+<mapper namespace="com.redescooter.ses.web.delivery.dao.EdScooterServiceMapper">
 
 
-    <select id="statusByCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+    <select id="countByStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select count(*) totalCount, scooter.status
         from cor_tenant_scooter scooter
         where scooter.tenant_id = #{tenantId}
@@ -31,7 +31,7 @@
             )
         </if>
     </select>
-    <select id="list" resultType="com.redescooter.ses.web.delivery.vo.edscooter.MobileResult">
+    <select id="list" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
         select scooter.scooter_id as id,
         scooter.status as status,
         scooter.license_plate as licensePlate,
@@ -60,7 +60,7 @@
         limit #{startRow},#{pageSize}
     </select>
 
-    <select id="detail" resultType="com.redescooter.ses.web.delivery.vo.edscooter.MobileResult">
+    <select id="detail" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
         select scooter.scooter_id as id,
         scooter.status as status,
         scooter.license_plate as licensePlate,
@@ -79,7 +79,7 @@
         where scooter.scooter_id = #{id}
         and scooter.tenant_id = #{tenantId}
     </select>
-    <select id="assignMobileHistroyCount" resultType="java.lang.Integer">
+    <select id="assignEdScooterHistroyCount" resultType="java.lang.Integer">
         select count(*)
         from cor_driver_scooter_history histroy
         inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
@@ -103,7 +103,7 @@
             )
         </if>
     </select>
-    <select id="usingAssignMobileHistroyCount" resultType="java.lang.Integer">
+    <select id="usingAssignEdScooterHistroyCount" resultType="java.lang.Integer">
         select count(*)
         from cor_driver_scooter scooter
         inner join cor_driver_scooter_history histroy
@@ -129,8 +129,8 @@
             )
         </if>
     </select>
-    <select id="assignMobileHistroyList"
-            resultType="com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyResult">
+    <select id="assignEdScooterHistroyList"
+            resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult">
         select histroy.id as id,
         histroy.scooter_id as scooterId,
         histroy.begin_time as assignedTime,
@@ -163,8 +163,8 @@
         order by histroy.begin_time desc
         limit #{startRow},#{pageSize}
     </select>
-    <select id="usingAssignMobileHistroyList"
-            resultType="com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyResult">
+    <select id="usingAssignEdScooterHistroyList"
+            resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult">
         select histroy.id as id,
         histroy.scooter_id as scooterId,
         histroy.begin_time as assignedTime,

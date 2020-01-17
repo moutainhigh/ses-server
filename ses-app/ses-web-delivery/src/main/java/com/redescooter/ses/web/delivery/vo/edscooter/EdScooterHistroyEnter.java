@@ -24,7 +24,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class MobileHistroyEnter extends PageEnter {
+public class EdScooterHistroyEnter extends PageEnter {
 
     @ApiModelProperty(value = "scooterId", required = true)
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "ID 不为空")

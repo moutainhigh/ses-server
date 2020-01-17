@@ -24,7 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class MobileHistroyResult extends GeneralResult {
+public class EdScooterHistroyResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;
