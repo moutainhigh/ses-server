@@ -3,6 +3,7 @@ package com.redescooter.ses.web.delivery.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,9 +13,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@ApiModel(value = "com.redescooter.ses.web.delivery.dm.CorDelivery")
+@ApiModel(value = "com-redescooter-ses-web-delivery-dm-CorDelivery")
 @Data
-@TableName(value = "cor_delivery")
+@TableName(value = "corporate.cor_delivery")
 public class CorDelivery implements Serializable {
     /**
      * ID
@@ -27,6 +28,7 @@ public class CorDelivery implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -234,6 +236,13 @@ public class CorDelivery implements Serializable {
     private String statistics;
 
     /**
+     * 标签
+     */
+    @TableField(value = "label")
+    @ApiModelProperty(value = "标签")
+    private String label;
+
+    /**
      * 更新时间
      */
     @TableField(value = "updated_time")
@@ -264,6 +273,13 @@ public class CorDelivery implements Serializable {
     /**
      * 冗余字段
      */
+    @TableField(value = "def1")
+    @ApiModelProperty(value = "冗余字段")
+    private String def1;
+
+    /**
+     * 冗余字段
+     */
     @TableField(value = "def2")
     @ApiModelProperty(value = "冗余字段")
     private String def2;
@@ -290,6 +306,8 @@ public class CorDelivery implements Serializable {
     private Double def6;
 
     private static final long serialVersionUID = 1L;
+
+    public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
 
@@ -351,6 +369,8 @@ public class CorDelivery implements Serializable {
 
     public static final String COL_STATISTICS = "statistics";
 
+    public static final String COL_LABEL = "label";
+
     public static final String COL_UPDATED_TIME = "updated_time";
 
     public static final String COL_CREATED_TIME = "created_time";
@@ -358,6 +378,8 @@ public class CorDelivery implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_CREATED_BY = "created_by";
+
+    public static final String COL_DEF1 = "def1";
 
     public static final String COL_DEF2 = "def2";
 

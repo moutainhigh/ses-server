@@ -1,9 +1,9 @@
-package com.redescooter.ses.service.mobile.b.service.base;
+package com.redescooter.ses.service.mobile.b.service.base.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.service.mobile.b.dao.base.CorScooterRideStatDetailMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStatDetail;
-import com.redescooter.ses.service.mobile.b.service.base.impl.CorScooterRideStatDetailService;
+import com.redescooter.ses.service.mobile.b.service.base.CorScooterRideStatDetailService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

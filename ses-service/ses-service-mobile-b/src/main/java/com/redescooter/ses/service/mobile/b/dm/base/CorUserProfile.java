@@ -28,7 +28,6 @@ public class CorUserProfile implements Serializable {
      */
     @TableField(value = "dr")
     @TableLogic
-
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 

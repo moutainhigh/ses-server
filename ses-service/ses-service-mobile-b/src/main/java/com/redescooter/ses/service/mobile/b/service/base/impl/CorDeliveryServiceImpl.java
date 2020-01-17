@@ -1,12 +1,13 @@
-package com.redescooter.ses.service.mobile.b.service.base;
+package com.redescooter.ses.service.mobile.b.service.base.impl;
+
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDelivery;
-import com.redescooter.ses.service.mobile.b.service.base.impl.CorDeliveryService;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.redescooter.ses.service.mobile.b.service.base.CorDeliveryService;
 
 @Service
 public class CorDeliveryServiceImpl extends ServiceImpl<CorDeliveryMapper, CorDelivery> implements CorDeliveryService {
@@ -14,6 +15,11 @@ public class CorDeliveryServiceImpl extends ServiceImpl<CorDeliveryMapper, CorDe
     @Override
     public int updateBatch(List<CorDelivery> list) {
         return baseMapper.updateBatch(list);
+    }
+
+    @Override
+    public int updateBatchSelective(List<CorDelivery> list) {
+        return baseMapper.updateBatchSelective(list);
     }
 
     @Override
@@ -31,5 +37,3 @@ public class CorDeliveryServiceImpl extends ServiceImpl<CorDeliveryMapper, CorDe
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
-
-

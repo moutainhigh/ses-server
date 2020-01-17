@@ -25,4 +25,7 @@ public interface CorDeliveryService extends IService<CorDelivery> {
 
     int insertOrUpdateSelective(CorDelivery record);
 
+    int updateBatchSelective(List<CorDelivery> list);
 }
+
+

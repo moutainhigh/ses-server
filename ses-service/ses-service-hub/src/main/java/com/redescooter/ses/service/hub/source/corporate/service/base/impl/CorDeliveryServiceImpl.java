@@ -1,14 +1,13 @@
 package com.redescooter.ses.service.hub.source.corporate.service.base.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.redescooter.ses.service.hub.source.corporate.dao.CorDeliveryMapper;
+import com.redescooter.ses.service.hub.source.corporate.dm.CorDelivery;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorDeliveryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.service.hub.source.corporate.dao.CorDeliveryMapper;
-import com.redescooter.ses.service.hub.source.corporate.dm.CorDelivery;
 
 @DS("corporate")
 @Service
@@ -39,3 +38,5 @@ public class CorDeliveryServiceImpl extends ServiceImpl<CorDeliveryMapper, CorDe
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+

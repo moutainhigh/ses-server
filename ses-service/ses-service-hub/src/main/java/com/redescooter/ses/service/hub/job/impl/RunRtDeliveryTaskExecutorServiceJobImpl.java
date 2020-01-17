@@ -2,6 +2,7 @@ package com.redescooter.ses.service.hub.job.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
+import com.redescooter.ses.api.common.enums.delivery.DeliveryLableEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.jiguang.JobResult;
@@ -49,6 +50,14 @@ public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTas
      */
     @Override
     public JobResult deliveryTimeOut(GeneralEnter enter) {
+        // 清楚掉终结状态下 标签
+        QueryWrapper<CorDelivery> updaCorDeliveryQueryWrapper = new QueryWrapper<>();
+        updaCorDeliveryQueryWrapper.in(CorDelivery.COL_STATUS, DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue(), DeliveryStatusEnums.COMPLETED.getValue(), DeliveryStatusEnums.CANCEL.getValue());
+        updaCorDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
+        updaCorDeliveryQueryWrapper.eq(CorDelivery.COL_LABEL, DeliveryLableEnums.TIMEOUT_WARNING.getValue());
+        List<CorDelivery> updateCorDeliveryList = corDeliveryService.list(updaCorDeliveryQueryWrapper);
+
+
         QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
         corDeliveryQueryWrapper.le(CorDelivery.COL_ETA, new Date());
         corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
@@ -63,6 +72,7 @@ public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTas
         List<CorDeliveryTrace> corDeliveryTraceList = corDeliveryTraceService.list(corDeliveryTraceQueryWrapper);
 
         List<Long> timeOutDeliveryIds = new ArrayList<>();
+        List<CorDelivery> updateCorDelivery = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(corDeliveryTraceList)) {
             corDeliveryTraceList.forEach(item -> {
                 timeOutDeliveryIds.add(item.getDeliveryId());
@@ -76,12 +86,19 @@ public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTas
                 if (CollectionUtils.isNotEmpty(timeOutDeliveryIds) && timeOutDeliveryIds.contains(item.getId())) {
                     continue;
                 }
+                item.setLabel(DeliveryLableEnums.TIMEOUT_WARNING.getValue());
+                updateCorDelivery.add(item);
                 CorDeliveryTrace trace = buildCorDeliveryTrace(item);
                 saveDeliveryTraceList.add(trace);
             }
         }
         if (CollectionUtils.isNotEmpty(saveDeliveryTraceList)) {
             corDeliveryTraceService.batchInsert(saveDeliveryTraceList);
+        }
+        // 将 清楚掉标签数据 放到list中做更新
+        updateCorDelivery.addAll(updateCorDeliveryList);
+        if (CollectionUtils.isNotEmpty(updateCorDelivery)) {
+            corDeliveryService.updateBatch(updateCorDelivery);
         }
         return JobResult.success();
     }

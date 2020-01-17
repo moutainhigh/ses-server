@@ -1,9 +1,9 @@
-package com.redescooter.ses.service.mobile.b.service.base;
+package com.redescooter.ses.service.mobile.b.service.base.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDriverMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriver;
-import com.redescooter.ses.service.mobile.b.service.base.impl.CorDriverService;
+import com.redescooter.ses.service.mobile.b.service.base.CorDriverService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

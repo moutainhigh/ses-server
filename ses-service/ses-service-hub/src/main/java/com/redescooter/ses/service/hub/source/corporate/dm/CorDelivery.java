@@ -7,16 +7,15 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import lombok.Data;
-
 @ApiModel(value = "com-redescooter-ses-service-hub-source-corporate-dm-CorDelivery")
 @Data
-@TableName(value = "cor_delivery")
+@TableName(value = "corporate.cor_delivery")
 public class CorDelivery implements Serializable {
     /**
      * ID
@@ -238,6 +237,13 @@ public class CorDelivery implements Serializable {
     private String statistics;
 
     /**
+     * 标签
+     */
+    @TableField(value = "label")
+    @ApiModelProperty(value = "标签")
+    private String label;
+
+    /**
      * 更新时间
      */
     @TableField(value = "updated_time")
@@ -363,6 +369,8 @@ public class CorDelivery implements Serializable {
     public static final String COL_SAVINGS = "savings";
 
     public static final String COL_STATISTICS = "statistics";
+
+    public static final String COL_LABEL = "label";
 
     public static final String COL_UPDATED_TIME = "updated_time";
 
