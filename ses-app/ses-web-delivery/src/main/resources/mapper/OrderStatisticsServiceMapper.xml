@@ -17,6 +17,9 @@
         <if test="date != null and date == true ">
             and DATE_SUB(CURDATE(), INTERVAL 7 DAY) <![CDATA[ < ]]> date(delivery.updated_time)
         </if>
+        <if test="date != null and date == false ">
+            and DATE_SUB(CURDATE(), INTERVAL 0 DAY) <![CDATA[ < ]]> date(delivery.updated_time)
+        </if>
         group by id, driverFirstName, driverLastName, avatar
         order by count desc
 
