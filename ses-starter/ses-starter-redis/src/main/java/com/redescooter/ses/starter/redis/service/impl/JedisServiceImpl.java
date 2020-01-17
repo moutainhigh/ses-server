@@ -35,8 +35,9 @@ public class JedisServiceImpl implements JedisService {
     @Override
     public String set(String key, String value, int seconds) {
         String responseResult = jedisCluster.set(key,value);
-        if(seconds!=0)
+        if(seconds!=0) {
             jedisCluster.expire(key,seconds);
+        }
         return responseResult;
     }
 

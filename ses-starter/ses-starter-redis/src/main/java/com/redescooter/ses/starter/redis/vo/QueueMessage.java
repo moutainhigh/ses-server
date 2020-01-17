@@ -1,6 +1,5 @@
 package com.redescooter.ses.starter.redis.vo;
 
-import com.redescooter.ses.starter.redis.enums.TopicQueueTypeEnums;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,10 +12,6 @@ import java.util.Map;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class QueueMessage extends MessageGeneralEnter {
-    /**
-     * 消息事件的类型
-     */
-    private TopicQueueTypeEnums type;
     /**
      * 消息唯一标识
      */
