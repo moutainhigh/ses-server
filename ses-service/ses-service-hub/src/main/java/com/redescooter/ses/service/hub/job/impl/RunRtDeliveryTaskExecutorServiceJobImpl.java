@@ -50,9 +50,10 @@ public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTas
      */
     @Override
     public JobResult deliveryTimeOut(GeneralEnter enter) {
-        // 清楚掉终结状态下 标签
+        //todo 年后aron 来了之后 去掉 清楚掉终结状态下 标签
         QueryWrapper<CorDelivery> updaCorDeliveryQueryWrapper = new QueryWrapper<>();
-        updaCorDeliveryQueryWrapper.in(CorDelivery.COL_STATUS, DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue(), DeliveryStatusEnums.COMPLETED.getValue(), DeliveryStatusEnums.CANCEL.getValue());
+        updaCorDeliveryQueryWrapper.in(CorDelivery.COL_STATUS, DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue(), DeliveryStatusEnums.REJECTED.getValue(), DeliveryStatusEnums.COMPLETED.getValue(),
+                DeliveryStatusEnums.CANCEL.getValue());
         updaCorDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
         updaCorDeliveryQueryWrapper.eq(CorDelivery.COL_LABEL, DeliveryLableEnums.TIMEOUT_WARNING.getValue());
         List<CorDelivery> updateCorDeliveryList = corDeliveryService.list(updaCorDeliveryQueryWrapper);
@@ -63,8 +64,7 @@ public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTas
 
         QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
         corDeliveryQueryWrapper.le(CorDelivery.COL_ETA, new Date());
-        corDeliveryQueryWrapper.eq(CorDelivery.COL_DR, 0);
-        corDeliveryQueryWrapper.eq(CorDelivery.COL_LABEL, null);
+        corDeliveryQueryWrapper.isNull(CorDelivery.COL_LABEL);
         corDeliveryQueryWrapper.in(CorDelivery.COL_STATUS, DeliveryStatusEnums.DELIVERING.getValue(), DeliveryStatusEnums.PENDING.getValue());
 
         List<CorDelivery> corDeliveryList = corDeliveryService.list(corDeliveryQueryWrapper);
@@ -106,9 +106,9 @@ public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTas
         trace.setGeohash(MapUtil.geoHash(item.getLongitude().toString(), item.getLatitude().toString()));
         trace.setScooterId(item.getScooterId());
         trace.setCreatedBy(item.getCreatedBy());
-        trace.setCreatedTime(new Date());
+        trace.setCreatedTime(item.getEta());
         trace.setUpdatedBy(item.getUpdatedBy());
-        trace.setUpdatedTime(new Date());
+        trace.setUpdatedTime(item.getEta());
         return trace;
     }
 }
