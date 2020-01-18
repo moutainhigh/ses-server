@@ -132,9 +132,9 @@ public class TenantSettingServiceImpl implements TenantSettingService {
         BaseCustomerEnter baseCustomerEnter = new BaseCustomerEnter();
         baseCustomerEnter.setId(enter.getId());
         if (StringUtils.isNotBlank(enter.getCustomerFirstName()) && StringUtils.isNotBlank(enter.getCustomerLastName())) {
-            baseCustomerEnter.setCustomerFirstName(enter.getCustomerFirstName());
-            baseCustomerEnter.setCustomerLastName(enter.getCustomerLastName());
-            baseCustomerEnter.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
+//            baseCustomerEnter.setCustomerFirstName(enter.getCustomerFirstName());
+//            baseCustomerEnter.setCustomerLastName(enter.getCustomerLastName());
+//            baseCustomerEnter.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
             baseCustomerEnter.setContactFirstName(enter.getCustomerFirstName());
             baseCustomerEnter.setContactLastName(enter.getCustomerLastName());
             baseCustomerEnter.setContactFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
@@ -157,11 +157,11 @@ public class TenantSettingServiceImpl implements TenantSettingService {
         if (corUserProfile == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if (StringUtils.isNotBlank(enter.getCustomerFirstName()) && StringUtils.isNotBlank(enter.getCustomerLastName())) {
-            corUserProfile.setFirstName(enter.getCustomerFirstName());
-            corUserProfile.setLastName(enter.getCustomerLastName());
-            corUserProfile.setFullName(new StringBuffer().append(enter.getCustomerLastName()).append(" ").append(enter.getCustomerLastName()).toString());
-        }
+//        if (StringUtils.isNotBlank(enter.getCustomerFirstName()) && StringUtils.isNotBlank(enter.getCustomerLastName())) {
+//            corUserProfile.setFirstName(enter.getCustomerFirstName());
+//            corUserProfile.setLastName(enter.getCustomerLastName());
+//            corUserProfile.setFullName(new StringBuffer().append(enter.getCustomerLastName()).append(" ").append(enter.getCustomerLastName()).toString());
+//        }
         if (StringUtils.isNotBlank(enter.getTelephone())) {
             corUserProfile.setTelNumber1(enter.getTelephone());
         }

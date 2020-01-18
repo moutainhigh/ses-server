@@ -79,10 +79,10 @@ public class CustomerServiceImpl implements CustomerService {
         if (opeCustomer == null) {
             throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
         }
-        if (StringUtils.isNotBlank(enter.getCustomerFirstName()) && StringUtils.isNotBlank(enter.getCustomerLastName())) {
-            opeCustomer.setCustomerFirstName(enter.getCustomerFirstName());
-            opeCustomer.setCustomerLastName(enter.getCustomerLastName());
-            opeCustomer.setCustomerFullName(enter.getCustomerFullName());
+        if (StringUtils.isNotBlank(enter.getContactFirstName()) && StringUtils.isNotBlank(enter.getContactLastName())) {
+//            opeCustomer.setCustomerFirstName(enter.getCustomerFirstName());
+//            opeCustomer.setCustomerLastName(enter.getCustomerLastName());
+//            opeCustomer.setCustomerFullName(enter.getCustomerFullName());
             opeCustomer.setContactFirstName(enter.getContactFirstName());
             opeCustomer.setContactLastName(enter.getContactLastName());
             opeCustomer.setContactFullName(enter.getContactFullName());
