@@ -1,13 +1,13 @@
 #日志路径
 log:
   file:
-    path: /data/java_service/logs2/@profile-active@
+    path: /data/java_service/logs/@profile-active@
     max-size: 128MB
     max-history: 180
 # DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:2181
+    address: zookeeper://127.0.0.1:2181
 
 # xxl-job config
 xxl:
@@ -21,7 +21,7 @@ xxl:
       ip:
       port: 48098
       ### xxl-job log path
-      logpath: ${log.filepath}
+      logpath: /data/java_service/logs/@profile-active@
       ### xxl-job log retention days
       logretentiondays: -1
     ### xxl-job, access token
