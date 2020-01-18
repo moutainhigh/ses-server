@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.delivery.dao.base.CorDeliveryMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.delivery.dm.CorDelivery">
     <!--@mbg.generated-->
-    <!--@Table corporate.cor_delivery-->
+    <!--@Table cor_delivery-->
     <id column="id" jdbcType="BIGINT" property="id"/>
     <result column="dr" jdbcType="INTEGER" property="dr"/>
     <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
@@ -57,7 +57,7 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update corporate.cor_delivery
+    update cor_delivery
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -267,7 +267,7 @@
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update corporate.cor_delivery
+    update cor_delivery
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -557,7 +557,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into corporate.cor_delivery
+    insert into cor_delivery
     (id, dr, order_no, tenant_id, deliverer_id, scooter_id, recipient, recipient_email,
     country_code, recipient_tel, recipient_address, longitude, latitude, geohash, house_info,
     parcel_quantity, goods_inventory, `result`, `status`, planned_time, timeout_expectde,
@@ -586,7 +586,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.delivery.dm.CorDelivery">
     <!--@mbg.generated-->
-    insert into corporate.cor_delivery
+    insert into cor_delivery
     (id, dr, order_no, tenant_id, deliverer_id, scooter_id, recipient, recipient_email,
     country_code, recipient_tel, recipient_address, longitude, latitude, geohash, house_info,
     parcel_quantity, goods_inventory, `result`, `status`, planned_time, timeout_expectde,
@@ -653,7 +653,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.delivery.dm.CorDelivery">
     <!--@mbg.generated-->
-    insert into corporate.cor_delivery
+    insert into cor_delivery
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

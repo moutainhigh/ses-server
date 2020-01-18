@@ -3,7 +3,6 @@ package com.redescooter.ses.web.delivery.dao.base;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.web.delivery.dm.CorDelivery;
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface CorDeliveryMapper extends BaseMapper<CorDelivery> {

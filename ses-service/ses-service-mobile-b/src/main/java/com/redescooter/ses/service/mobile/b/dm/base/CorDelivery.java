@@ -15,7 +15,7 @@ import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-service-mobile-b-dm-base-CorDelivery")
 @Data
-@TableName(value = "corporate.cor_delivery")
+@TableName(value = "cor_delivery")
 public class CorDelivery implements Serializable {
     /**
      * ID

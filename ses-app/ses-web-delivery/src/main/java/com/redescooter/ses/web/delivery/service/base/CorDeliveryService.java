@@ -6,18 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * @author Mr.lijiating
- * @version V1.0
- * @Date: 3/1/2020 3:32 下午
- * @ClassName: ${NAME}
- * @Function: TODO
- */
 @Transactional
 public interface CorDeliveryService extends IService<CorDelivery> {
 
 
     int updateBatch(List<CorDelivery> list);
+
+    int updateBatchSelective(List<CorDelivery> list);
 
     int batchInsert(List<CorDelivery> list);
 
@@ -25,7 +20,6 @@ public interface CorDeliveryService extends IService<CorDelivery> {
 
     int insertOrUpdateSelective(CorDelivery record);
 
-    int updateBatchSelective(List<CorDelivery> list);
 }
 
 

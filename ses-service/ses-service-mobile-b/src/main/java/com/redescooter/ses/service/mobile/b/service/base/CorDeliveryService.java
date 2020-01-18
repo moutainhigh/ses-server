@@ -21,4 +21,3 @@ public interface CorDeliveryService extends IService<CorDelivery> {
     int insertOrUpdateSelective(CorDelivery record);
 
 }
-
