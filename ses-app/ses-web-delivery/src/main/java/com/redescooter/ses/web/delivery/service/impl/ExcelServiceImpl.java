@@ -5,6 +5,7 @@ import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.starter.poi.EasyPoiUtils;
 import com.redescooter.ses.web.delivery.service.ExcelService;
+import com.redescooter.ses.web.delivery.service.express.EdOrderService;
 import com.redescooter.ses.web.delivery.verifyhandler.OrdersExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
@@ -32,6 +33,9 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Autowired
     private ImportExcelService importExcelService;
+
+    @Autowired
+    private EdOrderService edOrderService;
 
     /**
      * 快递订单导入
@@ -63,8 +67,8 @@ public class ExcelServiceImpl implements ExcelService {
             result.setErrorMsgList(errorMsgList);
             return result;
         }
-        //表格数据为空 做逻辑判断
         if (CollectionUtils.isEmpty(successList)) {
+            //表格数据为空 做逻辑判断
             result.setSuccess(Boolean.FALSE);
             Map<String, String> map = new TreeMap<>();
             map.put("msg", "The table data is empty and the import failed.");
@@ -75,6 +79,9 @@ public class ExcelServiceImpl implements ExcelService {
             result.setErrorMsgList(mapList);
             return result;
         }
+
+        //进行保存数据订单
+        edOrderService.saveOrders(successList);
 
         //数据返回
         result.setSuccess(Boolean.TRUE);

@@ -34,7 +34,8 @@
         tenant.expire_time     as expirationTime,
         tenant.status          as status
         from pla_tenant tenant
-        where tenant.dr = 0 and tenant.id!=0
+        where tenant.dr = 0
+          and tenant.id!=0
         <if test="status != null and status != ''">
             and  tenant.status = #{status}
         </if>

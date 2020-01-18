@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
+
 /**
  * @ClassName:QueryAccountListResult
  * @description: QueryAccountListResult
@@ -30,10 +32,10 @@ public class QueryAccountListResult extends GeneralResult {
     @ApiModelProperty(value = "激活时间")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
-    private String activationTime;
+    private Date activationTime;
 
     @ApiModelProperty(value = "到期时间")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
-    private String expirationTime;
+    private Date expirationTime;
 }

@@ -563,8 +563,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 .industryType(opeCustomer.getIndustryType())
                 .status(queryTenantResult.getStatus())
                 .email(opeCustomer.getEmail())
-                .activationTime(DateUtil.getTimeStr(queryTenantResult.getEffectiveTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
-                .expireTime(DateUtil.getTimeStr(queryTenantResult.getExpireTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
+                .activationTime(queryTenantResult.getEffectiveTime())
+                .expireTime(queryTenantResult.getExpireTime())
                 .build();
         if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), opeCustomer.getCustomerType())) {
             reslut.setContactFirstName(opeCustomer.getContactFirstName());

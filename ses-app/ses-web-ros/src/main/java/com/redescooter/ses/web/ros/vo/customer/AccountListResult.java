@@ -11,6 +11,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
+
 /**
  * @ClassName:AccountListResult
  * @description: AccountListResult
@@ -65,10 +67,10 @@ public class AccountListResult extends GeneralResult {
     @ApiModelProperty(value = "激活时间")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
-    private String activationTime;
+    private Date activationTime;
 
     @ApiModelProperty(value = "到期时间")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
-    private String expirationTime;
+    private Date expirationTime;
 }

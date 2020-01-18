@@ -11,17 +11,23 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@ApiModel(value = "com-redescooter-ses-web-delivery-dm-CorExpressDeliveryDetail")
+@ApiModel(value="com-redescooter-ses-web-delivery-dm-CorExpressDeliveryDetail")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "cor_express_delivery_detail")
 public class CorExpressDeliveryDetail implements Serializable {
     /**
      * 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value="主键")
     private Long id;
 
     /**
@@ -29,140 +35,140 @@ public class CorExpressDeliveryDetail implements Serializable {
      */
     @TableField(value = "dr")
     @TableLogic
-    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
+    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**
      * 租户id
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "租户id")
+    @ApiModelProperty(value="租户id")
     private Long tenantId;
 
     /**
      * 递送单主键
      */
     @TableField(value = "express_delivery_id")
-    @ApiModelProperty(value = "递送单主键")
+    @ApiModelProperty(value="递送单主键")
     private Long expressDeliveryId;
 
     /**
      * 订单主键
      */
     @TableField(value = "express_order_id")
-    @ApiModelProperty(value = "订单主键")
+    @ApiModelProperty(value="订单主键")
     private Long expressOrderId;
 
     /**
      * delivery子订单状态
      */
     @TableField(value = "status")
-    @ApiModelProperty(value = "delivery子订单状态")
+    @ApiModelProperty(value="delivery子订单状态")
     private String status;
 
     /**
      * 包裹数
      */
     @TableField(value = "parcel_quantity")
-    @ApiModelProperty(value = "包裹数")
+    @ApiModelProperty(value="包裹数")
     private Integer parcelQuantity;
 
     /**
      * 预计开始时间  快递业务没有 暂时做冗余字段
      */
     @TableField(value = "etd")
-    @ApiModelProperty(value = "预计开始时间  快递业务没有 暂时做冗余字段")
+    @ApiModelProperty(value="预计开始时间  快递业务没有 暂时做冗余字段")
     private Date etd;
 
     /**
      * 实际到达时间
      */
     @TableField(value = "ata")
-    @ApiModelProperty(value = "实际到达时间")
+    @ApiModelProperty(value="实际到达时间")
     private Date ata;
 
     /**
      * 实际开始时间
      */
     @TableField(value = "atd")
-    @ApiModelProperty(value = "实际开始时间")
+    @ApiModelProperty(value="实际开始时间")
     private Date atd;
 
     /**
      * 预计送达时间
      */
     @TableField(value = "eta")
-    @ApiModelProperty(value = "预计送达时间")
+    @ApiModelProperty(value="预计送达时间")
     private Date eta;
 
     /**
      * 排序优先级，多个订单分配同一个配送单，所需先后顺序
      */
     @TableField(value = "priority_sort")
-    @ApiModelProperty(value = "排序优先级，多个订单分配同一个配送单，所需先后顺序")
+    @ApiModelProperty(value="排序优先级，多个订单分配同一个配送单，所需先后顺序")
     private Integer prioritySort;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value = "创建人")
+    @ApiModelProperty(value="创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value="创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value = "更新人")
+    @ApiModelProperty(value="更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value="更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;

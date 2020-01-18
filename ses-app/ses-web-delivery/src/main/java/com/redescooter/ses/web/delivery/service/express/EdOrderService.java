@@ -2,11 +2,13 @@ package com.redescooter.ses.web.delivery.service.express;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author Mr.lijiating
@@ -23,7 +25,7 @@ public interface EdOrderService {
      *
      * @return
      */
-    void download( HttpServletResponse response);
+    void download(HttpServletResponse response);
 
     /**
      * 表格订单导入
@@ -32,5 +34,12 @@ public interface EdOrderService {
      * @return
      */
     ImportExcelOrderResult importOrders(ImportExcelOrderEnter enter);
+
+    /**
+     * 保存快递导入订单
+     *
+     * @param orderExcleDataList
+     */
+    void saveOrders(List<ExpressOrderExcleData> orderExcleDataList,GeneralEnter enter);
 
 }
