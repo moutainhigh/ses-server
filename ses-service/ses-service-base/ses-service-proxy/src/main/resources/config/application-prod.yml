@@ -5,6 +5,11 @@ log:
     max-size: 128MB
     max-history: 180
 
+# DUBBO 配置
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://127.0.0.1:2181
+
 spring:
   #数据库连接
   datasource:
@@ -20,12 +25,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 192.168.2.200:7000
-        - 192.168.2.200:7001
-        - 192.168.2.200:7002
-        - 192.168.2.200:7003
-        - 192.168.2.200:7004
-        - 192.168.2.200:7005
+        - 127.0.0.1:7000
+        - 127.0.0.1:7001
+        - 127.0.0.1:7002
+        - 127.0.0.1:7003
+        - 127.0.0.1:7004
+        - 127.0.0.1:7005
   # 邮件配置
   mail:
     from: support@redescooter.com
@@ -34,12 +39,12 @@ spring:
     password: RedE2019.scooter
     port: 465
 
-# DUBBO 配置
-dubbo:
-  registries:
-    ses:
-      group: ses
-      address: zookeeper://127.0.0.1:2181
+      
+      
+      
+      
+      
+      
 # 多注册中心配置
 #    reg2:
 #      group: hdg2
