@@ -3,13 +3,15 @@ package com.redescooter.ses.service.mobile.b.dm.base;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
 @ApiModel(value="com-redescooter-ses-service-mobile-b-dm-base-CorTenantScooter")
 @Data
@@ -26,7 +28,8 @@ public class CorTenantScooter implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
+    @TableLogic
+    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**

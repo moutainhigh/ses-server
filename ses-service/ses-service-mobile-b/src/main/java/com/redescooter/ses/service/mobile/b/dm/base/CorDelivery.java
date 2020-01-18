@@ -15,9 +15,8 @@ import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-service-mobile-b-dm-base-CorDelivery")
 @Data
-@TableName(value = "cor_delivery")
+@TableName(value = "corporate.cor_delivery")
 public class CorDelivery implements Serializable {
-    public static final String COL_DEF1 = "def1";
     /**
      * ID
      */
@@ -74,6 +73,13 @@ public class CorDelivery implements Serializable {
     @TableField(value = "recipient_email")
     @ApiModelProperty(value = "收件人邮箱")
     private String recipientEmail;
+
+    /**
+     * 手机国家区号
+     */
+    @TableField(value = "country_code")
+    @ApiModelProperty(value = "手机国家区号")
+    private String countryCode;
 
     /**
      * 收件人电话
@@ -231,6 +237,13 @@ public class CorDelivery implements Serializable {
     private String statistics;
 
     /**
+     * 标签
+     */
+    @TableField(value = "label")
+    @ApiModelProperty(value = "标签")
+    private String label;
+
+    /**
      * 更新时间
      */
     @TableField(value = "updated_time")
@@ -257,6 +270,13 @@ public class CorDelivery implements Serializable {
     @TableField(value = "created_by")
     @ApiModelProperty(value = "创建人")
     private Long createdBy;
+
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def1")
+    @ApiModelProperty(value = "冗余字段")
+    private String def1;
 
     /**
      * 冗余字段
@@ -304,6 +324,8 @@ public class CorDelivery implements Serializable {
 
     public static final String COL_RECIPIENT_EMAIL = "recipient_email";
 
+    public static final String COL_COUNTRY_CODE = "country_code";
+
     public static final String COL_RECIPIENT_TEL = "recipient_tel";
 
     public static final String COL_RECIPIENT_ADDRESS = "recipient_address";
@@ -348,6 +370,8 @@ public class CorDelivery implements Serializable {
 
     public static final String COL_STATISTICS = "statistics";
 
+    public static final String COL_LABEL = "label";
+
     public static final String COL_UPDATED_TIME = "updated_time";
 
     public static final String COL_CREATED_TIME = "created_time";
@@ -355,6 +379,8 @@ public class CorDelivery implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_CREATED_BY = "created_by";
+
+    public static final String COL_DEF1 = "def1";
 
     public static final String COL_DEF2 = "def2";
 

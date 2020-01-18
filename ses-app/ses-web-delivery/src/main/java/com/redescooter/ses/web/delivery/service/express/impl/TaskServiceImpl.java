@@ -9,7 +9,6 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.TaskServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorDriver;
 import com.redescooter.ses.web.delivery.dm.CorExpressDeliveryDetail;
@@ -61,7 +60,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private CorDriverService corDriverService;
 
-    @Autowired
+    @Reference
     private IdAppService idAppService;
 
     @Reference

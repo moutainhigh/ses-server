@@ -5,10 +5,10 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.delivery.vo.edscooter.ChanageStatusEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileHistroyResult;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileListEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.MobileResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterListEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult;
 
 import java.util.Map;
 
@@ -34,7 +34,7 @@ public interface EdScooterService {
      * @param enter
      * @return
      */
-    PageResult<MobileResult> list(MobileListEnter enter);
+    PageResult<EdScooterResult> list(EdScooterListEnter enter);
 
     /**
      * 车辆详情
@@ -42,7 +42,7 @@ public interface EdScooterService {
      * @param enter
      * @return
      */
-    MobileResult detail(IdEnter enter);
+    EdScooterResult detail(IdEnter enter);
 
     /**
      * 分配记录
@@ -50,7 +50,7 @@ public interface EdScooterService {
      * @param enter
      * @return
      */
-    PageResult<MobileHistroyResult> assignMobileHistroy(MobileHistroyEnter enter);
+    PageResult<EdScooterHistroyResult> assignMobileHistroy(EdScooterHistroyEnter enter);
 
     /**
      * todo 暂无数据 暂时不写
@@ -58,7 +58,7 @@ public interface EdScooterService {
      * @param enter
      * @return
      */
-    PageResult<MobileHistroyResult> repairMobileHistroy(MobileHistroyEnter enter);
+    PageResult<EdScooterHistroyResult> repairMobileHistroy(EdScooterHistroyEnter enter);
 
     /**
      * 修改车辆状态

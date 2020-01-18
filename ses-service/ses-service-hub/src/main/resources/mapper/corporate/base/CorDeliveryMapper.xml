@@ -3,12 +3,12 @@
 <mapper namespace="com.redescooter.ses.service.hub.source.corporate.dao.CorDeliveryMapper">
     <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.corporate.dm.CorDelivery">
         <!--@mbg.generated-->
-        <!--@Table cor_delivery-->
+        <!--@Table corporate.cor_delivery-->
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="dr" jdbcType="INTEGER" property="dr"/>
         <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
-        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
-        <result column="deliverer_id" jdbcType="BIGINT" property="delivererId"/>
+        <result column="tenant_id" jdbcType="INTEGER" property="tenantId"/>
+        <result column="deliverer_id" jdbcType="INTEGER" property="delivererId"/>
         <result column="scooter_id" jdbcType="BIGINT" property="scooterId"/>
         <result column="recipient" jdbcType="VARCHAR" property="recipient"/>
         <result column="recipient_email" jdbcType="VARCHAR" property="recipientEmail"/>
@@ -35,6 +35,7 @@
         <result column="co2" jdbcType="DECIMAL" property="co2"/>
         <result column="savings" jdbcType="DECIMAL" property="savings"/>
         <result column="statistics" jdbcType="VARCHAR" property="statistics"/>
+        <result column="label" jdbcType="VARCHAR" property="label"/>
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
         <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
@@ -51,11 +52,12 @@
         country_code, recipient_tel, recipient_address, longitude, latitude, geohash, house_info,
         parcel_quantity, goods_inventory, `result`, `status`, planned_time, timeout_expectde,
         time_out, etd, atd, eta, ata, driven_mileage, driven_duration, co2, savings, `statistics`,
-        updated_time, created_time, updated_by, created_by, def1, def2, def3, def5, def6
+        `label`, updated_time, created_time, updated_by, created_by, def1, def2, def3, def5,
+        def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
-        update cor_delivery
+        update corporate.cor_delivery
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="dr = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
@@ -69,12 +71,12 @@
             </trim>
             <trim prefix="tenant_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="deliverer_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.delivererId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.delivererId,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="scooter_id = case" suffix="end,">
@@ -207,6 +209,11 @@
                     when id = #{item.id,jdbcType=BIGINT} then #{item.statistics,jdbcType=VARCHAR}
                 </foreach>
             </trim>
+            <trim prefix="`label` = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.label,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
             <trim prefix="updated_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
@@ -260,7 +267,7 @@
     </update>
     <update id="updateBatchSelective" parameterType="java.util.List">
         <!--@mbg.generated-->
-        update cor_delivery
+        update corporate.cor_delivery
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="dr = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
@@ -279,14 +286,14 @@
             <trim prefix="tenant_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     <if test="item.tenantId != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=INTEGER}
                     </if>
                 </foreach>
             </trim>
             <trim prefix="deliverer_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     <if test="item.delivererId != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.delivererId,jdbcType=BIGINT}
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.delivererId,jdbcType=INTEGER}
                     </if>
                 </foreach>
             </trim>
@@ -472,6 +479,13 @@
                     </if>
                 </foreach>
             </trim>
+            <trim prefix="`label` = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.label != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.label,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
             <trim prefix="updated_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     <if test="item.updatedTime != null">
@@ -543,17 +557,17 @@
     </update>
     <insert id="batchInsert" parameterType="map">
         <!--@mbg.generated-->
-        insert into cor_delivery
+        insert into corporate.cor_delivery
         (id, dr, order_no, tenant_id, deliverer_id, scooter_id, recipient, recipient_email,
         country_code, recipient_tel, recipient_address, longitude, latitude, geohash, house_info,
         parcel_quantity, goods_inventory, `result`, `status`, planned_time, timeout_expectde,
         time_out, etd, atd, eta, ata, driven_mileage, driven_duration, co2, savings, `statistics`,
-        updated_time, created_time, updated_by, created_by, def1, def2, def3, def5, def6
-        )
+        `label`, updated_time, created_time, updated_by, created_by, def1, def2, def3,
+        def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.orderNo,jdbcType=VARCHAR},
-            #{item.tenantId,jdbcType=BIGINT}, #{item.delivererId,jdbcType=BIGINT}, #{item.scooterId,jdbcType=BIGINT},
+            #{item.tenantId,jdbcType=INTEGER}, #{item.delivererId,jdbcType=INTEGER}, #{item.scooterId,jdbcType=BIGINT},
             #{item.recipient,jdbcType=VARCHAR}, #{item.recipientEmail,jdbcType=VARCHAR},
             #{item.countryCode,jdbcType=VARCHAR},
             #{item.recipientTel,jdbcType=VARCHAR}, #{item.recipientAddress,jdbcType=VARCHAR},
@@ -566,7 +580,8 @@
             #{item.atd,jdbcType=TIMESTAMP}, #{item.eta,jdbcType=TIMESTAMP}, #{item.ata,jdbcType=TIMESTAMP},
             #{item.drivenMileage,jdbcType=DECIMAL}, #{item.drivenDuration,jdbcType=INTEGER},
             #{item.co2,jdbcType=DECIMAL}, #{item.savings,jdbcType=DECIMAL}, #{item.statistics,jdbcType=VARCHAR},
-            #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.label,jdbcType=VARCHAR}, #{item.updatedTime,jdbcType=TIMESTAMP},
+            #{item.createdTime,jdbcType=TIMESTAMP},
             #{item.updatedBy,jdbcType=BIGINT}, #{item.createdBy,jdbcType=BIGINT}, #{item.def1,jdbcType=VARCHAR},
             #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
             #{item.def6,jdbcType=DOUBLE})
@@ -574,16 +589,16 @@
     </insert>
     <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.hub.source.corporate.dm.CorDelivery">
         <!--@mbg.generated-->
-        insert into cor_delivery
+        insert into corporate.cor_delivery
         (id, dr, order_no, tenant_id, deliverer_id, scooter_id, recipient, recipient_email,
         country_code, recipient_tel, recipient_address, longitude, latitude, geohash, house_info,
         parcel_quantity, goods_inventory, `result`, `status`, planned_time, timeout_expectde,
         time_out, etd, atd, eta, ata, driven_mileage, driven_duration, co2, savings, `statistics`,
-        updated_time, created_time, updated_by, created_by, def1, def2, def3, def5, def6
-        )
+        `label`, updated_time, created_time, updated_by, created_by, def1, def2, def3,
+        def5, def6)
         values
-        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT},
-        #{delivererId,jdbcType=BIGINT}, #{scooterId,jdbcType=BIGINT}, #{recipient,jdbcType=VARCHAR},
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{tenantId,jdbcType=INTEGER},
+        #{delivererId,jdbcType=INTEGER}, #{scooterId,jdbcType=BIGINT}, #{recipient,jdbcType=VARCHAR},
         #{recipientEmail,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR}, #{recipientTel,jdbcType=VARCHAR},
         #{recipientAddress,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL},
         #{geohash,jdbcType=VARCHAR}, #{houseInfo,jdbcType=VARCHAR}, #{parcelQuantity,jdbcType=INTEGER},
@@ -592,15 +607,16 @@
         #{etd,jdbcType=TIMESTAMP}, #{atd,jdbcType=TIMESTAMP}, #{eta,jdbcType=TIMESTAMP},
         #{ata,jdbcType=TIMESTAMP}, #{drivenMileage,jdbcType=DECIMAL}, #{drivenDuration,jdbcType=INTEGER},
         #{co2,jdbcType=DECIMAL}, #{savings,jdbcType=DECIMAL}, #{statistics,jdbcType=VARCHAR},
-        #{updatedTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
-        #{createdBy,jdbcType=BIGINT}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
-        #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+        #{label,jdbcType=VARCHAR}, #{updatedTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP},
+        #{updatedBy,jdbcType=BIGINT}, #{createdBy,jdbcType=BIGINT}, #{def1,jdbcType=VARCHAR},
+        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+        )
         on duplicate key update
         id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
         order_no = #{orderNo,jdbcType=VARCHAR},
-        tenant_id = #{tenantId,jdbcType=BIGINT},
-        deliverer_id = #{delivererId,jdbcType=BIGINT},
+        tenant_id = #{tenantId,jdbcType=INTEGER},
+        deliverer_id = #{delivererId,jdbcType=INTEGER},
         scooter_id = #{scooterId,jdbcType=BIGINT},
         recipient = #{recipient,jdbcType=VARCHAR},
         recipient_email = #{recipientEmail,jdbcType=VARCHAR},
@@ -627,6 +643,7 @@
         co2 = #{co2,jdbcType=DECIMAL},
         savings = #{savings,jdbcType=DECIMAL},
         `statistics` = #{statistics,jdbcType=VARCHAR},
+        `label` = #{label,jdbcType=VARCHAR},
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
         created_time = #{createdTime,jdbcType=TIMESTAMP},
         updated_by = #{updatedBy,jdbcType=BIGINT},
@@ -640,7 +657,7 @@
     <insert id="insertOrUpdateSelective"
             parameterType="com.redescooter.ses.service.hub.source.corporate.dm.CorDelivery">
         <!--@mbg.generated-->
-        insert into cor_delivery
+        insert into corporate.cor_delivery
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -735,6 +752,9 @@
             <if test="statistics != null">
                 `statistics`,
             </if>
+            <if test="label != null">
+                `label`,
+            </if>
             <if test="updatedTime != null">
                 updated_time,
             </if>
@@ -775,10 +795,10 @@
                 #{orderNo,jdbcType=VARCHAR},
             </if>
             <if test="tenantId != null">
-                #{tenantId,jdbcType=BIGINT},
+                #{tenantId,jdbcType=INTEGER},
             </if>
             <if test="delivererId != null">
-                #{delivererId,jdbcType=BIGINT},
+                #{delivererId,jdbcType=INTEGER},
             </if>
             <if test="scooterId != null">
                 #{scooterId,jdbcType=BIGINT},
@@ -858,6 +878,9 @@
             <if test="statistics != null">
                 #{statistics,jdbcType=VARCHAR},
             </if>
+            <if test="label != null">
+                #{label,jdbcType=VARCHAR},
+            </if>
             <if test="updatedTime != null">
                 #{updatedTime,jdbcType=TIMESTAMP},
             </if>
@@ -898,10 +921,10 @@
                 order_no = #{orderNo,jdbcType=VARCHAR},
             </if>
             <if test="tenantId != null">
-                tenant_id = #{tenantId,jdbcType=BIGINT},
+                tenant_id = #{tenantId,jdbcType=INTEGER},
             </if>
             <if test="delivererId != null">
-                deliverer_id = #{delivererId,jdbcType=BIGINT},
+                deliverer_id = #{delivererId,jdbcType=INTEGER},
             </if>
             <if test="scooterId != null">
                 scooter_id = #{scooterId,jdbcType=BIGINT},
@@ -980,6 +1003,9 @@
             </if>
             <if test="statistics != null">
                 `statistics` = #{statistics,jdbcType=VARCHAR},
+            </if>
+            <if test="label != null">
+                `label` = #{label,jdbcType=VARCHAR},
             </if>
             <if test="updatedTime != null">
                 updated_time = #{updatedTime,jdbcType=TIMESTAMP},

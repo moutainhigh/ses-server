@@ -145,6 +145,6 @@ public class DeliveryDetailResult extends GeneralResult {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createdTime;
 
-    @ApiModelProperty(value = "超时标签是否显示，1显示，0 不显示")
+    @ApiModelProperty(value = "超时标签是否显示，1显示，null 不显示")
     private String label;
 }

@@ -80,5 +80,5 @@ public class SaveOrderDeliveryEnter extends GeneralEnter {
     private String Appointment;
 
     @ApiModelProperty(value = "超时时长")
-    private String timeoutExpectde;
+    private String timeoutExpectde = "0";
 }

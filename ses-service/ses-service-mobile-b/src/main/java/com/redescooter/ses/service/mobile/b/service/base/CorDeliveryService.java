@@ -1,12 +1,12 @@
-package com.redescooter.ses.service.hub.source.corporate.service.base;
+package com.redescooter.ses.service.mobile.b.service.base;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.redescooter.ses.service.hub.source.corporate.dm.CorDelivery;
+import com.redescooter.ses.service.mobile.b.dm.base.CorDelivery;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@DS("corporate")
+@Transactional
 public interface CorDeliveryService extends IService<CorDelivery> {
 
 
@@ -21,5 +21,4 @@ public interface CorDeliveryService extends IService<CorDelivery> {
     int insertOrUpdateSelective(CorDelivery record);
 
 }
-
 

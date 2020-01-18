@@ -115,3 +115,13 @@ Thumbs.db
 /*/*/target/
 /*/*/*/target/
 /*/*/*/*/target/
+
+### JRebel 热部署文件
+/*/.rebel.xml.bak
+/*/*/.rebel.xml.bak
+/*/*/*/.rebel.xml.bak
+
+/*/*/*/resources/rebel.xml
+/*/*/*/*/resources/rebel.xml
+/*/*/*/*/*/resources/rebel.xml
+

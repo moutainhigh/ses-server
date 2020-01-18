@@ -1,14 +1,10 @@
 package com.redescooter.ses.service.hub.source.corporate.dao;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorDelivery;
-
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
-@DS("corporate")
 public interface CorDeliveryMapper extends BaseMapper<CorDelivery> {
     int updateBatch(List<CorDelivery> list);
 

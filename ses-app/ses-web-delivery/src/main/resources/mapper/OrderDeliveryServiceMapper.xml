@@ -32,11 +32,7 @@
         cup.first_name as driverFirstName,
         cts.license_plate as licensePlate,
         cts.scooter_id as scooterId,
-        (case
-        when cdy.status=5 or cdy.status=6 or cdy.status=7 then null
-        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ >= ]]> 0 then null
-        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ < ]]> 0 then true
-        end) as label
+        cdy.label as label
         from cor_delivery cdy
         inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
         inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
@@ -126,11 +122,7 @@
         cts.tenant_id as tenantId,
         cdy.driven_mileage as mileage,
         cdy.eta as eatTime,
-        (case
-        when cdy.status=5 or cdy.status=6 or cdy.status=7 then null
-        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ >= ]]> 0 then null
-        when TIMESTAMPDIFF(SECOND, NOW(), cdy.eta) <![CDATA[ < ]]> 0 then true
-        end) as label
+        cdy.label as label
         from cor_delivery cdy
         inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
         inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0

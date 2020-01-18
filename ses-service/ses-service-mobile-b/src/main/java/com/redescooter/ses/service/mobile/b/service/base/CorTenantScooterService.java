@@ -1,9 +1,13 @@
 package com.redescooter.ses.service.mobile.b.service.base;
 
-import java.util.List;
-import com.redescooter.ses.service.mobile.b.dm.base.CorTenantScooter;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface CorTenantScooterService extends IService<CorTenantScooter>{
+import com.redescooter.ses.service.mobile.b.dm.base.CorTenantScooter;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Transactional
+public interface CorTenantScooterService extends IService<CorTenantScooter> {
 
 
     int updateBatch(List<CorTenantScooter> list);

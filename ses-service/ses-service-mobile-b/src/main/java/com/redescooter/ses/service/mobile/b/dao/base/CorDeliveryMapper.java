@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface CorDeliveryMapper extends BaseMapper<CorDelivery> {
     int updateBatch(List<CorDelivery> list);
 
+    int updateBatchSelective(List<CorDelivery> list);
+
     int batchInsert(@Param("list") List<CorDelivery> list);
 
     int insertOrUpdate(CorDelivery record);

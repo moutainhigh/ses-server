@@ -37,4 +37,11 @@ public class CorDeliveryServiceImpl extends ServiceImpl<CorDeliveryMapper, CorDe
     public int insertOrUpdateSelective(CorDelivery record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<CorDelivery> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
+

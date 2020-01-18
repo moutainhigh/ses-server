@@ -3,6 +3,7 @@ package com.redescooter.ses.service.mobile.b.dm.base;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,6 +29,7 @@ public class CorDriverScooter implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
