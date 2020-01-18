@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface CorExpressOrderTraceMapper extends BaseMapper<CorExpressOrderTrace> {
+    int updateBatch(List<CorExpressOrderTrace> list);
+
     int batchInsert(@Param("list") List<CorExpressOrderTrace> list);
 
     int insertOrUpdate(CorExpressOrderTrace record);
