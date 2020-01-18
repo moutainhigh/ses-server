@@ -3,6 +3,7 @@ package com.redescooter.ses.service.mobile.c.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
+import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 import com.redescooter.ses.service.mobile.c.constant.SequenceName;
 import com.redescooter.ses.service.mobile.c.dao.base.ConUserProfileMapper;
@@ -81,7 +82,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
         queryWrapper.in(ConUserProfile.COL_USER_ID,longs);
         List<ConUserProfile> list = userProfileService.list(queryWrapper);
 
-        if (list.size()>0){
+        if (list.size() > 0) {
             list.forEach(userProfile -> {
                 userProfileService.removeById(userProfile.getId());
             });
@@ -90,6 +91,29 @@ public class UserProfileProServiceImpl implements UserProfileProService {
         return new GeneralResult();
     }
 
+    /**
+     * 修改个人信息 暂时只支持名字
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult editUserProfile(EditUserProfile2CEnter enter) {
+        QueryWrapper<ConUserProfile> conUserProfileQueryWrapper = new QueryWrapper<>();
+        conUserProfileQueryWrapper.eq(ConUserProfile.COL_TENANT_ID, enter.getInputTenantId());
+        conUserProfileQueryWrapper.eq(ConUserProfile.COL_EMAIL_1, enter.getEmail());
+        conUserProfileQueryWrapper.eq(ConUserProfile.COL_DR, 0);
+        ConUserProfile conUserProfile = conUserProfileMapper.selectOne(conUserProfileQueryWrapper);
+        if (conUserProfile != null) {
+            if (StringUtils.isNotBlank(enter.getFirstName()) && StringUtils.isNotBlank(enter.getLastName())) {
+                conUserProfile.setFirstName(enter.getFirstName());
+                conUserProfile.setLastName(enter.getLastName());
+                conUserProfile.setFullName(new StringBuilder().append(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
+            }
+            conUserProfileMapper.updateById(conUserProfile);
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
 
     /**
      * checkUserProfile

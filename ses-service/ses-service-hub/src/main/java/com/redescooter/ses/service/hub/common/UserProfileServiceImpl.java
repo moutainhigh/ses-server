@@ -1,12 +1,12 @@
 package com.redescooter.ses.service.hub.common;
-import	java.util.LinkedList;
-import	java.util.Queue;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
+import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
+import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.corporate.dao.CorUserProfileMapper;
@@ -97,15 +97,50 @@ public class UserProfileServiceImpl implements UserProfileService {
     public void deleteUserProfile2B(List<Long> longs) {
 
         QueryWrapper<CorUserProfile> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(CorUserProfile.COL_DR,0);
-        queryWrapper.in(CorUserProfile.COL_USER_ID,longs);
+        queryWrapper.eq(CorUserProfile.COL_DR, 0);
+        queryWrapper.in(CorUserProfile.COL_USER_ID, longs);
         List<CorUserProfile> corUserProfiles = userProfileService.list(queryWrapper);
 
-        if (corUserProfiles.size()>0){
-         corUserProfiles.forEach(corUserProfile -> {
-             userProfileService.removeById(corUserProfile.getId());
-         });
+        if (corUserProfiles.size() > 0) {
+            corUserProfiles.forEach(corUserProfile -> {
+                userProfileService.removeById(corUserProfile.getId());
+            });
         }
 
+    }
+
+    /**
+     * 修改个人信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult editUserProfile2B(EditUserProfileEnter enter) {
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getInputTenantId());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_EMAIL_1, enter.getEmail());
+        CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+        if (corUserProfile != null) {
+            corUserProfile.setFirstName(enter.getFirstName());
+            corUserProfile.setLastName(enter.getLastName());
+            corUserProfile.setFullName(new StringBuilder().append(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
+            userProfileService.updateById(corUserProfile);
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 修改个人信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult editUserProfile2C(EditUserProfileEnter enter) {
+        EditUserProfile2CEnter editUserProfile = new EditUserProfile2CEnter();
+        BeanUtils.copyProperties(enter, editUserProfile);
+        userProfileProService.editUserProfile(editUserProfile);
+        return new GeneralResult(enter.getRequestId());
     }
 }

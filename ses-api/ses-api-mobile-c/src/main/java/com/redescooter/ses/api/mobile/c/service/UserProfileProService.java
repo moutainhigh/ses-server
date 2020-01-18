@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.mobile.c.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 
 import java.util.List;
@@ -23,6 +24,13 @@ public interface UserProfileProService {
     /**
      * 删除用户信息
      */
-    GeneralResult  deleteUserProfile2C(List<Long> longs);
+    GeneralResult deleteUserProfile2C(List<Long> longs);
 
+    /**
+     * 修改个人信息 暂时只支持名字
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult editUserProfile(EditUserProfile2CEnter enter);
 }

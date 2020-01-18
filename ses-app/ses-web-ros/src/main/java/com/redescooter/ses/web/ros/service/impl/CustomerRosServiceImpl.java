@@ -30,6 +30,7 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
+import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
@@ -229,6 +230,23 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             if (!StringUtils.equals(enter.getIndustryType(), customer.getIndustryType())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_INDUSTRYTYPE_IS_NOT_EDIT.getCode(), ExceptionCodeEnums.CUSTOMER_INDUSTRYTYPE_IS_NOT_EDIT.getMessage());
             }
+
+            EditUserProfileEnter editUserProfileEnter = new EditUserProfileEnter();
+            BeanUtils.copyProperties(enter, editUserProfileEnter);
+            editUserProfileEnter.setInputTenantId(customer.getTenantId());
+            editUserProfileEnter.setEmail(customer.getEmail());
+            editUserProfileEnter.setFirstName(enter.getCustomerFirstName());
+            editUserProfileEnter.setLastName(enter.getCustomerLastName());
+            // 已创建的是web 账户
+            if (customer.getTenantId() != 0) {
+                // saas 更新个人信息
+                userProfileService.editUserProfile2B(editUserProfileEnter);
+            }
+            if (customer.getTenantId() == 0 && StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), customer.getCustomerType())) {
+                // TOc 更新个人信息
+                userProfileService.editUserProfile2C(editUserProfileEnter);
+            }
+
         }
         if (!enter.getEmail().equals(customer.getEmail())) {
             //潜在客户允许编辑邮箱，但不允许重复
@@ -236,10 +254,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
             }
         }
-
         OpeCustomer update = new OpeCustomer();
         BeanUtils.copyProperties(enter, update);
         update.setTenantId(tenantId);
+        update.setCustomerFullName(new StringBuilder().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerFirstName()).toString());
         opeCustomerMapper.updateById(update);
 
         return new GeneralResult(enter.getRequestId());
