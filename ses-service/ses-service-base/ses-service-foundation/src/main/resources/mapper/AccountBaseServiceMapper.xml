@@ -6,7 +6,8 @@
     <select id="queryAccountListCount"
             resultType="int">
         select count(*) from pla_tenant tenant
-        where tenant.dr = 0 and tenant.id!=0
+        where tenant.dr = 0
+        and tenant.tenant_type ='1'
         <if test="status != null and status != ''">
             and  tenant.status = #{status}
         </if>
@@ -16,12 +17,10 @@
                 #{item}
             </foreach>
         </if>
-        <if
-                test="startActivationTime != null and startActivationTime != '' and endActivationTime != null and endActivationTime != ''">
+        <if test="startActivationTime != null and startActivationTime != '' and endActivationTime != null and endActivationTime != ''">
            and tenant.activation_time  between #{startActivationTime} and #{endActivationTime}
         </if>
-        <if
-                test="startExpirationTime != null and startExpirationTime != '' and endExpirationTime != null and endExpirationTime != '' != null and startExpirationTime != ''">
+        <if test="startExpirationTime != null and startExpirationTime != '' and endExpirationTime != null and endExpirationTime != '' != null and startExpirationTime != ''">
             and tenant.expire_time  between #{startExpirationTime} and #{endExpirationTime}
         </if>
     </select>
@@ -35,7 +34,7 @@
         tenant.status          as status
         from pla_tenant tenant
         where tenant.dr = 0
-          and tenant.id!=0
+          and tenant.tenant_type ='1'
         <if test="status != null and status != ''">
             and  tenant.status = #{status}
         </if>
@@ -45,12 +44,10 @@
                 #{item}
             </foreach>
         </if>
-        <if
-                test="startActivationTime != null and startActivationTime != '' and endActivationTime != null and endActivationTime != ''">
+        <if test="startActivationTime != null and startActivationTime != '' and endActivationTime != null and endActivationTime != ''">
             and tenant.activation_time  between #{startActivationTime} and #{endActivationTime}
         </if>
-        <if
-                test="startExpirationTime != null and startExpirationTime != '' and endExpirationTime != null and endExpirationTime != '' != null and startExpirationTime != ''">
+        <if test="startExpirationTime != null and startExpirationTime != '' and endExpirationTime != null and endExpirationTime != '' != null and startExpirationTime != ''">
             and tenant.expire_time  between #{startExpirationTime} and #{endExpirationTime}
         </if>
         order by tenant.created_time desc

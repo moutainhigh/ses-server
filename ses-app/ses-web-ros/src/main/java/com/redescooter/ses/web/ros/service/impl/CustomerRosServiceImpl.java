@@ -496,6 +496,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public PageResult<AccountListResult> accountList(AccountListEnter enter) {
+        //TODO ROS1.0.0 账户列表去除个人端账户查询
+        enter.setCustomerType(CustomerTypeEnum.ENTERPRISE.getValue());
         int countCustomer = customerServiceMapper.customerAccountCount(enter);
         if (countCustomer == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -707,14 +709,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         // 定义 图片大小
         VerificationCodeImgUtil vCode = new VerificationCodeImgUtil(103, 32, 5, 16);
         // 调用写操作
-        vCode.write();
+        VerificationCodeImgUtil.write();
         //获取code码
-        String code = vCode.code;
+        String code = VerificationCodeImgUtil.code;
         // redis 存储
         jedisCluster.set(enter.getRequestId(), code);
         // 设置超时时间
         jedisCluster.expire(enter.getRequestId(), new Long(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
-        VerificationCodeResult result = VerificationCodeResult.builder().base64Img(vCode.base64String).build();
+        VerificationCodeResult result = VerificationCodeResult.builder().base64Img(VerificationCodeImgUtil.base64String).build();
         result.setRequestId(enter.getRequestId());
         System.out.println(code);
         return result;
