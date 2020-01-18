@@ -120,8 +120,14 @@ Thumbs.db
 /*/.rebel.xml.bak
 /*/*/.rebel.xml.bak
 /*/*/*/.rebel.xml.bak
+/*/*/*/*/.rebel.xml.bak
+/*/*/*/*/*/.rebel.xml.bak
+/*/*/*/*/*/*/.rebel.xml.bak
 
+/*/resources/rebel.xml
+/*/*/resources/rebel.xml
 /*/*/*/resources/rebel.xml
 /*/*/*/*/resources/rebel.xml
 /*/*/*/*/*/resources/rebel.xml
+/*/*/*/*/*/*/resources/rebel.xml
 
