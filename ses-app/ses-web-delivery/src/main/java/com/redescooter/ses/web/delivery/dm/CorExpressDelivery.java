@@ -7,15 +7,14 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @ApiModel(value="com-redescooter-ses-web-delivery-dm-CorExpressDelivery")
 @Data
@@ -148,8 +147,8 @@ public class CorExpressDelivery implements Serializable {
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
-    private Integer updatedBy;
+    @ApiModelProperty(value = "更新人")
+    private Long updatedBy;
 
     /**
      * 更新时间
