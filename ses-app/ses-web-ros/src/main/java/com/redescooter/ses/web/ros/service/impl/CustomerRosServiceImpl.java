@@ -1,10 +1,25 @@
 package com.redescooter.ses.web.ros.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.customer.*;
+import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerCertificateTypeEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
@@ -15,7 +30,6 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
-import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
@@ -31,8 +45,18 @@ import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.CustomerRosService;
-import com.redescooter.ses.web.ros.vo.account.*;
-import com.redescooter.ses.web.ros.vo.customer.*;
+import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
+import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
+import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
+import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
+import com.redescooter.ses.web.ros.vo.account.VerificationCodeResult;
+import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
+import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
+import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
@@ -42,7 +66,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:CustomerImpl
@@ -187,6 +215,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public GeneralResult edit(EditCustomerEnter enter) {
 
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
+        final Long tenantId = customer.getTenantId();
         if (customer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getCode(), ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getMessage());
         }
@@ -210,6 +239,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         OpeCustomer update = new OpeCustomer();
         BeanUtils.copyProperties(enter, update);
+        update.setTenantId(tenantId);
         opeCustomerMapper.updateById(update);
 
         return new GeneralResult(enter.getRequestId());
@@ -409,6 +439,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
+        // todo 存在漏洞 先创建 Driver 账户 ---》 web或者TOC 账户是能够通过校验的
         BooleanResult checkMail = checkMail(opeCustomer.getEmail());
         BaseUserResult userResult = null;
         if (checkMail.isSuccess()) {
