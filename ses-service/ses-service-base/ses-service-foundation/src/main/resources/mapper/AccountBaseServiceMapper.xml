@@ -59,7 +59,8 @@
     <select id="accountCountStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select status, count(*) as totalCount
         from pla_tenant
-        where dr = 0 and id!=0
+        where dr = 0
+        and tenant_type ='1'
         group by status
     </select>
 </mapper>
