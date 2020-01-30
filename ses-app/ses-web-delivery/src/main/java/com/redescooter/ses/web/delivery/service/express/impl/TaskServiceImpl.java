@@ -236,6 +236,11 @@ public class TaskServiceImpl implements TaskService {
         // 保存taskDetailTrace
         edOrderTraceService.batchSaveExpressOrderTrace(baseExpressOrderTraceEnterList);
         //        保存task
+        buildtask(enter, tenantConfigInfoResult);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    private void buildtask(SaveTaskEnter enter, TenantConfigInfoResult tenantConfigInfoResult) {
         CorExpressDelivery corExpressDelivery=new CorExpressDelivery();
         corExpressDelivery.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY));
         corExpressDelivery.setDr(0);
@@ -250,7 +255,6 @@ public class TaskServiceImpl implements TaskService {
         corExpressDelivery.setUpdatedBy(enter.getUserId());
         corExpressDelivery.setUpdatedTime(new Date());
         corExpressDeliveryService.insertOrUpdateSelective(corExpressDelivery);
-        return new GeneralResult(enter.getRequestId());
     }
 
     private BaseExpressOrderTraceEnter buildBaseExpressOrderTraceEnter(SaveTaskEnter enter,

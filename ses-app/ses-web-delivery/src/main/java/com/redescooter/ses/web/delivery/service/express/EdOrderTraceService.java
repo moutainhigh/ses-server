@@ -4,7 +4,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderResult;
-import com.redescooter.ses.web.delivery.vo.task.SaveExpressOrderTraceEnter;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public interface EdOrderTraceService {
      * @param enter
      * @return
      */
-    GeneralResult saveExpressOrderTrace(SaveExpressOrderTraceEnter enter);
+    GeneralResult saveExpressOrderTrace(BaseExpressOrderTraceEnter enter);
 
     /**
      * 查询订单记录

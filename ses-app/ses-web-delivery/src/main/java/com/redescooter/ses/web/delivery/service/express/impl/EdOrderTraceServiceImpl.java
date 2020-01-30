@@ -7,7 +7,6 @@ import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderResult;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrderTrace;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderTraceService;
-import com.redescooter.ses.web.delivery.vo.task.SaveExpressOrderTraceEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -56,7 +55,10 @@ public class EdOrderTraceServiceImpl implements EdOrderTraceService {
      * @return
      */
     @Override
-    public GeneralResult saveExpressOrderTrace(SaveExpressOrderTraceEnter enter) {
+    public GeneralResult saveExpressOrderTrace(BaseExpressOrderTraceEnter enter) {
+        CorExpressOrderTrace corExpressOrderTrace = new CorExpressOrderTrace();
+        BeanUtils.copyProperties(enter, corExpressOrderTrace);
+        corExpressOrderTraceService.insertOrUpdate(corExpressOrderTrace);
         return null;
     }
 
@@ -68,6 +70,9 @@ public class EdOrderTraceServiceImpl implements EdOrderTraceService {
      */
     @Override
     public BaseExpressOrderResult queryOrdertraceByOrderId(IdEnter enter) {
-        return null;
+        CorExpressOrderTrace corExpressOrderTrace = corExpressOrderTraceService.getById(enter.getId());
+        BaseExpressOrderResult baseExpressOrderResult=new BaseExpressOrderResult();
+        BeanUtils.copyProperties(corExpressOrderTrace,baseExpressOrderResult);
+        return baseExpressOrderResult;
     }
 }
