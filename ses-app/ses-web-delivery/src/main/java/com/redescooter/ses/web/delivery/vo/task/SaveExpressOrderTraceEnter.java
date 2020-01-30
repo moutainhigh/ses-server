@@ -23,7 +23,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class SaveExpressOrderTraceEnter<BaseExpressOrderEnter> extends GeneralEnter {
+public class SaveExpressOrderTraceEnter<BaseExpressOrderTraceEnter> extends GeneralEnter {
 
     @ApiModelProperty(value = "快递订单，分配时不为空，其他事件时为空")
     private Long expressDeliveryId;

@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
+import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
+import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.order.OrderStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -7,12 +9,14 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.TaskServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorDriver;
@@ -26,6 +30,7 @@ import com.redescooter.ses.web.delivery.service.base.CorDriverService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryDetailService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
+import com.redescooter.ses.web.delivery.service.express.EdOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.TaskService;
 import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
@@ -41,6 +46,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,6 +88,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Reference
     private TenantBaseService tenantBaseService;
+
+    @Autowired
+    private EdOrderTraceService edOrderTraceService;
 
 
     /**
@@ -194,7 +204,7 @@ public class TaskServiceImpl implements TaskService {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
         List<CorExpressOrder> corExpressOrderList = taskServiceMapper.queryExpressOrderByIds(enter.getIds());
-        if (CollectionUtils.isEmpty(corExpressOrderList)) {
+        if (CollectionUtils.isEmpty(corExpressOrderList) && corExpressOrderList.size()!=enter.getIds().size()) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
 
@@ -205,24 +215,63 @@ public class TaskServiceImpl implements TaskService {
 
         List<CorExpressDeliveryDetail> corExpressDeliveryDetailList = new ArrayList<>();
 
-        List<CorExpressOrderTrace> corExpressOrderTraceList = new ArrayList<>();
+        List<BaseExpressOrderTraceEnter> baseExpressOrderTraceEnterList = new ArrayList<>();
         corExpressOrderList.forEach(item -> {
             if (!enter.getIds().contains(item.getId())) {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
             }
             // 保存 expressDeliveryDetail
             corExpressDeliveryDetailList.add(buildCorExpressDeliveryDetailSingle(enter, tenantConfigInfoResult, taskId, item));
-            //todo 生成 order 记录 未完成
-//            CorExpressOrderTrace
-//            corExpressOrderTraceList.add();
+
+            //生成 order 记录 未完成
+            BaseExpressOrderTraceEnter baseExpressOrderTraceEnter = buildBaseExpressOrderTraceEnter(enter,
+                    tenantConfigInfoResult, taskId, item);
+            baseExpressOrderTraceEnterList.add(baseExpressOrderTraceEnter);
         });
-        // 保存 expressDelivery
+        // 保存 TaskDetail
         corExpressDeliveryService.insertOrUpdateSelective(buildCorExpressDelivery(enter, taskId));
         if (CollectionUtils.isNotEmpty(corExpressDeliveryDetailList)) {
             corExpressDeliveryDetailService.batchInsert(corExpressDeliveryDetailList);
         }
-        // 保存订单记录
-        return null;
+        // 保存taskDetailTrace
+        edOrderTraceService.batchSaveExpressOrderTrace(baseExpressOrderTraceEnterList);
+        //        保存task
+        CorExpressDelivery corExpressDelivery=new CorExpressDelivery();
+        corExpressDelivery.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY));
+        corExpressDelivery.setDr(0);
+        corExpressDelivery.setTenantId(tenantConfigInfoResult.getTenantId());
+        corExpressDelivery.setStatus(TaskStatusEnums.PENDING.getValue());
+        corExpressDelivery.setDriverId(enter.getDiverId());
+        corExpressDelivery.setOrderSum(enter.getIds().size());
+        corExpressDelivery.setOrderCompleteNum(0);
+        corExpressDelivery.setDeliveryDate(DateUtil.stringToDate(enter.getTaskTime()));
+        corExpressDelivery.setCreateBy(enter.getUserId());
+        corExpressDelivery.setCreateTime(new Date());
+        corExpressDelivery.setUpdatedBy(enter.getUserId());
+        corExpressDelivery.setUpdatedTime(new Date());
+        corExpressDeliveryService.insertOrUpdateSelective(corExpressDelivery);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    private BaseExpressOrderTraceEnter buildBaseExpressOrderTraceEnter(SaveTaskEnter enter,
+                                                                       TenantConfigInfoResult tenantConfigInfoResult, Long taskId, CorExpressOrder item) {
+        return BaseExpressOrderTraceEnter.builder()
+                .id(idAppService.getId(SequenceName.COR_EXPRESS_ORDER_TRACE))
+                .dr(0)
+                .expressDeliveryId(taskId)
+                .expressOrderId(item.getId())
+                .tenantId(enter.getTenantId())
+                .driverId(enter.getDiverId())
+                .status(ExpressOrderStatusEnums.ASGN.getValue())
+                .event(ExpressOrderEventEnums.ASGN.getValue())
+                .reason(null)
+                .eventTime(new Date())
+                .longitude(tenantConfigInfoResult.getLongitude())
+                .latitude(tenantConfigInfoResult.getLatitude())
+                .geohash(MapUtil.geoHash(tenantConfigInfoResult.getLongitude().toString(),tenantConfigInfoResult.getLatitude().toString()))
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .build();
     }
 
     /**

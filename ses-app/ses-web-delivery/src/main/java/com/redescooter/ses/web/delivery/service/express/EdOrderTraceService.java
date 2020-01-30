@@ -2,7 +2,7 @@ package com.redescooter.ses.web.delivery.service.express;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderEnter;
+import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderResult;
 import com.redescooter.ses.web.delivery.vo.task.SaveExpressOrderTraceEnter;
 
@@ -22,7 +22,7 @@ public interface EdOrderTraceService {
      * @param enter
      * @return
      */
-    GeneralResult batchSaveExpressOrderTrace(List<BaseExpressOrderEnter> enter);
+    void batchSaveExpressOrderTrace(List<BaseExpressOrderTraceEnter> enter);
 
     /**
      * 保存单个订单记录
