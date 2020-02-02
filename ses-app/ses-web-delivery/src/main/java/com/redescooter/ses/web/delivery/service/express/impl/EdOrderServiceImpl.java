@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
+import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
@@ -10,6 +11,7 @@ import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrderTrace;
 import com.redescooter.ses.web.delivery.service.ExcelService;
+import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
@@ -23,10 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Mr.lijiating
@@ -41,10 +40,10 @@ public class EdOrderServiceImpl implements EdOrderService {
 
     @Autowired
     private ExcelService excelService;
-
     @Autowired
     private CorExpressOrderTraceService expressOrderTraceService;
-
+    @Autowired
+    private CorExpressOrderService expressOrderService;
     @Reference
     private IdAppService idAppService;
 
@@ -81,20 +80,54 @@ public class EdOrderServiceImpl implements EdOrderService {
     @Override
     public void saveOrders(List<ExpressOrderExcleData> orderExcleDataList, GeneralEnter enter) {
         //批量插入
-        List<CorExpressOrder> saveList = new ArrayList<>();
+        List<CorExpressOrder> saveOrdersList = new ArrayList<>();
         List<CorExpressOrderTrace> saveExpressOrderTraceList = new ArrayList<>();
+
         //批次号生成
-//        String batchNo = generateService.getOrderNo();
-//        orderExcleDataList.forEach(order -> {
-//            CorExpressOrder saverOrder = buildExpressOrderSingle((ImportExcelOrderEnter) enter, batchNo, order);
-//            saveList.add(saverOrder);
-//            // 保存日志
-//            createExpressOrderLogSingle(enter.getTenantId(),enter.getUserId(),saverOrder.getId(),0,0,saverOrder.getStatus(),'event',"event")
-//            saveExpressOrderTraceList.add(saveExpressDeliveryEnter);
-//        });
+        String batchNo = generateService.getOrderNo();
+
+        orderExcleDataList.forEach(order -> {
+            Optional.ofNullable(order)
+                    .ifPresent(o -> {
+                        CorExpressOrder saverOrder = buildExpressOrderSingle((ImportExcelOrderEnter) enter, batchNo, order);
+                        saveOrdersList.add(saverOrder);
+                        // 保存日志
+                        CorExpressOrderTrace saveExpressOrderTrace = createExpressOrderLogSingle(enter.getTenantId(), enter.getUserId(), saverOrder.getId(),
+                                0, 0, 0,
+                                saverOrder.getStatus(), ExpressOrderEventEnums.UNASGN.getValue(),
+                                null, null, Boolean.FALSE);
+                        saveExpressOrderTraceList.add(saveExpressOrderTrace);
+                    });
+        });
+
+        if (saveOrdersList.size() > 0 && saveExpressOrderTraceList.size() > 0) {
+            expressOrderService.batchInsert(saveOrdersList);
+            expressOrderTraceService.batchInsert(saveExpressOrderTraceList);
+        }
+
     }
 
-    private CorExpressOrderTrace createExpressOrderLogSingle(long tenantId, long userId, long expressOrderId, long expressDeliveryId, long driverId, long scooterId, String status, String event, String reason, Map<String, String> otherMap, Boolean saveDB) {
+    /**
+     * 保存订单导入记录
+     *
+     * @param tenantId
+     * @param userId
+     * @param expressOrderId
+     * @param expressDeliveryId
+     * @param driverId
+     * @param scooterId
+     * @param status
+     * @param event
+     * @param reason
+     * @param otherMap
+     * @param saveDB
+     * @return
+     */
+    private CorExpressOrderTrace createExpressOrderLogSingle(long tenantId, long userId, long expressOrderId,
+                                                             long expressDeliveryId, long driverId,
+                                                             long scooterId, String status, String event,
+                                                             String reason, Map<String, String> otherMap,
+                                                             Boolean saveDB) {
 
         if (StringUtils.isBlank(String.valueOf(saveDB))) {
             saveDB = Boolean.FALSE;
@@ -109,8 +142,8 @@ public class EdOrderServiceImpl implements EdOrderService {
         save.setDriverId(driverId);
         save.setStatus(status);
         save.setEvent(event);
-        save.setReason(reason);
         save.setEventTime(new Date());
+        save.setReason(reason);
         if (otherMap != null) {
             if (otherMap.containsKey(CorExpressOrderTrace.COL_LATITUDE) && otherMap.containsKey(CorExpressOrderTrace.COL_LONGITUDE)) {
                 save.setLongitude(new BigDecimal(otherMap.getOrDefault(CorExpressOrderTrace.COL_LONGITUDE, "0")));

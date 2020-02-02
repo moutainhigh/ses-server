@@ -1,0 +1,46 @@
+#Springboot 基础配置
+spring:
+  application:
+    name: ses-instance-one
+  profiles:
+    active: local
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false
+    encoding: UTF-8
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+server:
+  port: 8082
+  tomcat:
+    uri-encoding: UTF-8
+
+dubbo:                                                                                                                  #DUBBO 配置
+  application:
+    id: ses-instance-one
+    name: ses-instance-one
+    qos-enable: false                                                                                                   #是否启动QoS
+    qos-accept-foreign-ip: false                                                                                        #是否允许远程访问
+    logger: log4j
+  registry:
+    check: false                                                                                                        #注册中心不存在时，是否报错
+    group: ses
+  scan:
+    base-packages: com.redescooter.ses                                                                                  #服务暴露与发现消费所在的package
+  provider:                                                                                                             #服务提供者缺省值配置
+    timeout: 30000
+    threads: 300
+  consumer:                                                                                                             #服务消费者缺省值配置
+    check: false                                                                                                        #启动时检查提供者是否存在，true报错，false忽略
+    timeout: 20000
+    filter: dubboAccessLogFilter
+  protocol:
+    port: -1
+    threads: 300
+    name: dubbo
