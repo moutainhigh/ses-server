@@ -2,9 +2,11 @@ package com.redescooter.ses.web.delivery.service.express;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
 import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
+import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
@@ -60,6 +62,11 @@ public interface EdOrderService {
      */
     PageResult<QueryExpressOrderByPageResult> list(QueryExpressOrderByPageEnter enter);
 
-
+    /**
+     * 订单详情查询
+     * @param enter
+     * @return
+     */
+    QueryOrderDetailResult details(IdEnter enter);
 
 }

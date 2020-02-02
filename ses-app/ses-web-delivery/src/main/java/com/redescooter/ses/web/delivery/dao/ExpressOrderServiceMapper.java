@@ -2,8 +2,11 @@ package com.redescooter.ses.web.delivery.dao;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
 import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderTraceResult;
+import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
 
 import java.util.List;
 
@@ -39,4 +42,21 @@ public interface ExpressOrderServiceMapper {
      * @return
      */
     List<QueryExpressOrderByPageResult> list(QueryExpressOrderByPageEnter enter);
+
+    /**
+     * 订单详情查询
+     *
+     * @param enter
+     * @return
+     */
+    QueryOrderDetailResult detail(IdEnter enter);
+
+    /**
+     * 获取订单节点
+     *
+     * @param enter
+     * @return
+     */
+    List<QueryExpressOrderTraceResult> getOrderNode(IdEnter enter);
+
 }

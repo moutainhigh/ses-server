@@ -4,10 +4,13 @@ import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.ExpressOrderServiceMapper;
@@ -19,6 +22,8 @@ import com.redescooter.ses.web.delivery.service.base.CorExpressOrderTraceService
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
 import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
 import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderTraceResult;
+import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
@@ -56,7 +61,8 @@ public class EdOrderServiceImpl implements EdOrderService {
     private IdAppService idAppService;
     @Reference
     private GenerateService generateService;
-
+    @Reference
+    private TenantBaseService tenantBaseService;
 
     @Override
     public void download(HttpServletResponse response) {
@@ -156,6 +162,39 @@ public class EdOrderServiceImpl implements EdOrderService {
         List<QueryExpressOrderByPageResult> list = expressOrderServiceMapper.list(enter);
 
         return PageResult.create(enter, totalRows, list);
+    }
+
+    /**
+     * 订单详情查询
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public QueryOrderDetailResult details(IdEnter enter) {
+
+        QueryOrderDetailResult detail = expressOrderServiceMapper.detail(enter);
+
+        Optional.ofNullable(detail).ifPresent(d -> {
+            IdEnter tenantIdEnter = new IdEnter();
+            BeanUtils.copyProperties(enter, tenantIdEnter);
+            tenantIdEnter.setId(enter.getTenantId());
+            QueryTenantResult tenantResult = tenantBaseService.queryTenantById(tenantIdEnter);
+            List<QueryExpressOrderTraceResult> orderNode = expressOrderServiceMapper.getOrderNode(enter);
+
+            d.setTenantAddress(tenantResult.getAddress());
+            d.setTenantLat(tenantResult.getLatitude().toString());
+            d.setTenantLng(tenantResult.getLongitude().toString());
+
+            d.setSendMileage(MapUtil.getDistance(tenantResult.getLatitude().toString(), tenantResult.getLongitude().toString(), d.getSenderLatitude().toString(),
+                    d.getSenderLongitude().toString()));
+            d.setRecipientMileage(MapUtil.getDistance(tenantResult.getLatitude().toString(), tenantResult.getLongitude().toString(), d.getRecipientLatitude().toString(),
+                    d.getRecipientLongitude().toString()));
+
+            d.setExpressOrderTraceResultList(orderNode);
+        });
+
+        return detail;
     }
 
     /**
