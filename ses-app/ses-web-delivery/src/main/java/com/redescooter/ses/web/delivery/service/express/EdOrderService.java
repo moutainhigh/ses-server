@@ -9,6 +9,7 @@ import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mr.lijiating
@@ -41,5 +42,12 @@ public interface EdOrderService {
      * @param orderExcleDataList
      */
     void saveOrders(List<ExpressOrderExcleData> orderExcleDataList,GeneralEnter enter);
+
+    /**
+     * 快递订单状态统计
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> countStatus(GeneralEnter enter);
 
 }

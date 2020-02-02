@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.redescooter.ses.service.foundation.dao.SequenceMapper">
+
+    <update id="updateSequence">
+    	UPDATE
+    		PLA_SYS_SEQUENCE
+    	SET 
+    		CURRENT_VALUE = CURRENT_VALUE + #{length}
+    	WHERE 
+    		name = #{name} AND CURRENT_VALUE = #{currentValue}
+    </update>
+
+    <select id="getSequence" resultType="com.redescooter.ses.service.foundation.dm.SequenceDefination">
+    	SELECT
+    		name, CURRENT_VALUE currentValue, INCREMENT, CACHE
+    	FROM
+    		PLA_SYS_SEQUENCE
+    	WHERE
+    		name=#{name}
+    </select>
+
+    <select id="getAllSequence" resultType="com.redescooter.ses.service.foundation.dm.SequenceDefination">
+		SELECT
+		name, CURRENT_VALUE currentValue, INCREMENT, cache
+		FROM
+		PLA_SYS_SEQUENCE
+	</select>
+
+    <insert id="insertSequence">
+		INSERT INTO PLA_SYS_SEQUENCE (NAME)
+		VALUES (#{name})
+	</insert>
+
+
+</mapper>

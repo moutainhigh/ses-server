@@ -2,12 +2,14 @@ package com.redescooter.ses.web.delivery.service.express.impl;
 
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
+import com.redescooter.ses.web.delivery.dao.ExpressOrderServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrderTrace;
 import com.redescooter.ses.web.delivery.service.ExcelService;
@@ -41,12 +43,14 @@ public class EdOrderServiceImpl implements EdOrderService {
     @Autowired
     private ExcelService excelService;
     @Autowired
+    private CorExpressOrderService expressOrderService;
+    @Autowired
     private CorExpressOrderTraceService expressOrderTraceService;
     @Autowired
-    private CorExpressOrderService expressOrderService;
+    private ExpressOrderServiceMapper expressOrderServiceMapper;
+
     @Reference
     private IdAppService idAppService;
-
     @Reference
     private GenerateService generateService;
 
@@ -105,6 +109,30 @@ public class EdOrderServiceImpl implements EdOrderService {
             expressOrderTraceService.batchInsert(saveExpressOrderTraceList);
         }
 
+    }
+
+    /**
+     * 快递订单状态统计
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, Integer> countStatus(GeneralEnter enter) {
+        List<CountByStatusResult> list = expressOrderServiceMapper.countByStatus(enter);
+        Map<String, Integer> map = new HashMap<>();
+        if (list.size() > 0) {
+            for (CountByStatusResult item : list) {
+                map.put(item.getStatus(), item.getTotalCount());
+            }
+        }
+
+        for (ExpressOrderStatusEnums status : ExpressOrderStatusEnums.values()) {
+            if (!map.containsKey(status.getValue())) {
+                map.put(status.getValue(), 0);
+            }
+        }
+        return map;
     }
 
     /**

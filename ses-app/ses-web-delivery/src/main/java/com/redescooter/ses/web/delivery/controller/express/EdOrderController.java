@@ -12,7 +12,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 
 /**
@@ -34,13 +36,19 @@ public class EdOrderController {
     @GetMapping(value = "/download")
     @ApiOperation(value = "模板下载")
     public void download(HttpServletResponse response) {
-       edOrderService.download(response);
+        edOrderService.download(response);
     }
 
     @PostMapping(value = "/importOrders")
     @ApiOperation(value = "订单导入", response = GeneralResult.class)
     public Response<ImportExcelOrderResult> importOrders(@ModelAttribute @ApiParam("请求参数") ImportExcelOrderEnter enter) {
         return new Response<>(edOrderService.importOrders(enter));
+    }
+
+    @PostMapping(value = "/countStatus")
+    @ApiOperation(value = "状态统计", response = Map.class)
+    public Response<Map<String, Integer>> countStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>();
     }
 
     @PostMapping(value = "/list")
