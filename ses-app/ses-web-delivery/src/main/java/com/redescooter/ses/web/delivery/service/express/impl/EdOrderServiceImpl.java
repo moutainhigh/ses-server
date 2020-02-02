@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -16,6 +17,8 @@ import com.redescooter.ses.web.delivery.service.ExcelService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
@@ -133,6 +136,26 @@ public class EdOrderServiceImpl implements EdOrderService {
             }
         }
         return map;
+    }
+
+    /**
+     * 快递订单列表分页查询
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<QueryExpressOrderByPageResult> list(QueryExpressOrderByPageEnter enter) {
+
+        int totalRows = expressOrderServiceMapper.listCount(enter);
+
+        if (totalRows == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+
+        List<QueryExpressOrderByPageResult> list = expressOrderServiceMapper.list(enter);
+
+        return PageResult.create(enter, totalRows, list);
     }
 
     /**

@@ -5,6 +5,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import io.swagger.annotations.Api;
@@ -53,8 +55,8 @@ public class EdOrderController {
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "订单列表", response = PageResult.class)
-    public Response<PageResult<GeneralResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    public Response<PageResult<QueryExpressOrderByPageResult>> list(@ModelAttribute @ApiParam("请求参数") QueryExpressOrderByPageEnter enter) {
+        return new Response<>(edOrderService.list(enter));
     }
 
     @PostMapping(value = "/details")

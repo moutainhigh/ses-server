@@ -8,4 +8,82 @@
         where tenant_id=#{tenantId}
         group by status
     </select>
+    <select id="listCount" resultType="int">
+        select count(*)
+        from cor_express_order a
+        left join cor_express_delivery_detail b on a.id = b.express_order_id and b.dr=0
+        left join cor_express_delivery c on b.express_delivery_id = c.id and c.dr=0
+        left join cor_driver d on c.driver_id = d.id and d.dr=0
+        left join cor_user_profile e on e.user_id = d.user_id and e.dr=0
+        where a.tenant_id=#{tenantId}
+        and a.dr=0
+        <if test="status != null and status != ''">
+            and a.status=#{status}
+        </if>
+        <if test="city != null and city != ''">
+            and a.recipient_city=#{city}
+        </if>
+        <if test="postalCode != null and postalCode != ''">
+            and a.recipient_postcode=#{postalCode}
+        </if>
+        <if test="creatStartTime != null and creatStartTime != '' and creatEndTime != null and creatEndTime != ''">
+            and a.created_time between #{creatStartTime} and #{creatEndTime}
+        </if>
+        <if test="deliveredStartTime != null and deliveredStartTime != '' and deliveredEndTime != null and deliveredEndTime != ''">
+            and a.delivered_time between #{deliveredStartTime} and #{deliveredEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and(a.order_no like concat('%',#{keyword},'%')
+            or a.recipient_name like concat('%',#{keyword},'%')
+            or a.recipient_mail like concat('%',#{keyword},'%')
+            or e.FULL_NAME like concat('%',#{keyword},'%')
+            )
+        </if>
+    </select>
+    <select id="list" resultType="com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult">
+        select a.id as id,
+        a.batch_no as batchNo,
+        a.order_no as orderNo,
+        a.status as status,
+        a.recipient_postcode as recipientPostcode,
+        a.recipient_name as recipientName,
+        a.recipient_mail as recipientMail,
+        a.recipient_address as recipientAddress,
+        a.recipient_city as recipientCity,
+        a.created_time as createdTime,
+        a.delivered_time as deliveredTime,
+        e.first_name as driverFirstName,
+        e.last_name as driverLastName
+        from cor_express_order a
+        left join cor_express_delivery_detail b on a.id = b.express_order_id and b.dr=0
+        left join cor_express_delivery c on b.express_delivery_id = c.id and c.dr=0
+        left join cor_driver d on c.driver_id = d.id and d.dr=0
+        left join cor_user_profile e on e.user_id = d.user_id and e.dr=0
+        where a.tenant_id=#{tenantId}
+        and a.dr=0
+        <if test="status != null and status != ''">
+            and a.status=#{status}
+        </if>
+        <if test="city != null and city != ''">
+            and a.recipient_city=#{city}
+        </if>
+        <if test="postalCode != null and postalCode != ''">
+            and a.recipient_postcode=#{postalCode}
+        </if>
+        <if test="creatStartTime != null and creatStartTime != '' and creatEndTime != null and creatEndTime != ''">
+            and a.created_time between #{creatStartTime} and #{creatEndTime}
+        </if>
+        <if test="deliveredStartTime != null and deliveredStartTime != '' and deliveredEndTime != null and deliveredEndTime != ''">
+            and a.delivered_time between #{deliveredStartTime} and #{deliveredEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and(a.order_no like concat('%',#{keyword},'%')
+            or a.recipient_name like concat('%',#{keyword},'%')
+            or a.recipient_mail like concat('%',#{keyword},'%')
+            or e.FULL_NAME like concat('%',#{keyword},'%')
+            )
+        </if>
+        order by a.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
 </mapper>
