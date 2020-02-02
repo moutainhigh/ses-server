@@ -31,5 +31,4 @@ public interface ExcelService<T extends GeneralEnter> {
      */
     void download(String fileName, String path, HttpServletResponse response);
 
-
 }

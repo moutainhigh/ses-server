@@ -2,6 +2,11 @@ package com.redescooter.ses.web.delivery.service.express;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
+import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
@@ -9,6 +14,7 @@ import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mr.lijiating
@@ -41,5 +47,26 @@ public interface EdOrderService {
      * @param orderExcleDataList
      */
     void saveOrders(List<ExpressOrderExcleData> orderExcleDataList,GeneralEnter enter);
+
+    /**
+     * 快递订单状态统计
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> countStatus(GeneralEnter enter);
+
+    /**
+     * 快递订单列表分页查询
+     * @param enter
+     * @return
+     */
+    PageResult<QueryExpressOrderByPageResult> list(QueryExpressOrderByPageEnter enter);
+
+    /**
+     * 订单详情查询
+     * @param enter
+     * @return
+     */
+    QueryOrderDetailResult details(IdEnter enter);
 
 }

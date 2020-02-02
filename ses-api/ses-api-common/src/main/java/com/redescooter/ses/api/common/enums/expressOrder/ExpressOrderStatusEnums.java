@@ -26,7 +26,6 @@ public enum ExpressOrderStatusEnums {
 
     private String message;
 
-
     private String value;
 
 }

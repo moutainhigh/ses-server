@@ -1,10 +1,13 @@
 package com.redescooter.ses.mobile.client.config;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import javax.sql.DataSource;
 
 import java.util.Properties;
 
@@ -17,6 +20,9 @@ import java.util.Properties;
 @MapperScan({"com.redescooter.ses.mobile.client.dao",
              "com.redescooter.ses.mobile.client.com.redescooter.ses.service.mobile.c.base"})
 public class MybatisPlusConfig {
+
+
+
     /**
      * 分页插件
      *

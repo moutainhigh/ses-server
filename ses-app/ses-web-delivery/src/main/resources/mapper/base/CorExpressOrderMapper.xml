@@ -4,56 +4,57 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.delivery.dm.CorExpressOrder">
         <!--@mbg.generated-->
         <!--@Table cor_express_order-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
-        <result column="batch_no" jdbcType="VARCHAR" property="batchNo"/>
-        <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
-        <result column="status" jdbcType="VARCHAR" property="status"/>
-        <result column="recipient_country" jdbcType="VARCHAR" property="recipientCountry"/>
-        <result column="recipient_province" jdbcType="VARCHAR" property="recipientProvince"/>
-        <result column="recipient_city" jdbcType="VARCHAR" property="recipientCity"/>
-        <result column="recipient_postcode" jdbcType="VARCHAR" property="recipientPostcode"/>
-        <result column="recipient_address" jdbcType="VARCHAR" property="recipientAddress"/>
-        <result column="recipient_latitude" jdbcType="DECIMAL" property="recipientLatitude"/>
-        <result column="recipient_longitude" jdbcType="DECIMAL" property="recipientLongitude"/>
-        <result column="recipient_geohash" jdbcType="VARCHAR" property="recipientGeohash"/>
-        <result column="customer_reference" jdbcType="VARCHAR" property="customerReference"/>
-        <result column="recipient_name" jdbcType="VARCHAR" property="recipientName"/>
-        <result column="recipient_company" jdbcType="VARCHAR" property="recipientCompany"/>
-        <result column="recipient_phone" jdbcType="VARCHAR" property="recipientPhone"/>
-        <result column="recipient_mail" jdbcType="VARCHAR" property="recipientMail"/>
-        <result column="recipient_notes" jdbcType="VARCHAR" property="recipientNotes"/>
-        <result column="sender_country" jdbcType="VARCHAR" property="senderCountry"/>
-        <result column="sender_city" jdbcType="VARCHAR" property="senderCity"/>
-        <result column="sender_province" jdbcType="VARCHAR" property="senderProvince"/>
-        <result column="sender_postcode" jdbcType="VARCHAR" property="senderPostcode"/>
-        <result column="sender_address" jdbcType="VARCHAR" property="senderAddress"/>
-        <result column="sender_latitude" jdbcType="DECIMAL" property="senderLatitude"/>
-        <result column="sender_longitude" jdbcType="DECIMAL" property="senderLongitude"/>
-        <result column="sender_geohash" jdbcType="VARCHAR" property="senderGeohash"/>
-        <result column="sender_company" jdbcType="VARCHAR" property="senderCompany"/>
-        <result column="sender_name" jdbcType="VARCHAR" property="senderName"/>
-        <result column="sender_phone" jdbcType="VARCHAR" property="senderPhone"/>
-        <result column="sender_mail" jdbcType="VARCHAR" property="senderMail"/>
-        <result column="sender_notes" jdbcType="VARCHAR" property="senderNotes"/>
-        <result column="parcel_quantity" jdbcType="INTEGER" property="parcelQuantity"/>
-        <result column="assign_flag" jdbcType="BOOLEAN" property="assignFlag"/>
-        <result column="assign_time" jdbcType="TIMESTAMP" property="assignTime"/>
-        <result column="vehicle_type" jdbcType="VARCHAR" property="vehicleType"/>
-        <result column="expect_time_begin" jdbcType="TIMESTAMP" property="expectTimeBegin"/>
-        <result column="expect_time_end" jdbcType="TIMESTAMP" property="expectTimeEnd"/>
-        <result column="general_notes" jdbcType="VARCHAR" property="generalNotes"/>
-        <result column="denial_reason" jdbcType="VARCHAR" property="denialReason"/>
-        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
-        <result column="updated_by" jdbcType="INTEGER" property="updatedBy"/>
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
-        <result column="def1" jdbcType="VARCHAR" property="def1"/>
-        <result column="def2" jdbcType="VARCHAR" property="def2"/>
-        <result column="def3" jdbcType="VARCHAR" property="def3"/>
-        <result column="def5" jdbcType="VARCHAR" property="def5"/>
-        <result column="def6" jdbcType="DOUBLE" property="def6"/>
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+        <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="recipient_country" jdbcType="VARCHAR" property="recipientCountry" />
+        <result column="recipient_province" jdbcType="VARCHAR" property="recipientProvince" />
+        <result column="recipient_city" jdbcType="VARCHAR" property="recipientCity" />
+        <result column="recipient_postcode" jdbcType="VARCHAR" property="recipientPostcode" />
+        <result column="recipient_address" jdbcType="VARCHAR" property="recipientAddress" />
+        <result column="recipient_latitude" jdbcType="DECIMAL" property="recipientLatitude" />
+        <result column="recipient_longitude" jdbcType="DECIMAL" property="recipientLongitude" />
+        <result column="recipient_geohash" jdbcType="VARCHAR" property="recipientGeohash" />
+        <result column="customer_reference" jdbcType="VARCHAR" property="customerReference" />
+        <result column="recipient_name" jdbcType="VARCHAR" property="recipientName" />
+        <result column="recipient_company" jdbcType="VARCHAR" property="recipientCompany" />
+        <result column="recipient_phone" jdbcType="VARCHAR" property="recipientPhone" />
+        <result column="recipient_mail" jdbcType="VARCHAR" property="recipientMail" />
+        <result column="recipient_notes" jdbcType="VARCHAR" property="recipientNotes" />
+        <result column="sender_country" jdbcType="VARCHAR" property="senderCountry" />
+        <result column="sender_city" jdbcType="VARCHAR" property="senderCity" />
+        <result column="sender_province" jdbcType="VARCHAR" property="senderProvince" />
+        <result column="sender_postcode" jdbcType="VARCHAR" property="senderPostcode" />
+        <result column="sender_address" jdbcType="VARCHAR" property="senderAddress" />
+        <result column="sender_latitude" jdbcType="DECIMAL" property="senderLatitude" />
+        <result column="sender_longitude" jdbcType="DECIMAL" property="senderLongitude" />
+        <result column="sender_geohash" jdbcType="VARCHAR" property="senderGeohash" />
+        <result column="sender_company" jdbcType="VARCHAR" property="senderCompany" />
+        <result column="sender_name" jdbcType="VARCHAR" property="senderName" />
+        <result column="sender_phone" jdbcType="VARCHAR" property="senderPhone" />
+        <result column="sender_mail" jdbcType="VARCHAR" property="senderMail" />
+        <result column="sender_notes" jdbcType="VARCHAR" property="senderNotes" />
+        <result column="parcel_quantity" jdbcType="INTEGER" property="parcelQuantity" />
+        <result column="assign_flag" jdbcType="BOOLEAN" property="assignFlag" />
+        <result column="assign_time" jdbcType="TIMESTAMP" property="assignTime" />
+        <result column="vehicle_type" jdbcType="VARCHAR" property="vehicleType" />
+        <result column="expect_time_begin" jdbcType="TIMESTAMP" property="expectTimeBegin" />
+        <result column="expect_time_end" jdbcType="TIMESTAMP" property="expectTimeEnd" />
+        <result column="general_notes" jdbcType="VARCHAR" property="generalNotes" />
+        <result column="denial_reason" jdbcType="VARCHAR" property="denialReason" />
+        <result column="delivered_time" jdbcType="TIMESTAMP" property="deliveredTime" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="def1" jdbcType="VARCHAR" property="def1" />
+        <result column="def2" jdbcType="VARCHAR" property="def2" />
+        <result column="def3" jdbcType="VARCHAR" property="def3" />
+        <result column="def5" jdbcType="VARCHAR" property="def5" />
+        <result column="def6" jdbcType="DOUBLE" property="def6" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
@@ -64,7 +65,8 @@
         sender_address, sender_latitude, sender_longitude, sender_geohash, sender_company,
         sender_name, sender_phone, sender_mail, sender_notes, parcel_quantity, assign_flag,
         assign_time, vehicle_type, expect_time_begin, expect_time_end, general_notes, denial_reason,
-        created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+        delivered_time, created_by, created_time, updated_by, updated_time, def1, def2, def3,
+        def5, def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
@@ -72,606 +74,258 @@
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="dr = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.dr,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="tenant_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.tenantId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="batch_no = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.batchNo,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.batchNo,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="order_no = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.orderNo,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.orderNo,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="`status` = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.status,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_country = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientCountry,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientCountry,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_province = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientProvince,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientProvince,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_city = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientCity,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientCity,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_postcode = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientPostcode,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientPostcode,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_address = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientAddress,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientAddress,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_latitude = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientLatitude,jdbcType=DECIMAL}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientLatitude,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="recipient_longitude = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientLongitude,jdbcType=DECIMAL}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientLongitude,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="recipient_geohash = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientGeohash,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientGeohash,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="customer_reference = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.customerReference,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.customerReference,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_name = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientName,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientName,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_company = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientCompany,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientCompany,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_phone = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientPhone,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientPhone,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_mail = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientMail,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientMail,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="recipient_notes = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.recipientNotes,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.recipientNotes,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_country = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderCountry,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderCountry,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_city = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderCity,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderCity,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_province = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderProvince,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderProvince,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_postcode = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderPostcode,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderPostcode,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_address = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderAddress,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderAddress,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_latitude = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderLatitude,jdbcType=DECIMAL}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderLatitude,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="sender_longitude = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderLongitude,jdbcType=DECIMAL}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderLongitude,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="sender_geohash = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderGeohash,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderGeohash,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_company = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderCompany,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderCompany,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_name = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderName,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderName,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_phone = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderPhone,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderPhone,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_mail = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderMail,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderMail,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sender_notes = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.senderNotes,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.senderNotes,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="parcel_quantity = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.parcelQuantity,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.parcelQuantity,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="assign_flag = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.assignFlag,jdbcType=BOOLEAN}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.assignFlag,jdbcType=BOOLEAN}
                 </foreach>
             </trim>
             <trim prefix="assign_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.assignTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.assignTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="vehicle_type = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.vehicleType,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.vehicleType,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="expect_time_begin = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.expectTimeBegin,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.expectTimeBegin,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="expect_time_end = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.expectTimeEnd,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.expectTimeEnd,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="general_notes = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.generalNotes,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.generalNotes,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="denial_reason = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.denialReason,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.denialReason,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="delivered_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.deliveredTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="created_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.createdBy,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="created_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.createdTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="updated_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.updatedBy,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="updated_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.updatedTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="def1 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def1,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def2 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def2,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def3 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def3,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def5 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def5,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def6 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def6,jdbcType=DOUBLE}
                 </foreach>
             </trim>
         </trim>
         where id in
         <foreach close=")" collection="list" item="item" open="(" separator=", ">
-            #{item.id,jdbcType=BIGINT}
-        </foreach>
-    </update>
-    <update id="updateBatchSelective" parameterType="java.util.List">
-        <!--@mbg.generated-->
-        update cor_express_order
-        <trim prefix="set" suffixOverrides=",">
-            <trim prefix="dr = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.dr != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="tenant_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.tenantId != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="batch_no = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.batchNo != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.batchNo,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="order_no = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.orderNo != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.orderNo,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="`status` = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.status != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_country = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientCountry != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientCountry,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_province = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientProvince != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientProvince,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_city = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientCity != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientCity,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_postcode = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientPostcode != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientPostcode,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_address = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientAddress != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientAddress,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_latitude = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientLatitude != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientLatitude,jdbcType=DECIMAL}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_longitude = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientLongitude != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientLongitude,jdbcType=DECIMAL}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_geohash = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientGeohash != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientGeohash,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="customer_reference = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.customerReference != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.customerReference,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_name = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientName != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientName,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_company = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientCompany != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientCompany,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_phone = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientPhone != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientPhone,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_mail = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientMail != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientMail,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="recipient_notes = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.recipientNotes != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.recipientNotes,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_country = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderCountry != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderCountry,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_city = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderCity != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderCity,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_province = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderProvince != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderProvince,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_postcode = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderPostcode != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderPostcode,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_address = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderAddress != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderAddress,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_latitude = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderLatitude != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderLatitude,jdbcType=DECIMAL}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_longitude = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderLongitude != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderLongitude,jdbcType=DECIMAL}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_geohash = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderGeohash != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderGeohash,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_company = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderCompany != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderCompany,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_name = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderName != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderName,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_phone = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderPhone != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderPhone,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_mail = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderMail != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderMail,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="sender_notes = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.senderNotes != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.senderNotes,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="parcel_quantity = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.parcelQuantity != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.parcelQuantity,jdbcType=INTEGER}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="assign_flag = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.assignFlag != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.assignFlag,jdbcType=BOOLEAN}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="assign_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.assignTime != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.assignTime,jdbcType=TIMESTAMP}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="vehicle_type = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.vehicleType != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.vehicleType,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="expect_time_begin = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.expectTimeBegin != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.expectTimeBegin,jdbcType=TIMESTAMP}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="expect_time_end = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.expectTimeEnd != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.expectTimeEnd,jdbcType=TIMESTAMP}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="general_notes = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.generalNotes != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.generalNotes,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="denial_reason = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.denialReason != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.denialReason,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="created_by = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.createdBy != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="created_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.createdTime != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="updated_by = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.updatedBy != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=INTEGER}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="updated_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.updatedTime != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="def1 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.def1 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="def2 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.def2 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="def3 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.def3 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="def5 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.def5 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="def6 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.def6 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
-                    </if>
-                </foreach>
-            </trim>
-        </trim>
-        where id in
-        <foreach close=")" collection="list" item="item" open="(" separator=", ">
-            #{item.id,jdbcType=BIGINT}
+            #{item.id,jdbcType=INTEGER}
         </foreach>
     </update>
     <insert id="batchInsert" parameterType="map">
@@ -684,11 +338,11 @@
         sender_postcode, sender_address, sender_latitude, sender_longitude, sender_geohash,
         sender_company, sender_name, sender_phone, sender_mail, sender_notes, parcel_quantity,
         assign_flag, assign_time, vehicle_type, expect_time_begin, expect_time_end, general_notes,
-        denial_reason, created_by, created_time, updated_by, updated_time, def1, def2,
-        def3, def5, def6)
+        denial_reason, delivered_time, created_by, created_time, updated_by, updated_time,
+        def1, def2, def3, def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
+            (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
             #{item.batchNo,jdbcType=VARCHAR}, #{item.orderNo,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR},
             #{item.recipientCountry,jdbcType=VARCHAR}, #{item.recipientProvince,jdbcType=VARCHAR},
             #{item.recipientCity,jdbcType=VARCHAR}, #{item.recipientPostcode,jdbcType=VARCHAR},
@@ -697,23 +351,19 @@
             #{item.customerReference,jdbcType=VARCHAR}, #{item.recipientName,jdbcType=VARCHAR},
             #{item.recipientCompany,jdbcType=VARCHAR}, #{item.recipientPhone,jdbcType=VARCHAR},
             #{item.recipientMail,jdbcType=VARCHAR}, #{item.recipientNotes,jdbcType=VARCHAR},
-            #{item.senderCountry,jdbcType=VARCHAR}, #{item.senderCity,jdbcType=VARCHAR},
-            #{item.senderProvince,jdbcType=VARCHAR},
+            #{item.senderCountry,jdbcType=VARCHAR}, #{item.senderCity,jdbcType=VARCHAR}, #{item.senderProvince,jdbcType=VARCHAR},
             #{item.senderPostcode,jdbcType=VARCHAR}, #{item.senderAddress,jdbcType=VARCHAR},
             #{item.senderLatitude,jdbcType=DECIMAL}, #{item.senderLongitude,jdbcType=DECIMAL},
             #{item.senderGeohash,jdbcType=VARCHAR}, #{item.senderCompany,jdbcType=VARCHAR},
-            #{item.senderName,jdbcType=VARCHAR}, #{item.senderPhone,jdbcType=VARCHAR},
-            #{item.senderMail,jdbcType=VARCHAR},
+            #{item.senderName,jdbcType=VARCHAR}, #{item.senderPhone,jdbcType=VARCHAR}, #{item.senderMail,jdbcType=VARCHAR},
             #{item.senderNotes,jdbcType=VARCHAR}, #{item.parcelQuantity,jdbcType=INTEGER},
-            #{item.assignFlag,jdbcType=BOOLEAN}, #{item.assignTime,jdbcType=TIMESTAMP},
-            #{item.vehicleType,jdbcType=VARCHAR},
+            #{item.assignFlag,jdbcType=BOOLEAN}, #{item.assignTime,jdbcType=TIMESTAMP}, #{item.vehicleType,jdbcType=VARCHAR},
             #{item.expectTimeBegin,jdbcType=TIMESTAMP}, #{item.expectTimeEnd,jdbcType=TIMESTAMP},
-            #{item.generalNotes,jdbcType=VARCHAR}, #{item.denialReason,jdbcType=VARCHAR},
-            #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=INTEGER},
-            #{item.updatedTime,jdbcType=TIMESTAMP},
-            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
-            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+            #{item.generalNotes,jdbcType=VARCHAR}, #{item.denialReason,jdbcType=VARCHAR}, #{item.deliveredTime,jdbcType=TIMESTAMP},
+            #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+            #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
+            #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+            )
         </foreach>
     </insert>
     <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.delivery.dm.CorExpressOrder">
@@ -726,14 +376,13 @@
         sender_postcode, sender_address, sender_latitude, sender_longitude, sender_geohash,
         sender_company, sender_name, sender_phone, sender_mail, sender_notes, parcel_quantity,
         assign_flag, assign_time, vehicle_type, expect_time_begin, expect_time_end, general_notes,
-        denial_reason, created_by, created_time, updated_by, updated_time, def1, def2,
-        def3, def5, def6)
+        denial_reason, delivered_time, created_by, created_time, updated_by, updated_time,
+        def1, def2, def3, def5, def6)
         values
-        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{batchNo,jdbcType=VARCHAR},
+        (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{batchNo,jdbcType=VARCHAR},
         #{orderNo,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{recipientCountry,jdbcType=VARCHAR},
         #{recipientProvince,jdbcType=VARCHAR}, #{recipientCity,jdbcType=VARCHAR}, #{recipientPostcode,jdbcType=VARCHAR},
-        #{recipientAddress,jdbcType=VARCHAR}, #{recipientLatitude,jdbcType=DECIMAL},
-        #{recipientLongitude,jdbcType=DECIMAL},
+        #{recipientAddress,jdbcType=VARCHAR}, #{recipientLatitude,jdbcType=DECIMAL}, #{recipientLongitude,jdbcType=DECIMAL},
         #{recipientGeohash,jdbcType=VARCHAR}, #{customerReference,jdbcType=VARCHAR}, #{recipientName,jdbcType=VARCHAR},
         #{recipientCompany,jdbcType=VARCHAR}, #{recipientPhone,jdbcType=VARCHAR}, #{recipientMail,jdbcType=VARCHAR},
         #{recipientNotes,jdbcType=VARCHAR}, #{senderCountry,jdbcType=VARCHAR}, #{senderCity,jdbcType=VARCHAR},
@@ -743,12 +392,12 @@
         #{senderMail,jdbcType=VARCHAR}, #{senderNotes,jdbcType=VARCHAR}, #{parcelQuantity,jdbcType=INTEGER},
         #{assignFlag,jdbcType=BOOLEAN}, #{assignTime,jdbcType=TIMESTAMP}, #{vehicleType,jdbcType=VARCHAR},
         #{expectTimeBegin,jdbcType=TIMESTAMP}, #{expectTimeEnd,jdbcType=TIMESTAMP}, #{generalNotes,jdbcType=VARCHAR},
-        #{denialReason,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
-        #{updatedBy,jdbcType=INTEGER}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
-        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
-        )
+        #{denialReason,jdbcType=VARCHAR}, #{deliveredTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT},
+        #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
+        #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
+        #{def6,jdbcType=DOUBLE})
         on duplicate key update
-        id = #{id,jdbcType=BIGINT},
+        id = #{id,jdbcType=INTEGER},
         dr = #{dr,jdbcType=INTEGER},
         tenant_id = #{tenantId,jdbcType=BIGINT},
         batch_no = #{batchNo,jdbcType=VARCHAR},
@@ -789,9 +438,10 @@
         expect_time_end = #{expectTimeEnd,jdbcType=TIMESTAMP},
         general_notes = #{generalNotes,jdbcType=VARCHAR},
         denial_reason = #{denialReason,jdbcType=VARCHAR},
+        delivered_time = #{deliveredTime,jdbcType=TIMESTAMP},
         created_by = #{createdBy,jdbcType=BIGINT},
         created_time = #{createdTime,jdbcType=TIMESTAMP},
-        updated_by = #{updatedBy,jdbcType=INTEGER},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
         def1 = #{def1,jdbcType=VARCHAR},
         def2 = #{def2,jdbcType=VARCHAR},
@@ -926,6 +576,9 @@
             <if test="denialReason != null">
                 denial_reason,
             </if>
+            <if test="deliveredTime != null">
+                delivered_time,
+            </if>
             <if test="createdBy != null">
                 created_by,
             </if>
@@ -957,7 +610,7 @@
         values
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=BIGINT},
+                #{id,jdbcType=INTEGER},
             </if>
             <if test="dr != null">
                 #{dr,jdbcType=INTEGER},
@@ -1079,6 +732,9 @@
             <if test="denialReason != null">
                 #{denialReason,jdbcType=VARCHAR},
             </if>
+            <if test="deliveredTime != null">
+                #{deliveredTime,jdbcType=TIMESTAMP},
+            </if>
             <if test="createdBy != null">
                 #{createdBy,jdbcType=BIGINT},
             </if>
@@ -1086,7 +742,7 @@
                 #{createdTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updatedBy != null">
-                #{updatedBy,jdbcType=INTEGER},
+                #{updatedBy,jdbcType=BIGINT},
             </if>
             <if test="updatedTime != null">
                 #{updatedTime,jdbcType=TIMESTAMP},
@@ -1110,7 +766,7 @@
         on duplicate key update
         <trim suffixOverrides=",">
             <if test="id != null">
-                id = #{id,jdbcType=BIGINT},
+                id = #{id,jdbcType=INTEGER},
             </if>
             <if test="dr != null">
                 dr = #{dr,jdbcType=INTEGER},
@@ -1232,6 +888,9 @@
             <if test="denialReason != null">
                 denial_reason = #{denialReason,jdbcType=VARCHAR},
             </if>
+            <if test="deliveredTime != null">
+                delivered_time = #{deliveredTime,jdbcType=TIMESTAMP},
+            </if>
             <if test="createdBy != null">
                 created_by = #{createdBy,jdbcType=BIGINT},
             </if>
@@ -1239,7 +898,7 @@
                 created_time = #{createdTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updatedBy != null">
-                updated_by = #{updatedBy,jdbcType=INTEGER},
+                updated_by = #{updatedBy,jdbcType=BIGINT},
             </if>
             <if test="updatedTime != null">
                 updated_time = #{updatedTime,jdbcType=TIMESTAMP},

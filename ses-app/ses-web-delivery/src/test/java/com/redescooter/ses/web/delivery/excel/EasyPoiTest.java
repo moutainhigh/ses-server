@@ -18,6 +18,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Mr.lijiating
@@ -28,6 +29,17 @@ import java.util.List;
  */
 public class EasyPoiTest {
 
+    @Test
+    public void  test1(){
+        ExpressOrderExcleData expressOrderExcleData =new ExpressOrderExcleData();
+        expressOrderExcleData=null;
+
+        Optional.ofNullable(expressOrderExcleData)
+                .ifPresent(u->{
+                    System.out.println("---"+u);
+                });
+
+    }
     /**
      * 测试单sheet导出
      *
@@ -78,7 +90,6 @@ public class EasyPoiTest {
 //        System.out.println("upload url:" + upload.getAbsolutePath());
         //在开发测试模式时，得到的地址为：{项目跟目录}/target/static/images/upload/
         //在打包成jar正式发布时，得到的地址为：{发布jar包目录}/static/images/upload/
-
 
     }
 }
