@@ -20,24 +20,38 @@ spring:
       stat-view-servlet:
         loginUsername: admin
         loginPassword: admin@RedE2019
-    dynamic:
-      druid:
-        initial-size: 3
-        max-active: 8
-        min-idle: 2
-        max-wait: -1
-        min-evictable-idle-time-millis: 30000
-        max-evictable-idle-time-millis: 30000
-        time-between-eviction-runs-millis: 0
-        validation-query: select 1
-        validation-query-timeout: -1
-        test-on-borrow: false
-        test-on-return: false
-        test-while-idle: true
-        pool-prepared-statements: true
-        max-open-prepared-statements: 100
-        filters: stat,wall
-        share-prepared-statements: true
+        enabled: false
+        url-pattern: /druid/*
+      time-between-eviction-runsMillis: 60000
+      min-evictable-idle-timeMillis: 300000
+      validation-query: select 'x' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 20
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      use-global-data-source-stat: true
+#    dynamic:
+#      druid:
+#        initial-size: 3
+#        max-active: 8
+#        min-idle: 2
+#        max-wait: -1
+#        min-evictable-idle-time-millis: 30000
+#        max-evictable-idle-time-millis: 30000
+#        time-between-eviction-runs-millis: 0
+#        validation-query: select 1
+#        validation-query-timeout: -1
+#        test-on-borrow: false
+#        test-on-return: false
+#        test-while-idle: true
+#        pool-prepared-statements: true
+#        max-open-prepared-statements: 100
+#        filters: stat,wall
+#        share-prepared-statements: true
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect

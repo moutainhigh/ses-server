@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.redescooter.ses.starter.swagger.autoconfig.Swagger2AutoConfiguration \
+  com.redescooter.ses.starter.db.config.WebMvcConfig
