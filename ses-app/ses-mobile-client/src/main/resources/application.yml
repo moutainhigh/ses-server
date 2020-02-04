@@ -27,9 +27,9 @@ spring:
       pool-prepared-statements: true
       max-open-prepared-statements: 20
       max-pool-prepared-statement-per-connection-size: 20
-      filters: stat
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
       use-global-data-source-stat: true
+      filters: stat,wall
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
@@ -94,7 +94,6 @@ dubbo:                                                                          
     port: -1
     threads: 300
     name: dubbo
-
 
 mybatis:                                                                                                                #MYBATIS配置
   configuration:
