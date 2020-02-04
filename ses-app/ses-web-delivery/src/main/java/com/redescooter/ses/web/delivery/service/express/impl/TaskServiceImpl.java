@@ -2,7 +2,6 @@ package com.redescooter.ses.web.delivery.service.express.impl;
 
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.order.OrderStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -318,7 +317,7 @@ public class TaskServiceImpl implements TaskService {
         corExpressDeliveryDetail.setTenantId(enter.getTenantId());
         corExpressDeliveryDetail.setExpressDeliveryId(taskId);
         corExpressDeliveryDetail.setExpressOrderId(item.getId());
-        corExpressDeliveryDetail.setStatus(OrderStatusEnums.ASSIGNED.getValue());
+        corExpressDeliveryDetail.setStatus(ExpressOrderStatusEnums.ASGN.getValue());
         corExpressDeliveryDetail.setParcelQuantity(1);
         // todo 暂时以当前时间 加店铺超时时间
         corExpressDeliveryDetail.setAta(DateUtils.addMinutes(new Date(), tenantConfigInfoResult.getEstimatedDuration().intValue()));

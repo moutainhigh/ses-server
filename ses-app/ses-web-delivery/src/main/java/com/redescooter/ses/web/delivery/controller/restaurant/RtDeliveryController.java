@@ -86,8 +86,8 @@ public class RtDeliveryController {
     }
 
     @PostMapping(value = "/orderInfor")
-    @ApiOperation(value = "司机订单列表", response = DriverOrderInfoResult.class)
-    public Response<DriverOrderInfoResult> driverDeliveryInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    @ApiOperation(value = "司机订单列表", response = DriverDeliveryInfoResult.class)
+    public Response<DriverDeliveryInfoResult> driverDeliveryInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(rtDeliveryService.driverDeliveryInfor(enter));
     }
 

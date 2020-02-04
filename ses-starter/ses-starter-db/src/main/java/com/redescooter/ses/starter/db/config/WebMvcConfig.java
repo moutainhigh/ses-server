@@ -1,5 +1,6 @@
 package com.redescooter.ses.starter.db.config;
 
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.*;

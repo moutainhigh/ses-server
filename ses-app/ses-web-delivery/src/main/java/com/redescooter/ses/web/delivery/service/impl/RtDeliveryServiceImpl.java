@@ -46,7 +46,7 @@ import com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult;
 import com.redescooter.ses.web.delivery.vo.DeliveryMapResult;
 import com.redescooter.ses.web.delivery.vo.DeliveryNodeResult;
 import com.redescooter.ses.web.delivery.vo.DeliveryResetEnter;
-import com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult;
+import com.redescooter.ses.web.delivery.vo.DriverDeliveryInfoResult;
 import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
 import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
 import com.redescooter.ses.web.delivery.vo.MapEnter;
@@ -410,9 +410,9 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @return
      */
     @Override
-    public DriverOrderInfoResult driverDeliveryInfor(IdEnter enter) {
+    public DriverDeliveryInfoResult driverDeliveryInfor(IdEnter enter) {
 
-        DriverOrderInfoResult result = orderDeliveryServiceMapper.driverDeliveryInfor(enter);
+        DriverDeliveryInfoResult result = orderDeliveryServiceMapper.driverDeliveryInfor(enter);
 
         if (result == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
@@ -449,7 +449,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             });
         }
 
-        return DriverOrderInfoResult.builder()
+        return DriverDeliveryInfoResult.builder()
                 .scooterId(scooterListResult.get(0).getId())
                 .licensePlate(scooterListResult.get(0).getLicensePlate())
                 .battery(scooterListResult.get(0).getBattery())

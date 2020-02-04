@@ -163,7 +163,7 @@
         left join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
         where scooter.tenant_id = #{tenantId}
     </select>
-    <select id="driverDeliveryInfor" resultType="com.redescooter.ses.web.delivery.vo.DriverOrderInfoResult">
+    <select id="driverDeliveryInfor" resultType="com.redescooter.ses.web.delivery.vo.DriverDeliveryInfoResult">
         select driver.id as id,
         driver.user_id as userId,
         profile.picture as avatar,

@@ -1,10 +1,12 @@
 package com.redescooter.ses.web.delivery.controller.express;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.delivery.service.RtDeliveryService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
-import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
-import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
-import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
+import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import io.swagger.annotations.Api;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 
@@ -32,6 +35,9 @@ public class EdOrderController {
 
     @Autowired
     private EdOrderService edOrderService;
+
+    @Autowired
+    private RtDeliveryService rtDeliveryService;
 
     @GetMapping(value = "/download")
     @ApiOperation(value = "模板下载")
@@ -61,5 +67,23 @@ public class EdOrderController {
     @ApiOperation(value = "订单详情", response = GeneralResult.class)
     public Response<QueryOrderDetailResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(edOrderService.details(enter));
+    }
+
+    @PostMapping(value = "/map")
+    @ApiOperation(value = "地图接口", response = ExpressOrderMapResult.class)
+    public Response<ExpressOrderMapResult> expressOrderMap(@ModelAttribute @ApiParam("请求参数") ExpressOrderMapEnter enter) {
+        return new Response<>(edOrderService.expressOrderMap(enter));
+    }
+
+    @PostMapping(value = "/diverOrderInfor")
+    @ApiOperation(value = "司机订单列表", response = DiverOrderInforResult.class)
+    public Response<DiverOrderInforResult> diverOrderInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(edOrderService.diverOrderInfor(enter));
+    }
+
+    @PostMapping(value = "/licensePlateList")
+    @ApiOperation(value = "车牌号列表", response = ScooterLicensePlateResult.class)
+    public Response<List<ScooterLicensePlateResult>> scooterLicensePlate(@ModelAttribute @ApiParam("请求参数") ScooterLicensePlateEnter enter) {
+        return new Response<>(rtDeliveryService.scooterLicensePlate(enter));
     }
 }

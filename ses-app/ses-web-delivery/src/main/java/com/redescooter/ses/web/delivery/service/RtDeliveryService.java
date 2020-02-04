@@ -87,7 +87,7 @@ public interface RtDeliveryService {
      * @param enter
      * @return
      */
-    DriverOrderInfoResult driverDeliveryInfor(IdEnter enter);
+    DriverDeliveryInfoResult driverDeliveryInfor(IdEnter enter);
 
     /**
      * 车辆信息

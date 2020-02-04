@@ -4,9 +4,10 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
-import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
-import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
+import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
@@ -68,5 +69,25 @@ public interface EdOrderService {
      * @return
      */
     QueryOrderDetailResult details(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author  AlexLi
+     * @Date   2020/2/3 13:46
+     * @Param  ExpressOrderMapEnter
+     * @Return ExpressOrderMapResult
+     * @method   EdOrderService
+     */
+    ExpressOrderMapResult expressOrderMap(ExpressOrderMapEnter enter);
+
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/3 15:28
+    * @Param:  enter
+    * @Return: QueryOrderDetailResult
+    * @method: diverOrderInfor
+    */
+    DiverOrderInforResult diverOrderInfor(IdEnter enter);
 
 }

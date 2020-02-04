@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.delivery.vo;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +26,7 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 public class DeliveryHistroyEnter extends PageEnter {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "id",required = true)
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 不为空")
     private Long id;
 }

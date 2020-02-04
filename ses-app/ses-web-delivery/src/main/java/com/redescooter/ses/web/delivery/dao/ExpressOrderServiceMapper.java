@@ -3,10 +3,10 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
-import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
-import com.redescooter.ses.web.delivery.vo.QueryExpressOrderTraceResult;
-import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
+import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
+import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
 
 import java.util.List;
 
@@ -58,5 +58,40 @@ public interface ExpressOrderServiceMapper {
      * @return
      */
     List<QueryExpressOrderTraceResult> getOrderNode(IdEnter enter);
-
+    /**
+    * @Description
+    * @Author  AlexLi
+    * @Date   2020/2/3 13:51
+    * @Param  ExpressOrderMapEnter
+    * @Return List<ScooterMapResult>
+    * @method   ExpressOrderServiceMapper
+    */
+    List<ScooterMapResult> scooterMap(ExpressOrderMapEnter enter);
+    /**
+    * @Description
+    * @Author  AlexLi
+    * @Date   2020/2/3 13:56
+    * @Param  ExpressOrderMapEnter
+    * @Return List<CorExpressOrder>
+    * @method   ExpressOrderServiceMapper
+    */
+    List<CorExpressOrder> mapOrderList(ExpressOrderMapEnter enter);
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/3 15:45
+    * @Param:  enter
+    * @Return: DiverOrderInforResult
+    * @desc: 地图的司机信息
+    */
+    DiverOrderInforResult diverInfor(IdEnter enter);
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/3 16:07
+    * @Param:  enter
+    * @Return: List<QueryOrderDetailResult>
+    * @desc: 司机的订单列表
+    */
+    List<QueryOrderDetailResult> driverOrderList(IdEnter enter);
 }
