@@ -130,3 +130,11 @@ ses-server
 | [Spring Security](https://docs.spring.io/spring-security/site/docs/5.2.2.BUILD-SNAPSHOT/reference/htmlsingle/)|https://docs.spring.io/spring-security/site/docs/5.2.2.BUILD-SNAPSHOT/reference/htmlsingle/|
 | [Spring Security Oauth](https://projects.spring.io/spring-security-oauth/docs/oauth2.html)|https://projects.spring.io/spring-security-oauth/docs/oauth2.html|
 
+
+#### 五、相关命令
+
+1. maven 多环境打包命令
+```shell script
+mvn clean package -Dmaven.test.skip=true -Pprod
+
+```
