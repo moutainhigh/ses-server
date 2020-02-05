@@ -267,12 +267,12 @@ public class EdOrderServiceImpl implements EdOrderService {
         //订单数据
         List<QueryOrderDetailResult> orderList=expressOrderServiceMapper.driverOrderList(enter);
 
-        return DiverOrderInforResult.builder()
-                .scooterId(scooterListResult.get(0).getId())
-                .licensePlate(scooterListResult.get(0).getLicensePlate())
-                .battery(scooterListResult.get(0).getBattery())
-                .orderList(CollectionUtils.isNotEmpty(orderList)==true ? null:orderList)
-                .build();
+        result.setScooterId(scooterListResult.get(0).getId());
+        result.setLicensePlate(scooterListResult.get(0).getLicensePlate());
+        result.setBattery(scooterListResult.get(0).getBattery());
+        result.setOrderList(CollectionUtils.isNotEmpty(orderList)==true ? null:orderList);
+
+        return result;
     }
 
     /**
@@ -343,6 +343,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         CorExpressOrder saverOrder = new CorExpressOrder();
         BeanUtils.copyProperties(order, saverOrder);
         saverOrder.setId(idAppService.getId(SequenceName.COR_EXPRESS_ORDER));
+        saverOrder.setDr(0);
         saverOrder.setTenantId(enter.getTenantId());
         saverOrder.setBatchNo(batchNo);
         saverOrder.setOrderNo(generateService.getOrderNo());

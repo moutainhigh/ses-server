@@ -194,9 +194,11 @@
     </select>
 
     <select id="scooterMap" resultType="com.redescooter.ses.web.delivery.vo.ScooterMapResult">
-         select scooter.scooter_id as id,
+          select scooter.scooter_id as id,
         scooter.latitude as lat,
         scooter.longitule as lng,
+        scooter.status as status,
+        scooter.license_plate as licensePlate,
         driver.id as driverId,
         profile.FIRST_NAME as driverFirstName,
         profile.LAST_NAME as driverLastName,
@@ -280,7 +282,7 @@
                 #{item}
             </foreach>
         </if>
-        and a.created_time desc
+        order by a.created_time desc
     </select>
     <select id="diverInfor" resultType="com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult">
          select driver.id as id,

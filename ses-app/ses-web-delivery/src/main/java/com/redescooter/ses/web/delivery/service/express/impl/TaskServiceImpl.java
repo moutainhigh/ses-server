@@ -22,7 +22,6 @@ import com.redescooter.ses.web.delivery.dm.CorDriver;
 import com.redescooter.ses.web.delivery.dm.CorExpressDelivery;
 import com.redescooter.ses.web.delivery.dm.CorExpressDeliveryDetail;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
-import com.redescooter.ses.web.delivery.dm.CorExpressOrderTrace;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.base.CorDriverService;
@@ -31,12 +30,7 @@ import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.TaskService;
-import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
-import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
-import com.redescooter.ses.web.delivery.vo.task.OrderResult;
-import com.redescooter.ses.web.delivery.vo.task.SaveTaskEnter;
-import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
-import com.redescooter.ses.web.delivery.vo.task.TaskResult;
+import com.redescooter.ses.web.delivery.vo.task.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -45,13 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName:TaskServiceImpl
@@ -222,26 +210,34 @@ public class TaskServiceImpl implements TaskService {
             // 保存 expressDeliveryDetail
             corExpressDeliveryDetailList.add(buildCorExpressDeliveryDetailSingle(enter, tenantConfigInfoResult, taskId, item));
 
-            //生成 order 记录 未完成
+            //生成 order 记录
             BaseExpressOrderTraceEnter baseExpressOrderTraceEnter = buildBaseExpressOrderTraceEnter(enter,
                     tenantConfigInfoResult, taskId, item);
             baseExpressOrderTraceEnterList.add(baseExpressOrderTraceEnter);
+            //修改expressOrder 状态
+            item.setStatus(ExpressOrderStatusEnums.ASGN.getValue());
+            item.setUpdatedBy(enter.getUserId());
+            item.setUpdatedTime(new Date());
+
         });
+        //        保存task
+        buildtask(enter, tenantConfigInfoResult,taskId);
         // 保存 TaskDetail
-        corExpressDeliveryService.insertOrUpdateSelective(buildCorExpressDelivery(enter, taskId));
         if (CollectionUtils.isNotEmpty(corExpressDeliveryDetailList)) {
             corExpressDeliveryDetailService.batchInsert(corExpressDeliveryDetailList);
         }
+
+        // 修改express Order 状态
+        corExpressOrderService.updateBatch(corExpressOrderList);
         // 保存taskDetailTrace
         edOrderTraceService.batchSaveExpressOrderTrace(baseExpressOrderTraceEnterList);
-        //        保存task
-        buildtask(enter, tenantConfigInfoResult);
+
         return new GeneralResult(enter.getRequestId());
     }
 
-    private void buildtask(SaveTaskEnter enter, TenantConfigInfoResult tenantConfigInfoResult) {
+    private void buildtask(SaveTaskEnter enter, TenantConfigInfoResult tenantConfigInfoResult,Long taskId) {
         CorExpressDelivery corExpressDelivery=new CorExpressDelivery();
-        corExpressDelivery.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY));
+        corExpressDelivery.setId(taskId);
         corExpressDelivery.setDr(0);
         corExpressDelivery.setTenantId(tenantConfigInfoResult.getTenantId());
         corExpressDelivery.setStatus(TaskStatusEnums.PENDING.getValue());
@@ -274,6 +270,8 @@ public class TaskServiceImpl implements TaskService {
                 .geohash(MapUtil.geoHash(tenantConfigInfoResult.getLongitude().toString(),tenantConfigInfoResult.getLatitude().toString()))
                 .createdBy(enter.getUserId())
                 .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
                 .build();
     }
 

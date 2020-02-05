@@ -42,23 +42,23 @@ public class EdDriverController {
         return new Response<>(rtDriverService.list(page));
     }
 
-//    @PostMapping(value = "/save")
-//    @ApiOperation(value = "新建司机", response = GeneralResult.class)
-//    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveDriverEnter enter) {
-//        return new Response<>(rtDriverService.save(enter));
-//    }
+    @PostMapping(value = "/save")
+    @ApiOperation(value = "新建司机", response = GeneralResult.class)
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveDriverEnter enter) {
+        return new Response<>(rtDriverService.save(enter));
+    }
 
-//    @PostMapping(value = "/edit")
-//    @ApiOperation(value = "司机编辑", response = GeneralResult.class)
-//    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") SaveDriverEnter enter) {
-//        return new Response<>(rtDriverService.save(enter));
-//    }
+    @PostMapping(value = "/edit")
+    @ApiOperation(value = "司机编辑", response = GeneralResult.class)
+    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") SaveDriverEnter enter) {
+        return new Response<>(rtDriverService.save(enter));
+    }
 
-//    @PostMapping(value = "/details")
-//    @ApiOperation(value = "司机详情", response = DriverDetailsResult.class)
-//    public Response<DriverDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>(rtDriverService.details(enter));
-//    }
+    @PostMapping(value = "/details")
+    @ApiOperation(value = "司机详情", response = DriverDetailsResult.class)
+    public Response<DriverDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(rtDriverService.details(enter));
+    }
 
     @PostMapping(value = "/leave")
     @ApiOperation(value = "司机离职", response = GeneralResult.class)
