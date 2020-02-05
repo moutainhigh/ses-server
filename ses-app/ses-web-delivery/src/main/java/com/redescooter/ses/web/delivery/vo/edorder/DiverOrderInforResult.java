@@ -1,31 +1,20 @@
-package com.redescooter.ses.web.delivery.vo;
+package com.redescooter.ses.web.delivery.vo.edorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-/**
- * @ClassName:DriverOrderInfoResult
- * @description: DriverOrderInfoResult
- * @author: Alex
- * @Version：1.3
- * @create: 2020/01/04 17:09
- */
-@ApiModel(value = "司机订单信息出参", description = "司机订单信息出参")
-@AllArgsConstructor
-@NoArgsConstructor
+@ApiModel(value = "快递地图司机订单列表出参", description = "快递地图司机订单列表出参")
+@Data //生成getter,setter等函数
+@AllArgsConstructor //生成全参数构造函数
+@NoArgsConstructor//生成无参构造函数
 @Builder
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class DriverOrderInfoResult extends GeneralResult {
-
+@EqualsAndHashCode(callSuper = false)
+public class DiverOrderInforResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
@@ -50,6 +39,6 @@ public class DriverOrderInfoResult extends GeneralResult {
     @ApiModelProperty(value = "电量")
     private Integer battery;
 
-    @ApiModelProperty(value = "订单信息")
-    private List<DeliveryMapResult> deliveryMapResultList;
+    @ApiModelProperty(value = "订单信息列表")
+    private List<QueryOrderDetailResult> orderList;
 }

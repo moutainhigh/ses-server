@@ -63,7 +63,7 @@ public interface OrderDeliveryServiceMapper {
      * @param enter
      * @return
      */
-    DriverOrderInfoResult driverDeliveryInfor(IdEnter enter);
+    DriverDeliveryInfoResult driverDeliveryInfor(IdEnter enter);
 
     /**
      * 订单 节点

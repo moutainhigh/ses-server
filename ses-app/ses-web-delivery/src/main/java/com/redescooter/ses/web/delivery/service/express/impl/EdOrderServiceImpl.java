@@ -6,9 +6,11 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
+import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.StringUtils;
@@ -16,18 +18,21 @@ import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.ExpressOrderServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrderTrace;
+import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.ExcelService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
-import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
-import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
-import com.redescooter.ses.web.delivery.vo.QueryExpressOrderTraceResult;
-import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
+import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +68,8 @@ public class EdOrderServiceImpl implements EdOrderService {
     private GenerateService generateService;
     @Reference
     private TenantBaseService tenantBaseService;
+    @Reference
+    private ScooterService scooterService;
 
     @Override
     public void download(HttpServletResponse response) {
@@ -198,6 +205,77 @@ public class EdOrderServiceImpl implements EdOrderService {
     }
 
     /**
+     * @Description
+     * @Author AlexLi
+     * @Date 2020/2/3 13:46
+     * @Param ExpressOrderMapEnter
+     * @Return ExpressOrderMapResult
+     * @desc 司机地图订单展示
+     * @param enter
+     */
+    @Override
+    public ExpressOrderMapResult expressOrderMap(ExpressOrderMapEnter enter) {
+        // 查询门店信息
+        QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
+
+        if (tenant == null) {
+            return new ExpressOrderMapResult();
+        }
+        // 司机车辆分配数据
+        List<ScooterMapResult> scooterMapList = expressOrderServiceMapper.scooterMap(enter);
+
+        List<CorExpressOrder> expressOrderList = expressOrderServiceMapper.mapOrderList(enter);
+
+        List<QueryOrderDetailResult> orderResultList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(expressOrderList)) {
+            expressOrderList.forEach(item -> {
+                QueryOrderDetailResult orderResult = new QueryOrderDetailResult();
+                BeanUtils.copyProperties(item,orderResult);
+                orderResultList.add(orderResult);
+            });
+        }
+        return ExpressOrderMapResult.builder()
+                .tenantId(tenant.getId())
+                .tenantLat(tenant.getLatitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLatitude()))
+                .tenantLng(tenant.getLongitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLongitude()))
+                .scooterMapResultList(scooterMapList)
+                .orderList(orderResultList)
+                .build();
+    }
+
+    /**
+     * @Description
+     * @Author: AlexLi
+     * @Date: 2020/2/3 15:28
+     * @Param: enter
+     * @Return: QueryOrderDetailResult
+     * @method: diverOrderInfor
+     * @param enter
+     */
+    @Override
+    public DiverOrderInforResult diverOrderInfor(IdEnter enter) {
+        DiverOrderInforResult result = expressOrderServiceMapper.diverInfor(enter);
+
+        if (result == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
+        }
+        // 车辆数据
+        List<Long> scooterIdList = new ArrayList<>();
+        scooterIdList.add(result.getScooterId());
+        List<BaseScooterResult> scooterListResult = scooterService.scooterInfor(scooterIdList);
+
+        //订单数据
+        List<QueryOrderDetailResult> orderList=expressOrderServiceMapper.driverOrderList(enter);
+
+        result.setScooterId(scooterListResult.get(0).getId());
+        result.setLicensePlate(scooterListResult.get(0).getLicensePlate());
+        result.setBattery(scooterListResult.get(0).getBattery());
+        result.setOrderList(CollectionUtils.isNotEmpty(orderList)==true ? null:orderList);
+
+        return result;
+    }
+
+    /**
      * 保存订单导入记录
      *
      * @param tenantId
@@ -265,6 +343,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         CorExpressOrder saverOrder = new CorExpressOrder();
         BeanUtils.copyProperties(order, saverOrder);
         saverOrder.setId(idAppService.getId(SequenceName.COR_EXPRESS_ORDER));
+        saverOrder.setDr(0);
         saverOrder.setTenantId(enter.getTenantId());
         saverOrder.setBatchNo(batchNo);
         saverOrder.setOrderNo(generateService.getOrderNo());
