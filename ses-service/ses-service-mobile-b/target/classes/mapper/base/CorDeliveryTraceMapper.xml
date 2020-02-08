@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryTraceMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace">
+    <!--@mbg.generated-->
+    <!--@Table cor_delivery_trace-->
+    <result column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="delivery_id" property="deliveryId" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="user_id" property="userId" />
+    <result column="status" property="status" />
+    <result column="event" property="event" />
+    <result column="reason" property="reason" />
+    <result column="event_time" property="eventTime" />
+    <result column="longitude" property="longitude" />
+    <result column="latitude" property="latitude" />
+    <result column="geohash" property="geohash" />
+    <result column="scooter_id" property="scooterId" />
+    <result column="scooter_longitude" property="scooterLongitude" />
+    <result column="scooter_latitude" property="scooterLatitude" />
+    <result column="scooter_location_geohash" property="scooterLocationGeohash" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into cor_delivery_trace
+    (id, dr, delivery_id, tenant_id, user_id, `status`, event, reason, event_time, longitude, 
+      latitude, geohash, scooter_id, scooter_longitude, scooter_latitude, scooter_location_geohash, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.deliveryId}, #{item.tenantId}, #{item.userId}, #{item.status}, 
+        #{item.event}, #{item.reason}, #{item.eventTime}, #{item.longitude}, #{item.latitude}, 
+        #{item.geohash}, #{item.scooterId}, #{item.scooterLongitude}, #{item.scooterLatitude}, 
+        #{item.scooterLocationGeohash}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, 
+        #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace">
+    <!--@mbg.generated-->
+    insert into cor_delivery_trace
+    (id, dr, delivery_id, tenant_id, user_id, `status`, event, reason, event_time, longitude, 
+      latitude, geohash, scooter_id, scooter_longitude, scooter_latitude, scooter_location_geohash, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
+    values
+    (#{id}, #{dr}, #{deliveryId}, #{tenantId}, #{userId}, #{status}, #{event}, #{reason}, 
+      #{eventTime}, #{longitude}, #{latitude}, #{geohash}, #{scooterId}, #{scooterLongitude}, 
+      #{scooterLatitude}, #{scooterLocationGeohash}, #{createdBy}, #{createdTime}, #{updatedBy}, 
+      #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    delivery_id = #{deliveryId}, 
+    tenant_id = #{tenantId}, 
+    user_id = #{userId}, 
+    `status` = #{status}, 
+    event = #{event}, 
+    reason = #{reason}, 
+    event_time = #{eventTime}, 
+    longitude = #{longitude}, 
+    latitude = #{latitude}, 
+    geohash = #{geohash}, 
+    scooter_id = #{scooterId}, 
+    scooter_longitude = #{scooterLongitude}, 
+    scooter_latitude = #{scooterLatitude}, 
+    scooter_location_geohash = #{scooterLocationGeohash}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace">
+    <!--@mbg.generated-->
+    insert into cor_delivery_trace
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="deliveryId != null">
+        delivery_id,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="event != null">
+        event,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="eventTime != null">
+        event_time,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="geohash != null">
+        geohash,
+      </if>
+      <if test="scooterId != null">
+        scooter_id,
+      </if>
+      <if test="scooterLongitude != null">
+        scooter_longitude,
+      </if>
+      <if test="scooterLatitude != null">
+        scooter_latitude,
+      </if>
+      <if test="scooterLocationGeohash != null">
+        scooter_location_geohash,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="deliveryId != null">
+        #{deliveryId},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="userId != null">
+        #{userId},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="event != null">
+        #{event},
+      </if>
+      <if test="reason != null">
+        #{reason},
+      </if>
+      <if test="eventTime != null">
+        #{eventTime},
+      </if>
+      <if test="longitude != null">
+        #{longitude},
+      </if>
+      <if test="latitude != null">
+        #{latitude},
+      </if>
+      <if test="geohash != null">
+        #{geohash},
+      </if>
+      <if test="scooterId != null">
+        #{scooterId},
+      </if>
+      <if test="scooterLongitude != null">
+        #{scooterLongitude},
+      </if>
+      <if test="scooterLatitude != null">
+        #{scooterLatitude},
+      </if>
+      <if test="scooterLocationGeohash != null">
+        #{scooterLocationGeohash},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="deliveryId != null">
+        delivery_id = #{deliveryId},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="event != null">
+        event = #{event},
+      </if>
+      <if test="reason != null">
+        reason = #{reason},
+      </if>
+      <if test="eventTime != null">
+        event_time = #{eventTime},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude},
+      </if>
+      <if test="geohash != null">
+        geohash = #{geohash},
+      </if>
+      <if test="scooterId != null">
+        scooter_id = #{scooterId},
+      </if>
+      <if test="scooterLongitude != null">
+        scooter_longitude = #{scooterLongitude},
+      </if>
+      <if test="scooterLatitude != null">
+        scooter_latitude = #{scooterLatitude},
+      </if>
+      <if test="scooterLocationGeohash != null">
+        scooter_location_geohash = #{scooterLocationGeohash},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>

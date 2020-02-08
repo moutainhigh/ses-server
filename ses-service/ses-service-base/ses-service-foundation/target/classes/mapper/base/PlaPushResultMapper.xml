@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaPushResultMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaPushResult">
+      <!--@mbg.generated-->
+      <!--@Table pla_push_result-->
+      <id column="id" jdbcType="BIGINT" property="id"/>
+      <result column="dr" jdbcType="INTEGER" property="dr"/>
+      <result column="msg_id" jdbcType="BIGINT" property="msgId"/>
+      <result column="send_no" jdbcType="INTEGER" property="sendNo"/>
+      <result column="status_code" jdbcType="INTEGER" property="statusCode"/>
+      <result column="error_code" jdbcType="INTEGER" property="errorCode"/>
+      <result column="error_message" jdbcType="VARCHAR" property="errorMessage"/>
+      <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+      <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+      <result column="def1" jdbcType="VARCHAR" property="def1"/>
+      <result column="def2" jdbcType="VARCHAR" property="def2"/>
+      <result column="def3" jdbcType="VARCHAR" property="def3"/>
+      <result column="def5" jdbcType="VARCHAR" property="def5"/>
+      <result column="def6" jdbcType="DOUBLE" property="def6"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, msg_id, send_no, status_code, error_code, error_message, created_by, created_time, 
+    def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update pla_push_result
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="msg_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.msgId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="send_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.sendNo,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="status_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.statusCode,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="error_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.errorCode,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="error_message = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.errorMessage,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+        <trim prefix="def6 = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+            </foreach>
+        </trim>
+    </trim>
+      where id in
+      <foreach close=")" collection="list" item="item" open="(" separator=", ">
+          #{item.id,jdbcType=BIGINT}
+      </foreach>
+  </update>
+    <update id="updateBatchSelective" parameterType="java.util.List">
+        <!--@mbg.generated-->
+        update pla_push_result
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="dr = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.dr != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="msg_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.msgId != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.msgId,jdbcType=BIGINT}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="send_no = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.sendNo != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.sendNo,jdbcType=INTEGER}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="status_code = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.statusCode != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.statusCode,jdbcType=INTEGER}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="error_code = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.errorCode != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.errorCode,jdbcType=INTEGER}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="error_message = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.errorMessage != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.errorMessage,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="created_by = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.createdBy != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="created_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.createdTime != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="def1 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.def1 != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="def2 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.def2 != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="def3 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.def3 != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="def5 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.def5 != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="def6 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.def6 != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach close=")" collection="list" item="item" open="(" separator=", ">
+            #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into pla_push_result
+        (id, dr, msg_id, send_no, status_code, error_code, error_message, created_by, created_time,
+        def1, def2, def3, def5, def6)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.msgId,jdbcType=BIGINT},
+            #{item.sendNo,jdbcType=INTEGER}, #{item.statusCode,jdbcType=INTEGER}, #{item.errorCode,jdbcType=INTEGER},
+            #{item.errorMessage,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
+            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+        </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaPushResult">
+    <!--@mbg.generated-->
+      insert into pla_push_result
+      (id, dr, msg_id, send_no, status_code, error_code, error_message, created_by, created_time,
+      def1, def2, def3, def5, def6)
+      values
+      (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{msgId,jdbcType=BIGINT}, #{sendNo,jdbcType=INTEGER},
+      #{statusCode,jdbcType=INTEGER}, #{errorCode,jdbcType=INTEGER}, #{errorMessage,jdbcType=VARCHAR},
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
+      on duplicate key update
+      id = #{id,jdbcType=BIGINT},
+      dr = #{dr,jdbcType=INTEGER},
+      msg_id = #{msgId,jdbcType=BIGINT},
+      send_no = #{sendNo,jdbcType=INTEGER},
+      status_code = #{statusCode,jdbcType=INTEGER},
+      error_code = #{errorCode,jdbcType=INTEGER},
+      error_message = #{errorMessage,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      def1 = #{def1,jdbcType=VARCHAR},
+      def2 = #{def2,jdbcType=VARCHAR},
+      def3 = #{def3,jdbcType=VARCHAR},
+      def5 = #{def5,jdbcType=VARCHAR},
+      def6 = #{def6,jdbcType=DOUBLE}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaPushResult">
+    <!--@mbg.generated-->
+    insert into pla_push_result
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="msgId != null">
+        msg_id,
+      </if>
+      <if test="sendNo != null">
+        send_no,
+      </if>
+      <if test="statusCode != null">
+        status_code,
+      </if>
+      <if test="errorCode != null">
+        error_code,
+      </if>
+      <if test="errorMessage != null">
+        error_message,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+          #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+          #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="msgId != null">
+          #{msgId,jdbcType=BIGINT},
+      </if>
+      <if test="sendNo != null">
+          #{sendNo,jdbcType=INTEGER},
+      </if>
+      <if test="statusCode != null">
+          #{statusCode,jdbcType=INTEGER},
+      </if>
+      <if test="errorCode != null">
+          #{errorCode,jdbcType=INTEGER},
+      </if>
+      <if test="errorMessage != null">
+          #{errorMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+          #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+          #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+          #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+          #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+          #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+          #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+          #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+          id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+          dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="msgId != null">
+          msg_id = #{msgId,jdbcType=BIGINT},
+      </if>
+      <if test="sendNo != null">
+          send_no = #{sendNo,jdbcType=INTEGER},
+      </if>
+      <if test="statusCode != null">
+          status_code = #{statusCode,jdbcType=INTEGER},
+      </if>
+      <if test="errorCode != null">
+          error_code = #{errorCode,jdbcType=INTEGER},
+      </if>
+      <if test="errorMessage != null">
+          error_message = #{errorMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+          created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+          created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+          def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+          def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+          def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+          def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+          def6 = #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -1,0 +1,54 @@
+#日志路径
+log:
+  file:
+    path: logs/local
+    max-size: 128MB
+    max-history: 180
+
+spring:
+  #数据库连接
+  datasource:
+    url: jdbc:mysql://localhost:3306/scooter?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 1qaz2wsx
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      initial-size: 8
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+  #REDIS集群配置
+  redis:
+    cluster:
+      nodes:
+        - localhost:7000
+        - localhost:7001
+        - localhost:7002
+        - localhost:7003
+        - localhost:7004
+        - localhost:7005
+
+# DUBBO 配置
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://localhost:22181
+
+
+# 多注册中心配置
+#    reg2:
+#      group: hdg2
+#      address: zookeeper://zk1.t.xqcx.com:2181?backup=zk2.t.xqcx.com:2181,zk3.t.xqcx.com:2181
+
+
+# sentinel 规则文件位置，以下依次是：流控规则，降级规则，系统规则文件位置
+#sentinel:
+#  zk-address: zk1.t.xqcx.com:2181,zk2.t.xqcx.com:2181,zk3.t.xqcx.com:2181
+#  groupid: hdg_sentinel
+#  flow-dataid: ses-service-scooter-flow
+#  degra-dedataid: ses-service-scooter-degra
+#  system-dataid: ses-service-scooter-sys
+
+#35.180.46.199:7332;35.180.46.199:7332
+iot:
+  address: 106.14.206.178:7332
+
