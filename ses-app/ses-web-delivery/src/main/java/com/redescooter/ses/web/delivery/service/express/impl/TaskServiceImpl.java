@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
+import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
@@ -203,23 +204,27 @@ public class TaskServiceImpl implements TaskService {
         List<CorExpressDeliveryDetail> corExpressDeliveryDetailList = new ArrayList<>();
 
         List<BaseExpressOrderTraceEnter> baseExpressOrderTraceEnterList = new ArrayList<>();
-        corExpressOrderList.forEach(item -> {
+        for (CorExpressOrder item : corExpressOrderList) {
             if (!enter.getIds().contains(item.getId())) {
-                throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+                throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
             }
             // 保存 expressDeliveryDetail
-            corExpressDeliveryDetailList.add(buildCorExpressDeliveryDetailSingle(enter, tenantConfigInfoResult, taskId, item));
+            corExpressDeliveryDetailList.add(buildCorExpressDeliveryDetailSingle(enter, tenantConfigInfoResult,
+                    taskId, item));
 
             //生成 order 记录
             BaseExpressOrderTraceEnter baseExpressOrderTraceEnter = buildBaseExpressOrderTraceEnter(enter,
                     tenantConfigInfoResult, taskId, item);
             baseExpressOrderTraceEnterList.add(baseExpressOrderTraceEnter);
             //修改expressOrder 状态
+            item.setAssignFlag(Boolean.TRUE);
+            item.setAssignTime(new Date());
             item.setStatus(ExpressOrderStatusEnums.ASGN.getValue());
             item.setUpdatedBy(enter.getUserId());
             item.setUpdatedTime(new Date());
 
-        });
+        }
         //        保存task
         buildtask(enter, tenantConfigInfoResult,taskId);
         // 保存 TaskDetail
@@ -315,10 +320,11 @@ public class TaskServiceImpl implements TaskService {
         corExpressDeliveryDetail.setTenantId(enter.getTenantId());
         corExpressDeliveryDetail.setExpressDeliveryId(taskId);
         corExpressDeliveryDetail.setExpressOrderId(item.getId());
-        corExpressDeliveryDetail.setStatus(ExpressOrderStatusEnums.ASGN.getValue());
+        corExpressDeliveryDetail.setStatus(ExpressDeliveryDetailStatusEnums.ASGN.getValue());
         corExpressDeliveryDetail.setParcelQuantity(1);
         // todo 暂时以当前时间 加店铺超时时间
         corExpressDeliveryDetail.setAta(DateUtils.addMinutes(new Date(), tenantConfigInfoResult.getEstimatedDuration().intValue()));
+        //enter.getIds().indexOf(item.getId())+1
         corExpressDeliveryDetail.setPrioritySort(0);
         corExpressDeliveryDetail.setCreatedBy(enter.getUserId());
         corExpressDeliveryDetail.setCreatedTime(new Date());

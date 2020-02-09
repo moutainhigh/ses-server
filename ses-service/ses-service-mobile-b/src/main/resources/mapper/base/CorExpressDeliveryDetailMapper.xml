@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.base.CorExpressDeliveryDetailMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.mobile.b.dm.base.CorExpressDeliveryDetail">
+    <!--@mbg.generated-->
+    <!--@Table cor_express_delivery_detail-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="express_delivery_id" property="expressDeliveryId" />
+    <result column="express_order_id" property="expressOrderId" />
+    <result column="status" property="status" />
+    <result column="parcel_quantity" property="parcelQuantity" />
+    <result column="etd" property="etd" />
+    <result column="ata" property="ata" />
+    <result column="atd" property="atd" />
+    <result column="eta" property="eta" />
+    <result column="priority_sort" property="prioritySort" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <!--@mbg.generated-->
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <!--@mbg.generated-->
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, express_delivery_id, express_order_id, `status`, parcel_quantity, 
+    etd, ata, atd, eta, priority_sort, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def5, def6
+  </sql>
+  <select id="selectByExample" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressDeliveryDetailExample" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cor_express_delivery_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressDeliveryDetailExample">
+    <!--@mbg.generated-->
+    delete from cor_express_delivery_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <select id="countByExample" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressDeliveryDetailExample" resultType="java.lang.Long">
+    <!--@mbg.generated-->
+    select count(*) from cor_express_delivery_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    <!--@mbg.generated-->
+    update cor_express_delivery_detail
+    <set>
+      <if test="record.id != null">
+        id = #{record.id},
+      </if>
+      <if test="record.dr != null">
+        dr = #{record.dr},
+      </if>
+      <if test="record.tenantId != null">
+        tenant_id = #{record.tenantId},
+      </if>
+      <if test="record.expressDeliveryId != null">
+        express_delivery_id = #{record.expressDeliveryId},
+      </if>
+      <if test="record.expressOrderId != null">
+        express_order_id = #{record.expressOrderId},
+      </if>
+      <if test="record.status != null">
+        `status` = #{record.status},
+      </if>
+      <if test="record.parcelQuantity != null">
+        parcel_quantity = #{record.parcelQuantity},
+      </if>
+      <if test="record.etd != null">
+        etd = #{record.etd},
+      </if>
+      <if test="record.ata != null">
+        ata = #{record.ata},
+      </if>
+      <if test="record.atd != null">
+        atd = #{record.atd},
+      </if>
+      <if test="record.eta != null">
+        eta = #{record.eta},
+      </if>
+      <if test="record.prioritySort != null">
+        priority_sort = #{record.prioritySort},
+      </if>
+      <if test="record.createdBy != null">
+        created_by = #{record.createdBy},
+      </if>
+      <if test="record.createdTime != null">
+        created_time = #{record.createdTime},
+      </if>
+      <if test="record.updatedBy != null">
+        updated_by = #{record.updatedBy},
+      </if>
+      <if test="record.updatedTime != null">
+        updated_time = #{record.updatedTime},
+      </if>
+      <if test="record.def1 != null">
+        def1 = #{record.def1},
+      </if>
+      <if test="record.def2 != null">
+        def2 = #{record.def2},
+      </if>
+      <if test="record.def3 != null">
+        def3 = #{record.def3},
+      </if>
+      <if test="record.def5 != null">
+        def5 = #{record.def5},
+      </if>
+      <if test="record.def6 != null">
+        def6 = #{record.def6},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    <!--@mbg.generated-->
+    update cor_express_delivery_detail
+    set id = #{record.id},
+      dr = #{record.dr},
+      tenant_id = #{record.tenantId},
+      express_delivery_id = #{record.expressDeliveryId},
+      express_order_id = #{record.expressOrderId},
+      `status` = #{record.status},
+      parcel_quantity = #{record.parcelQuantity},
+      etd = #{record.etd},
+      ata = #{record.ata},
+      atd = #{record.atd},
+      eta = #{record.eta},
+      priority_sort = #{record.prioritySort},
+      created_by = #{record.createdBy},
+      created_time = #{record.createdTime},
+      updated_by = #{record.updatedBy},
+      updated_time = #{record.updatedTime},
+      def1 = #{record.def1},
+      def2 = #{record.def2},
+      def3 = #{record.def3},
+      def5 = #{record.def5},
+      def6 = #{record.def6}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

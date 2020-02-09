@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.base.CorExpressOrderMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrder">
+    <!--@mbg.generated-->
+    <!--@Table cor_express_order-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="batch_no" property="batchNo" />
+    <result column="order_no" property="orderNo" />
+    <result column="status" property="status" />
+    <result column="recipient_country" property="recipientCountry" />
+    <result column="recipient_province" property="recipientProvince" />
+    <result column="recipient_city" property="recipientCity" />
+    <result column="recipient_postcode" property="recipientPostcode" />
+    <result column="recipient_address" property="recipientAddress" />
+    <result column="recipient_latitude" property="recipientLatitude" />
+    <result column="recipient_longitude" property="recipientLongitude" />
+    <result column="recipient_geohash" property="recipientGeohash" />
+    <result column="customer_reference" property="customerReference" />
+    <result column="recipient_name" property="recipientName" />
+    <result column="recipient_company" property="recipientCompany" />
+    <result column="recipient_phone" property="recipientPhone" />
+    <result column="recipient_mail" property="recipientMail" />
+    <result column="recipient_notes" property="recipientNotes" />
+    <result column="sender_country" property="senderCountry" />
+    <result column="sender_city" property="senderCity" />
+    <result column="sender_province" property="senderProvince" />
+    <result column="sender_postcode" property="senderPostcode" />
+    <result column="sender_address" property="senderAddress" />
+    <result column="sender_latitude" property="senderLatitude" />
+    <result column="sender_longitude" property="senderLongitude" />
+    <result column="sender_geohash" property="senderGeohash" />
+    <result column="sender_company" property="senderCompany" />
+    <result column="sender_name" property="senderName" />
+    <result column="sender_phone" property="senderPhone" />
+    <result column="sender_mail" property="senderMail" />
+    <result column="sender_notes" property="senderNotes" />
+    <result column="parcel_quantity" property="parcelQuantity" />
+    <result column="assign_flag" property="assignFlag" />
+    <result column="assign_time" property="assignTime" />
+    <result column="vehicle_type" property="vehicleType" />
+    <result column="expect_time_begin" property="expectTimeBegin" />
+    <result column="expect_time_end" property="expectTimeEnd" />
+    <result column="general_notes" property="generalNotes" />
+    <result column="denial_reason" property="denialReason" />
+    <result column="delivered_time" property="deliveredTime" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <!--@mbg.generated-->
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <!--@mbg.generated-->
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, batch_no, order_no, `status`, recipient_country, recipient_province, 
+    recipient_city, recipient_postcode, recipient_address, recipient_latitude, recipient_longitude, 
+    recipient_geohash, customer_reference, recipient_name, recipient_company, recipient_phone, 
+    recipient_mail, recipient_notes, sender_country, sender_city, sender_province, sender_postcode, 
+    sender_address, sender_latitude, sender_longitude, sender_geohash, sender_company, 
+    sender_name, sender_phone, sender_mail, sender_notes, parcel_quantity, assign_flag, 
+    assign_time, vehicle_type, expect_time_begin, expect_time_end, general_notes, denial_reason, 
+    delivered_time, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+    def5, def6
+  </sql>
+  <select id="selectByExample" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderExample" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cor_express_order
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderExample">
+    <!--@mbg.generated-->
+    delete from cor_express_order
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <select id="countByExample" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderExample" resultType="java.lang.Long">
+    <!--@mbg.generated-->
+    select count(*) from cor_express_order
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    <!--@mbg.generated-->
+    update cor_express_order
+    <set>
+      <if test="record.id != null">
+        id = #{record.id},
+      </if>
+      <if test="record.dr != null">
+        dr = #{record.dr},
+      </if>
+      <if test="record.tenantId != null">
+        tenant_id = #{record.tenantId},
+      </if>
+      <if test="record.batchNo != null">
+        batch_no = #{record.batchNo},
+      </if>
+      <if test="record.orderNo != null">
+        order_no = #{record.orderNo},
+      </if>
+      <if test="record.status != null">
+        `status` = #{record.status},
+      </if>
+      <if test="record.recipientCountry != null">
+        recipient_country = #{record.recipientCountry},
+      </if>
+      <if test="record.recipientProvince != null">
+        recipient_province = #{record.recipientProvince},
+      </if>
+      <if test="record.recipientCity != null">
+        recipient_city = #{record.recipientCity},
+      </if>
+      <if test="record.recipientPostcode != null">
+        recipient_postcode = #{record.recipientPostcode},
+      </if>
+      <if test="record.recipientAddress != null">
+        recipient_address = #{record.recipientAddress},
+      </if>
+      <if test="record.recipientLatitude != null">
+        recipient_latitude = #{record.recipientLatitude},
+      </if>
+      <if test="record.recipientLongitude != null">
+        recipient_longitude = #{record.recipientLongitude},
+      </if>
+      <if test="record.recipientGeohash != null">
+        recipient_geohash = #{record.recipientGeohash},
+      </if>
+      <if test="record.customerReference != null">
+        customer_reference = #{record.customerReference},
+      </if>
+      <if test="record.recipientName != null">
+        recipient_name = #{record.recipientName},
+      </if>
+      <if test="record.recipientCompany != null">
+        recipient_company = #{record.recipientCompany},
+      </if>
+      <if test="record.recipientPhone != null">
+        recipient_phone = #{record.recipientPhone},
+      </if>
+      <if test="record.recipientMail != null">
+        recipient_mail = #{record.recipientMail},
+      </if>
+      <if test="record.recipientNotes != null">
+        recipient_notes = #{record.recipientNotes},
+      </if>
+      <if test="record.senderCountry != null">
+        sender_country = #{record.senderCountry},
+      </if>
+      <if test="record.senderCity != null">
+        sender_city = #{record.senderCity},
+      </if>
+      <if test="record.senderProvince != null">
+        sender_province = #{record.senderProvince},
+      </if>
+      <if test="record.senderPostcode != null">
+        sender_postcode = #{record.senderPostcode},
+      </if>
+      <if test="record.senderAddress != null">
+        sender_address = #{record.senderAddress},
+      </if>
+      <if test="record.senderLatitude != null">
+        sender_latitude = #{record.senderLatitude},
+      </if>
+      <if test="record.senderLongitude != null">
+        sender_longitude = #{record.senderLongitude},
+      </if>
+      <if test="record.senderGeohash != null">
+        sender_geohash = #{record.senderGeohash},
+      </if>
+      <if test="record.senderCompany != null">
+        sender_company = #{record.senderCompany},
+      </if>
+      <if test="record.senderName != null">
+        sender_name = #{record.senderName},
+      </if>
+      <if test="record.senderPhone != null">
+        sender_phone = #{record.senderPhone},
+      </if>
+      <if test="record.senderMail != null">
+        sender_mail = #{record.senderMail},
+      </if>
+      <if test="record.senderNotes != null">
+        sender_notes = #{record.senderNotes},
+      </if>
+      <if test="record.parcelQuantity != null">
+        parcel_quantity = #{record.parcelQuantity},
+      </if>
+      <if test="record.assignFlag != null">
+        assign_flag = #{record.assignFlag},
+      </if>
+      <if test="record.assignTime != null">
+        assign_time = #{record.assignTime},
+      </if>
+      <if test="record.vehicleType != null">
+        vehicle_type = #{record.vehicleType},
+      </if>
+      <if test="record.expectTimeBegin != null">
+        expect_time_begin = #{record.expectTimeBegin},
+      </if>
+      <if test="record.expectTimeEnd != null">
+        expect_time_end = #{record.expectTimeEnd},
+      </if>
+      <if test="record.generalNotes != null">
+        general_notes = #{record.generalNotes},
+      </if>
+      <if test="record.denialReason != null">
+        denial_reason = #{record.denialReason},
+      </if>
+      <if test="record.deliveredTime != null">
+        delivered_time = #{record.deliveredTime},
+      </if>
+      <if test="record.createdBy != null">
+        created_by = #{record.createdBy},
+      </if>
+      <if test="record.createdTime != null">
+        created_time = #{record.createdTime},
+      </if>
+      <if test="record.updatedBy != null">
+        updated_by = #{record.updatedBy},
+      </if>
+      <if test="record.updatedTime != null">
+        updated_time = #{record.updatedTime},
+      </if>
+      <if test="record.def1 != null">
+        def1 = #{record.def1},
+      </if>
+      <if test="record.def2 != null">
+        def2 = #{record.def2},
+      </if>
+      <if test="record.def3 != null">
+        def3 = #{record.def3},
+      </if>
+      <if test="record.def5 != null">
+        def5 = #{record.def5},
+      </if>
+      <if test="record.def6 != null">
+        def6 = #{record.def6},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    <!--@mbg.generated-->
+    update cor_express_order
+    set id = #{record.id},
+      dr = #{record.dr},
+      tenant_id = #{record.tenantId},
+      batch_no = #{record.batchNo},
+      order_no = #{record.orderNo},
+      `status` = #{record.status},
+      recipient_country = #{record.recipientCountry},
+      recipient_province = #{record.recipientProvince},
+      recipient_city = #{record.recipientCity},
+      recipient_postcode = #{record.recipientPostcode},
+      recipient_address = #{record.recipientAddress},
+      recipient_latitude = #{record.recipientLatitude},
+      recipient_longitude = #{record.recipientLongitude},
+      recipient_geohash = #{record.recipientGeohash},
+      customer_reference = #{record.customerReference},
+      recipient_name = #{record.recipientName},
+      recipient_company = #{record.recipientCompany},
+      recipient_phone = #{record.recipientPhone},
+      recipient_mail = #{record.recipientMail},
+      recipient_notes = #{record.recipientNotes},
+      sender_country = #{record.senderCountry},
+      sender_city = #{record.senderCity},
+      sender_province = #{record.senderProvince},
+      sender_postcode = #{record.senderPostcode},
+      sender_address = #{record.senderAddress},
+      sender_latitude = #{record.senderLatitude},
+      sender_longitude = #{record.senderLongitude},
+      sender_geohash = #{record.senderGeohash},
+      sender_company = #{record.senderCompany},
+      sender_name = #{record.senderName},
+      sender_phone = #{record.senderPhone},
+      sender_mail = #{record.senderMail},
+      sender_notes = #{record.senderNotes},
+      parcel_quantity = #{record.parcelQuantity},
+      assign_flag = #{record.assignFlag},
+      assign_time = #{record.assignTime},
+      vehicle_type = #{record.vehicleType},
+      expect_time_begin = #{record.expectTimeBegin},
+      expect_time_end = #{record.expectTimeEnd},
+      general_notes = #{record.generalNotes},
+      denial_reason = #{record.denialReason},
+      delivered_time = #{record.deliveredTime},
+      created_by = #{record.createdBy},
+      created_time = #{record.createdTime},
+      updated_by = #{record.updatedBy},
+      updated_time = #{record.updatedTime},
+      def1 = #{record.def1},
+      def2 = #{record.def2},
+      def3 = #{record.def3},
+      def5 = #{record.def5},
+      def6 = #{record.def6}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

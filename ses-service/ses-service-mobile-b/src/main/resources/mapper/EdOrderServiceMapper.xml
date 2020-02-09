@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.EdOrderServiceMapper">
+    <select id="orderList" resultType="com.redescooter.ses.api.mobile.b.vo.express.OrderResult">
+        select exorder.*
+        from cor_express_order exorder
+        left join cor_express_delivery_detail detail on exorder.id = detail.express_order_id and detail.dr=0
+        left join cor_express_delivery delivery on detail.express_delivery_id = delivery.id and  delivery.dr=0
+        left join cor_driver cd on delivery.driver_id = cd.id and cd.dr=0
+        where cd.user_id=#{userId}
+        and cd.tenant_id=#{tenantId}
+    </select>
+    <select id="dirverShippingOrder" resultType="java.lang.Integer">
+        select count(*)
+        from cor_express_order exorder
+                 left join cor_express_delivery_detail detail on exorder.id = detail.express_order_id and detail.dr=0
+                 left join cor_express_delivery delivery on detail.express_delivery_id = delivery.id and  delivery.dr=0
+                 left join cor_driver cd on delivery.driver_id = cd.id and cd.dr=0
+        where cd.user_id=#{userId}
+        and cd.tenant_id=#{tenantId}
+        and  exorder.status=3
+
+    </select>
+    <select id="queryScooterIdByUserId" resultType="com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter">
+        select cds.*
+        from cor_driver driver
+        left join cor_driver_scooter cds on driver.id = cds.driver_id and cds.dr = 0
+        where cds.status = 1
+        and driver.status = 1
+        and driver.tenant_id =#{tenantId}
+        and driver.user_id=#{userId}
+    </select>
+</mapper>
