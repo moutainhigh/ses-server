@@ -27,35 +27,43 @@ public class I18nServiceMessageImpl implements I18nServiceMessage {
      * @param code：对应文本配置的key.
      * @return 对应地区的语言消息字符串
      */
+    @Override
     public String getMessage(String code) {
         return this.getMessage(code, new Object[]{});
     }
 
+    @Override
     public String getMessage(String code, String defaultMessage) {
         return this.getMessage(code, null, defaultMessage);
     }
 
+    @Override
     public String getMessage(String code, String defaultMessage, Locale locale) {
         return this.getMessage(code, null, defaultMessage, locale);
     }
 
+    @Override
     public String getMessage(String code, Locale locale) {
         return this.getMessage(code, null, "", locale);
     }
 
+    @Override
     public String getMessage(String code, Object[] args) {
         return this.getMessage(code, args, "");
     }
 
+    @Override
     public String getMessage(String code, Object[] args, Locale locale) {
         return this.getMessage(code, args, "", locale);
     }
 
+    @Override
     public String getMessage(String code, Object[] args, String defaultMessage) {
         Locale locale = LocaleContextHolder.getLocale();
         return this.getMessage(code, args, defaultMessage, locale);
     }
 
+    @Override
     public String getMessage(String code, Object[] args, String defaultMessage, Locale locale) {
         return messageSource.getMessage(code, args, defaultMessage, locale);
     }
