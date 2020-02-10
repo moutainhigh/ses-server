@@ -1,7 +1,5 @@
 package com.redescooter.ses.api.common.vo.edorder;
 
-import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationException;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -24,7 +22,7 @@ public class BaseExpressOrderTraceEnter {
     @ApiModelProperty(value="主键")
     private Long id;
 
-    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
+   @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     @ApiModelProperty(value="deliveryId")

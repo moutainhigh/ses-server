@@ -792,7 +792,7 @@ public class DateUtil {
 
     /**
      * 返回两个时间的差值
-     * 单位 分钟
+     * 单位 秒
      *
      * @param dateA
      * @param dateB

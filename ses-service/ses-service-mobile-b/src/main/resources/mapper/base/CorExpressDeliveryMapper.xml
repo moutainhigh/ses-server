@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.base.CorExpressDeliveryMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.mobile.b.dm.base.CorExpressDelivery">
+    <!--@mbg.generated-->
+    <!--@Table cor_express_delivery-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="status" property="status" />
+    <result column="result" property="result" />
+    <result column="driver_id" property="driverId" />
+    <result column="order_sum" property="orderSum" />
+    <result column="order_complete_num" property="orderCompleteNum" />
+    <result column="delivery_date" property="deliveryDate" />
+    <result column="delivery_start_time" property="deliveryStartTime" />
+    <result column="delivery_end_time" property="deliveryEndTime" />
+    <result column="driven_mileage" property="drivenMileage" />
+    <result column="driven_duration" property="drivenDuration" />
+    <result column="co2" property="co2" />
+    <result column="savings" property="savings" />
+    <result column="create_by" property="createBy" />
+    <result column="create_time" property="createTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, `status`, `result`, driver_id, order_sum, order_complete_num, 
+    delivery_date, delivery_start_time, delivery_end_time, driven_mileage, driven_duration, 
+    co2, savings, create_by, create_time, updated_by, updated_time, def1, def2, def3, 
+    def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update cor_express_delivery
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="`result` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.result}
+        </foreach>
+      </trim>
+      <trim prefix="driver_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.driverId}
+        </foreach>
+      </trim>
+      <trim prefix="order_sum = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.orderSum}
+        </foreach>
+      </trim>
+      <trim prefix="order_complete_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.orderCompleteNum}
+        </foreach>
+      </trim>
+      <trim prefix="delivery_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.deliveryDate}
+        </foreach>
+      </trim>
+      <trim prefix="delivery_start_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.deliveryStartTime}
+        </foreach>
+      </trim>
+      <trim prefix="delivery_end_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.deliveryEndTime}
+        </foreach>
+      </trim>
+      <trim prefix="driven_mileage = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.drivenMileage}
+        </foreach>
+      </trim>
+      <trim prefix="driven_duration = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.drivenDuration}
+        </foreach>
+      </trim>
+      <trim prefix="co2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.co2}
+        </foreach>
+      </trim>
+      <trim prefix="savings = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.savings}
+        </foreach>
+      </trim>
+      <trim prefix="create_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createBy}
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update cor_express_delivery
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id} then #{item.dr}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantId != null">
+            when id = #{item.id} then #{item.tenantId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.status != null">
+            when id = #{item.id} then #{item.status}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`result` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.result != null">
+            when id = #{item.id} then #{item.result}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="driver_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.driverId != null">
+            when id = #{item.id} then #{item.driverId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="order_sum = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.orderSum != null">
+            when id = #{item.id} then #{item.orderSum}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="order_complete_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.orderCompleteNum != null">
+            when id = #{item.id} then #{item.orderCompleteNum}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="delivery_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.deliveryDate != null">
+            when id = #{item.id} then #{item.deliveryDate}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="delivery_start_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.deliveryStartTime != null">
+            when id = #{item.id} then #{item.deliveryStartTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="delivery_end_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.deliveryEndTime != null">
+            when id = #{item.id} then #{item.deliveryEndTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="driven_mileage = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.drivenMileage != null">
+            when id = #{item.id} then #{item.drivenMileage}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="driven_duration = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.drivenDuration != null">
+            when id = #{item.id} then #{item.drivenDuration}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="co2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.co2 != null">
+            when id = #{item.id} then #{item.co2}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="savings = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.savings != null">
+            when id = #{item.id} then #{item.savings}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createBy != null">
+            when id = #{item.id} then #{item.createBy}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createTime != null">
+            when id = #{item.id} then #{item.createTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id} then #{item.updatedBy}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id} then #{item.updatedTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id} then #{item.def1}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id} then #{item.def2}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id} then #{item.def3}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id} then #{item.def5}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id} then #{item.def6}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into cor_express_delivery
+    (id, dr, tenant_id, `status`, `result`, driver_id, order_sum, order_complete_num, 
+      delivery_date, delivery_start_time, delivery_end_time, driven_mileage, driven_duration, 
+      co2, savings, create_by, create_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.status}, #{item.result}, #{item.driverId}, 
+        #{item.orderSum}, #{item.orderCompleteNum}, #{item.deliveryDate}, #{item.deliveryStartTime}, 
+        #{item.deliveryEndTime}, #{item.drivenMileage}, #{item.drivenDuration}, #{item.co2}, 
+        #{item.savings}, #{item.createBy}, #{item.createTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressDelivery">
+    <!--@mbg.generated-->
+    insert into cor_express_delivery
+    (id, dr, tenant_id, `status`, `result`, driver_id, order_sum, order_complete_num, 
+      delivery_date, delivery_start_time, delivery_end_time, driven_mileage, driven_duration, 
+      co2, savings, create_by, create_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
+    values
+    (#{id}, #{dr}, #{tenantId}, #{status}, #{result}, #{driverId}, #{orderSum}, #{orderCompleteNum}, 
+      #{deliveryDate}, #{deliveryStartTime}, #{deliveryEndTime}, #{drivenMileage}, #{drivenDuration}, 
+      #{co2}, #{savings}, #{createBy}, #{createTime}, #{updatedBy}, #{updatedTime}, #{def1}, 
+      #{def2}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    tenant_id = #{tenantId}, 
+    `status` = #{status}, 
+    `result` = #{result}, 
+    driver_id = #{driverId}, 
+    order_sum = #{orderSum}, 
+    order_complete_num = #{orderCompleteNum}, 
+    delivery_date = #{deliveryDate}, 
+    delivery_start_time = #{deliveryStartTime}, 
+    delivery_end_time = #{deliveryEndTime}, 
+    driven_mileage = #{drivenMileage}, 
+    driven_duration = #{drivenDuration}, 
+    co2 = #{co2}, 
+    savings = #{savings}, 
+    create_by = #{createBy}, 
+    create_time = #{createTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressDelivery">
+    <!--@mbg.generated-->
+    insert into cor_express_delivery
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="result != null">
+        `result`,
+      </if>
+      <if test="driverId != null">
+        driver_id,
+      </if>
+      <if test="orderSum != null">
+        order_sum,
+      </if>
+      <if test="orderCompleteNum != null">
+        order_complete_num,
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date,
+      </if>
+      <if test="deliveryStartTime != null">
+        delivery_start_time,
+      </if>
+      <if test="deliveryEndTime != null">
+        delivery_end_time,
+      </if>
+      <if test="drivenMileage != null">
+        driven_mileage,
+      </if>
+      <if test="drivenDuration != null">
+        driven_duration,
+      </if>
+      <if test="co2 != null">
+        co2,
+      </if>
+      <if test="savings != null">
+        savings,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="result != null">
+        #{result},
+      </if>
+      <if test="driverId != null">
+        #{driverId},
+      </if>
+      <if test="orderSum != null">
+        #{orderSum},
+      </if>
+      <if test="orderCompleteNum != null">
+        #{orderCompleteNum},
+      </if>
+      <if test="deliveryDate != null">
+        #{deliveryDate},
+      </if>
+      <if test="deliveryStartTime != null">
+        #{deliveryStartTime},
+      </if>
+      <if test="deliveryEndTime != null">
+        #{deliveryEndTime},
+      </if>
+      <if test="drivenMileage != null">
+        #{drivenMileage},
+      </if>
+      <if test="drivenDuration != null">
+        #{drivenDuration},
+      </if>
+      <if test="co2 != null">
+        #{co2},
+      </if>
+      <if test="savings != null">
+        #{savings},
+      </if>
+      <if test="createBy != null">
+        #{createBy},
+      </if>
+      <if test="createTime != null">
+        #{createTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="result != null">
+        `result` = #{result},
+      </if>
+      <if test="driverId != null">
+        driver_id = #{driverId},
+      </if>
+      <if test="orderSum != null">
+        order_sum = #{orderSum},
+      </if>
+      <if test="orderCompleteNum != null">
+        order_complete_num = #{orderCompleteNum},
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date = #{deliveryDate},
+      </if>
+      <if test="deliveryStartTime != null">
+        delivery_start_time = #{deliveryStartTime},
+      </if>
+      <if test="deliveryEndTime != null">
+        delivery_end_time = #{deliveryEndTime},
+      </if>
+      <if test="drivenMileage != null">
+        driven_mileage = #{drivenMileage},
+      </if>
+      <if test="drivenDuration != null">
+        driven_duration = #{drivenDuration},
+      </if>
+      <if test="co2 != null">
+        co2 = #{co2},
+      </if>
+      <if test="savings != null">
+        savings = #{savings},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>

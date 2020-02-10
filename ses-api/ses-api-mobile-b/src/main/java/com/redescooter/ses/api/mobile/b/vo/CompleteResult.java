@@ -25,15 +25,15 @@ import lombok.NoArgsConstructor;
 public class CompleteResult extends GeneralResult {
 
     @ApiModelProperty(value = "公里数 单位 米")
-    private String mileage;
+    private String mileage="0";
 
     @ApiModelProperty(value = "平均速度 单位 m/s")
-    private String avg;
+    private String avg="0";
 
     @ApiModelProperty(value = " 节省co2 单位 g")
-    private String co2;
+    private String co2="0";
 
     @ApiModelProperty(value = "节省钱 单位 欧")
-    private String money;
+    private String money="0";
 
 }
