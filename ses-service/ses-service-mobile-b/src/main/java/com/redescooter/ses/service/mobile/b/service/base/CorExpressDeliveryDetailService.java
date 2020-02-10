@@ -1,24 +1,26 @@
 package com.redescooter.ses.service.mobile.b.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.redescooter.ses.service.mobile.b.dm.base.CorExpressDeliveryDetail;
-import com.redescooter.ses.service.mobile.b.dm.base.CorExpressDeliveryDetailExample;
+import java.util.List;
+
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.redescooter.ses.service.mobile.b.dm.base.CorExpressDeliveryDetail;
 @Transactional
+public interface CorExpressDeliveryDetailService extends IService<CorExpressDeliveryDetail> {
 
-public interface CorExpressDeliveryDetailService extends IService<CorExpressDeliveryDetail>{
 
+    int updateBatch(List<CorExpressDeliveryDetail> list);
 
-    long countByExample(CorExpressDeliveryDetailExample example);
+    int updateBatchSelective(List<CorExpressDeliveryDetail> list);
 
-    int deleteByExample(CorExpressDeliveryDetailExample example);
+    int batchInsert(List<CorExpressDeliveryDetail> list);
 
-    List<CorExpressDeliveryDetail> selectByExample(CorExpressDeliveryDetailExample example);
+    int insertOrUpdate(CorExpressDeliveryDetail record);
 
-    int updateByExampleSelective(CorExpressDeliveryDetail record,CorExpressDeliveryDetailExample example);
-
-    int updateByExample(CorExpressDeliveryDetail record,CorExpressDeliveryDetailExample example);
-
+    int insertOrUpdateSelective(CorExpressDeliveryDetail record);
 }
+
+
+
+

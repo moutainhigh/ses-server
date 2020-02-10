@@ -1,35 +1,42 @@
 package com.redescooter.ses.service.mobile.b.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.service.mobile.b.dm.base.CorExpressDelivery;
-import java.util.List;
 import com.redescooter.ses.service.mobile.b.dao.base.CorExpressDeliveryMapper;
-import com.redescooter.ses.service.mobile.b.dm.base.CorExpressDeliveryExample;
+import com.redescooter.ses.service.mobile.b.dm.base.CorExpressDelivery;
 import com.redescooter.ses.service.mobile.b.service.base.CorExpressDeliveryService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 @Service
-public class CorExpressDeliveryServiceImpl extends ServiceImpl<CorExpressDeliveryMapper, CorExpressDelivery> implements CorExpressDeliveryService{
+public class CorExpressDeliveryServiceImpl extends ServiceImpl<CorExpressDeliveryMapper, CorExpressDelivery> implements CorExpressDeliveryService {
 
     @Override
-    public long countByExample(CorExpressDeliveryExample example) {
-        return baseMapper.countByExample(example);
+    public int updateBatch(List<CorExpressDelivery> list) {
+        return baseMapper.updateBatch(list);
     }
+
     @Override
-    public int deleteByExample(CorExpressDeliveryExample example) {
-        return baseMapper.deleteByExample(example);
+    public int updateBatchSelective(List<CorExpressDelivery> list) {
+        return baseMapper.updateBatchSelective(list);
     }
+
     @Override
-    public List<CorExpressDelivery> selectByExample(CorExpressDeliveryExample example) {
-        return baseMapper.selectByExample(example);
+    public int batchInsert(List<CorExpressDelivery> list) {
+        return baseMapper.batchInsert(list);
     }
+
     @Override
-    public int updateByExampleSelective(CorExpressDelivery record,CorExpressDeliveryExample example) {
-        return baseMapper.updateByExampleSelective(record,example);
+    public int insertOrUpdate(CorExpressDelivery record) {
+        return baseMapper.insertOrUpdate(record);
     }
+
     @Override
-    public int updateByExample(CorExpressDelivery record,CorExpressDeliveryExample example) {
-        return baseMapper.updateByExample(record,example);
+    public int insertOrUpdateSelective(CorExpressDelivery record) {
+        return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+
+
+

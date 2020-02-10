@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.common.vo.edorder;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -18,7 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class BaseExpressOrderResult {
+public class BaseExpressOrderResult extends GeneralResult {
     @ApiModelProperty(value="主键")
     private Long id;
 

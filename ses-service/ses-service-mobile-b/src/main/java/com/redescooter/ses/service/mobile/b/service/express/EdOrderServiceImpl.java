@@ -38,6 +38,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -115,6 +116,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @desc: 开始订单
      * @param enter
      */
+    @Transactional
     @Override
     public GeneralResult start(StartEnter enter) {
         // 是否有正在进行的订单
@@ -127,12 +129,17 @@ public class EdOrderServiceImpl implements EdOrderService {
         if (corExpressOrder==null){
             throw new MobileBException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
+        // 状态过滤
+        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.ASGN.getValue())){
+            throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        }
         // 开启订单
         // 查询expressDeliveryDetail订单
         QueryWrapper<CorExpressDeliveryDetail> corExpressDeliveryDetailQueryWrapper=new QueryWrapper<>();
         corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_DR,0);
         corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_TENANT_ID,enter.getTenantId());
         corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_STATUS, ExpressDeliveryDetailStatusEnums.ASGN.getValue());
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_EXPRESS_ORDER_ID,enter.getId());
         CorExpressDeliveryDetail deliveryDetail = corExpressDeliveryDetailService.getOne(corExpressDeliveryDetailQueryWrapper);
 
         deliveryDetail.setStatus(ExpressDeliveryDetailStatusEnums.SHIPPING.getValue());
@@ -180,7 +187,14 @@ public class EdOrderServiceImpl implements EdOrderService {
         CorTenantScooter corTenantScooter=corTenantScooterService.getOne(corTenantScooterQueryWrapper);
         // 记录日志
         savrOrderTrace(enter,enter.getLng(),enter.getLat(),
-                deliveryDetail.getExpressDeliveryId(),deliveryDetail.getExpressOrderId(), corDriverScooter.getDriverId(),corDriverScooter.getScooterId(), corTenantScooter.getLatitude(),corTenantScooter.getLatitude());
+                deliveryDetail.getExpressDeliveryId(),
+                deliveryDetail.getExpressOrderId(),
+                corDriverScooter.getDriverId(),
+                corDriverScooter.getScooterId()
+                , corTenantScooter.getLatitude()
+                ,corTenantScooter.getLatitude()
+                ,ExpressOrderStatusEnums.SHIPPING.getValue(),
+                ExpressOrderEventEnums.SHIPPING.getValue());
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -196,12 +210,17 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @desc: 拒绝订单
      * @param enter
      */
+    @Transactional
     @Override
     public GeneralResult refuse(RefuseEnter enter) {
         //验证订单是否存在
         CorExpressOrder corExpressOrder = corExpressOrderService.getById(enter.getId());
         if (corExpressOrder==null){
             throw new MobileBException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+        }
+        // 状态过滤
+        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.ASGN.getValue())){
+            throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         // 拒绝订单
         // 查询expressDeliveryDetail订单
@@ -232,7 +251,14 @@ public class EdOrderServiceImpl implements EdOrderService {
         CorTenantScooter corTenantScooter=corTenantScooterService.getOne(corTenantScooterQueryWrapper);
 
         savrOrderTrace(enter,null,null,
-                deliveryDetail.getExpressDeliveryId(),deliveryDetail.getExpressOrderId(), corDriverScooter.getDriverId(),corDriverScooter.getScooterId(), corTenantScooter.getLatitude(),corTenantScooter.getLatitude());
+                deliveryDetail.getExpressDeliveryId(),
+                deliveryDetail.getExpressOrderId(),
+                corDriverScooter.getDriverId(),
+                corDriverScooter.getScooterId(),
+                corTenantScooter.getLatitude(),
+                corTenantScooter.getLatitude(),
+                ExpressOrderStatusEnums.REJECTED.getValue(),
+                ExpressOrderEventEnums.REJECTED.getValue());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -245,6 +271,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @desc: 完成订单
      * @param enter
      */
+    @Transactional
     @Override
     public CompleteResult complete(CompleteEnter enter) {
         //验证订单是否存在
@@ -252,12 +279,17 @@ public class EdOrderServiceImpl implements EdOrderService {
         if (corExpressOrder==null){
             throw new MobileBException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
+        // 状态过滤
+        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.SHIPPING.getValue())){
+            throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        }
         // 拒绝订单
         // 查询expressDeliveryDetail订单
         QueryWrapper<CorExpressDeliveryDetail> corExpressDeliveryDetailQueryWrapper=new QueryWrapper<>();
         corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_DR,0);
         corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_TENANT_ID,enter.getTenantId());
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_STATUS, ExpressDeliveryDetailStatusEnums.ASGN.getValue());
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_STATUS, ExpressDeliveryDetailStatusEnums.SHIPPING.getValue());
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_EXPRESS_ORDER_ID,enter.getId());
         CorExpressDeliveryDetail deliveryDetail = corExpressDeliveryDetailService.getOne(corExpressDeliveryDetailQueryWrapper);
 
         deliveryDetail.setStatus(ExpressDeliveryDetailStatusEnums.COMPLETED.getValue());
@@ -303,8 +335,17 @@ public class EdOrderServiceImpl implements EdOrderService {
         scooterIotService.navigation(iotScooterEnter);
 
         // 订单日志
-        savrOrderTrace(enter,enter.getLng(),enter.getLat(),
-                deliveryDetail.getExpressDeliveryId(),deliveryDetail.getExpressOrderId(), corDriverScooter.getDriverId(),corDriverScooter.getScooterId(), corTenantScooter.getLatitude(),corTenantScooter.getLatitude());
+        savrOrderTrace(enter,enter.getLng(),
+                enter.getLat(),
+                deliveryDetail.getExpressDeliveryId(),
+                deliveryDetail.getExpressOrderId(),
+                corDriverScooter.getDriverId(),
+                corDriverScooter.getScooterId(),
+                corTenantScooter.getLatitude(),
+                corTenantScooter.getLatitude(),
+                ExpressOrderStatusEnums.COMPLETED.getValue(),
+                ExpressOrderEventEnums.COMPLETED.getValue()
+                );
 
         return CompleteResult.builder()
                 .avg("1")
@@ -315,7 +356,7 @@ public class EdOrderServiceImpl implements EdOrderService {
     }
 
 
-    private void savrOrderTrace(GeneralEnter enter,String lng,String lat,Long deliveryId,Long orderId,Long driverId,Long scooterId,BigDecimal scooterLng,BigDecimal scooterLat) {
+    private void savrOrderTrace(GeneralEnter enter,String lng,String lat,Long deliveryId,Long orderId,Long driverId,Long scooterId,BigDecimal scooterLng,BigDecimal scooterLat,String status,String event) {
 
         BaseExpressOrderTraceEnter baseExpressOrderTraceEnter=new BaseExpressOrderTraceEnter();
         BeanUtils.copyProperties(enter,baseExpressOrderTraceEnter);
@@ -325,8 +366,8 @@ public class EdOrderServiceImpl implements EdOrderService {
         baseExpressOrderTraceEnter.setExpressOrderId(orderId);
         baseExpressOrderTraceEnter.setTenantId(enter.getTenantId());
         baseExpressOrderTraceEnter.setDriverId(driverId);
-        baseExpressOrderTraceEnter.setStatus(ExpressDeliveryDetailStatusEnums.SHIPPING.getValue());
-        baseExpressOrderTraceEnter.setEvent(ExpressOrderEventEnums.SHIPPING.getValue());
+        baseExpressOrderTraceEnter.setStatus(status);
+        baseExpressOrderTraceEnter.setEvent(event);
         baseExpressOrderTraceEnter.setReason(null);
         baseExpressOrderTraceEnter.setEventTime(new Date());
         baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng)==true?lng:"0"));

@@ -2,23 +2,24 @@ package com.redescooter.ses.service.mobile.b.service.base;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderTrace;
-import com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderTraceExample;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Transactional
+public interface CorExpressOrderTraceService extends IService<CorExpressOrderTrace> {
 
-public interface CorExpressOrderTraceService extends IService<CorExpressOrderTrace>{
 
+    int updateBatch(List<CorExpressOrderTrace> list);
 
-    long countByExample(CorExpressOrderTraceExample example);
+    int updateBatchSelective(List<CorExpressOrderTrace> list);
 
-    int deleteByExample(CorExpressOrderTraceExample example);
+    int batchInsert(List<CorExpressOrderTrace> list);
 
-    List<CorExpressOrderTrace> selectByExample(CorExpressOrderTraceExample example);
+    int insertOrUpdate(CorExpressOrderTrace record);
 
-    int updateByExampleSelective(CorExpressOrderTrace record,CorExpressOrderTraceExample example);
-
-    int updateByExample(CorExpressOrderTrace record,CorExpressOrderTraceExample example);
-
+    int insertOrUpdateSelective(CorExpressOrderTrace record);
 }
+
+
+
+

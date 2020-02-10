@@ -9,6 +9,7 @@
         left join cor_driver cd on delivery.driver_id = cd.id and cd.dr=0
         where cd.user_id=#{userId}
         and cd.tenant_id=#{tenantId}
+        and exorder.status in (2,3)
     </select>
     <select id="dirverShippingOrder" resultType="java.lang.Integer">
         select count(*)

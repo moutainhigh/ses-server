@@ -1,35 +1,43 @@
 package com.redescooter.ses.service.mobile.b.service.base.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import java.util.List;
-import com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderTraceExample;
 import com.redescooter.ses.service.mobile.b.dao.base.CorExpressOrderTraceMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderTrace;
 import com.redescooter.ses.service.mobile.b.service.base.CorExpressOrderTraceService;
+
 @Service
-public class CorExpressOrderTraceServiceImpl extends ServiceImpl<CorExpressOrderTraceMapper, CorExpressOrderTrace> implements CorExpressOrderTraceService{
+public class CorExpressOrderTraceServiceImpl extends ServiceImpl<CorExpressOrderTraceMapper, CorExpressOrderTrace> implements CorExpressOrderTraceService {
 
     @Override
-    public long countByExample(CorExpressOrderTraceExample example) {
-        return baseMapper.countByExample(example);
+    public int updateBatch(List<CorExpressOrderTrace> list) {
+        return baseMapper.updateBatch(list);
     }
+
     @Override
-    public int deleteByExample(CorExpressOrderTraceExample example) {
-        return baseMapper.deleteByExample(example);
+    public int updateBatchSelective(List<CorExpressOrderTrace> list) {
+        return baseMapper.updateBatchSelective(list);
     }
+
     @Override
-    public List<CorExpressOrderTrace> selectByExample(CorExpressOrderTraceExample example) {
-        return baseMapper.selectByExample(example);
+    public int batchInsert(List<CorExpressOrderTrace> list) {
+        return baseMapper.batchInsert(list);
     }
+
     @Override
-    public int updateByExampleSelective(CorExpressOrderTrace record,CorExpressOrderTraceExample example) {
-        return baseMapper.updateByExampleSelective(record,example);
+    public int insertOrUpdate(CorExpressOrderTrace record) {
+        return baseMapper.insertOrUpdate(record);
     }
+
     @Override
-    public int updateByExample(CorExpressOrderTrace record,CorExpressOrderTraceExample example) {
-        return baseMapper.updateByExample(record,example);
+    public int insertOrUpdateSelective(CorExpressOrderTrace record) {
+        return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+
+
+

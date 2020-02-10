@@ -1,14 +1,20 @@
 package com.redescooter.ses.mobile.client.controller.express;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.mobile.b.service.express.EdOrderService;
-import com.redescooter.ses.api.mobile.b.vo.*;
+import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
+import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
+import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
+import com.redescooter.ses.api.mobile.b.vo.StartEnter;
 import com.redescooter.ses.api.mobile.b.vo.express.OrderResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,12 +26,19 @@ import java.util.List;
 @RequestMapping(value = "/ed/order", method = RequestMethod.POST)
 public class EdExpressOrderController {
 
+    @Reference
     private EdOrderService edOrderService;
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "订单列表", response = OrderResult.class)
-    public Response<List<OrderResult>> orderList(@ModelAttribute @ApiParam("请求参数") DeliveryListEnter enter) {
+    public Response<List<OrderResult>> orderList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(edOrderService.orderList(enter));
+    }
+
+    @PostMapping(value = "/detail")
+    @ApiOperation(value = "订单详情", response = OrderResult.class)
+    public Response<OrderResult> orderDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(edOrderService.orderDetail(enter));
     }
 
 
