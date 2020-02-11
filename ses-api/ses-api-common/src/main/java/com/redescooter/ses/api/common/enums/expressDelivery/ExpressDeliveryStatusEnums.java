@@ -16,12 +16,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum ExpressDeliveryStatusEnums {
 
-    WAITING("WAITING", "待配送"),
-    SHIPPING("SHIPPING", " 正在配送 "),
-    COMPLETED("COMPLETED", "已配送"),
-    REFUSE("REFUSED", "失败");
+    WAITING("WAITING", "待配送","1"),
+    SHIPPING("SHIPPING", " 正在配送 ","2"),
+    COMPLETED("COMPLETED", "已配送","3"),
+    REFUSE("REFUSED", "失败","4");
 
     private String code;
 
     private String message;
+
+    private String value;
 }

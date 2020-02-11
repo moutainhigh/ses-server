@@ -70,6 +70,6 @@ public interface ValidationExceptionCode {
     int END_WEEK_IS_EMPTY = 10050;
     // 营业开始时间为空
     int BEGIN_TIME_IS_EMPTY = 10051;
-    // 营业结束时间
+    // 营业结束时间为空
     int END_TIME_IS_EMPTY = 10052;
 }

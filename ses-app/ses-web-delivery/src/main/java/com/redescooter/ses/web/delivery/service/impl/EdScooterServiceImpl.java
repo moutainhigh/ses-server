@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @ClassName:MobileServiceImpl
+ * @ClassName: MobileServiceImpl
  * @description: EdScooterServiceImpl
  * @author: Alex
  * @Version：1.3
