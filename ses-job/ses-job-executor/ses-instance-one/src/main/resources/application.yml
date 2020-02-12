@@ -29,8 +29,9 @@ dubbo:                                                                          
     qos-accept-foreign-ip: false                                                                                        #是否允许远程访问
     logger: log4j
   registry:
-    check: false                                                                                                        #注册中心不存在时，是否报错
+    check: false
     group: ses
+    client: curator
   scan:
     base-packages: com.redescooter.ses                                                                                  #服务暴露与发现消费所在的package
   provider:                                                                                                             #服务提供者缺省值配置
