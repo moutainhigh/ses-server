@@ -9,7 +9,7 @@ dubbo:
   registries:
     ses:
       group: ses
-      address: zookeeper://192.168.2.200:132181
+      address: zookeeper://192.168.2.200:12181
 # 多注册中心配置
 #    reg2:
 #      group: hdg2
