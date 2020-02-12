@@ -15,8 +15,8 @@ import com.redescooter.ses.api.mobile.b.service.express.EdOrderDeliveryTraceServ
 import com.redescooter.ses.api.mobile.b.service.express.EdOrderService;
 import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
 import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
-import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.StartEnter;
+import com.redescooter.ses.api.mobile.b.vo.express.EdRfuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.express.OrderResult;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.service.mobile.b.constant.SequenceName;
@@ -212,14 +212,14 @@ public class EdOrderServiceImpl implements EdOrderService {
      */
     @Transactional
     @Override
-    public GeneralResult refuse(RefuseEnter enter) {
+    public GeneralResult refuse(EdRfuseEnter enter) {
         //验证订单是否存在
         CorExpressOrder corExpressOrder = corExpressOrderService.getById(enter.getId());
         if (corExpressOrder==null){
             throw new MobileBException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
         // 状态过滤
-        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.ASGN.getValue())){
+        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.SHIPPING.getValue())){
             throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         // 拒绝订单
@@ -249,6 +249,16 @@ public class EdOrderServiceImpl implements EdOrderService {
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID,corDriverScooter.getScooterId());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID,enter.getTenantId());
         CorTenantScooter corTenantScooter=corTenantScooterService.getOne(corTenantScooterQueryWrapper);
+
+        // 结束导航
+        IotScooterEnter iotScooterEnter =new IotScooterEnter();
+        BeanUtils.copyProperties(enter,iotScooterEnter);
+        iotScooterEnter.setId(corDriverScooter.getScooterId());
+        iotScooterEnter.setEvent(CommonEvent.END.getValue());
+        iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
+        iotScooterEnter.setLongitude(new BigDecimal(enter.getLng()));
+        iotScooterEnter.setBluetoothCommunication(enter.getBluetoothCommunication());
+        scooterIotService.navigation(iotScooterEnter);
 
         savrOrderTrace(enter,null,null,
                 deliveryDetail.getExpressDeliveryId(),

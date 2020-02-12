@@ -7,8 +7,8 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.mobile.b.service.express.EdOrderService;
 import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
 import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
-import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.StartEnter;
+import com.redescooter.ses.api.mobile.b.vo.express.EdRfuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.express.OrderResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,7 +50,7 @@ public class EdExpressOrderController {
 
     @PostMapping(value = "/refuse")
     @ApiOperation(value = "拒绝订单", response = GeneralResult.class)
-    public Response<GeneralResult> refuse(@ModelAttribute @ApiParam("请求参数") RefuseEnter enter) {
+    public Response<GeneralResult> refuse(@ModelAttribute @ApiParam("请求参数") EdRfuseEnter enter) {
         return new Response<>(edOrderService.refuse(enter));
     }
 
