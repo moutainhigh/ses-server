@@ -5,8 +5,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.mobile.b.vo.CompleteEnter;
 import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
-import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.StartEnter;
+import com.redescooter.ses.api.mobile.b.vo.express.EdRfuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.express.OrderResult;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public interface EdOrderService {
     * @Return: GeneralResult
     * @desc:  拒绝订单
     */
-    GeneralResult refuse(RefuseEnter enter);
+    GeneralResult refuse(EdRfuseEnter enter);
     /**
     * @Description
     * @Author:  AlexLi
