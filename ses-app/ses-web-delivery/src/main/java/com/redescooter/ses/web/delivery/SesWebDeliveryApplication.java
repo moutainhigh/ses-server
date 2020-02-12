@@ -13,8 +13,6 @@ import java.util.TimeZone;
 
 @Slf4j
 @EnableDubbo
-//是否开启缓存机制
-//@EnableCaching
 @EnableDubboConfig(multiple = true)
 @SpringBootApplication(scanBasePackages = {"com.redescooter.ses"})
 @EnableTransactionManagement

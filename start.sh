@@ -86,3 +86,17 @@ pkill -f "${pkill_path}ses-instance-one.jar"
 > ${base_path}nohup.out
 nohup java -jar ${base_path}lib/ses-instance-one.jar > ${base_path}nohup.out &
 echo "start project ses-instance-one success"
+
+
+#! /bin/shell
+source /etc/profile
+
+base_path="/root/java_service/jerry/"
+pkill_path="jerry/lib/"
+jar_name="ses-service-foundation"
+
+echo "starting project ${jar_name}"
+pkill -f "${pkill_path}${jar_name}.jar"
+> ${base_path}nohup.out
+nohup java -jar ${base_path}lib/${jar_name}.jar > ${base_path}nohup.out &
+echo "start project ${jar_name} success"
