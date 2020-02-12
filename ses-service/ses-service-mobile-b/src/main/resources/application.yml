@@ -1,6 +1,6 @@
 #Springboot 基础配置
 server:
-  port: 28290
+  port: 58090
 spring:
   application:
     name: @project.artifactId@
@@ -66,6 +66,7 @@ dubbo:
   registry:
     check: false # 注册中心不存在时，是否报错
     group: ses
+    client: curator
   scan:
     base-packages: com.redescooter.ses #服务暴露与发现消费所在的package
   provider: #服务提供者缺省值配置

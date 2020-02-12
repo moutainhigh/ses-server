@@ -1,14 +1,14 @@
 #日志路径
 log:
   file:
-    path: logs/@profile-active@
+    path: /data/java_service/logs/@profile-active@
     max-size: 128MB
     max-history: 180
 
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://10.211.55.5:32181
-
+## DUBBO 配置
+dubbo:
+  registry: #注册中心
+    address: zookeeper://172.16.0.205:12181?backup=172.16.0.205:32181,172.16.0.205:32181
 
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
@@ -18,9 +18,9 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://localhost:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://172.16.0.205:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: root
+    password: 1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
@@ -35,12 +35,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - 10.211.55.5:7000
-        - 10.211.55.5:7001
-        - 10.211.55.5:7002
-        - 10.211.55.5:7003
-        - 10.211.55.5:7004
-        - 10.211.55.5:7005
+        - 172.16.0.205:7000
+        - 172.16.0.205:7001
+        - 172.16.0.205:7002
+        - 172.16.0.205:7003
+        - 172.16.0.205:7004
+        - 172.16.0.205:7005
   swagger:                                                                                                              #swagger在线文档配置
     enabled: true                                                                                                       #是否启用swagger
     group:

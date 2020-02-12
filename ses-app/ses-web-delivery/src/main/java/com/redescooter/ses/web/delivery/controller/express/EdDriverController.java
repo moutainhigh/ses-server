@@ -22,7 +22,7 @@ import java.util.Map;
 @Api(tags = {"快递司机"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rd/driver", method = RequestMethod.POST)
+@RequestMapping(value = "/ed/driver", method = RequestMethod.POST)
 public class EdDriverController {
 
     @Autowired

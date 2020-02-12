@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.constant.MaggessConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.driver.DriverLoginTypeEnum;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
@@ -174,6 +175,22 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         wrapper.eq(PlaTenant.COL_DR, 0);
 
         return tenantMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    /**
+     * 用户昵称验证
+     *
+     * @param nickname
+     * @return
+     */
+    @Override
+    public Boolean checkNaickname(String nickname) {
+
+        QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
+        wrapper.eq(PlaUser.COL_LOGIN_NAME, nickname);
+        wrapper.eq(PlaUser.COL_DR, 0);
+
+        return userMapper.selectCount(wrapper)== 0 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**
@@ -466,6 +483,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         PlaTenant tenant = tenantMapper.selectById(dto.getTenantId());
 
+        //账号登录类型
+        int  driverloginType = dto.getDriverLoginType()==DriverLoginTypeEnum.EMAIL.getValue()?
+                Integer.parseInt(DriverLoginTypeEnum.EMAIL.getValue()):
+                Integer.parseInt(DriverLoginTypeEnum.NICKNAME.getValue());
+
+
         int accountType = AccountTypeUtils.getAccountType(tenant.getTenantType(), tenant.getTenantIndustry());
 
         if (accountType == AccountTypeEnums.WEB_EXPRESS.getAccountType()) {
@@ -490,11 +513,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         user.setTenantId(tenant.getId());
         user.setAppId(AccountTypeUtils.getAppId(accountType));
         user.setSystemId(AccountTypeUtils.getSystemId(accountType));
-        user.setLoginName(dto.getEmail());
+        user.setLoginName(driverloginType==1?dto.getEmail():dto.getNickName());
+        user.setLoginType(driverloginType);
         user.setUserType(accountType);
         user.setStatus(UserStatusEnum.INACTIVATED.getValue());
-        //标识账号尚未激活
-        user.setDef1(MaggessConstant.ACCOUNT_ACTIVAT_BEFORE);
+        //标识账号是否激活
+        user.setDef1(driverloginType==1?MaggessConstant.ACCOUNT_ACTIVAT_BEFORE:MaggessConstant.ACCOUNT_ACTIVAT_AFTER);
         user.setCreatedBy(dto.getUserId());
         user.setCreatedTime(new Date());
         user.setUpdatedBy(dto.getUserId());
@@ -503,16 +527,19 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         //②、创建密码记录
         QueryWrapper<PlaUserPassword> queryPassWord = new QueryWrapper<>();
-        queryPassWord.eq(PlaUserPassword.COL_LOGIN_NAME, dto.getEmail());
+        queryPassWord.eq(PlaUserPassword.COL_LOGIN_NAME, driverloginType==1?dto.getEmail():dto.getNickName());
+
         queryPassWord.eq(PlaUserPassword.COL_DR, 0);
         PlaUserPassword passwordServiceOne = userPasswordService.getOne(queryPassWord);
 
         if (passwordServiceOne == null) {
             PlaUserPassword savePassWord = new PlaUserPassword();
             savePassWord.setId(idAppService.getId(SequenceName.PLA_USER_PASSWORD));
-            savePassWord.setLoginName(dto.getEmail());
             savePassWord.setSalt(String.valueOf(RandomUtils.nextInt(10000, 99999)));
-            savePassWord.setPassword(null);
+
+            savePassWord.setLoginName(driverloginType==1?dto.getEmail():dto.getNickName());
+            savePassWord.setPassword(driverloginType==1?null:dto.getPasswordAgain());
+
             savePassWord.setCreatedBy(dto.getUserId());
             savePassWord.setCreatedTime(new Date());
             savePassWord.setUpdatedBy(dto.getUserId());
@@ -541,6 +568,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         result.setId(user.getId());
         result.setTenantId(dto.getTenantId());
         result.setLoginName(user.getLoginName());
+        result.setLoginType(driverloginType);
         result.setStatus(user.getStatus());
         result.setUserType(user.getUserType());
         result.setCreatedBy(dto.getUserId());

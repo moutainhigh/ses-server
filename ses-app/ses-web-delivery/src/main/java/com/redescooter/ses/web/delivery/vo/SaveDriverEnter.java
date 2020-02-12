@@ -27,6 +27,10 @@ public class SaveDriverEnter extends GeneralEnter {
     @ApiModelProperty(value = "司机主键")
     private Long id;
 
+    @ApiModelProperty(value = "司机类型")
+    @NotNull(code = ValidationExceptionCode.DRIVER_ACCOUNT_TYPE_IS_EMPTY, message = "司机账号类型为空")
+    private String driverLoginType;
+
     @ApiModelProperty(value = "头像")
     @NotNull(code = ValidationExceptionCode.PICTURE_IS_EMPTY, message = "头像为空")
     private String avatar;
@@ -57,12 +61,6 @@ public class SaveDriverEnter extends GeneralEnter {
     @MaximumLength(code = ValidationExceptionCode.PHONE_IS_UNAVAILABLE, message = "手机号字符长度为2-20字符")
     private String driverPhone;
 
-    @ApiModelProperty(value = "司机邮箱")
-    @NotNull(code = ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱为空")
-    @MinimumLength(code = ValidationExceptionCode.EMAIL_IS_UNAVAILABLE, message = "邮箱字符长度为2-20字符")
-    @MaximumLength(code = ValidationExceptionCode.EMAIL_IS_UNAVAILABLE, message = "邮箱字符长度为2-20字符")
-    private String email;
-
     @ApiModelProperty(value = "司机地址")
     @NotNull(code = ValidationExceptionCode.ADDRESS_IS_EMPTY, message = "地址为空")
     @MinimumLength(code = ValidationExceptionCode.ADDRESS_IS_UNAVAILABLE, message = "地址字符长度为2-20字符")
@@ -79,5 +77,20 @@ public class SaveDriverEnter extends GeneralEnter {
     @ApiModelProperty(value = "驾驶证附件上")
     @NotNull(code = ValidationExceptionCode.DRIVER_LICENSE_UPANNEX_IS_EMPTY, message = "驾驶证附件为空")
     private String driverLicenseUpAnnex;
+
+    @ApiModelProperty(value = "邮箱账号")
+//    @NotNull(code = ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱为空")
+//    @MinimumLength(code = ValidationExceptionCode.EMAIL_IS_UNAVAILABLE, message = "邮箱字符长度为2-20字符")
+//    @MaximumLength(code = ValidationExceptionCode.EMAIL_IS_UNAVAILABLE, message = "邮箱字符长度为2-20字符")
+    private String email;
+
+    @ApiModelProperty(value = "昵称账号")
+    private String nickName;
+
+    @ApiModelProperty(value = "密码")
+    private String password;
+
+    @ApiModelProperty(value = "二次密码")
+    private String passwordAgain;
 
 }

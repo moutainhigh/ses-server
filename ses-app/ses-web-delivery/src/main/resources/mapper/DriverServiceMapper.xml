@@ -46,10 +46,12 @@
         cup.first_name     as driverFirstName,
         cup.last_name      as driverLastName,
         cup.email_1        as email,
+        cup.nickname       as nickname,
         cup.country_code_1 as countryCodel,
         cup.tel_number_1   as driverPhone,
         cts.license_plate  as plateNumber,
-        cdr.def1           as activatBoolean
+        cdr.def1           as activatBoolean,
+        case when cup.email_1 is null then '2' ELSE '1' END loginType
         from cor_driver cdr
         inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr = 0
         inner join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
@@ -88,6 +90,8 @@
         address,
         driverFirstName, driverLastName,
         email,
+        nickname,
+        loginType,
         countryCodel,
         driverPhone,
         plateNumber,

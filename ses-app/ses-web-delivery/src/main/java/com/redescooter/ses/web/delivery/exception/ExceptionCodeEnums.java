@@ -107,6 +107,8 @@ public enum ExceptionCodeEnums {
 
     EXPRESS_ORDER_IS_NOT_EXIST(10046, "快递订单不存在"),
 
+    ILLEGAL_NICKNAME(10047,"昵称不合法"),
+
     ;
 
 

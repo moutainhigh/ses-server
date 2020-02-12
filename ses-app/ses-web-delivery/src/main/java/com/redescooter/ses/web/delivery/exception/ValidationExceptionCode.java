@@ -65,11 +65,13 @@ public interface ValidationExceptionCode {
     // 耗时为空
     int DURATION_IS_EMPTY = 10048;
     // 营业日期开始为空
-    int BEGIN_WEEK_IS_EMPTY=10049;
+    int BEGIN_WEEK_IS_EMPTY = 10049;
     // 营业结束日期为空
     int END_WEEK_IS_EMPTY = 10050;
     // 营业开始时间为空
     int BEGIN_TIME_IS_EMPTY = 10051;
     // 营业结束时间
     int END_TIME_IS_EMPTY = 10052;
+    // 司机账号类型
+    int DRIVER_ACCOUNT_TYPE_IS_EMPTY = 10053;
 }

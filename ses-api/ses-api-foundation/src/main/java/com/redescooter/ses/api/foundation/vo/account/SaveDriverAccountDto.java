@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.foundation.vo.account;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,9 +21,11 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class SaveDriverAccountDto extends GeneralEnter {
 
-
     @ApiModelProperty(value = "司机主键")
     private Long driverId;
+
+    @ApiModelProperty(value = "登录类型")
+    private String driverLoginType;
 
     @ApiModelProperty(value = "头像")
     private String avatar;
@@ -41,9 +44,6 @@ public class SaveDriverAccountDto extends GeneralEnter {
 
     @ApiModelProperty(value = "司机手机号")
     private String driverPhone;
-
-    @ApiModelProperty(value = "司机邮箱")
-    private String email;
 
     @ApiModelProperty(value = "司机地址")
     private String address;
@@ -65,5 +65,17 @@ public class SaveDriverAccountDto extends GeneralEnter {
 
     @ApiModelProperty(value = "驾驶证附件下")
     private String driverLicenseDownAnnex;
+
+    @ApiModelProperty(value = "邮箱账号")
+    private String email;
+
+    @ApiModelProperty(value = "昵称账号")
+    private String nickName;
+
+    @ApiModelProperty(value = "昵称密码")
+    private String password;
+
+    @ApiModelProperty(value = "昵称密码确认")
+    private String passwordAgain;
 
 }

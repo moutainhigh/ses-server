@@ -25,6 +25,13 @@ public interface AccountBaseService {
     Boolean chectMail(String mail);
 
     /**
+     * 用户昵称验证
+     * @param nickname
+     * @return
+     */
+    Boolean checkNaickname(String nickname);
+
+    /**
      * 账号开通
      *
      * @param enter

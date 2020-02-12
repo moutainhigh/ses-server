@@ -2,6 +2,7 @@ package com.redescooter.ses.web.delivery.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
+import com.redescooter.ses.api.common.enums.driver.DriverLoginTypeEnum;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.driver.RoleEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
@@ -116,14 +117,28 @@ public class RtDriverServiceImpl implements RtDriverService {
     @Override
     public GeneralResult save(SaveDriverEnter enter) {
 
-        //①验证邮箱是否存在
-        Boolean aBoolean = accountBaseService.chectMail(enter.getEmail());
-
-        if (!aBoolean) {
-            throw new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
-        }
+        Boolean aBoolean = Boolean.FALSE;
 
         if (enter.getId() == null || enter.getId() == 0) {
+            if (enter.getDriverLoginType().equals(DriverLoginTypeEnum.EMAIL.getValue())) {
+                //①验证邮箱是否存在
+                aBoolean = accountBaseService.chectMail(enter.getEmail());
+            } else if (enter.getDriverLoginType().equals(DriverLoginTypeEnum.NICKNAME.getValue())) {
+                if (enter.getNickName().contains("@")) {
+                    throw new SesWebDeliveryException(ExceptionCodeEnums.ILLEGAL_NICKNAME.getCode(), ExceptionCodeEnums.ILLEGAL_NICKNAME.getMessage());
+                }
+                //验证租户与手机用户不可通用
+                Boolean tenantBoolean = accountBaseService.chectMail(enter.getNickName());
+                //验证骑手非邮箱账号用户名是否存在
+                Boolean userBoolean = accountBaseService.checkNaickname(enter.getNickName());
+                aBoolean = (tenantBoolean.equals(Boolean.TRUE) && userBoolean.equals(Boolean.TRUE)) ? Boolean.TRUE : Boolean.FALSE;
+            } else {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.OPERATION_ERROR.getCode(), ExceptionCodeEnums.OPERATION_ERROR.getMessage());
+            }
+
+            if (!aBoolean) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+            }
             //创建2B司机账户
             BaseUserResult user = openDriver2BAccout(enter);
             //保存司机
@@ -134,7 +149,7 @@ public class RtDriverServiceImpl implements RtDriverService {
             driverSave.setTenantId(user.getTenantId());
             driverSave.setStatus(DriverStatusEnum.OFFWORK.getValue());
             //司机账号是否激活
-            driverSave.setDef1(Boolean.FALSE.toString());
+            driverSave.setDef1(enter.getDriverLoginType().equals(DriverLoginTypeEnum.EMAIL.getValue()) ? Boolean.FALSE.toString() : Boolean.TRUE.toString());
             driverSave.setCreatedBy(enter.getUserId());
             driverSave.setCreatedTime(new Date());
             driverSave.setUpdatedBy(enter.getUserId());
@@ -164,7 +179,11 @@ public class RtDriverServiceImpl implements RtDriverService {
             profileSave.setFirstName(enter.getDriverFirstName());
             profileSave.setLastName(enter.getDriverLastName());
             profileSave.setFullName(new StringBuffer().append(enter.getDriverFirstName()).append(" ").append(enter.getDriverLastName()).toString());
-            profileSave.setEmail1(enter.getEmail());
+            if (enter.getDriverLoginType().equals(DriverLoginTypeEnum.EMAIL.getValue())) {
+                profileSave.setEmail1(enter.getEmail());
+            } else {
+                profileSave.setNickname(enter.getNickName());
+            }
             profileSave.setCountryCode1(enter.getCountryCodel());
             profileSave.setTelNumber1(enter.getDriverPhone());
             profileSave.setGender(enter.getGender());
@@ -181,11 +200,13 @@ public class RtDriverServiceImpl implements RtDriverService {
             profileSave.setUpdatedTime(new Date());
             userProfileService.save(profileSave);
 
-            //发送激活邮件
-            IdEnter idEnter = new IdEnter();
-            BeanUtils.copyProperties(enter, idEnter);
-            idEnter.setId(driverSave.getUserId());
-            accountBaseService.sendEmailActiv(idEnter);
+            if (enter.getDriverLoginType().equals(DriverLoginTypeEnum.EMAIL.getValue())) {
+                //发送激活邮件
+                IdEnter idEnter = new IdEnter();
+                BeanUtils.copyProperties(enter, idEnter);
+                idEnter.setId(driverSave.getUserId());
+                accountBaseService.sendEmailActiv(idEnter);
+            }
 
             //维护租户的司机数量
             tenantBaseService.updateDriverCount(enter);
@@ -274,6 +295,7 @@ public class RtDriverServiceImpl implements RtDriverService {
         DriverDetailsResult result = new DriverDetailsResult();
 
         result.setId(driver.getId());
+        result.setDriverLoginType(profile.getEmail1() == null ? DriverLoginTypeEnum.NICKNAME.getValue() : DriverLoginTypeEnum.EMAIL.getValue());
         result.setAvatar(profile.getPicture());
         result.setDriverFirstName(profile.getFirstName());
         result.setDriverLastName(profile.getLastName());
@@ -281,6 +303,7 @@ public class RtDriverServiceImpl implements RtDriverService {
         result.setCountryCodel(profile.getCountryCode1());
         result.setDriverPhone(profile.getTelNumber1());
         result.setEmail(profile.getEmail1());
+        result.setNickName(profile.getNickname());
         result.setAddress(profile.getPlaceBirth());
         result.setBirthday(DateUtil.getDateTime(profile.getBirthday(), null));
         result.setPlateNumber(null);
@@ -304,8 +327,7 @@ public class RtDriverServiceImpl implements RtDriverService {
     public BaseUserResult openDriver2BAccout(SaveDriverEnter enter) {
         SaveDriverAccountDto dto = new SaveDriverAccountDto();
         BeanUtils.copyProperties(enter, dto);
-        BaseUserResult baseUserResult = accountBaseService.openDriver2BAccout(dto);
-        return baseUserResult;
+        return accountBaseService.openDriver2BAccout(dto);
     }
 
     /**

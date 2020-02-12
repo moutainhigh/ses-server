@@ -1,7 +1,10 @@
 package com.redescooter.ses.service.mobile.b.service.base;
 
 import com.redescooter.ses.service.mobile.b.dm.base.CorExpressDelivery;
-import com.baomidou.mybatisplus.extension.service.IService;import java.util.List;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 @Transactional
 public interface CorExpressDeliveryService extends IService<CorExpressDelivery> {
 

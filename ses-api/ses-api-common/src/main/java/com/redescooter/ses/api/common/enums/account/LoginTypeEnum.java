@@ -12,7 +12,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum LoginTypeEnum {
 
-    PASSWORD(1, "密码登录"), DYNAMIC_CODE(2, "动态验证码登录");
+    PASSWORD(1, "邮箱密码登录"),
+    NICKNAME(2, "昵称登录"),
+    DYNAMIC_CODE(3, "动态验证码登录");
 
     private int code;
 

@@ -16,7 +16,7 @@ public class CorUserProfile implements Serializable {
      * ID
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "ID")
+    @ApiModelProperty(value="ID")
     private Long id;
 
     /**
@@ -24,255 +24,264 @@ public class CorUserProfile implements Serializable {
      */
     @TableField(value = "dr")
     @TableLogic
-    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
+    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "租户ID")
+    @ApiModelProperty(value="租户ID")
     private Long tenantId;
 
     /**
      * 用户ID
      */
     @TableField(value = "user_id")
-    @ApiModelProperty(value = "用户ID")
+    @ApiModelProperty(value="用户ID")
     private Long userId;
 
     /**
      * 是否主账号:1-主账号,0-子账号
      */
     @TableField(value = "is_master")
-    @ApiModelProperty(value = "是否主账号:1-主账号,0-子账号")
+    @ApiModelProperty(value="是否主账号:1-主账号,0-子账号")
     private Integer isMaster;
 
     /**
      * 照片
      */
     @TableField(value = "picture")
-    @ApiModelProperty(value = "照片")
+    @ApiModelProperty(value="照片")
     private String picture;
 
     /**
      * 名
      */
     @TableField(value = "first_name")
-    @ApiModelProperty(value = "名")
+    @ApiModelProperty(value="名")
     private String firstName;
 
     /**
      * 姓
      */
     @TableField(value = "last_name")
-    @ApiModelProperty(value = "姓")
+    @ApiModelProperty(value="姓")
     private String lastName;
 
     /**
      * 全名
      */
     @TableField(value = "full_name")
-    @ApiModelProperty(value = "全名")
+    @ApiModelProperty(value="全名")
     private String fullName;
+
+    /**
+     * 昵称
+     */
+    @TableField(value = "nickname")
+    @ApiModelProperty(value="昵称")
+    private String nickname;
 
     /**
      * 邮箱
      */
     @TableField(value = "email_1")
-    @ApiModelProperty(value = "邮箱")
+    @ApiModelProperty(value="邮箱")
     private String email1;
 
     /**
      * 邮箱
      */
     @TableField(value = "email_2")
-    @ApiModelProperty(value = "邮箱")
+    @ApiModelProperty(value="邮箱")
     private String email2;
 
     /**
      * 邮箱
      */
     @TableField(value = "email_3")
-    @ApiModelProperty(value = "邮箱")
+    @ApiModelProperty(value="邮箱")
     private String email3;
 
     /**
      * 电话号
      */
     @TableField(value = "tel_number_1")
-    @ApiModelProperty(value = "电话号")
+    @ApiModelProperty(value="电话号")
     private String telNumber1;
 
     /**
      * 国家编码如+86
      */
     @TableField(value = "country_code_1")
-    @ApiModelProperty(value = "国家编码如+86")
+    @ApiModelProperty(value="国家编码如+86")
     private String countryCode1;
 
     /**
      * 电话号
      */
     @TableField(value = "tel_number_2")
-    @ApiModelProperty(value = "电话号")
+    @ApiModelProperty(value="电话号")
     private String telNumber2;
 
     /**
      * 国家编码如+86
      */
     @TableField(value = "country_code_2")
-    @ApiModelProperty(value = "国家编码如+86")
+    @ApiModelProperty(value="国家编码如+86")
     private String countryCode2;
 
     /**
      * 电话号
      */
     @TableField(value = "tel_number_3")
-    @ApiModelProperty(value = "电话号")
+    @ApiModelProperty(value="电话号")
     private String telNumber3;
 
     /**
      * 国家编码如+86
      */
     @TableField(value = "country_code_3")
-    @ApiModelProperty(value = "国家编码如+86")
+    @ApiModelProperty(value="国家编码如+86")
     private String countryCode3;
 
     /**
      * 性别
      */
     @TableField(value = "gender")
-    @ApiModelProperty(value = "性别")
+    @ApiModelProperty(value="性别")
     private String gender;
 
     /**
      * 生日
      */
     @TableField(value = "birthday")
-    @ApiModelProperty(value = "生日")
+    @ApiModelProperty(value="生日")
     private Date birthday;
 
     /**
      * 证件类型1身份证，2驾驶证，3护照
      */
     @TableField(value = "CERTIFICATE_TYPE")
-    @ApiModelProperty(value = "证件类型1身份证，2驾驶证，3护照")
+    @ApiModelProperty(value="证件类型1身份证，2驾驶证，3护照")
     private String certificateType;
 
     /**
      * 证件反面图片
      */
     @TableField(value = "CERTIFICATE_NEGATIVE_ANNEX")
-    @ApiModelProperty(value = "证件反面图片")
+    @ApiModelProperty(value="证件反面图片")
     private String certificateNegativeAnnex;
 
     /**
      * 证件正面图片
      */
     @TableField(value = "CERTIFICATE_POSITIVE_ANNEX")
-    @ApiModelProperty(value = "证件正面图片")
+    @ApiModelProperty(value="证件正面图片")
     private String certificatePositiveAnnex;
 
     /**
      * 角色 DRIVER-司机；MANAGE-管理者
      */
     @TableField(value = "role")
-    @ApiModelProperty(value = "角色 DRIVER-司机；MANAGE-管理者")
+    @ApiModelProperty(value="角色 DRIVER-司机；MANAGE-管理者")
     private String role;
 
     /**
      * 页面引导提示开关，默认true 打开
      */
     @TableField(value = "page_boot_tips")
-    @ApiModelProperty(value = "页面引导提示开关，默认true 打开")
+    @ApiModelProperty(value="页面引导提示开关，默认true 打开")
     private Boolean pageBootTips;
 
     /**
      * 出生地
      */
     @TableField(value = "place_birth")
-    @ApiModelProperty(value = "出生地")
+    @ApiModelProperty(value="出生地")
     private String placeBirth;
 
     /**
      * 加入日期
      */
     @TableField(value = "join_date")
-    @ApiModelProperty(value = "加入日期")
+    @ApiModelProperty(value="加入日期")
     private Date joinDate;
 
     /**
      * 时区
      */
     @TableField(value = "time_zone")
-    @ApiModelProperty(value = "时区")
+    @ApiModelProperty(value="时区")
     private String timeZone;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value = "创建人")
+    @ApiModelProperty(value="创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value="创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value = "更新人")
+    @ApiModelProperty(value="更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value="更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;
+
+    public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
 
@@ -289,6 +298,8 @@ public class CorUserProfile implements Serializable {
     public static final String COL_LAST_NAME = "last_name";
 
     public static final String COL_FULL_NAME = "full_name";
+
+    public static final String COL_NICKNAME = "nickname";
 
     public static final String COL_EMAIL_1 = "email_1";
 

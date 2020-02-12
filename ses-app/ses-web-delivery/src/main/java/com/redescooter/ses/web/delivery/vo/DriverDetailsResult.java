@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.delivery.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -25,6 +27,9 @@ public class DriverDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "司机主键")
     private Long id;
 
+    @ApiModelProperty(value = "司机账户登录类型")
+    private String driverLoginType;
+
     @ApiModelProperty(value = "头像")
     private String avatar;
 
@@ -45,6 +50,9 @@ public class DriverDetailsResult extends GeneralResult {
 
     @ApiModelProperty(value = "司机邮箱")
     private String email;
+
+    @ApiModelProperty(value = "昵称账号")
+    private String nickName;
 
     @ApiModelProperty(value = "司机地址")
     private String address;

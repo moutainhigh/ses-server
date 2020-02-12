@@ -71,6 +71,8 @@ public class EdScooterServiceImpl implements EdScooterService {
                 map.put(status.getValue(), 0);
             }
         }
+        //去除充电中的统计数据
+        map.remove(TenantScooterStatusEnums.CHARGING.getValue());
         return map;
     }
 
