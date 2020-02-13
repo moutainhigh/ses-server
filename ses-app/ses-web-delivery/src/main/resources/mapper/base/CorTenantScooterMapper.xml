@@ -4,23 +4,23 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.delivery.dm.CorTenantScooter">
         <!--@mbg.generated-->
         <!--@Table cor_tenant_scooter-->
-        <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="dr" jdbcType="INTEGER" property="dr" />
-        <result column="tenant_id" jdbcType="INTEGER" property="tenantId" />
-        <result column="model" jdbcType="VARCHAR" property="model" />
-        <result column="scooter_id" jdbcType="BIGINT" property="scooterId" />
-        <result column="longitule" jdbcType="DECIMAL" property="longitule" />
-        <result column="latitude" jdbcType="DECIMAL" property="latitude" />
-        <result column="license_plate" jdbcType="VARCHAR" property="licensePlate" />
-        <result column="license_plate_picture" jdbcType="VARCHAR" property="licensePlatePicture" />
-        <result column="status" jdbcType="VARCHAR" property="status" />
-        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-        <result column="def3" jdbcType="VARCHAR" property="def3" />
-        <result column="def5" jdbcType="VARCHAR" property="def5" />
-        <result column="def6" jdbcType="DOUBLE" property="def6" />
+        <id column="id" property="id" />
+        <result column="dr" property="dr" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="model" property="model"/>
+        <result column="scooter_id" property="scooterId" />
+        <result column="longitule" property="longitule" />
+        <result column="latitude" property="latitude" />
+        <result column="license_plate" property="licensePlate" />
+        <result column="license_plate_picture" property="licensePlatePicture" />
+        <result column="status" property="status" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_by" property="updatedBy" />
+        <result column="updated_time" property="updatedTime" />
+        <result column="def3" property="def3" />
+        <result column="def5" property="def5" />
+        <result column="def6" property="def6" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
@@ -33,88 +33,88 @@
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="dr = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+                    when id = #{item.id} then #{item.dr}
                 </foreach>
             </trim>
             <trim prefix="tenant_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=INTEGER}
+                    when id = #{item.id} then #{item.tenantId}
                 </foreach>
             </trim>
             <trim prefix="model = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.model,jdbcType=VARCHAR}
+                    when id = #{item.id} then #{item.model}
                 </foreach>
             </trim>
             <trim prefix="scooter_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.scooterId,jdbcType=BIGINT}
+                    when id = #{item.id} then #{item.scooterId}
                 </foreach>
             </trim>
             <trim prefix="longitule = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.longitule,jdbcType=DECIMAL}
+                    when id = #{item.id} then #{item.longitule}
                 </foreach>
             </trim>
             <trim prefix="latitude = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.latitude,jdbcType=DECIMAL}
+                    when id = #{item.id} then #{item.latitude}
                 </foreach>
             </trim>
             <trim prefix="license_plate = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.licensePlate,jdbcType=VARCHAR}
+                    when id = #{item.id} then #{item.licensePlate}
                 </foreach>
             </trim>
             <trim prefix="license_plate_picture = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.licensePlatePicture,jdbcType=VARCHAR}
+                    when id = #{item.id} then #{item.licensePlatePicture}
                 </foreach>
             </trim>
             <trim prefix="`status` = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+                    when id = #{item.id} then #{item.status}
                 </foreach>
             </trim>
             <trim prefix="created_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+                    when id = #{item.id} then #{item.createdBy}
                 </foreach>
             </trim>
             <trim prefix="created_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id} then #{item.createdTime}
                 </foreach>
             </trim>
             <trim prefix="updated_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+                    when id = #{item.id} then #{item.updatedBy}
                 </foreach>
             </trim>
             <trim prefix="updated_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id} then #{item.updatedTime}
                 </foreach>
             </trim>
             <trim prefix="def3 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+                    when id = #{item.id} then #{item.def3}
                 </foreach>
             </trim>
             <trim prefix="def5 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+                    when id = #{item.id} then #{item.def5}
                 </foreach>
             </trim>
             <trim prefix="def6 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+                    when id = #{item.id} then #{item.def6}
                 </foreach>
             </trim>
         </trim>
         where id in
         <foreach close=")" collection="list" item="item" open="(" separator=", ">
-            #{item.id,jdbcType=BIGINT}
+            #{item.id}
         </foreach>
     </update>
     <insert id="batchInsert" parameterType="map">
@@ -124,12 +124,10 @@
         `status`, created_by, created_time, updated_by, updated_time, def3, def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=INTEGER},
-            #{item.model,jdbcType=VARCHAR}, #{item.scooterId,jdbcType=BIGINT}, #{item.longitule,jdbcType=DECIMAL},
-            #{item.latitude,jdbcType=DECIMAL}, #{item.licensePlate,jdbcType=VARCHAR}, #{item.licensePlatePicture,jdbcType=VARCHAR},
-            #{item.status,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
-            #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def3,jdbcType=VARCHAR},
-            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+            (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.model}, #{item.scooterId}, #{item.longitule},
+            #{item.latitude}, #{item.licensePlate}, #{item.licensePlatePicture}, #{item.status},
+            #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime},
+            #{item.def3}, #{item.def5}, #{item.def6})
         </foreach>
     </insert>
     <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.delivery.dm.CorTenantScooter">
@@ -138,30 +136,27 @@
         (id, dr, tenant_id, model, scooter_id, longitule, latitude, license_plate, license_plate_picture,
         `status`, created_by, created_time, updated_by, updated_time, def3, def5, def6)
         values
-        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=INTEGER}, #{model,jdbcType=VARCHAR},
-        #{scooterId,jdbcType=BIGINT}, #{longitule,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL},
-        #{licensePlate,jdbcType=VARCHAR}, #{licensePlatePicture,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
-        #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
-        #{updatedTime,jdbcType=TIMESTAMP}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
-        #{def6,jdbcType=DOUBLE})
+        (#{id}, #{dr}, #{tenantId}, #{model}, #{scooterId}, #{longitule}, #{latitude}, #{licensePlate},
+        #{licensePlatePicture}, #{status}, #{createdBy}, #{createdTime}, #{updatedBy},
+        #{updatedTime}, #{def3}, #{def5}, #{def6})
         on duplicate key update
-        id = #{id,jdbcType=BIGINT},
-        dr = #{dr,jdbcType=INTEGER},
-        tenant_id = #{tenantId,jdbcType=INTEGER},
-        model = #{model,jdbcType=VARCHAR},
-        scooter_id = #{scooterId,jdbcType=BIGINT},
-        longitule = #{longitule,jdbcType=DECIMAL},
-        latitude = #{latitude,jdbcType=DECIMAL},
-        license_plate = #{licensePlate,jdbcType=VARCHAR},
-        license_plate_picture = #{licensePlatePicture,jdbcType=VARCHAR},
-        `status` = #{status,jdbcType=VARCHAR},
-        created_by = #{createdBy,jdbcType=BIGINT},
-        created_time = #{createdTime,jdbcType=TIMESTAMP},
-        updated_by = #{updatedBy,jdbcType=BIGINT},
-        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-        def3 = #{def3,jdbcType=VARCHAR},
-        def5 = #{def5,jdbcType=VARCHAR},
-        def6 = #{def6,jdbcType=DOUBLE}
+        id = #{id},
+        dr = #{dr},
+        tenant_id = #{tenantId},
+        model = #{model},
+        scooter_id = #{scooterId},
+        longitule = #{longitule},
+        latitude = #{latitude},
+        license_plate = #{licensePlate},
+        license_plate_picture = #{licensePlatePicture},
+        `status` = #{status},
+        created_by = #{createdBy},
+        created_time = #{createdTime},
+        updated_by = #{updatedBy},
+        updated_time = #{updatedTime},
+        def3 = #{def3},
+        def5 = #{def5},
+        def6 = #{def6}
     </insert>
     <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.delivery.dm.CorTenantScooter">
         <!--@mbg.generated-->
@@ -222,109 +217,109 @@
         values
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=BIGINT},
+                #{id},
             </if>
             <if test="dr != null">
-                #{dr,jdbcType=INTEGER},
+                #{dr},
             </if>
             <if test="tenantId != null">
-                #{tenantId,jdbcType=INTEGER},
+                #{tenantId},
             </if>
             <if test="model != null">
-                #{model,jdbcType=VARCHAR},
+                #{model},
             </if>
             <if test="scooterId != null">
-                #{scooterId,jdbcType=BIGINT},
+                #{scooterId},
             </if>
             <if test="longitule != null">
-                #{longitule,jdbcType=DECIMAL},
+                #{longitule},
             </if>
             <if test="latitude != null">
-                #{latitude,jdbcType=DECIMAL},
+                #{latitude},
             </if>
             <if test="licensePlate != null">
-                #{licensePlate,jdbcType=VARCHAR},
+                #{licensePlate},
             </if>
             <if test="licensePlatePicture != null">
-                #{licensePlatePicture,jdbcType=VARCHAR},
+                #{licensePlatePicture},
             </if>
             <if test="status != null">
-                #{status,jdbcType=VARCHAR},
+                #{status},
             </if>
             <if test="createdBy != null">
-                #{createdBy,jdbcType=BIGINT},
+                #{createdBy},
             </if>
             <if test="createdTime != null">
-                #{createdTime,jdbcType=TIMESTAMP},
+                #{createdTime},
             </if>
             <if test="updatedBy != null">
-                #{updatedBy,jdbcType=BIGINT},
+                #{updatedBy},
             </if>
             <if test="updatedTime != null">
-                #{updatedTime,jdbcType=TIMESTAMP},
+                #{updatedTime},
             </if>
             <if test="def3 != null">
-                #{def3,jdbcType=VARCHAR},
+                #{def3},
             </if>
             <if test="def5 != null">
-                #{def5,jdbcType=VARCHAR},
+                #{def5},
             </if>
             <if test="def6 != null">
-                #{def6,jdbcType=DOUBLE},
+                #{def6},
             </if>
         </trim>
         on duplicate key update
         <trim suffixOverrides=",">
             <if test="id != null">
-                id = #{id,jdbcType=BIGINT},
+                id = #{id},
             </if>
             <if test="dr != null">
-                dr = #{dr,jdbcType=INTEGER},
+                dr = #{dr},
             </if>
             <if test="tenantId != null">
-                tenant_id = #{tenantId,jdbcType=INTEGER},
+                tenant_id = #{tenantId},
             </if>
             <if test="model != null">
-                model = #{model,jdbcType=VARCHAR},
+                model = #{model},
             </if>
             <if test="scooterId != null">
-                scooter_id = #{scooterId,jdbcType=BIGINT},
+                scooter_id = #{scooterId},
             </if>
             <if test="longitule != null">
-                longitule = #{longitule,jdbcType=DECIMAL},
+                longitule = #{longitule},
             </if>
             <if test="latitude != null">
-                latitude = #{latitude,jdbcType=DECIMAL},
+                latitude = #{latitude},
             </if>
             <if test="licensePlate != null">
-                license_plate = #{licensePlate,jdbcType=VARCHAR},
+                license_plate = #{licensePlate},
             </if>
             <if test="licensePlatePicture != null">
-                license_plate_picture = #{licensePlatePicture,jdbcType=VARCHAR},
+                license_plate_picture = #{licensePlatePicture},
             </if>
             <if test="status != null">
-                `status` = #{status,jdbcType=VARCHAR},
+                `status` = #{status},
             </if>
             <if test="createdBy != null">
-                created_by = #{createdBy,jdbcType=BIGINT},
+                created_by = #{createdBy},
             </if>
             <if test="createdTime != null">
-                created_time = #{createdTime,jdbcType=TIMESTAMP},
+                created_time = #{createdTime},
             </if>
             <if test="updatedBy != null">
-                updated_by = #{updatedBy,jdbcType=BIGINT},
+                updated_by = #{updatedBy},
             </if>
             <if test="updatedTime != null">
-                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+                updated_time = #{updatedTime},
             </if>
             <if test="def3 != null">
-                def3 = #{def3,jdbcType=VARCHAR},
+                def3 = #{def3},
             </if>
             <if test="def5 != null">
-                def5 = #{def5,jdbcType=VARCHAR},
+                def5 = #{def5},
             </if>
             <if test="def6 != null">
-                def6 = #{def6,jdbcType=DOUBLE},
+                def6 = #{def6},
             </if>
         </trim>
     </insert>

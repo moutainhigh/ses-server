@@ -1,6 +1,16 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
 
+import java.util.*;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -15,24 +25,7 @@ import com.redescooter.ses.web.delivery.dao.EdScooterServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.service.EdScooterService;
 import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
-import com.redescooter.ses.web.delivery.vo.edscooter.ChanageStatusEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterListEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.redescooter.ses.web.delivery.vo.edscooter.*;
 
 /**
  * @ClassName:MobileServiceImpl

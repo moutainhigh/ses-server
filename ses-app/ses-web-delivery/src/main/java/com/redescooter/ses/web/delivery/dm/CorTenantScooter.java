@@ -1,19 +1,14 @@
 package com.redescooter.ses.web.delivery.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.Data;
 
-@ApiModel(value = "com-redescooter-ses-web-delivery-dm-CorTenantScooter")
+@ApiModel(value="com-redescooter-ses-web-delivery-dm-CorTenantScooter")
 @Data
 @TableName(value = "cor_tenant_scooter")
 public class CorTenantScooter implements Serializable {
@@ -29,6 +24,7 @@ public class CorTenantScooter implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -36,7 +32,7 @@ public class CorTenantScooter implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value="tenantId")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 车辆型号
