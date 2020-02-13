@@ -105,6 +105,7 @@ public class UserTokenServiceImpl implements UserTokenService {
                 });
                 LoginResult result = new LoginResult();
                 result.setAccountSelectionList(checkAppUser);
+                result.setRequestId(enter.getRequestId());
                 // 放入到redis缓存中
                 String userListJson = JSON.toJSONString(checkAppUser);
                 jedisCluster.set(enter.getRequestId(), userListJson);

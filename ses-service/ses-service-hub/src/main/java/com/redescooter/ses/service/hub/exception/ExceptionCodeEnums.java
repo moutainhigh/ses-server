@@ -74,8 +74,6 @@ public enum ExceptionCodeEnums {
     ACCESS_DENIED(10026, "非法登录，授权失败，禁止访问"),
 
     //10030 往后是业务异常
-
-
     USER_IS_NOT_HAVE_SCOOTER(10031, "用户没有车辆"),
 
     USER_PROFILE_IS_NOT_EXIST(10032, "用户个人信息不存在"),

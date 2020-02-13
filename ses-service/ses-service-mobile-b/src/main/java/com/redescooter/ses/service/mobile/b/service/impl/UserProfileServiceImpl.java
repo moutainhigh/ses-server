@@ -58,26 +58,28 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
      */
     @Override
     public UserProfileResult userProfile(GeneralEnter enter) {
-
+        UserProfileResult result = new UserProfileResult();
         IdEnter idEnter = new IdEnter();
         BeanUtils.copyProperties(enter, idEnter);
-
-        CorUserProfile corUserProfile = null;
+        idEnter.setId(enter.getUserId());
 
         QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
-        if (queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType() || queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType()) {
+        if (queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType()) || queryUserResult.getUserType().equals(AccountTypeEnums.APP_EXPRESS.getAccountType())) {
             QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
             corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
             corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
             corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
-            corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+            CorUserProfile toBProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
+            if (toBProfile != null) {
+                BeanUtils.copyProperties(toBProfile, result);
+            }
         } else {
-            QueryUserProfileResult queryUserProfileResult = consumerUserProfileService.queryUserProfile(idEnter);
-            corUserProfile = new CorUserProfile();
-            BeanUtils.copyProperties(queryUserProfileResult, corUserProfile);
+            QueryUserProfileResult toCProfile = consumerUserProfileService.queryUserProfile(idEnter);
+            if (toCProfile != null) {
+                BeanUtils.copyProperties(toCProfile, result);
+            }
         }
-        UserProfileResult result = new UserProfileResult();
-        BeanUtils.copyProperties(corUserProfile, result);
+
         return result;
     }
 
@@ -94,7 +96,8 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
 
         CorUserProfile corUserProfile = null;
         // 保存TOC 信息
-        if (queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType() || queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType()) {
+        if (queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType()) ||
+                queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType())) {
             if (null != enter.getId() && 0 != enter.getId()) {
                 QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
                 corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);

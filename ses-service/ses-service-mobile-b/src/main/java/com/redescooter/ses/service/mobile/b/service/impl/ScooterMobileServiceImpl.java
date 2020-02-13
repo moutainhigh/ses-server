@@ -76,7 +76,7 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
 
         // 查询账户类型
         QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
-        if (queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType() || queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType()) {
+        if (queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType()) || queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType())) {
             // 获取车辆分配信息
             corDriverScooter = scooterMobileServiceMapper.driverScooterByUserId(enter.getUserId(), DriverScooterStatusEnums.USED.getValue());
         } else {
@@ -84,8 +84,13 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
             IdEnter idEnter = new IdEnter();
             BeanUtils.copyProperties(enter, idEnter);
             QueryDriverScooterResult queryDriverScooterResult = cusotmerScooterService.queryDriverScooter(idEnter);
-            corDriverScooter = new CorDriverScooter();
-            BeanUtils.copyProperties(queryDriverScooterResult, corDriverScooter);
+
+            if(queryDriverScooterResult==null){
+                return null;
+            }else{
+                corDriverScooter = new CorDriverScooter();
+                BeanUtils.copyProperties(queryDriverScooterResult, corDriverScooter);
+            }
         }
 
         List<BaseScooterResult> scooterResultList = null;

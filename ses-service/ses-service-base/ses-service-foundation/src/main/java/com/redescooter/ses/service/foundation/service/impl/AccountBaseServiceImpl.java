@@ -484,7 +484,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         PlaTenant tenant = tenantMapper.selectById(dto.getTenantId());
 
         //账号登录类型
-        int driverloginType = dto.getDriverLoginType() == DriverLoginTypeEnum.EMAIL.getValue() ?
+        int driverloginType = dto.getDriverLoginType().equals(DriverLoginTypeEnum.EMAIL.getValue()) ?
                 Integer.parseInt(DriverLoginTypeEnum.EMAIL.getValue()) :
                 Integer.parseInt(DriverLoginTypeEnum.NICKNAME.getValue());
 
@@ -499,15 +499,21 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(PlaUser.COL_LOGIN_NAME, driverloginType == 1 ? dto.getEmail() : dto.getNickName());
         queryWrapper.eq(PlaUser.COL_DR, 0);
-        queryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
 
-        if(driverloginType==2){
-            int count = userMapper.selectCount(queryWrapper);
-
-            if (count > 0) {
-                throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
-                        ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        List<PlaUser> userList = userMapper.selectList(queryWrapper);
+        int count = userList.size();
+        if (driverloginType == 1) {
+            if (userList.size() > 0) {
+                for (PlaUser user : userList) {
+                    if (user.getUserType() == accountType) {
+                        throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
+                                ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+                    }
+                }
             }
+        }else {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
+                    ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
         //①、创建user信息
         PlaUser user = new PlaUser();
@@ -519,9 +525,16 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         user.setLoginName(driverloginType == 1 ? dto.getEmail() : dto.getNickName());
         user.setLoginType(driverloginType);
         user.setUserType(accountType);
-        user.setStatus(driverloginType==1?UserStatusEnum.INACTIVATED.getValue():UserStatusEnum.NORMAL.getValue());
-        //标识账号是否激活
-        user.setDef1(driverloginType == 1 ? MaggessConstant.ACCOUNT_ACTIVAT_BEFORE : MaggessConstant.ACCOUNT_ACTIVAT_AFTER);
+        if (count > 0) {
+            user.setStatus(UserStatusEnum.NORMAL.getValue());
+            //标识账号是否激活
+            user.setDef1(MaggessConstant.ACCOUNT_ACTIVAT_AFTER);
+        } else {
+            user.setStatus(driverloginType == 1 ? UserStatusEnum.INACTIVATED.getValue() : UserStatusEnum.NORMAL.getValue());
+            //标识账号是否激活
+            user.setDef1(driverloginType == 1 ? MaggessConstant.ACCOUNT_ACTIVAT_BEFORE : MaggessConstant.ACCOUNT_ACTIVAT_AFTER);
+        }
+
         user.setCreatedBy(dto.getUserId());
         user.setCreatedTime(new Date());
         user.setUpdatedBy(dto.getUserId());
@@ -558,7 +571,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPermission.setUserId(user.getId());
         plaUserPermission.setSystemId(AccountTypeUtils.getSystemId(accountType));
         plaUserPermission.setAppId(AccountTypeUtils.getAppId(accountType));
-        //TODO 为了账户多平台通用，设置为正常
         plaUserPermission.setStatus(UserStatusEnum.NORMAL.getValue());
         plaUserPermission.setCreatedBy(dto.getUserId());
         plaUserPermission.setCreatedTime(new Date());

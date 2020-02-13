@@ -42,7 +42,8 @@ public class HubCustomerScooterServiceImpl implements CusotmerScooterService {
         }
         HubConUserScooter hubConUserScooter = hubConUserScooterMapper.selectOne(conUserScooterQueryWrapper);
         if (hubConUserScooter == null) {
-            throw new SeSHubException(ExceptionCodeEnums.USER_IS_NOT_HAVE_SCOOTER.getCode(), ExceptionCodeEnums.USER_IS_NOT_HAVE_SCOOTER.getMessage());
+           // throw new SeSHubException(ExceptionCodeEnums.USER_IS_NOT_HAVE_SCOOTER.getCode(), ExceptionCodeEnums.USER_IS_NOT_HAVE_SCOOTER.getMessage());
+            return null;
         }
         QueryDriverScooterResult result = new QueryDriverScooterResult();
         BeanUtils.copyProperties(hubConUserScooter, result);
