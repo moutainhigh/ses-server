@@ -20,6 +20,7 @@ public enum ExpressOrderStatusEnums {
     SHIPPING("SHIPPING", " 正在配送 ","3"),
     COMPLETED("COMPLETED","完成","4"),
     REJECTED("REJECTED", "拒绝","5"),
+    CANCEL("CANCEL", "取消", "6"),
     ;
 
     private String code;

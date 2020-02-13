@@ -9,12 +9,12 @@ log:
 ## DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://10.211.55.5:12181?backup=10.211.55.5:22181,10.211.55.5:32181
+    address: zookeeper://192.168.0.104:2181
 
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://10.211.55.5:3306/scooter?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://47.102.126.144:3306/scooter?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
     druid:
@@ -33,23 +33,6 @@ spring:
         - 10.211.55.5:7004
         - 10.211.55.5:7005
 
-
-
-# 多注册中心配置
-#    reg2:
-#      group: hdg2
-#      address: zookeeper://zk1.t.xqcx.com:32181?backup=zk2.t.xqcx.com:32181,zk3.t.xqcx.com:32181
-
-
-# sentinel 规则文件位置，以下依次是：流控规则，降级规则，系统规则文件位置
-#sentinel:
-#  zk-address: zk1.t.xqcx.com:32181,zk2.t.xqcx.com:32181,zk3.t.xqcx.com:32181
-#  groupid: hdg_sentinel
-#  flow-dataid: @project.artifactId@-flow
-#  degra-dedataid: @project.artifactId@-degra
-#  system-dataid: @project.artifactId@-sys
-
-#35.180.46.199:7332;35.180.46.199:7332 13.209.4.155 106.14.206.178:7332
 iot:
   address: 106.14.206.178:7332
 

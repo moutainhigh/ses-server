@@ -30,7 +30,7 @@ import java.util.Map;
 @Api(tags = {"快递订单"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rd/orders", method = RequestMethod.POST)
+@RequestMapping(value = "/ed/orders", method = RequestMethod.POST)
 public class EdOrderController {
 
     @Autowired

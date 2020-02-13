@@ -23,7 +23,7 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class QueryOrderDetailResult extends GeneralResult {
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "主键id")
     private Long id;
 
     @ApiModelProperty(value = "订单创建时间")
@@ -57,6 +57,15 @@ public class QueryOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "司机名字")
     private String driverLastName;
 
+    @ApiModelProperty(value = "司机邮箱")
+    private String driverEmail;
+
+    @ApiModelProperty(value = "司机昵称")
+    private String driverNickname;
+
+    @ApiModelProperty(value = "车牌号")
+    private String licensePlate;
+
     @ApiModelProperty(value = "门店地址")
     private String tenantAddress;
 
@@ -72,7 +81,7 @@ public class QueryOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "收货人距离")
     private double recipientMileage;
 
-    @ApiModelProperty(value = "orderNo")
+    @ApiModelProperty(value = "订单编号")
     private String orderNo;
 
     @ApiModelProperty(value = "状态")
@@ -105,7 +114,7 @@ public class QueryOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "发货维度")
     private String recipientLongitude;
 
-    @ApiModelProperty(value = "geohash")
+    @ApiModelProperty(value = "geohash",hidden = true)
     private String recipientGeohash;
 
     @ApiModelProperty(value = "收货人电话")
@@ -141,7 +150,7 @@ public class QueryOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "发货人维度")
     private String senderLongitude;
 
-    @ApiModelProperty(value = "geohash")
+    @ApiModelProperty(value = "geohash",hidden = true)
     private String senderGeohash;
 
     @ApiModelProperty(value = "发货人公司")

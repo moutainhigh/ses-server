@@ -516,7 +516,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         user.setLoginName(driverloginType == 1 ? dto.getEmail() : dto.getNickName());
         user.setLoginType(driverloginType);
         user.setUserType(accountType);
-        user.setStatus(UserStatusEnum.INACTIVATED.getValue());
+        user.setStatus(driverloginType==1?UserStatusEnum.INACTIVATED.getValue():UserStatusEnum.NORMAL.getValue());
         //标识账号是否激活
         user.setDef1(driverloginType == 1 ? MaggessConstant.ACCOUNT_ACTIVAT_BEFORE : MaggessConstant.ACCOUNT_ACTIVAT_AFTER);
         user.setCreatedBy(dto.getUserId());
