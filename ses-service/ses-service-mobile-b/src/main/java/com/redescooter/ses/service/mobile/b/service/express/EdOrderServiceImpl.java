@@ -227,7 +227,8 @@ public class EdOrderServiceImpl implements EdOrderService {
         QueryWrapper<CorExpressDeliveryDetail> corExpressDeliveryDetailQueryWrapper=new QueryWrapper<>();
         corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_DR,0);
         corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_TENANT_ID,enter.getTenantId());
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_STATUS, ExpressDeliveryDetailStatusEnums.ASGN.getValue());
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_EXPRESS_ORDER_ID,enter.getId());
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_STATUS, ExpressDeliveryDetailStatusEnums.SHIPPING.getValue());
         CorExpressDeliveryDetail deliveryDetail = corExpressDeliveryDetailService.getOne(corExpressDeliveryDetailQueryWrapper);
 
         deliveryDetail.setStatus(ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
