@@ -8,8 +8,6 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.web.delivery.dao.EdDasboardServiceMapper;
-import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
-import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
 import com.redescooter.ses.web.delivery.service.express.EdDasboardService;
 import com.redescooter.ses.web.delivery.vo.*;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;

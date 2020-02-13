@@ -6,13 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.Data;
 
-@ApiModel(value = "com-redescooter-ses-web-delivery-dm-CorTenantScooter")
+@ApiModel(value="com-redescooter-ses-web-delivery-dm-CorTenantScooter")
 @Data
 @TableName(value = "cor_tenant_scooter")
 public class CorTenantScooter implements Serializable {
@@ -20,119 +19,119 @@ public class CorTenantScooter implements Serializable {
      * ID
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "ID")
+    @ApiModelProperty(value="ID")
     private Long id;
 
     /**
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
+    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**
      * tenantId
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "tenantId")
+    @ApiModelProperty(value="tenantId")
     private Long tenantId;
 
     /**
      * 车辆型号
      */
     @TableField(value = "model")
-    @ApiModelProperty(value = "车辆型号")
+    @ApiModelProperty(value="车辆型号")
     private String model;
 
     /**
      * 车辆ID
      */
     @TableField(value = "scooter_id")
-    @ApiModelProperty(value = "车辆ID")
+    @ApiModelProperty(value="车辆ID")
     private Long scooterId;
 
     /**
      * 车辆经度
      */
     @TableField(value = "longitule")
-    @ApiModelProperty(value = "车辆经度")
+    @ApiModelProperty(value="车辆经度")
     private BigDecimal longitule;
 
     /**
      * 车辆纬度
      */
     @TableField(value = "latitude")
-    @ApiModelProperty(value = "车辆纬度")
+    @ApiModelProperty(value="车辆纬度")
     private BigDecimal latitude;
 
     /**
      * 车牌号
      */
     @TableField(value = "license_plate")
-    @ApiModelProperty(value = "车牌号")
+    @ApiModelProperty(value="车牌号")
     private String licensePlate;
 
     /**
      * 车牌号图片
      */
     @TableField(value = "license_plate_picture")
-    @ApiModelProperty(value = "车牌号图片")
+    @ApiModelProperty(value="车牌号图片")
     private String licensePlatePicture;
 
     /**
      * 车辆状态 AVAILABLE;CHARGING;REPAIR;FAULT;USEING
      */
     @TableField(value = "status")
-    @ApiModelProperty(value = "车辆状态 AVAILABLE;CHARGING;REPAIR;FAULT;USEING")
+    @ApiModelProperty(value="车辆状态 AVAILABLE;CHARGING;REPAIR;FAULT;USEING")
     private String status;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value = "创建人")
+    @ApiModelProperty(value="创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value="创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value = "更新人")
+    @ApiModelProperty(value="更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value="更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;
