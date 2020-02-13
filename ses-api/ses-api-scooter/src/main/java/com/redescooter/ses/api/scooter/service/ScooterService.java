@@ -5,7 +5,6 @@ import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName:ScooterService
@@ -38,13 +37,4 @@ public interface ScooterService {
      * @return
      */
     GeneralResult updateStatus(UpdateStatusEnter enter);
-    /**
-    * @Description
-    * @Author:  AlexLi
-    * @Date:   2020/2/13 11:04
-    * @Param:  ids
-    * @Return: map
-    * @desc:  车辆型号列表
-    */
-    Map<String, Integer> scooterTypeList(List<Long> ids);
 }

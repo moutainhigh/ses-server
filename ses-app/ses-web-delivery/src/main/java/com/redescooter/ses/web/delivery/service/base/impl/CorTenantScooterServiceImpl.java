@@ -37,6 +37,12 @@ public class CorTenantScooterServiceImpl extends ServiceImpl<CorTenantScooterMap
     public int insertOrUpdateSelective(CorTenantScooter record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<CorTenantScooter> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
 
 

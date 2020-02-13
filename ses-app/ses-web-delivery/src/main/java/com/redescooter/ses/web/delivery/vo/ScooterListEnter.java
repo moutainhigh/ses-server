@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.delivery.vo;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import lombok.*;
 
 import io.swagger.annotations.*;
@@ -12,5 +14,6 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 public class ScooterListEnter extends GeneralEnter {
     @ApiModelProperty(value = "车辆型号Id，详情 见 TAPD")
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 不为空")
     private String modelId;
 }

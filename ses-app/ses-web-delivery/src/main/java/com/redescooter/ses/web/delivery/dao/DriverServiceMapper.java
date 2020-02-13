@@ -137,7 +137,7 @@ public interface DriverServiceMapper {
     * @Date:   2020/2/13 11:01
     * @Param:  tenantId
     * @Return: List
-    * @desc: 查询租户车辆Id
+    * @desc: 查询租户车辆型号
     */
-    List<Long> queryScooterIdsByTenantId(Long tenantId);
+    List<String> queryScooterModelByTenantId(Long tenantId);
 }

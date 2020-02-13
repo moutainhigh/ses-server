@@ -417,9 +417,9 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @param enter
      */
     @Override
-    public Map<String, Integer> scooterTypeList(GeneralEnter enter) {
-        List<Long> scooterId=driverServiceMapper.queryScooterIdsByTenantId(enter.getTenantId());
-        return scooterService.scooterTypeList(scooterId);
+    public ScooterModelListResult scooterModelList(GeneralEnter enter) {
+        List<String> modelList=driverServiceMapper.queryScooterModelByTenantId(enter.getTenantId());
+        return ScooterModelListResult.builder().modelList(modelList).build();
     }
 
     /**
@@ -429,10 +429,11 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @return
      */
     @Override
-    public List<ListScooterResult> scooterList(GeneralEnter enter) {
+    public List<ListScooterResult> scooterList(ScooterListEnter enter) {
         QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_MODEL,enter.getModelId());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_STATUS, TenantScooterStatusEnums.AVAILABLE.getValue());
         List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
         if (CollectionUtils.isEmpty(corTenantScooterList)) {
