@@ -71,6 +71,15 @@ public interface RtDriverService {
      * @return
      */
     GeneralResult againSendEmail(IdEnter enter);
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/13 10:23
+    * @Param:  enter
+    * @Return: map
+    * @desc: 车辆类型
+    */
+    Map<String, Integer> scooterTypeList(GeneralEnter enter);
 
     /**
      * 门店车辆列表

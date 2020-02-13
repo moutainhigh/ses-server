@@ -1,5 +1,7 @@
 package com.redescooter.ses.service.scooter.service.impl;
 
+import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
@@ -17,7 +19,9 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:ScooterServiceImpl
@@ -72,5 +76,30 @@ public class ScooterServiceImpl implements ScooterService {
         scoScooter.setUpdatedTime(new Date());
         scoScooterService.updateById(scoScooter);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * @Description
+     * @Author: AlexLi
+     * @Date: 2020/2/13 11:04
+     * @Param: ids
+     * @Return: map
+     * @desc: 车辆型号列表
+     * @param ids
+     */
+    @Override
+    public Map<String, Integer> scooterTypeList(List<Long> ids) {
+        List<CountByStatusResult> modelList=scooterServiceMapper.scooterTypeListByScooterIds(ids);
+
+        Map<String, Integer> map = new HashMap<>();
+        for (CountByStatusResult item : modelList) {
+            map.put(item.getStatus(), item.getTotalCount());
+        }
+        for (ScooterModelEnums status : ScooterModelEnums.values()) {
+            if (!map.containsKey(status.getValue())) {
+                map.put(status.getValue(), 0);
+            }
+        }
+        return map;
     }
 }

@@ -365,4 +365,13 @@
         </if>
         group by times
     </select>
+    <select id="queryScooterIdsByTenantId" resultType="java.lang.Long">
+        SELECT
+        scooter_id
+        FROM
+        cor_tenant_scooter
+        WHERE
+        tenant_id = #{tenantId}
+        AND dr = 0
+    </select>
 </mapper>

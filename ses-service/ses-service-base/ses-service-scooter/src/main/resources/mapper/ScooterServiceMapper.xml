@@ -32,4 +32,15 @@
             </foreach>
         </if>
     </select>
+    <select id="scooterTypeListByScooterIds" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        SELECT
+            model as status,
+            COUNT(*) as totalCount
+        FROM
+            sco_scooter
+        WHERE
+            dr = 0
+        GROUP BY
+            model
+    </select>
 </mapper>
