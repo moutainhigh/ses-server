@@ -500,11 +500,14 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         queryWrapper.eq(PlaUser.COL_LOGIN_NAME, driverloginType == 1 ? dto.getEmail() : dto.getNickName());
         queryWrapper.eq(PlaUser.COL_DR, 0);
         queryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
-        int count = userMapper.selectCount(queryWrapper);
 
-        if (count > 0) {
-            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
-                    ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        if(driverloginType!=1){
+            int count = userMapper.selectCount(queryWrapper);
+
+            if (count > 0) {
+                throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
+                        ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+            }
         }
         //①、创建user信息
         PlaUser user = new PlaUser();
