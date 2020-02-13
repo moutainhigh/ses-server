@@ -199,11 +199,4 @@
         order by histroy.begin_time desc
         limit #{startRow},#{pageSize}
     </select>
-    <select id="scooterTypeList" resultType="com.redescooter.ses.api.common.vo.base.StringResult">
-     select model
-     from cor_tenant_scooter
-     where tenant_id =
-       and dr = 0
-     group by model
-    </select>
 </mapper>

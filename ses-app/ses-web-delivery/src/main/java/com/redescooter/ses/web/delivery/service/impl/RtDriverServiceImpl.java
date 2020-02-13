@@ -410,17 +410,32 @@ public class RtDriverServiceImpl implements RtDriverService {
     }
 
     /**
+     * @Description
+     * @Author: AlexLi
+     * @Date: 2020/2/13 10:23
+     * @Param: enter
+     * @Return: map
+     * @desc: 车辆类型
+     * @param enter
+     */
+    @Override
+    public ScooterModelListResult scooterModelList(GeneralEnter enter) {
+        List<String> modelList=driverServiceMapper.queryScooterModelByTenantId(enter.getTenantId());
+        return ScooterModelListResult.builder().modelList(modelList).build();
+    }
+
+    /**
      * 门店车辆列表
      *
      * @param enter
      * @return
      */
     @Override
-    public List<ListScooterResult> scooterList(StringEnter enter) {
+    public List<ListScooterResult> scooterList(ScooterListEnter enter) {
         QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_MODEL, enter.getSt());
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_MODEL,enter.getModelId());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_STATUS, TenantScooterStatusEnums.AVAILABLE.getValue());
         List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
         if (CollectionUtils.isEmpty(corTenantScooterList)) {
@@ -442,20 +457,6 @@ public class RtDriverServiceImpl implements RtDriverService {
         });
 
         return resultList;
-    }
-
-    /**
-     * 获取车辆型号
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public List<StringResult> scooterTypeList(GeneralEnter enter) {
-
-        List<StringResult> stringResults = scooterServiceMapper.scooterTypeList(enter);
-
-        return stringResults;
     }
 
     /**

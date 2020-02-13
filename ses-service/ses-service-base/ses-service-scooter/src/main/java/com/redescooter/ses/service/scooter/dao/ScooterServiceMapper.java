@@ -1,8 +1,8 @@
 package com.redescooter.ses.service.scooter.dao;
 
-import java.util.List;
-
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+
+import java.util.List;
 
 /**
  * @ClassName:ScooterServiceMapper

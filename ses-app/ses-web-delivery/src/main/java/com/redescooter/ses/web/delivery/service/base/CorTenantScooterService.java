@@ -25,6 +25,8 @@ public interface CorTenantScooterService extends IService<CorTenantScooter> {
 
     int insertOrUpdateSelective(CorTenantScooter record);
 
+    int updateBatchSelective(List<CorTenantScooter> list);
 }
+
 
 

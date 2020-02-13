@@ -71,6 +71,15 @@ public interface RtDriverService {
      * @return
      */
     GeneralResult againSendEmail(IdEnter enter);
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/13 10:23
+    * @Param:  enter
+    * @Return: ScooterModelListResult
+    * @desc: 车辆类型
+    */
+    ScooterModelListResult scooterModelList(GeneralEnter enter);
 
     /**
      * 门店车辆列表
@@ -78,15 +87,7 @@ public interface RtDriverService {
      * @param enter
      * @return
      */
-    List<ListScooterResult> scooterList(StringEnter enter);
-
-    /**
-     * 获取车辆型号
-     *
-     * @param enter
-     * @return
-     */
-    List<StringResult> scooterTypeList(GeneralEnter enter);
+    List<ListScooterResult> scooterList(ScooterListEnter enter);
 
     /**
      * 司机车辆分配

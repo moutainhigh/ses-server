@@ -3,7 +3,6 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult;
 import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterListEnter;
@@ -42,14 +41,6 @@ public interface EdScooterServiceMapper {
      * @return
      */
     List<EdScooterResult> list(EdScooterListEnter enter);
-
-    /**
-     * 获取车辆型号列表
-     *
-     * @param enter
-     * @return
-     */
-    List<StringResult> scooterTypeList(GeneralEnter enter);
 
     /**
      * 车辆详情

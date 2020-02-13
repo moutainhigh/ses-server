@@ -85,18 +85,17 @@ public class EdDriverController {
         return new Response<>(rtDriverService.againSendEmail(enter));
     }
 
+    @PostMapping(value = "/scooterModelList")
+    @ApiOperation(value = "车辆型号列表", response = ScooterModelListResult.class)
+    public Response<ScooterModelListResult> scooterModelList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(rtDriverService.scooterModelList(enter));
+    }
+
     @PostMapping(value = "/scooterList")
     @ApiOperation(value = "车辆列表", response = ListScooterResult.class)
-    public Response<List<ListScooterResult>> scooterList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+    public Response<List<ListScooterResult>> scooterList(@ModelAttribute @ApiParam("请求参数") ScooterListEnter enter) {
         return new Response<>(rtDriverService.scooterList(enter));
     }
-
-    @PostMapping(value = "/scooterTypeList")
-    @ApiOperation(value = "车辆类型列表", response = ListScooterResult.class)
-    public Response<List<StringResult>> scooterTypeList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(rtDriverService.scooterTypeList(enter));
-    }
-
     @PostMapping(value = "/scooterInfor")
     @ApiOperation(value = "司机详情车辆信息", response = DriverScooterInforResult.class)
     public Response<DriverScooterInforResult> driverScooterInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {

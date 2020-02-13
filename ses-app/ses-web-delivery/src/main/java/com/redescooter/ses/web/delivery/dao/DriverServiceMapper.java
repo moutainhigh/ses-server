@@ -131,4 +131,13 @@ public interface DriverServiceMapper {
     List<DeliveryChartResult> driverDeliveryChart365Day(DeliveryChartDto enter);
 
     BigDecimal queryScooterMileage(@Param("enter") IdEnter enter, @Param("beginTime") Date beginTime);
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/13 11:01
+    * @Param:  tenantId
+    * @Return: List
+    * @desc: 查询租户车辆型号
+    */
+    List<String> queryScooterModelByTenantId(Long tenantId);
 }

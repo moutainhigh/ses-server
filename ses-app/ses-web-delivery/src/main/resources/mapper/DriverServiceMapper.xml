@@ -365,4 +365,15 @@
         </if>
         group by times
     </select>
+    <select id="queryScooterModelByTenantId" resultType="java.lang.String">
+        SELECT
+        model
+        FROM
+        cor_tenant_scooter
+        WHERE
+        tenant_id = #{tenantId}
+        AND dr = 0
+        GROUP BY
+        model
+    </select>
 </mapper>
