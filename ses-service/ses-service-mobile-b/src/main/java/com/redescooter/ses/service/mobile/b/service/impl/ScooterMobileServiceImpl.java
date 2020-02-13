@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.mobile.b.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -19,8 +20,10 @@ import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.service.mobile.b.dao.ScooterMobileServiceMapper;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDriverScooterMapper;
+import com.redescooter.ses.service.mobile.b.dm.base.CorDriver;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.mobile.b.service.base.CorDriverService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -43,7 +46,7 @@ import java.util.List;
 public class ScooterMobileServiceImpl implements ScooterMobileService {
 
     @Autowired
-    private CorDriverScooterMapper corDriverScooterMapper;
+    private CorDriverService driverService;
 
     @Autowired
     private ScooterMobileServiceMapper scooterMobileServiceMapper;
@@ -76,7 +79,7 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
 
         // 查询账户类型
         QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
-        if (queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType()) || queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType())) {
+        if (queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType()) || queryUserResult.getUserType().equals(AccountTypeEnums.APP_EXPRESS.getAccountType())) {
             // 获取车辆分配信息
             corDriverScooter = scooterMobileServiceMapper.driverScooterByUserId(enter.getUserId(), DriverScooterStatusEnums.USED.getValue());
         } else {
@@ -114,16 +117,19 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
 
         // 查询账户类型
         QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
-        if (queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType() || queryUserResult.getUserType() == AccountTypeEnums.APP_RESTAURANT.getAccountType()) {
+        if (queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType()) || queryUserResult.getUserType().equals(AccountTypeEnums.APP_EXPRESS.getAccountType())) {
             // 获取车辆分配信息
             corDriverScooter = scooterMobileServiceMapper.driverScooterByUserId(enter.getUserId(), DriverScooterStatusEnums.USED.getValue());
         } else {
             // 查询TOC 车辆分配信息
             IdEnter idEnter = new IdEnter();
             BeanUtils.copyProperties(enter, idEnter);
+            idEnter.setId(enter.getUserId());
             QueryDriverScooterResult queryDriverScooterResult = cusotmerScooterService.queryDriverScooter(idEnter);
-            corDriverScooter = new CorDriverScooter();
-            BeanUtils.copyProperties(queryDriverScooterResult, corDriverScooter);
+            if(queryDriverScooterResult!=null){
+                corDriverScooter = new CorDriverScooter();
+                BeanUtils.copyProperties(queryDriverScooterResult, corDriverScooter);
+            }
         }
         if (corDriverScooter == null) {
             throw new MobileBException(ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getCode(), ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getMessage());

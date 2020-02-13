@@ -69,7 +69,6 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
         JpushUserEnter jpushUserEnter = new JpushUserEnter();
         BeanUtils.copyProperties(enter, jpushUserEnter);
         //由于是做登出注销操作，故设置值为1
-
         jpushUserEnter.setStatus(LoginPushStatusEnums.LOGIN_OUT.getValue());
         jpushUserService.save(jpushUserEnter);
         return new GeneralResult(enter.getRequestId());

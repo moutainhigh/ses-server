@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.redescooter.ses.api.common.enums.account.LoginPushStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.JpushUserService;
 import com.redescooter.ses.api.foundation.vo.message.JpushUserEnter;
@@ -14,6 +15,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.poi.ddf.NullEscherSerializationListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,9 +72,9 @@ public class JpushUserServiceImpl implements JpushUserService {
             jpushUser = new PlaJpushUser();
             BeanUtils.copyProperties(enter, jpushUser);
             jpushUser.setId(idSerService.getId(SequenceName.PLA_JPUSHUSER));
-            jpushUser.setUserId(enter.getUserId());
             jpushUser.setStatus(enter.getStatus());
-            jpushUser.setStatusCode(LOGIN);
+            jpushUser.setUserId(enter.getStatus().equals(LoginPushStatusEnums.LOGIN_IN.getValue()) ?enter.getUserId():null);
+            jpushUser.setStatusCode(enter.getStatus().equals(LoginPushStatusEnums.LOGIN_IN.getValue())?LOGIN:LOGOUT);
             jpushUser.setPlatformType(enter.getPlatformType());
             jpushUser.setAudienceType(enter.getAudienceType());
             jpushUser.setCreateBy(enter.getUserId());
@@ -83,7 +85,7 @@ public class JpushUserServiceImpl implements JpushUserService {
             return new GeneralResult(enter.getRequestId());
         }
 
-        //用户注销后进行登录
+        //登录绑定
         if (enter.getStatus() == 0) {
             jpushUser = new PlaJpushUser();
             BeanUtils.copyProperties(jpushUserData, jpushUser);
@@ -101,37 +103,18 @@ public class JpushUserServiceImpl implements JpushUserService {
 
             return new GeneralResult(enter.getRequestId());
         }
-        //登录后解绑切换设备清除绑定信息
+        //注销解绑
         if (enter.getStatus() == 1) {
-            // 清除之前绑定的设备信息 重新保存数据
-            jpushUserMapper.deleteById(jpushUserData.getId());
 
             jpushUser = new PlaJpushUser();
-            BeanUtils.copyProperties(enter, jpushUser);
-            jpushUser.setId(idSerService.getId(SequenceName.PLA_JPUSHUSER));
-            jpushUser.setUserId(enter.getUserId());
+            jpushUser.setId(jpushUserData.getId());
+            jpushUser.setUserId(new Long(0));
             jpushUser.setStatus(enter.getStatus());
-            jpushUser.setStatusCode(LOGIN);
+            jpushUser.setStatusCode(LOGOUT);
             jpushUser.setPlatformType(enter.getPlatformType());
             jpushUser.setAudienceType(enter.getAudienceType());
-            jpushUser.setCreateBy(enter.getUserId());
-            jpushUser.setCreateTime(new Date());
-            jpushUser.setUpdateBy(enter.getUserId());
             jpushUser.setUpdateTime(new Date());
-            jpushUserMapper.insert(jpushUser);
-//            jpushUser = new JpushUser();
-//            BeanUtils.copyProperties(jpushUserData, jpushUser);
-//            //清除绑定用户ID,别名，标签，推送平台，推送类型，设备状态，设备状态值
-//            jpushUser.setUserId(null);
-//            jpushUser.setAlias(null);
-//            jpushUser.setTag(null);
-//            jpushUser.setPlatformType(null);
-//            jpushUser.setAudienceType(null);
-//            jpushUser.setStatus(1);
-//            jpushUser.setStatusCode(LOGOUT);
-//            jpushUser.setUpdateBy(enter.getUserId());
-//            jpushUser.setUpdateTime(new Date());
-//            jpushUserServiceMapper.reset(jpushUser);
+            jpushUserMapper.updateById(jpushUser);
 
             return new GeneralResult(enter.getRequestId());
         }

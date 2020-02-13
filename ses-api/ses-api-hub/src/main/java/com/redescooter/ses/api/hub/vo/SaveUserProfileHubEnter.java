@@ -22,6 +22,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class SaveUserProfileHubEnter extends GeneralEnter {
 
+    @ApiModelProperty(value = "id 主键")
+    private Long id;
     /**
      * 租户ID
      */

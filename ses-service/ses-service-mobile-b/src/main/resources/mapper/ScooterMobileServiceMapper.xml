@@ -5,10 +5,9 @@
     <select id="driverScooterByUserId" resultType="com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter">
         select cds.*
         from cor_driver driver
-        inner join cor_driver_scooter cds on driver.id = cds.driver_id
-        where cds.status = #{scooterStatus}
-        and driver.user_id = #{userId}
+        inner join cor_driver_scooter cds on driver.id = cds.driver_id and cds.dr = 0 and cds.status =  #{scooterStatus}
+        where driver.user_id =  #{userId}
         and driver.dr = 0
-        and cds.dr = 0
+        group by cds.id
     </select>
 </mapper>
