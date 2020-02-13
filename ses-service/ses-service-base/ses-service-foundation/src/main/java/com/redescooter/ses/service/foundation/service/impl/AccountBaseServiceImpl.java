@@ -501,7 +501,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         queryWrapper.eq(PlaUser.COL_DR, 0);
         queryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
 
-        if(driverloginType!=1){
+        if(driverloginType==2){
             int count = userMapper.selectCount(queryWrapper);
 
             if (count > 0) {
