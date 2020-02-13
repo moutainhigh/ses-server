@@ -19,6 +19,8 @@ import com.redescooter.ses.starter.redis.RedisLock;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
+import com.redescooter.ses.web.delivery.dao.EdDriverServiceMapper;
+import com.redescooter.ses.web.delivery.dao.EdScooterServiceMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorDeliveryMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dm.*;
@@ -73,7 +75,7 @@ public class RtDriverServiceImpl implements RtDriverService {
     @Autowired
     private DriverServiceMapper driverServiceMapper;
     @Autowired
-    private CorDeliveryMapper corDeliveryMapper;
+    private EdScooterServiceMapper scooterServiceMapper;
     @Reference
     private IdAppService idAppService;
     @Reference

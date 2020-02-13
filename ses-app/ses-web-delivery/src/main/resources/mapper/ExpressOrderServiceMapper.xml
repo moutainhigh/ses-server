@@ -130,6 +130,9 @@
         a.created_time  as createdTime,
         e.first_name as driverFirstName,
     	e.last_name as driverLastName,
+        e.email_1             as driverEmail,
+        e.nickname            as driverNickname,
+        cts.license_plate     as licensePlate,
     	a.denial_reason as reason
     FROM
     	cor_express_order a
@@ -145,12 +148,11 @@
     		created_time DESC
     		LIMIT 1
     	) b ON a.id = b.express_order_id
-    	LEFT JOIN cor_express_delivery c ON b.express_delivery_id = c.id
-    	AND c.dr = 0
-    	LEFT JOIN cor_driver d ON c.driver_id = d.id
-    	AND d.dr = 0
-    	LEFT JOIN cor_user_profile e ON e.user_id = d.user_id
-    	AND e.dr = 0
+        LEFT JOIN cor_express_delivery c ON b.express_delivery_id = c.id AND c.dr = 0
+        LEFT JOIN cor_driver d ON c.driver_id = d.id AND d.dr = 0
+        LEFT JOIN cor_user_profile e ON e.user_id = d.user_id AND e.dr = 0
+        left join cor_driver_scooter cds on d.id = cds.driver_id and cds.dr = 0
+        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr = 0
     WHERE
         a.tenant_id = #{tenantId}
     	AND a.dr = 0

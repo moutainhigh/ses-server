@@ -23,30 +23,41 @@
 	<!--环境配置-->
 	<profiles>
 		<profile>
-			<id>local</id>
+			<id>jerry</id>
 			<properties>
-				<profile-active>local</profile-active>
+				<profile-active>jerry</profile-active>
+				<log.path>logs/</log.path>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 		</profile>
 		<profile>
+			<id>local</id>
+			<properties>
+				<profile-active>local</profile-active>
+				<log.path>logs/</log.path>
+			</properties>
+		</profile>
+		<profile>
 			<id>dev</id>
 			<properties>
 				<profile-active>dev</profile-active>
+				<log.path>/data/java_service/logs/</log.path>
 			</properties>
 		</profile>
 		<profile>
 			<id>test</id>
 			<properties>
 				<profile-active>test</profile-active>
+				<log.path>/data/java_service/logs/</log.path>
 			</properties>
 		</profile>
 		<profile>
 			<id>prod</id>
 			<properties>
 				<profile-active>prod</profile-active>
+				<log.path>/data/java_service/logs/</log.path>
 			</properties>
 		</profile>
 	</profiles>

@@ -76,7 +76,7 @@ public interface RtDriverService {
     * @Author:  AlexLi
     * @Date:   2020/2/13 10:23
     * @Param:  enter
-    * @Return: ScooterTypeListResult
+    * @Return: ScooterModelListResult
     * @desc: 车辆类型
     */
     ScooterModelListResult scooterModelList(GeneralEnter enter);

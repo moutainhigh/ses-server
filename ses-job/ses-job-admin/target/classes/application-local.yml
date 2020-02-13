@@ -1,7 +1,7 @@
 #日志路径
 log:
   file:
-    path: logs/local
+    path: ${log.path}local
     max-size: 128MB
     max-history: 180
 

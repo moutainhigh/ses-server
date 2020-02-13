@@ -190,7 +190,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         wrapper.eq(PlaUser.COL_LOGIN_NAME, nickname);
         wrapper.eq(PlaUser.COL_DR, 0);
 
-        return userMapper.selectCount(wrapper)== 0 ? Boolean.TRUE : Boolean.FALSE;
+        return userMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**
@@ -484,8 +484,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         PlaTenant tenant = tenantMapper.selectById(dto.getTenantId());
 
         //账号登录类型
-        int  driverloginType = dto.getDriverLoginType()==DriverLoginTypeEnum.EMAIL.getValue()?
-                Integer.parseInt(DriverLoginTypeEnum.EMAIL.getValue()):
+        int driverloginType = dto.getDriverLoginType() == DriverLoginTypeEnum.EMAIL.getValue() ?
+                Integer.parseInt(DriverLoginTypeEnum.EMAIL.getValue()) :
                 Integer.parseInt(DriverLoginTypeEnum.NICKNAME.getValue());
 
 
@@ -497,7 +497,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             accountType = AccountTypeEnums.APP_RESTAURANT.getAccountType();
         }
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(PlaUser.COL_LOGIN_NAME, dto.getEmail());
+        queryWrapper.eq(PlaUser.COL_LOGIN_NAME, driverloginType == 1 ? dto.getEmail() : dto.getNickName());
         queryWrapper.eq(PlaUser.COL_DR, 0);
         queryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
         int count = userMapper.selectCount(queryWrapper);
@@ -513,12 +513,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         user.setTenantId(tenant.getId());
         user.setAppId(AccountTypeUtils.getAppId(accountType));
         user.setSystemId(AccountTypeUtils.getSystemId(accountType));
-        user.setLoginName(driverloginType==1?dto.getEmail():dto.getNickName());
+        user.setLoginName(driverloginType == 1 ? dto.getEmail() : dto.getNickName());
         user.setLoginType(driverloginType);
         user.setUserType(accountType);
-        user.setStatus(UserStatusEnum.INACTIVATED.getValue());
+        user.setStatus(driverloginType==1?UserStatusEnum.INACTIVATED.getValue():UserStatusEnum.NORMAL.getValue());
         //标识账号是否激活
-        user.setDef1(driverloginType==1?MaggessConstant.ACCOUNT_ACTIVAT_BEFORE:MaggessConstant.ACCOUNT_ACTIVAT_AFTER);
+        user.setDef1(driverloginType == 1 ? MaggessConstant.ACCOUNT_ACTIVAT_BEFORE : MaggessConstant.ACCOUNT_ACTIVAT_AFTER);
         user.setCreatedBy(dto.getUserId());
         user.setCreatedTime(new Date());
         user.setUpdatedBy(dto.getUserId());
@@ -527,18 +527,19 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         //②、创建密码记录
         QueryWrapper<PlaUserPassword> queryPassWord = new QueryWrapper<>();
-        queryPassWord.eq(PlaUserPassword.COL_LOGIN_NAME, driverloginType==1?dto.getEmail():dto.getNickName());
+        queryPassWord.eq(PlaUserPassword.COL_LOGIN_NAME, driverloginType == 1 ? dto.getEmail() : dto.getNickName());
 
         queryPassWord.eq(PlaUserPassword.COL_DR, 0);
         PlaUserPassword passwordServiceOne = userPasswordService.getOne(queryPassWord);
 
         if (passwordServiceOne == null) {
+            String salt = String.valueOf(RandomUtils.nextInt(10000, 99999));
             PlaUserPassword savePassWord = new PlaUserPassword();
             savePassWord.setId(idAppService.getId(SequenceName.PLA_USER_PASSWORD));
-            savePassWord.setSalt(String.valueOf(RandomUtils.nextInt(10000, 99999)));
+            savePassWord.setSalt(salt);
 
-            savePassWord.setLoginName(driverloginType==1?dto.getEmail():dto.getNickName());
-            savePassWord.setPassword(driverloginType==1?null:dto.getPasswordAgain());
+            savePassWord.setLoginName(driverloginType == 1 ? dto.getEmail() : dto.getNickName());
+            savePassWord.setPassword(driverloginType == 1 ? null : DigestUtils.md5Hex(dto.getPasswordAgain() + salt));
 
             savePassWord.setCreatedBy(dto.getUserId());
             savePassWord.setCreatedTime(new Date());
