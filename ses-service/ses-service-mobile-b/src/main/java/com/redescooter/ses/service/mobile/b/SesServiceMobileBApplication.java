@@ -6,6 +6,7 @@ import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
@@ -14,6 +15,7 @@ import java.util.TimeZone;
 @EnableDubbo
 @EnableDubboConfig(multiple = true)
 @SpringBootApplication(scanBasePackages = {"com.redescooter.ses"})
+@EnableTransactionManagement
 public class SesServiceMobileBApplication {
 
     private static volatile boolean running = true;

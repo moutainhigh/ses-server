@@ -1,7 +1,7 @@
 #日志路径
 log:
   file:
-    path: /data/java_service/logs/@profile-active@
+    path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
 

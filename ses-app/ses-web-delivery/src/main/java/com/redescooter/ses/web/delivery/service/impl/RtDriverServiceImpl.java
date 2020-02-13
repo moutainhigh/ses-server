@@ -19,6 +19,8 @@ import com.redescooter.ses.starter.redis.RedisLock;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
+import com.redescooter.ses.web.delivery.dao.EdDriverServiceMapper;
+import com.redescooter.ses.web.delivery.dao.EdScooterServiceMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorDeliveryMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dm.*;
@@ -73,7 +75,7 @@ public class RtDriverServiceImpl implements RtDriverService {
     @Autowired
     private DriverServiceMapper driverServiceMapper;
     @Autowired
-    private CorDeliveryMapper corDeliveryMapper;
+    private EdScooterServiceMapper scooterServiceMapper;
     @Reference
     private IdAppService idAppService;
     @Reference
@@ -414,10 +416,11 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @return
      */
     @Override
-    public List<ListScooterResult> scooterList(GeneralEnter enter) {
+    public List<ListScooterResult> scooterList(StringEnter enter) {
         QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_MODEL, enter.getSt());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_STATUS, TenantScooterStatusEnums.AVAILABLE.getValue());
         List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
         if (CollectionUtils.isEmpty(corTenantScooterList)) {
@@ -439,6 +442,20 @@ public class RtDriverServiceImpl implements RtDriverService {
         });
 
         return resultList;
+    }
+
+    /**
+     * 获取车辆型号
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<StringResult> scooterTypeList(GeneralEnter enter) {
+
+        List<StringResult> stringResults = scooterServiceMapper.scooterTypeList(enter);
+
+        return stringResults;
     }
 
     /**

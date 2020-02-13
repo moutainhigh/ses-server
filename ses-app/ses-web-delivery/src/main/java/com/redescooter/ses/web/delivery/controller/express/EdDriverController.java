@@ -87,10 +87,15 @@ public class EdDriverController {
 
     @PostMapping(value = "/scooterList")
     @ApiOperation(value = "车辆列表", response = ListScooterResult.class)
-    public Response<List<ListScooterResult>> scooterList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<ListScooterResult>> scooterList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(rtDriverService.scooterList(enter));
     }
 
+    @PostMapping(value = "/scooterTypeList")
+    @ApiOperation(value = "车辆类型列表", response = ListScooterResult.class)
+    public Response<List<StringResult>> scooterTypeList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(rtDriverService.scooterTypeList(enter));
+    }
 
     @PostMapping(value = "/scooterInfor")
     @ApiOperation(value = "司机详情车辆信息", response = DriverScooterInforResult.class)
@@ -110,12 +115,6 @@ public class EdDriverController {
         return new Response<>(rtDriverService.driverscooterHistroy(enter));
     }
 
-    //todo 需要重写
 
-    //    @PostMapping(value = "/driverDeliveryChartList")
-//    @ApiOperation(value = "司机订单柱状图", response = DeliveryChartResult.class)
-//    public Response<DeliveryChartListResult> driverDeliveryChartList(@ModelAttribute @ApiParam("请求参数") DeliveryChartEnter enter) {
-//        return new Response<>(rtDriverService.driverDeliveryChartList(enter));
-//    }
 
 }

@@ -86,7 +86,7 @@ public class RtDriverController {
 
     @PostMapping(value = "/scooterList")
     @ApiOperation(value = "车辆列表", response = ListScooterResult.class)
-    public Response<List<ListScooterResult>> scooterList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<ListScooterResult>> scooterList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(rtDriverService.scooterList(enter));
     }
 

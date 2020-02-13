@@ -78,7 +78,15 @@ public interface RtDriverService {
      * @param enter
      * @return
      */
-    List<ListScooterResult> scooterList(GeneralEnter enter);
+    List<ListScooterResult> scooterList(StringEnter enter);
+
+    /**
+     * 获取车辆型号
+     *
+     * @param enter
+     * @return
+     */
+    List<StringResult> scooterTypeList(GeneralEnter enter);
 
     /**
      * 司机车辆分配

@@ -26,6 +26,8 @@ public class ListScooterResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;
+    @ApiModelProperty(value = "车辆型号")
+    private String model;
 
     @ApiModelProperty(value = "车牌号")
     private String scooterLicense;
