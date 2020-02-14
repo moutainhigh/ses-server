@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.delivery.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -60,4 +61,7 @@ public class QueryExpressOrderByPageResult extends GeneralResult {
 
     @ApiModelProperty(value = "司机名字")
     private String driverLastName;
+
+    @ApiModelProperty(value="车牌号")
+    private String licensePlate;
 }

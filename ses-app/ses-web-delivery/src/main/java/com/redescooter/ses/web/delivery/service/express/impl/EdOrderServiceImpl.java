@@ -351,13 +351,13 @@ public class EdOrderServiceImpl implements EdOrderService {
         return new GeneralResult(enter.getRequestId());
     }
     /**
-    * @Description
-    * @Author:  AlexLi
-    * @Date:   2020/2/14 11:19
-    * @Param:  enter,corExpressDelivery
-    * @Return: void
-    * @desc: 订单详情记录
-    */
+     * @Description
+     * @Author:  AlexLi
+     * @Date:   2020/2/14 11:19
+     * @Param:  enter,corExpressDelivery
+     * @Return: void
+     * @desc: 订单详情记录
+     */
     private void saveExpressDeliveyDetail(ChanageExpressOrderEnter enter, CorExpressDelivery corExpressDelivery) {
         CorExpressDeliveryDetail corExpressDeliveryDetail = new CorExpressDeliveryDetail();
         corExpressDeliveryDetail.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY_DETAIL));
@@ -378,13 +378,13 @@ public class EdOrderServiceImpl implements EdOrderService {
         corExpressDeliveryDetailService.insertOrUpdate(corExpressDeliveryDetail);
     }
     /**
-    * @Description
-    * @Author:  AlexLi
-    * @Date:   2020/2/14 11:20
-    * @Param:  enter
-    * @Return: CorExpressDelivery
-    * @desc: saveCorExpressDelivery
-    */
+     * @Description
+     * @Author:  AlexLi
+     * @Date:   2020/2/14 11:20
+     * @Param:  enter
+     * @Return: CorExpressDelivery
+     * @desc: saveCorExpressDelivery
+     */
     private CorExpressDelivery saveCorExpressDelivery(ChanageExpressOrderEnter enter) {
         CorExpressDelivery corExpressDelivery;
         corExpressDelivery=new CorExpressDelivery();

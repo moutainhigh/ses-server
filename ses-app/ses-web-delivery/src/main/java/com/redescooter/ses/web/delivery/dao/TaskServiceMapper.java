@@ -26,6 +26,14 @@ public interface TaskServiceMapper {
     List<CountByStatusResult> countByStatus(GeneralEnter enter);
 
     /**
+     * 任务时间统计
+     *
+     * @param enter
+     * @return
+     */
+    TaskTimeCountDto taskTimeCount(GeneralEnter enter);
+
+    /**
      * task 统计
      *
      * @param enter

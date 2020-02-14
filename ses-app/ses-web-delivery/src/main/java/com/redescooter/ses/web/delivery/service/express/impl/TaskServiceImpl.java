@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetai
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
+import com.redescooter.ses.api.common.enums.task.TaskTimeCountEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -103,6 +104,24 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
+     * 任务时间统计
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, Integer> taskTimeCount(GeneralEnter enter) {
+
+        TaskTimeCountDto taskTimeCountDto = taskServiceMapper.taskTimeCount(enter);
+
+        Map<String, Integer> resultMap = new HashMap<>();
+        resultMap.put(TaskTimeCountEnums.TODAY_NUM.getValue(), taskTimeCountDto.getTnum());
+        resultMap.put(TaskTimeCountEnums.HISTORY_NUM.getValue(), taskTimeCountDto.getHnum());
+
+        return resultMap;
+    }
+
+    /**
      * 车辆列表
      *
      * @param enter
@@ -110,6 +129,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public PageResult<TaskResult> list(TaskListEnter enter) {
+
         int count = taskServiceMapper.taskCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -192,7 +212,7 @@ public class TaskServiceImpl implements TaskService {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
         List<CorExpressOrder> corExpressOrderList = taskServiceMapper.queryExpressOrderByIds(enter.getIds());
-        if (CollectionUtils.isEmpty(corExpressOrderList) && corExpressOrderList.size()!=enter.getIds().size()) {
+        if (CollectionUtils.isEmpty(corExpressOrderList) && corExpressOrderList.size() != enter.getIds().size()) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
 
@@ -226,7 +246,7 @@ public class TaskServiceImpl implements TaskService {
 
         }
         //        保存task
-        buildtask(enter, tenantConfigInfoResult,taskId);
+        buildtask(enter, tenantConfigInfoResult, taskId);
         // 保存 TaskDetail
         if (CollectionUtils.isNotEmpty(corExpressDeliveryDetailList)) {
             corExpressDeliveryDetailService.batchInsert(corExpressDeliveryDetailList);
@@ -240,8 +260,8 @@ public class TaskServiceImpl implements TaskService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    private void buildtask(SaveTaskEnter enter, TenantConfigInfoResult tenantConfigInfoResult,Long taskId) {
-        CorExpressDelivery corExpressDelivery=new CorExpressDelivery();
+    private void buildtask(SaveTaskEnter enter, TenantConfigInfoResult tenantConfigInfoResult, Long taskId) {
+        CorExpressDelivery corExpressDelivery = new CorExpressDelivery();
         corExpressDelivery.setId(taskId);
         corExpressDelivery.setDr(0);
         corExpressDelivery.setTenantId(tenantConfigInfoResult.getTenantId());
@@ -272,7 +292,7 @@ public class TaskServiceImpl implements TaskService {
                 .eventTime(new Date())
                 .longitude(tenantConfigInfoResult.getLongitude())
                 .latitude(tenantConfigInfoResult.getLatitude())
-                .geohash(MapUtil.geoHash(tenantConfigInfoResult.getLongitude().toString(),tenantConfigInfoResult.getLatitude().toString()))
+                .geohash(MapUtil.geoHash(tenantConfigInfoResult.getLongitude().toString(), tenantConfigInfoResult.getLatitude().toString()))
                 .createdBy(enter.getUserId())
                 .createdTime(new Date())
                 .updatedBy(enter.getUserId())

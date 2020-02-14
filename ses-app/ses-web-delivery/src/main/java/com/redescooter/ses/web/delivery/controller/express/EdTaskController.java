@@ -15,7 +15,7 @@ import java.util.Map;
 @Api(tags = {"快递Task 模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rd/task", method = RequestMethod.POST)
+@RequestMapping(value = "/ed/task", method = RequestMethod.POST)
 public class EdTaskController {
 
     @Autowired
@@ -25,6 +25,12 @@ public class EdTaskController {
     @ApiOperation(value = "状态统计", response = Map.class)
     public Response<Map<String, Integer>> countStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(taskService.countByStatus(enter));
+    }
+
+    @PostMapping(value = "/taskTimeCount")
+    @ApiOperation(value = "任务时间统计", response = Map.class)
+    public Response<Map<String, Integer>> taskTimeCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(taskService.taskTimeCount(enter));
     }
 
     @PostMapping(value = "/list")
@@ -62,4 +68,6 @@ public class EdTaskController {
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveTaskEnter enter) {
         return new Response<>(taskService.save(enter));
     }
+
+
 }

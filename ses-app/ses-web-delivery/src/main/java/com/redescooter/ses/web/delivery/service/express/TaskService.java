@@ -19,12 +19,20 @@ import java.util.Map;
 public interface TaskService {
 
     /**
-     * 状态
+     * 状态统计
      *
      * @param enter
      * @return
      */
     Map<String, Integer> countByStatus(GeneralEnter enter);
+
+    /**
+     * 任务时间统计
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> taskTimeCount(GeneralEnter enter);
 
     /**
      * 车辆列表
