@@ -4,11 +4,7 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
-import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
-import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
-import com.redescooter.ses.web.delivery.vo.task.OrderResult;
-import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
-import com.redescooter.ses.web.delivery.vo.task.TaskResult;
+import com.redescooter.ses.web.delivery.vo.task.*;
 
 import java.util.List;
 
@@ -28,6 +24,14 @@ public interface TaskServiceMapper {
      * @return
      */
     List<CountByStatusResult> countByStatus(GeneralEnter enter);
+
+    /**
+     * 任务时间统计
+     *
+     * @param enter
+     * @return
+     */
+    TaskTimeCountDto taskTimeCount(GeneralEnter enter);
 
     /**
      * task 统计

@@ -32,6 +32,9 @@ public class TaskListEnter extends PageEnter {
     @ApiModelProperty(value = "状态")
     private String status;
 
+    @ApiModelProperty(value = "时间统计类型")
+    private String taskTimeCountType;
+
     @ApiModelProperty(value = "任务配送开始时间")
     private String taskStartTime;
 

@@ -25,7 +25,7 @@ import java.util.Map;
 @Api(tags = {"快递仪表统计"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rd/dashboard", method = RequestMethod.POST)
+@RequestMapping(value = "/ed/dashboard", method = RequestMethod.POST)
 public class EdDashboardController {
     @Reference
     private EdDasboardService edDasboardService;
