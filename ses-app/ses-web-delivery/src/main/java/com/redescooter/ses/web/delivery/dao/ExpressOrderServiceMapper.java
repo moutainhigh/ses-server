@@ -9,8 +9,6 @@ import com.redescooter.ses.web.delivery.vo.*;
 import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
 import com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult;
-import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -112,16 +110,6 @@ public interface ExpressOrderServiceMapper {
      * @desc: 拒绝订单详情
      */
     List<RefuseOrderDetailResult> refuseOrderDetail(IdEnter enter);
-
-    /**
-     * @Description
-     * @Author: AlexLi
-     * @Date: 2020/2/13 23:09
-     * @Param: enter
-     * @Return: DriverListResult
-     * @desc: 可分配司机列表
-     */
-    List<DriverListResult> attribuableDriverList(@Param("tenantId") Long tenantId, @Param("ids") List<Long> ids);
 
     /**
      * @Description

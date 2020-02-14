@@ -329,28 +329,6 @@
         and driver.id is not null
         group by driver.id, profile.first_name, profile.last_name, ceot.reason
     </select>
-    <select id="attribuableDriverList" resultType="com.redescooter.ses.web.delivery.vo.task.DriverListResult">
-        select driver.id as id,
-        profile.FIRST_NAME as driverFirstName,
-        profile.LAST_NAME as driverLastName,
-        profile.PICTURE as avatar,
-        count(cedd.id) as count
-        from cor_driver driver
-        left join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
-        left join cor_express_delivery delivery on delivery.driver_id=driver.id and delivery.dr=0
-        left join cor_express_delivery_detail cedd on delivery.id=cedd.express_delivery_id and cedd.status in (1,2) and
-        cedd.dr=0
-        where driver.tenant_id=#{tenantId}
-        and driver.dr=0
-        <if test="ids != null and ids.size() != 0">
-            and driver.id not in
-            <foreach collection="ids" open="(" close=")" item="item" separator=",">
-                #{item}
-            </foreach>
-        </if>
-        group by id,driverFirstName,driverLastName,avatar
-
-    </select>
     <select id="expressDeliveryShippingByDriverId"
             resultType="com.redescooter.ses.web.delivery.dm.CorExpressDelivery">
         select *

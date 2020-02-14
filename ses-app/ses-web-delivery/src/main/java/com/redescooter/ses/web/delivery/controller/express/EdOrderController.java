@@ -7,7 +7,6 @@ import com.redescooter.ses.web.delivery.vo.*;
 import com.redescooter.ses.web.delivery.vo.edorder.*;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
-import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -90,12 +89,6 @@ public class EdOrderController {
     @ApiOperation(value = "拒绝订单详情", response = RefuseOrderDetailResult.class)
     public Response<List<RefuseOrderDetailResult>> refuseOrderDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(edOrderService.refuseOrderDetail(enter));
-    }
-
-    @PostMapping(value = "/attribuableDriver")
-    @ApiOperation(value = "可分配的司机列表", response = DriverListResult.class)
-    public Response<List<DriverListResult>> attribuableDriverList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(edOrderService.attribuableDriverList(enter));
     }
 
     @PostMapping(value = "/chanageOrder")

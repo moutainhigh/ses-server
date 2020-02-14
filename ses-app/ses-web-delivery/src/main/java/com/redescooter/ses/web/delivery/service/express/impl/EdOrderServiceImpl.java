@@ -315,24 +315,6 @@ public class EdOrderServiceImpl implements EdOrderService {
         return expressOrderServiceMapper.refuseOrderDetail(enter);
     }
 
-    /**
-     * @Description
-     * @Author: AlexLi
-     * @Date: 2020/2/13 23:03
-     * @Param: enter
-     * @Return: DriverListResult
-     * @desc: 可分配司机列表
-     * @param enter
-     */
-    @Override
-    public List<DriverListResult> attribuableDriverList(IdEnter enter) {
-        List<RefuseOrderDetailResult> refuseOrderDetailResultList = refuseOrderDetail(enter);
-        List<Long> ids=new ArrayList<>();
-        refuseOrderDetailResultList.forEach(item->{
-            ids.add(item.getDriverId());
-        });
-        return expressOrderServiceMapper.attribuableDriverList(enter.getTenantId(),ids);
-    }
 
     /**
      * @Description
@@ -353,16 +335,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.REJECTED.getValue())){
             throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
-        IdEnter idEnter = new IdEnter();
-        BeanUtils.copyProperties(enter,idEnter);
-        idEnter.setId(enter.getId());
-        List<RefuseOrderDetailResult> refuseOrderDetailResultList = expressOrderServiceMapper.refuseOrderDetail(idEnter);
 
-        refuseOrderDetailResultList.forEach(item->{
-            if (item.getDriverId().equals(enter.getDriverId())){
-                throw new SesWebDeliveryException(ExceptionCodeEnums.REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER.getCode(),ExceptionCodeEnums.REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
-            }
-        });
         // 生成大订单
         CorExpressDelivery  corExpressDelivery = saveCorExpressDelivery(enter);
         //生成 订单详情记录

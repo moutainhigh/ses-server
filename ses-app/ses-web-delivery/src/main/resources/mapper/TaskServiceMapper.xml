@@ -143,20 +143,20 @@
           and expressDetail.express_delivery_id = #{id}
     </select>
     <select id="driverList" resultType="com.redescooter.ses.web.delivery.vo.task.DriverListResult">
-       select driver.id                as id,
-               profile.FIRST_NAME       as driverFirstName,
-               profile.LAST_NAME        as driverLastName,
-               profile.PICTURE          as avatar,
-               count(detail.status = 2) as total
+        select driver.id as id,
+        profile.FIRST_NAME as driverFirstName,
+        profile.LAST_NAME as driverLastName,
+        profile.PICTURE as avatar,
+        count(detail.status in (1,2)) as count
         from cor_driver driver
-                 inner join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
-                 left join cor_express_delivery delivery
-                           on delivery.driver_id = driver.id and delivery.dr = 0 and delivery.status in (1, 2)
-                 left join cor_express_delivery_detail detail
-                           on detail.express_delivery_id = delivery.id and detail.dr = 0 and detail.status = 2
+        inner join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
+        left join cor_express_delivery delivery
+        on delivery.driver_id = driver.id and delivery.dr = 0 and delivery.status in (1, 2)
+        left join cor_express_delivery_detail detail
+        on detail.express_delivery_id = delivery.id and detail.dr = 0 and detail.status in (1,2)
         where driver.tenant_id = #{tenantId}
-          and driver.status = 1
-          and driver.dr = 0
+        and driver.status = 1
+        and driver.dr = 0
         group by id,driverFirstName,driverLastName,avatar
     </select>
     <select id="orderListCount" resultType="int">

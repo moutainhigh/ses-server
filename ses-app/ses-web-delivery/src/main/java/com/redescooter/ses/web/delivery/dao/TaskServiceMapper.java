@@ -71,7 +71,7 @@ public interface TaskServiceMapper {
      * @param enter
      * @return
      */
-    DriverListResult driverList(GeneralEnter enter);
+    List<DriverListResult> driverList(GeneralEnter enter);
 
     /**
      * 添加任务小定单列表

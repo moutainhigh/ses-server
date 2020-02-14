@@ -3,14 +3,8 @@ package com.redescooter.ses.web.delivery.service.express;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
-import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
-import com.redescooter.ses.web.delivery.vo.task.OrderResult;
-import com.redescooter.ses.web.delivery.vo.task.SaveTaskEnter;
-import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
-import com.redescooter.ses.web.delivery.vo.task.TaskResult;
+import com.redescooter.ses.web.delivery.vo.task.*;
 
 import java.util.List;
 import java.util.Map;
@@ -70,7 +64,7 @@ public interface TaskService {
      * @param enter
      * @return
      */
-    DriverListResult driverList(GeneralEnter enter);
+    List<DriverListResult> driverList(GeneralEnter enter);
 
     /**
      * 未分配小定单列表
