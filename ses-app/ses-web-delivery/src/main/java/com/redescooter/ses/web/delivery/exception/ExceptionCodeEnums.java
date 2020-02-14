@@ -109,6 +109,8 @@ public enum ExceptionCodeEnums {
 
     ILLEGAL_NICKNAME(10047,"昵称不合法"),
 
+    REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER(10048,"拒绝订单不可分给同一个司机"),
+
     ;
 
 

@@ -1,15 +1,13 @@
 package com.redescooter.ses.web.delivery.vo.task;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 import java.util.List;
-
-import io.swagger.annotations.*;
 
 /**
  * @ClassName:SaveTaskEnter
@@ -27,11 +25,14 @@ import io.swagger.annotations.*;
 public class SaveTaskEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "小定单id", required = true)
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
     private List<Long> ids;
 
     @ApiModelProperty(value = "司机Id", required = true)
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
     private Long diverId;
 
     @ApiModelProperty(value = "任务时间", required = true)
+    @NotNull(code = ValidationExceptionCode.TASK_TIME,message = "任务时间 为空")
     private String taskTime;
 }

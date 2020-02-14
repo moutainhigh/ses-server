@@ -1,38 +1,49 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
+import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
+import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.ExpressOrderServiceMapper;
+import com.redescooter.ses.web.delivery.dm.CorExpressDelivery;
+import com.redescooter.ses.web.delivery.dm.CorExpressDeliveryDetail;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrderTrace;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.ExcelService;
+import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryDetailService;
+import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
+import com.redescooter.ses.web.delivery.service.express.EdOrderTraceService;
 import com.redescooter.ses.web.delivery.vo.*;
-import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
-import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
-import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
+import com.redescooter.ses.web.delivery.vo.edorder.*;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +72,12 @@ public class EdOrderServiceImpl implements EdOrderService {
     private CorExpressOrderTraceService expressOrderTraceService;
     @Autowired
     private ExpressOrderServiceMapper expressOrderServiceMapper;
+    @Autowired
+    private CorExpressDeliveryService corExpressDeliveryService;
+    @Autowired
+    private EdOrderTraceService edOrderTraceService;
+    @Autowired
+    private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
 
     @Reference
     private IdAppService idAppService;
@@ -70,6 +87,7 @@ public class EdOrderServiceImpl implements EdOrderService {
     private TenantBaseService tenantBaseService;
     @Reference
     private ScooterService scooterService;
+
 
     @Override
     public void download(HttpServletResponse response) {
@@ -273,6 +291,189 @@ public class EdOrderServiceImpl implements EdOrderService {
         result.setOrderList(CollectionUtils.isNotEmpty(orderList)==true ? null:orderList);
 
         return result;
+    }
+
+    /**
+     * @Description
+     * @Author: AlexLi
+     * @Date: 2020/2/13 22:42
+     * @Param: enter
+     * @Return: RefuseOrderDetailResult
+     * @desc: 拒绝订单详情
+     * @param enter
+     */
+    @Override
+    public List<RefuseOrderDetailResult> refuseOrderDetail(IdEnter enter) {
+        CorExpressOrder corExpressOrder = expressOrderService.getById(enter.getId());
+        if (corExpressOrder==null){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.REJECTED.getValue())){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+        }
+        //获取
+        return expressOrderServiceMapper.refuseOrderDetail(enter);
+    }
+
+    /**
+     * @Description
+     * @Author: AlexLi
+     * @Date: 2020/2/13 23:03
+     * @Param: enter
+     * @Return: DriverListResult
+     * @desc: 可分配司机列表
+     * @param enter
+     */
+    @Override
+    public List<DriverListResult> attribuableDriverList(AttribuableDriverListEnter enter) {
+        return expressOrderServiceMapper.attribuableDriverList(enter);
+    }
+
+    /**
+     * @Description
+     * @Author: AlexLi
+     * @Date: 2020/2/13 23:47
+     * @Param: enter
+     * @Return: generalResult
+     * @desc: 修改订单状态
+     * @param enter
+     */
+    @Override
+    public GeneralResult chanageExpressOrder(ChanageExpressOrderEnter enter) {
+        // 订单验证
+        CorExpressOrder corExpressOrder = expressOrderService.getById(enter.getId());
+        if (corExpressOrder==null){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.REJECTED.getValue())){
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+        }
+        IdEnter idEnter = new IdEnter();
+        BeanUtils.copyProperties(enter,idEnter);
+        idEnter.setId(enter.getId());
+        List<RefuseOrderDetailResult> refuseOrderDetailResultList = expressOrderServiceMapper.refuseOrderDetail(idEnter);
+
+        refuseOrderDetailResultList.forEach(item->{
+            if (item.getDriverId().equals(enter.getDriverId())){
+                throw new SesWebDeliveryException(ExceptionCodeEnums.REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER.getCode(),ExceptionCodeEnums.REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
+            }
+        });
+
+        CorExpressDelivery  corExpressDelivery = saveCorExpressDelivery(enter);
+
+//        // 当天大订单查询
+//       CorExpressDelivery corExpressDelivery=expressOrderServiceMapper.expressDeliveryShippingByDriverId(enter.getDriverId());
+//        if (corExpressDelivery==null){
+//            // 生成大订单 当天未分配订单事
+//            corExpressDelivery = saveCorExpressDelivery(enter);
+//
+//        }else if(StringUtils.equals(corExpressDelivery.getStatus(), ExpressDeliveryStatusEnums.COMPLETED.getValue())){
+//            // 修改订单状态 若已完成 将完成的订单修改成未完成状态
+//            corExpressDelivery.setOrderSum(corExpressDelivery.getOrderSum()+1);
+//            corExpressDelivery.setStatus(ExpressDeliveryStatusEnums.SHIPPING.getValue());
+//            corExpressDelivery.setDeliveryEndTime(null);
+//            corExpressDelivery.setUpdatedBy(enter.getUserId());
+//            corExpressDelivery.setUpdatedTime(new Date());
+//            corExpressDeliveryService.updateById(corExpressDelivery);
+//        }else{
+//            // 直接添加到大订单中 有正在进行的订单
+//            corExpressDelivery.setOrderSum(corExpressDelivery.getOrderSum()+1);
+//            corExpressDelivery.setUpdatedBy(enter.getUserId());
+//            corExpressDelivery.setUpdatedTime(new Date());
+//            corExpressDeliveryService.updateById(corExpressDelivery);
+//        }
+        //生成 订单详情记录
+        saveExpressDeliveyDetail(enter, corExpressDelivery);
+
+        // 修改expressOrder 状态
+        corExpressOrder.setStatus(ExpressOrderStatusEnums.ASGN.getValue());
+        corExpressOrder.setUpdatedBy(enter.getUserId());
+        corExpressOrder.setUpdatedTime(new Date());
+        expressOrderService.updateById(corExpressOrder);
+        // 订单记录
+        saveOrderTraceSingle(enter, corExpressDelivery);
+        return new GeneralResult(enter.getRequestId());
+    }
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/14 11:19
+    * @Param:  enter,corExpressDelivery
+    * @Return: void
+    * @desc: 订单详情记录
+    */
+    private void saveExpressDeliveyDetail(ChanageExpressOrderEnter enter, CorExpressDelivery corExpressDelivery) {
+        CorExpressDeliveryDetail corExpressDeliveryDetail = new CorExpressDeliveryDetail();
+        corExpressDeliveryDetail.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY_DETAIL));
+        corExpressDeliveryDetail.setDr(0);
+        corExpressDeliveryDetail.setTenantId(enter.getTenantId());
+        corExpressDeliveryDetail.setExpressDeliveryId(corExpressDelivery.getId());
+        corExpressDeliveryDetail.setExpressOrderId(enter.getId());
+        corExpressDeliveryDetail.setStatus(ExpressDeliveryDetailStatusEnums.ASGN.getValue());
+        corExpressDeliveryDetail.setParcelQuantity(1);
+        // todo 暂时以当前时间 加店铺超时时间
+        corExpressDeliveryDetail.setAta(DateUtils.addMinutes(new Date(), 30));
+        //enter.getIds().indexOf(item.getId())+1
+        corExpressDeliveryDetail.setPrioritySort(0);
+        corExpressDeliveryDetail.setCreatedBy(enter.getUserId());
+        corExpressDeliveryDetail.setCreatedTime(new Date());
+        corExpressDeliveryDetail.setUpdatedBy(enter.getUserId());
+        corExpressDeliveryDetail.setUpdatedTime(new Date());
+        corExpressDeliveryDetailService.insertOrUpdate(corExpressDeliveryDetail);
+    }
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/14 11:20
+    * @Param:  enter
+    * @Return: CorExpressDelivery
+    * @desc: saveCorExpressDelivery
+    */
+    private CorExpressDelivery saveCorExpressDelivery(ChanageExpressOrderEnter enter) {
+        CorExpressDelivery corExpressDelivery;
+        corExpressDelivery=new CorExpressDelivery();
+        corExpressDelivery.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY));
+        corExpressDelivery.setDr(0);
+        corExpressDelivery.setTenantId(enter.getTenantId());
+        corExpressDelivery.setStatus(TaskStatusEnums.PENDING.getValue());
+        corExpressDelivery.setDriverId(enter.getDriverId());
+        corExpressDelivery.setOrderSum(1);
+        corExpressDelivery.setOrderCompleteNum(0);
+        corExpressDelivery.setDeliveryDate(DateUtil.stringToDate(enter.getTaskTime()));
+        corExpressDelivery.setCreateBy(enter.getUserId());
+        corExpressDelivery.setCreateTime(new Date());
+        corExpressDelivery.setUpdatedBy(enter.getUserId());
+        corExpressDelivery.setUpdatedTime(new Date());
+        corExpressDeliveryService.insertOrUpdateSelective(corExpressDelivery);
+        return corExpressDelivery;
+    }
+
+    private void saveOrderTraceSingle(ChanageExpressOrderEnter enter, CorExpressDelivery corExpressDelivery) {
+        // 门店信息
+        TenantConfigInfoResult tenantConfigInfoResult = tenantBaseService.tenantConfigInfo(enter);
+        // 保存日志
+        BaseExpressOrderTraceEnter baseExpressOrderTraceEnter = BaseExpressOrderTraceEnter.builder()
+                .id(idAppService.getId(SequenceName.COR_EXPRESS_ORDER_TRACE))
+                .dr(0)
+                .expressDeliveryId(corExpressDelivery.getId())
+                .expressOrderId(enter.getId())
+                .tenantId(enter.getTenantId())
+                .driverId(enter.getDriverId())
+                .status(ExpressOrderStatusEnums.ASGN.getValue())
+                .event(ExpressOrderEventEnums.ASGN.getValue())
+                .reason(null)
+                .eventTime(new Date())
+                .longitude(tenantConfigInfoResult.getLongitude())
+                .latitude(tenantConfigInfoResult.getLatitude())
+                .geohash(MapUtil.geoHash(tenantConfigInfoResult.getLongitude().toString(),
+                        tenantConfigInfoResult.getLatitude().toString()))
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+        edOrderTraceService.saveExpressOrderTrace(baseExpressOrderTraceEnter);
+
     }
 
     /**

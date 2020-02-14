@@ -4,15 +4,15 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.delivery.vo.*;
-import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
-import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
-import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
+import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
+import com.redescooter.ses.web.delivery.vo.edorder.*;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
@@ -89,5 +89,31 @@ public interface EdOrderService {
     * @method: diverOrderInfor
     */
     DiverOrderInforResult diverOrderInfor(IdEnter enter);
-
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/13 22:42
+    * @Param:  enter
+    * @Return: RefuseOrderDetailResult
+    * @desc: 拒绝订单详情
+    */
+    List<RefuseOrderDetailResult> refuseOrderDetail(IdEnter enter);
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/13 23:03
+    * @Param:  enter
+    * @Return: DriverListResult
+    * @desc: 可分配司机列表
+    */
+    List<DriverListResult> attribuableDriverList(AttribuableDriverListEnter enter);
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/13 23:47
+    * @Param:  enter
+    * @Return: generalResult
+    * @desc: 修改订单状态
+    */
+   GeneralResult chanageExpressOrder(ChanageExpressOrderEnter enter);
 }

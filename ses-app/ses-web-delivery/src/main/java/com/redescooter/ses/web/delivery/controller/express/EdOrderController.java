@@ -4,11 +4,10 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.delivery.service.RtDeliveryService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
 import com.redescooter.ses.web.delivery.vo.*;
-import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
-import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
-import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
+import com.redescooter.ses.web.delivery.vo.edorder.*;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -85,5 +84,23 @@ public class EdOrderController {
     @ApiOperation(value = "车牌号列表", response = ScooterLicensePlateResult.class)
     public Response<List<ScooterLicensePlateResult>> scooterLicensePlate(@ModelAttribute @ApiParam("请求参数") ScooterLicensePlateEnter enter) {
         return new Response<>(rtDeliveryService.scooterLicensePlate(enter));
+    }
+
+    @PostMapping(value = "/refuseOrderDetail")
+    @ApiOperation(value = "拒绝订单详情", response = RefuseOrderDetailResult.class)
+    public Response<List<RefuseOrderDetailResult>> refuseOrderDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(edOrderService.refuseOrderDetail(enter));
+    }
+
+    @PostMapping(value = "/attribuableDriver")
+    @ApiOperation(value = "可分配的司机列表", response = DriverListResult.class)
+    public Response<List<DriverListResult>> attribuableDriverList(@ModelAttribute @ApiParam("请求参数") AttribuableDriverListEnter enter) {
+        return new Response<>(edOrderService.attribuableDriverList(enter));
+    }
+
+    @PostMapping(value = "/chanageOrder")
+    @ApiOperation(value = "重新分配订单", response = GeneralResult.class)
+    public Response<GeneralResult> chanageExpressOrder(@ModelAttribute @ApiParam("请求参数") ChanageExpressOrderEnter enter) {
+        return new Response<>(edOrderService.chanageExpressOrder(enter));
     }
 }
