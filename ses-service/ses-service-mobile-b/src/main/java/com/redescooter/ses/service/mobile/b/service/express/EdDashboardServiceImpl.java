@@ -1,16 +1,18 @@
 package com.redescooter.ses.service.mobile.b.service.express;
 
+import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.service.express.EdDashboardService;
-import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
+import com.redescooter.ses.api.mobile.b.vo.express.EdMobileBExpressOrderChartResult;
+import com.redescooter.ses.api.mobile.b.vo.express.EdMonthlyExpressOrderChartResult;
 import com.redescooter.ses.service.mobile.b.dao.EdDashboardServiceMapper;
+import com.redescooter.ses.tool.utils.DateUtil;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class EdDashboardServiceImpl implements EdDashboardService {
@@ -33,7 +35,18 @@ public class EdDashboardServiceImpl implements EdDashboardService {
         List<CountByStatusResult> countByStatusResultList=edDashboardServiceMapper.allCountByStatus(enter);
         // 查询拒绝订单
         CountByStatusResult refuseCount=edDashboardServiceMapper.refuseCount(enter);
-        return null;
+
+        Map<String, Integer> map = new HashMap<>();
+        for (CountByStatusResult item : countByStatusResultList) {
+            map.put(item.getStatus(), item.getTotalCount());
+        }
+        for (ExpressOrderStatusEnums status : ExpressOrderStatusEnums.values()) {
+            if (!map.containsKey(status.getValue())) {
+                map.put(status.getValue(), 0);
+            }
+        }
+        map.put(refuseCount.getStatus(),refuseCount.getTotalCount());
+        return map;
     }
 
     /**
@@ -46,7 +59,39 @@ public class EdDashboardServiceImpl implements EdDashboardService {
      * @param enter
      */
     @Override
-    public MobileBDeliveryChartResult mobileBDeliveryChart(DateTimeParmEnter enter) {
-        return null;
+    public EdMobileBExpressOrderChartResult mobileBExpressOrderChart(DateTimeParmEnter enter) {
+        Map<String, EdMonthlyExpressOrderChartResult> allMap = new LinkedHashMap<>();
+        Map<String, EdMonthlyExpressOrderChartResult> listMap = new LinkedHashMap<>();
+
+        List<EdMonthlyExpressOrderChartResult> list = edDashboardServiceMapper.mobileBDeliveryChart(enter);
+
+        if (list.size() == 0) {
+            return new EdMobileBExpressOrderChartResult();
+        } else {
+            EdMonthlyExpressOrderChartResult result = null;
+            List<String> dayList = new LinkedList();
+            // 获取指定日期格式向前N天时间集合
+            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+
+            for (String str : dayList) {
+                for (EdMonthlyExpressOrderChartResult chart : list) {
+                    if (chart.getTimes().equals(str)) {
+                        allMap.put(str, chart);
+                        listMap.put(str, chart);
+                    }
+                }
+                if (!allMap.containsKey(str)) {
+                    result = new EdMonthlyExpressOrderChartResult();
+                    result.setTimes(str);
+                    allMap.put(str, result);
+                }
+            }
+        }
+
+        EdMobileBExpressOrderChartResult result = new EdMobileBExpressOrderChartResult();
+        result.setAllMap(allMap);
+        result.setListMap(listMap);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 }

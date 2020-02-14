@@ -2,7 +2,7 @@ package com.redescooter.ses.api.mobile.b.service.express;
 
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
+import com.redescooter.ses.api.mobile.b.vo.express.EdMobileBExpressOrderChartResult;
 
 import java.util.Map;
 
@@ -31,8 +31,5 @@ public interface EdDashboardService {
     * @Return: MobileBDeliveryChartResult
     * @desc:  订单月统计
     */
-    MobileBDeliveryChartResult mobileBDeliveryChart(DateTimeParmEnter enter);
-
-
-
+    EdMobileBExpressOrderChartResult mobileBExpressOrderChart(DateTimeParmEnter enter);
 }
