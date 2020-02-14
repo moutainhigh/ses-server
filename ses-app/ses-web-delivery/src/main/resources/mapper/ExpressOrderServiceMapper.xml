@@ -314,19 +314,20 @@
     </select>
     <select id="refuseOrderDetail"
             resultType="com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult">
-        select exorder.id as id,
-        driver.id as driverId,
+        select driver.id   as driverId,
         profile.first_name as driverFirstName,
-        profile.last_name as driverLastName,
-        ceot.reason as reason
+        profile.last_name  as driverLastName,
+        ceot.reason        as reason
         from cor_express_order exorder
         left join cor_express_order_trace ceot on exorder.id = ceot.express_order_id and exorder.status = ceot.status
-        and ceot.dr=0
-        left join cor_driver driver on ceot.driver_id = driver.id and ceot.dr=0
-        left join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr=0
+        and ceot.dr = 0
+        left join cor_driver driver on ceot.driver_id = driver.id and ceot.dr = 0
+        left join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
         where exorder.id=#{id}
         and ceot.tenant_id=#{tenantId}
-        and exorder.dr=0
+        and exorder.dr = 0
+        and driver.id is not null
+        group by driver.id, profile.first_name, profile.last_name, ceot.reason
     </select>
     <select id="attribuableDriverList" resultType="com.redescooter.ses.web.delivery.vo.task.DriverListResult">
         select driver.id as id,
