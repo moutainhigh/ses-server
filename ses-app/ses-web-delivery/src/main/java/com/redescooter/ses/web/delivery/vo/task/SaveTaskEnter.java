@@ -24,13 +24,9 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class SaveTaskEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "小定单id", required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
-    private List<Long> ids;
 
-    @ApiModelProperty(value = "司机Id", required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
-    private Long diverId;
+    @ApiModelProperty(value = "司机任务列表", required = true)
+    private List<DriverTaskEnter> driverTaskEnterList;
 
     @ApiModelProperty(value = "任务时间", required = true)
     @NotNull(code = ValidationExceptionCode.TASK_TIME,message = "任务时间 为空")
