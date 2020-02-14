@@ -287,7 +287,7 @@ public class TaskServiceImpl implements TaskService {
         corExpressDelivery.setDriverId(driverTaskEnter.getDiverId());
         corExpressDelivery.setOrderSum(driverTaskEnter.getIds().size());
         corExpressDelivery.setOrderCompleteNum(0);
-        corExpressDelivery.setDeliveryDate(DateUtil.stringToDate(enter.getTaskTime()));
+        corExpressDelivery.setDeliveryDate(enter.getTaskTime());
         corExpressDelivery.setDrivenMileage(BigDecimal.ZERO);
         corExpressDelivery.setResult(null);
         corExpressDelivery.setDrivenDuration(0);

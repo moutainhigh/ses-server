@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
+
 /**
  * @author Mr.lijiating
  * @version V1.0
@@ -81,9 +83,9 @@ public class DriverDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "用户类型")
     private Integer userType;
 
-    @ApiModelProperty(value = "驾驶证附件下")
+    @ApiModelProperty(value = "加入时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    private String joinDate;
+    private Date joinDate;
 
 }

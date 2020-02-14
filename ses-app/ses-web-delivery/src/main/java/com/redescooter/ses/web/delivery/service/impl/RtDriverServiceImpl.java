@@ -319,7 +319,7 @@ public class RtDriverServiceImpl implements RtDriverService {
         result.setDriverLicenseDownAnnex(profile.getCertificatePositiveAnnex());
         result.setDriverLicenseUpAnnex(profile.getCertificateNegativeAnnex());
         result.setRequestId(enter.getRequestId());
-        result.setJoinDate(DateUtil.format(profile.getJoinDate(), DateUtil.DEFAULT_DATE_FORMAT));
+        result.setJoinDate(profile.getJoinDate());
         result.setAge(DateUtil.dateCompare(profile.getBirthday(), new Date(), 1));
         return result;
     }

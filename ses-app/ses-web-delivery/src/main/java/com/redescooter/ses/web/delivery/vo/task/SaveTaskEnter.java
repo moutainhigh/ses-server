@@ -1,12 +1,15 @@
 package com.redescooter.ses.web.delivery.vo.task;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +31,8 @@ public class SaveTaskEnter extends GeneralEnter {
     private List<DriverTaskEnter> driverTaskEnterList;
 
     @ApiModelProperty(value = "任务时间", required = true)
-    @NotNull(code = ValidationExceptionCode.TASK_TIME,message = "任务时间 为空")
-    private String taskTime;
+    @NotNull(code = ValidationExceptionCode.TASK_TIME,message = "任务时间为空")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date taskTime;
 }
