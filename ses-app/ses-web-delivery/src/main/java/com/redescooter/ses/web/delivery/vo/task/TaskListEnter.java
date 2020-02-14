@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
 
+import java.util.List;
+
 /**
  * @ClassName:DeliveryListEnter
  * @description: DeliveryListEnter
@@ -28,6 +30,9 @@ import io.swagger.annotations.*;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class TaskListEnter extends PageEnter {
+
+    @ApiModelProperty(value = "过滤已选择订单")
+    private List<Long> filterIds;
 
     @ApiModelProperty(value = "状态")
     private String status;
