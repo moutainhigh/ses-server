@@ -325,8 +325,13 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @param enter
      */
     @Override
-    public List<DriverListResult> attribuableDriverList(AttribuableDriverListEnter enter) {
-        return expressOrderServiceMapper.attribuableDriverList(enter);
+    public List<DriverListResult> attribuableDriverList(IdEnter enter) {
+        List<RefuseOrderDetailResult> refuseOrderDetailResultList = refuseOrderDetail(enter);
+        List<Long> ids=new ArrayList<>();
+        refuseOrderDetailResultList.forEach(item->{
+            ids.add(item.getDriverId());
+        });
+        return expressOrderServiceMapper.attribuableDriverList(enter.getTenantId(),ids);
     }
 
     /**
@@ -358,30 +363,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER.getCode(),ExceptionCodeEnums.REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
             }
         });
-
+        // 生成大订单
         CorExpressDelivery  corExpressDelivery = saveCorExpressDelivery(enter);
-
-//        // 当天大订单查询
-//       CorExpressDelivery corExpressDelivery=expressOrderServiceMapper.expressDeliveryShippingByDriverId(enter.getDriverId());
-//        if (corExpressDelivery==null){
-//            // 生成大订单 当天未分配订单事
-//            corExpressDelivery = saveCorExpressDelivery(enter);
-//
-//        }else if(StringUtils.equals(corExpressDelivery.getStatus(), ExpressDeliveryStatusEnums.COMPLETED.getValue())){
-//            // 修改订单状态 若已完成 将完成的订单修改成未完成状态
-//            corExpressDelivery.setOrderSum(corExpressDelivery.getOrderSum()+1);
-//            corExpressDelivery.setStatus(ExpressDeliveryStatusEnums.SHIPPING.getValue());
-//            corExpressDelivery.setDeliveryEndTime(null);
-//            corExpressDelivery.setUpdatedBy(enter.getUserId());
-//            corExpressDelivery.setUpdatedTime(new Date());
-//            corExpressDeliveryService.updateById(corExpressDelivery);
-//        }else{
-//            // 直接添加到大订单中 有正在进行的订单
-//            corExpressDelivery.setOrderSum(corExpressDelivery.getOrderSum()+1);
-//            corExpressDelivery.setUpdatedBy(enter.getUserId());
-//            corExpressDelivery.setUpdatedTime(new Date());
-//            corExpressDeliveryService.updateById(corExpressDelivery);
-//        }
         //生成 订单详情记录
         saveExpressDeliveyDetail(enter, corExpressDelivery);
 

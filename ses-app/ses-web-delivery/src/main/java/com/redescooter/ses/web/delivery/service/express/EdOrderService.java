@@ -106,7 +106,7 @@ public interface EdOrderService {
     * @Return: DriverListResult
     * @desc: 可分配司机列表
     */
-    List<DriverListResult> attribuableDriverList(AttribuableDriverListEnter enter);
+    List<DriverListResult> attribuableDriverList(IdEnter enter);
     /**
     * @Description
     * @Author:  AlexLi

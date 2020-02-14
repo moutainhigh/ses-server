@@ -94,7 +94,7 @@ public class EdOrderController {
 
     @PostMapping(value = "/attribuableDriver")
     @ApiOperation(value = "可分配的司机列表", response = DriverListResult.class)
-    public Response<List<DriverListResult>> attribuableDriverList(@ModelAttribute @ApiParam("请求参数") AttribuableDriverListEnter enter) {
+    public Response<List<DriverListResult>> attribuableDriverList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(edOrderService.attribuableDriverList(enter));
     }
 
