@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -276,6 +277,11 @@ public class TaskServiceImpl implements TaskService {
         corExpressDelivery.setOrderSum(driverTaskEnter.getIds().size());
         corExpressDelivery.setOrderCompleteNum(0);
         corExpressDelivery.setDeliveryDate(DateUtil.stringToDate(enter.getTaskTime()));
+        corExpressDelivery.setDrivenMileage(BigDecimal.ZERO);
+        corExpressDelivery.setResult(null);
+        corExpressDelivery.setDrivenDuration(0);
+        corExpressDelivery.setCo2(BigDecimal.ZERO);
+        corExpressDelivery.setSavings(BigDecimal.ZERO);
         corExpressDelivery.setCreateBy(enter.getUserId());
         corExpressDelivery.setCreateTime(new Date());
         corExpressDelivery.setUpdatedBy(enter.getUserId());
