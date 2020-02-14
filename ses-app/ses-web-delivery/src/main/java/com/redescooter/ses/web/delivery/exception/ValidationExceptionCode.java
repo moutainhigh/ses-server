@@ -74,4 +74,6 @@ public interface ValidationExceptionCode {
     int END_TIME_IS_EMPTY = 10052;
     // 司机账号类型
     int DRIVER_ACCOUNT_TYPE_IS_EMPTY = 10053;
+    // 任务时间为空
+    int TASK_TIME=10054;
 }

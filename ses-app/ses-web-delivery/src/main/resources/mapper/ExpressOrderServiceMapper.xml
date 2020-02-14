@@ -305,11 +305,57 @@
     <select id="driverOrderList" resultType="com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult">
         select exorder.*
         from cor_express_order exorder
-                 right join cor_express_delivery_detail cedd on exorder.id = cedd.express_order_id and cedd.dr=0
-                 right join cor_express_delivery delivery on delivery.id = cedd.express_delivery_id and delivery.dr=0
-                 left join cor_driver cd on cd.id = delivery.driver_id and cd.dr=0 and  cd.status=1
-        where  exorder.dr=0
-        and  exorder.tenant_id=#{tenantId}
-        and  cd.id=#{id}
+        right join cor_express_delivery_detail cedd on exorder.id = cedd.express_order_id and cedd.dr=0
+        right join cor_express_delivery delivery on delivery.id = cedd.express_delivery_id and delivery.dr=0
+        left join cor_driver cd on cd.id = delivery.driver_id and cd.dr=0 and cd.status=1
+        where exorder.dr=0
+        and exorder.tenant_id=#{tenantId}
+        and cd.id=#{id}
+    </select>
+    <select id="refuseOrderDetail"
+            resultType="com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult">
+        select exorder.id as id,
+        driver.id as driverId,
+        profile.first_name as driverFirstName,
+        profile.last_name as driverLastName,
+        ceot.reason as reason
+        from cor_express_order exorder
+        left join cor_express_order_trace ceot on exorder.id = ceot.express_order_id and exorder.status = ceot.status
+        and ceot.dr=0
+        left join cor_driver driver on ceot.driver_id = driver.id and ceot.dr=0
+        left join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr=0
+        where exorder.id=#{id}
+        and ceot.tenant_id=#{tenantId}
+        and exorder.dr=0
+    </select>
+    <select id="attribuableDriverList" resultType="com.redescooter.ses.web.delivery.vo.task.DriverListResult">
+        select driver.id as id,
+        profile.FIRST_NAME as driverFirstName,
+        profile.LAST_NAME as driverLastName,
+        profile.PICTURE as avatar,
+        count(cedd.id) as count
+        from cor_driver driver
+        left join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
+        left join cor_express_delivery delivery on delivery.driver_id=driver.id and delivery.dr=0
+        left join cor_express_delivery_detail cedd on delivery.id=cedd.express_delivery_id and cedd.status in (1,2) and
+        cedd.dr=0
+        where driver.tenant_id=#{tenantId}
+        and driver.dr=0
+        <if test="ids != null and ids.size() != 0">
+            and driver.id not in
+            <foreach collection="ids" open="(" close=")" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        group by id,driverFirstName,driverLastName,avatar
+
+    </select>
+    <select id="expressDeliveryShippingByDriverId"
+            resultType="com.redescooter.ses.web.delivery.dm.CorExpressDelivery">
+        select *
+        from cor_express_delivery delivery
+        where dr = 0
+          and driver_id = 1004162
+          and TO_DAYS(create_time) = TO_DAYS(NOW())
     </select>
 </mapper>

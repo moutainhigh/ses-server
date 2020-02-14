@@ -3,10 +3,14 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.delivery.dm.CorExpressDelivery;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.edorder.AttribuableDriverListEnter;
 import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
+import com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 
 import java.util.List;
 
@@ -94,4 +98,31 @@ public interface ExpressOrderServiceMapper {
     * @desc: 司机的订单列表
     */
     List<QueryOrderDetailResult> driverOrderList(IdEnter enter);
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/13 22:50
+    * @Param:  enter
+    * @Return: RefuseOrderDetailResult
+    * @desc:  拒绝订单详情
+    */
+    List<RefuseOrderDetailResult> refuseOrderDetail(IdEnter enter);
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/13 23:09
+    * @Param:  enter
+    * @Return: DriverListResult
+    * @desc: 可分配司机列表
+    */
+    List<DriverListResult> attribuableDriverList(AttribuableDriverListEnter enter);
+    /**
+    * @Description
+    * @Author:  AlexLi
+    * @Date:   2020/2/14 00:15
+    * @Param:  driverId
+    * @Return: CorExpressDelivery
+    * @desc: 查询正在配送中订单 若无 返回当天已完成的订单
+    */
+    CorExpressDelivery expressDeliveryShippingByDriverId(Long driverId);
 }
