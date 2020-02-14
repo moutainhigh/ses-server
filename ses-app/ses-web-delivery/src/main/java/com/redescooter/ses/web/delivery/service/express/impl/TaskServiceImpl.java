@@ -18,6 +18,7 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
+import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.TaskServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorDriver;
@@ -235,6 +236,10 @@ public class TaskServiceImpl implements TaskService {
                     throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),
                             ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
                 }
+                if (!StringUtils.equals(item.getStatus(),ExpressOrderStatusEnums.UNASGN.getValue())){
+                    throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+                }
+
                 // 保存 expressDeliveryDetail
                 corExpressDeliveryDetailList.add(buildCorExpressDeliveryDetailSingle(enter, tenantConfigInfoResult,
                         taskId, item));
