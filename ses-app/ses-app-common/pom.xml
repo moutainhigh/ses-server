@@ -34,10 +34,6 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-dubbo</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.redescooter.ses</groupId>-->
-<!--            <artifactId>ses-stater-sentinel</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-poi</artifactId>

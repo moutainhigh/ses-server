@@ -31,9 +31,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class TaskListEnter extends PageEnter {
 
-    @ApiModelProperty(value = "过滤已选择订单")
-    private List<Long> filterIds;
-
     @ApiModelProperty(value = "状态")
     private String status;
 

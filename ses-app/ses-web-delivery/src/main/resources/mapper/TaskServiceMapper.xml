@@ -19,12 +19,6 @@
         inner join cor_tenant_scooter tscooter on tscooter.scooter_id = dscooter.scooter_id and tscooter.dr=0
         where express.tenant_id =#{tenantId}
         and express.dr = 0
-        <if test="filterIds != null and filterIds.size() != 0">
-            and express.id not in
-            <foreach collection="filterIds" open="(" separator="," close=")" item="item">
-                #(iterm)
-            </foreach>
-        </if>
         <if test="taskTimeCountType != null and taskTimeCountType != '' and taskTimeCountType == '1'.toString() ">
             and TO_DAYS(express.create_time)  <![CDATA[ = ]]> TO_DAYS(NOW())
         </if>
@@ -73,12 +67,6 @@
         inner join cor_tenant_scooter tscooter on tscooter.scooter_id = dscooter.scooter_id and tscooter.dr=0
         where express.tenant_id =#{tenantId}
         and express.dr = 0
-        <if test="filterIds != null and filterIds.size() != 0">
-            and express.id not in
-            <foreach collection="filterIds" open="(" separator="," close=")" item="item">
-                #(iterm)
-            </foreach>
-        </if>
         <if test="taskTimeCountType != null and taskTimeCountType != '' and taskTimeCountType == '1'.toString() ">
             and TO_DAYS(express.create_time)  <![CDATA[ = ]]> TO_DAYS(NOW())
         </if>
@@ -176,20 +164,23 @@
         where eorder.dr = 0
         and eorder.tenant_id = #{tenantId}
         and eorder.status = 1
+        <if test="filterIds != null and filterIds.size() != 0">
+            and eorder.id not in
+            <foreach collection="filterIds"  index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="recipientCity != null and recipientCity != ''">
             and eorder.recipient_city=#{recipientCity}
         </if>
         <if test="recipientPostcode != null and recipientPostcode != ''">
             and eorder.recipient_postcode = #{recipientPostcode}
         </if>
-        <if
-                test="createdStartTime != null and createdStartTime != '' and createdEndTime != null and createdEndTime != ''">
+        <if test="createdStartTime != null and createdStartTime != '' and createdEndTime != null and createdEndTime != ''">
             and (eorder.created_time between #{createdStartTime} and #{createdEndTime})
         </if>
-        <if
-                test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
-            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end
-            <![CDATA[ > ]]> #{expectTimeEnd} )
+        <if test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
+            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end  <![CDATA[ > ]]> #{expectTimeEnd} )
         </if>
     </select>
     <select id="orderList" resultType="com.redescooter.ses.web.delivery.vo.task.OrderResult">
@@ -206,20 +197,23 @@
         where eorder.dr = 0
         and eorder.tenant_id = #{tenantId}
         and eorder.status = 1
+        <if test="filterIds != null and filterIds.size() != 0">
+            and eorder.id not in
+            <foreach collection="filterIds"  index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="recipientCity != null and recipientCity != ''">
             and eorder.recipient_city=#{recipientCity}
         </if>
         <if test="recipientPostcode != null and recipientPostcode != ''">
             and eorder.recipient_postcode = #{recipientPostcode}
         </if>
-        <if
-                test="createdStartTime != null and createdStartTime != '' and createdEndTime != null and createdEndTime != ''">
+        <if test="createdStartTime != null and createdStartTime != '' and createdEndTime != null and createdEndTime != ''">
             and (eorder.created_time between #{createdStartTime} and #{createdEndTime})
         </if>
-        <if
-                test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
-            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end
-            <![CDATA[ > ]]> #{expectTimeEnd} )
+        <if test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
+            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end <![CDATA[ > ]]> #{expectTimeEnd} )
         </if>
         order by eorder.created_time desc
         limit #{startRow},#{pageSize}

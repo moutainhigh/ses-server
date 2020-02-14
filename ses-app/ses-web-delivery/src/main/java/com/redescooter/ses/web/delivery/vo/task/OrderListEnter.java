@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
 
+import java.util.List;
+
 /**
  * @ClassName:OrderListEnter
  * @description: OrderListEnter
@@ -25,6 +27,10 @@ import io.swagger.annotations.*;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class OrderListEnter extends PageEnter {
+
+    @ApiModelProperty(value = "过滤已选择订单")
+    private List<Long> filterIds;
+
     @ApiModelProperty(value = "收货方城市")
     private String recipientCity;
 
