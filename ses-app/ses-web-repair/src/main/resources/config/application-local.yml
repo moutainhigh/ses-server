@@ -71,9 +71,6 @@ spring:                                                                         
           email: Jerry@redescooter.com
           url: https://github.com/mrjerryli
 
-#redis:                                                                                                                  #REDIS配置
-#  redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
-
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
     address: zookeeper://localhost:12181

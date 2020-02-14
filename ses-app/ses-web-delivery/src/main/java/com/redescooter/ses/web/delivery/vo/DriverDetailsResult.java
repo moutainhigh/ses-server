@@ -78,6 +78,9 @@ public class DriverDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "驾驶证附件下")
     private int age;
 
+    @ApiModelProperty(value = "用户类型")
+    private Integer userType;
+
     @ApiModelProperty(value = "驾驶证附件下")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")

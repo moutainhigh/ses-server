@@ -94,64 +94,22 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
 
         QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
 
-        CorUserProfile corUserProfile = null;
-        // 保存TOC 信息
+        //更新2B用户信息
         if (queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType()) ||
-                queryUserResult.getUserType().equals(AccountTypeEnums.APP_RESTAURANT.getAccountType())) {
-            if (null != enter.getId() && 0 != enter.getId()) {
-                QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
-                corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
-                corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
-                corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
-                corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
-                checkUserProfile(enter, corUserProfile);
-            } else {
-                //保存
-            }
-            if (corUserProfile != null) {
-                corUserProfileMapper.insertOrUpdate(corUserProfile);
-            }
+                queryUserResult.getUserType().equals(AccountTypeEnums.APP_EXPRESS.getAccountType())) {
+
+            CorUserProfile update = new CorUserProfile();
+            update.setId(enter.getId());
+            update.setPicture(enter.getPicture());
+            corUserProfileMapper.updateById(update);
         } else {
-            // 保存、修改TO B 人信息
+            // 更新2C用户信息
             SaveUserProfileHubEnter saveUserProfileHubEnter = new SaveUserProfileHubEnter();
             BeanUtils.copyProperties(enter, saveUserProfileHubEnter);
+            saveUserProfileHubEnter.setId(enter.getId());
             userProfileService.saveUserProfile2C(saveUserProfileHubEnter);
         }
         return new GeneralResult(enter.getRequestId());
-    }
-
-    /**
-     * checkUserProfile
-     *
-     * @param enter
-     * @param corUserProfile
-     */
-    private void checkUserProfile(SaveUserProfileEnter enter, CorUserProfile corUserProfile) {
-        if (StringUtils.isNotBlank(enter.getPicture())) {
-            corUserProfile.setPicture(enter.getPicture());
-        }
-        if (StringUtils.isNotBlank(enter.getFirstName())) {
-            corUserProfile.setFirstName(enter.getFirstName());
-            corUserProfile.setFullName((new StringBuilder().append(corUserProfile.getLastName() + " " + enter.getFirstName()).toString()));
-        }
-        if (StringUtils.isNotBlank(enter.getLastName())) {
-            corUserProfile.setLastName(enter.getLastName());
-            corUserProfile.setFullName((new StringBuilder().append(enter.getLastName() + " " + corUserProfile.getFirstName()).toString()));
-        }
-        if (StringUtils.isNotBlank(enter.getTelNumber1()) && StringUtils.isNotBlank(enter.getCountryCode1())) {
-            corUserProfile.setTelNumber1(enter.getTelNumber1());
-            corUserProfile.setCountryCode1(enter.getCountryCode1());
-        }
-        if (StringUtils.isNotBlank(enter.getCertificateType()) && StringUtils.isNotBlank(enter.getCertificateNegativeAnnex()) && StringUtils.isNotBlank(enter.getCertificatePositiveAnnex())) {
-            corUserProfile.setCertificateType(enter.getCertificateType());
-            corUserProfile.setCertificateNegativeAnnex(enter.getCertificateNegativeAnnex());
-            corUserProfile.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());
-        }
-        if (StringUtils.isNotBlank(enter.getPlaceBirth())) {
-            corUserProfile.setPlaceBirth(enter.getPlaceBirth());
-        }
-        corUserProfile.setUpdatedBy(enter.getUserId());
-        corUserProfile.setUpdatedTime(new Date());
     }
 
 }

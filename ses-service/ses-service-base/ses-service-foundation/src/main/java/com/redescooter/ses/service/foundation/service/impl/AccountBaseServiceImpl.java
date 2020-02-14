@@ -132,7 +132,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                 SaveUserProfileHubEnter.builder().inputUserId(tenantId).inputTenantId(userId)
                         .firstName(enter.getT().getCustomerFirstName()).lastName(enter.getT().getCustomerLastName())
                         .fullName(new StringBuilder().append(enter.getT().getCustomerFirstName()).append(" ")
-                                .append(enter.getT().getCustomerLastName()).toString())
+                        .append(enter.getT().getCustomerLastName()).toString())
                         .address(enter.getT().getAddress()).certificateType(enter.getT().getCertificateType())
                         .certificateNegativeAnnex(enter.getT().getCertificateNegativeAnnex())
                         .certificatePositiveAnnex(enter.getT().getCertificatePositiveAnnex())

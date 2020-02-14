@@ -12,7 +12,9 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
+import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
+import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.RedisLock;
@@ -80,6 +82,8 @@ public class RtDriverServiceImpl implements RtDriverService {
     private IdAppService idAppService;
     @Reference
     private AccountBaseService accountBaseService;
+    @Reference
+    private UserBaseService userBaseService;
     @Reference
     private ScooterService scooterService;
     @Reference
@@ -294,8 +298,9 @@ public class RtDriverServiceImpl implements RtDriverService {
             return new DriverDetailsResult();
         }
 
-        DriverDetailsResult result = new DriverDetailsResult();
+        QueryUserResult userResult = userBaseService.queryUserById(new IdEnter(driver.getUserId()));
 
+        DriverDetailsResult result = new DriverDetailsResult();
         result.setId(driver.getId());
         result.setDriverLoginType(profile.getEmail1() == null ? DriverLoginTypeEnum.NICKNAME.getValue() : DriverLoginTypeEnum.EMAIL.getValue());
         result.setAvatar(profile.getPicture());
@@ -309,6 +314,7 @@ public class RtDriverServiceImpl implements RtDriverService {
         result.setAddress(profile.getPlaceBirth());
         result.setBirthday(DateUtil.getDateTime(profile.getBirthday(), null));
         result.setPlateNumber(null);
+        result.setUserType(userResult.getUserType());
         result.setCertificateType(profile.getCertificateType());
         result.setDriverLicenseDownAnnex(profile.getCertificatePositiveAnnex());
         result.setDriverLicenseUpAnnex(profile.getCertificateNegativeAnnex());
@@ -410,17 +416,17 @@ public class RtDriverServiceImpl implements RtDriverService {
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/13 10:23
      * @Param: enter
      * @Return: map
      * @desc: 车辆类型
-     * @param enter
      */
     @Override
     public ScooterModelListResult scooterModelList(GeneralEnter enter) {
-        List<String> modelList=driverServiceMapper.queryScooterModelByTenantId(enter.getTenantId());
+        List<String> modelList = driverServiceMapper.queryScooterModelByTenantId(enter.getTenantId());
         return ScooterModelListResult.builder().modelList(modelList).build();
     }
 
@@ -435,7 +441,7 @@ public class RtDriverServiceImpl implements RtDriverService {
         QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_MODEL,enter.getModelId());
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_MODEL, enter.getModelId());
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_STATUS, TenantScooterStatusEnums.AVAILABLE.getValue());
         List<CorTenantScooter> corTenantScooterList = corTenantScooterMapper.selectList(corTenantScooterQueryWrapper);
         if (CollectionUtils.isEmpty(corTenantScooterList)) {

@@ -26,10 +26,11 @@ public class SaveUserProfileEnter extends GeneralEnter {
     private Long id;
 
     @ApiModelProperty(value="租户ID")
-    private Long tenantId;
+    private Long inputTenantId;
+
 
     @ApiModelProperty(value="用户ID")
-    private Long userId;
+    private Long inputUserId;
 
     @ApiModelProperty(value="姓")
     private String firstName;
