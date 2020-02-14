@@ -159,7 +159,7 @@ public class TaskServiceImpl implements TaskService {
      * @return
      */
     @Override
-    public DriverListResult driverList(GeneralEnter enter) {
+    public List<DriverListResult> driverList(GeneralEnter enter) {
         return taskServiceMapper.driverList(enter);
     }
 

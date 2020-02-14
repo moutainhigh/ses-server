@@ -47,7 +47,7 @@ public class EdTaskController {
 
     @PostMapping(value = "/driverList")
     @ApiOperation(value = "司机列表", response = DriverListResult.class)
-    public Response<DriverListResult> driverList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<DriverListResult>> driverList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(taskService.driverList(enter));
     }
 

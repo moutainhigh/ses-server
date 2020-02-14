@@ -11,7 +11,6 @@ import com.redescooter.ses.web.delivery.vo.edorder.*;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
-import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -98,15 +97,6 @@ public interface EdOrderService {
     * @desc: 拒绝订单详情
     */
     List<RefuseOrderDetailResult> refuseOrderDetail(IdEnter enter);
-    /**
-    * @Description
-    * @Author:  AlexLi
-    * @Date:   2020/2/13 23:03
-    * @Param:  enter
-    * @Return: DriverListResult
-    * @desc: 可分配司机列表
-    */
-    List<DriverListResult> attribuableDriverList(IdEnter enter);
     /**
     * @Description
     * @Author:  AlexLi
