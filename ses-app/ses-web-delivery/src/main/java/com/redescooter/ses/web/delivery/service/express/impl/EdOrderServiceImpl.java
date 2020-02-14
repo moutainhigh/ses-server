@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
-import com.redescooter.ses.api.common.enums.base.IdsEnter;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
@@ -326,11 +325,13 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @param enter
      */
     @Override
-    public List<DriverListResult> attribuableDriverList(IdsEnter enter) {
-
-
-
-        return expressOrderServiceMapper.attribuableDriverList(enter);
+    public List<DriverListResult> attribuableDriverList(IdEnter enter) {
+        List<RefuseOrderDetailResult> refuseOrderDetailResultList = refuseOrderDetail(enter);
+        List<Long> ids=new ArrayList<>();
+        refuseOrderDetailResultList.forEach(item->{
+            ids.add(item.getDriverId());
+        });
+        return expressOrderServiceMapper.attribuableDriverList(enter.getTenantId(),ids);
     }
 
     /**
@@ -362,9 +363,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER.getCode(),ExceptionCodeEnums.REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER.getMessage());
             }
         });
-
+        // 生成大订单
         CorExpressDelivery  corExpressDelivery = saveCorExpressDelivery(enter);
-
         //生成 订单详情记录
         saveExpressDeliveyDetail(enter, corExpressDelivery);
 
@@ -378,13 +378,13 @@ public class EdOrderServiceImpl implements EdOrderService {
         return new GeneralResult(enter.getRequestId());
     }
     /**
-    * @Description
-    * @Author:  AlexLi
-    * @Date:   2020/2/14 11:19
-    * @Param:  enter,corExpressDelivery
-    * @Return: void
-    * @desc: 订单详情记录
-    */
+     * @Description
+     * @Author:  AlexLi
+     * @Date:   2020/2/14 11:19
+     * @Param:  enter,corExpressDelivery
+     * @Return: void
+     * @desc: 订单详情记录
+     */
     private void saveExpressDeliveyDetail(ChanageExpressOrderEnter enter, CorExpressDelivery corExpressDelivery) {
         CorExpressDeliveryDetail corExpressDeliveryDetail = new CorExpressDeliveryDetail();
         corExpressDeliveryDetail.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY_DETAIL));
@@ -405,13 +405,13 @@ public class EdOrderServiceImpl implements EdOrderService {
         corExpressDeliveryDetailService.insertOrUpdate(corExpressDeliveryDetail);
     }
     /**
-    * @Description
-    * @Author:  AlexLi
-    * @Date:   2020/2/14 11:20
-    * @Param:  enter
-    * @Return: CorExpressDelivery
-    * @desc: saveCorExpressDelivery
-    */
+     * @Description
+     * @Author:  AlexLi
+     * @Date:   2020/2/14 11:20
+     * @Param:  enter
+     * @Return: CorExpressDelivery
+     * @desc: saveCorExpressDelivery
+     */
     private CorExpressDelivery saveCorExpressDelivery(ChanageExpressOrderEnter enter) {
         CorExpressDelivery corExpressDelivery;
         corExpressDelivery=new CorExpressDelivery();
