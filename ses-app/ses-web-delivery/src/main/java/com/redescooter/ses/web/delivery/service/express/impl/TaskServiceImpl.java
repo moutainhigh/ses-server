@@ -264,11 +264,17 @@ public class TaskServiceImpl implements TaskService {
             corExpressDeliveryDetailService.batchInsert(corExpressDeliveryDetailList);
         }
         // 保存大订单
-        corExpressDeliveryService.batchInsert(saveCorExpressDeliveryList);
+        if (CollectionUtils.isNotEmpty(saveCorExpressDeliveryList)) {
+            corExpressDeliveryService.batchInsert(saveCorExpressDeliveryList);
+        }
         // 修改express Order 状态
-        corExpressOrderService.updateBatch(updateCorExpressOrderList);
+        if (CollectionUtils.isNotEmpty(updateCorExpressOrderList)) {
+            corExpressOrderService.updateBatch(updateCorExpressOrderList);
+        }
         // 保存taskDetailTrace
-        edOrderTraceService.batchSaveExpressOrderTrace(baseExpressOrderTraceEnterList);
+        if (CollectionUtils.isNotEmpty(updateCorExpressOrderList)) {
+            edOrderTraceService.batchSaveExpressOrderTrace(baseExpressOrderTraceEnterList);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
