@@ -6,7 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.delivery.dm.CorExpressDelivery;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.vo.*;
-import com.redescooter.ses.web.delivery.vo.edorder.AttribuableDriverListEnter;
+import com.redescooter.ses.api.common.enums.base.IdsEnter;
 import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
 import com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult;
@@ -115,7 +115,7 @@ public interface ExpressOrderServiceMapper {
     * @Return: DriverListResult
     * @desc: 可分配司机列表
     */
-    List<DriverListResult> attribuableDriverList(AttribuableDriverListEnter enter);
+    List<DriverListResult> attribuableDriverList(IdsEnter enter);
     /**
     * @Description
     * @Author:  AlexLi

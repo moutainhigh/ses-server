@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.delivery.service.express;
 
+import com.redescooter.ses.api.common.enums.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -106,7 +107,7 @@ public interface EdOrderService {
     * @Return: DriverListResult
     * @desc: 可分配司机列表
     */
-    List<DriverListResult> attribuableDriverList(AttribuableDriverListEnter enter);
+    List<DriverListResult> attribuableDriverList(IdsEnter enter);
     /**
     * @Description
     * @Author:  AlexLi
