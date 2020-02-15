@@ -16,6 +16,7 @@ import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
 import com.redescooter.ses.web.delivery.vo.TopTenEnter;
 import com.redescooter.ses.web.delivery.vo.TopTenResult;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,13 +72,8 @@ public class EdDasboardServiceImpl implements EdDasboardService {
      * @desc: 司机排行榜
      */
     @Override
-    public TopTenResult topTen(TopTenEnter enter) {
-        TopTenResult result = edDasboardServiceMapper.topTen(enter);
-
-        if (result == null) {
-            result = new TopTenResult();
-        }
-        return result;
+    public List<TopTenResult> topTen(TopTenEnter enter) {
+        return edDasboardServiceMapper.topTen(enter);
     }
 
     /**

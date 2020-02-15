@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiParam;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,7 +39,7 @@ public class EdDashboardController {
 
     @PostMapping(value = "/topTen")
     @ApiOperation(value = "司机排行榜", response = TopTenResult.class)
-    public Response<TopTenResult> topTen(@ModelAttribute @ApiParam("请求参数") TopTenEnter enter) {
+    public Response<List<TopTenResult>> topTen(@ModelAttribute @ApiParam("请求参数") TopTenEnter enter) {
         return new Response<>(edDasboardService.topTen(enter));
     }
 
