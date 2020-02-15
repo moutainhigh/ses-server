@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
@@ -38,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -209,76 +212,103 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public GeneralResult save(SaveTaskEnter enter) {
-        // 获取店铺配置
-        TenantConfigInfoResult tenantConfigInfoResult = tenantBaseService.tenantConfigInfo(enter);
-        // 大订单详情列表
-        List<CorExpressDeliveryDetail> corExpressDeliveryDetailList = new ArrayList<>();
-        // 大订单节点
-        List<BaseExpressOrderTraceEnter> baseExpressOrderTraceEnterList = new ArrayList<>();
-        // 小订单更新 集合
-        List<CorExpressOrder> updateCorExpressOrderList=new ArrayList<>();
-        // 大订单集合
-        List<CorExpressDelivery> saveCorExpressDeliveryList= new ArrayList<>();
 
-        enter.getDriverTaskEnterList().forEach(driverTaskEnter -> {
-            CorDriver corDriver = corDriverService.getById(driverTaskEnter.getDiverId());
-            if (corDriver == null) {
-                throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
-            }
-            List<CorExpressOrder> corExpressOrderList = taskServiceMapper.queryExpressOrderByIds(driverTaskEnter.getIds());
-            if (CollectionUtils.isEmpty(corExpressOrderList) && corExpressOrderList.size() != driverTaskEnter.getIds().size()) {
-                throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
-            }
 
-            Long taskId = idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY);
-            for (CorExpressOrder item : corExpressOrderList) {
-                if (!driverTaskEnter.getIds().contains(item.getId())) {
-                    throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),
-                            ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
-                }
-                if (!StringUtils.equals(item.getStatus(),ExpressOrderStatusEnums.UNASGN.getValue())){
-                    throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
-                }
+        List<DriverTaskEnter> driverTaskEnters = null;
+        try {
+            driverTaskEnters = JSONArray.parseArray(enter.getDriverTaskListJson(), DriverTaskEnter.class);
+        } catch (Exception e) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
 
-                // 保存 expressDeliveryDetail
-                corExpressDeliveryDetailList.add(buildCorExpressDeliveryDetailSingle(enter, tenantConfigInfoResult,
-                        taskId, item));
-                //生成 order 记录
-                BaseExpressOrderTraceEnter baseExpressOrderTraceEnter = buildBaseExpressOrderTraceEnter(enter,
-                        tenantConfigInfoResult,driverTaskEnter.getDiverId(), taskId, item);
-                baseExpressOrderTraceEnterList.add(baseExpressOrderTraceEnter);
-                //修改expressOrder 状态
-                item.setAssignFlag(Boolean.TRUE);
-                item.setAssignTime(new Date());
-                item.setStatus(ExpressOrderStatusEnums.ASGN.getValue());
-                item.setUpdatedBy(enter.getUserId());
-                item.setUpdatedTime(new Date());
-                updateCorExpressOrderList.add(item);
-            }
-            //保存task
-            buildtask(enter, driverTaskEnter,tenantConfigInfoResult, taskId,saveCorExpressDeliveryList);
+        //验证订单是否分配完成
+        OrderListEnter conutOrders = new OrderListEnter();
+        BeanUtils.copyProperties(enter, conutOrders);
+        int count = taskServiceMapper.orderListCount(conutOrders);
+        List<Long> longs = new ArrayList<>();
+        driverTaskEnters.forEach(ds -> {
+            Optional.ofNullable(ds).ifPresent(d -> {
+                longs.addAll(d.getIds());
+            });
         });
 
-        // 保存 TaskDetail
-        if (CollectionUtils.isNotEmpty(corExpressDeliveryDetailList)) {
-            corExpressDeliveryDetailService.batchInsert(corExpressDeliveryDetailList);
+        Boolean saveBoolean = count == longs.size() ? Boolean.TRUE : Boolean.FALSE;
+
+        if(saveBoolean){
+            // 获取店铺配置
+            TenantConfigInfoResult tenantConfigInfoResult = tenantBaseService.tenantConfigInfo(enter);
+            // 大订单详情列表
+            List<CorExpressDeliveryDetail> corExpressDeliveryDetailList = new ArrayList<>();
+            // 大订单节点
+            List<BaseExpressOrderTraceEnter> baseExpressOrderTraceEnterList = new ArrayList<>();
+            // 小订单更新 集合
+            List<CorExpressOrder> updateCorExpressOrderList = new ArrayList<>();
+            // 大订单集合
+            List<CorExpressDelivery> saveCorExpressDeliveryList = new ArrayList<>();
+
+            driverTaskEnters.forEach(driverTaskEnter -> {
+                CorDriver corDriver = corDriverService.getById(driverTaskEnter.getDiverId());
+                if (corDriver == null) {
+                    throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+                }
+                List<CorExpressOrder> corExpressOrderList = taskServiceMapper.queryExpressOrderByIds(driverTaskEnter.getIds());
+                if (CollectionUtils.isEmpty(corExpressOrderList) && corExpressOrderList.size() != driverTaskEnter.getIds().size()) {
+                    throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+                }
+
+                Long taskId = idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY);
+                for (CorExpressOrder item : corExpressOrderList) {
+                    if (!driverTaskEnter.getIds().contains(item.getId())) {
+                        throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),
+                                ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+                    }
+                    if (!StringUtils.equals(item.getStatus(), ExpressOrderStatusEnums.UNASGN.getValue())) {
+                        throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+                    }
+
+                    // 保存 expressDeliveryDetail
+                    corExpressDeliveryDetailList.add(buildCorExpressDeliveryDetailSingle(enter, tenantConfigInfoResult,
+                            taskId, item));
+                    //生成 order 记录
+                    BaseExpressOrderTraceEnter baseExpressOrderTraceEnter = buildBaseExpressOrderTraceEnter(enter,
+                            tenantConfigInfoResult, driverTaskEnter.getDiverId(), taskId, item);
+                    baseExpressOrderTraceEnterList.add(baseExpressOrderTraceEnter);
+                    //修改expressOrder 状态
+                    item.setAssignFlag(Boolean.TRUE);
+                    item.setAssignTime(new Date());
+                    item.setStatus(ExpressOrderStatusEnums.ASGN.getValue());
+                    item.setUpdatedBy(enter.getUserId());
+                    item.setUpdatedTime(new Date());
+                    updateCorExpressOrderList.add(item);
+                }
+                //保存task
+                buildtask(enter, driverTaskEnter, tenantConfigInfoResult, taskId, saveCorExpressDeliveryList);
+            });
+
+            // 保存 TaskDetail
+            if (CollectionUtils.isNotEmpty(corExpressDeliveryDetailList)) {
+                corExpressDeliveryDetailService.batchInsert(corExpressDeliveryDetailList);
+            }
+            // 保存大订单
+            if (CollectionUtils.isNotEmpty(saveCorExpressDeliveryList)) {
+                corExpressDeliveryService.batchInsert(saveCorExpressDeliveryList);
+            }
+            // 修改express Order 状态
+            if (CollectionUtils.isNotEmpty(updateCorExpressOrderList)) {
+                corExpressOrderService.updateBatch(updateCorExpressOrderList);
+            }
+            // 保存taskDetailTrace
+            if (CollectionUtils.isNotEmpty(updateCorExpressOrderList)) {
+                edOrderTraceService.batchSaveExpressOrderTrace(baseExpressOrderTraceEnterList);
+            }
+        }else{
+            throw new SesWebDeliveryException(ExceptionCodeEnums.ORDER_IS_NOT_ALLOCATED.getCode(), ExceptionCodeEnums.ORDER_IS_NOT_ALLOCATED.getMessage());
         }
-        // 保存大订单
-        if (CollectionUtils.isNotEmpty(saveCorExpressDeliveryList)) {
-            corExpressDeliveryService.batchInsert(saveCorExpressDeliveryList);
-        }
-        // 修改express Order 状态
-        if (CollectionUtils.isNotEmpty(updateCorExpressOrderList)) {
-            corExpressOrderService.updateBatch(updateCorExpressOrderList);
-        }
-        // 保存taskDetailTrace
-        if (CollectionUtils.isNotEmpty(updateCorExpressOrderList)) {
-            edOrderTraceService.batchSaveExpressOrderTrace(baseExpressOrderTraceEnterList);
-        }
+
         return new GeneralResult(enter.getRequestId());
     }
 
-    private void buildtask(SaveTaskEnter enter,DriverTaskEnter driverTaskEnter, TenantConfigInfoResult tenantConfigInfoResult, Long taskId,List<CorExpressDelivery> saveCorExpressDeliveryList) {
+    private void buildtask(SaveTaskEnter enter, DriverTaskEnter driverTaskEnter, TenantConfigInfoResult tenantConfigInfoResult, Long taskId, List<CorExpressDelivery> saveCorExpressDeliveryList) {
         CorExpressDelivery corExpressDelivery = new CorExpressDelivery();
         corExpressDelivery.setId(taskId);
         corExpressDelivery.setDr(0);
@@ -301,7 +331,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private BaseExpressOrderTraceEnter buildBaseExpressOrderTraceEnter(SaveTaskEnter enter,
-                                                                       TenantConfigInfoResult tenantConfigInfoResult,Long driverId, Long taskId, CorExpressOrder item) {
+                                                                       TenantConfigInfoResult tenantConfigInfoResult, Long driverId, Long taskId, CorExpressOrder item) {
         return BaseExpressOrderTraceEnter.builder()
                 .id(idAppService.getId(SequenceName.COR_EXPRESS_ORDER_TRACE))
                 .dr(0)

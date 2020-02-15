@@ -7,6 +7,7 @@ import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.boot.configurationprocessor.json.JSONStringer;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -27,11 +28,12 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class SaveTaskEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "司机任务列表", required = true ,allowEmptyValue=true)
-    private List<DriverTaskEnter> driverTaskEnterList;
+    @ApiModelProperty(value = "司机任务列表Json", required = true)
+    @NotNull(code = ValidationExceptionCode.JSON_TIME, message = "司机任务列表Json不能为空")
+    private String driverTaskListJson;
 
     @ApiModelProperty(value = "任务时间", required = true)
-    @NotNull(code = ValidationExceptionCode.TASK_TIME,message = "任务时间为空")
+    @NotNull(code = ValidationExceptionCode.TASK_TIME, message = "任务时间为空")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date taskTime;

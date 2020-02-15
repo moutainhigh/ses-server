@@ -60,7 +60,7 @@ public enum ExceptionCodeEnums {
 
     NON_REPEATABLE(10021, "不可重复操作"),
 
-    DATA_EXCEPTION(10022, "参数数据异常"),
+    DATA_EXCEPTION(10022, "参数数据异常或格式错误"),
 
     ACCOUNT_IS_ACTIVATED(10023, "账户已激活"),
 
@@ -110,6 +110,10 @@ public enum ExceptionCodeEnums {
     ILLEGAL_NICKNAME(10047,"昵称不合法"),
 
     REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER(10048,"拒绝订单不可分给同一个司机"),
+
+    ORDER_IS_NOT_ALLOCATED(10049,"订单尚未完全分配完"),
+
+
 
     ;
 

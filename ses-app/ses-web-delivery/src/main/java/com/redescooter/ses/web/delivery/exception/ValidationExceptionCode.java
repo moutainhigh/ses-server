@@ -76,4 +76,6 @@ public interface ValidationExceptionCode {
     int DRIVER_ACCOUNT_TYPE_IS_EMPTY = 10053;
     // 任务时间为空
     int TASK_TIME=10054;
+    // JSON不能为空
+    int JSON_TIME=10055;
 }

@@ -17,10 +17,10 @@ import java.util.List;
 public class DriverTaskEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "小订单id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
+    //@NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
     private List<Long> ids;
 
     @ApiModelProperty(value = "司机Id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
+    //@NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
     private Long diverId;
 }

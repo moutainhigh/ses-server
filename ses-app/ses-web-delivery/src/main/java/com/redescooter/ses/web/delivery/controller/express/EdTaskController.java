@@ -64,7 +64,7 @@ public class EdTaskController {
     }
 
     @PostMapping(value = "/save")
-    @ApiOperation(value = "生成大订单", response = GeneralResult.class)
+    @ApiOperation(value = "生成大订单", response = SaveTaskEnter.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveTaskEnter enter) {
         return new Response<>(taskService.save(enter));
     }
