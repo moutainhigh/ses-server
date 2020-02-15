@@ -108,41 +108,11 @@ spring:                                                                         
           url: https://github.com/mrjerryli#联系地址
 
       Data-api:
-        group-name: 5.Data-API
+        group-name: 4.Data-API
         title: 个人信息相关的操作
         description: 个人信息相关的操作
         base-package: com.redescooter.ses
         path-regex: /data/.*
-        path-mapping: /
-        version: 1.2.0
-        license: RedE 公司内部传阅
-        license-url: '#'
-        contact:
-          name: Jerry
-          email: Jerry@redescooter.com
-          url: https://github.com/mrjerryli#联系地址
-
-      ExpressOrder-api:
-        group-name: 6.ExpressOrder-API
-        title: 快递模块接口
-        description: 快递模块的操作
-        base-package: com.redescooter.ses
-        path-regex: /ed/order/.*
-        path-mapping: /
-        version: 1.2.0
-        license: RedE 公司内部传阅
-        license-url: '#'
-        contact:
-          name: Jerry
-          email: Jerry@redescooter.com
-          url: https://github.com/mrjerryli#联系地址
-
-      ExpressDashboard-api:
-        group-name: 7.ExpressDashboard-API
-        title: 快递统计模块接口
-        description: 快递统计模块接口
-        base-package: com.redescooter.ses
-        path-regex: /ed/dashboard/.*
         path-mapping: /
         version: 1.2.0
         license: RedE 公司内部传阅

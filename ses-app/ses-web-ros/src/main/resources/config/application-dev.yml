@@ -45,7 +45,7 @@ spring:                                                                         
   swagger:                                                                                                              #swagger在线文档配置
     enabled: true                                                                                                       #是否启用swagger
     group:
-      sign-api:                                                                                                          #用户组api，可以配置多个组
+      Sign-api:                                                                                                          #用户组api，可以配置多个组
         group-name: 1.Sign-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: ROS Sign接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
         description: 用户登录注销创建操作                                                                                  #api组的描述，会在swagger-ui的描述中显示
@@ -89,5 +89,5 @@ spring:                                                                         
         contact:
           name: Jerry
           email: Jerry@redescooter.com
-          url: https://github.com/mrjerryli                                                                        #联系地址
+          url: https://github.com/mrjerryli                                                                      #联系地址
 
