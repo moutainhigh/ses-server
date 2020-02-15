@@ -21,9 +21,7 @@ import com.redescooter.ses.starter.redis.RedisLock;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
-import com.redescooter.ses.web.delivery.dao.EdDriverServiceMapper;
 import com.redescooter.ses.web.delivery.dao.EdScooterServiceMapper;
-import com.redescooter.ses.web.delivery.dao.base.CorDeliveryMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
 import com.redescooter.ses.web.delivery.dm.*;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
@@ -497,6 +495,17 @@ public class RtDriverServiceImpl implements RtDriverService {
 
             if (driverScooterOne == null) {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+
+            // 车辆验证
+            QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper = new QueryWrapper<>();
+            corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_SCOOTER_ID, enter.getScooterId());
+            corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
+            corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
+            corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS,DriverScooterStatusEnums.USED.getValue());
+            CorDriverScooter driverScooter = driverScooterService.getOne(driverScooterQueryWrapper);
+            if (driverScooter!=null){
+                throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
             }
 
             //先进行分配车辆，后更改司机状态
