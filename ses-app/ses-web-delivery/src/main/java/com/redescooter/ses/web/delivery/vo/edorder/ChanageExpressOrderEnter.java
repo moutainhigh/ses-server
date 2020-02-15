@@ -26,4 +26,5 @@ public class ChanageExpressOrderEnter extends GeneralEnter {
     @ApiModelProperty(value = "任务时间")
     @NotNull(code = ValidationExceptionCode.TASK_TIME,message = "任务时间 为空")
     private String taskTime;
+
 }

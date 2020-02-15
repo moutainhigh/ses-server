@@ -61,22 +61,20 @@
     </select>
 
     <select id="detail" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
-        select scooter.scooter_id as id,
-        scooter.status as status,
-        scooter.license_plate as licensePlate,
-        driver.id as driverId,
-        profile.FIRST_NAME as driverFirstName,
-        profile.LAST_NAME as driverLastName,
-        ifnull(csrs.co2_total, 0) as co2,
-        ifnull(csrs.saved_money, 0) as monty
-        from cor_tenant_scooter scooter
-        left join cor_driver_scooter driverScooter
-        on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0 and
-        driverScooter.status = 1
-        left join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
-        left join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
-        left join cor_scooter_ride_stat csrs on csrs.scooter_id = scooter.scooter_id and csrs.dr = 0
-        where scooter.scooter_id = #{id}
+      select scooter.scooter_id    as id,
+             scooter.status        as status,
+             scooter.model         as model,
+             scooter.license_plate as licensePlate,
+             driver.id             as driverId,
+             profile.FIRST_NAME    as driverFirstName,
+             profile.LAST_NAME     as driverLastName
+      from cor_tenant_scooter scooter
+               left join cor_driver_scooter driverScooter
+                         on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0 and
+                            driverScooter.status = 1
+               left join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
+               left join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
+      where scooter.scooter_id = #{id}
         and scooter.tenant_id = #{tenantId}
     </select>
     <select id="assignEdScooterHistroyCount" resultType="java.lang.Integer">
@@ -198,5 +196,17 @@
         </if>
         order by histroy.begin_time desc
         limit #{startRow},#{pageSize}
+    </select>
+    <select id="scooterGreenData"
+            resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterGreenDataResult">
+      select scooter.scooter_id          as id,
+             scooter.license_plate       as licensePlate,
+             ifnull(csrs.co2_total, 0)   as co2,
+             ifnull(csrs.saved_money, 0) as monty
+      from cor_tenant_scooter scooter
+               left join cor_scooter_ride_stat csrs on csrs.scooter_id = scooter.scooter_id and csrs.dr = 0
+      where scooter.scooter_id = #{id}
+        and scooter.tenant_id = #{tenantId}
+
     </select>
 </mapper>

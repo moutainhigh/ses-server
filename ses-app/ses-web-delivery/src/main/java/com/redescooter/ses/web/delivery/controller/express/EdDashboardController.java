@@ -54,9 +54,4 @@ public class EdDashboardController {
         return new Response<>(edDasboardService.map(enter));
     }
 
-//    @PostMapping(value = "/deliveryChartList")
-//    @ApiOperation(value = "仪表盘订单柱状图", response = DeliveryChartResult.class)
-//    public Response<DeliveryChartListResult> deliveryChartList(@ModelAttribute @ApiParam("请求参数") DeliveryChartEnter enter) {
-//        return new Response<>(rtDashboardService.deliveryChartList(enter));
-//    }
 }

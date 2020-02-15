@@ -337,7 +337,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         }
 
         // 生成大订单
-        CorExpressDelivery  corExpressDelivery = saveCorExpressDelivery(enter);
+        CorExpressDelivery corExpressDelivery = saveCorExpressDelivery(enter);
         //生成 订单详情记录
         saveExpressDeliveyDetail(enter, corExpressDelivery);
 

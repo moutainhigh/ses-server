@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Service
 public class EdDasboardServiceImpl implements EdDasboardService {
     @Autowired
@@ -36,13 +37,13 @@ public class EdDasboardServiceImpl implements EdDasboardService {
     private TenantBaseService tenantBaseService;
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/3 16:48
      * @Param: enter
      * @Return: Map
      * @desc: todayCountByStatus
-     * @param enter
      */
     @Override
     public Map<String, Integer> todayCountByStatus(GeneralEnter enter) {
@@ -61,41 +62,52 @@ public class EdDasboardServiceImpl implements EdDasboardService {
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/3 16:49
      * @Param: enter
      * @Return: TopTenResult
      * @desc: 司机排行榜
-     * @param enter
      */
     @Override
     public TopTenResult topTen(TopTenEnter enter) {
-        return edDasboardServiceMapper.topTen(enter);
+        TopTenResult result = edDasboardServiceMapper.topTen(enter);
+
+        if (result == null) {
+            result = new TopTenResult();
+        }
+        return result;
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/3 16:51
      * @Param: enter
      * @Return: ScooterRideDataResult
      * @desc: 车辆骑行数据
-     * @param enter
      */
     @Override
     public ScooterRideDataResult scooterRideData(GeneralEnter enter) {
-        return edDasboardServiceMapper.scooterRideData(enter);
+        ScooterRideDataResult result = edDasboardServiceMapper.scooterRideData(enter);
+
+        if (result == null) {
+            new ScooterRideDataResult();
+        }
+
+        return result;
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/3 16:52
      * @Param: enter
      * @Return: ExpressOrderMapResult
      * @desc: 仪表盘地图接口
-     * @param enter
      */
     @Override
     public ExpressOrderMapResult map(GeneralEnter enter) {

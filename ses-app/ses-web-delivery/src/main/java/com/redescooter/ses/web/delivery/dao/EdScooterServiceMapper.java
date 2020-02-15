@@ -3,10 +3,7 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterListEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.*;
 
 import java.util.List;
 
@@ -49,6 +46,13 @@ public interface EdScooterServiceMapper {
      * @return
      */
     EdScooterResult detail(IdEnter enter);
+
+    /**
+     * 车辆环保数据展示
+     * @param enter
+     * @return
+     */
+    EdScooterGreenDataResult scooterGreenData(IdEnter enter);
 
     /**
      * 车辆已还车分配记录

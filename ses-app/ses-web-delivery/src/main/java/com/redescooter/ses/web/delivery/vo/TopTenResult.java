@@ -40,5 +40,5 @@ public class TopTenResult extends GeneralResult {
     private String driverLastName;
 
     @ApiModelProperty(value = "完成总数 包含完成，超时完成")
-    private Integer count;
+    private Integer count=0;
 }

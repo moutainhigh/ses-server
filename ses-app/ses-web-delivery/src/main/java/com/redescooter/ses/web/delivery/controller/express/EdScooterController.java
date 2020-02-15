@@ -6,11 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.EdScooterService;
-import com.redescooter.ses.web.delivery.vo.edscooter.ChanageStatusEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterListEnter;
-import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -56,6 +52,12 @@ public class EdScooterController {
     @ApiOperation(value = "车辆详情", response = EdScooterResult.class)
     public Response<EdScooterResult> detail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(edScooterService.detail(enter));
+    }
+
+    @PostMapping(value = "/detail")
+    @ApiOperation(value = "车辆环保数据", response = EdScooterGreenDataResult.class)
+    public Response<EdScooterGreenDataResult> scooterGreenData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(edScooterService.scooterGreenData(enter));
     }
 
     @PostMapping(value = "/assignMobileHistroy")

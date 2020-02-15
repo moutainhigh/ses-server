@@ -113,10 +113,30 @@ public class EdScooterServiceImpl implements EdScooterService {
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
         result.setBattery(baseScooterResults.get(0).getBattery());
         result.setMobilePicture(baseScooterResults.get(0).getPictures());
+        return result;
+    }
+
+    /**
+     * 车辆环保数据展示
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public EdScooterGreenDataResult scooterGreenData(IdEnter enter) {
+
+        EdScooterGreenDataResult result = edScooterServiceMapper.scooterGreenData(enter);
+        if (result == null) {
+            return new EdScooterGreenDataResult();
+        }
+        List<Long> scooterIdList = new ArrayList<>();
+        scooterIdList.add(result.getId());
+        List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
+        result.setBattery(baseScooterResults.get(0).getBattery());
         result.setLicensePlate(baseScooterResults.get(0).getLicensePlatePicture());
-        result.setModel(baseScooterResults.get(0).getModel());
         result.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
         result.setNextMaintenanceKm(baseScooterResults.get(0).getNextMaintenanceKm().toString());
+
         return result;
     }
 
