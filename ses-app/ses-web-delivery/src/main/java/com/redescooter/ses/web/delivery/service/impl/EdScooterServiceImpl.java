@@ -133,7 +133,6 @@ public class EdScooterServiceImpl implements EdScooterService {
         scooterIdList.add(result.getId());
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
         result.setBattery(baseScooterResults.get(0).getBattery());
-        result.setLicensePlate(baseScooterResults.get(0).getLicensePlatePicture());
         result.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
         result.setNextMaintenanceKm(baseScooterResults.get(0).getNextMaintenanceKm().toString());
 
