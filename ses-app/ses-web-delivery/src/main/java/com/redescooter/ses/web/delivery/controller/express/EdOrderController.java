@@ -2,6 +2,7 @@ package com.redescooter.ses.web.delivery.controller.express;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.delivery.service.RtDeliveryService;
+import com.redescooter.ses.web.delivery.service.RtDriverService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
 import com.redescooter.ses.web.delivery.vo.*;
 import com.redescooter.ses.web.delivery.vo.edorder.*;
@@ -33,6 +34,9 @@ public class EdOrderController {
 
     @Autowired
     private EdOrderService edOrderService;
+
+    @Autowired
+    private RtDriverService rtDriverService;
 
     @Autowired
     private RtDeliveryService rtDeliveryService;
@@ -77,6 +81,12 @@ public class EdOrderController {
     @ApiOperation(value = "司机订单列表", response = DiverOrderInforResult.class)
     public Response<DiverOrderInforResult> diverOrderInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(edOrderService.diverOrderInfor(enter));
+    }
+
+    @PostMapping(value = "/driverList")
+    @ApiOperation(value = "司机列表", response = ListDriverResult.class)
+    public Response<PageResult<ListDriverResult>> list(@ModelAttribute @ApiParam("请求参数") ListDriverPage page) {
+        return new Response<>(rtDriverService.list(page));
     }
 
     @PostMapping(value = "/licensePlateList")
