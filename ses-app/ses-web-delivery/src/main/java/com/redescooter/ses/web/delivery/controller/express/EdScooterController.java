@@ -54,7 +54,7 @@ public class EdScooterController {
         return new Response<>(edScooterService.detail(enter));
     }
 
-    @PostMapping(value = "/detail")
+    @PostMapping(value = "/scooterGreenData")
     @ApiOperation(value = "车辆环保数据", response = EdScooterGreenDataResult.class)
     public Response<EdScooterGreenDataResult> scooterGreenData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(edScooterService.scooterGreenData(enter));

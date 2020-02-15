@@ -12,7 +12,7 @@ import lombok.*;
  * @Version：1.3
  * @create: 2020/01/13 18:50
  */
-@ApiModel(value = "车辆列表", description = "车辆列表")
+@ApiModel(value = "车辆环保数据", description = "车辆环保数据")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
