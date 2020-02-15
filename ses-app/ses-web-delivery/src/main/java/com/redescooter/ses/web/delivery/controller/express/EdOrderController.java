@@ -83,7 +83,7 @@ public class EdOrderController {
         return new Response<>(edOrderService.diverOrderInfor(enter));
     }
 
-    @PostMapping(value = "/list")
+    @PostMapping(value = "/driverList")
     @ApiOperation(value = "司机列表", response = ListDriverResult.class)
     public Response<PageResult<ListDriverResult>> list(@ModelAttribute @ApiParam("请求参数") ListDriverPage page) {
         return new Response<>(rtDriverService.list(page));
