@@ -18,7 +18,6 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;

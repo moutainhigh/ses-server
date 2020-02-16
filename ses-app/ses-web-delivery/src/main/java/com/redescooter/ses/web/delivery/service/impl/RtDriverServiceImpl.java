@@ -296,7 +296,10 @@ public class RtDriverServiceImpl implements RtDriverService {
             return new DriverDetailsResult();
         }
 
-        QueryUserResult userResult = userBaseService.queryUserById(new IdEnter(driver.getUserId()));
+        GeneralEnter userEnter = new GeneralEnter();
+        BeanUtils.copyProperties(enter,userEnter);
+        userEnter.setUserId(driver.getUserId());
+        QueryUserResult userResult = userBaseService.queryUserById(userEnter);
 
         DriverDetailsResult result = new DriverDetailsResult();
         result.setId(driver.getId());
@@ -473,8 +476,8 @@ public class RtDriverServiceImpl implements RtDriverService {
     @Override
     public GeneralResult assignScooter(AssignScooterEnter enter) {
 
-        RedisLock.getInstance(jedisCluster).lock(String.valueOf(enter.getScooterId()));
-        try {
+//        RedisLock.getInstance(jedisCluster).lock(String.valueOf(enter.getScooterId()));
+//        try {
             CorDriver driver = driverService.getById(enter.getDriverId());
 
             if (driver == null) {
@@ -549,12 +552,12 @@ public class RtDriverServiceImpl implements RtDriverService {
             driver.setUpdatedBy(enter.getUserId());
             driverService.updateById(driver);
 
-        } catch (SesWebDeliveryException e) {
-            RedisLock.getInstance(jedisCluster).unlock(String.valueOf(enter.getScooterId()));
-            throw new SesWebDeliveryException(ExceptionCodeEnums.NON_REPEATABLE.getCode(), ExceptionCodeEnums.NON_REPEATABLE.getMessage());
-        } finally {
-            RedisLock.getInstance(jedisCluster).unlock(String.valueOf(enter.getScooterId()));
-        }
+//        } catch (SesWebDeliveryException e) {
+//            RedisLock.getInstance(jedisCluster).unlock(String.valueOf(enter.getScooterId()));
+//            throw new SesWebDeliveryException(ExceptionCodeEnums.NON_REPEATABLE.getCode(), ExceptionCodeEnums.NON_REPEATABLE.getMessage());
+//        } finally {
+//            RedisLock.getInstance(jedisCluster).unlock(String.valueOf(enter.getScooterId()));
+//        }
         return new GeneralResult(enter.getRequestId());
     }
 
