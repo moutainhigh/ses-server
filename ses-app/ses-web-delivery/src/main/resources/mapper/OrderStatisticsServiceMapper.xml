@@ -141,9 +141,7 @@
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
         and DATE_FORMAT(cdy.updated_time, '%Y-%m-%d') = DATE_FORMAT(#{dateTime}, '%Y-%m-%d')
-        <if test="status != null and status != ''">
-            and cdy.status=#{status}
-        </if>
+        and cdy.status='4'
         group by times
 
     </select>
@@ -156,9 +154,7 @@
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
         and (DATE_FORMAT(cdy.updated_time, '%Y-%m-%d') between  DATE_FORMAT(#{startDateTime}, '%Y-%m-%d')  and DATE_FORMAT(#{endDateTime}, '%Y-%m-%d'))
-        <if test="status != null and status != ''">
-            and cdy.status=#{status}
-        </if>
+        and cdy.status='4'
         group by times
     </select>
     <select id="eDDeliveryChart30Day" resultType="com.redescooter.ses.web.delivery.vo.DeliveryChartResult">
@@ -170,9 +166,7 @@
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
         and (DATE_FORMAT(cdy.updated_time,'%Y-%m-%d') between   DATE_FORMAT(#{startDateTime}, '%Y-%m-%d')  and DATE_FORMAT(#{endDateTime}, '%Y-%m-%d'))
-        <if test="status != null and status != ''">
-            and cdy.status=#{status}
-        </if>
+        and cdy.status='4'
         group by times
     </select>
     <select id="eDDeliveryChart365Day" resultType="com.redescooter.ses.web.delivery.vo.DeliveryChartResult">
@@ -184,9 +178,7 @@
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
         and (DATE_FORMAT(cdy.updated_time, '%Y-%m') between   DATE_FORMAT(#{startDateTime}, '%Y-%m')  and DATE_FORMAT(#{endDateTime}, '%Y-%m'))
-        <if test="status != null and status != ''">
-            and cdy.status=#{status}
-        </if>
+        and cdy.status='4'
         group by times
     </select>
     <select id="eDDeliveryCountByStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
