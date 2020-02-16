@@ -297,7 +297,7 @@ public class RtDriverServiceImpl implements RtDriverService {
         }
 
         GeneralEnter userEnter = new GeneralEnter();
-        BeanUtils.copyProperties(enter, userEnter);
+        BeanUtils.copyProperties(enter,userEnter);
         userEnter.setUserId(driver.getUserId());
         QueryUserResult userResult = userBaseService.queryUserById(userEnter);
 
@@ -478,27 +478,27 @@ public class RtDriverServiceImpl implements RtDriverService {
 
 //        RedisLock.getInstance(jedisCluster).lock(String.valueOf(enter.getScooterId()));
 //        try {
-        CorDriver driver = driverService.getById(enter.getDriverId());
+            CorDriver driver = driverService.getById(enter.getDriverId());
 
-        if (driver == null) {
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
-        }
-        if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.DEPARTURE.getValue())) {
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_DEPARTURE.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_DEPARTURE.getMessage());
-        }
-        if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.WORKING.getValue())) {
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getMessage());
-        }
+            if (driver == null) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
+            }
+            if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.DEPARTURE.getValue())) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_DEPARTURE.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_DEPARTURE.getMessage());
+            }
+            if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.WORKING.getValue())) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getMessage());
+            }
 
-        QueryWrapper<CorDriverScooter> driverScooterQueryWrapper = new QueryWrapper<>();
-        driverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
-        driverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
-        driverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
-        CorDriverScooter driverScooterOne = driverScooterService.getOne(driverScooterQueryWrapper);
+            QueryWrapper<CorDriverScooter> driverScooterQueryWrapper = new QueryWrapper<>();
+            driverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
+            driverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
+            driverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
+            CorDriverScooter driverScooterOne = driverScooterService.getOne(driverScooterQueryWrapper);
 
-        if (driverScooterOne == null) {
-            throw new SesWebDeliveryException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
+            if (driverScooterOne == null) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
 
         // 车辆验证
         driverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
@@ -507,46 +507,46 @@ public class RtDriverServiceImpl implements RtDriverService {
             throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
 
-        //先进行分配车辆，后更改司机状态
-        driverScooterOne.setStatus(DriverScooterStatusEnums.USED.getValue());
-        driverScooterOne.setScooterId(enter.getScooterId());
-        driverScooterOne.setBeginTime(new Date());
-        driverScooterOne.setEndTime(null);
-        driverScooterOne.setUpdatedBy(enter.getDriverId());
-        driverScooterOne.setUpdatedTime(new Date());
-        driverScooterService.updateById(driverScooterOne);
+            //先进行分配车辆，后更改司机状态
+            driverScooterOne.setStatus(DriverScooterStatusEnums.USED.getValue());
+            driverScooterOne.setScooterId(enter.getScooterId());
+            driverScooterOne.setBeginTime(new Date());
+            driverScooterOne.setEndTime(null);
+            driverScooterOne.setUpdatedBy(enter.getDriverId());
+            driverScooterOne.setUpdatedTime(new Date());
+            driverScooterService.updateById(driverScooterOne);
 
-        //加入分车历史记录
-        CorDriverScooterHistory driverScooterHistory = new CorDriverScooterHistory();
-        driverScooterHistory.setId(idAppService.getId(SequenceName.COR_DRIVER_SCOOTER));
-        driverScooterHistory.setDr(0);
-        driverScooterHistory.setTenantId(enter.getTenantId());
-        driverScooterHistory.setDriverId(driver.getId());
-        driverScooterHistory.setScooterId(driverScooterOne.getScooterId());
-        driverScooterHistory.setBeginTime(driverScooterOne.getBeginTime());
-        driverScooterHistory.setStatus(driverScooterOne.getStatus());
-        driverScooterHistory.setCreatedBy(enter.getUserId());
-        driverScooterHistory.setCreatedTime(new Date());
-        driverScooterHistory.setUpdatedBy(enter.getUserId());
-        driverScooterHistory.setUpdatedTime(new Date());
-        driverScooterHistoryService.save(driverScooterHistory);
+            //加入分车历史记录
+            CorDriverScooterHistory driverScooterHistory = new CorDriverScooterHistory();
+            driverScooterHistory.setId(idAppService.getId(SequenceName.COR_DRIVER_SCOOTER));
+            driverScooterHistory.setDr(0);
+            driverScooterHistory.setTenantId(enter.getTenantId());
+            driverScooterHistory.setDriverId(driver.getId());
+            driverScooterHistory.setScooterId(driverScooterOne.getScooterId());
+            driverScooterHistory.setBeginTime(driverScooterOne.getBeginTime());
+            driverScooterHistory.setStatus(driverScooterOne.getStatus());
+            driverScooterHistory.setCreatedBy(enter.getUserId());
+            driverScooterHistory.setCreatedTime(new Date());
+            driverScooterHistory.setUpdatedBy(enter.getUserId());
+            driverScooterHistory.setUpdatedTime(new Date());
+            driverScooterHistoryService.save(driverScooterHistory);
 
-        CorTenantScooter updateTenantScooter = new CorTenantScooter();
-        updateTenantScooter.setStatus(TenantScooterStatusEnums.USEING.getValue());
-        updateTenantScooter.setUpdatedBy(enter.getUserId());
-        updateTenantScooter.setUpdatedTime(new Date());
+            CorTenantScooter updateTenantScooter = new CorTenantScooter();
+            updateTenantScooter.setStatus(TenantScooterStatusEnums.USEING.getValue());
+            updateTenantScooter.setUpdatedBy(enter.getUserId());
+            updateTenantScooter.setUpdatedTime(new Date());
 
-        QueryWrapper<CorTenantScooter> scooterQueryWrapper = new QueryWrapper<>();
-        scooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
-        scooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
-        scooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, enter.getScooterId());
-        tenantScooterService.update(updateTenantScooter, scooterQueryWrapper);
+            QueryWrapper<CorTenantScooter> scooterQueryWrapper = new QueryWrapper<>();
+            scooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+            scooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
+            scooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, enter.getScooterId());
+            tenantScooterService.update(updateTenantScooter, scooterQueryWrapper);
 
-        //更新司机状态
-        driver.setStatus(DriverStatusEnum.WORKING.getValue());
-        driver.setUpdatedTime(new Date());
-        driver.setUpdatedBy(enter.getUserId());
-        driverService.updateById(driver);
+            //更新司机状态
+            driver.setStatus(DriverStatusEnum.WORKING.getValue());
+            driver.setUpdatedTime(new Date());
+            driver.setUpdatedBy(enter.getUserId());
+            driverService.updateById(driver);
 
 //        } catch (SesWebDeliveryException e) {
 //            RedisLock.getInstance(jedisCluster).unlock(String.valueOf(enter.getScooterId()));

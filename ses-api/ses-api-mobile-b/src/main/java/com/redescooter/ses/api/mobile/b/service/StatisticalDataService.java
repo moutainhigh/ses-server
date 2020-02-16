@@ -42,13 +42,6 @@ public interface StatisticalDataService {
      */
     MobileBDeliveryChartResult mobileBDeliveryChart(DateTimeParmEnter enter);
 
-    /**
-     * 订单数据图表统计
-     *
-     * @param enter
-     * @return
-     */
-    MobileBDeliveryChartResult mobileBEdDeliveryChart(DateTimeParmEnter enter);
 
     /**
      * 车辆图表数据统计

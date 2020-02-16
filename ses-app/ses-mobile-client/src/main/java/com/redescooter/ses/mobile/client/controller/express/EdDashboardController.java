@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @Slf4j
-@Api(tags = {"快递统计模块"})
+@Api(tags = {"快递订单统计模块"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/ed/dashboard", method = RequestMethod.POST)
