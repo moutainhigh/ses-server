@@ -3,6 +3,8 @@ package com.redescooter.ses.web.delivery.service.impl;
 
 import java.util.*;
 
+import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -42,6 +44,9 @@ public class EdScooterServiceImpl implements EdScooterService {
 
     @Autowired
     private CorTenantScooterService corTenantScooterService;
+
+    @Autowired
+    private DriverServiceMapper driverServiceMapper;
 
     @Reference
     private ScooterService scooterService;
@@ -97,6 +102,17 @@ public class EdScooterServiceImpl implements EdScooterService {
             });
         });
         return PageResult.create(enter, count, resultList);
+    }
+
+    /**
+     * 查询已下班且未离职的司机列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<DriverListResult> offDrivers(GeneralEnter enter) {
+        return driverServiceMapper.offDrivers(enter);
     }
 
     /**

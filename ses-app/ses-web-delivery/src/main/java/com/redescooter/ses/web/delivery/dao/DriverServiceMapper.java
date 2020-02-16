@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
@@ -140,4 +141,13 @@ public interface DriverServiceMapper {
     * @desc: 查询租户车辆型号
     */
     List<String> queryScooterModelByTenantId(Long tenantId);
+
+
+    /**
+     * 查询已下班且未离职的司机列表
+     *
+     * @param enter
+     * @return
+     */
+    List<DriverListResult> offDrivers(GeneralEnter enter);
 }

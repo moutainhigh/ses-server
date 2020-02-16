@@ -17,6 +17,7 @@ import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.RedisLock;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
@@ -499,16 +500,12 @@ public class RtDriverServiceImpl implements RtDriverService {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
 
-            // 车辆验证
-            QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper = new QueryWrapper<>();
-            corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_SCOOTER_ID, enter.getScooterId());
-            corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
-            corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
-            corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS,DriverScooterStatusEnums.USED.getValue());
-            CorDriverScooter driverScooter = driverScooterService.getOne(corDriverScooterQueryWrapper);
-            if (driverScooter!=null){
-                throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
-            }
+        // 车辆验证
+        driverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
+        CorDriverScooter driverScooter = driverScooterService.getOne(driverScooterQueryWrapper);
+        if (driverScooter != null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+        }
 
             //先进行分配车辆，后更改司机状态
             driverScooterOne.setStatus(DriverScooterStatusEnums.USED.getValue());

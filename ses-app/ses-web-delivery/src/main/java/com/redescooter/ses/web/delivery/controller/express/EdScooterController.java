@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.EdScooterService;
 import com.redescooter.ses.web.delivery.vo.edscooter.*;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,6 +48,12 @@ public class EdScooterController {
     @ApiOperation(value = "车辆列表", response = EdScooterResult.class)
     public Response<PageResult<EdScooterResult>> list(@ModelAttribute @ApiParam("请求参数") EdScooterListEnter enter) {
         return new Response<>(edScooterService.list(enter));
+    }
+
+    @PostMapping(value = "/offDrivers")
+    @ApiOperation(value = "车辆添加司机列表", response = DriverListResult.class)
+    public Response<List<DriverListResult>> offDrivers(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(edScooterService.offDrivers(enter));
     }
 
     @PostMapping(value = "/detail")

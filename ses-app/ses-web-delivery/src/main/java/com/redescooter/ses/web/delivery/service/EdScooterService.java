@@ -1,11 +1,10 @@
 package com.redescooter.ses.web.delivery.service;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.delivery.vo.edscooter.*;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +32,14 @@ public interface EdScooterService {
     PageResult<EdScooterResult> list(EdScooterListEnter enter);
 
     /**
+     * 查询已下班且未离职的司机列表
+     *
+     * @param enter
+     * @return
+     */
+    List<DriverListResult> offDrivers(GeneralEnter enter);
+
+    /**
      * 车辆详情
      *
      * @param enter
@@ -42,6 +49,7 @@ public interface EdScooterService {
 
     /**
      * 车辆环保数据展示
+     *
      * @param enter
      * @return
      */
