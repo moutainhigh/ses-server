@@ -89,6 +89,12 @@ public class EdOrderController {
         return new Response<>(rtDriverService.list(page));
     }
 
+    @PostMapping(value = "/cancelOrder")
+    @ApiOperation(value = "订单取消", response = DiverOrderInforResult.class)
+    public Response<GeneralResult> cancelOrder(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(edOrderService.cancelOrder(enter));
+    }
+
     @PostMapping(value = "/licensePlateList")
     @ApiOperation(value = "车牌号列表", response = ScooterLicensePlateResult.class)
     public Response<List<ScooterLicensePlateResult>> scooterLicensePlate(@ModelAttribute @ApiParam("请求参数") ScooterLicensePlateEnter enter) {

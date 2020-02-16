@@ -113,6 +113,7 @@ public enum ExceptionCodeEnums {
 
     ORDER_IS_NOT_ALLOCATED(10049,"订单尚未完全分配完"),
 
+    ORDER_HAS_BEEN_ASSIGNED(10050, "订单已分配，不可取消"),
 
 
     ;

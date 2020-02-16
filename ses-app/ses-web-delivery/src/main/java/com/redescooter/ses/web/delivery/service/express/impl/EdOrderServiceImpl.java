@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
@@ -223,13 +224,13 @@ public class EdOrderServiceImpl implements EdOrderService {
     }
 
     /**
+     * @param enter
      * @Description
      * @Author AlexLi
      * @Date 2020/2/3 13:46
      * @Param ExpressOrderMapEnter
      * @Return ExpressOrderMapResult
      * @desc 司机地图订单展示
-     * @param enter
      */
     @Override
     public ExpressOrderMapResult expressOrderMap(ExpressOrderMapEnter enter) {
@@ -248,7 +249,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         if (CollectionUtils.isNotEmpty(expressOrderList)) {
             expressOrderList.forEach(item -> {
                 QueryOrderDetailResult orderResult = new QueryOrderDetailResult();
-                BeanUtils.copyProperties(item,orderResult);
+                BeanUtils.copyProperties(item, orderResult);
                 orderResultList.add(orderResult);
             });
         }
@@ -262,13 +263,13 @@ public class EdOrderServiceImpl implements EdOrderService {
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/3 15:28
      * @Param: enter
      * @Return: QueryOrderDetailResult
      * @method: diverOrderInfor
-     * @param enter
      */
     @Override
     public DiverOrderInforResult diverOrderInfor(IdEnter enter) {
@@ -283,33 +284,33 @@ public class EdOrderServiceImpl implements EdOrderService {
         List<BaseScooterResult> scooterListResult = scooterService.scooterInfor(scooterIdList);
 
         //订单数据
-        List<QueryOrderDetailResult> orderList=expressOrderServiceMapper.driverOrderList(enter);
+        List<QueryOrderDetailResult> orderList = expressOrderServiceMapper.driverOrderList(enter);
 
         result.setScooterId(scooterListResult.get(0).getId());
         result.setLicensePlate(scooterListResult.get(0).getLicensePlate());
         result.setBattery(scooterListResult.get(0).getBattery());
-        result.setOrderList(CollectionUtils.isNotEmpty(orderList)==true ? null:orderList);
+        result.setOrderList(CollectionUtils.isNotEmpty(orderList) == true ? null : orderList);
 
         return result;
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/13 22:42
      * @Param: enter
      * @Return: RefuseOrderDetailResult
      * @desc: 拒绝订单详情
-     * @param enter
      */
     @Override
     public List<RefuseOrderDetailResult> refuseOrderDetail(IdEnter enter) {
         CorExpressOrder corExpressOrder = expressOrderService.getById(enter.getId());
-        if (corExpressOrder==null){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+        if (corExpressOrder == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.REJECTED.getValue())){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+        if (!StringUtils.equals(corExpressOrder.getStatus(), ExpressOrderStatusEnums.REJECTED.getValue())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
         //获取
         return expressOrderServiceMapper.refuseOrderDetail(enter);
@@ -317,23 +318,23 @@ public class EdOrderServiceImpl implements EdOrderService {
 
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/13 23:47
      * @Param: enter
      * @Return: generalResult
      * @desc: 修改订单状态
-     * @param enter
      */
     @Override
     public GeneralResult chanageExpressOrder(ChanageExpressOrderEnter enter) {
         // 订单验证
         CorExpressOrder corExpressOrder = expressOrderService.getById(enter.getId());
-        if (corExpressOrder==null){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+        if (corExpressOrder == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.REJECTED.getValue())){
-            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
+        if (!StringUtils.equals(corExpressOrder.getStatus(), ExpressOrderStatusEnums.REJECTED.getValue())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
 
         // 生成大订单
@@ -350,11 +351,42 @@ public class EdOrderServiceImpl implements EdOrderService {
         saveOrderTraceSingle(enter, corExpressDelivery);
         return new GeneralResult(enter.getRequestId());
     }
+
+    /**
+     * 取消订单
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult cancelOrder(IdEnter enter) {
+
+        CorExpressOrder expressOrder = expressOrderService.getById(enter.getId());
+
+        if (expressOrder == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+        }
+        if (!expressOrder.getStatus().equals(ExpressOrderStatusEnums.UNASGN.getValue())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.ORDER_HAS_BEEN_ASSIGNED.getCode(), ExceptionCodeEnums.ORDER_HAS_BEEN_ASSIGNED.getMessage());
+        }
+        expressOrder.setStatus(ExpressOrderStatusEnums.CANCEL.getValue());
+        expressOrder.setUpdatedTime(new Date());
+
+        expressOrderService.updateById(expressOrder);
+
+        //加入记录
+        createExpressOrderLogSingle(enter.getTenantId(), enter.getUserId(), expressOrder.getId(),
+                0, 0, 0, ExpressOrderStatusEnums.CANCEL.getValue(),
+                ExpressOrderEventEnums.UNASGN.getValue(), null, null, Boolean.TRUE);
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
     /**
      * @Description
-     * @Author:  AlexLi
-     * @Date:   2020/2/14 11:19
-     * @Param:  enter,corExpressDelivery
+     * @Author: AlexLi
+     * @Date: 2020/2/14 11:19
+     * @Param: enter, corExpressDelivery
      * @Return: void
      * @desc: 订单详情记录
      */
@@ -377,17 +409,18 @@ public class EdOrderServiceImpl implements EdOrderService {
         corExpressDeliveryDetail.setUpdatedTime(new Date());
         corExpressDeliveryDetailService.insertOrUpdate(corExpressDeliveryDetail);
     }
+
     /**
      * @Description
-     * @Author:  AlexLi
-     * @Date:   2020/2/14 11:20
-     * @Param:  enter
+     * @Author: AlexLi
+     * @Date: 2020/2/14 11:20
+     * @Param: enter
      * @Return: CorExpressDelivery
      * @desc: saveCorExpressDelivery
      */
     private CorExpressDelivery saveCorExpressDelivery(ChanageExpressOrderEnter enter) {
         CorExpressDelivery corExpressDelivery;
-        corExpressDelivery=new CorExpressDelivery();
+        corExpressDelivery = new CorExpressDelivery();
         corExpressDelivery.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY));
         corExpressDelivery.setDr(0);
         corExpressDelivery.setTenantId(enter.getTenantId());
