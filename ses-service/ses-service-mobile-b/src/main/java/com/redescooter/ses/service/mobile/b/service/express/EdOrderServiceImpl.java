@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetai
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
+import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -241,6 +242,19 @@ public class EdOrderServiceImpl implements EdOrderService {
         corExpressOrder.setUpdatedBy(enter.getUserId());
         corExpressOrder.setUpdatedTime(new Date());
         corExpressOrderService.updateById(corExpressOrder);
+
+        //查询task
+        CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
+        corExpressDelivery.setOrderCompleteNum(corExpressDelivery.getOrderCompleteNum()+1);
+        if ((corExpressDelivery.getOrderCompleteNum()).equals(corExpressDelivery.getOrderSum())){
+            corExpressDelivery.setStatus(TaskStatusEnums.DELIVERED.getValue());
+        }
+        // 更新 task 信息
+        corExpressDelivery.setUpdatedBy(enter.getUserId());
+        corExpressDelivery.setUpdatedTime(new Date());
+        corExpressDeliveryService.updateById(corExpressDelivery);
+
+
         // 获取正在骑行的车辆记录
         CorDriverScooter corDriverScooter=edOrderServiceMapper.queryScooterIdByUserId(enter.getUserId(),enter.getTenantId());
 

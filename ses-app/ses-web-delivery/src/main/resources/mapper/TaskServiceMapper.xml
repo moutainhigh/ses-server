@@ -123,18 +123,18 @@
         and express.id =#{id}
     </select>
     <select id="detailOrderList" resultType="com.redescooter.ses.web.delivery.vo.task.OrderResult">
-       select expressDetail.express_order_id as id,
-               expressDetail.status           as status,
-               eorder.recipient_country       as recipientCountry,
-               eorder.recipient_province      as recipientProvince,
-               eorder.recipient_postcode      as recipientPostcode,
-               eorder.recipient_city          as recipientCity,
-               eorder.recipient_address       as recipientAddress,
-               eorder.expect_time_begin       as expectTimeStart,
-               eorder.expect_time_end         as expectTimeEnd
+        select expressDetail.express_order_id as id,
+        eorder.status as status,
+        eorder.recipient_country as recipientCountry,
+        eorder.recipient_province as recipientProvince,
+        eorder.recipient_postcode as recipientPostcode,
+        eorder.recipient_city as recipientCity,
+        eorder.recipient_address as recipientAddress,
+        eorder.expect_time_begin as expectTimeStart,
+        eorder.expect_time_end as expectTimeEnd
         from cor_express_delivery_detail expressDetail
-                 inner join
-             cor_express_order eorder
+        inner join
+        cor_express_order eorder
              on eorder.id = expressDetail.express_order_id
                  and eorder.dr = 0
         where expressDetail.tenant_id = #{tenantId}
