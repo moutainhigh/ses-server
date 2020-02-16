@@ -3,9 +3,7 @@ package com.redescooter.ses.web.delivery.controller.express;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.express.EdDasboardService;
-import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
-import com.redescooter.ses.web.delivery.vo.TopTenEnter;
-import com.redescooter.ses.web.delivery.vo.TopTenResult;
+import com.redescooter.ses.web.delivery.vo.*;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *  @author: alex
- *  @Date: 2020/2/2 15:54
- *  @version：V 1.2
- *  @Description: EdDashboardController
+ * @author: alex
+ * @Date: 2020/2/2 15:54
+ * @version：V 1.2
+ * @Description: EdDashboardController
  */
 
 @Api(tags = {"快递仪表统计"})
@@ -28,6 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/ed/dashboard", method = RequestMethod.POST)
 public class EdDashboardController {
+
     @Reference
     private EdDasboardService edDasboardService;
 
@@ -53,6 +52,12 @@ public class EdDashboardController {
     @ApiOperation(value = "地图", response = ExpressOrderMapResult.class)
     public Response<ExpressOrderMapResult> map(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(edDasboardService.map(enter));
+    }
+
+    @PostMapping(value = "/eDDeliveryCharts")
+    @ApiOperation(value = "快递仪表盘订单柱状图", response = DeliveryChartResult.class)
+    public Response<DeliveryChartListResult> eDDeliveryCharts(@ModelAttribute @ApiParam("请求参数") DeliveryChartEnter enter) {
+        return new Response<>(edDasboardService.eDDeliveryChartList(enter));
     }
 
 }
