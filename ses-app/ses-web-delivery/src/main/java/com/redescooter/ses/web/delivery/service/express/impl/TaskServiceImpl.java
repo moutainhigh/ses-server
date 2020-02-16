@@ -212,7 +212,6 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public GeneralResult save(SaveTaskEnter enter) {
 
-
         List<DriverTaskEnter> driverTaskEnters = null;
         try {
             driverTaskEnters = JSONArray.parseArray(enter.getDriverTaskListJson(), DriverTaskEnter.class);

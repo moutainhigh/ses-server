@@ -516,7 +516,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                 throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
                         ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
             }
-
         }
         //①、创建user信息
         PlaUser user = new PlaUser();

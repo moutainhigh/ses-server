@@ -46,10 +46,11 @@ public interface EdOrderService {
      *
      * @param orderExcleDataList
      */
-    void saveOrders(List<ExpressOrderExcleData> orderExcleDataList,GeneralEnter enter);
+    void saveOrders(List<ExpressOrderExcleData> orderExcleDataList, GeneralEnter enter);
 
     /**
      * 快递订单状态统计
+     *
      * @param enter
      * @return
      */
@@ -57,6 +58,7 @@ public interface EdOrderService {
 
     /**
      * 快递订单列表分页查询
+     *
      * @param enter
      * @return
      */
@@ -64,6 +66,7 @@ public interface EdOrderService {
 
     /**
      * 订单详情查询
+     *
      * @param enter
      * @return
      */
@@ -71,39 +74,49 @@ public interface EdOrderService {
 
     /**
      * @Description
-     * @Author  AlexLi
-     * @Date   2020/2/3 13:46
-     * @Param  ExpressOrderMapEnter
+     * @Author AlexLi
+     * @Date 2020/2/3 13:46
+     * @Param ExpressOrderMapEnter
      * @Return ExpressOrderMapResult
-     * @method   EdOrderService
+     * @method EdOrderService
      */
     ExpressOrderMapResult expressOrderMap(ExpressOrderMapEnter enter);
 
     /**
-    * @Description
-    * @Author:  AlexLi
-    * @Date:   2020/2/3 15:28
-    * @Param:  enter
-    * @Return: QueryOrderDetailResult
-    * @method: diverOrderInfor
-    */
+     * @Description
+     * @Author: AlexLi
+     * @Date: 2020/2/3 15:28
+     * @Param: enter
+     * @Return: QueryOrderDetailResult
+     * @method: diverOrderInfor
+     */
     DiverOrderInforResult diverOrderInfor(IdEnter enter);
+
     /**
-    * @Description
-    * @Author:  AlexLi
-    * @Date:   2020/2/13 22:42
-    * @Param:  enter
-    * @Return: RefuseOrderDetailResult
-    * @desc: 拒绝订单详情
-    */
+     * @Description
+     * @Author: AlexLi
+     * @Date: 2020/2/13 22:42
+     * @Param: enter
+     * @Return: RefuseOrderDetailResult
+     * @desc: 拒绝订单详情
+     */
     List<RefuseOrderDetailResult> refuseOrderDetail(IdEnter enter);
+
     /**
-    * @Description
-    * @Author:  AlexLi
-    * @Date:   2020/2/13 23:47
-    * @Param:  enter
-    * @Return: generalResult
-    * @desc: 修改订单状态
-    */
-   GeneralResult chanageExpressOrder(ChanageExpressOrderEnter enter);
+     * @Description
+     * @Author: AlexLi
+     * @Date: 2020/2/13 23:47
+     * @Param: enter
+     * @Return: generalResult
+     * @desc: 修改订单状态
+     */
+    GeneralResult chanageExpressOrder(ChanageExpressOrderEnter enter);
+
+    /**
+     * 取消订单
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult cancelOrder(IdEnter enter);
 }
