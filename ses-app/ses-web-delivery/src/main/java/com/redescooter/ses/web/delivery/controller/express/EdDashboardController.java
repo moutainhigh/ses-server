@@ -30,7 +30,7 @@ public class EdDashboardController {
     @Reference
     private EdDasboardService edDasboardService;
 
-    @PostMapping(value = "/countByStatus")
+    @PostMapping(value = "/todayCountByStatus")
     @ApiOperation(value = "今天订单状态统计", response = Map.class)
     public Response<Map<String, Integer>> todayCountByStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(edDasboardService.todayCountByStatus(enter));
@@ -55,7 +55,7 @@ public class EdDashboardController {
     }
 
     @PostMapping(value = "/eDDeliveryCharts")
-    @ApiOperation(value = "快递仪表盘订单柱状图", response = DeliveryChartResult.class)
+    @ApiOperation(value = "快递订单柱状图", response = DeliveryChartResult.class)
     public Response<DeliveryChartListResult> eDDeliveryCharts(@ModelAttribute @ApiParam("请求参数") DeliveryChartEnter enter) {
         return new Response<>(edDasboardService.eDDeliveryChartList(enter));
     }

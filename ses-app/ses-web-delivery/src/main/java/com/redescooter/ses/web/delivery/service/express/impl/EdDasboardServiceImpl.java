@@ -2,6 +2,7 @@ package com.redescooter.ses.web.delivery.service.express.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
+import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -56,11 +57,13 @@ public class EdDasboardServiceImpl implements EdDasboardService {
         for (CountByStatusResult item : countByStatusResultList) {
             map.put(item.getStatus(), item.getTotalCount());
         }
-        for (DeliveryStatusEnums status : DeliveryStatusEnums.values()) {
+        for (ExpressOrderStatusEnums status : ExpressOrderStatusEnums.values()) {
             if (!map.containsKey(status.getValue())) {
                 map.put(status.getValue(), 0);
             }
         }
+        map.remove(ExpressOrderStatusEnums.CANCEL.getValue());
+        map.remove(ExpressOrderStatusEnums.SHIPPING.getValue());
         return map;
     }
 
@@ -144,6 +147,8 @@ public class EdDasboardServiceImpl implements EdDasboardService {
      */
     @Override
     public DeliveryChartListResult eDDeliveryChartList(DeliveryChartEnter enter) {
+
+        enter.setStatus(ExpressOrderStatusEnums.COMPLETED.getValue());
         Map<String, DeliveryChartResult> map = new LinkedHashMap<>();
         List<DeliveryChartResult> deliveryChartResults = new ArrayList<>();
         Double max = 0.00, avg = 0.00, min = 0.00;
@@ -182,7 +187,6 @@ public class EdDasboardServiceImpl implements EdDasboardService {
                 BeanUtils.copyProperties(enter, dateTimeParm30);
                 dateTimeParm30.setEndDateTime(enter.getDateTimes());
                 dateTimeParm30.setStartDateTime(start30);
-                deliveryChartResults = orderStatisticsServiceMapper.deliveryChart30Day(dateTimeParm30);
                 deliveryChartResults = orderStatisticsServiceMapper.eDDeliveryChart30Day(dateTimeParm30);
                 break;
 
@@ -194,7 +198,6 @@ public class EdDasboardServiceImpl implements EdDasboardService {
                 BeanUtils.copyProperties(enter, dateTimeParm365);
                 dateTimeParm365.setEndDateTime(enter.getDateTimes());
                 dateTimeParm365.setStartDateTime(start365);
-                deliveryChartResults = orderStatisticsServiceMapper.deliveryChart365Day(dateTimeParm365);
                 deliveryChartResults = orderStatisticsServiceMapper.eDDeliveryChart365Day(dateTimeParm365);
                 break;
 
