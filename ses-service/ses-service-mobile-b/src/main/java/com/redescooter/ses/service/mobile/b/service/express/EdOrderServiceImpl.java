@@ -163,7 +163,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         corExpressDelivery.setCo2(corExpressDelivery.getCo2().add(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(Long.valueOf(enter.getMileage())))));
         corExpressDelivery.setSavings(corExpressDelivery.getSavings().add(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(Long.valueOf(enter.getMileage())))));
         // 刚开始第一单
-        if (corExpressDelivery.getOrderCompleteNum()< 1){
+        if (corExpressDelivery.getOrderCompleteNum()==0){
             corExpressDelivery.setDeliveryStartTime(new Date());
         }
         corExpressDeliveryService.updateById(corExpressDelivery);
@@ -248,6 +248,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         corExpressDelivery.setOrderCompleteNum(corExpressDelivery.getOrderCompleteNum()+1);
         if ((corExpressDelivery.getOrderCompleteNum()).equals(corExpressDelivery.getOrderSum())){
             corExpressDelivery.setStatus(TaskStatusEnums.DELIVERED.getValue());
+            corExpressDelivery.setDeliveryEndTime(new Date());
         }
         // 更新 task 信息
         corExpressDelivery.setUpdatedBy(enter.getUserId());
