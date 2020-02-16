@@ -109,7 +109,7 @@ public interface ExpressOrderServiceMapper {
      * @Return: RefuseOrderDetailResult
      * @desc: 拒绝订单详情
      */
-    List<RefuseOrderDetailResult> refuseOrderDetail(IdEnter enter);
+    RefuseOrderDetailResult refuseOrderDetail(IdEnter enter);
 
     /**
      * @Description

@@ -304,7 +304,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @desc: 拒绝订单详情
      */
     @Override
-    public List<RefuseOrderDetailResult> refuseOrderDetail(IdEnter enter) {
+    public RefuseOrderDetailResult refuseOrderDetail(IdEnter enter) {
         CorExpressOrder corExpressOrder = expressOrderService.getById(enter.getId());
         if (corExpressOrder == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());

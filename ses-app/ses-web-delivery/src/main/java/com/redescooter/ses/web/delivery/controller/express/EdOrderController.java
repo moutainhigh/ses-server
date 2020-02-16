@@ -103,7 +103,7 @@ public class EdOrderController {
 
     @PostMapping(value = "/refuseOrderDetail")
     @ApiOperation(value = "拒绝订单详情", response = RefuseOrderDetailResult.class)
-    public Response<List<RefuseOrderDetailResult>> refuseOrderDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<RefuseOrderDetailResult> refuseOrderDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(edOrderService.refuseOrderDetail(enter));
     }
 
