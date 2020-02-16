@@ -9,6 +9,7 @@ import com.redescooter.ses.api.mobile.b.vo.express.EdMobileBExpressOrderChartRes
 import com.redescooter.ses.api.mobile.b.vo.express.EdMonthlyExpressOrderChartResult;
 import com.redescooter.ses.service.mobile.b.dao.EdDashboardServiceMapper;
 import com.redescooter.ses.tool.utils.DateUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,15 +38,19 @@ public class EdDashboardServiceImpl implements EdDashboardService {
         CountByStatusResult refuseCount=edDashboardServiceMapper.refuseCount(enter);
 
         Map<String, Integer> map = new HashMap<>();
-        for (CountByStatusResult item : countByStatusResultList) {
-            map.put(item.getStatus(), item.getTotalCount());
+        if (CollectionUtils.isNotEmpty(countByStatusResultList)){
+            for (CountByStatusResult item : countByStatusResultList) {
+                map.put(item.getStatus(), item.getTotalCount());
+            }
         }
         for (ExpressOrderStatusEnums status : ExpressOrderStatusEnums.values()) {
             if (!map.containsKey(status.getValue())) {
                 map.put(status.getValue(), 0);
             }
         }
-        map.put(refuseCount.getStatus(),refuseCount.getTotalCount());
+        if (refuseCount!=null){
+            map.put(refuseCount.getStatus(),refuseCount.getTotalCount());
+        }
         return map;
     }
 
@@ -65,14 +70,22 @@ public class EdDashboardServiceImpl implements EdDashboardService {
 
         List<EdMonthlyExpressOrderChartResult> list = edDashboardServiceMapper.mobileBDeliveryChart(enter);
 
+        List<String> dayList = new LinkedList();
+        // 获取指定日期格式向前N天时间集合
+        dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+
+
         if (list.size() == 0) {
-            return new EdMobileBExpressOrderChartResult();
+            EdMobileBExpressOrderChartResult edMobileBExpressOrderChartResult = new EdMobileBExpressOrderChartResult();
+            dayList.forEach(item->{
+                EdMonthlyExpressOrderChartResult edMonthlyExpressOrderChartResult = new EdMonthlyExpressOrderChartResult();
+                edMonthlyExpressOrderChartResult.setTimes(item);
+                allMap.put(item, edMonthlyExpressOrderChartResult);
+            });
+            edMobileBExpressOrderChartResult.setAllMap(allMap);
+            return edMobileBExpressOrderChartResult;
         } else {
             EdMonthlyExpressOrderChartResult result = null;
-            List<String> dayList = new LinkedList();
-            // 获取指定日期格式向前N天时间集合
-            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
-
             for (String str : dayList) {
                 for (EdMonthlyExpressOrderChartResult chart : list) {
                     if (chart.getTimes().equals(str)) {
