@@ -34,7 +34,7 @@ public interface EdDasboardServiceMapper {
     * @Return: TopTenResult
     * @desc: 排行榜
     */
-    TopTenResult topTen(TopTenEnter enter);
+    List<TopTenResult> topTen(TopTenEnter enter);
     /**
     * @Description
     * @Author:  AlexLi

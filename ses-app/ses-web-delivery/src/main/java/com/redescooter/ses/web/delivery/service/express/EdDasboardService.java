@@ -6,6 +6,7 @@ import com.redescooter.ses.web.delivery.vo.TopTenEnter;
 import com.redescooter.ses.web.delivery.vo.TopTenResult;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +34,7 @@ public interface EdDasboardService {
     * @Return: TopTenResult
     * @desc:  司机排行榜
     */
-    TopTenResult topTen(TopTenEnter enter);
+    List<TopTenResult> topTen(TopTenEnter enter);
     /**
     * @Description
     * @Author:  AlexLi
