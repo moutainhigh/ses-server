@@ -64,8 +64,6 @@ public class RtDeliveryController {
         return new Response<>(rtDeliveryService.details(enter));
     }
 
-
-
     @PostMapping(value = "/selectDriver")
     @ApiOperation(value = "司机列表选择", response = SelectDriverResult.class)
     public Response<List<SelectDriverResult>> selectDriver(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
