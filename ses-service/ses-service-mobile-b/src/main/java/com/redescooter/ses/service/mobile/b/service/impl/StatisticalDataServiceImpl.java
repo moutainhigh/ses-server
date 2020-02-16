@@ -261,17 +261,6 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
     }
 
     /**
-     * 订单数据图表统计
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public MobileBDeliveryChartResult mobileBEdDeliveryChart(DateTimeParmEnter enter) {
-        return null;
-    }
-
-    /**
      * 车辆图表数据统计
      *
      * @param enter

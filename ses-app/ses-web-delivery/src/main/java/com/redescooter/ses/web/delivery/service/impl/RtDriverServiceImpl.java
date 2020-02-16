@@ -17,7 +17,6 @@ import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.starter.redis.RedisLock;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
@@ -506,7 +505,7 @@ public class RtDriverServiceImpl implements RtDriverService {
             corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
             corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
             corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS,DriverScooterStatusEnums.USED.getValue());
-            CorDriverScooter driverScooter = driverScooterService.getOne(driverScooterQueryWrapper);
+            CorDriverScooter driverScooter = driverScooterService.getOne(corDriverScooterQueryWrapper);
             if (driverScooter!=null){
                 throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(),ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
             }

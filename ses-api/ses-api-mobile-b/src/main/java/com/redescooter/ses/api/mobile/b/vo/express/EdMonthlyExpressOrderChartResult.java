@@ -10,10 +10,10 @@ import lombok.*;
 public class EdMonthlyExpressOrderChartResult extends GeneralResult {
 
     @ApiModelProperty(value = "完成总数")
-    private Integer completed;
+    private Integer completed=0;
 
     @ApiModelProperty(value = "拒绝总数")
-    private Integer refuse;
+    private Integer refuse=0;
 
     @ApiModelProperty(value = "日期")
     private String times;
