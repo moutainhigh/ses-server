@@ -38,8 +38,11 @@
         ifnull(sum(case when cdy.status = '5' then 1 end), 0) as completed,
         ifnull(sum(case
         when cdy.status = '4' then 1
-        when cdy.status = '' then 1 end), 0) as total
-        from cor_express_order_trace cdy LEFT JOIN cor_driver driver on cdy.driver_id=driver.id
+        when cdy.status = '5' then 1
+        when cdy.status = '6' then 1
+        end), 0) as total
+        from cor_express_order_trace cdy
+        LEFT JOIN cor_driver driver on cdy.driver_id = driver.id
         where cdy.dr = 0
         and cdy.tenant_id = #{tenantId}
         and driver.user_id = #{userId}

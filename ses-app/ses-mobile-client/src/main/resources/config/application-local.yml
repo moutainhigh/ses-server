@@ -142,7 +142,7 @@ spring:                                                                         
         title: 快递订单统计模块接口
         description: 快递订单统计模块的操作
         base-package: com.redescooter.ses
-        path-regex: /ed/date/.*
+        path-regex: /ed/dashboard/.*
         path-mapping: /
         version: 1.2.0
         license: RedE 公司内部传阅

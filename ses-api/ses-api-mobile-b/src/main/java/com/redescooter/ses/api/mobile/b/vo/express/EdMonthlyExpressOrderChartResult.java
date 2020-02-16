@@ -15,6 +15,9 @@ public class EdMonthlyExpressOrderChartResult extends GeneralResult {
     @ApiModelProperty(value = "拒绝总数")
     private Integer refuse=0;
 
+    @ApiModelProperty(value = "总数")
+    private Integer total=0;
+
     @ApiModelProperty(value = "日期")
     private String times;
 }
