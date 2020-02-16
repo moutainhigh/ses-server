@@ -135,3 +135,18 @@ spring:                                                                         
           email: Jerry@redescooter.com
           url: https://github.com/mrjerryli#联系地址
 
+      ExpressOrderDate-api:
+        group-name: 7.ExpressOrderDate-API
+        title: 快递订单统计模块接口
+        description: 快递订单统计模块的操作
+        base-package: com.redescooter.ses
+        path-regex: /ed/dashboard/.*
+        path-mapping: /
+        version: 1.2.0
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
+
