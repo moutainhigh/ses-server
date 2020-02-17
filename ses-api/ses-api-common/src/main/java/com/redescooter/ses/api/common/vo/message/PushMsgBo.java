@@ -51,6 +51,9 @@ public class PushMsgBo {
     @ApiModelProperty(value = "推送类型 PC、android")
     private String pushType;
 
+    @ApiModelProperty(value = "消息类型站内、站外 、空 默认 空 ")
+    private String mesageType;
+
     @ApiModelProperty(value = "消息优先级 0 无需提醒 1 小红点 2 强提醒")
     private String messagePriority;
 

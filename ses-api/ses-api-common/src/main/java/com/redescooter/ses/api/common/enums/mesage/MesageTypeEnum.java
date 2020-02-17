@@ -15,8 +15,11 @@ import lombok.NoArgsConstructor;
 public enum MesageTypeEnum {
     //站内消息
     SITE("SITE", "site", "1"),
-    // 推送消息
-    PUSH("PUSH", "push", "2");
+    // 站外消息
+    PUSH("PUSH", "push", "2"),
+
+    NONE("NONE", "none", "3"),
+    ;
 
     private String code;
 
