@@ -329,6 +329,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         corExpressOrder.setStatus(ExpressOrderStatusEnums.COMPLETED.getValue());
         corExpressOrder.setUpdatedBy(enter.getUserId());
         corExpressOrder.setUpdatedTime(new Date());
+        corExpressOrder.setDeliveredTime(new Date());
         corExpressOrderService.updateById(corExpressOrder);
 
         //维护delivery 中的 完成数量

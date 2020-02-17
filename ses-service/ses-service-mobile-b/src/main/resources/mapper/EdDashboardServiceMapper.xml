@@ -34,8 +34,8 @@
     <select id="mobileBDeliveryChart"
             resultType="com.redescooter.ses.api.mobile.b.vo.express.EdMonthlyExpressOrderChartResult">
         select DATE_FORMAT(cdy.created_time, '%Y-%m-%d') as times,
-        ifnull(sum(case when cdy.status = '4' then 1 end), 0) as rejected,
-        ifnull(sum(case when cdy.status = '5' then 1 end), 0) as completed,
+        ifnull(sum(case when cdy.status = '4' then 1 end), 0) as completed,
+        ifnull(sum(case when cdy.status = '5' then 1 end), 0) as refuse,
         ifnull(sum(case
         when cdy.status = '4' then 1
         when cdy.status = '5' then 1
