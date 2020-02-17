@@ -272,7 +272,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @method: diverOrderInfor
      */
     @Override
-    public DiverOrderInforResult diverOrderInfor(IdEnter enter) {
+    public DiverOrderInforResult diverOrderlistById(IdEnter enter) {
         DiverOrderInforResult result = expressOrderServiceMapper.diverInfor(enter);
 
         if (result == null) {
@@ -289,7 +289,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         result.setScooterId(scooterListResult.get(0).getId());
         result.setLicensePlate(scooterListResult.get(0).getLicensePlate());
         result.setBattery(scooterListResult.get(0).getBattery());
-        result.setOrderList(CollectionUtils.isNotEmpty(orderList) == true ? null : orderList);
+        result.setOrderList(orderList);
 
         return result;
     }
