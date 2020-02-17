@@ -60,6 +60,12 @@ public class QueryOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "司机邮箱")
     private String driverEmail;
 
+    @ApiModelProperty(value = "司机手机号")
+    private String driverPhone;
+
+    @ApiModelProperty(value = "司机登录类型")
+    private String driverLoginType;
+
     @ApiModelProperty(value = "司机昵称")
     private String driverNickname;
 
@@ -114,7 +120,7 @@ public class QueryOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "发货维度")
     private String recipientLongitude;
 
-    @ApiModelProperty(value = "geohash",hidden = true)
+    @ApiModelProperty(value = "geohash", hidden = true)
     private String recipientGeohash;
 
     @ApiModelProperty(value = "收货人电话")
@@ -150,7 +156,7 @@ public class QueryOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "发货人维度")
     private String senderLongitude;
 
-    @ApiModelProperty(value = "geohash",hidden = true)
+    @ApiModelProperty(value = "geohash", hidden = true)
     private String senderGeohash;
 
     @ApiModelProperty(value = "发货人公司")

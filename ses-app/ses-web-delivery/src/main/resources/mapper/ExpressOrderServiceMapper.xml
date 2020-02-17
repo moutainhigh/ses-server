@@ -87,67 +87,57 @@
         limit #{startRow},#{pageSize}
     </select>
     <select id="detail" resultType="com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult">
-    SELECT
-    	a.id,
-    	a.tenant_id as tenantId,
-    	a.batch_no as batchNo,
-    	a.order_no as orderNo,
-    	a.STATUS,
-    	a.recipient_country as recipientCountry,
-    	a.recipient_city as recipientCity,
-    	a.recipient_province as recipientProvince,
-    	a.recipient_postcode as recipientPostcode,
-    	a.recipient_address as recipientAddress,
-    	a.recipient_latitude as recipientLatitude,
-    	a.recipient_longitude as recipientLongitude,
-    	a.recipient_geohash as recipientGeohash,
-    	a.recipient_name as recipientName,
-    	a.recipient_company as recipientCompany,
-    	a.recipient_phone as recipientPhone,
-    	a.recipient_mail as recipientMail,
-    	a.recipient_notes as recipientNotes,
-    	a.sender_country as senderCountry,
-    	a.sender_city as senderCity,
-    	a.sender_province as senderProvince,
-    	a.sender_postcode as senderPostcode,
-    	a.sender_address as senderAddress,
-    	a.sender_latitude as senderLatitude,
-    	a.sender_longitude as senderLongitude,
-    	a.sender_geohash as senderGeohash,
-    	a.sender_company as senderCompany,
-    	a.sender_name as senderName,
-    	a.sender_phone as senderPhone,
-    	a.sender_mail as senderMail,
-    	a.sender_notes as senderNotes,
-    	a.parcel_quantity as parcelQuantity,
-    	a.assign_flag as assignFlag,
-    	a.assign_time as assignTime,
-    	a.vehicle_type as vehicleType,
-    	a.expect_time_begin as expectTimeBegin,
-    	a.expect_time_end as expectTimeEnd,
-    	a.general_notes as generalNotes,
-        a.delivered_time as deliveredTime,
-        a.created_time  as createdTime,
-        e.first_name as driverFirstName,
-    	e.last_name as driverLastName,
-        e.email_1             as driverEmail,
-        e.nickname            as driverNickname,
-        cts.license_plate     as licensePlate,
-    	a.denial_reason as reason
-    FROM
-    	cor_express_order a
-    	LEFT JOIN (
-    	SELECT
-    		*
-    	FROM
-    		cor_express_delivery_detail
-    	WHERE
-    		dr = 0
-    		AND express_order_id = #{id}
-    	ORDER BY
-    		created_time DESC
-    		LIMIT 1
-    	) b ON a.id = b.express_order_id
+        SELECT a.id,
+        a.tenant_id           as                          tenantId,
+        a.batch_no            as                          batchNo,
+        a.order_no            as                          orderNo,
+        a.STATUS,
+        a.recipient_country   as                          recipientCountry,
+        a.recipient_city      as                          recipientCity,
+        a.recipient_province  as                          recipientProvince,
+        a.recipient_postcode  as                          recipientPostcode,
+        a.recipient_address   as                          recipientAddress,
+        a.recipient_latitude  as                          recipientLatitude,
+        a.recipient_longitude as                          recipientLongitude,
+        a.recipient_geohash   as                          recipientGeohash,
+        a.recipient_name      as                          recipientName,
+        a.recipient_company   as                          recipientCompany,
+        a.recipient_phone     as                          recipientPhone,
+        a.recipient_mail      as                          recipientMail,
+        a.recipient_notes     as                          recipientNotes,
+        a.sender_country      as                          senderCountry,
+        a.sender_city         as                          senderCity,
+        a.sender_province     as                          senderProvince,
+        a.sender_postcode     as                          senderPostcode,
+        a.sender_address      as                          senderAddress,
+        a.sender_latitude     as                          senderLatitude,
+        a.sender_longitude    as                          senderLongitude,
+        a.sender_geohash      as                          senderGeohash,
+        a.sender_company      as                          senderCompany,
+        a.sender_name         as                          senderName,
+        a.sender_phone        as                          senderPhone,
+        a.sender_mail         as                          senderMail,
+        a.sender_notes        as                          senderNotes,
+        a.parcel_quantity     as                          parcelQuantity,
+        a.assign_flag         as                          assignFlag,
+        a.assign_time         as                          assignTime,
+        a.vehicle_type        as                          vehicleType,
+        a.expect_time_begin   as                          expectTimeBegin,
+        a.expect_time_end     as                          expectTimeEnd,
+        a.general_notes       as                          generalNotes,
+        a.delivered_time      as                          deliveredTime,
+        a.created_time        as                          createdTime,
+        e.first_name          as                          driverFirstName,
+        e.last_name           as                          driverLastName,
+        e.email_1             as                          driverEmail,
+        e.nickname            as                          driverNickname,
+        e.tel_number_1        as                          driverPhone,
+        case when e.email_1 is null then '2' ELSE '1' END driverLoginType,
+        cts.license_plate     as                          licensePlate,
+        a.denial_reason       as                          reason
+        FROM cor_express_order a
+        LEFT JOIN (SELECT * FROM cor_express_delivery_detail ORDER BY created_time DESC LIMIT 1) b
+        ON a.id = b.express_order_id
         LEFT JOIN cor_express_delivery c ON b.express_delivery_id = c.id AND c.dr = 0
         LEFT JOIN cor_driver d ON c.driver_id = d.id AND d.dr = 0
         LEFT JOIN cor_user_profile e ON e.user_id = d.user_id AND e.dr = 0
