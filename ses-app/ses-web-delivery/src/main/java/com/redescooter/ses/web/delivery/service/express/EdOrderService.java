@@ -90,7 +90,7 @@ public interface EdOrderService {
      * @Return: QueryOrderDetailResult
      * @method: diverOrderInfor
      */
-    DiverOrderInforResult diverOrderInfor(IdEnter enter);
+    DiverOrderInforResult diverOrderlistById(IdEnter enter);
 
     /**
      * @Description

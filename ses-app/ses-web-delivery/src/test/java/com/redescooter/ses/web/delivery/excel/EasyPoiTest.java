@@ -4,6 +4,7 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.redescooter.ses.starter.poi.EasyPoiUtils;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import lombok.SneakyThrows;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.system.ApplicationHome;
@@ -30,16 +31,17 @@ import java.util.Optional;
 public class EasyPoiTest {
 
     @Test
-    public void  test1(){
-        ExpressOrderExcleData expressOrderExcleData =new ExpressOrderExcleData();
-        expressOrderExcleData=null;
+    public void test1() {
+        ExpressOrderExcleData expressOrderExcleData = new ExpressOrderExcleData();
+        expressOrderExcleData = null;
 
         Optional.ofNullable(expressOrderExcleData)
-                .ifPresent(u->{
-                    System.out.println("---"+u);
+                .ifPresent(u -> {
+                    System.out.println("---" + u);
                 });
 
     }
+
     /**
      * 测试单sheet导出
      *
@@ -47,19 +49,17 @@ public class EasyPoiTest {
      */
     @Test
     public void testExportExcel() throws IOException {
-        List<ExpressOrderExcleData> list = new ArrayList<>();
-//        int i = 0;
-//        while (i < 10){
-//            ExpressOrderExcleData expressOrder = new ExpressOrderExcleData();
-//            expressOrder.setCustomerReference(String.valueOf(i+1));
-//            expressOrder.setRecipientMail("abc@163.com");
-//            expressOrder.setRecipientName("张三"+i);
-//            expressOrder.setVehicleType(String.valueOf(i%2==0?1:2));
-//            expressOrder.setExpectTimeBegin(new Date());
-//            list.add(expressOrder);
-//            i++;
-//        }
-        EasyPoiUtils.exportExcel(ExpressOrderExcleData.class, list, "src/main/resources/template/", "expressOrder.xls");
+        List<String> list = new ArrayList<>();
+        list.add("0");
+        list.add("0");
+        list.add("0");
+        list.add("0");
+
+
+        boolean notEmpty = CollectionUtils.isNotEmpty(list);
+
+        System.out.println(notEmpty + "===========");
+
     }
 
     /**

@@ -77,10 +77,10 @@ public class EdOrderController {
         return new Response<>(edOrderService.expressOrderMap(enter));
     }
 
-    @PostMapping(value = "/diverOrderInfor")
-    @ApiOperation(value = "司机订单列表", response = DiverOrderInforResult.class)
-    public Response<DiverOrderInforResult> diverOrderInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(edOrderService.diverOrderInfor(enter));
+    @PostMapping(value = "/diverOrderlistById")
+    @ApiOperation(value = "司机个人订单列表", response = DiverOrderInforResult.class)
+    public Response<DiverOrderInforResult> diverOrderlistById(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(edOrderService.diverOrderlistById(enter));
     }
 
     @PostMapping(value = "/driverList")
