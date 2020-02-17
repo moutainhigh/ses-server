@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://localhost:12181
+    address: zookeeper://39.108.92.232:12181
 
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
@@ -17,7 +17,7 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://localhost:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://39.108.92.232:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
     username: root
     password: 1qaz2wsx
     druid:
@@ -34,12 +34,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - localhost:7000
-        - localhost:7001
-        - localhost:7002
-        - localhost:7003
-        - localhost:7004
-        - localhost:7005
+        - 39.108.92.232:7000
+        - 39.108.92.232:7001
+        - 39.108.92.232:7002
+        - 39.108.92.232:7003
+        - 39.108.92.232:7004
+        - 39.108.92.232:7005
 
   swagger:                                                                                                              #swagger在线文档配置
     enabled: true                                                                                                       #是否启用swagger

@@ -21,17 +21,17 @@ spring:
   redis:
     cluster:
       nodes:
-        - localhost:7000
-        - localhost:7001
-        - localhost:7002
-        - localhost:7003
-        - localhost:7004
-        - localhost:7005
+        - 39.108.92.232:7000
+        - 39.108.92.232:7001
+        - 39.108.92.232:7002
+        - 39.108.92.232:7003
+        - 39.108.92.232:7004
+        - 39.108.92.232:7005
 
 # DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://localhost:12181
+    address: zookeeper://39.108.92.232:12181
 
 
 # 多注册中心配置
