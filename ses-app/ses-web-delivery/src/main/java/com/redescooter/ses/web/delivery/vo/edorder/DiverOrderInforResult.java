@@ -15,10 +15,10 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class DiverOrderInforResult extends GeneralResult {
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
-    @ApiModelProperty(value = "userId")
+    @ApiModelProperty(value = "用户主键")
     private Long userId;
 
     @ApiModelProperty(value = "头像")
@@ -30,7 +30,7 @@ public class DiverOrderInforResult extends GeneralResult {
     @ApiModelProperty(value = "司机姓")
     private String driverLastName;
 
-    @ApiModelProperty(value = "scooterId")
+    @ApiModelProperty(value = "车辆主键")
     private Long scooterId;
 
     @ApiModelProperty(value = "车牌")

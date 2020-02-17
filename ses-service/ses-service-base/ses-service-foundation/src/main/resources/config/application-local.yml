@@ -28,4 +28,4 @@ spring:
 ## DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://39.108.92.232:22181
+    address: zookeeper://192.168.2.200:32181
