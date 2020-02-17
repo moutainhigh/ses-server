@@ -137,6 +137,8 @@
         e.nickname            as                          driverNickname,
         e.tel_number_1        as                          driverPhone,
         case when e.email_1 is null then '2' ELSE '1' END driverLoginType,
+        cts.latitude          as                          driverLatitude,
+        cts.longitule         as                          driverLongitule,
         cts.license_plate     as                          licensePlate,
         a.denial_reason       as                          reason
         FROM cor_express_order a

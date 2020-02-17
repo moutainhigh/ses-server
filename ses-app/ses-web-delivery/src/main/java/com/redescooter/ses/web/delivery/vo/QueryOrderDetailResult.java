@@ -72,6 +72,12 @@ public class QueryOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "车牌号")
     private String licensePlate;
 
+    @ApiModelProperty(value = "经纬度")
+    private String driverLatitude;
+
+    @ApiModelProperty(value = "经纬度")
+    private String driverLongitule;
+
     @ApiModelProperty(value = "门店地址")
     private String tenantAddress;
 
