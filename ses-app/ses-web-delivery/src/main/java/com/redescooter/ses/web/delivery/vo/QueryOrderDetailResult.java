@@ -51,6 +51,9 @@ public class QueryOrderDetailResult extends GeneralResult {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date expectTimeEnd;
 
+    @ApiModelProperty(value = "司机Id")
+    private Long driverId;
+
     @ApiModelProperty(value = "司机名字")
     private String driverFirstName;
 

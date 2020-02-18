@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.delivery.dm.CorExpressDelivery;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
+import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.vo.*;
 import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
@@ -120,4 +121,14 @@ public interface ExpressOrderServiceMapper {
      * @desc: 查询正在配送中订单 若无 返回当天已完成的订单
      */
     CorExpressDelivery expressDeliveryShippingByDriverId(Long driverId);
+
+    /**
+     * @desc: 车辆数据
+     * @parm: driverId
+     * @retrn: CorTenantScooter
+     * @auther: alex
+     * @date: 2020/2/18 17:44
+     * @Version: SAAS 1.2
+     */
+    CorTenantScooter queryCorTenantScooterByDriverId(Long driverId);
 }

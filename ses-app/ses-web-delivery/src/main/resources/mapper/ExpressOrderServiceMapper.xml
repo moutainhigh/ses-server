@@ -92,67 +92,66 @@
     </select>
     <select id="detail" resultType="com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult">
         SELECT a.id,
-        a.tenant_id           as                          tenantId,
-        a.batch_no            as                          batchNo,
-        a.order_no            as                          orderNo,
+        a.tenant_id as tenantId,
+        a.batch_no as batchNo,
+        a.order_no as orderNo,
         a.STATUS,
-        a.recipient_country   as                          recipientCountry,
-        a.recipient_city      as                          recipientCity,
-        a.recipient_province  as                          recipientProvince,
-        a.recipient_postcode  as                          recipientPostcode,
-        a.recipient_address   as                          recipientAddress,
-        a.recipient_latitude  as                          recipientLatitude,
-        a.recipient_longitude as                          recipientLongitude,
-        a.recipient_geohash   as                          recipientGeohash,
-        a.recipient_name      as                          recipientName,
-        a.recipient_company   as                          recipientCompany,
-        a.recipient_phone     as                          recipientPhone,
-        a.recipient_mail      as                          recipientMail,
-        a.recipient_notes     as                          recipientNotes,
-        a.sender_country      as                          senderCountry,
-        a.sender_city         as                          senderCity,
-        a.sender_province     as                          senderProvince,
-        a.sender_postcode     as                          senderPostcode,
-        a.sender_address      as                          senderAddress,
-        a.sender_latitude     as                          senderLatitude,
-        a.sender_longitude    as                          senderLongitude,
-        a.sender_geohash      as                          senderGeohash,
-        a.sender_company      as                          senderCompany,
-        a.sender_name         as                          senderName,
-        a.sender_phone        as                          senderPhone,
-        a.sender_mail         as                          senderMail,
-        a.sender_notes        as                          senderNotes,
-        a.parcel_quantity     as                          parcelQuantity,
-        a.assign_flag         as                          assignFlag,
-        a.assign_time         as                          assignTime,
-        a.vehicle_type        as                          vehicleType,
-        a.expect_time_begin   as                          expectTimeBegin,
-        a.expect_time_end     as                          expectTimeEnd,
-        a.general_notes       as                          generalNotes,
-        a.delivered_time      as                          deliveredTime,
-        a.created_time        as                          createdTime,
-        e.first_name          as                          driverFirstName,
-        e.last_name           as                          driverLastName,
-        e.email_1             as                          driverEmail,
-        e.nickname            as                          driverNickname,
-        e.tel_number_1        as                          driverPhone,
+        a.recipient_country as recipientCountry,
+        a.recipient_city as recipientCity,
+        a.recipient_province as recipientProvince,
+        a.recipient_postcode as recipientPostcode,
+        a.recipient_address as recipientAddress,
+        a.recipient_latitude as recipientLatitude,
+        a.recipient_longitude as recipientLongitude,
+        a.recipient_geohash as recipientGeohash,
+        a.recipient_name as recipientName,
+        a.recipient_company as recipientCompany,
+        a.recipient_phone as recipientPhone,
+        a.recipient_mail as recipientMail,
+        a.recipient_notes as recipientNotes,
+        a.sender_country as senderCountry,
+        a.sender_city as senderCity,
+        a.sender_province as senderProvince,
+        a.sender_postcode as senderPostcode,
+        a.sender_address as senderAddress,
+        a.sender_latitude as senderLatitude,
+        a.sender_longitude as senderLongitude,
+        a.sender_geohash as senderGeohash,
+        a.sender_company as senderCompany,
+        a.sender_name as senderName,
+        a.sender_phone as senderPhone,
+        a.sender_mail as senderMail,
+        a.sender_notes as senderNotes,
+        a.parcel_quantity as parcelQuantity,
+        a.assign_flag as assignFlag,
+        a.assign_time as assignTime,
+        a.vehicle_type as vehicleType,
+        a.expect_time_begin as expectTimeBegin,
+        a.expect_time_end as expectTimeEnd,
+        a.general_notes as generalNotes,
+        a.delivered_time as deliveredTime,
+        a.created_time as createdTime,
+        e.first_name as driverFirstName,
+        e.last_name as driverLastName,
+        e.email_1 as driverEmail,
+        e.nickname as driverNickname,
+        e.tel_number_1 as driverPhone,
         case when e.email_1 is null then '2' ELSE '1' END driverLoginType,
-        cts.latitude          as                          driverLatitude,
-        cts.longitule         as                          driverLongitule,
-        cts.license_plate     as                          licensePlate,
-        a.denial_reason       as                          reason
+        a.denial_reason as reason,
+        d.id as driverId
         FROM cor_express_order a
-        LEFT JOIN (SELECT * FROM cor_express_delivery_detail ORDER BY created_time DESC LIMIT 1) b
+        LEFT JOIN (SELECT *
+        FROM cor_express_delivery_detail
+        where express_order_id = #{id}
+        ORDER BY created_time DESC
+        LIMIT 1) b
         ON a.id = b.express_order_id
         LEFT JOIN cor_express_delivery c ON b.express_delivery_id = c.id AND c.dr = 0
         LEFT JOIN cor_driver d ON c.driver_id = d.id AND d.dr = 0
-        LEFT JOIN cor_user_profile e ON e.user_id = d.user_id AND e.dr = 0
-        left join cor_driver_scooter cds on d.id = cds.driver_id and cds.dr = 0
-        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr = 0
-    WHERE
-        a.tenant_id = #{tenantId}
-    	AND a.dr = 0
-    	AND a.id = #{id}
+        left JOIN cor_user_profile e ON e.user_id = d.user_id AND e.dr = 0
+        WHERE a.tenant_id = #{tenantId}
+        AND a.dr = 0
+        AND a.id = #{id};
     </select>
     <select id="getOrderNode" resultType="com.redescooter.ses.web.delivery.vo.QueryExpressOrderTraceResult">
         SELECT
@@ -313,7 +312,7 @@
         select driver.id   as driverId,
         profile.first_name as driverFirstName,
         profile.last_name  as driverLastName,
-        ceot.reason        as reason
+        ceot.reason as reason
         from cor_express_order exorder
         left join cor_express_order_trace ceot on exorder.id = ceot.express_order_id and exorder.status = ceot.status
         and ceot.dr = 0
@@ -323,7 +322,8 @@
         and ceot.tenant_id=#{tenantId}
         and exorder.dr = 0
         and driver.id is not null
-        group by driver.id, profile.first_name, profile.last_name, ceot.reason
+        order by ceot.created_time desc
+        limit 1
     </select>
     <select id="expressDeliveryShippingByDriverId"
             resultType="com.redescooter.ses.web.delivery.dm.CorExpressDelivery">
@@ -332,5 +332,9 @@
         where dr = 0
           and driver_id = 1004162
           and TO_DAYS(create_time) = TO_DAYS(NOW())
+    </select>
+    <select id="queryCorTenantScooterByDriverId"
+            resultType="com.redescooter.ses.web.delivery.dm.CorTenantScooter">
+
     </select>
 </mapper>
