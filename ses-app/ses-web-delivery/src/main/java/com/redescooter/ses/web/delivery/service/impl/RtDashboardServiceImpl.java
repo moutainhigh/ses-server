@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
 import com.redescooter.ses.web.delivery.dao.OrderStatisticsServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
@@ -188,7 +189,7 @@ public class RtDashboardServiceImpl implements RtDashboardService {
         }
 
         List<String> dateList = new LinkedList();
-        dateList = getDateList(heavens, enter.getDateTimes());
+        dateList = OrderChartUtils.getDateList(heavens, enter.getDateTimes());
 
         if (deliveryChartResults.size() > 0) {
 
@@ -242,38 +243,5 @@ public class RtDashboardServiceImpl implements RtDashboardService {
         }
 
         return map;
-    }
-
-    private List<String> getDateList(int heavens, Date date) {
-        ArrayList<String> list = new ArrayList<>();
-        switch (heavens) {
-            case 1:
-                list = DateUtil.get24HourList(DateUtil.getDateTimeStamp(date));
-                break;
-            case 7:
-                list = DateUtil.getDayList(date, 7, null);
-                break;
-            case 30:
-                list = DateUtil.getDayList(date, 30, null);
-                break;
-            case 365:
-                list = DateUtil.getDayList(date, 365, DateUtil.DEFAULT_YYMM_FORMAT);
-                break;
-        }
-
-        return checkDayResultSingle(list);
-    }
-
-    //去除重复的时间，只供柱状图使用。
-    private ArrayList<String> checkDayResultSingle(ArrayList<String> dayList) {
-        ArrayList<String> temp = new ArrayList<String>();
-        Iterator<String> iterator = dayList.iterator();
-        while (iterator.hasNext()) {
-            String str = iterator.next();
-            if (!temp.contains(str)) {
-                temp.add(str);
-            }
-        }
-        return temp;
     }
 }

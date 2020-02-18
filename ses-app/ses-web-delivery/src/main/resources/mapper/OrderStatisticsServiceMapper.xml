@@ -141,6 +141,9 @@
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
         and DATE_FORMAT(cdy.updated_time, '%Y-%m-%d') = DATE_FORMAT(#{dateTime}, '%Y-%m-%d')
+        <if test="id != null and id!=0">
+            and cdy.driver_id=#{id}
+        </if>
         and cdy.status='4'
         group by times
 
@@ -154,6 +157,9 @@
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
         and (DATE_FORMAT(cdy.updated_time, '%Y-%m-%d') between  DATE_FORMAT(#{startDateTime}, '%Y-%m-%d')  and DATE_FORMAT(#{endDateTime}, '%Y-%m-%d'))
+        <if test="id != null and id!=0">
+            and cdy.driver_id=#{id}
+        </if>
         and cdy.status='4'
         group by times
     </select>
@@ -166,6 +172,9 @@
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
         and (DATE_FORMAT(cdy.updated_time,'%Y-%m-%d') between   DATE_FORMAT(#{startDateTime}, '%Y-%m-%d')  and DATE_FORMAT(#{endDateTime}, '%Y-%m-%d'))
+        <if test="id != null and id!=0">
+            and cdy.driver_id=#{id}
+        </if>
         and cdy.status='4'
         group by times
     </select>
@@ -178,6 +187,9 @@
         where cdy.dr = 0
         and cdy.tenant_id=#{tenantId}
         and (DATE_FORMAT(cdy.updated_time, '%Y-%m') between   DATE_FORMAT(#{startDateTime}, '%Y-%m')  and DATE_FORMAT(#{endDateTime}, '%Y-%m'))
+        <if test="id != null and id!=0">
+            and cdy.driver_id=#{id}
+        </if>
         and cdy.status='4'
         group by times
     </select>
