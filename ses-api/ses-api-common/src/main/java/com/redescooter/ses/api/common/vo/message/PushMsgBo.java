@@ -51,12 +51,20 @@ public class PushMsgBo {
     @ApiModelProperty(value = "推送类型 PC、android")
     private String pushType;
 
-    @ApiModelProperty(value = "消息优先级 0 无需提醒 1 小红点 2 强提醒")
+    // 非必须参数根据业务 考虑是否需要赋值
+
+    //App 必传
+    @ApiModelProperty(value = "消息类型站内、站外 、空 默认 空 ")
+    private String mesageType;
+
+    // web 必传
+    @ApiModelProperty(value = "消息优先级 0 无需提醒 1 小红点 2 强提醒,默认无需提醒", required = false)
     private String messagePriority;
 
-    @ApiModelProperty(value = "服务类型（只在维修系统中有使用） 可以为空")
+    // reapir系统 必传
+    @ApiModelProperty(value = "服务类型（只在维修系统中有使用） 可以为空", required = false)
     private String serviceType;
 
-    @ApiModelProperty(value = "当前业务的 租户Id")
+    @ApiModelProperty(value = "当前业务的 租户Id", required = false)
     private String inputTenantId;
 }

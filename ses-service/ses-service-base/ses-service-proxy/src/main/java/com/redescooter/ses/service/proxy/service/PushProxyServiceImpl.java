@@ -53,7 +53,7 @@ public class PushProxyServiceImpl implements PushProxyService {
                     .code(PushResultCode.DEFAULT_CODE)
                     .message(PushResultCode.DEFAULT_MESSAGE)
                     .msg_id(PushResultCode.DEFAULT_MSGID)
-                    .sendno(pushResult.sendno)
+                    .sendno(PushResultCode.DEFAULT_SEND_NO)
                     .statusCode(PushResultCode.DEFAULT_STATUS_CODE)
                     .build();
         }
@@ -111,7 +111,7 @@ public class PushProxyServiceImpl implements PushProxyService {
                     .code(PushResultCode.DEFAULT_CODE)
                     .message(PushResultCode.DEFAULT_MESSAGE)
                     .msg_id(PushResultCode.DEFAULT_MSGID)
-                    .sendno(pushResult.sendno)
+                    .sendno(PushResultCode.DEFAULT_SEND_NO)
                     .statusCode(PushResultCode.DEFAULT_STATUS_CODE)
                     .build();
         }
@@ -145,7 +145,7 @@ public class PushProxyServiceImpl implements PushProxyService {
                     .code(PushResultCode.DEFAULT_CODE)
                     .message(PushResultCode.DEFAULT_MESSAGE)
                     .msg_id(PushResultCode.DEFAULT_MSGID)
-                    .sendno(pushResult.sendno)
+                    .sendno(PushResultCode.DEFAULT_SEND_NO)
                     .statusCode(PushResultCode.DEFAULT_STATUS_CODE)
                     .build();
         }
@@ -178,7 +178,7 @@ public class PushProxyServiceImpl implements PushProxyService {
                     .code(PushResultCode.DEFAULT_CODE)
                     .message(PushResultCode.DEFAULT_MESSAGE)
                     .msg_id(PushResultCode.DEFAULT_MSGID)
-                    .sendno(pushResult.sendno)
+                    .sendno(PushResultCode.DEFAULT_SEND_NO)
                     .statusCode(PushResultCode.DEFAULT_STATUS_CODE)
                     .build();
         }
@@ -207,12 +207,13 @@ public class PushProxyServiceImpl implements PushProxyService {
                 .setNotification(Notification.android(enter.getAlert(), enter.getTitle(), enter.getExtras()))
                 .setOptions(Options.newBuilder().setApnsProduction(jPushConfig.getApns(enter)).build())
                 .build(), enter);
+
         if (pushResult == null) {
             return PushJgResult.builder()
                     .code(PushResultCode.DEFAULT_CODE)
                     .message(PushResultCode.DEFAULT_MESSAGE)
                     .msg_id(PushResultCode.DEFAULT_MSGID)
-                    .sendno(pushResult.sendno)
+                    .sendno(PushResultCode.DEFAULT_SEND_NO)
                     .statusCode(PushResultCode.DEFAULT_STATUS_CODE)
                     .build();
         }
@@ -247,7 +248,7 @@ public class PushProxyServiceImpl implements PushProxyService {
                     .code(PushResultCode.DEFAULT_CODE)
                     .message(PushResultCode.DEFAULT_MESSAGE)
                     .msg_id(PushResultCode.DEFAULT_MSGID)
-                    .sendno(pushResult.sendno)
+                    .sendno(PushResultCode.DEFAULT_SEND_NO)
                     .statusCode(PushResultCode.DEFAULT_STATUS_CODE)
                     .build();
         }

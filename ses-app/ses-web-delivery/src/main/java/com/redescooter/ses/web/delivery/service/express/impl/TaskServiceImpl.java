@@ -1,10 +1,15 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MesageBizTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskTimeCountEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -13,7 +18,9 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
+import com.redescooter.ses.api.common.vo.message.PushMsgBo;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+import com.redescooter.ses.api.foundation.service.PushService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
@@ -34,7 +41,14 @@ import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.TaskService;
-import com.redescooter.ses.web.delivery.vo.task.*;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
+import com.redescooter.ses.web.delivery.vo.task.DriverTaskEnter;
+import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
+import com.redescooter.ses.web.delivery.vo.task.OrderResult;
+import com.redescooter.ses.web.delivery.vo.task.SaveTaskEnter;
+import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
+import com.redescooter.ses.web.delivery.vo.task.TaskResult;
+import com.redescooter.ses.web.delivery.vo.task.TaskTimeCountDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -45,7 +59,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @ClassName:TaskServiceImpl
@@ -73,6 +92,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private CorDriverService corDriverService;
 
+    @Autowired
+    private EdOrderTraceService edOrderTraceService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -82,8 +104,8 @@ public class TaskServiceImpl implements TaskService {
     @Reference
     private TenantBaseService tenantBaseService;
 
-    @Autowired
-    private EdOrderTraceService edOrderTraceService;
+    @Reference
+    private PushService pushService;
 
 
     /**
@@ -232,7 +254,7 @@ public class TaskServiceImpl implements TaskService {
 
         Boolean saveBoolean = count == longs.size() ? Boolean.TRUE : Boolean.FALSE;
 
-        if(saveBoolean){
+        if (saveBoolean) {
             // 获取店铺配置
             TenantConfigInfoResult tenantConfigInfoResult = tenantBaseService.tenantConfigInfo(enter);
             // 大订单详情列表
@@ -299,10 +321,32 @@ public class TaskServiceImpl implements TaskService {
             if (CollectionUtils.isNotEmpty(updateCorExpressOrderList)) {
                 edOrderTraceService.batchSaveExpressOrderTrace(baseExpressOrderTraceEnterList);
             }
-        }else{
+
+            // web ---》 app 消息推送
+            saveCorExpressDeliveryList.forEach(item -> {
+                //todo args 规则 参数1 小定单订单号 参数2 大订单id 后面参数不做限定
+                Object[] args = new Object[]{item.getId(), "0", item.getId()};
+
+                CorDriver corDriver = corDriverService.getById(item.getDriverId());
+                PushMsgBo pushApp = PushMsgBo.builder()
+                        .enter(enter)
+                        .status(TaskStatusEnums.PENDING.getValue())
+                        .args(args)
+                        .bizType(MesageBizTypeEnum.EXPRESS_DELIVERY.getValue())
+                        .bizId(item.getId())
+                        .belongId(corDriver.getUserId())
+                        .appId(AppIDEnums.SAAS_APP.getAppId())
+                        .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                        .pushType(PlatformTypeEnum.ANDROID.getValue())
+                        .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
+                        .mesageType(MesageTypeEnum.PUSH.getValue())
+                        .build();
+                pushMsg(pushApp);
+            });
+
+        } else {
             throw new SesWebDeliveryException(ExceptionCodeEnums.ORDER_IS_NOT_ALLOCATED.getCode(), ExceptionCodeEnums.ORDER_IS_NOT_ALLOCATED.getMessage());
         }
-
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -378,5 +422,49 @@ public class TaskServiceImpl implements TaskService {
         corExpressDeliveryDetail.setUpdatedBy(enter.getUserId());
         corExpressDeliveryDetail.setUpdatedTime(new Date());
         return corExpressDeliveryDetail;
+    }
+
+
+    private void pushMsg(PushMsgBo pushMsg) {
+
+        String generalEnter = JSON.toJSONString(pushMsg.getEnter());
+        Map<String, String> pushParameter = new HashMap<>();
+
+
+        StringBuffer argsString = new StringBuffer();
+        if (pushMsg.getArgs() != null) {
+            for (int i = 0; i < pushMsg.getArgs().length; i++) {
+                argsString.append(pushMsg.getArgs()[i]);
+                if (i < pushMsg.getArgs().length - 1) {
+                    argsString.append(",");
+                }
+            }
+        } else {
+            argsString.append("0");
+        }
+
+        String title = pushMsg.getBizType() + "_" + pushMsg.getSystemId() + "_" + pushMsg.getAppId() + "_" + pushMsg.getStatus() + "_TITLE";
+        String content = pushMsg.getBizType() + "_" + pushMsg.getSystemId() + "_" + pushMsg.getAppId() + "_" + pushMsg.getStatus() + "_CONTENT";
+
+
+        pushParameter.put("BizType", pushMsg.getBizType());
+        pushParameter.put("Id", String.valueOf(pushMsg.getBizId()));
+        pushParameter.put("Type", pushMsg.getStatus());
+        pushParameter.put("args", argsString.toString());
+        pushParameter.put("title", title);
+        pushParameter.put("content", content);
+        pushParameter.put("bussinessStatus", pushMsg.getStatus());
+        pushParameter.put("messagePriority", StringUtils.isEmpty(pushMsg.getMessagePriority()) == true ? MessagePriorityEnums.NONE_REMIND.getValue() : pushMsg.getMessagePriority());
+        pushParameter.put("mesageType", StringUtils.isEmpty(pushMsg.getMesageType()) == true ? MesageTypeEnum.NONE.getValue() : pushMsg.getMesageType());
+
+        pushParameter.put("generalEnter", generalEnter);
+
+        // 消息所推对象参数
+        pushParameter.put("userIds", String.valueOf(pushMsg.getBelongId()));
+        pushParameter.put("createUser", pushMsg.getEnter().getUserId().toString());
+        pushParameter.put("appId", pushMsg.getAppId());
+        pushParameter.put("systemId", pushMsg.getSystemId());
+        pushParameter.put("pushType", pushMsg.getPushType());
+        pushService.pushMessage(JSON.toJSONString(pushParameter));
     }
 }

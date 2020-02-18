@@ -30,4 +30,8 @@ public class EdRfuseEnter extends GeneralEnter {
     @ApiModelProperty(value = "纬度")
     @NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY, message = "经度为空")
     private String lng;
+
+    @ApiModelProperty(value = "拒绝原因")
+    @NotNull(code = ValidationExceptionCode.REASON_IS_EMPTY, message = "拒绝原因为空")
+    private String reason;
 }
