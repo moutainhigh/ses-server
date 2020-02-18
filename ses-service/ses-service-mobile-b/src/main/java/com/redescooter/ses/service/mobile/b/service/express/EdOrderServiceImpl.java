@@ -5,10 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
-import com.redescooter.ses.api.common.enums.mesage.MesageBizTypeEnum;
-import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
-import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -325,35 +321,35 @@ public class EdOrderServiceImpl implements EdOrderService {
 
         // 消息推送
         // 1、 app 自己
-        PushMsgBo pushApp = PushMsgBo.builder()
-                .enter(enter)
-                .status(ExpressOrderStatusEnums.REJECTED.getValue())
-                .args(args)
-                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
-                .bizId(enter.getId())
-                .belongId(enter.getUserId())
-                .appId(enter.getAppId())
-                .systemId(enter.getSystemId())
-                .pushType(PlatformTypeEnum.ANDROID.getValue())
-                .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
-                .mesageType(MesageTypeEnum.SITE.getValue())
-                .build();
+//        PushMsgBo pushApp = PushMsgBo.builder()
+//                .enter(enter)
+//                .status(ExpressOrderStatusEnums.REJECTED.getValue())
+//                .args(args)
+//                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
+//                .bizId(enter.getId())
+//                .belongId(enter.getUserId())
+//                .appId(enter.getAppId())
+//                .systemId(enter.getSystemId())
+//                .pushType(PlatformTypeEnum.ANDROID.getValue())
+//                .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
+//                .mesageType(MesageTypeEnum.SITE.getValue())
+//                .build();
 
         // 2 app----》web
-        PushMsgBo pushWeb = PushMsgBo.builder()
-                .enter(enter)
-                .status(ExpressOrderStatusEnums.REJECTED.getValue())
-                .args(args)
-                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
-                .bizId(enter.getId())
-                .belongId(corExpressDelivery.getCreateBy())
-                .appId(enter.getAppId())
-                .systemId(enter.getSystemId())
-                .pushType(PlatformTypeEnum.PC.getValue())
-                .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
-                .mesageType(MesageTypeEnum.NONE.getValue())
-                .build();
-        pushMsg(pushWeb);
+//        PushMsgBo pushWeb = PushMsgBo.builder()
+//                .enter(enter)
+//                .status(ExpressOrderStatusEnums.REJECTED.getValue())
+//                .args(args)
+//                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
+//                .bizId(enter.getId())
+//                .belongId(corExpressDelivery.getCreateBy())
+//                .appId(enter.getAppId())
+//                .systemId(enter.getSystemId())
+//                .pushType(PlatformTypeEnum.PC.getValue())
+//                .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
+//                .mesageType(MesageTypeEnum.NONE.getValue())
+//                .build();
+//        pushMsg(pushWeb);
 
         // 判断大订单是否完成 完成进行大订单推送
 //        if (taskPush){
