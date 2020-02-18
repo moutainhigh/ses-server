@@ -74,6 +74,9 @@ public class SaveDriverEnter extends GeneralEnter {
     @ApiModelProperty(value = "证件类型1身份证，2驾驶证，3护照")
     private String certificateType;
 
+    @ApiModelProperty(value = "驾照等级")
+    private String driverLicenseLevel;
+
     @ApiModelProperty(value = "驾驶证附件上")
     @NotNull(code = ValidationExceptionCode.DRIVER_LICENSE_UPANNEX_IS_EMPTY, message = "驾驶证附件为空")
     private String driverLicenseUpAnnex;

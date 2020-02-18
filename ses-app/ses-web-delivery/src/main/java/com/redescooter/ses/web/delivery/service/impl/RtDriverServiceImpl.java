@@ -2,6 +2,7 @@ package com.redescooter.ses.web.delivery.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
+import com.redescooter.ses.api.common.enums.driver.DriverLicenseLevelEnum;
 import com.redescooter.ses.api.common.enums.driver.DriverLoginTypeEnum;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.driver.RoleEnums;
@@ -162,6 +163,8 @@ public class RtDriverServiceImpl implements RtDriverService {
     public GeneralResult save(SaveDriverEnter enter) {
 
         Boolean aBoolean = Boolean.FALSE;
+        //驾照等级
+        String driverLicenseLevel = enter.getDriverLicenseLevel();
 
         if (enter.getId() == null || enter.getId() == 0) {
             if (enter.getDriverLoginType().equals(DriverLoginTypeEnum.EMAIL.getValue())) {
@@ -192,6 +195,7 @@ public class RtDriverServiceImpl implements RtDriverService {
             driverSave.setUserId(user.getId());
             driverSave.setTenantId(user.getTenantId());
             driverSave.setStatus(DriverStatusEnum.OFFWORK.getValue());
+            driverSave.setDriverLicenseLevel(driverLicenseLevel == DriverLicenseLevelEnum.HIGH.getValue() ? DriverLicenseLevelEnum.HIGH.getValue() : DriverLicenseLevelEnum.NONE.getValue());
             //司机账号是否激活
             driverSave.setDef1(enter.getDriverLoginType().equals(DriverLoginTypeEnum.EMAIL.getValue()) ? Boolean.FALSE.toString() : Boolean.TRUE.toString());
             driverSave.setCreatedBy(enter.getUserId());
@@ -337,7 +341,7 @@ public class RtDriverServiceImpl implements RtDriverService {
         }
 
         GeneralEnter userEnter = new GeneralEnter();
-        BeanUtils.copyProperties(enter,userEnter);
+        BeanUtils.copyProperties(enter, userEnter);
         userEnter.setUserId(driver.getUserId());
         QueryUserResult userResult = userBaseService.queryUserById(userEnter);
 
