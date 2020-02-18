@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.jiguang.PushJgResult;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
@@ -197,7 +198,9 @@ public class PushServiceImpl implements PushService {
         extras.put("args", map.get("args"));
         extras.put("title", map.get("title"));
         extras.put("content", map.get("content"));
-        extras.put("messagePriority", map.get("messagePriority"));
+        extras.put("messagePriority", StringUtils.isEmpty(map.get("messagePriority").toString()) == true ? MessagePriorityEnums.NONE_REMIND.getValue() : map.get("messagePriority"));
+        extras.put("mesageType", StringUtils.isEmpty(map.get("mesageType").toString()) == true ? MesageTypeEnum.NONE.getValue() : map.get("mesageType"));
+
         extras.put("bussinessStatus", map.get("bussinessStatus"));
         if (map.containsKey("TenantId")) {
             extras.put("TenantId", map.get("TenantId"));
@@ -269,14 +272,16 @@ public class PushServiceImpl implements PushService {
         GeneralEnter generalEnter = JSON.parseObject(map.get("generalEnter").toString(), GeneralEnter.class);
         MessageSaveEnter messageSaveEnter = new MessageSaveEnter();
         BeanUtils.copyProperties(generalEnter, messageSaveEnter);
-        messageSaveEnter.setMessageType(MesageTypeEnum.PUSH.getValue());
         messageSaveEnter.setBizId((String) extras.get("Id"));
         messageSaveEnter.setBizType((String) extras.get("BizType"));
         messageSaveEnter.setTitle((String) extras.get("title"));
         messageSaveEnter.setContent((String) extras.get("content"));
         messageSaveEnter.setBussinessStatus((String) extras.get("bussinessStatus"));
         messageSaveEnter.setMemo(StringUtils.isNotBlank(map.get("args").toString()) == true ? map.get("args").toString() : null);
+
+        messageSaveEnter.setMessageType((String) extras.get("mesageType"));
         messageSaveEnter.setMessagePriority((String) extras.get("messagePriority"));
+
 
         if (StringUtils.equals(push.getAppId(), AppIDEnums.SAAS_REPAIR_WEB.getAppId())) {
 

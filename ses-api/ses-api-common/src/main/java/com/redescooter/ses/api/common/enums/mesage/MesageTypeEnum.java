@@ -17,7 +17,7 @@ public enum MesageTypeEnum {
     SITE("SITE", "site", "1"),
     // 站外消息
     PUSH("PUSH", "push", "2"),
-
+    // 无需提醒
     NONE("NONE", "none", "3"),
     ;
 

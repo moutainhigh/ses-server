@@ -2,9 +2,14 @@ package com.redescooter.ses.service.mobile.b.service.express;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MesageBizTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -317,58 +322,60 @@ public class EdOrderServiceImpl implements EdOrderService {
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
         CorUserProfile corUserProfile = corUserProfileService.getOne(corUserProfileQueryWrapper);
 
-        Object[] args = new Object[]{new StringBuffer(corUserProfile.getFirstName()).append(" ").append(corUserProfile.getLastName()).toString(), enter.getReason()};
+        Object[] args = new Object[]{corExpressOrder.getOrderNo(), corExpressDelivery.getId(),
+                new StringBuffer(corUserProfile.getFirstName()).append(" ").append(corUserProfile.getLastName()).toString(),
+                enter.getReason()};
 
         // 消息推送
         // 1、 app 自己
-//        PushMsgBo pushApp = PushMsgBo.builder()
-//                .enter(enter)
-//                .status(ExpressOrderStatusEnums.REJECTED.getValue())
-//                .args(args)
-//                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
-//                .bizId(enter.getId())
-//                .belongId(enter.getUserId())
-//                .appId(enter.getAppId())
-//                .systemId(enter.getSystemId())
-//                .pushType(PlatformTypeEnum.ANDROID.getValue())
-//                .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
-//                .mesageType(MesageTypeEnum.SITE.getValue())
-//                .build();
+        PushMsgBo pushApp = PushMsgBo.builder()
+                .enter(enter)
+                .status(ExpressOrderStatusEnums.REJECTED.getValue())
+                .args(args)
+                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
+                .bizId(enter.getId())
+                .belongId(enter.getUserId())
+                .appId(AppIDEnums.SAAS_APP.getAppId())
+                .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                .pushType(PlatformTypeEnum.ANDROID.getValue())
+                .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
+                .mesageType(MesageTypeEnum.SITE.getValue())
+                .build();
+        pushMsg(pushApp);
 
         // 2 app----》web
-//        PushMsgBo pushWeb = PushMsgBo.builder()
-//                .enter(enter)
-//                .status(ExpressOrderStatusEnums.REJECTED.getValue())
-//                .args(args)
-//                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
-//                .bizId(enter.getId())
-//                .belongId(corExpressDelivery.getCreateBy())
-//                .appId(enter.getAppId())
-//                .systemId(enter.getSystemId())
-//                .pushType(PlatformTypeEnum.PC.getValue())
-//                .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
-//                .mesageType(MesageTypeEnum.NONE.getValue())
-//                .build();
-//        pushMsg(pushWeb);
+        PushMsgBo pushWeb = PushMsgBo.builder()
+                .enter(enter)
+                .status(ExpressOrderStatusEnums.REJECTED.getValue())
+                .args(args)
+                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
+                .bizId(enter.getId())
+                .belongId(corExpressDelivery.getCreateBy())
+                .appId(AppIDEnums.SAAS_WEB.getAppId())
+                .systemId(AppIDEnums.SAAS_WEB.getSystemId())
+                .pushType(PlatformTypeEnum.PC.getValue())
+                .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
+                .mesageType(MesageTypeEnum.NONE.getValue())
+                .build();
+        pushMsg(pushWeb);
 
         // 判断大订单是否完成 完成进行大订单推送
-//        if (taskPush){
-//            PushMsgBo pushWeb = PushMsgBo.builder()
-//                    .enter(enter)
-//                    .status(TaskStatusEnums.DELIVERED.getValue())
-//                    .args(args)
-//                    .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
-//                    .bizId(enter.getId())
-//                    .belongId(corExpressDelivery.getCreateBy())
-//                    .appId(enter.getAppId())
-//                    .systemId(enter.getSystemId())
-//                    .pushType(PlatformTypeEnum.PC.getValue())
-//                    .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
-//                    .mesageType(MesageTypeEnum.NONE.getValue())
-//                    .build();
-//            pushMsg(pushWeb);
-//        }
-
+        if (taskPush) {
+            PushMsgBo taskPushWeb = PushMsgBo.builder()
+                    .enter(enter)
+                    .status(TaskStatusEnums.DELIVERED.getValue())
+                    .args(args)
+                    .bizType(MesageBizTypeEnum.EXPRESS_DELIVERY.getValue())
+                    .bizId(corExpressDelivery.getId())
+                    .belongId(corExpressDelivery.getCreateBy())
+                    .appId(AppIDEnums.SAAS_WEB.getAppId())
+                    .systemId(AppIDEnums.SAAS_WEB.getSystemId())
+                    .pushType(PlatformTypeEnum.PC.getValue())
+                    .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
+                    .mesageType(MesageTypeEnum.NONE.getValue())
+                    .build();
+            pushMsg(taskPushWeb);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -419,32 +426,46 @@ public class EdOrderServiceImpl implements EdOrderService {
         CorExpressDelivery corExpressDelivery=corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
         int time = DateUtil.timeComolete(deliveryDetail.getAta(), deliveryDetail.getAtd()).intValue();
         corExpressDelivery.setDrivenDuration(time);
+        Boolean taskComplete = Boolean.FALSE;
         corExpressDelivery.setOrderCompleteNum(corExpressDelivery.getOrderCompleteNum()+1);
-        if (corExpressDelivery.getOrderCompleteNum().equals(corExpressDelivery.getOrderSum())){
+        if (corExpressDelivery.getOrderCompleteNum().equals(corExpressDelivery.getOrderSum())) {
             corExpressDelivery.setStatus(TaskStatusEnums.DELIVERED.getValue());
             corExpressDelivery.setDeliveryEndTime(new Date());
+
+            //大订单完成进行 大订单推送
+            taskComplete = Boolean.TRUE;
         }
         corExpressDeliveryService.updateById(corExpressDelivery);
 
         // 获取正在骑行的车辆记录
-        CorDriverScooter corDriverScooter=edOrderServiceMapper.queryScooterIdByUserId(enter.getUserId(),enter.getTenantId());
+        CorDriverScooter corDriverScooter = edOrderServiceMapper.queryScooterIdByUserId(enter.getUserId(), enter.getTenantId());
 
         // 查询车辆信息
-        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper=new QueryWrapper<>();
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR,0);
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID,corDriverScooter.getScooterId());
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID,enter.getTenantId());
-        CorTenantScooter corTenantScooter=corTenantScooterService.getOne(corTenantScooterQueryWrapper);
+        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, corDriverScooter.getScooterId());
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
+        CorTenantScooter corTenantScooter = corTenantScooterService.getOne(corTenantScooterQueryWrapper);
 
         // 结束导航
-        IotScooterEnter iotScooterEnter =new IotScooterEnter();
-        BeanUtils.copyProperties(enter,iotScooterEnter);
+        IotScooterEnter iotScooterEnter = new IotScooterEnter();
+        BeanUtils.copyProperties(enter, iotScooterEnter);
         iotScooterEnter.setId(corDriverScooter.getScooterId());
         iotScooterEnter.setEvent(CommonEvent.END.getValue());
         iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
         iotScooterEnter.setLongitude(new BigDecimal(enter.getLng()));
         iotScooterEnter.setBluetoothCommunication(enter.getBluetoothCommunication());
         scooterIotService.navigation(iotScooterEnter);
+
+        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
+        CorUserProfile corUserProfile = corUserProfileService.getOne(corUserProfileQueryWrapper);
+
+        Object[] args = new Object[]{corExpressOrder.getOrderNo(), corExpressDelivery.getId(),
+                new StringBuffer(corUserProfile.getFirstName()).append(" ").append(corUserProfile.getLastName()).toString()};
+
 
         // 订单日志
         savrOrderTrace(enter, enter.getLng(),
@@ -460,10 +481,55 @@ public class EdOrderServiceImpl implements EdOrderService {
         );
         // 消息推送
         // app自己
+        PushMsgBo pushApp = PushMsgBo.builder()
+                .enter(enter)
+                .status(ExpressOrderStatusEnums.COMPLETED.getValue())
+                .args(args)
+                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
+                .bizId(enter.getId())
+                .belongId(enter.getUserId())
+                .appId(enter.getAppId())
+                .systemId(enter.getSystemId())
+                .pushType(PlatformTypeEnum.ANDROID.getValue())
+                .appId(AppIDEnums.SAAS_APP.getAppId())
+                .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
+                .mesageType(MesageTypeEnum.SITE.getValue())
+                .build();
+        pushMsg(pushApp);
         // app-web
+        PushMsgBo pushWeb = PushMsgBo.builder()
+                .enter(enter)
+                .status(ExpressOrderStatusEnums.COMPLETED.getValue())
+                .args(args)
+                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
+                .bizId(corExpressDelivery.getId())
+                .belongId(corExpressDelivery.getCreateBy())
+                .appId(AppIDEnums.SAAS_WEB.getAppId())
+                .systemId(AppIDEnums.SAAS_WEB.getSystemId())
+                .pushType(PlatformTypeEnum.PC.getValue())
+                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+                .mesageType(MesageTypeEnum.NONE.getValue())
+                .build();
+        pushMsg(pushWeb);
+
         // 判断大订单是否完成 完成进行大订单推送
-
-
+        if (taskComplete) {
+            PushMsgBo taskPushWeb = PushMsgBo.builder()
+                    .enter(enter)
+                    .status(TaskStatusEnums.DELIVERED.getValue())
+                    .args(args)
+                    .bizType(MesageBizTypeEnum.EXPRESS_DELIVERY.getValue())
+                    .bizId(corExpressDelivery.getId())
+                    .belongId(corExpressDelivery.getCreateBy())
+                    .appId(AppIDEnums.SAAS_WEB.getAppId())
+                    .systemId(AppIDEnums.SAAS_WEB.getSystemId())
+                    .pushType(PlatformTypeEnum.PC.getValue())
+                    .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
+                    .mesageType(MesageTypeEnum.NONE.getValue())
+                    .build();
+            pushMsg(taskPushWeb);
+        }
         return CompleteResult.builder()
                 .avg("1")
                 .co2("2")
@@ -532,7 +598,10 @@ public class EdOrderServiceImpl implements EdOrderService {
         pushParameter.put("title", title);
         pushParameter.put("content", content);
         pushParameter.put("bussinessStatus", pushMsg.getStatus());
-        pushParameter.put("messagePriority", pushMsg.getMessagePriority());
+        pushParameter.put("messagePriority", com.redescooter.ses.tool.utils.StringUtils.isEmpty(pushMsg.getMessagePriority()) == true ? MessagePriorityEnums.NONE_REMIND.getValue() :
+                pushMsg.getMessagePriority());
+        pushParameter.put("mesageType", com.redescooter.ses.tool.utils.StringUtils.isEmpty(pushMsg.getMesageType()) == true ? MesageTypeEnum.NONE.getValue() : pushMsg.getMesageType());
+
 
         pushParameter.put("generalEnter", generalEnter);
 
