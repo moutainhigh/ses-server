@@ -69,13 +69,13 @@ public class EdDriverController {
     @PostMapping(value = "/assignScooter")
     @ApiOperation(value = "分配车辆", response = GeneralResult.class)
     public Response<GeneralResult> assignScooter(@ModelAttribute @ApiParam("请求参数") AssignScooterEnter enter) {
-        return new Response<>(rtDriverService.assignScooter(enter));
+        return new Response<>(edDriverService.assignScooter(enter));
     }
 
     @PostMapping(value = "/removeScooter")
     @ApiOperation(value = "移除车辆", response = GeneralResult.class)
     public Response<GeneralResult> removeScooter(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(rtDriverService.removeScooter(enter));
+        return new Response<>(edDriverService.removeScooter(enter));
     }
 
     @PostMapping(value = "/againSendEmail")
@@ -113,7 +113,6 @@ public class EdDriverController {
     public Response<PageResult<DriverScooterHistoryResult>> driverscooterHistroy(@ModelAttribute @ApiParam("请求参数") DriverScooterHistroyEnter enter) {
         return new Response<>(rtDriverService.driverscooterHistroy(enter));
     }
-
 
     @PostMapping(value = "/eDDriverCharts")
     @ApiOperation(value = "快递司机详情单据柱状图", response = DeliveryChartResult.class)

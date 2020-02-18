@@ -115,6 +115,8 @@ public enum ExceptionCodeEnums {
 
     ORDER_WAS_NOT_REJECTED(10050, "订单未拒绝，不可取消"),
 
+    NO_DRIVER_LICENSE(10051, "没有摩托车驾照，不可分配125CC型号车辆"),
+
 
     ;
 
