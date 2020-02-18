@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *  @author: alex
- *  @Date: 2020/2/2 14:56
- *  @version：V 1.2
- *  @Description: EdDriverController
+ * @author: alex
+ * @Date: 2020/2/2 14:56
+ * @version：V 1.2
+ * @Description: EdDriverController
  */
 @Api(tags = {"快递司机"})
 @CrossOrigin
@@ -95,6 +95,7 @@ public class EdDriverController {
     public Response<List<ListScooterResult>> scooterList(@ModelAttribute @ApiParam("请求参数") ScooterListEnter enter) {
         return new Response<>(rtDriverService.scooterList(enter));
     }
+
     @PostMapping(value = "/scooterInfor")
     @ApiOperation(value = "司机详情车辆信息", response = DriverScooterInforResult.class)
     public Response<DriverScooterInforResult> driverScooterInfor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -113,6 +114,12 @@ public class EdDriverController {
         return new Response<>(rtDriverService.driverscooterHistroy(enter));
     }
 
+
+    @PostMapping(value = "/eDDriverCharts")
+    @ApiOperation(value = "快递司机详情单据柱状图", response = DeliveryChartResult.class)
+    public Response<DeliveryChartListResult> eDDriverCharts(@ModelAttribute @ApiParam("请求参数") DeliveryChartEnter enter) {
+        return new Response<>(edDriverService.eDDriverCharts(enter));
+    }
 
 
 }
