@@ -335,6 +335,14 @@
     </select>
     <select id="queryCorTenantScooterByDriverId"
             resultType="com.redescooter.ses.web.delivery.dm.CorTenantScooter">
-
+        select tscooter.*
+        from cor_tenant_scooter tscooter
+        inner join (select scooter_id
+        from cor_driver_scooter_history histroy
+        where driver_id = #{driverId}
+        and dr = 0
+        order by created_time desc
+        limit 1) histroy
+        on tscooter.scooter_id = histroy.scooter_id;
     </select>
 </mapper>

@@ -1,10 +1,8 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -24,8 +22,6 @@ import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.ExpressOrderServiceMapper;
-import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
-import com.redescooter.ses.web.delivery.dm.CorDriverScooterHistory;
 import com.redescooter.ses.web.delivery.dm.CorExpressDelivery;
 import com.redescooter.ses.web.delivery.dm.CorExpressDeliveryDetail;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
@@ -41,8 +37,16 @@ import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderTraceService;
-import com.redescooter.ses.web.delivery.vo.*;
-import com.redescooter.ses.web.delivery.vo.edorder.*;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderTraceResult;
+import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
+import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
+import com.redescooter.ses.web.delivery.vo.edorder.ChanageExpressOrderEnter;
+import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
+import com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
@@ -56,7 +60,12 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Mr.lijiating
@@ -207,8 +216,12 @@ public class EdOrderServiceImpl implements EdOrderService {
 
         QueryOrderDetailResult detail = expressOrderServiceMapper.detail(enter);
 
-//        CorTenantScooter corTenantScooter=expressOrderServiceMapper.queryCorTenantScooterByDriverId(detail.getDriverId());
-
+        CorTenantScooter corTenantScooter = expressOrderServiceMapper.queryCorTenantScooterByDriverId(detail.getDriverId());
+        if (corTenantScooter != null) {
+            detail.setLicensePlate(corTenantScooter.getLicensePlate());
+            detail.setDriverLatitude(corTenantScooter.getLatitude().toString());
+            detail.setDriverLongitule(corTenantScooter.getLongitule().toString());
+        }
 
         Optional.ofNullable(detail).ifPresent(d -> {
             IdEnter tenantIdEnter = new IdEnter();
