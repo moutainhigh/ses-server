@@ -22,8 +22,8 @@
         <module>ses-starter-swagger</module>
         <module>ses-starter-common</module>
         <module>ses-starter-txlcn</module>
-        <!--        <module>ses-starter-rabbitmq</module>-->
-        <!--        <module>ses-stater-sentinel</module>-->
+        <module>ses-starter-rabbitmq</module>
+        <module>ses-stater-sentinel</module>
     </modules>
 
     <description>Demo project for Spring Boot</description>

@@ -49,6 +49,13 @@ public class CorDriver implements Serializable {
     private String drivingLicense;
 
     /**
+     * 驾照等级
+     */
+    @TableField(value = "driver_license_level")
+    @ApiModelProperty(value = "驾照等级")
+    private String driverLicenseLevel;
+
+    /**
      * 评分
      */
     @TableField(value = "score")
@@ -127,6 +134,8 @@ public class CorDriver implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String COL_ID = "id";
+
     public static final String COL_DR = "dr";
 
     public static final String COL_TENANT_ID = "tenant_id";
@@ -134,6 +143,8 @@ public class CorDriver implements Serializable {
     public static final String COL_USER_ID = "user_id";
 
     public static final String COL_DRIVING_LICENSE = "driving_license";
+
+    public static final String COL_DRIVER_LICENSE_LEVEL = "driver_license_level";
 
     public static final String COL_SCORE = "score";
 
@@ -156,4 +167,5 @@ public class CorDriver implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
 }
