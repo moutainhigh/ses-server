@@ -262,6 +262,11 @@ public class EdOrderServiceImpl implements EdOrderService {
         if (tenant == null) {
             return new ExpressOrderMapResult();
         }
+        if (enter.getStatusList() == null || enter.getStatusList().size() == 0) {
+            List<String> list = new ArrayList<>();
+            list.add("0");
+            enter.setStatusList(list);
+        }
         // 司机车辆分配数据
         List<ScooterMapResult> scooterMapList = expressOrderServiceMapper.scooterMap(enter);
 
