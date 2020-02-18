@@ -66,7 +66,6 @@ public class EdDriverController {
         return new Response<>(rtDriverService.leave(enter));
     }
 
-
     @PostMapping(value = "/assignScooter")
     @ApiOperation(value = "分配车辆", response = GeneralResult.class)
     public Response<GeneralResult> assignScooter(@ModelAttribute @ApiParam("请求参数") AssignScooterEnter enter) {
