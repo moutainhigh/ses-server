@@ -377,6 +377,7 @@ public class RtDriverServiceImpl implements RtDriverService {
         result.setRequestId(enter.getRequestId());
         result.setJoinDate(profile.getJoinDate());
         result.setAge(DateUtil.dateCompare(profile.getBirthday(), new Date(), 1));
+        result.setDriverLicenseLevel(driver.getDriverLicenseLevel());
         return result;
     }
 

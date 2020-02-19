@@ -13,10 +13,6 @@
     <select id="listCount" resultType="java.lang.Integer">
         select count(*)
         from cor_tenant_scooter scooter
-        left join cor_driver_scooter driverScooter
-        on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0 and driverScooter.status = 1
-        inner join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
-        inner join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
         where scooter.tenant_id = #{tenantId}
         and scooter.dr = 0
         <if test="status != null and status != ''">
@@ -24,9 +20,6 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            profile.FIRST_NAME like concat('%',#{keyword},'%') or
-            profile.LAST_NAME like concat('%',#{keyword},'%') or
-            profile.FULL_NAME like concat('%',#{keyword},'%') or
             scooter.license_plate like concat('%',#{keyword},'%')
             )
         </if>
@@ -34,15 +27,10 @@
     <select id="list" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
         select scooter.scooter_id as id,
         scooter.status as status,
-        scooter.license_plate as licensePlate,
-        driver.id as driverId,
-        profile.FIRST_NAME as driverFirstName,
-        profile.LAST_NAME as driverLastName
+        scooter.license_plate as licensePlate
         from cor_tenant_scooter scooter
         left join cor_driver_scooter driverScooter
-        on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0 and driverScooter.status = 1
-        inner join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
-        inner join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
+        on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0
         where scooter.tenant_id = #{tenantId}
         and scooter.dr = 0
         <if test="status != null and status != ''">
@@ -50,9 +38,6 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            profile.FIRST_NAME like concat('%',#{keyword},'%') or
-            profile.LAST_NAME like concat('%',#{keyword},'%') or
-            profile.FULL_NAME like concat('%',#{keyword},'%') or
             scooter.license_plate like concat('%',#{keyword},'%')
             )
         </if>
@@ -64,15 +49,8 @@
         select scooter.scooter_id as id,
         scooter.status as status,
         scooter.model as model,
-        scooter.license_plate as licensePlate,
-        driver.id as driverId,
-        profile.FIRST_NAME as driverFirstName,
-        profile.LAST_NAME as driverLastName
+        scooter.license_plate as licensePlate
         from cor_tenant_scooter scooter
-        left join cor_driver_scooter driverScooter on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr
-        = 0 and driverScooter.status = 1
-        inner join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
-        inner join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
         where scooter.scooter_id = #{id}
         and scooter.tenant_id = #{tenantId}
     </select>
@@ -198,14 +176,31 @@
     </select>
     <select id="scooterGreenData"
             resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterGreenDataResult">
-      select scooter.scooter_id          as id,
-             scooter.license_plate       as licensePlate,
-             ifnull(csrs.co2_total, 0)   as co2,
-             ifnull(csrs.saved_money, 0) as monty
-      from cor_tenant_scooter scooter
-               left join cor_scooter_ride_stat csrs on csrs.scooter_id = scooter.scooter_id and csrs.dr = 0
-      where scooter.scooter_id = #{id}
+        select scooter.scooter_id as id,
+        scooter.license_plate as licensePlate,
+        ifnull(csrs.co2_total, 0) as co2,
+        ifnull(csrs.saved_money, 0) as monty
+        from cor_tenant_scooter scooter
+        left join cor_scooter_ride_stat csrs on csrs.scooter_id = scooter.scooter_id and csrs.dr = 0
+        where scooter.scooter_id = #{id}
         and scooter.tenant_id = #{tenantId}
 
+    </select>
+    <select id="driverUserProfile" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
+        select dscooter.scooter_id as scooterId,
+        driver.id as driverId,
+        profile.FIRST_NAME as driverFirstName,
+        profile.LAST_NAME as driverLastName
+        from cor_driver_scooter dscooter
+        inner join cor_driver driver on driver.id = dscooter.driver_id and driver.dr = 0
+        inner join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
+        where dscooter.dr = 0
+        and driver.status=1
+        <if test="collection != null and collection.size() != 0">
+            and dscooter.scooter_id in
+            <foreach collection="list" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
     </select>
 </mapper>

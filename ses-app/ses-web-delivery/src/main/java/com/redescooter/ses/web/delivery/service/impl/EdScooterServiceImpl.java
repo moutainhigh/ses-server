@@ -1,18 +1,6 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
 
-import java.util.*;
-
-import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
-import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -23,11 +11,31 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
+import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
 import com.redescooter.ses.web.delivery.dao.EdScooterServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.service.EdScooterService;
 import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
-import com.redescooter.ses.web.delivery.vo.edscooter.*;
+import com.redescooter.ses.web.delivery.vo.edscooter.ChanageStatusEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterGreenDataResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterListEnter;
+import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:MobileServiceImpl
@@ -91,6 +99,19 @@ public class EdScooterServiceImpl implements EdScooterService {
         resultList.forEach(item -> {
             scooterIdList.add(item.getId());
         });
+        List<EdScooterResult> results = edScooterServiceMapper.driverUserProfile(scooterIdList);
+        if (CollectionUtils.isNotEmpty(results)) {
+            resultList.forEach(item -> {
+                results.forEach(scooterResult -> {
+                    if (item.getDriverId().equals(scooterResult.getDriverId())) {
+                        item.setDriverId(scooterResult.getDriverId());
+                        item.setDriverFirstName(scooterResult.getDriverFirstName());
+                        item.setDriverLastName(scooterResult.getDriverLastName());
+                    }
+                });
+            });
+        }
+
         List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterIdList);
         scooterResultList.forEach(item -> {
             resultList.forEach(result -> {
@@ -124,8 +145,22 @@ public class EdScooterServiceImpl implements EdScooterService {
     @Override
     public EdScooterResult detail(IdEnter enter) {
         EdScooterResult result = edScooterServiceMapper.detail(enter);
+        if (result == null) {
+            return result;
+        }
         List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(result.getId());
+
+        List<EdScooterResult> results = edScooterServiceMapper.driverUserProfile(scooterIdList);
+        if (CollectionUtils.isNotEmpty(results)) {
+            results.forEach(scooterResult -> {
+                if (result.getDriverId().equals(scooterResult.getDriverId())) {
+                    result.setDriverId(scooterResult.getDriverId());
+                    result.setDriverFirstName(scooterResult.getDriverFirstName());
+                    result.setDriverLastName(scooterResult.getDriverLastName());
+                }
+            });
+        }
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
         result.setBattery(baseScooterResults.get(0).getBattery());
         result.setMobilePicture(baseScooterResults.get(0).getPictures());
