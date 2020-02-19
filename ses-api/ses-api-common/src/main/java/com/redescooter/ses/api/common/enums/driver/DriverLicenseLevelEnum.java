@@ -29,4 +29,13 @@ public enum DriverLicenseLevelEnum {
     private String message;
 
     private String value;
+
+    public static DriverLicenseLevelEnum getEnumByValue(String value) {
+        for (DriverLicenseLevelEnum item : DriverLicenseLevelEnum.values()) {
+            if (item.getValue().equals(value)) {
+                return item;
+            }
+        }
+        return DriverLicenseLevelEnum.NONE;
+    }
 }

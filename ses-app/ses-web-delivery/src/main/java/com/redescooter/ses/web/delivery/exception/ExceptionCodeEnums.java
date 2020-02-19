@@ -117,6 +117,8 @@ public enum ExceptionCodeEnums {
 
     NO_DRIVER_LICENSE(10051, "没有摩托车驾照，不可分配125CC型号车辆"),
 
+    SCOOTER_IS_NOT_EXIST(10052, "车辆不存在"),
+
 
     ;
 

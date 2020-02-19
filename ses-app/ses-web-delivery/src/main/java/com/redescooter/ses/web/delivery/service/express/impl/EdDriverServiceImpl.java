@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.enums.driver.DriverLicenseLevelEnum;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -263,17 +264,24 @@ public class EdDriverServiceImpl implements EdDriverService {
         driverScooterHistory.setUpdatedTime(new Date());
         driverScooterHistoryService.save(driverScooterHistory);
 
-        CorTenantScooter updateTenantScooter = new CorTenantScooter();
-        updateTenantScooter.setStatus(TenantScooterStatusEnums.USEING.getValue());
-        updateTenantScooter.setUpdatedBy(enter.getUserId());
-        updateTenantScooter.setUpdatedTime(new Date());
-
         QueryWrapper<CorTenantScooter> scooterQueryWrapper = new QueryWrapper<>();
         scooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
         scooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
         scooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, enter.getScooterId());
-        tenantScooterService.update(updateTenantScooter, scooterQueryWrapper);
-
+        CorTenantScooter tenantScooter = tenantScooterService.getOne(scooterQueryWrapper);
+        if (tenantScooter == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
+        }
+        // 125CC 车辆过滤
+        if (StringUtils.equals(tenantScooter.getModel(), ScooterModelEnums.SCOOTER_125_CC.getValue())) {
+            if (!driver.getDriverLicenseLevel().equals(DriverLicenseLevelEnum.HIGH.getValue())) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.NO_DRIVER_LICENSE.getCode(), ExceptionCodeEnums.NO_DRIVER_LICENSE.getMessage());
+            }
+        }
+        tenantScooter.setStatus(TenantScooterStatusEnums.USEING.getValue());
+        tenantScooter.setUpdatedBy(enter.getUserId());
+        tenantScooter.setUpdatedTime(new Date());
+        tenantScooterService.updateById(tenantScooter);
         //更新司机状态
         driver.setStatus(DriverStatusEnum.WORKING.getValue());
         driver.setUpdatedTime(new Date());
