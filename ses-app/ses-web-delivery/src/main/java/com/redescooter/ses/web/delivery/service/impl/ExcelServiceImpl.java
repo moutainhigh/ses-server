@@ -4,6 +4,8 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.starter.poi.EasyPoiUtils;
+import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.ExcelService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
 import com.redescooter.ses.web.delivery.verifyhandler.OrdersExcelVerifyHandlerImpl;
@@ -48,8 +50,12 @@ public class ExcelServiceImpl implements ExcelService {
 
         ImportExcelOrderResult result = new ImportExcelOrderResult();
 
-        ExcelImportResult<ExpressOrderExcleData> excelImportResult = importExcelService.setiExcelVerifyHandler(new OrdersExcelVerifyHandlerImpl()).importOssExcel(enter.getUrl(), ExpressOrderExcleData.class, new ImportParams());
+        ExcelImportResult<ExpressOrderExcleData> excelImportResult = importExcelService.setiExcelVerifyHandler(new OrdersExcelVerifyHandlerImpl()).importOssExcel(enter.getUrl(),
+                ExpressOrderExcleData.class, new ImportParams());
 
+        if (excelImportResult == null) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+        }
         List<ExpressOrderExcleData> successList = excelImportResult.getList();
         List<ExpressOrderExcleData> failList = excelImportResult.getFailList();
         //验证是否有不合法的Eecel数据
