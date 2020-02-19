@@ -533,6 +533,9 @@ public class RtDriverServiceImpl implements RtDriverService {
         if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.WORKING.getValue())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getMessage());
         }
+        if (!driver.getDriverLicenseLevel().equals(DriverLicenseLevelEnum.HIGH.getValue())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.NO_DRIVER_LICENSE.getCode(), ExceptionCodeEnums.NO_DRIVER_LICENSE.getMessage());
+        }
 
         QueryWrapper<CorDriverScooter> driverScooterQueryWrapper = new QueryWrapper<>();
         driverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());

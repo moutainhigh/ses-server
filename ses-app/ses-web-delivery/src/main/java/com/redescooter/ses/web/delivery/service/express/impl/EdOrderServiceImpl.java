@@ -54,9 +54,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -86,6 +86,7 @@ public class EdOrderServiceImpl implements EdOrderService {
     private CorExpressOrderTraceService expressOrderTraceService;
     @Autowired
     private ExpressOrderServiceMapper expressOrderServiceMapper;
+
     @Autowired
     private CorExpressDeliveryService corExpressDeliveryService;
     @Autowired
@@ -94,9 +95,9 @@ public class EdOrderServiceImpl implements EdOrderService {
     private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
     @Autowired
     private CorDriverScooterService corDriverScooterService;
-
-    @Reference
+    @Autowired
     private IdAppService idAppService;
+
     @Reference
     private GenerateService generateService;
     @Reference

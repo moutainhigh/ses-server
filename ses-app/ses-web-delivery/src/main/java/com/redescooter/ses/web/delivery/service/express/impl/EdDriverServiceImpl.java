@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.driver.DriverLicenseLevelEnum;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
@@ -34,7 +35,6 @@ import com.redescooter.ses.web.delivery.vo.DeliveryChartResult;
 import com.redescooter.ses.web.delivery.vo.DeliveryHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,19 +60,19 @@ public class EdDriverServiceImpl implements EdDriverService {
     @Autowired
     private IdAppService idAppService;
 
-    @Reference
+    @Autowired
     private CorDriverService driverService;
 
-    @Reference
+    @Autowired
     private CorDriverScooterService driverScooterService;
 
-    @Reference
+    @Autowired
     private CorDriverScooterHistoryService driverScooterHistoryService;
 
-    @Reference
+    @Autowired
     private CorTenantScooterService tenantScooterService;
 
-    @Reference
+    @Autowired
     private CorExpressDeliveryService corExpressDeliveryService;
 
     @Override
@@ -218,7 +218,7 @@ public class EdDriverServiceImpl implements EdDriverService {
         if (StringUtils.equals(driver.getStatus(), DriverStatusEnum.WORKING.getValue())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getCode(), ExceptionCodeEnums.DRIVER_STATUS_IS_WORKING.getMessage());
         }
-        if (true) {
+        if (!driver.getDriverLicenseLevel().equals(DriverLicenseLevelEnum.HIGH.getValue())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.NO_DRIVER_LICENSE.getCode(), ExceptionCodeEnums.NO_DRIVER_LICENSE.getMessage());
         }
 
