@@ -15,8 +15,8 @@
         from cor_tenant_scooter scooter
         left join cor_driver_scooter driverScooter
         on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0 and driverScooter.status = 1
-        left join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
-        left join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
+        inner join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
+        inner join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
         where scooter.tenant_id = #{tenantId}
         and scooter.dr = 0
         <if test="status != null and status != ''">
@@ -41,8 +41,8 @@
         from cor_tenant_scooter scooter
         left join cor_driver_scooter driverScooter
         on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0 and driverScooter.status = 1
-        left join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
-        left join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
+        inner join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
+        inner join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
         where scooter.tenant_id = #{tenantId}
         and scooter.dr = 0
         <if test="status != null and status != ''">
@@ -61,20 +61,19 @@
     </select>
 
     <select id="detail" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
-      select scooter.scooter_id    as id,
-             scooter.status        as status,
-             scooter.model         as model,
-             scooter.license_plate as licensePlate,
-             driver.id             as driverId,
-             profile.FIRST_NAME    as driverFirstName,
-             profile.LAST_NAME     as driverLastName
-      from cor_tenant_scooter scooter
-               left join cor_driver_scooter driverScooter
-                         on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0 and
-                            driverScooter.status = 1
-               left join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
-               left join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
-      where scooter.scooter_id = #{id}
+        select scooter.scooter_id as id,
+        scooter.status as status,
+        scooter.model as model,
+        scooter.license_plate as licensePlate,
+        driver.id as driverId,
+        profile.FIRST_NAME as driverFirstName,
+        profile.LAST_NAME as driverLastName
+        from cor_tenant_scooter scooter
+        left join cor_driver_scooter driverScooter on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr
+        = 0 and driverScooter.status = 1
+        inner join cor_driver driver on driver.id = driverScooter.driver_id and driver.dr = 0
+        inner join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
+        where scooter.scooter_id = #{id}
         and scooter.tenant_id = #{tenantId}
     </select>
     <select id="assignEdScooterHistroyCount" resultType="java.lang.Integer">
