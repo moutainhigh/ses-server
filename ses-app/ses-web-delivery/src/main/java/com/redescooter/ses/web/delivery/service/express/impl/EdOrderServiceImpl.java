@@ -576,11 +576,19 @@ public class EdOrderServiceImpl implements EdOrderService {
             saverOrder.setRecipientLatitude(new BigDecimal("0"));
             saverOrder.setRecipientLongitude(new BigDecimal("0"));
             saverOrder.setRecipientGeohash("0");
+        } else {
+            saverOrder.setRecipientLatitude(order.getRecipientLatitude());
+            saverOrder.setRecipientLongitude(order.getRecipientLongitude());
+            saverOrder.setRecipientGeohash(MapUtil.geoHash(order.getRecipientLongitude().toString(),order.getRecipientLatitude().toString()));
         }
         if (order.getSenderLatitude() == null || order.getSenderLongitude() == null) {
             saverOrder.setSenderLatitude(new BigDecimal("0"));
             saverOrder.setSenderLongitude(new BigDecimal("0"));
             saverOrder.setSenderGeohash("0");
+        } else {
+            saverOrder.setRecipientLatitude(order.getSenderLatitude());
+            saverOrder.setRecipientLongitude(order.getSenderLongitude());
+            saverOrder.setRecipientGeohash(MapUtil.geoHash(order.getSenderLongitude().toString(),order.getSenderLatitude().toString()));
         }
         return saverOrder;
     }
