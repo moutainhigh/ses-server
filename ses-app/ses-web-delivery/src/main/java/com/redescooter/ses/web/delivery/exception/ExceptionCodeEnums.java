@@ -119,6 +119,8 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_IS_NOT_EXIST(10052, "车辆不存在"),
 
+    FILE_TEMPLATE_IS_INVALID(10053, "文件模板不合法，请重新下载文件模板"),
+
 
     ;
 
