@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
@@ -27,32 +26,46 @@ import com.redescooter.ses.web.delivery.dm.CorExpressDelivery;
 import com.redescooter.ses.web.delivery.dm.CorExpressDeliveryDetail;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrderTrace;
+import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.ExcelService;
+import com.redescooter.ses.web.delivery.service.base.CorDriverScooterService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryDetailService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderTraceService;
-import com.redescooter.ses.web.delivery.vo.*;
-import com.redescooter.ses.web.delivery.vo.edorder.*;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
+import com.redescooter.ses.web.delivery.vo.QueryExpressOrderTraceResult;
+import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
+import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
+import com.redescooter.ses.web.delivery.vo.edorder.ChanageExpressOrderEnter;
+import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
+import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
+import com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
-import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Mr.lijiating
@@ -73,15 +86,18 @@ public class EdOrderServiceImpl implements EdOrderService {
     private CorExpressOrderTraceService expressOrderTraceService;
     @Autowired
     private ExpressOrderServiceMapper expressOrderServiceMapper;
+
     @Autowired
     private CorExpressDeliveryService corExpressDeliveryService;
     @Autowired
     private EdOrderTraceService edOrderTraceService;
     @Autowired
     private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
-
-    @Reference
+    @Autowired
+    private CorDriverScooterService corDriverScooterService;
+    @Autowired
     private IdAppService idAppService;
+
     @Reference
     private GenerateService generateService;
     @Reference
@@ -200,6 +216,13 @@ public class EdOrderServiceImpl implements EdOrderService {
     public QueryOrderDetailResult details(IdEnter enter) {
 
         QueryOrderDetailResult detail = expressOrderServiceMapper.detail(enter);
+
+        CorTenantScooter corTenantScooter = expressOrderServiceMapper.queryCorTenantScooterByDriverId(detail.getDriverId());
+        if (corTenantScooter != null) {
+            detail.setLicensePlate(corTenantScooter.getLicensePlate());
+            detail.setDriverLatitude(corTenantScooter.getLatitude().toString());
+            detail.setDriverLongitule(corTenantScooter.getLongitule().toString());
+        }
 
         Optional.ofNullable(detail).ifPresent(d -> {
             IdEnter tenantIdEnter = new IdEnter();
@@ -371,8 +394,8 @@ public class EdOrderServiceImpl implements EdOrderService {
         if (expressOrder == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
-        if (!expressOrder.getStatus().equals(ExpressOrderStatusEnums.UNASGN.getValue())) {
-            throw new SesWebDeliveryException(ExceptionCodeEnums.ORDER_HAS_BEEN_ASSIGNED.getCode(), ExceptionCodeEnums.ORDER_HAS_BEEN_ASSIGNED.getMessage());
+        if (!expressOrder.getStatus().equals(ExpressOrderStatusEnums.REJECTED.getValue())) {
+            throw new SesWebDeliveryException(ExceptionCodeEnums.ORDER_WAS_NOT_REJECTED.getCode(), ExceptionCodeEnums.ORDER_WAS_NOT_REJECTED.getMessage());
         }
         expressOrder.setStatus(ExpressOrderStatusEnums.CANCEL.getValue());
         expressOrder.setUpdatedTime(new Date());

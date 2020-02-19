@@ -107,13 +107,15 @@ public enum ExceptionCodeEnums {
 
     EXPRESS_ORDER_IS_NOT_EXIST(10046, "快递订单不存在"),
 
-    ILLEGAL_NICKNAME(10047,"昵称不合法"),
+    ILLEGAL_NICKNAME(10047, "昵称不合法"),
 
-    REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER(10048,"拒绝订单不可分给同一个司机"),
+    REJECTED_ORDERS_CANNOT_ASSIGNED_THE_SAME_DRIVER(10048, "拒绝订单不可分给同一个司机"),
 
-    ORDER_IS_NOT_ALLOCATED(10049,"订单尚未完全分配完"),
+    ORDER_IS_NOT_ALLOCATED(10049, "订单尚未完全分配完"),
 
-    ORDER_HAS_BEEN_ASSIGNED(10050, "订单已分配，不可取消"),
+    ORDER_WAS_NOT_REJECTED(10050, "订单未拒绝，不可取消"),
+
+    NO_DRIVER_LICENSE(10051, "没有摩托车驾照，不可分配125CC型号车辆"),
 
 
     ;
