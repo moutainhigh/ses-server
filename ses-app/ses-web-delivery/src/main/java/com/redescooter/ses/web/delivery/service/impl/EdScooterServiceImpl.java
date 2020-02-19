@@ -114,12 +114,15 @@ public class EdScooterServiceImpl implements EdScooterService {
 
         List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterIdList);
         scooterResultList.forEach(item -> {
-            resultList.forEach(result -> {
-                if (item.getId().equals(result.getId())) {
-                    result.setBattery(item.getBattery());
-                    result.setModel(item.getModel());
-                    result.setMileage(item.getTotalmileage().toString());
-                }
+
+            Optional.ofNullable(item).ifPresent(it -> {
+                resultList.forEach(result -> {
+                    if (item.getId().equals(result.getId())) {
+                        result.setBattery(item.getBattery());
+                        result.setModel(item.getModel());
+                        result.setMileage(item.getTotalmileage().toString());
+                    }
+                });
             });
         });
         return PageResult.create(enter, count, resultList);
@@ -162,8 +165,10 @@ public class EdScooterServiceImpl implements EdScooterService {
             });
         }
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
-        result.setBattery(baseScooterResults.get(0).getBattery());
-        result.setMobilePicture(baseScooterResults.get(0).getPictures());
+        if(baseScooterResults.size()>0){
+            result.setBattery(baseScooterResults.get(0).getBattery());
+            result.setMobilePicture(baseScooterResults.get(0).getPictures());
+        }
         return result;
     }
 
@@ -183,9 +188,11 @@ public class EdScooterServiceImpl implements EdScooterService {
         List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(result.getId());
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
-        result.setBattery(baseScooterResults.get(0).getBattery());
-        result.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
-        result.setNextMaintenanceKm(baseScooterResults.get(0).getNextMaintenanceKm().toString());
+        if(baseScooterResults.size()>0){
+            result.setBattery(baseScooterResults.get(0).getBattery());
+            result.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
+            result.setNextMaintenanceKm(baseScooterResults.get(0).getNextMaintenanceKm().toString());
+        }
 
         return result;
     }

@@ -314,9 +314,12 @@ public class EdOrderServiceImpl implements EdOrderService {
         //订单数据
         List<QueryOrderDetailResult> orderList = expressOrderServiceMapper.driverOrderList(enter);
 
-        result.setScooterId(scooterListResult.get(0).getId());
-        result.setLicensePlate(scooterListResult.get(0).getLicensePlate());
-        result.setBattery(scooterListResult.get(0).getBattery());
+        if(scooterListResult.size()>0){
+            result.setScooterId(scooterListResult.get(0).getId());
+            result.setLicensePlate(scooterListResult.get(0).getLicensePlate());
+            result.setBattery(scooterListResult.get(0).getBattery());
+        }
+
         result.setOrderList(orderList);
 
         return result;

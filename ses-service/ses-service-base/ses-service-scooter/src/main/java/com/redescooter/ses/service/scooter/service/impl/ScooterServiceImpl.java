@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @ClassName:ScooterServiceImpl
@@ -38,11 +39,10 @@ public class ScooterServiceImpl implements ScooterService {
     @Override
     public List<BaseScooterResult> scooterInfor(List<Long> enter) {
         List<BaseScooterResult> scooterResultList = scooterServiceMapper.scooterInfor(enter);
-        if (CollectionUtils.isEmpty(scooterResultList)) {
-            throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
-        }
         scooterResultList.forEach(item -> {
-            item.setNextMaintenanceKm(ScooterDefaultData.MAINTENANCE_KM.subtract(item.getTotalmileage()));
+            Optional.ofNullable(item).ifPresent(it->{
+                it.setNextMaintenanceKm(ScooterDefaultData.MAINTENANCE_KM.subtract(item.getTotalmileage()));
+            });
         });
         return scooterResultList;
     }

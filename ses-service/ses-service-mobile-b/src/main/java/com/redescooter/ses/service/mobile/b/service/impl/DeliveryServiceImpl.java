@@ -56,11 +56,7 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -139,27 +135,30 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
 
         List<DeliveryDetailResult> deliveryList = deliveryServiceMapper.deliveryList(enter);
-
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
 
-        List<Long> scooterIdList = new ArrayList<> ();
+        List<Long> scooterIdList = new ArrayList<>();
         deliveryList.forEach(item -> {
-            scooterIdList.add(item.getScooterId());
-            item.setTenantLongitude(queryTenantResult.getLongitude());
-            item.setTenantLatitude(queryTenantResult.getLatitude());
+            Optional.ofNullable(item).ifPresent(it -> {
+                scooterIdList.add(it.getScooterId());
+                item.setTenantLongitude(queryTenantResult.getLongitude());
+                item.setTenantLatitude(queryTenantResult.getLatitude());
+            });
         });
 
         // 查询车辆信息
         List<BaseScooterResult> scooter = scooterService.scooterInfor(scooterIdList);
-        scooter.forEach(item->{
-            for (DeliveryDetailResult delivery : deliveryList) {
-                if (item.getId().equals(delivery.getScooterId())) {
-                    delivery.setScooterId(item.getId());
-                    delivery.setScooterLongitude(item.getLongitule());
-                    delivery.setScooterLatitude(item.getLatitude());
-                    continue;
+        scooter.forEach(item -> {
+            Optional.ofNullable(item).ifPresent(it -> {
+                for (DeliveryDetailResult delivery : deliveryList) {
+                    if (it.getId().equals(delivery.getScooterId())) {
+                        delivery.setScooterId(it.getId());
+                        delivery.setScooterLongitude(it.getLongitule());
+                        delivery.setScooterLatitude(it.getLatitude());
+                        continue;
+                    }
                 }
-            }
+            });
         });
 
         return new DeliveryListResult(map, deliveryList);
@@ -205,9 +204,11 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         result.setTenantLatitude(tenant.getLatitude());
         result.setTenantLongitude(tenant.getLongitude());
-        result.setScooterLatitude(scooter.get(0).getLatitude());
-        result.setScooterLongitude(scooter.get(0).getLongitule());
-        result.setBattery(scooter.get(0).getBattery());
+        if (scooter.size() > 0) {
+            result.setScooterLatitude(scooter.get(0).getLatitude());
+            result.setScooterLongitude(scooter.get(0).getLongitule());
+            result.setBattery(scooter.get(0).getBattery());
+        }
         return result;
     }
 

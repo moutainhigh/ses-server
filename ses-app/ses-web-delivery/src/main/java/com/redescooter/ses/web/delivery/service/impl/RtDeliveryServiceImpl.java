@@ -281,7 +281,9 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(details.getTenantId()));
         details.setTenantLat(queryTenantResult.getLatitude().toString());
         details.setTenantLng(queryTenantResult.getLongitude().toString());
-        details.setBattery(String.valueOf(scooter.get(0).getBattery()));
+        if(scooter.size()>0){
+            details.setBattery(String.valueOf(scooter.get(0).getBattery()));
+        }
         return details;
     }
 
@@ -474,12 +476,14 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
 
         ScooterMapResult scooterMapResult = orderDeliveryServiceMapper.driverInfo(enter);
         if (scooterMapResult != null) {
-            scooterMapResult.setId(scooterResultList.get(0).getId());
-            scooterMapResult.setLng(scooterResultList.get(0).getLongitule().toString());
-            scooterMapResult.setLat(scooterResultList.get(0).getLatitude().toString());
-            scooterMapResult.setBattery(scooterResultList.get(0).getBattery());
-            scooterMapResult.setLicensePlate(scooterResultList.get(0).getLicensePlate());
-            scooterMapResult.setStatus(scooterResultList.get(0).getAvailableStatus());
+            if(scooterResultList.size()>0){
+                scooterMapResult.setId(scooterResultList.get(0).getId());
+                scooterMapResult.setLng(scooterResultList.get(0).getLongitule().toString());
+                scooterMapResult.setLat(scooterResultList.get(0).getLatitude().toString());
+                scooterMapResult.setBattery(scooterResultList.get(0).getBattery());
+                scooterMapResult.setLicensePlate(scooterResultList.get(0).getLicensePlate());
+                scooterMapResult.setStatus(scooterResultList.get(0).getAvailableStatus());
+            }
         } else {
             scooterMapResult = ScooterMapResult.builder()
                     .id(scooterResultList.get(0).getId())

@@ -177,9 +177,15 @@ public class TaskServiceImpl implements TaskService {
         }
         List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(result.getScooterId());
+
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
-        result.setBattery(baseScooterResults.get(0).getBattery());
-        result.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
+        baseScooterResults.forEach(itme->{
+            Optional.ofNullable(itme).ifPresent(it->{
+                result.setBattery(baseScooterResults.get(0).getBattery());
+                result.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
+            });
+        });
+
         return result;
     }
 
