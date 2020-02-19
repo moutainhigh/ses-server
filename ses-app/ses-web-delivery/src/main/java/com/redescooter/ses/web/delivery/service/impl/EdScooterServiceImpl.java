@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @ClassName:MobileServiceImpl
@@ -103,7 +104,7 @@ public class EdScooterServiceImpl implements EdScooterService {
         if (CollectionUtils.isNotEmpty(results)) {
             resultList.forEach(item -> {
                 results.forEach(scooterResult -> {
-                    if (item.getDriverId().equals(scooterResult.getDriverId())) {
+                    if (item.getDriverId() != null && item.getDriverId().equals(scooterResult.getDriverId())) {
                         item.setDriverId(scooterResult.getDriverId());
                         item.setDriverFirstName(scooterResult.getDriverFirstName());
                         item.setDriverLastName(scooterResult.getDriverLastName());
@@ -157,7 +158,7 @@ public class EdScooterServiceImpl implements EdScooterService {
         List<EdScooterResult> results = edScooterServiceMapper.driverUserProfile(scooterIdList);
         if (CollectionUtils.isNotEmpty(results)) {
             results.forEach(scooterResult -> {
-                if (result.getDriverId().equals(scooterResult.getDriverId())) {
+                if (scooterResult.getDriverId() != null && scooterResult.getDriverId().equals(scooterResult.getDriverId())) {
                     result.setDriverId(scooterResult.getDriverId());
                     result.setDriverFirstName(scooterResult.getDriverFirstName());
                     result.setDriverLastName(scooterResult.getDriverLastName());

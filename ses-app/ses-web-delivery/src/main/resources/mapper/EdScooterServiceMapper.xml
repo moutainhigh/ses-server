@@ -29,8 +29,6 @@
         scooter.status as status,
         scooter.license_plate as licensePlate
         from cor_tenant_scooter scooter
-        left join cor_driver_scooter driverScooter
-        on scooter.scooter_id = driverScooter.scooter_id and driverScooter.dr = 0
         where scooter.tenant_id = #{tenantId}
         and scooter.dr = 0
         <if test="status != null and status != ''">
