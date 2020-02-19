@@ -95,9 +95,11 @@ public class DeliveryTraceServiceImpl implements DeliveryTraceService {
         deliveryTrace.setLatitude(item.getT().getLatitude());
         deliveryTrace.setGeohash(MapUtil.geoHash(item.getT().getLongitude().toString(), item.getT().getLatitude().toString()));
         deliveryTrace.setScooterId(item.getT().getScooterId());
-        deliveryTrace.setScooterLatitude(scooter.get(0).getLatitude());
-        deliveryTrace.setScooterLongitude(scooter.get(0).getLongitule());
-        deliveryTrace.setScooterLocationGeohash(MapUtil.geoHash(scooter.get(0).getLatitude().toString(), scooter.get(0).getLongitule().toString()));
+        if(scooter.size()>0){
+            deliveryTrace.setScooterLatitude(scooter.get(0).getLatitude());
+            deliveryTrace.setScooterLongitude(scooter.get(0).getLongitule());
+            deliveryTrace.setScooterLocationGeohash(MapUtil.geoHash(scooter.get(0).getLatitude().toString(), scooter.get(0).getLongitule().toString()));
+        }
         deliveryTrace.setCreatedBy(item.getUserId());
         deliveryTrace.setCreatedTime(new Date());
         deliveryTrace.setUpdatedBy(item.getUserId());

@@ -76,13 +76,7 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Mr.lijiating
@@ -510,12 +504,14 @@ public class RtDriverServiceImpl implements RtDriverService {
 
         List<ListScooterResult> resultList = new ArrayList<>();
         scooterService.scooterInfor(scooterIdList).forEach(scooter -> {
-            ListScooterResult scooterResult = ListScooterResult.builder()
-                    .id(scooter.getId())
-                    .battery(scooter.getBattery())
-                    .scooterLicense(scooter.getLicensePlate())
-                    .build();
-            resultList.add(scooterResult);
+            Optional.ofNullable(scooter).ifPresent(it->{
+                ListScooterResult scooterResult = ListScooterResult.builder()
+                        .id(scooter.getId())
+                        .battery(scooter.getBattery())
+                        .scooterLicense(scooter.getLicensePlate())
+                        .build();
+                resultList.add(scooterResult);
+            });
         });
 
         return resultList;
