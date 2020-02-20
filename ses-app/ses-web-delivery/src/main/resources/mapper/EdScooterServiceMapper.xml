@@ -185,7 +185,7 @@
 
     </select>
     <select id="driverUserProfile" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
-        select dscooter.scooter_id as scooterId,
+        select dscooter.scooter_id as id,
         driver.id as driverId,
         profile.FIRST_NAME as driverFirstName,
         profile.LAST_NAME as driverLastName

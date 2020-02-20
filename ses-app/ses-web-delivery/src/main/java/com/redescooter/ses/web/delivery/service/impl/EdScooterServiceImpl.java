@@ -104,7 +104,7 @@ public class EdScooterServiceImpl implements EdScooterService {
         if (CollectionUtils.isNotEmpty(results)) {
             resultList.forEach(item -> {
                 results.forEach(scooterResult -> {
-                    if (item.getDriverId() != null && item.getDriverId().equals(scooterResult.getDriverId())) {
+                    if (item.getId() != null && item.getId().equals(scooterResult.getId())) {
                         item.setDriverId(scooterResult.getDriverId());
                         item.setDriverFirstName(scooterResult.getDriverFirstName());
                         item.setDriverLastName(scooterResult.getDriverLastName());
@@ -158,7 +158,7 @@ public class EdScooterServiceImpl implements EdScooterService {
         List<EdScooterResult> results = edScooterServiceMapper.driverUserProfile(scooterIdList);
         if (CollectionUtils.isNotEmpty(results)) {
             results.forEach(scooterResult -> {
-                if (scooterResult.getDriverId() != null && scooterResult.getDriverId().equals(scooterResult.getDriverId())) {
+                if (scooterResult.getId() != null && scooterResult.getId().equals(scooterResult.getId())) {
                     result.setDriverId(scooterResult.getDriverId());
                     result.setDriverFirstName(scooterResult.getDriverFirstName());
                     result.setDriverLastName(scooterResult.getDriverLastName());
