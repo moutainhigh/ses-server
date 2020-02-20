@@ -1,7 +1,7 @@
 package com.redescooter.ses.api.mobile.c.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.mobile.c.vo.ScooterNgvEnter;
+import com.redescooter.ses.api.mobile.c.vo.ScooterNavigationEnter;
 
 /**
  * @ClassName:ScooterService
@@ -20,5 +20,5 @@ public interface IdScooterService {
      * @date: 2020/2/20 11:11
      * @Version: SAAS 1.2
      */
-    GeneralResult scooterNgv(ScooterNgvEnter enter);
+    GeneralResult scooterNavigation(ScooterNavigationEnter enter);
 }

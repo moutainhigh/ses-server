@@ -7,7 +7,7 @@ import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.mobile.b.service.ScooterMobileService;
 import com.redescooter.ses.api.mobile.b.vo.LockEnter;
 import com.redescooter.ses.api.mobile.c.service.IdScooterService;
-import com.redescooter.ses.api.mobile.c.vo.ScooterNgvEnter;
+import com.redescooter.ses.api.mobile.c.vo.ScooterNavigationEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -52,9 +52,9 @@ public class ScooterController {
 
     // 为C端 在开放两个 开始导航 、结束导航接口
 
-    @ApiOperation(value = "车辆开始导航")
-    @RequestMapping(value = "/startNgv")
-    public Response<GeneralResult> lock(@ModelAttribute ScooterNgvEnter enter) {
-        return new Response<>(idScooterService.scooterNgv(enter));
+    @ApiOperation(value = "车辆导航")
+    @RequestMapping(value = "/scooterNavigation")
+    public Response<GeneralResult> scooterNavigation(@ModelAttribute ScooterNavigationEnter enter) {
+        return new Response<>(idScooterService.scooterNavigation(enter));
     }
 }

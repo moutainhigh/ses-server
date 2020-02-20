@@ -761,6 +761,9 @@ public class RtDriverServiceImpl implements RtDriverService {
         List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(corDriverScooter.getScooterId());
         List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterIdList);
+        if (CollectionUtils.isEmpty(scooterResultList)) {
+            return null;
+        }
 
         QueryWrapper<CorScooterRideStat> corScooterRideStatQueryWrapper = new QueryWrapper<>();
         corScooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_SCOOTER_ID, scooterResultList.get(0).getId());

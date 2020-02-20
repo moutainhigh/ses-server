@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.c.dao.base.ConScooterRideStatMapper">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.service.mobile.c.dm.base.ConScooterRideStat">
+        <!--@mbg.generated-->
+        <!--@Table con_scooter_ride_stat-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="tenant_id" jdbcType="INTEGER" property="tenantId"/>
+        <result column="scooter_id" jdbcType="BIGINT" property="scooterId"/>
+        <result column="total_duration" jdbcType="BIGINT" property="totalDuration"/>
+        <result column="co2_total" jdbcType="DOUBLE" property="co2Total"/>
+        <result column="co2_increment" jdbcType="DOUBLE" property="co2Increment"/>
+        <result column="saved_money" jdbcType="DOUBLE" property="savedMoney"/>
+        <result column="svg_speed" jdbcType="DOUBLE" property="svgSpeed"/>
+        <result column="read_time" jdbcType="TIMESTAMP" property="readTime"/>
+        <result column="total_mileage" jdbcType="DOUBLE" property="totalMileage"/>
+        <result column="first_ride_time" jdbcType="TIMESTAMP" property="firstRideTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="def1" jdbcType="VARCHAR" property="def1"/>
+        <result column="def2" jdbcType="VARCHAR" property="def2"/>
+        <result column="def3" jdbcType="VARCHAR" property="def3"/>
+        <result column="def5" jdbcType="VARCHAR" property="def5"/>
+        <result column="def6" jdbcType="DOUBLE" property="def6"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, dr, tenant_id, scooter_id, total_duration, co2_total, co2_increment, saved_money,
+        svg_speed, read_time, total_mileage, first_ride_time, create_time, create_by, update_time,
+        update_by, def1, def2, def3, def5, def6
+    </sql>
+    <update id="updateBatch" parameterType="java.util.List">
+        <!--@mbg.generated-->
+        update con_scooter_ride_stat
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="dr = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+                </foreach>
+            </trim>
+            <trim prefix="tenant_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=INTEGER}
+                </foreach>
+            </trim>
+            <trim prefix="scooter_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.scooterId,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="total_duration = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.totalDuration,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="co2_total = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.co2Total,jdbcType=DOUBLE}
+                </foreach>
+            </trim>
+            <trim prefix="co2_increment = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.co2Increment,jdbcType=DOUBLE}
+                </foreach>
+            </trim>
+            <trim prefix="saved_money = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.savedMoney,jdbcType=DOUBLE}
+                </foreach>
+            </trim>
+            <trim prefix="svg_speed = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.svgSpeed,jdbcType=DOUBLE}
+                </foreach>
+            </trim>
+            <trim prefix="read_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.readTime,jdbcType=TIMESTAMP}
+                </foreach>
+            </trim>
+            <trim prefix="total_mileage = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.totalMileage,jdbcType=DOUBLE}
+                </foreach>
+            </trim>
+            <trim prefix="first_ride_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.firstRideTime,jdbcType=TIMESTAMP}
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=TIMESTAMP}
+                </foreach>
+            </trim>
+            <trim prefix="create_by = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.createBy,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.updateTime,jdbcType=TIMESTAMP}
+                </foreach>
+            </trim>
+            <trim prefix="update_by = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.updateBy,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="def1 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def2 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def3 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def5 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def6 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach close=")" collection="list" item="item" open="(" separator=", ">
+            #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into con_scooter_ride_stat
+        (id, dr, tenant_id, scooter_id, total_duration, co2_total, co2_increment, saved_money,
+        svg_speed, read_time, total_mileage, first_ride_time, create_time, create_by, update_time,
+        update_by, def1, def2, def3, def5, def6)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=INTEGER},
+            #{item.scooterId,jdbcType=BIGINT}, #{item.totalDuration,jdbcType=BIGINT}, #{item.co2Total,jdbcType=DOUBLE},
+            #{item.co2Increment,jdbcType=DOUBLE}, #{item.savedMoney,jdbcType=DOUBLE}, #{item.svgSpeed,jdbcType=DOUBLE},
+            #{item.readTime,jdbcType=TIMESTAMP}, #{item.totalMileage,jdbcType=DOUBLE},
+            #{item.firstRideTime,jdbcType=TIMESTAMP},
+            #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=BIGINT},
+            #{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.updateBy,jdbcType=BIGINT}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
+            #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+            )
+        </foreach>
+    </insert>
+    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.mobile.c.dm.base.ConScooterRideStat">
+        <!--@mbg.generated-->
+        insert into con_scooter_ride_stat
+        (id, dr, tenant_id, scooter_id, total_duration, co2_total, co2_increment, saved_money,
+        svg_speed, read_time, total_mileage, first_ride_time, create_time, create_by, update_time,
+        update_by, def1, def2, def3, def5, def6)
+        values
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=INTEGER}, #{scooterId,jdbcType=BIGINT},
+        #{totalDuration,jdbcType=BIGINT}, #{co2Total,jdbcType=DOUBLE}, #{co2Increment,jdbcType=DOUBLE},
+        #{savedMoney,jdbcType=DOUBLE}, #{svgSpeed,jdbcType=DOUBLE}, #{readTime,jdbcType=TIMESTAMP},
+        #{totalMileage,jdbcType=DOUBLE}, #{firstRideTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP},
+        #{createBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT},
+        #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
+        #{def6,jdbcType=DOUBLE})
+        on duplicate key update
+        id = #{id,jdbcType=BIGINT},
+        dr = #{dr,jdbcType=INTEGER},
+        tenant_id = #{tenantId,jdbcType=INTEGER},
+        scooter_id = #{scooterId,jdbcType=BIGINT},
+        total_duration = #{totalDuration,jdbcType=BIGINT},
+        co2_total = #{co2Total,jdbcType=DOUBLE},
+        co2_increment = #{co2Increment,jdbcType=DOUBLE},
+        saved_money = #{savedMoney,jdbcType=DOUBLE},
+        svg_speed = #{svgSpeed,jdbcType=DOUBLE},
+        read_time = #{readTime,jdbcType=TIMESTAMP},
+        total_mileage = #{totalMileage,jdbcType=DOUBLE},
+        first_ride_time = #{firstRideTime,jdbcType=TIMESTAMP},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        create_by = #{createBy,jdbcType=BIGINT},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        update_by = #{updateBy,jdbcType=BIGINT},
+        def1 = #{def1,jdbcType=VARCHAR},
+        def2 = #{def2,jdbcType=VARCHAR},
+        def3 = #{def3,jdbcType=VARCHAR},
+        def5 = #{def5,jdbcType=VARCHAR},
+        def6 = #{def6,jdbcType=DOUBLE}
+    </insert>
+    <insert id="insertOrUpdateSelective"
+            parameterType="com.redescooter.ses.service.mobile.c.dm.base.ConScooterRideStat">
+        <!--@mbg.generated-->
+        insert into con_scooter_ride_stat
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="scooterId != null">
+                scooter_id,
+            </if>
+            <if test="totalDuration != null">
+                total_duration,
+            </if>
+            <if test="co2Total != null">
+                co2_total,
+            </if>
+            <if test="co2Increment != null">
+                co2_increment,
+            </if>
+            <if test="savedMoney != null">
+                saved_money,
+            </if>
+            <if test="svgSpeed != null">
+                svg_speed,
+            </if>
+            <if test="readTime != null">
+                read_time,
+            </if>
+            <if test="totalMileage != null">
+                total_mileage,
+            </if>
+            <if test="firstRideTime != null">
+                first_ride_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="def1 != null">
+                def1,
+            </if>
+            <if test="def2 != null">
+                def2,
+            </if>
+            <if test="def3 != null">
+                def3,
+            </if>
+            <if test="def5 != null">
+                def5,
+            </if>
+            <if test="def6 != null">
+                def6,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=INTEGER},
+            </if>
+            <if test="scooterId != null">
+                #{scooterId,jdbcType=BIGINT},
+            </if>
+            <if test="totalDuration != null">
+                #{totalDuration,jdbcType=BIGINT},
+            </if>
+            <if test="co2Total != null">
+                #{co2Total,jdbcType=DOUBLE},
+            </if>
+            <if test="co2Increment != null">
+                #{co2Increment,jdbcType=DOUBLE},
+            </if>
+            <if test="savedMoney != null">
+                #{savedMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="svgSpeed != null">
+                #{svgSpeed,jdbcType=DOUBLE},
+            </if>
+            <if test="readTime != null">
+                #{readTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="totalMileage != null">
+                #{totalMileage,jdbcType=DOUBLE},
+            </if>
+            <if test="firstRideTime != null">
+                #{firstRideTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="def1 != null">
+                #{def1,jdbcType=VARCHAR},
+            </if>
+            <if test="def2 != null">
+                #{def2,jdbcType=VARCHAR},
+            </if>
+            <if test="def3 != null">
+                #{def3,jdbcType=VARCHAR},
+            </if>
+            <if test="def5 != null">
+                #{def5,jdbcType=VARCHAR},
+            </if>
+            <if test="def6 != null">
+                #{def6,jdbcType=DOUBLE},
+            </if>
+        </trim>
+        on duplicate key update
+        <trim suffixOverrides=",">
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=INTEGER},
+            </if>
+            <if test="scooterId != null">
+                scooter_id = #{scooterId,jdbcType=BIGINT},
+            </if>
+            <if test="totalDuration != null">
+                total_duration = #{totalDuration,jdbcType=BIGINT},
+            </if>
+            <if test="co2Total != null">
+                co2_total = #{co2Total,jdbcType=DOUBLE},
+            </if>
+            <if test="co2Increment != null">
+                co2_increment = #{co2Increment,jdbcType=DOUBLE},
+            </if>
+            <if test="savedMoney != null">
+                saved_money = #{savedMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="svgSpeed != null">
+                svg_speed = #{svgSpeed,jdbcType=DOUBLE},
+            </if>
+            <if test="readTime != null">
+                read_time = #{readTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="totalMileage != null">
+                total_mileage = #{totalMileage,jdbcType=DOUBLE},
+            </if>
+            <if test="firstRideTime != null">
+                first_ride_time = #{firstRideTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="def1 != null">
+                def1 = #{def1,jdbcType=VARCHAR},
+            </if>
+            <if test="def2 != null">
+                def2 = #{def2,jdbcType=VARCHAR},
+            </if>
+            <if test="def3 != null">
+                def3 = #{def3,jdbcType=VARCHAR},
+            </if>
+            <if test="def5 != null">
+                def5 = #{def5,jdbcType=VARCHAR},
+            </if>
+            <if test="def6 != null">
+                def6 = #{def6,jdbcType=DOUBLE},
+            </if>
+        </trim>
+    </insert>
+</mapper>

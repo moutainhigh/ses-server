@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
 import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import com.redescooter.ses.api.hub.vo.QueryDriverScooterResult;
 import com.redescooter.ses.api.mobile.c.service.IdScooterService;
-import com.redescooter.ses.api.mobile.c.vo.ScooterNgvEnter;
+import com.redescooter.ses.api.mobile.c.vo.ScooterNavigationEnter;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -39,7 +39,7 @@ public class IdScooterServiceImpl implements IdScooterService {
      * @Version: SAAS 1.2
      */
     @Override
-    public GeneralResult scooterNgv(ScooterNgvEnter enter) {
+    public GeneralResult scooterNavigation(ScooterNavigationEnter enter) {
         //todo 车辆数据骑行的问题
         // 查询TOC 车辆分配信息
         QueryDriverScooterResult queryDriverScooterResult = cusotmerScooterService.queryDriverScooter(enter);

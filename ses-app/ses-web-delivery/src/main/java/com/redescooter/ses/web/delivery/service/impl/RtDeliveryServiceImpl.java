@@ -22,6 +22,7 @@ import com.redescooter.ses.api.foundation.service.PushService;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
+import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
@@ -158,6 +159,10 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             if (driver == null) {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
             }
+            // 获取店铺配置
+            TenantConfigInfoResult tenantConfigInfoResult = tenantBaseService.tenantConfigInfo(enter);
+
+
             CorDelivery deliverySave = new CorDelivery();
             BeanUtils.copyProperties(enter, deliverySave);
             deliverySave.setId(idAppService.getId(SequenceName.COR_DELIVERY));
@@ -170,7 +175,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             deliverySave.setStatus(DeliveryStatusEnums.PENDING.getValue());
             // todo 预计开始配送的时间,默认十分钟后开始配送
             deliverySave.setEtd(DateUtils.addMinutes(new Date(), Integer.parseInt("10")));
-            deliverySave.setEta(DateUtils.addMinutes(new Date(), Integer.parseInt(enter.getTimeoutExpectde())));
+            deliverySave.setEta(DateUtils.addMinutes(new Date(), tenantConfigInfoResult.getEstimatedDuration().intValue()/60));
             BigDecimal drivenMileage = new BigDecimal(MapUtil.getDistance(enter.getLatitude(), enter.getLongitude(), tenant.getLatitude() == null ? "0" : String.valueOf(tenant.getLatitude()),
                     tenant.getLongitude() == null ? "0" : String.valueOf(tenant.getLongitude())));
             deliverySave.setDrivenMileage(drivenMileage);
@@ -533,9 +538,12 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
 
+        TenantConfigInfoResult tenantConfigInfoResult = tenantBaseService.tenantConfigInfo(enter);
+
         corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateUtil.DEFAULT_DATETIME_FORMAT));
         corDelivery.setStatus(DeliveryStatusEnums.PENDING.getValue());
         corDelivery.setDelivererId(corDriver.getUserId());
+        corDelivery.setEta(DateUtils.addMinutes(new Date(), tenantConfigInfoResult.getEstimatedDuration().intValue()/60));
         corDelivery.setLabel(null);
         corDelivery.setUpdatedBy(enter.getUserId());
         corDelivery.setUpdatedTime(new Date());

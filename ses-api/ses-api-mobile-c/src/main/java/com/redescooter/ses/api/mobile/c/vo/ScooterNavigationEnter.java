@@ -3,6 +3,7 @@ package com.redescooter.ses.api.mobile.c.vo;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.c.exception.ValidationExceptionCode;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,12 +18,13 @@ import lombok.NoArgsConstructor;
  * @Version：1.3
  * @create: 2020/02/20 11:06
  */
+@ApiModel(value = "车辆导航入参", description = "车辆导航入参")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ScooterNgvEnter extends GeneralEnter {
+public class ScooterNavigationEnter extends GeneralEnter {
     @ApiModelProperty(value = "事件 见 状态文档", required = true)
     @NotNull(code = ValidationExceptionCode.EVENT_IS_EMPTY, message = "事件 不能为空")
     private String event;
