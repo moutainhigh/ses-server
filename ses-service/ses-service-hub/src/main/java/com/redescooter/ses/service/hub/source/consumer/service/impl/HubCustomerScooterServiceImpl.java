@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.hub.source.consumer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import com.redescooter.ses.api.hub.vo.QueryDriverScooterResult;
@@ -32,18 +32,15 @@ public class HubCustomerScooterServiceImpl implements CusotmerScooterService {
      * @return
      */
     @Override
-    public QueryDriverScooterResult queryDriverScooter(IdEnter enter) {
+    public QueryDriverScooterResult queryDriverScooter(GeneralEnter enter) {
         QueryWrapper<HubConUserScooter> conUserScooterQueryWrapper = new QueryWrapper<>();
         if (enter.getUserId() != null && enter.getUserId() != 0) {
             conUserScooterQueryWrapper.eq(HubConUserScooter.COL_USER_ID, enter.getUserId());
         }
-        if (enter.getId() != null && enter.getId() != 0) {
-            conUserScooterQueryWrapper.eq(HubConUserScooter.COL_SCOOTER_ID, enter.getId());
-        }
+        conUserScooterQueryWrapper.eq(HubConUserScooter.COL_DR, 0);
         HubConUserScooter hubConUserScooter = hubConUserScooterMapper.selectOne(conUserScooterQueryWrapper);
         if (hubConUserScooter == null) {
-           // throw new SeSHubException(ExceptionCodeEnums.USER_IS_NOT_HAVE_SCOOTER.getCode(), ExceptionCodeEnums.USER_IS_NOT_HAVE_SCOOTER.getMessage());
-            return null;
+            throw new SeSHubException(ExceptionCodeEnums.USER_IS_NOT_HAVE_SCOOTER.getCode(), ExceptionCodeEnums.USER_IS_NOT_HAVE_SCOOTER.getMessage());
         }
         QueryDriverScooterResult result = new QueryDriverScooterResult();
         BeanUtils.copyProperties(hubConUserScooter, result);

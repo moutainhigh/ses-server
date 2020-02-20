@@ -1,11 +1,9 @@
 package com.redescooter.ses.service.mobile.b.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
@@ -19,8 +17,6 @@ import com.redescooter.ses.api.mobile.b.vo.LockEnter;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.service.mobile.b.dao.ScooterMobileServiceMapper;
-import com.redescooter.ses.service.mobile.b.dao.base.CorDriverScooterMapper;
-import com.redescooter.ses.service.mobile.b.dm.base.CorDriver;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.b.service.base.CorDriverService;
@@ -84,9 +80,7 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
             corDriverScooter = scooterMobileServiceMapper.driverScooterByUserId(enter.getUserId(), DriverScooterStatusEnums.USED.getValue());
         } else {
             // 查询TOC 车辆分配信息
-            IdEnter idEnter = new IdEnter();
-            BeanUtils.copyProperties(enter, idEnter);
-            QueryDriverScooterResult queryDriverScooterResult = cusotmerScooterService.queryDriverScooter(idEnter);
+            QueryDriverScooterResult queryDriverScooterResult = cusotmerScooterService.queryDriverScooter(enter);
 
             if(queryDriverScooterResult==null){
                 return null;
@@ -122,10 +116,7 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
             corDriverScooter = scooterMobileServiceMapper.driverScooterByUserId(enter.getUserId(), DriverScooterStatusEnums.USED.getValue());
         } else {
             // 查询TOC 车辆分配信息
-            IdEnter idEnter = new IdEnter();
-            BeanUtils.copyProperties(enter, idEnter);
-            idEnter.setId(enter.getUserId());
-            QueryDriverScooterResult queryDriverScooterResult = cusotmerScooterService.queryDriverScooter(idEnter);
+            QueryDriverScooterResult queryDriverScooterResult = cusotmerScooterService.queryDriverScooter(enter);
             if(queryDriverScooterResult!=null){
                 corDriverScooter = new CorDriverScooter();
                 BeanUtils.copyProperties(queryDriverScooterResult, corDriverScooter);

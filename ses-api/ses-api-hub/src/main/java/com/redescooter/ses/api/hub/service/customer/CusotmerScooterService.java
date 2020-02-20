@@ -1,6 +1,6 @@
 package com.redescooter.ses.api.hub.service.customer;
 
-import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.hub.vo.QueryDriverScooterResult;
 
 /**
@@ -14,8 +14,8 @@ public interface CusotmerScooterService {
     /**
      * 查询车辆分配信息
      *
-     * @param enter 入参Id 为scooterId
+     * @param enter
      * @return
      */
-    QueryDriverScooterResult queryDriverScooter(IdEnter enter);
+    QueryDriverScooterResult queryDriverScooter(GeneralEnter enter);
 }

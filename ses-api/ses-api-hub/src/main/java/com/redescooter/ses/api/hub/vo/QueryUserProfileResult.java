@@ -73,4 +73,15 @@ public class QueryUserProfileResult extends GeneralResult {
 
     @ApiModelProperty(value = "居住地址")
     private String address;
+
+
+    // 合同、发票 两个字段只有TOC使用
+    @ApiModelProperty(value = "发票编号 ToC 使用")
+    private String invoiceNum;
+
+    @ApiModelProperty(value = "发票附件 ToC 使用")
+    private String invoiceAnnex;
+
+    @ApiModelProperty(value = "合同附件 ToC 使用")
+    private String contractAnnex;
 }

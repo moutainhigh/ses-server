@@ -17,13 +17,10 @@ import com.redescooter.ses.api.mobile.b.vo.SaveUserProfileEnter;
 import com.redescooter.ses.api.mobile.b.vo.UserProfileResult;
 import com.redescooter.ses.service.mobile.b.dao.base.CorUserProfileMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Date;
 
 /**
  * @ClassName:UserProfileServiceImpl

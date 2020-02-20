@@ -71,4 +71,14 @@ public class UserProfileResult extends GeneralResult {
 
     @ApiModelProperty(value = "出生地")
     private String placeBirth;
+
+    // 合同、发票 两个字段只有TOC使用
+    @ApiModelProperty(value = "发票编号")
+    private String invoiceNum;
+
+    @ApiModelProperty(value = "发票附件")
+    private String invoiceAnnex;
+
+    @ApiModelProperty(value = "合同附件")
+    private String contractAnnex;
 }
