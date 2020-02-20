@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryResultEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -43,7 +44,6 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorDelivery;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
 import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
-import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.StatisticalUtil;
@@ -56,7 +56,12 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -234,14 +239,10 @@ public class DeliveryServiceImpl implements DeliveryService {
             throw new MobileBException(ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getCode(), ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getMessage());
         }
 
-        CorDelivery delivery = null;
-        delivery = JSONObject.parseObject(jedisCluster.get(enter.getId().toString()), CorDelivery.class);
 
+        CorDelivery delivery = corDeliveryMapper.selectById(enter.getId());
         if (delivery == null) {
-            delivery = corDeliveryMapper.selectById(enter.getId());
-            if (delivery == null) {
-                throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
-            }
+            throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(DeliveryStatusEnums.PENDING.getValue(), delivery.getStatus())) {
             throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
@@ -258,9 +259,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         corDeliveryMapper.updateById(delivery);
         // 记录日志
         saveDelivertTrace(enter, delivery, DeliveryEventEnums.START.getValue());
-        // 更新最新的状态到 redis
-        jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
-        jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        } finally {
@@ -286,6 +284,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .systemId(AppIDEnums.SAAS_WEB.getSystemId())
                 .appId(AppIDEnums.SAAS_WEB.getAppId())
                 .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+                .mesageType(MesageTypeEnum.NONE.getValue())
                 .build();
         pushMsg(pushMsg);
         return new GeneralResult(enter.getRequestId());
@@ -310,15 +309,9 @@ public class DeliveryServiceImpl implements DeliveryService {
             throw new MobileBException(ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getCode(), ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getMessage());
         }
 
-        CorDelivery delivery = null;
-
-        delivery = JSONObject.parseObject(jedisCluster.get(enter.getId().toString()), CorDelivery.class);
-
+        CorDelivery delivery = corDeliveryMapper.selectById(enter.getId());
         if (delivery == null) {
-            delivery = corDeliveryMapper.selectById(enter.getId());
-            if (delivery == null) {
-                throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
-            }
+            throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(DeliveryStatusEnums.PENDING.getValue(), delivery.getStatus())) {
             throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
@@ -331,10 +324,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         // 订单日志
         saveDelivertTrace(enter, delivery, DeliveryEventEnums.REJECT.getValue());
-
-        // 更新最新的状态到 redis
-        jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
-        jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
 
         QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, delivery.getDelivererId());
@@ -356,6 +345,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .systemId(AppIDEnums.SAAS_WEB.getSystemId())
                 .appId(AppIDEnums.SAAS_WEB.getAppId())
                 .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
+                .mesageType(MesageTypeEnum.NONE.getValue())
                 .build();
         pushMsg(pushMsg);
 
@@ -374,15 +364,9 @@ public class DeliveryServiceImpl implements DeliveryService {
         List<String> deliveryStatus = new ArrayList<>();
         deliveryStatus.add(DeliveryStatusEnums.DELIVERING.getValue());
 
-        CorDelivery delivery = null;
-
-        delivery = JSONObject.parseObject(jedisCluster.get(enter.getId().toString()), CorDelivery.class);
-
+        CorDelivery delivery = corDeliveryMapper.selectById(enter.getId());
         if (delivery == null) {
-            delivery = corDeliveryMapper.selectById(enter.getId());
-            if (delivery == null) {
-                throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
-            }
+            throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
 
         if (!deliveryStatus.contains(delivery.getStatus())) {
@@ -408,10 +392,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         saveDelivertTrace(enter, delivery, StringUtils.equals(delivery.getStatus(), DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue()) == true ? DeliveryEventEnums.TIMEOUT_COMPLETE.getValue() :
                 DeliveryEventEnums.COMPLETED.getValue());
 
-        // 更新最新的状态到 redis
-        jedisCluster.set(enter.getId().toString(), JSON.toJSONString(delivery));
-        jedisCluster.expire(enter.getId().toString(), new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
-
         QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, delivery.getDelivererId());
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
@@ -432,6 +412,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .systemId(AppIDEnums.SAAS_WEB.getSystemId())
                 .appId(AppIDEnums.SAAS_WEB.getAppId())
                 .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+                .mesageType(MesageTypeEnum.NONE.getValue())
                 .build();
         pushMsg(pushMsg);
 
@@ -514,7 +495,10 @@ public class DeliveryServiceImpl implements DeliveryService {
         pushParameter.put("title", title);
         pushParameter.put("content", content);
         pushParameter.put("bussinessStatus", pushMsg.getStatus());
-        pushParameter.put("messagePriority", pushMsg.getMessagePriority());
+        pushParameter.put("messagePriority", StringUtils.isEmpty(pushMsg.getMessagePriority()) == true ? MessagePriorityEnums.NONE_REMIND.getValue() :
+                pushMsg.getMessagePriority());
+        pushParameter.put("mesageType", StringUtils.isEmpty(pushMsg.getMesageType()) == true ? MesageTypeEnum.NONE.getValue() : pushMsg.getMesageType());
+
 
         pushParameter.put("generalEnter", generalEnter);
 

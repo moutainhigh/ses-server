@@ -331,7 +331,7 @@ public class TaskServiceImpl implements TaskService {
             // web ---》 app 消息推送
             saveCorExpressDeliveryList.forEach(item -> {
                 //todo args 规则 参数1 小定单订单号 参数2 大订单id 后面参数不做限定
-                Object[] args = new Object[]{item.getId(), "0", item.getId()};
+                Object[] args = new Object[]{"0", item.getId()};
 
                 CorDriver corDriver = corDriverService.getById(item.getDriverId());
                 PushMsgBo pushApp = PushMsgBo.builder()

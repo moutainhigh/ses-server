@@ -31,7 +31,7 @@ public class DeliveryResetEnter extends GeneralEnter {
     private Long id;
 
     @ApiModelProperty(value = "司机Id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
+    @NotNull(code = ValidationExceptionCode.DRIVER_ID_IS_EMPTY, message = "未选择司机")
     private Long driverId;
 
     @ApiModelProperty(value = "耗时")

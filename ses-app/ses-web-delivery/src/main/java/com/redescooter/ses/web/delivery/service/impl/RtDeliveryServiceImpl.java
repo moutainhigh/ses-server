@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
+import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -341,7 +342,8 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
                 .belongId(delivery.getDelivererId())
                 .systemId(AppIDEnums.SAAS_APP.getSystemId())
                 .appId(AppIDEnums.SAAS_APP.getAppId())
-                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+                .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
+                .mesageType(MesageTypeEnum.SITE.getValue())
                 .build();
         pushMsg(pushMsg);
         return new GeneralResult(enter.getRequestId());
@@ -562,6 +564,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
                 .systemId(AppIDEnums.SAAS_APP.getSystemId())
                 .appId(AppIDEnums.SAAS_APP.getAppId())
                 .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+                .mesageType(MesageTypeEnum.SITE.getValue())
                 .build();
         pushMsg(pushMsg);
 
@@ -650,7 +653,10 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
         pushParameter.put("title", title);
         pushParameter.put("content", content);
         pushParameter.put("bussinessStatus", pushMsg.getStatus());
-        pushParameter.put("messagePriority", pushMsg.getMessagePriority());
+        pushParameter.put("messagePriority", StringUtils.isEmpty(pushMsg.getMessagePriority()) == true ? MessagePriorityEnums.NONE_REMIND.getValue() :
+                pushMsg.getMessagePriority());
+        pushParameter.put("mesageType", StringUtils.isEmpty(pushMsg.getMesageType()) == true ? MesageTypeEnum.NONE.getValue() : pushMsg.getMesageType());
+
 
         pushParameter.put("generalEnter", generalEnter);
 

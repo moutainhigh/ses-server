@@ -75,7 +75,9 @@ public interface ValidationExceptionCode {
     // 司机账号类型
     int DRIVER_ACCOUNT_TYPE_IS_EMPTY = 10053;
     // 任务时间为空
-    int TASK_TIME=10054;
+    int TASK_TIME = 10054;
     // JSON不能为空
-    int JSON_TIME=10055;
+    int JSON_TIME = 10055;
+    // 司机Id 为空
+    int DRIVER_ID_IS_EMPTY = 10056;
 }
