@@ -269,8 +269,7 @@
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
         inner join (select *
         from cor_driver_scooter_history histroy
-        where histroy.status = 2
-        and histroy.driver_id = #{driverId}
+        where histroy.driver_id = #{driverId}
         order by histroy.created_time desc
         limit 1) dscooter on dscooter.driver_id = driver.id
         inner join cor_tenant_scooter tsc on dscooter.scooter_id = tsc.scooter_id and tsc.dr=0

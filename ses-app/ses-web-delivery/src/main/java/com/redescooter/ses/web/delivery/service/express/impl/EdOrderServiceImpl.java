@@ -1,22 +1,5 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
@@ -67,8 +50,22 @@ import com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Mr.lijiating
@@ -220,14 +217,6 @@ public class EdOrderServiceImpl implements EdOrderService {
 
         QueryOrderDetailResult detail = expressOrderServiceMapper.detail(enter);
 
-        CorTenantScooter corTenantScooter = expressOrderServiceMapper.queryCorTenantScooterByDriverId(detail.getDriverId());
-        if (corTenantScooter == null) {
-            return detail;
-        }
-        detail.setLicensePlate(corTenantScooter.getLicensePlate());
-        detail.setDriverLatitude(corTenantScooter.getLatitude().toString());
-        detail.setDriverLongitule(corTenantScooter.getLongitule().toString());
-
         Optional.ofNullable(detail).ifPresent(d -> {
             IdEnter tenantIdEnter = new IdEnter();
             BeanUtils.copyProperties(enter, tenantIdEnter);
@@ -246,6 +235,14 @@ public class EdOrderServiceImpl implements EdOrderService {
 
             d.setExpressOrderTraceResultList(orderNode);
         });
+
+        CorTenantScooter corTenantScooter = expressOrderServiceMapper.queryCorTenantScooterByDriverId(detail.getDriverId());
+        if (corTenantScooter == null) {
+            return detail;
+        }
+        detail.setLicensePlate(corTenantScooter.getLicensePlate());
+        detail.setDriverLatitude(corTenantScooter.getLatitude().toString());
+        detail.setDriverLongitule(corTenantScooter.getLongitule().toString());
 
         return detail;
     }
