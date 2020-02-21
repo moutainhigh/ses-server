@@ -17,12 +17,6 @@ import java.util.Date;
 public class FactorySaveEnter  extends GeneralEnter {
 
     /**
-     * 状态
-     */
-    @ApiModelProperty(value="状态")
-    private String status;
-
-    /**
      * 代工厂名称
      */
     @ApiModelProperty(value="代工厂名称")
