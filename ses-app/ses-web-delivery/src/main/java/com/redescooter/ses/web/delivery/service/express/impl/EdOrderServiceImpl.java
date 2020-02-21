@@ -1,8 +1,27 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -22,6 +41,7 @@ import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.ExpressOrderServiceMapper;
+import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
 import com.redescooter.ses.web.delivery.dm.CorExpressDelivery;
 import com.redescooter.ses.web.delivery.dm.CorExpressDeliveryDetail;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
@@ -50,22 +70,8 @@ import com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Mr.lijiating
@@ -369,8 +375,17 @@ public class EdOrderServiceImpl implements EdOrderService {
             throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
 
+        // 查询司机当前正在使用的车辆
+        QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper=new QueryWrapper<>();
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID,enter.getDriverId());
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID,enter.getTenantId());
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR,0);
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
+        CorDriverScooter corDriverScooter = corDriverScooterService.getOne(corDriverScooterQueryWrapper);
+
+
         // 生成大订单
-        CorExpressDelivery corExpressDelivery = saveCorExpressDelivery(enter);
+        CorExpressDelivery corExpressDelivery = saveCorExpressDelivery(enter,corDriverScooter.getScooterId());
         //生成 订单详情记录
         saveExpressDeliveyDetail(enter, corExpressDelivery);
 
@@ -450,11 +465,12 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: CorExpressDelivery
      * @desc: saveCorExpressDelivery
      */
-    private CorExpressDelivery saveCorExpressDelivery(ChanageExpressOrderEnter enter) {
+    private CorExpressDelivery saveCorExpressDelivery(ChanageExpressOrderEnter enter,Long scooterId) {
         CorExpressDelivery corExpressDelivery;
         corExpressDelivery = new CorExpressDelivery();
         corExpressDelivery.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY));
         corExpressDelivery.setDr(0);
+        corExpressDelivery.setScooterId(scooterId);
         corExpressDelivery.setTenantId(enter.getTenantId());
         corExpressDelivery.setStatus(TaskStatusEnums.PENDING.getValue());
         corExpressDelivery.setDriverId(enter.getDriverId());
