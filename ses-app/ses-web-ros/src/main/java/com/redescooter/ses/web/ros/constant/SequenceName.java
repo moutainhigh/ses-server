@@ -13,14 +13,6 @@ public interface SequenceName {
 
     String OPE_CUSTOMER = "OPE_CUSTOMER";
 
-
-
-
-
-
-
-
-
     String CUSTOMERINQUIRY = "CUSTOMER_INQUIRY";
 
     String ORG_STAFF_POSITION = "ORG_STAFF_POSITION";
@@ -71,5 +63,8 @@ public interface SequenceName {
 
     String SALES_DELIVERY_ORDER_DETAIL = "SALES_DELIVERY_ORDER_DETAIL";
 
+    String OPE_FACTORY="OPE_FACTORY";
+
+    String OPE_FACTORY_TRACE="OPE_FACTORY_TRACE";
 
 }
