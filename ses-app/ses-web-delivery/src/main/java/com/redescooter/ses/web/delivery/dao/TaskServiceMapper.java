@@ -1,12 +1,20 @@
 package com.redescooter.ses.web.delivery.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.delivery.dm.CorDriver;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
-import com.redescooter.ses.web.delivery.vo.task.*;
-
-import java.util.List;
+import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
+import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
+import com.redescooter.ses.web.delivery.vo.task.OrderResult;
+import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
+import com.redescooter.ses.web.delivery.vo.task.TaskResult;
+import com.redescooter.ses.web.delivery.vo.task.TaskTimeCountDto;
 
 /**
  * @ClassName:TaskService
@@ -96,4 +104,19 @@ public interface TaskServiceMapper {
      * @return
      */
     List<CorExpressOrder> queryExpressOrderByIds(List<Long> ids);
+
+    /**
+     * 获取司机信息 通过taskId
+     * @param enter
+     * @return
+     */
+    CorDriver queryDriverByTaskId(IdEnter enter);
+
+    /**
+     * 获取个人信息 通过taskId
+     * @param driverId
+     * @param tenantId
+     * @return
+     */
+    TaskResult driverOffUserProfileByDriverId(@Param("driverId") Long driverId, @Param("tenantId") Long tenantId);
 }

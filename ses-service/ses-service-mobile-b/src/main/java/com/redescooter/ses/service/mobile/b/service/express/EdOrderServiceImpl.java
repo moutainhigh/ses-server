@@ -1,5 +1,20 @@
 package com.redescooter.ses.service.mobile.b.service.express;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -46,20 +61,6 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class EdOrderServiceImpl implements EdOrderService {
@@ -503,7 +504,7 @@ public class EdOrderServiceImpl implements EdOrderService {
                 .status(ExpressOrderStatusEnums.COMPLETED.getValue())
                 .args(args)
                 .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
-                .bizId(corExpressDelivery.getId())
+                .bizId(enter.getId())
                 .belongId(corExpressDelivery.getCreateBy())
                 .appId(AppIDEnums.SAAS_WEB.getAppId())
                 .systemId(AppIDEnums.SAAS_WEB.getSystemId())
