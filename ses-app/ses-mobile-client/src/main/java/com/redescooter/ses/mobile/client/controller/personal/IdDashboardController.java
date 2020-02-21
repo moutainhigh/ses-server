@@ -1,11 +1,22 @@
 package com.redescooter.ses.mobile.client.controller.personal;
 
-import io.swagger.annotations.Api;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.mobile.c.service.IdDashboardService;
+import com.redescooter.ses.api.mobile.c.vo.AllScooterChartResult;
+import com.redescooter.ses.api.mobile.c.vo.ScooterChartResult;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @ClassName:IdDashboardController
@@ -21,5 +32,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/id", method = RequestMethod.POST)
 public class IdDashboardController {
+
+    @Reference
+    private IdDashboardService idDashboardService;
+
+    @ApiOperation(value = "骑行数据总计",response = ScooterChartResult.class)
+    @RequestMapping(value = "/allScooterChart")
+    public Response<ScooterChartResult> allScooterChart(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(idDashboardService.allScooterChart(enter));
+    }
+
+
+    @ApiOperation(value = "骑行数据图标",response = AllScooterChartResult.class)
+    @RequestMapping(value = "/scooterChart")
+    public Response<AllScooterChartResult> scooterChart(@ModelAttribute DateTimeParmEnter enter) {
+        return new Response<>(idDashboardService.scooterChart(enter));
+    }
 
 }

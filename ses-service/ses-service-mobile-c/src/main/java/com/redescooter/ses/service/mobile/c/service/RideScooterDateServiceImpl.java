@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -56,6 +57,7 @@ public class RideScooterDateServiceImpl implements RideScooterDateService{
      * @date: 2020/2/21 11:45
      * @Version: APP 1.2
      */
+    @Transactional
     @Override
     public GeneralResult saveDriverRideDate(SaveRideDateEnter enter) {
         // 查询司机之前是否存在有统计数据
@@ -134,6 +136,7 @@ public class RideScooterDateServiceImpl implements RideScooterDateService{
      * @date: 2020/2/21 11:45
      * @Version: APP 1.2
      */
+    @Transactional
     @Override
     public GeneralResult saveScooterRideDate(SaveRideDateEnter enter) {
         // 查询车辆骑行数据是否能存在
