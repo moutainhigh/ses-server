@@ -8,28 +8,53 @@ package com.redescooter.ses.web.ros.exception;
 public interface ValidationExceptionCode {
 
     // 10000-10030 公共异常
-
     // 经度为空
     int LAT_IS_EMPTY = 10001;
     // 纬度为空
     int LNG_IS_EMPTY = 10002;
-    // 原因为空
-    int REASON_IS_EMPTY = 10003;
-    // 事件为空
-    int EVENT_IS_EMPTY = 10004;
-    // 业务对象为空
-    int BUSSINESS_OBJ_IS_EMPTY = 10005;
     // 图片为空
-    int PICTURE_IS_EMPTY = 10006;
+    int PICTURE_IS_EMPTY = 10003;
+    //长度过长，长度为2-20字符
+    int CHARACTER_IS_TOO_LONG = 10004;
+    //长度过短，长度为2-20字符
+    int CHARACTER_IS_TOO_SHORT = 10005;
     // 邮箱为空
-    int EMAIL_IS_EMPTY = 10007;
+    int EMAIL_IS_EMPTY = 10006;
     // id 为空
-    int ID_IS_EMPTY = 10008;
-
-    // 10030 为业务异常
+    int ID_IS_EMPTY = 10007;
+    //国家手机号编码不能为空
+    int COUNTRY_CODE_IS_EMPTY = 10008;
     // 地址信息为空
-    int ADDRESS_INFO_IS_EMPTY = 10031;
-
+    int ADDRESS_INFO_IS_EMPTY = 10030;
     //客户信息不能为空
-    int CUSTOMER_INFO_IS_EMPTY = 10032;
+    int CUSTOMER_INFO_IS_EMPTY = 10031;
+    //地址国家不能为空
+    int ADDRESS_COUNTRY_IS_EMPTY = 10032;
+    //代工厂标签不能为空
+    int FACTORY_TAG_IS_EMPTY = 10033;
+    //代工厂名称不能为空
+    int FACTORY_NAME_IS_EMPTY = 10034;
+    //供应商标签不能为空
+    int SUPPLIER_TAG_IS_EMPTY = 10035;
+    //供应商名称不能为空
+    int SUPPLIER_NAME_IS_EMPTY = 10036;
+    //联系人全名不能为空
+    int CONTACT_FULLNAME_IS_EMPTY = 10037;
+    //联系人邮箱不能为空
+    int CONTACT_EMAIL_IS_EMPTY = 10038;
+    //联系人手机号不能为空
+    int CONTACT_PHONE_IS_EMPTY = 10039;
+    //付款周期不能为空
+    int PAYMENT_CYCLE_IS_EMPTY = 10040;
+    //合同开始时间不能为空
+    int COOPERATION_TIME_START_IS_EMPTY = 10041;
+    //营业执照编号不能为空
+    int BUSINESS_NUMBER_IS_EMPTY = 10042;
+    //营业执照附件不能为空
+    int BUSINESS_LICENSE_ANNEX_IS_EMPTY = 10043;
+    //合同编号不能为空
+    int CONTRACT_NUMBER_IS_EMPTY = 10044;
+    //合同附件不能为空
+    int CONTRACT_ANNEX_IS_EMPTY = 10045;
+
 }
