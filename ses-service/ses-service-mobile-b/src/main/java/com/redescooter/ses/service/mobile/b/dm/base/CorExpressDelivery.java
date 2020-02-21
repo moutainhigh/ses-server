@@ -136,7 +136,7 @@ public class CorExpressDelivery implements Serializable {
      */
     @TableField(value = "create_by")
     @ApiModelProperty(value = "创建人")
-    private Integer createBy;
+    private Long createBy;
 
     /**
      * 创建时间
@@ -150,7 +150,7 @@ public class CorExpressDelivery implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Integer updatedBy;
+    private Long updatedBy;
 
     /**
      * 更新时间

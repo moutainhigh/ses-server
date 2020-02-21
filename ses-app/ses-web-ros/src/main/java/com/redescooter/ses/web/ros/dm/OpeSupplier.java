@@ -1,17 +1,19 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
-import io.swagger.annotations.ApiModel;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.poi.hpsf.Decimal;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
 @Builder
@@ -45,7 +47,7 @@ public class OpeSupplier implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value="租户ID")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 用户ID

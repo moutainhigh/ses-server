@@ -1,12 +1,13 @@
 package com.redescooter.ses.service.mobile.b.service.base.impl;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.service.mobile.b.dao.base.CorExpressDeliveryMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorExpressDelivery;
 import com.redescooter.ses.service.mobile.b.service.base.CorExpressDeliveryService;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CorExpressDeliveryServiceImpl extends ServiceImpl<CorExpressDeliveryMapper, CorExpressDelivery> implements CorExpressDeliveryService {
@@ -14,11 +15,6 @@ public class CorExpressDeliveryServiceImpl extends ServiceImpl<CorExpressDeliver
     @Override
     public int updateBatch(List<CorExpressDelivery> list) {
         return baseMapper.updateBatch(list);
-    }
-
-    @Override
-    public int updateBatchSelective(List<CorExpressDelivery> list) {
-        return baseMapper.updateBatchSelective(list);
     }
 
     @Override
