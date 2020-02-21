@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryEventEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -108,7 +107,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
 
         FactoryResult factoryResult = new FactoryResult();
         Optional.ofNullable(factory).ifPresent(f -> {
-            BeanUtils.copyProperties(factory, factoryResult);
+            BeanUtils.copyProperties(f, factoryResult);
             factoryResult.setRequestId(enter.getRequestId());
         });
 

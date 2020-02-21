@@ -67,4 +67,8 @@ public interface SequenceName {
 
     String OPE_FACTORY_TRACE="OPE_FACTORY_TRACE";
 
+    String OPE_SUPPLIER="OPE_SUPPLIER";
+
+    String OPE_SUPPLIER_TRACE="OPE_SUPPLIER_TRACE";
+
 }

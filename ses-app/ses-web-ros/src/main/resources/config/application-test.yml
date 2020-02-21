@@ -1,4 +1,4 @@
-                                                                                                                        #日志路径
+#日志路径
 log:
   file:
     path: ${log.path}@profile-active@
@@ -80,6 +80,21 @@ spring:                                                                         
         description: 代工厂操作
         base-package: com.redescooter.ses.web.ros
         path-regex: /factory/.*
+        path-mapping: /
+        version: 1.2.0
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli
+
+      supplier-api:
+        group-name: 4.supplier-API
+        title: 供应商操作
+        description: 供应商操作
+        base-package: com.redescooter.ses.web.ros
+        path-regex: /supplier/.*
         path-mapping: /
         version: 1.2.0
         license: RedE 公司内部传阅

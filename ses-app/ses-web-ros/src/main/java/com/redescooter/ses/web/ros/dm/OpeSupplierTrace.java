@@ -15,8 +15,8 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_factory_trace")
-public class OpeFactoryTrace implements Serializable {
+@TableName(value = "ope_supplier_trace")
+public class OpeSupplierTrace implements Serializable {
     /**
      * ID
      */
@@ -33,11 +33,11 @@ public class OpeFactoryTrace implements Serializable {
     private Integer dr;
 
     /**
-     * 代工厂ID
+     * 采购商ID
      */
-    @TableField(value = "factory_id")
-    @ApiModelProperty(value="代工厂ID")
-    private Long factoryId;
+    @TableField(value = "supplier_id")
+    @ApiModelProperty(value="采购商ID")
+    private Long supplierId;
 
     /**
      * 租户ID
@@ -54,17 +54,17 @@ public class OpeFactoryTrace implements Serializable {
     private Long userId;
 
     /**
-     * 代工厂操作状态
+     * 采购商操作状态
      */
     @TableField(value = "status")
-    @ApiModelProperty(value="代工厂操作状态")
+    @ApiModelProperty(value="采购商操作状态")
     private String status;
 
     /**
-     * 代工厂操作事件
+     * 采购商操作事件
      */
     @TableField(value = "event")
-    @ApiModelProperty(value="代工厂操作事件")
+    @ApiModelProperty(value="采购商操作事件")
     private String event;
 
     /**
@@ -150,7 +150,7 @@ public class OpeFactoryTrace implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_FACTORY_ID = "factory_id";
+    public static final String COL_SUPPLIER_ID = "supplier_id";
 
     public static final String COL_TENANT_ID = "tenant_id";
 

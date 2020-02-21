@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeFactoryMapper">
-  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeFactory">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSupplierMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSupplier">
     <!--@mbg.generated-->
-    <!--@Table ope_factory-->
+    <!--@Table ope_supplier-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
-    <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
-    <result column="factory_address" jdbcType="VARCHAR" property="factoryAddress" />
-    <result column="factory_country" jdbcType="VARCHAR" property="factoryCountry" />
-    <result column="factory_longitude" jdbcType="DECIMAL" property="factoryLongitude" />
-    <result column="factory_latitude" jdbcType="DECIMAL" property="factoryLatitude" />
-    <result column="factory_tag" jdbcType="VARCHAR" property="factoryTag" />
-    <result column="factory_memo" jdbcType="VARCHAR" property="factoryMemo" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supplier_address" jdbcType="VARCHAR" property="supplierAddress" />
+    <result column="supplier_country" jdbcType="VARCHAR" property="supplierCountry" />
+    <result column="supplier_longitude" jdbcType="DECIMAL" property="supplierLongitude" />
+    <result column="supplier_latitude" jdbcType="DECIMAL" property="supplierLatitude" />
+    <result column="supplier_tag" jdbcType="VARCHAR" property="supplierTag" />
+    <result column="supplier_memo" jdbcType="VARCHAR" property="supplierMemo" />
     <result column="contact_first_name" jdbcType="VARCHAR" property="contactFirstName" />
     <result column="contact_last_name" jdbcType="VARCHAR" property="contactLastName" />
     <result column="contact_full_name" jdbcType="VARCHAR" property="contactFullName" />
@@ -42,8 +42,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, `status`, tenant_id, user_id, factory_name, factory_address, factory_country, 
-    factory_longitude, factory_latitude, factory_tag, factory_memo, contact_first_name, 
+    id, dr, `status`, tenant_id, user_id, supplier_name, supplier_address, supplier_country, 
+    supplier_longitude, supplier_latitude, supplier_tag, supplier_memo, contact_first_name, 
     contact_last_name, contact_full_name, contact_email, contact_phone_country_code, 
     contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number, 
     business_license_annex, contract_number, contract_annex, overdue_flag, created_time, 
@@ -51,7 +51,7 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_factory
+    update ope_supplier
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -73,39 +73,39 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
         </foreach>
       </trim>
-      <trim prefix="factory_name = case" suffix="end,">
+      <trim prefix="supplier_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.factoryName,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierName,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="factory_address = case" suffix="end,">
+      <trim prefix="supplier_address = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.factoryAddress,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierAddress,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="factory_country = case" suffix="end,">
+      <trim prefix="supplier_country = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.factoryCountry,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierCountry,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="factory_longitude = case" suffix="end,">
+      <trim prefix="supplier_longitude = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.factoryLongitude,jdbcType=DECIMAL}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierLongitude,jdbcType=DECIMAL}
         </foreach>
       </trim>
-      <trim prefix="factory_latitude = case" suffix="end,">
+      <trim prefix="supplier_latitude = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.factoryLatitude,jdbcType=DECIMAL}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierLatitude,jdbcType=DECIMAL}
         </foreach>
       </trim>
-      <trim prefix="factory_tag = case" suffix="end,">
+      <trim prefix="supplier_tag = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.factoryTag,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierTag,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="factory_memo = case" suffix="end,">
+      <trim prefix="supplier_memo = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.factoryMemo,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierMemo,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="contact_first_name = case" suffix="end,">
@@ -231,9 +231,9 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_factory
-    (id, dr, `status`, tenant_id, user_id, factory_name, factory_address, factory_country, 
-      factory_longitude, factory_latitude, factory_tag, factory_memo, contact_first_name, 
+    insert into ope_supplier
+    (id, dr, `status`, tenant_id, user_id, supplier_name, supplier_address, supplier_country, 
+      supplier_longitude, supplier_latitude, supplier_tag, supplier_memo, contact_first_name, 
       contact_last_name, contact_full_name, contact_email, contact_phone_country_code, 
       contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number, 
       business_license_annex, contract_number, contract_annex, overdue_flag, created_time, 
@@ -241,10 +241,10 @@
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.tenantId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}, #{item.factoryName,jdbcType=VARCHAR}, 
-        #{item.factoryAddress,jdbcType=VARCHAR}, #{item.factoryCountry,jdbcType=VARCHAR}, 
-        #{item.factoryLongitude,jdbcType=DECIMAL}, #{item.factoryLatitude,jdbcType=DECIMAL}, 
-        #{item.factoryTag,jdbcType=VARCHAR}, #{item.factoryMemo,jdbcType=VARCHAR}, #{item.contactFirstName,jdbcType=VARCHAR}, 
+        #{item.tenantId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}, #{item.supplierName,jdbcType=VARCHAR}, 
+        #{item.supplierAddress,jdbcType=VARCHAR}, #{item.supplierCountry,jdbcType=VARCHAR}, 
+        #{item.supplierLongitude,jdbcType=DECIMAL}, #{item.supplierLatitude,jdbcType=DECIMAL}, 
+        #{item.supplierTag,jdbcType=VARCHAR}, #{item.supplierMemo,jdbcType=VARCHAR}, #{item.contactFirstName,jdbcType=VARCHAR}, 
         #{item.contactLastName,jdbcType=VARCHAR}, #{item.contactFullName,jdbcType=VARCHAR}, 
         #{item.contactEmail,jdbcType=VARCHAR}, #{item.contactPhoneCountryCode,jdbcType=VARCHAR}, 
         #{item.contactPhone,jdbcType=VARCHAR}, #{item.paymentCycle,jdbcType=INTEGER}, #{item.cooperationTimeStart,jdbcType=TIMESTAMP}, 
@@ -256,20 +256,20 @@
         #{item.def3,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
-  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeFactory">
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSupplier">
     <!--@mbg.generated-->
-    insert into ope_factory
-    (id, dr, `status`, tenant_id, user_id, factory_name, factory_address, factory_country, 
-      factory_longitude, factory_latitude, factory_tag, factory_memo, contact_first_name, 
+    insert into ope_supplier
+    (id, dr, `status`, tenant_id, user_id, supplier_name, supplier_address, supplier_country, 
+      supplier_longitude, supplier_latitude, supplier_tag, supplier_memo, contact_first_name, 
       contact_last_name, contact_full_name, contact_email, contact_phone_country_code, 
       contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number, 
       business_license_annex, contract_number, contract_annex, overdue_flag, created_time, 
       created_by, updated_time, updated_by, def1, def2, def5, def3, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, 
-      #{userId,jdbcType=BIGINT}, #{factoryName,jdbcType=VARCHAR}, #{factoryAddress,jdbcType=VARCHAR}, 
-      #{factoryCountry,jdbcType=VARCHAR}, #{factoryLongitude,jdbcType=DECIMAL}, #{factoryLatitude,jdbcType=DECIMAL}, 
-      #{factoryTag,jdbcType=VARCHAR}, #{factoryMemo,jdbcType=VARCHAR}, #{contactFirstName,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=BIGINT}, #{supplierName,jdbcType=VARCHAR}, #{supplierAddress,jdbcType=VARCHAR}, 
+      #{supplierCountry,jdbcType=VARCHAR}, #{supplierLongitude,jdbcType=DECIMAL}, #{supplierLatitude,jdbcType=DECIMAL}, 
+      #{supplierTag,jdbcType=VARCHAR}, #{supplierMemo,jdbcType=VARCHAR}, #{contactFirstName,jdbcType=VARCHAR}, 
       #{contactLastName,jdbcType=VARCHAR}, #{contactFullName,jdbcType=VARCHAR}, #{contactEmail,jdbcType=VARCHAR}, 
       #{contactPhoneCountryCode,jdbcType=VARCHAR}, #{contactPhone,jdbcType=VARCHAR}, 
       #{paymentCycle,jdbcType=INTEGER}, #{cooperationTimeStart,jdbcType=TIMESTAMP}, #{cooperationTimeEnd,jdbcType=TIMESTAMP}, 
@@ -284,13 +284,13 @@
     `status` = #{status,jdbcType=VARCHAR}, 
     tenant_id = #{tenantId,jdbcType=BIGINT}, 
     user_id = #{userId,jdbcType=BIGINT}, 
-    factory_name = #{factoryName,jdbcType=VARCHAR}, 
-    factory_address = #{factoryAddress,jdbcType=VARCHAR}, 
-    factory_country = #{factoryCountry,jdbcType=VARCHAR}, 
-    factory_longitude = #{factoryLongitude,jdbcType=DECIMAL}, 
-    factory_latitude = #{factoryLatitude,jdbcType=DECIMAL}, 
-    factory_tag = #{factoryTag,jdbcType=VARCHAR}, 
-    factory_memo = #{factoryMemo,jdbcType=VARCHAR}, 
+    supplier_name = #{supplierName,jdbcType=VARCHAR}, 
+    supplier_address = #{supplierAddress,jdbcType=VARCHAR}, 
+    supplier_country = #{supplierCountry,jdbcType=VARCHAR}, 
+    supplier_longitude = #{supplierLongitude,jdbcType=DECIMAL}, 
+    supplier_latitude = #{supplierLatitude,jdbcType=DECIMAL}, 
+    supplier_tag = #{supplierTag,jdbcType=VARCHAR}, 
+    supplier_memo = #{supplierMemo,jdbcType=VARCHAR}, 
     contact_first_name = #{contactFirstName,jdbcType=VARCHAR}, 
     contact_last_name = #{contactLastName,jdbcType=VARCHAR}, 
     contact_full_name = #{contactFullName,jdbcType=VARCHAR}, 
@@ -315,9 +315,9 @@
     def3 = #{def3,jdbcType=VARCHAR}, 
     def6 = #{def6,jdbcType=DOUBLE}
   </insert>
-  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeFactory">
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSupplier">
     <!--@mbg.generated-->
-    insert into ope_factory
+    insert into ope_supplier
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -334,26 +334,26 @@
       <if test="userId != null">
         user_id,
       </if>
-      <if test="factoryName != null">
-        factory_name,
+      <if test="supplierName != null">
+        supplier_name,
       </if>
-      <if test="factoryAddress != null">
-        factory_address,
+      <if test="supplierAddress != null">
+        supplier_address,
       </if>
-      <if test="factoryCountry != null">
-        factory_country,
+      <if test="supplierCountry != null">
+        supplier_country,
       </if>
-      <if test="factoryLongitude != null">
-        factory_longitude,
+      <if test="supplierLongitude != null">
+        supplier_longitude,
       </if>
-      <if test="factoryLatitude != null">
-        factory_latitude,
+      <if test="supplierLatitude != null">
+        supplier_latitude,
       </if>
-      <if test="factoryTag != null">
-        factory_tag,
+      <if test="supplierTag != null">
+        supplier_tag,
       </if>
-      <if test="factoryMemo != null">
-        factory_memo,
+      <if test="supplierMemo != null">
+        supplier_memo,
       </if>
       <if test="contactFirstName != null">
         contact_first_name,
@@ -442,26 +442,26 @@
       <if test="userId != null">
         #{userId,jdbcType=BIGINT},
       </if>
-      <if test="factoryName != null">
-        #{factoryName,jdbcType=VARCHAR},
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
       </if>
-      <if test="factoryAddress != null">
-        #{factoryAddress,jdbcType=VARCHAR},
+      <if test="supplierAddress != null">
+        #{supplierAddress,jdbcType=VARCHAR},
       </if>
-      <if test="factoryCountry != null">
-        #{factoryCountry,jdbcType=VARCHAR},
+      <if test="supplierCountry != null">
+        #{supplierCountry,jdbcType=VARCHAR},
       </if>
-      <if test="factoryLongitude != null">
-        #{factoryLongitude,jdbcType=DECIMAL},
+      <if test="supplierLongitude != null">
+        #{supplierLongitude,jdbcType=DECIMAL},
       </if>
-      <if test="factoryLatitude != null">
-        #{factoryLatitude,jdbcType=DECIMAL},
+      <if test="supplierLatitude != null">
+        #{supplierLatitude,jdbcType=DECIMAL},
       </if>
-      <if test="factoryTag != null">
-        #{factoryTag,jdbcType=VARCHAR},
+      <if test="supplierTag != null">
+        #{supplierTag,jdbcType=VARCHAR},
       </if>
-      <if test="factoryMemo != null">
-        #{factoryMemo,jdbcType=VARCHAR},
+      <if test="supplierMemo != null">
+        #{supplierMemo,jdbcType=VARCHAR},
       </if>
       <if test="contactFirstName != null">
         #{contactFirstName,jdbcType=VARCHAR},
@@ -550,26 +550,26 @@
       <if test="userId != null">
         user_id = #{userId,jdbcType=BIGINT},
       </if>
-      <if test="factoryName != null">
-        factory_name = #{factoryName,jdbcType=VARCHAR},
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
       </if>
-      <if test="factoryAddress != null">
-        factory_address = #{factoryAddress,jdbcType=VARCHAR},
+      <if test="supplierAddress != null">
+        supplier_address = #{supplierAddress,jdbcType=VARCHAR},
       </if>
-      <if test="factoryCountry != null">
-        factory_country = #{factoryCountry,jdbcType=VARCHAR},
+      <if test="supplierCountry != null">
+        supplier_country = #{supplierCountry,jdbcType=VARCHAR},
       </if>
-      <if test="factoryLongitude != null">
-        factory_longitude = #{factoryLongitude,jdbcType=DECIMAL},
+      <if test="supplierLongitude != null">
+        supplier_longitude = #{supplierLongitude,jdbcType=DECIMAL},
       </if>
-      <if test="factoryLatitude != null">
-        factory_latitude = #{factoryLatitude,jdbcType=DECIMAL},
+      <if test="supplierLatitude != null">
+        supplier_latitude = #{supplierLatitude,jdbcType=DECIMAL},
       </if>
-      <if test="factoryTag != null">
-        factory_tag = #{factoryTag,jdbcType=VARCHAR},
+      <if test="supplierTag != null">
+        supplier_tag = #{supplierTag,jdbcType=VARCHAR},
       </if>
-      <if test="factoryMemo != null">
-        factory_memo = #{factoryMemo,jdbcType=VARCHAR},
+      <if test="supplierMemo != null">
+        supplier_memo = #{supplierMemo,jdbcType=VARCHAR},
       </if>
       <if test="contactFirstName != null">
         contact_first_name = #{contactFirstName,jdbcType=VARCHAR},

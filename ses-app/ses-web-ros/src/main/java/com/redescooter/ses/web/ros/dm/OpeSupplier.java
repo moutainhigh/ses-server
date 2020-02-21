@@ -15,8 +15,8 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_factory")
-public class OpeFactory implements Serializable {
+@TableName(value = "ope_supplier")
+public class OpeSupplier implements Serializable {
     /**
      * 主键
      */
@@ -54,53 +54,53 @@ public class OpeFactory implements Serializable {
     private Long userId;
 
     /**
-     * 代工厂名称
+     * 采购商名称
      */
-    @TableField(value = "factory_name")
-    @ApiModelProperty(value="代工厂名称")
-    private String factoryName;
+    @TableField(value = "supplier_name")
+    @ApiModelProperty(value="采购商名称")
+    private String supplierName;
 
     /**
-     * 代工厂地址
+     * 采购商地址
      */
-    @TableField(value = "factory_address")
-    @ApiModelProperty(value="代工厂地址")
-    private String factoryAddress;
+    @TableField(value = "supplier_address")
+    @ApiModelProperty(value="采购商地址")
+    private String supplierAddress;
 
     /**
-     * 代工厂国家
+     * 采购商国家
      */
-    @TableField(value = "factory_country")
-    @ApiModelProperty(value="代工厂国家")
-    private String factoryCountry;
+    @TableField(value = "supplier_country")
+    @ApiModelProperty(value="采购商国家")
+    private String supplierCountry;
 
     /**
-     * 代工厂经度
+     * 采购商经度
      */
-    @TableField(value = "factory_longitude")
-    @ApiModelProperty(value="代工厂经度")
-    private Long factoryLongitude;
+    @TableField(value = "supplier_longitude")
+    @ApiModelProperty(value="采购商经度")
+    private Long supplierLongitude;
 
     /**
-     * 代工厂纬度
+     * 采购商纬度
      */
-    @TableField(value = "factory_latitude")
-    @ApiModelProperty(value="代工厂纬度")
-    private Long factoryLatitude;
+    @TableField(value = "supplier_latitude")
+    @ApiModelProperty(value="采购商纬度")
+    private Long supplierLatitude;
 
     /**
-     * 代工厂标签
+     * 采购商标签
      */
-    @TableField(value = "factory_tag")
-    @ApiModelProperty(value="代工厂标签")
-    private String factoryTag;
+    @TableField(value = "supplier_tag")
+    @ApiModelProperty(value="采购商标签")
+    private String supplierTag;
 
     /**
-     * 代工厂备注
+     * 采购商备注
      */
-    @TableField(value = "factory_memo")
-    @ApiModelProperty(value="代工厂备注")
-    private String factoryMemo;
+    @TableField(value = "supplier_memo")
+    @ApiModelProperty(value="采购商备注")
+    private String supplierMemo;
 
     /**
      * 联系人名字
@@ -275,19 +275,19 @@ public class OpeFactory implements Serializable {
 
     public static final String COL_USER_ID = "user_id";
 
-    public static final String COL_FACTORY_NAME = "factory_name";
+    public static final String COL_SUPPLIER_NAME = "supplier_name";
 
-    public static final String COL_FACTORY_ADDRESS = "factory_address";
+    public static final String COL_SUPPLIER_ADDRESS = "supplier_address";
 
-    public static final String COL_FACTORY_COUNTRY = "factory_country";
+    public static final String COL_SUPPLIER_COUNTRY = "supplier_country";
 
-    public static final String COL_FACTORY_LONGITUDE = "factory_longitude";
+    public static final String COL_SUPPLIER_LONGITUDE = "supplier_longitude";
 
-    public static final String COL_FACTORY_LATITUDE = "factory_latitude";
+    public static final String COL_SUPPLIER_LATITUDE = "supplier_latitude";
 
-    public static final String COL_FACTORY_TAG = "factory_tag";
+    public static final String COL_SUPPLIER_TAG = "supplier_tag";
 
-    public static final String COL_FACTORY_MEMO = "factory_memo";
+    public static final String COL_SUPPLIER_MEMO = "supplier_memo";
 
     public static final String COL_CONTACT_FIRST_NAME = "contact_first_name";
 
