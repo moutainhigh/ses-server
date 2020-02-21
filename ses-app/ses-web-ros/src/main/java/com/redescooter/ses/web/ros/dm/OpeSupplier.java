@@ -30,7 +30,6 @@ public class OpeSupplier implements Serializable {
      * 逻辑删除标识
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value="逻辑删除标识")
     private Integer dr;
 
@@ -46,7 +45,7 @@ public class OpeSupplier implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value="租户ID")
-    private Long tenantId;
+    private Integer tenantId;
 
     /**
      * 用户ID
@@ -89,6 +88,20 @@ public class OpeSupplier implements Serializable {
     @TableField(value = "supplier_latitude")
     @ApiModelProperty(value="采购商纬度")
     private BigDecimal supplierLatitude;
+
+    /**
+     * 地址唯一ID
+     */
+    @TableField(value = "place_id")
+    @ApiModelProperty(value="地址唯一ID")
+    private String placeId;
+
+    /**
+     * geo_hash
+     */
+    @TableField(value = "geo_hash")
+    @ApiModelProperty(value="geo_hash")
+    private String geoHash;
 
     /**
      * 采购商标签
@@ -286,6 +299,10 @@ public class OpeSupplier implements Serializable {
     public static final String COL_SUPPLIER_LONGITUDE = "supplier_longitude";
 
     public static final String COL_SUPPLIER_LATITUDE = "supplier_latitude";
+
+    public static final String COL_PLACE_ID = "place_id";
+
+    public static final String COL_GEO_HASH = "geo_hash";
 
     public static final String COL_SUPPLIER_TAG = "supplier_tag";
 

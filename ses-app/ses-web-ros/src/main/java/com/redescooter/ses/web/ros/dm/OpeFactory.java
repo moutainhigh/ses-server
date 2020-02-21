@@ -91,6 +91,20 @@ public class OpeFactory implements Serializable {
     private BigDecimal factoryLatitude;
 
     /**
+     * 地址唯一ID
+     */
+    @TableField(value = "place_id")
+    @ApiModelProperty(value="地址唯一ID")
+    private String placeId;
+
+    /**
+     * geo_hash
+     */
+    @TableField(value = "geo_hash")
+    @ApiModelProperty(value="geo_hash")
+    private String geoHash;
+
+    /**
      * 代工厂标签
      */
     @TableField(value = "factory_tag")
@@ -286,6 +300,10 @@ public class OpeFactory implements Serializable {
     public static final String COL_FACTORY_LONGITUDE = "factory_longitude";
 
     public static final String COL_FACTORY_LATITUDE = "factory_latitude";
+
+    public static final String COL_PLACE_ID = "place_id";
+
+    public static final String COL_GEO_HASH = "geo_hash";
 
     public static final String COL_FACTORY_TAG = "factory_tag";
 

@@ -78,8 +78,8 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         factorySave.setTenantId(enter.getTenantId());
         factorySave.setUserId(enter.getUserId());
         factorySave.setOverdueFlag(0);
-        factorySave.setUpdatedBy(enter.getUserId());
-        factorySave.setUpdatedTime(new Date());
+        factorySave.setCreatedBy(enter.getUserId());
+        factorySave.setCreatedTime(new Date());
         factorySave.setUpdatedBy(enter.getUserId());
         factorySave.setUpdatedTime(new Date());
 
