@@ -108,7 +108,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
 
         FactoryResult factoryResult = new FactoryResult();
         Optional.ofNullable(factory).ifPresent(f -> {
-            BeanUtils.copyProperties(factory, factoryResult);
+            BeanUtils.copyProperties(f, factoryResult);
             factoryResult.setRequestId(enter.getRequestId());
         });
 
