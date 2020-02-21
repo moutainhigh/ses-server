@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeFactory")
 @Data
 @Builder
 @AllArgsConstructor
@@ -131,6 +130,9 @@ public class OpeFactory implements Serializable {
     @ApiModelProperty(value="联系人邮箱")
     private String contactEmail;
 
+    /**
+     * 手机号归属国家
+     */
     @TableField(value = "contact_phone_country_code")
     @ApiModelProperty(value="手机号归属国家")
     private String contactPhoneCountryCode;
@@ -199,13 +201,6 @@ public class OpeFactory implements Serializable {
     private Integer overdueFlag;
 
     /**
-     * 创建人
-     */
-    @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
-    private Long createdBy;
-
-    /**
      * 创建时间
      */
     @TableField(value = "created_time")
@@ -213,11 +208,11 @@ public class OpeFactory implements Serializable {
     private Date createdTime;
 
     /**
-     * 更新人
+     * 创建人
      */
-    @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
-    private Long updatedBy;
+    @TableField(value = "created_by")
+    @ApiModelProperty(value="创建人")
+    private Long createdBy;
 
     /**
      * 更新时间
@@ -225,6 +220,13 @@ public class OpeFactory implements Serializable {
     @TableField(value = "updated_time")
     @ApiModelProperty(value="更新时间")
     private Date updatedTime;
+
+    /**
+     * 更新人
+     */
+    @TableField(value = "updated_by")
+    @ApiModelProperty(value="更新人")
+    private Long updatedBy;
 
     /**
      * 冗余字段
@@ -315,13 +317,13 @@ public class OpeFactory implements Serializable {
 
     public static final String COL_OVERDUE_FLAG = "overdue_flag";
 
-    public static final String COL_CREATED_BY = "created_by";
-
     public static final String COL_CREATED_TIME = "created_time";
 
-    public static final String COL_UPDATED_BY = "updated_by";
+    public static final String COL_CREATED_BY = "created_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
+
+    public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_DEF1 = "def1";
 

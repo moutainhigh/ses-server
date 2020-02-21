@@ -9,8 +9,6 @@ import com.redescooter.ses.web.ros.vo.factory.FactoryEditEnter;
 import com.redescooter.ses.web.ros.vo.factory.FactoryPage;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
-import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Map;
 

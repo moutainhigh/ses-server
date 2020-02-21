@@ -30,10 +30,10 @@
     <result column="contract_number" jdbcType="VARCHAR" property="contractNumber" />
     <result column="contract_annex" jdbcType="VARCHAR" property="contractAnnex" />
     <result column="overdue_flag" jdbcType="INTEGER" property="overdueFlag" />
-    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="def1" jdbcType="VARCHAR" property="def1" />
     <result column="def2" jdbcType="VARCHAR" property="def2" />
     <result column="def5" jdbcType="VARCHAR" property="def5" />
@@ -46,8 +46,8 @@
     supplier_longitude, supplier_latitude, supplier_tag, supplier_memo, contact_first_name, 
     contact_last_name, contact_full_name, contact_email, contact_phone_country_code, 
     contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number, 
-    business_license_annex, contract_number, contract_annex, overdue_flag, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def5, def3, def6
+    business_license_annex, contract_number, contract_annex, overdue_flag, created_time, 
+    created_by, updated_time, updated_by, def1, def2, def5, def3, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -178,24 +178,24 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.overdueFlag,jdbcType=INTEGER}
         </foreach>
       </trim>
-      <trim prefix="created_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
-        </foreach>
-      </trim>
       <trim prefix="created_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
-      <trim prefix="updated_by = case" suffix="end,">
+      <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="def1 = case" suffix="end,">
@@ -236,8 +236,8 @@
       supplier_longitude, supplier_latitude, supplier_tag, supplier_memo, contact_first_name, 
       contact_last_name, contact_full_name, contact_email, contact_phone_country_code, 
       contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number, 
-      business_license_annex, contract_number, contract_annex, overdue_flag, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def5, def3, def6)
+      business_license_annex, contract_number, contract_annex, overdue_flag, created_time, 
+      created_by, updated_time, updated_by, def1, def2, def5, def3, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
@@ -250,8 +250,8 @@
         #{item.contactPhone,jdbcType=VARCHAR}, #{item.paymentCycle,jdbcType=INTEGER}, #{item.cooperationTimeStart,jdbcType=TIMESTAMP}, 
         #{item.cooperationTimeEnd,jdbcType=TIMESTAMP}, #{item.businessNumber,jdbcType=VARCHAR}, 
         #{item.businessLicenseAnnex,jdbcType=VARCHAR}, #{item.contractNumber,jdbcType=VARCHAR}, 
-        #{item.contractAnnex,jdbcType=VARCHAR}, #{item.overdueFlag,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.contractAnnex,jdbcType=VARCHAR}, #{item.overdueFlag,jdbcType=INTEGER}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
         #{item.def3,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
     </foreach>
@@ -263,8 +263,8 @@
       supplier_longitude, supplier_latitude, supplier_tag, supplier_memo, contact_first_name, 
       contact_last_name, contact_full_name, contact_email, contact_phone_country_code, 
       contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number, 
-      business_license_annex, contract_number, contract_annex, overdue_flag, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def5, def3, def6)
+      business_license_annex, contract_number, contract_annex, overdue_flag, created_time, 
+      created_by, updated_time, updated_by, def1, def2, def5, def3, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, 
       #{userId,jdbcType=BIGINT}, #{supplierName,jdbcType=VARCHAR}, #{supplierAddress,jdbcType=VARCHAR}, 
@@ -274,8 +274,8 @@
       #{contactPhoneCountryCode,jdbcType=VARCHAR}, #{contactPhone,jdbcType=VARCHAR}, 
       #{paymentCycle,jdbcType=INTEGER}, #{cooperationTimeStart,jdbcType=TIMESTAMP}, #{cooperationTimeEnd,jdbcType=TIMESTAMP}, 
       #{businessNumber,jdbcType=VARCHAR}, #{businessLicenseAnnex,jdbcType=VARCHAR}, #{contractNumber,jdbcType=VARCHAR}, 
-      #{contractAnnex,jdbcType=VARCHAR}, #{overdueFlag,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{contractAnnex,jdbcType=VARCHAR}, #{overdueFlag,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{createdBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
       #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, 
       #{def6,jdbcType=DOUBLE})
     on duplicate key update 
@@ -305,10 +305,10 @@
     contract_number = #{contractNumber,jdbcType=VARCHAR}, 
     contract_annex = #{contractAnnex,jdbcType=VARCHAR}, 
     overdue_flag = #{overdueFlag,jdbcType=INTEGER}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
     updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
     def1 = #{def1,jdbcType=VARCHAR}, 
     def2 = #{def2,jdbcType=VARCHAR}, 
     def5 = #{def5,jdbcType=VARCHAR}, 
@@ -397,17 +397,17 @@
       <if test="overdueFlag != null">
         overdue_flag,
       </if>
-      <if test="createdBy != null">
-        created_by,
-      </if>
       <if test="createdTime != null">
         created_time,
       </if>
-      <if test="updatedBy != null">
-        updated_by,
+      <if test="createdBy != null">
+        created_by,
       </if>
       <if test="updatedTime != null">
         updated_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
       </if>
       <if test="def1 != null">
         def1,
@@ -505,17 +505,17 @@
       <if test="overdueFlag != null">
         #{overdueFlag,jdbcType=INTEGER},
       </if>
-      <if test="createdBy != null">
-        #{createdBy,jdbcType=BIGINT},
-      </if>
       <if test="createdTime != null">
         #{createdTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updatedBy != null">
-        #{updatedBy,jdbcType=BIGINT},
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
         #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="def1 != null">
         #{def1,jdbcType=VARCHAR},
@@ -613,17 +613,17 @@
       <if test="overdueFlag != null">
         overdue_flag = #{overdueFlag,jdbcType=INTEGER},
       </if>
-      <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=BIGINT},
-      </if>
       <if test="createdTime != null">
         created_time = #{createdTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=BIGINT},
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="def1 != null">
         def1 = #{def1,jdbcType=VARCHAR},

@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import com.redescooter.ses.api.common.enums.factory.FactoryStatusEnum;
 import com.redescooter.ses.api.common.enums.supplier.SupplierEventEnum;
 import com.redescooter.ses.api.common.enums.supplier.SupplierStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -11,14 +10,11 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.SupplierServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeFactory;
-import com.redescooter.ses.web.ros.dm.OpeFactoryTrace;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
 import com.redescooter.ses.web.ros.dm.OpeSupplierTrace;
 import com.redescooter.ses.web.ros.service.SupplierRosService;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierTraceService;
-import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierEditEnter;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierPage;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierResult;
@@ -33,6 +29,7 @@ import java.util.*;
 
 @Service
 public class SupplierRosServiceImpl implements SupplierRosService {
+
     @Autowired
     private OpeSupplierService supplierService;
     @Autowired

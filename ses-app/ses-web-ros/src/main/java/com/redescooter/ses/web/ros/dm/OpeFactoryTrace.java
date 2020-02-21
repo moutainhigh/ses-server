@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeFactoryTrace")
 @Data
 @Builder
 @AllArgsConstructor

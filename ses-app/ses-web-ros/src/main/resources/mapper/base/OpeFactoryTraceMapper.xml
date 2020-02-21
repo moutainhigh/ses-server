@@ -8,7 +8,7 @@
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="factory_id" jdbcType="BIGINT" property="factoryId" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="event" jdbcType="VARCHAR" property="event" />
     <result column="event_time" jdbcType="TIMESTAMP" property="eventTime" />
@@ -49,7 +49,7 @@
       </trim>
       <trim prefix="user_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="`status` = case" suffix="end,">
@@ -131,7 +131,7 @@
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.factoryId,jdbcType=BIGINT}, 
-        #{item.tenantId,jdbcType=BIGINT}, #{item.userId,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
+        #{item.tenantId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, 
         #{item.event,jdbcType=VARCHAR}, #{item.eventTime,jdbcType=TIMESTAMP}, #{item.reason,jdbcType=VARCHAR}, 
         #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
         #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
@@ -146,7 +146,7 @@
       created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{factoryId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, 
-      #{userId,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{event,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{event,jdbcType=VARCHAR}, 
       #{eventTime,jdbcType=TIMESTAMP}, #{reason,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
       #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
@@ -156,7 +156,7 @@
     dr = #{dr,jdbcType=INTEGER}, 
     factory_id = #{factoryId,jdbcType=BIGINT}, 
     tenant_id = #{tenantId,jdbcType=BIGINT}, 
-    user_id = #{userId,jdbcType=INTEGER}, 
+    user_id = #{userId,jdbcType=BIGINT}, 
     `status` = #{status,jdbcType=VARCHAR}, 
     event = #{event,jdbcType=VARCHAR}, 
     event_time = #{eventTime,jdbcType=TIMESTAMP}, 
@@ -245,7 +245,7 @@
         #{tenantId,jdbcType=BIGINT},
       </if>
       <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
+        #{userId,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         #{status,jdbcType=VARCHAR},
@@ -302,7 +302,7 @@
         tenant_id = #{tenantId,jdbcType=BIGINT},
       </if>
       <if test="userId != null">
-        user_id = #{userId,jdbcType=INTEGER},
+        user_id = #{userId,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         `status` = #{status,jdbcType=VARCHAR},

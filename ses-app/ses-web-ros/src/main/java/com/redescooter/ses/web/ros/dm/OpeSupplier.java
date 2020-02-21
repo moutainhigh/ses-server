@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -14,7 +11,6 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSupplier")
 @Data
 @Builder
 @AllArgsConstructor
@@ -32,6 +28,7 @@ public class OpeSupplier implements Serializable {
      * 逻辑删除标识
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value="逻辑删除标识")
     private Integer dr;
 
@@ -204,13 +201,6 @@ public class OpeSupplier implements Serializable {
     private Integer overdueFlag;
 
     /**
-     * 创建人
-     */
-    @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
-    private Long createdBy;
-
-    /**
      * 创建时间
      */
     @TableField(value = "created_time")
@@ -218,11 +208,11 @@ public class OpeSupplier implements Serializable {
     private Date createdTime;
 
     /**
-     * 更新人
+     * 创建人
      */
-    @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
-    private Long updatedBy;
+    @TableField(value = "created_by")
+    @ApiModelProperty(value="创建人")
+    private Long createdBy;
 
     /**
      * 更新时间
@@ -230,6 +220,13 @@ public class OpeSupplier implements Serializable {
     @TableField(value = "updated_time")
     @ApiModelProperty(value="更新时间")
     private Date updatedTime;
+
+    /**
+     * 更新人
+     */
+    @TableField(value = "updated_by")
+    @ApiModelProperty(value="更新人")
+    private Long updatedBy;
 
     /**
      * 冗余字段
@@ -320,13 +317,13 @@ public class OpeSupplier implements Serializable {
 
     public static final String COL_OVERDUE_FLAG = "overdue_flag";
 
-    public static final String COL_CREATED_BY = "created_by";
-
     public static final String COL_CREATED_TIME = "created_time";
 
-    public static final String COL_UPDATED_BY = "updated_by";
+    public static final String COL_CREATED_BY = "created_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
+
+    public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_DEF1 = "def1";
 
