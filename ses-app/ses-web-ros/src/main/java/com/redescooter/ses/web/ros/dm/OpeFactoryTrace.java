@@ -52,7 +52,7 @@ public class OpeFactoryTrace implements Serializable {
      */
     @TableField(value = "user_id")
     @ApiModelProperty(value="用户ID")
-    private Integer userId;
+    private Long userId;
 
     /**
      * 代工厂操作状态

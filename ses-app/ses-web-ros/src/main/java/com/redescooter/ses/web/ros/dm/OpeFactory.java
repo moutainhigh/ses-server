@@ -131,6 +131,10 @@ public class OpeFactory implements Serializable {
     @ApiModelProperty(value="联系人邮箱")
     private String contactEmail;
 
+    @TableField(value = "contact_phone_country_code")
+    @ApiModelProperty(value="手机号归属国家")
+    private String contactPhoneCountryCode;
+
     /**
      * 联系人手机号
      */
@@ -199,7 +203,7 @@ public class OpeFactory implements Serializable {
      */
     @TableField(value = "created_by")
     @ApiModelProperty(value="创建人")
-    private Integer createdBy;
+    private Long createdBy;
 
     /**
      * 创建时间
@@ -290,6 +294,8 @@ public class OpeFactory implements Serializable {
     public static final String COL_CONTACT_FULL_NAME = "contact_full_name";
 
     public static final String COL_CONTACT_EMAIL = "contact_email";
+
+    public static final String COL_CONTACT_PHONE_COUNTRY_CODE = "contact_phone_country_code";
 
     public static final String COL_CONTACT_PHONE = "contact_phone";
 
