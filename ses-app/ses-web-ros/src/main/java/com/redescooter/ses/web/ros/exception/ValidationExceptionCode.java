@@ -7,7 +7,7 @@ package com.redescooter.ses.web.ros.exception;
  */
 public interface ValidationExceptionCode {
 
-    // 10000-10030 公共异常
+    // ###############################10001~10030公共入参异常#######################################
     // 经度为空
     int LAT_IS_EMPTY = 10001;
     // 纬度为空
@@ -24,6 +24,8 @@ public interface ValidationExceptionCode {
     int ID_IS_EMPTY = 10007;
     //国家手机号编码不能为空
     int COUNTRY_CODE_IS_EMPTY = 10008;
+
+    //###############################10030~100?? 业务入参异常#######################################
     // 地址信息为空
     int ADDRESS_INFO_IS_EMPTY = 10030;
     //客户信息不能为空
