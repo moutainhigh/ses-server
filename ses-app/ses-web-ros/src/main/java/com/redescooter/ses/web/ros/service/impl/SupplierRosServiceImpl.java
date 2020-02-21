@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.SupplierServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
@@ -20,10 +21,12 @@ import com.redescooter.ses.web.ros.vo.supplier.SupplierPage;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierResult;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierSaveEnter;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.poi.hpsf.Decimal;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -63,6 +66,10 @@ public class SupplierRosServiceImpl implements SupplierRosService {
         supplierSave.setId(idAppService.getId(SequenceName.OPE_SUPPLIER));
         supplierSave.setDr(0);
         supplierSave.setStatus(SupplierStatusEnum.NORMAL.getValue());
+        if(StringUtils.isNoneBlank(enter.getSupplierLatitude(),enter.getSupplierLongitude())){
+            supplierSave.setSupplierLatitude(new BigDecimal(enter.getSupplierLatitude()));
+            supplierSave.setSupplierLongitude(new BigDecimal(enter.getSupplierLongitude()));
+        }
         supplierSave.setTenantId(enter.getTenantId());
         supplierSave.setUserId(enter.getUserId());
         supplierSave.setOverdueFlag(0);

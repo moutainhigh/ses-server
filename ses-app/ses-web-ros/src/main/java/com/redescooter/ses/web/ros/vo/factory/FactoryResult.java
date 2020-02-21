@@ -3,11 +3,13 @@ package com.redescooter.ses.web.ros.vo.factory;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -52,13 +54,13 @@ public class FactoryResult extends GeneralResult {
      * 代工厂经度
      */
     @ApiModelProperty(value="代工厂经度")
-    private Long factoryLongitude;
+    private String factoryLongitude;
 
     /**
      * 代工厂纬度
      */
     @ApiModelProperty(value="代工厂纬度")
-    private Long factoryLatitude;
+    private String factoryLatitude;
 
     /**
      * 代工厂标签
@@ -118,12 +120,16 @@ public class FactoryResult extends GeneralResult {
      * 合作开始时间
      */
     @ApiModelProperty(value="合作开始时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date cooperationTimeStart;
 
     /**
      * 合作结束时间
      */
     @ApiModelProperty(value="合作结束时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date cooperationTimeEnd;
 
     /**
@@ -184,6 +190,8 @@ public class FactoryResult extends GeneralResult {
      * 创建时间
      */
     @ApiModelProperty(value="创建时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date createdTime;
 
     /**
@@ -196,6 +204,8 @@ public class FactoryResult extends GeneralResult {
      * 更新时间
      */
     @ApiModelProperty(value="更新时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date updatedTime;
 
 
