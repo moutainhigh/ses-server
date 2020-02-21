@@ -5,8 +5,9 @@ import com.redescooter.ses.service.mobile.c.dm.base.ConDriverRideStatDetail;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
 @Transactional
-public interface ConDriverRideStatDetailService extends IService<ConDriverRideStatDetail>{
+public interface ConDriverRideStatDetailService extends IService<ConDriverRideStatDetail> {
 
 
     int updateBatch(List<ConDriverRideStatDetail> list);
@@ -18,3 +19,4 @@ public interface ConDriverRideStatDetailService extends IService<ConDriverRideSt
     int insertOrUpdateSelective(ConDriverRideStatDetail record);
 
 }
+

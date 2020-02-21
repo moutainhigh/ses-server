@@ -3,6 +3,7 @@ package com.redescooter.ses.api.mobile.c.vo;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.c.exception.ValidationExceptionCode;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -44,5 +45,5 @@ public class ScooterNavigationEnter extends GeneralEnter {
     private String mileage;
 
     @ApiModelProperty(value = "行驶公里数，结束导航时传递 单位 s")
-    private String time;
+    private Long duration;
 }

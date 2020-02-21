@@ -11,11 +11,11 @@
         <result column="biz_type" jdbcType="VARCHAR" property="bizType"/>
         <result column="driver_id" jdbcType="BIGINT" property="driverId"/>
         <result column="duration" jdbcType="BIGINT" property="duration"/>
-        <result column="co2_history_total" jdbcType="DOUBLE" property="co2HistoryTotal"/>
-        <result column="co2_increment" jdbcType="DOUBLE" property="co2Increment"/>
-        <result column="svg_speed" jdbcType="DOUBLE" property="svgSpeed"/>
-        <result column="mileage" jdbcType="DOUBLE" property="mileage"/>
-        <result column="saved_money" jdbcType="DOUBLE" property="savedMoney"/>
+        <result column="co2_history_total" jdbcType="DECIMAL" property="co2HistoryTotal"/>
+        <result column="co2_increment" jdbcType="DECIMAL" property="co2Increment"/>
+        <result column="svg_speed" jdbcType="DECIMAL" property="svgSpeed"/>
+        <result column="mileage" jdbcType="DECIMAL" property="mileage"/>
+        <result column="saved_money" jdbcType="DECIMAL" property="savedMoney"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="BIGINT" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -68,27 +68,27 @@
             </trim>
             <trim prefix="co2_history_total = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.co2HistoryTotal,jdbcType=DOUBLE}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.co2HistoryTotal,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="co2_increment = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.co2Increment,jdbcType=DOUBLE}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.co2Increment,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="svg_speed = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.svgSpeed,jdbcType=DOUBLE}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.svgSpeed,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="mileage = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.mileage,jdbcType=DOUBLE}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.mileage,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="saved_money = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.savedMoney,jdbcType=DOUBLE}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.savedMoney,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="create_time = case" suffix="end,">
@@ -152,9 +152,9 @@
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
             #{item.bizId,jdbcType=BIGINT}, #{item.bizType,jdbcType=VARCHAR}, #{item.driverId,jdbcType=BIGINT},
-            #{item.duration,jdbcType=BIGINT}, #{item.co2HistoryTotal,jdbcType=DOUBLE},
-            #{item.co2Increment,jdbcType=DOUBLE},
-            #{item.svgSpeed,jdbcType=DOUBLE}, #{item.mileage,jdbcType=DOUBLE}, #{item.savedMoney,jdbcType=DOUBLE},
+            #{item.duration,jdbcType=BIGINT}, #{item.co2HistoryTotal,jdbcType=DECIMAL},
+            #{item.co2Increment,jdbcType=DECIMAL},
+            #{item.svgSpeed,jdbcType=DECIMAL}, #{item.mileage,jdbcType=DECIMAL}, #{item.savedMoney,jdbcType=DECIMAL},
             #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=BIGINT},
             #{item.updateTime,jdbcType=TIMESTAMP},
             #{item.updateBy,jdbcType=BIGINT}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
@@ -171,8 +171,8 @@
         values
         (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{bizId,jdbcType=BIGINT},
         #{bizType,jdbcType=VARCHAR}, #{driverId,jdbcType=BIGINT}, #{duration,jdbcType=BIGINT},
-        #{co2HistoryTotal,jdbcType=DOUBLE}, #{co2Increment,jdbcType=DOUBLE}, #{svgSpeed,jdbcType=DOUBLE},
-        #{mileage,jdbcType=DOUBLE}, #{savedMoney,jdbcType=DOUBLE}, #{createTime,jdbcType=TIMESTAMP},
+        #{co2HistoryTotal,jdbcType=DECIMAL}, #{co2Increment,jdbcType=DECIMAL}, #{svgSpeed,jdbcType=DECIMAL},
+        #{mileage,jdbcType=DECIMAL}, #{savedMoney,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP},
         #{createBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT},
         #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
         #{def6,jdbcType=DOUBLE})
@@ -184,11 +184,11 @@
         biz_type = #{bizType,jdbcType=VARCHAR},
         driver_id = #{driverId,jdbcType=BIGINT},
         duration = #{duration,jdbcType=BIGINT},
-        co2_history_total = #{co2HistoryTotal,jdbcType=DOUBLE},
-        co2_increment = #{co2Increment,jdbcType=DOUBLE},
-        svg_speed = #{svgSpeed,jdbcType=DOUBLE},
-        mileage = #{mileage,jdbcType=DOUBLE},
-        saved_money = #{savedMoney,jdbcType=DOUBLE},
+        co2_history_total = #{co2HistoryTotal,jdbcType=DECIMAL},
+        co2_increment = #{co2Increment,jdbcType=DECIMAL},
+        svg_speed = #{svgSpeed,jdbcType=DECIMAL},
+        mileage = #{mileage,jdbcType=DECIMAL},
+        saved_money = #{savedMoney,jdbcType=DECIMAL},
         create_time = #{createTime,jdbcType=TIMESTAMP},
         create_by = #{createBy,jdbcType=BIGINT},
         update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -292,19 +292,19 @@
                 #{duration,jdbcType=BIGINT},
             </if>
             <if test="co2HistoryTotal != null">
-                #{co2HistoryTotal,jdbcType=DOUBLE},
+                #{co2HistoryTotal,jdbcType=DECIMAL},
             </if>
             <if test="co2Increment != null">
-                #{co2Increment,jdbcType=DOUBLE},
+                #{co2Increment,jdbcType=DECIMAL},
             </if>
             <if test="svgSpeed != null">
-                #{svgSpeed,jdbcType=DOUBLE},
+                #{svgSpeed,jdbcType=DECIMAL},
             </if>
             <if test="mileage != null">
-                #{mileage,jdbcType=DOUBLE},
+                #{mileage,jdbcType=DECIMAL},
             </if>
             <if test="savedMoney != null">
-                #{savedMoney,jdbcType=DOUBLE},
+                #{savedMoney,jdbcType=DECIMAL},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
@@ -358,19 +358,19 @@
                 duration = #{duration,jdbcType=BIGINT},
             </if>
             <if test="co2HistoryTotal != null">
-                co2_history_total = #{co2HistoryTotal,jdbcType=DOUBLE},
+                co2_history_total = #{co2HistoryTotal,jdbcType=DECIMAL},
             </if>
             <if test="co2Increment != null">
-                co2_increment = #{co2Increment,jdbcType=DOUBLE},
+                co2_increment = #{co2Increment,jdbcType=DECIMAL},
             </if>
             <if test="svgSpeed != null">
-                svg_speed = #{svgSpeed,jdbcType=DOUBLE},
+                svg_speed = #{svgSpeed,jdbcType=DECIMAL},
             </if>
             <if test="mileage != null">
-                mileage = #{mileage,jdbcType=DOUBLE},
+                mileage = #{mileage,jdbcType=DECIMAL},
             </if>
             <if test="savedMoney != null">
-                saved_money = #{savedMoney,jdbcType=DOUBLE},
+                saved_money = #{savedMoney,jdbcType=DECIMAL},
             </if>
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=TIMESTAMP},

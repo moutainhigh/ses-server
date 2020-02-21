@@ -1,6 +1,9 @@
 package com.redescooter.ses.api.mobile.c.vo;
 
+import java.math.BigDecimal;
+
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,8 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 /**
  * @ClassName:SaveDriverRideDateEnter
@@ -24,7 +25,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class SaveDriverRideDateEnter extends GeneralEnter {
+public class SaveRideDateEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "距离")
     private BigDecimal mileage;
@@ -33,10 +34,8 @@ public class SaveDriverRideDateEnter extends GeneralEnter {
     private Long duration;
 
     @ApiModelProperty(value = "bizType")
-    private Long bizType;
+    private String bizType;
 
     @ApiModelProperty(value = "bizId")
     private Long bizId;
-
-
 }
