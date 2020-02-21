@@ -1,8 +1,25 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
@@ -25,6 +42,7 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
@@ -49,22 +67,8 @@ import com.redescooter.ses.web.delivery.vo.task.SaveTaskEnter;
 import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
 import com.redescooter.ses.web.delivery.vo.task.TaskResult;
 import com.redescooter.ses.web.delivery.vo.task.TaskTimeCountDto;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @ClassName:TaskServiceImpl
@@ -171,7 +175,27 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public TaskResult detail(IdEnter enter) {
-        TaskResult result = taskServiceMapper.detail(enter);
+        TaskResult result=null;
+        // 查询司机信息
+        CorDriver corDriver = taskServiceMapper.queryDriverByTaskId(enter);
+        if (corDriver.getStatus().equals(DriverStatusEnum.WORKING.getValue())) {
+            result= taskServiceMapper.detail(enter);
+        }else {
+            CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(enter.getId());
+            if (corExpressDelivery == null) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.TASK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TASK_IS_NOT_EXIST.getMessage());
+            }
+            result=taskServiceMapper.driverOffUserProfileByDriverId(corExpressDelivery.getDriverId(),enter.getTenantId());
+            result.setId(corExpressDelivery.getId());
+            result.setStatus(corExpressDelivery.getStatus());
+            result.setCompleteCount(corExpressDelivery.getOrderCompleteNum());
+            result.setTotalCount(corExpressDelivery.getOrderSum());
+            result.setTaskTime(DateUtil.getTimeStr(corExpressDelivery.getDeliveryDate(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            result.setStartTime(DateUtil.getTimeStr(corExpressDelivery.getDeliveryStartTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            result.setDeliveredTime(DateUtil.getTimeStr(corExpressDelivery.getDeliveryEndTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            result.setCreatedTime(DateUtil.getTimeStr(corExpressDelivery.getCreateTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
+
+        }
         if (result == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.TASK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TASK_IS_NOT_EXIST.getMessage());
         }
@@ -179,10 +203,11 @@ public class TaskServiceImpl implements TaskService {
         scooterIdList.add(result.getScooterId());
 
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
+        TaskResult finalResult = result;
         baseScooterResults.forEach(itme->{
             Optional.ofNullable(itme).ifPresent(it->{
-                result.setBattery(baseScooterResults.get(0).getBattery());
-                result.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
+                finalResult.setBattery(baseScooterResults.get(0).getBattery());
+                finalResult.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
             });
         });
 

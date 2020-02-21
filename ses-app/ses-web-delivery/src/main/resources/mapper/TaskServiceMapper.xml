@@ -135,11 +135,11 @@
         from cor_express_delivery_detail expressDetail
         inner join
         cor_express_order eorder
-             on eorder.id = expressDetail.express_order_id
-                 and eorder.dr = 0
+        on eorder.id = expressDetail.express_order_id
+        and eorder.dr = 0
         where expressDetail.tenant_id = #{tenantId}
-          and expressDetail.dr = 0
-          and expressDetail.express_delivery_id = #{id}
+        and expressDetail.dr = 0
+        and expressDetail.express_delivery_id = #{id}
     </select>
     <select id="driverList" resultType="com.redescooter.ses.web.delivery.vo.task.DriverListResult">
         select driver.id as id,
@@ -166,7 +166,7 @@
         and eorder.status = 1
         <if test="filterIds != null and filterIds.size() != 0">
             and eorder.id not in
-            <foreach collection="filterIds"  index="index" item="item" open="(" separator="," close=")">
+            <foreach collection="filterIds" index="index" item="item" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
@@ -180,7 +180,8 @@
             and (eorder.created_time between #{createdStartTime} and #{createdEndTime})
         </if>
         <if test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
-            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end  <![CDATA[ > ]]> #{expectTimeEnd} )
+            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end
+            <![CDATA[ > ]]> #{expectTimeEnd} )
         </if>
     </select>
     <select id="orderList" resultType="com.redescooter.ses.web.delivery.vo.task.OrderResult">
@@ -199,7 +200,7 @@
         and eorder.status = 1
         <if test="filterIds != null and filterIds.size() != 0">
             and eorder.id not in
-            <foreach collection="filterIds"  index="index" item="item" open="(" separator="," close=")">
+            <foreach collection="filterIds" index="index" item="item" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
@@ -213,7 +214,8 @@
             and (eorder.created_time between #{createdStartTime} and #{createdEndTime})
         </if>
         <if test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
-            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end <![CDATA[ > ]]> #{expectTimeEnd} )
+            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end <![CDATA[ > ]]>
+            #{expectTimeEnd} )
         </if>
         order by eorder.created_time desc
         limit #{startRow},#{pageSize}
@@ -243,8 +245,37 @@
         where express.dr = 0
         and TO_DAYS(create_time) <![CDATA[ < ]]> TO_DAYS(NOW())
         and dr = 0
-        and tenant_id =  #{tenantId}) a
+        and tenant_id = #{tenantId}) a
 
+    </select>
+    <select id="queryDriverByTaskId" resultType="com.redescooter.ses.web.delivery.dm.CorDriver">
+        select driver.*
+        from cor_driver driver
+                 inner join cor_express_delivery delivery on driver.id = delivery.driver_id
+        where delivery.id = 1006387
+          and delivery.dr = 0
+
+    </select>
+    <select id="driverOffUserProfileByDriverId"
+            resultType="com.redescooter.ses.web.delivery.vo.task.TaskResult">
+        select driver.id as id,
+        profile.first_name as driverFirstName,
+        profile.last_name as driverLastName,
+        profile.email_1 as driverEmail,
+        profile.tel_number_1 as driverPhone,
+        tsc.scooter_id as scooterId,
+        tsc.license_plate as licensePlate
+        from cor_driver driver
+        inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
+        inner join (select *
+        from cor_driver_scooter_history histroy
+        where histroy.status = 2
+        and histroy.driver_id = #{driverId}
+        order by histroy.created_time desc
+        limit 1) dscooter on dscooter.driver_id = driver.id
+        inner join cor_tenant_scooter tsc on dscooter.scooter_id = tsc.scooter_id and tsc.dr=0
+        where driver.dr=0
+        and driver.tenant_id=#{tenantId}
     </select>
 
 
