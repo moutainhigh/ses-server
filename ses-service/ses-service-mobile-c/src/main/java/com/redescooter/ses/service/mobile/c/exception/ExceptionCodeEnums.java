@@ -75,6 +75,11 @@ public enum ExceptionCodeEnums {
     //10030 之后业务异常
     USERPROFILE_IS_NOT_EXIST(10031, "个人信息不存在"),
 
+    MILEAGE_IS_EMPTY(10032,"骑行距离为空"),
+
+    DURATION_IS_EMPTY(10033,"耗时为空"),
+
+
     ;
     private int code;
 
