@@ -190,11 +190,14 @@ public class TaskServiceImpl implements TaskService {
             result.setStatus(corExpressDelivery.getStatus());
             result.setCompleteCount(corExpressDelivery.getOrderCompleteNum());
             result.setTotalCount(corExpressDelivery.getOrderSum());
-            result.setTaskTime(DateUtil.getTimeStr(corExpressDelivery.getDeliveryDate(),DateUtil.DEFAULT_DATETIME_FORMAT));
-            result.setStartTime(DateUtil.getTimeStr(corExpressDelivery.getDeliveryStartTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
-            result.setDeliveredTime(DateUtil.getTimeStr(corExpressDelivery.getDeliveryEndTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
-            result.setCreatedTime(DateUtil.getTimeStr(corExpressDelivery.getCreateTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
-
+            result.setTaskTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryDate(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            if (!result.getStatus().equals(TaskStatusEnums.PENDING.getValue())){
+                result.setStartTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryStartTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            }
+            if (result.getStatus().equals(TaskStatusEnums.DELIVERED.getValue())){
+                result.setDeliveredTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryEndTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            }
+            result.setCreatedTime(DateUtil.getDateTime(corExpressDelivery.getCreateTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
         }
         if (result == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.TASK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TASK_IS_NOT_EXIST.getMessage());
