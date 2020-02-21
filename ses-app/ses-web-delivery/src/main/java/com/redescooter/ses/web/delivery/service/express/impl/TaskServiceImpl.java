@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
@@ -27,6 +28,7 @@ import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MesageBizTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
+import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskTimeCountEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -48,11 +50,13 @@ import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.TaskServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorDriver;
+import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
 import com.redescooter.ses.web.delivery.dm.CorExpressDelivery;
 import com.redescooter.ses.web.delivery.dm.CorExpressDeliveryDetail;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
+import com.redescooter.ses.web.delivery.service.base.CorDriverScooterService;
 import com.redescooter.ses.web.delivery.service.base.CorDriverService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryDetailService;
 import com.redescooter.ses.web.delivery.service.base.CorExpressDeliveryService;
@@ -98,6 +102,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private EdOrderTraceService edOrderTraceService;
+
+    @Autowired
+    private CorDriverScooterService corDriverScooterService;
 
     @Reference
     private IdAppService idAppService;
@@ -305,6 +312,14 @@ public class TaskServiceImpl implements TaskService {
                 if (corDriver == null) {
                     throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
                 }
+                // 查询司机当前正在使用的车辆
+                QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper=new QueryWrapper<>();
+                corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID,corDriver.getId());
+                corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID,enter.getTenantId());
+                corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR,0);
+                corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
+                CorDriverScooter corDriverScooter = corDriverScooterService.getOne(corDriverScooterQueryWrapper);
+
                 List<CorExpressOrder> corExpressOrderList = taskServiceMapper.queryExpressOrderByIds(driverTaskEnter.getIds());
                 if (CollectionUtils.isEmpty(corExpressOrderList) && corExpressOrderList.size() != driverTaskEnter.getIds().size()) {
                     throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
@@ -336,7 +351,7 @@ public class TaskServiceImpl implements TaskService {
                     updateCorExpressOrderList.add(item);
                 }
                 //保存task
-                buildtask(enter, driverTaskEnter, tenantConfigInfoResult, taskId, saveCorExpressDeliveryList);
+                buildtask(enter, driverTaskEnter, tenantConfigInfoResult, taskId, saveCorExpressDeliveryList,corDriverScooter.getScooterId());
             });
 
             // 保存 TaskDetail
@@ -384,10 +399,12 @@ public class TaskServiceImpl implements TaskService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    private void buildtask(SaveTaskEnter enter, DriverTaskEnter driverTaskEnter, TenantConfigInfoResult tenantConfigInfoResult, Long taskId, List<CorExpressDelivery> saveCorExpressDeliveryList) {
+    private void buildtask(SaveTaskEnter enter, DriverTaskEnter driverTaskEnter, TenantConfigInfoResult tenantConfigInfoResult, Long taskId, List<CorExpressDelivery> saveCorExpressDeliveryList,
+                           Long scooterId) {
         CorExpressDelivery corExpressDelivery = new CorExpressDelivery();
         corExpressDelivery.setId(taskId);
         corExpressDelivery.setDr(0);
+        corExpressDelivery.setScooterId(scooterId);
         corExpressDelivery.setTenantId(tenantConfigInfoResult.getTenantId());
         corExpressDelivery.setStatus(TaskStatusEnums.PENDING.getValue());
         corExpressDelivery.setDriverId(driverTaskEnter.getDiverId());

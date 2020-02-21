@@ -1,12 +1,9 @@
-package com.redescooter.ses.service.mobile.b.service.base;
+package com.redescooter.ses.service.mobile.b.service.base.impl;
 
-import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
-
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.service.mobile.b.dm.base.CorExpressDelivery;
-@Transactional
+import java.util.List;
+import com.baomidou.mybatisplus.extension.service.IService;
+
 public interface CorExpressDeliveryService extends IService<CorExpressDelivery> {
 
 
@@ -17,8 +14,6 @@ public interface CorExpressDeliveryService extends IService<CorExpressDelivery> 
     int insertOrUpdate(CorExpressDelivery record);
 
     int insertOrUpdateSelective(CorExpressDelivery record);
+
 }
-
-
-
 

@@ -1,14 +1,17 @@
 package com.redescooter.ses.service.mobile.b.dm.base;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @ApiModel(value = "com-redescooter-ses-service-mobile-b-dm-base-CorExpressDelivery")
@@ -26,6 +29,7 @@ public class CorExpressDelivery implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -34,7 +38,14 @@ public class CorExpressDelivery implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户表")
-    private Long tenantId;
+    private Integer tenantId;
+
+    /**
+     * 车辆Id
+     */
+    @TableField(value = "scooter_Id")
+    @ApiModelProperty(value = "车辆Id")
+    private Long scooterId;
 
     /**
      * 状态，WAITING 待配送 SHIPPING 正在配送 COMPLETED 已配送 REFUSED 失败
@@ -190,6 +201,8 @@ public class CorExpressDelivery implements Serializable {
     public static final String COL_DR = "dr";
 
     public static final String COL_TENANT_ID = "tenant_id";
+
+    public static final String COL_SCOOTER_ID = "scooter_Id";
 
     public static final String COL_STATUS = "status";
 

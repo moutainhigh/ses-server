@@ -4,9 +4,10 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.delivery.dm.CorExpressDelivery">
         <!--@mbg.generated-->
         <!--@Table cor_express_delivery-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="dr" jdbcType="INTEGER" property="dr"/>
         <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="scooter_Id" jdbcType="BIGINT" property="scooterId"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
         <result column="result" jdbcType="VARCHAR" property="result"/>
         <result column="driver_id" jdbcType="BIGINT" property="driverId"/>
@@ -31,7 +32,7 @@
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        id, dr, tenant_id, `status`, `result`, driver_id, order_sum, order_complete_num,
+        id, dr, tenant_id, scooter_Id, `status`, `result`, driver_id, order_sum, order_complete_num,
         delivery_date, delivery_start_time, delivery_end_time, driven_mileage, driven_duration,
         co2, savings, create_by, create_time, updated_by, updated_time, def1, def2, def3,
         def5, def6
@@ -42,338 +43,174 @@
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="dr = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.dr,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="tenant_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.tenantId,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="scooter_Id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.scooterId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="`status` = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.status,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="`result` = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.result,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.result,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="driver_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.driverId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.driverId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="order_sum = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.orderSum,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.orderSum,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="order_complete_num = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.orderCompleteNum,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.orderCompleteNum,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="delivery_date = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.deliveryDate,jdbcType=DATE}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.deliveryDate,jdbcType=DATE}
                 </foreach>
             </trim>
             <trim prefix="delivery_start_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.deliveryStartTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.deliveryStartTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="delivery_end_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.deliveryEndTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.deliveryEndTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="driven_mileage = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.drivenMileage,jdbcType=DECIMAL}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.drivenMileage,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="driven_duration = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.drivenDuration,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.drivenDuration,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="co2 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.co2,jdbcType=DECIMAL}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.co2,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="savings = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.savings,jdbcType=DECIMAL}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.savings,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="create_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createBy,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.createBy,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="create_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.createTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="updated_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.updatedBy,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="updated_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.updatedTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="def1 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def1,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def2 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def2,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def3 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def3,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def5 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def5,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def6 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def6,jdbcType=DOUBLE}
                 </foreach>
             </trim>
         </trim>
         where id in
         <foreach close=")" collection="list" item="item" open="(" separator=", ">
-            #{item.id,jdbcType=BIGINT}
-        </foreach>
-    </update>
-    <update id="updateBatchSelective" parameterType="java.util.List">
-        <!--@mbg.generated-->
-        update cor_express_delivery
-        <trim prefix="set" suffixOverrides=",">
-            <trim prefix="dr = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.dr != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="tenant_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.tenantId != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="`status` = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.status != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="`result` = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.result != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.result,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="driver_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.driverId != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.driverId,jdbcType=BIGINT}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="order_sum = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.orderSum != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.orderSum,jdbcType=INTEGER}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="order_complete_num = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.orderCompleteNum != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.orderCompleteNum,jdbcType=INTEGER}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="delivery_date = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.deliveryDate != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.deliveryDate,jdbcType=DATE}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="delivery_start_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.deliveryStartTime != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.deliveryStartTime,jdbcType=TIMESTAMP}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="delivery_end_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.deliveryEndTime != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.deliveryEndTime,jdbcType=TIMESTAMP}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="driven_mileage = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.drivenMileage != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.drivenMileage,jdbcType=DECIMAL}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="driven_duration = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.drivenDuration != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.drivenDuration,jdbcType=INTEGER}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="co2 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.co2 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.co2,jdbcType=DECIMAL}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="savings = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.savings != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.savings,jdbcType=DECIMAL}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="create_by = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.createBy != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.createBy,jdbcType=BIGINT}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="create_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.createTime != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=TIMESTAMP}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="updated_by = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.updatedBy != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="updated_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.updatedTime != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="def1 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.def1 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="def2 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.def2 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="def3 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.def3 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="def5 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.def5 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
-                    </if>
-                </foreach>
-            </trim>
-            <trim prefix="def6 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    <if test="item.def6 != null">
-                        when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
-                    </if>
-                </foreach>
-            </trim>
-        </trim>
-        where id in
-        <foreach close=")" collection="list" item="item" open="(" separator=", ">
-            #{item.id,jdbcType=BIGINT}
+            #{item.id,jdbcType=INTEGER}
         </foreach>
     </update>
     <insert id="batchInsert" parameterType="map">
         <!--@mbg.generated-->
         insert into cor_express_delivery
-        (id, dr, tenant_id, `status`, `result`, driver_id, order_sum, order_complete_num,
+        (id, dr, tenant_id, scooter_Id, `status`, `result`, driver_id, order_sum, order_complete_num,
         delivery_date, delivery_start_time, delivery_end_time, driven_mileage, driven_duration,
         co2, savings, create_by, create_time, updated_by, updated_time, def1, def2, def3,
         def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
-            #{item.status,jdbcType=VARCHAR}, #{item.result,jdbcType=VARCHAR}, #{item.driverId,jdbcType=BIGINT},
-            #{item.orderSum,jdbcType=INTEGER}, #{item.orderCompleteNum,jdbcType=INTEGER},
-            #{item.deliveryDate,jdbcType=DATE},
-            #{item.deliveryStartTime,jdbcType=TIMESTAMP}, #{item.deliveryEndTime,jdbcType=TIMESTAMP},
-            #{item.drivenMileage,jdbcType=DECIMAL}, #{item.drivenDuration,jdbcType=INTEGER},
-            #{item.co2,jdbcType=DECIMAL}, #{item.savings,jdbcType=DECIMAL}, #{item.createBy,jdbcType=BIGINT},
-            #{item.createTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-            #{item.updatedTime,jdbcType=TIMESTAMP},
-            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
-            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+            (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
+            #{item.scooterId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, #{item.result,jdbcType=VARCHAR},
+            #{item.driverId,jdbcType=BIGINT}, #{item.orderSum,jdbcType=INTEGER},
+            #{item.orderCompleteNum,jdbcType=INTEGER},
+            #{item.deliveryDate,jdbcType=DATE}, #{item.deliveryStartTime,jdbcType=TIMESTAMP},
+            #{item.deliveryEndTime,jdbcType=TIMESTAMP}, #{item.drivenMileage,jdbcType=DECIMAL},
+            #{item.drivenDuration,jdbcType=INTEGER}, #{item.co2,jdbcType=DECIMAL}, #{item.savings,jdbcType=DECIMAL},
+            #{item.createBy,jdbcType=BIGINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+            #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
+            #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+            )
         </foreach>
     </insert>
     <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.delivery.dm.CorExpressDelivery">
         <!--@mbg.generated-->
         insert into cor_express_delivery
-        (id, dr, tenant_id, `status`, `result`, driver_id, order_sum, order_complete_num,
+        (id, dr, tenant_id, scooter_Id, `status`, `result`, driver_id, order_sum, order_complete_num,
         delivery_date, delivery_start_time, delivery_end_time, driven_mileage, driven_duration,
         co2, savings, create_by, create_time, updated_by, updated_time, def1, def2, def3,
         def5, def6)
         values
-        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR},
-        #{result,jdbcType=VARCHAR}, #{driverId,jdbcType=BIGINT}, #{orderSum,jdbcType=INTEGER},
-        #{orderCompleteNum,jdbcType=INTEGER}, #{deliveryDate,jdbcType=DATE}, #{deliveryStartTime,jdbcType=TIMESTAMP},
-        #{deliveryEndTime,jdbcType=TIMESTAMP}, #{drivenMileage,jdbcType=DECIMAL}, #{drivenDuration,jdbcType=INTEGER},
-        #{co2,jdbcType=DECIMAL}, #{savings,jdbcType=DECIMAL}, #{createBy,jdbcType=BIGINT},
-        #{createTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
-        #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
-        #{def6,jdbcType=DOUBLE})
+        (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{scooterId,jdbcType=BIGINT},
+        #{status,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR}, #{driverId,jdbcType=BIGINT},
+        #{orderSum,jdbcType=INTEGER}, #{orderCompleteNum,jdbcType=INTEGER}, #{deliveryDate,jdbcType=DATE},
+        #{deliveryStartTime,jdbcType=TIMESTAMP}, #{deliveryEndTime,jdbcType=TIMESTAMP},
+        #{drivenMileage,jdbcType=DECIMAL}, #{drivenDuration,jdbcType=INTEGER}, #{co2,jdbcType=DECIMAL},
+        #{savings,jdbcType=DECIMAL}, #{createBy,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+        #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
+        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+        )
         on duplicate key update
-        id = #{id,jdbcType=BIGINT},
+        id = #{id,jdbcType=INTEGER},
         dr = #{dr,jdbcType=INTEGER},
         tenant_id = #{tenantId,jdbcType=BIGINT},
+        scooter_Id = #{scooterId,jdbcType=BIGINT},
         `status` = #{status,jdbcType=VARCHAR},
         `result` = #{result,jdbcType=VARCHAR},
         driver_id = #{driverId,jdbcType=BIGINT},
@@ -408,6 +245,9 @@
             </if>
             <if test="tenantId != null">
                 tenant_id,
+            </if>
+            <if test="scooterId != null">
+                scooter_Id,
             </if>
             <if test="status != null">
                 `status`,
@@ -476,13 +316,16 @@
         values
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=BIGINT},
+                #{id,jdbcType=INTEGER},
             </if>
             <if test="dr != null">
                 #{dr,jdbcType=INTEGER},
             </if>
             <if test="tenantId != null">
                 #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="scooterId != null">
+                #{scooterId,jdbcType=BIGINT},
             </if>
             <if test="status != null">
                 #{status,jdbcType=VARCHAR},
@@ -551,13 +394,16 @@
         on duplicate key update
         <trim suffixOverrides=",">
             <if test="id != null">
-                id = #{id,jdbcType=BIGINT},
+                id = #{id,jdbcType=INTEGER},
             </if>
             <if test="dr != null">
                 dr = #{dr,jdbcType=INTEGER},
             </if>
             <if test="tenantId != null">
                 tenant_id = #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="scooterId != null">
+                scooter_Id = #{scooterId,jdbcType=BIGINT},
             </if>
             <if test="status != null">
                 `status` = #{status,jdbcType=VARCHAR},
