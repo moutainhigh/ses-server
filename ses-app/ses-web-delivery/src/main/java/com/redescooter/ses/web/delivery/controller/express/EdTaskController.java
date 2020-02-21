@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -69,5 +70,16 @@ public class EdTaskController {
         return new Response<>(taskService.save(enter));
     }
 
+    /**
+     * 解决订单条件过滤时，异常
+     * nested exception is java.lang.IndexOutOfBoundsException: Index: 256, Size: 256
+     * 的处理。
+     * @param binder
+     */
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setAutoGrowNestedPaths(true);
+        binder.setAutoGrowCollectionLimit(1024);
+    }
 
 }
