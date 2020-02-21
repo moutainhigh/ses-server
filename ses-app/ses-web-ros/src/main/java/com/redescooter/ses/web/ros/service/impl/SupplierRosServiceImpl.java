@@ -73,8 +73,8 @@ public class SupplierRosServiceImpl implements SupplierRosService {
         supplierSave.setTenantId(enter.getTenantId());
         supplierSave.setUserId(enter.getUserId());
         supplierSave.setOverdueFlag(0);
-        supplierSave.setUpdatedBy(enter.getUserId());
-        supplierSave.setUpdatedTime(new Date());
+        supplierSave.setCreatedBy(enter.getUserId());
+        supplierSave.setCreatedTime(new Date());
         supplierSave.setUpdatedBy(enter.getUserId());
         supplierSave.setUpdatedTime(new Date());
 

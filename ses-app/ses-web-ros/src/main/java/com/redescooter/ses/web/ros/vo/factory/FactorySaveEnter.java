@@ -48,6 +48,8 @@ public class FactorySaveEnter  extends GeneralEnter {
     @ApiModelProperty(value="代工厂纬度")
     private String factoryLatitude;
 
+    @ApiModelProperty(value="placeId")
+    private String placeId;
     /**
      * 代工厂标签
      */
@@ -86,9 +88,8 @@ public class FactorySaveEnter  extends GeneralEnter {
     /**
      * 国家编码，如手机号 中国 +86
      */
-    @TableField(value = "country_code")
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
-    private String countryCode;
+    private String contactPhoneCountryCode;
 
     /**
      * 联系人手机号

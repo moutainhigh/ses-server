@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://39.108.92.232:22181
+    address: zookeeper://192.168.2.200:32181
 
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
@@ -17,7 +17,7 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://39.108.92.232:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://192.168.2.200:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
     username: root
     password: 1qaz2wsx
     druid:
@@ -90,3 +90,32 @@ spring:                                                                         
           email: Jerry@redescooter.com
           url: https://github.com/mrjerryli
 
+      factory-api:
+        group-name: 3.factory-API
+        title: 代工厂操作
+        description: 代工厂操作
+        base-package: com.redescooter.ses.web.ros
+        path-regex: /factory/.*
+        path-mapping: /
+        version: 1.2.0
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli
+
+      supplier-api:
+        group-name: 4.supplier-API
+        title: 供应商操作
+        description: 供应商操作
+        base-package: com.redescooter.ses.web.ros
+        path-regex: /supplier/.*
+        path-mapping: /
+        version: 1.2.0
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli

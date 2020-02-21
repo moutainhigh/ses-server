@@ -100,9 +100,8 @@ public class FactoryResult extends GeneralResult {
     /**
      * 国家编码，如手机号 中国 +86
      */
-    @TableField(value = "country_code")
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
-    private String countryCode;
+    private String contactPhoneCountryCode;
 
     /**
      * 联系人手机号
@@ -171,13 +170,13 @@ public class FactoryResult extends GeneralResult {
     /**
      * 质检成功率
      */
-    @ApiModelProperty(value="完成订单数量")
+    @ApiModelProperty(value="质检成功率")
     private double fpy;
 
     /**
      * 不良率
      */
-    @ApiModelProperty(value="完成订单数量")
+    @ApiModelProperty(value="不良率")
     private double rejectRatio;
 
     /**
