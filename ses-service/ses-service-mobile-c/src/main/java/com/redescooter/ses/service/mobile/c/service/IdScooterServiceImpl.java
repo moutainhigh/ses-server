@@ -6,6 +6,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
@@ -50,6 +51,7 @@ public class IdScooterServiceImpl implements IdScooterService {
      * @date: 2020/2/20 11:11
      * @Version: SAAS 1.2
      */
+    @Transactional
     @Override
     public GeneralResult scooterNavigation(ScooterNavigationEnter enter) {
         // 查询TOC 车辆分配信息
