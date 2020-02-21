@@ -1,10 +1,12 @@
 package com.redescooter.ses.web.ros.vo.supplier;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -49,13 +51,13 @@ public class SupplierResult extends GeneralResult {
      * 采购商经度
      */
     @ApiModelProperty(value="采购商经度")
-    private Long supplierLongitude;
+    private String supplierLongitude;
 
     /**
      * 采购商纬度
      */
     @ApiModelProperty(value="采购商纬度")
-    private Long supplierLatitude;
+    private String supplierLatitude;
 
     /**
      * 采购商标签
@@ -115,12 +117,16 @@ public class SupplierResult extends GeneralResult {
      * 合作开始时间
      */
     @ApiModelProperty(value="合作开始时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date cooperationTimeStart;
 
     /**
      * 合作结束时间
      */
     @ApiModelProperty(value="合作结束时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date cooperationTimeEnd;
 
     /**
@@ -181,6 +187,8 @@ public class SupplierResult extends GeneralResult {
      * 创建时间
      */
     @ApiModelProperty(value="创建时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date createdTime;
 
     /**
@@ -193,6 +201,8 @@ public class SupplierResult extends GeneralResult {
      * 更新时间
      */
     @ApiModelProperty(value="更新时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date updatedTime;
 
 

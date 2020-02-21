@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.poi.hpsf.Decimal;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -79,14 +81,14 @@ public class OpeFactory implements Serializable {
      */
     @TableField(value = "factory_longitude")
     @ApiModelProperty(value="代工厂经度")
-    private Long factoryLongitude;
+    private BigDecimal factoryLongitude;
 
     /**
      * 代工厂纬度
      */
     @TableField(value = "factory_latitude")
     @ApiModelProperty(value="代工厂纬度")
-    private Long factoryLatitude;
+    private BigDecimal factoryLatitude;
 
     /**
      * 代工厂标签
