@@ -1,20 +1,23 @@
 package com.redescooter.ses.mobile.client.controller;
 
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.LoginJPushProService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
+import com.redescooter.ses.api.foundation.vo.account.VerifyAccountEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import com.redescooter.ses.api.foundation.vo.message.LoginPushEnter;
 import com.redescooter.ses.mobile.client.service.TokenService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Mr.lijiating
@@ -87,6 +90,13 @@ public class UserTokenController {
 
         return new Response<>(loginJPushProService.logOutPush(enter));
     }
+
+    @ApiOperation(value = "app 系统内验证手机号类型账户", notes = "app 系统内验证手机号类型账户")
+    @RequestMapping(value = "/verifyAccount")
+    public Response<GeneralResult> verifyAccount(VerifyAccountEnter enter) {
+        return new Response<>(userTokenService.verifyAccount(enter));
+    }
+
 }
 
 

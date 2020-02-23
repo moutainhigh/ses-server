@@ -1,11 +1,8 @@
 package com.redescooter.ses.api.foundation.service.base;
 
-import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
-import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.account.ChanagePasswordEnter;
+import com.redescooter.ses.api.foundation.vo.account.VerifyAccountEnter;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -121,6 +118,13 @@ public interface UserTokenService {
      * @return
      */
     GeneralResult sendEmail(BaseSendMailEnter enter);
+
+    /**
+     *  App 系统内 手机号类型验证 用户密码
+     * @param enter
+     * @return
+     */
+    GeneralResult verifyAccount(VerifyAccountEnter enter);
 
     /**
      * 根据租户id锁定所有账户

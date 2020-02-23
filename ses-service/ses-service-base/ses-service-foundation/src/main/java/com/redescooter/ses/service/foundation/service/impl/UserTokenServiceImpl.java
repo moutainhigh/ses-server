@@ -12,9 +12,9 @@ import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
-import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.account.ChanagePasswordEnter;
+import com.redescooter.ses.api.foundation.vo.account.VerifyAccountEnter;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -716,6 +716,34 @@ public class UserTokenServiceImpl implements UserTokenService {
         baseMailTaskEnter.setMailAppId(enter.getAppId());
         baseMailTaskEnter.setMailSystemId(enter.getSystemId());
         mailMultiTaskService.addSetPasswordWebUserTask(baseMailTaskEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     *  App 手机号类型验证 用户密码
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult verifyAccount(VerifyAccountEnter enter) {
+        if (StringUtils.isBlank(enter.getPassword())){
+            throw new FoundationException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+
+        PlaUser plaUser = plaUserMapper.selectById(enter.getUserId());
+        if (plaUser==null){
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper=new QueryWrapper<>();
+        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME,plaUser.getLoginName());
+        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_DR,0);
+        PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
+        if (plaUserPassword==null){
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(plaUserPassword.getPassword(),DigestUtils.md5Hex(enter.getPassword() + plaUserPassword.getSalt()))){
+            throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(),ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
