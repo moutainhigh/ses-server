@@ -6,13 +6,14 @@
         <artifactId>ses-server</artifactId>
         <version>1.2.0</version>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.redescooter.ses</groupId>
     <artifactId>ses-starter</artifactId>
     <version>1.2.0</version>
     <packaging>pom</packaging>
     <name>ses-starter</name>
+    <description>Demo project for Spring Boot</description>
+
     <modules>
         <module>ses-starter-db</module>
         <module>ses-starter-redis</module>
@@ -25,8 +26,6 @@
         <module>ses-starter-rabbitmq</module>
         <module>ses-stater-sentinel</module>
     </modules>
-
-    <description>Demo project for Spring Boot</description>
 
     <build>
         <plugins>
