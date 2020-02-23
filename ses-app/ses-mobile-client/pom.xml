@@ -18,10 +18,13 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-app-common</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-mobile-b</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-mobile-c</artifactId>
         </dependency>
     </dependencies>
 

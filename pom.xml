@@ -194,12 +194,6 @@
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
-            <!-- springboot配套的验证器 -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate.validator.version}</version>
-            </dependency>
             <!--引入糊涂工具-->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -254,7 +248,6 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
         <!--邮件发送模板需要的依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
