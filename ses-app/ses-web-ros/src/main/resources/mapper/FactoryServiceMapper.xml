@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.FactoryServiceMapper">
+    <sql id="field_query_factory_list">
+        ofa.id,
+        ofa.status,
+        ofa.factory_name,
+        ofa.factory_address,
+        ofa.factory_country,
+        ofa.factory_longitude,
+        ofa.factory_latitude,
+        ofa.factory_tag,
+        ofa.factory_memo,
+        ofa.contact_first_name,
+        ofa.contact_last_name,
+        ofa.contact_full_name,
+        ofa.contact_email,
+        ofa.contact_phone_country_code,
+        ofa.contact_phone,
+        ofa.payment_cycle,
+        ofa.cooperation_time_start,
+        ofa.cooperation_time_end,
+        ofa.business_number,
+        ofa.business_license_annex,
+        ofa.contract_number,
+        ofa.contract_annex,
+        ofa.created_by,
+        ofa.created_time,
+        ofa.updated_by,
+        ofa.updated_time
+    </sql>
+    <sql id="where_query_factory_list">
+        <where>
+            and ofa.dr = 0
+            and ofa.tenant_id = #{tenantId}
+            <if test="status != null and status != ''">
+                and ofa.status =#{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (ofa.factory_name like concat("%",#{keyword},"%")
+                or ofa.factory_tag like concat("%",#{keyword},"%"))
+            </if>
+        </where>
+    </sql>
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
        select ofa.status, count(*) totalCount
        from ope_factory ofa
@@ -11,59 +52,14 @@
     <select id="listCount" resultType="int">
         select count(*)
         from ope_factory ofa
-        where ofa.tenant_id = #{tenantId}
-        and ofa.dr = 0
-        <if test="status != null and status != ''">
-            and ofa.status =#{status}
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            ofa.factory_name like concat("%",#{keyword},"%")
-            or ofa.factory_tag like concat("%",#{keyword},"%")
-            )
-        </if>
+        <include refid="where_query_factory_list"/>
     </select>
     <select id="list" resultType="com.redescooter.ses.web.ros.vo.factory.FactoryResult">
-        select id,
-        status,
-        factory_name,
-        factory_address,
-        factory_country,
-        factory_longitude,
-        factory_latitude,
-        factory_tag,
-        factory_memo,
-        contact_first_name,
-        contact_last_name,
-        contact_full_name,
-        contact_email,
-        contact_phone_country_code,
-        contact_phone,
-        payment_cycle,
-        cooperation_time_start,
-        cooperation_time_end,
-        business_number,
-        business_license_annex,
-        contract_number,
-        contract_annex,
-        created_by,
-        created_time,
-        updated_by,
-        updated_time
+        select
+        <include refid="field_query_factory_list"/>
         from ope_factory ofa
-        where ofa.tenant_id = #{tenantId}
-        and ofa.dr = 0
-        <if test="status != null and status != ''">
-            and ofa.status =#{status}
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            ofa.factory_name like concat("%",#{keyword},"%")
-            or ofa.factory_tag like concat("%",#{keyword},"%")
-            )
-        </if>
+        <include refid="where_query_factory_list"/>
         order by ofa.updated_time desc
         limit #{startRow},#{pageSize}
-
     </select>
 </mapper>

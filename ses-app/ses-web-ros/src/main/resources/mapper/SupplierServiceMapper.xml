@@ -1,7 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.SupplierServiceMapper">
-
+    <sql id="field_query_supplier_list">
+        osu.id,
+        osu.status,
+        osu.supplier_name,
+        osu.supplier_address,
+        osu.supplier_country,
+        osu.supplier_longitude,
+        osu.supplier_latitude,
+        osu.supplier_tag,
+        osu.supplier_memo,
+        osu.contact_first_name,
+        osu.contact_last_name,
+        osu.contact_full_name,
+        osu.contact_email,
+        osu.contact_phone_country_code,
+        osu.contact_phone,
+        osu.payment_cycle,
+        osu.cooperation_time_start,
+        osu.cooperation_time_end,
+        osu.business_number,
+        osu.business_license_annex,
+        osu.contract_number,
+        osu.contract_annex,
+        osu.created_by,
+        osu.created_time,
+        osu.updated_by,
+        osu.updated_time
+    </sql>
+    <sql id="where_query_supplier_list">
+        <where>
+            and osu.dr = 0
+            and osu.tenant_id = #{tenantId}
+            <if test="status != null and status != ''">
+                and osu.status =#{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (osu.supplier_name like concat("%",#{keyword},"%")
+                or osu.supplier_tag like concat("%",#{keyword},"%"))
+            </if>
+        </where>
+    </sql>
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select osu.status, count(*) totalCount
         from ope_supplier osu
@@ -12,59 +52,14 @@
     <select id="listCount" resultType="int">
         select count(*)
         from ope_supplier osu
-        where osu.tenant_id = #{tenantId}
-        and osu.dr = 0
-        <if test="status != null and status != ''">
-            and osu.status =#{status}
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            osu.supplier_name like concat("%",#{keyword},"%")
-            or osu.supplier_tag like concat("%",#{keyword},"%")
-            )
-        </if>
+        <include refid="where_query_supplier_list"/>
     </select>
     <select id="list" resultType="com.redescooter.ses.web.ros.vo.supplier.SupplierResult">
-        select id,
-        status,
-        supplier_name,
-        supplier_address,
-        supplier_country,
-        supplier_longitude,
-        supplier_latitude,
-        supplier_tag,
-        supplier_memo,
-        contact_first_name,
-        contact_last_name,
-        contact_full_name,
-        contact_email,
-        contact_phone_country_code,
-        contact_phone,
-        payment_cycle,
-        cooperation_time_start,
-        cooperation_time_end,
-        business_number,
-        business_license_annex,
-        contract_number,
-        contract_annex,
-        created_by,
-        created_time,
-        updated_by,
-        updated_time
+        select
+        <include refid="field_query_supplier_list"/>
         from ope_supplier osu
-        where osu.tenant_id = #{tenantId}
-        and osu.dr = 0
-        <if test="status != null and status != ''">
-            and osu.status =#{status}
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            osu.supplier_name like concat("%",#{keyword},"%")
-            or osu.supplier_tag like concat("%",#{keyword},"%")
-            )
-        </if>
+        <include refid="where_query_supplier_list"/>
         order by osu.updated_time desc
         limit #{startRow},#{pageSize}
-
     </select>
 </mapper>

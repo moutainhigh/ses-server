@@ -13,6 +13,17 @@
     <name>ses-starter-db</name>
     <description>Demo project for Spring Boot</description>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- mybatisPlus的依赖 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus-boot-starter.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <!-- jdbc驱动依赖 -->
         <dependency>
@@ -35,7 +46,6 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis-plus-boot-starter.version}</version>
         </dependency>
     </dependencies>
 
