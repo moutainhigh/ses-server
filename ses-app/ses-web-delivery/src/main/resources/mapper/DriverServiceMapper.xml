@@ -2,12 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.delivery.dao.DriverServiceMapper">
 
-    <select id="listCount" resultType="int">
-        select count(cdr.id)
-        from cor_driver cdr
-        inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr = 0
-        inner join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
-        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr = 0
+    <sql id="where_driver_list">
         <where>
             cdr.dr=0
             and cdr.tenant_id = #{tenantId}
@@ -35,7 +30,40 @@
                 and cdr.status = #{status}
             </if>
         </where>
+    </sql>
 
+    <sql id="where_driverScooterUsed_list">
+        <if test="assignBeginTime != null and assignBeginTime != '' and  assignEndTime != null and assignEndTime != ''">
+            and cdsh.begin_time between #{assignBeginTime} and #{assignEndTime}
+        </if>
+        <if test="removeBeginTime != null and removeBeginTime != '' and removeEndTime != null and removeEndTime != ''">
+            and cdsh.end_time between #{removeBeginTime} and #{removeEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and cts.license_plate like concat('%',#{keyword},'%')
+        </if>
+    </sql>
+    <sql id="where_driverScooterUsing_list">
+        <if test="assignBeginTime != null and assignBeginTime != '' and assignEndTime != null and assignEndTime != '' ">
+            and histroy.begin_time between #{assignBeginTime} and #{assignEndTime}
+        </if>
+        <if test="removeBeginTime != null and removeBeginTime != '' and  removeEndTime != null and removeEndTime != ''">
+            and histroy.end_time between #{removeBeginTime} and #{removeEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            tscooter.license_plate like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <select id="listCount" resultType="int">
+        select count(cdr.id)
+        from cor_driver cdr
+        inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr = 0
+        inner join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
+        left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr = 0
+        <include refid="where_driver_list"></include>
     </select>
     <select id="list" resultType="com.redescooter.ses.web.delivery.vo.ListDriverResult">
         select cdr.id as id,
@@ -56,33 +84,7 @@
         inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr = 0
         inner join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
         left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr = 0
-        <where>
-            cdr.tenant_id=#{tenantId}
-            and cdr.dr=0
-            <choose>
-                <when test="map==false">
-                    <if test="keyword != null and keyword != ''">
-                        and (
-                        cup.first_name like concat("%",#{keyword},"%")
-                        or cup.last_name like concat("%",#{keyword},"%")
-                        or cup.email_1 like concat("%",#{keyword},"%")
-                        or cup.tel_number_1 like concat("%",#{keyword},"%")
-                        )
-                    </if>
-                </when>
-                <when test="map==true">
-                    <if test="keyword != null and keyword != ''">
-                        and (
-                        cup.first_name like concat("%",#{keyword},"%")
-                        or cup.last_name like concat("%",#{keyword},"%")
-                        )
-                    </if>
-                </when>
-            </choose>
-            <if test="status != null and status != ''">
-                and cdr.status = #{status}
-            </if>
-        </where>
+        <include refid="where_driver_list"></include>
         group by id,
         status,
         userId,
@@ -166,18 +168,7 @@
         and cdsh.dr=0
         and cdsh.tenant_id=#{tenantId}
         and cdsh.driver_id=#{id}
-        <if
-                test="assignBeginTime != null and assignBeginTime != '' and  assignEndTime != null and assignEndTime != ''">
-            and cdsh.begin_time between #{assignBeginTime} and #{assignEndTime}
-        </if>
-        <if
-                test="removeBeginTime != null and removeBeginTime != '' and removeEndTime != null and removeEndTime != ''">
-            and cdsh.end_time between #{removeBeginTime} and #{removeEndTime}
-
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and cts.license_plate like concat('%',#{keyword},'%')
-        </if>
+        <include refid="where_driverScooterUsed_list"></include>
 
     </select>
 
@@ -190,19 +181,7 @@
         where scooter.status = 1
         and histroy.driver_id = #{id}
         and histroy.tenant_id = #{tenantId}
-        <if
-                test="assignBeginTime != null and assignBeginTime != '' and assignEndTime != null and assignEndTime != '' ">
-            and histroy.begin_time between #{assignBeginTime} and #{assignEndTime}
-        </if>
-        <if
-                test="removeBeginTime != null and removeBeginTime != '' and  removeEndTime != null and removeEndTime != ''">
-            and histroy.end_time between #{removeBeginTime} and #{removeEndTime}
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            tscooter.license_plate like concat('%',#{keyword},'%')
-            )
-        </if>
+        <include refid="where_driverScooterUsing_list"></include>
     </select>
 
     <select id="driverScooterUsingHistroyList"
@@ -219,19 +198,7 @@
         where scooter.status = 1
         and histroy.driver_id = #{id}
         and histroy.tenant_id = #{tenantId}
-        <if
-                test="assignBeginTime != null and assignBeginTime != '' and assignEndTime != null and assignEndTime != ''">
-            and histroy.begin_time between #{assignBeginTime} and #{assignEndTime}
-        </if>
-        <if
-                test="removeBeginTime != null and removeBeginTime != '' and  removeEndTime != null and removeEndTime != ''">
-            and histroy.end_time between #{removeBeginTime} and #{removeEndTime}
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            tscooter.license_plate like concat('%',#{keyword},'%')
-            )
-        </if>
+        <include refid="where_driverScooterUsing_list"></include>
         order by histroy.begin_time desc
         limit #{startRow},#{pageSize}
     </select>
@@ -250,18 +217,7 @@
         and cdsh.dr=0
         and cdsh.tenant_id=#{tenantId}
         and cdsh.driver_id=#{id}
-        <if
-                test="assignBeginTime != null and assignBeginTime != '' and  assignEndTime != null and assignEndTime != ''">
-            and cdsh.begin_time between #{assignBeginTime} and #{assignEndTime}
-        </if>
-        <if
-                test="removeBeginTime != null and removeBeginTime != '' and removeEndTime != null and removeEndTime != ''">
-            and cdsh.end_time between #{removeBeginTime} and #{removeEndTime}
-
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and cts.license_plate like concat('%',#{keyword},'%')
-        </if>
+        <include refid="where_driverScooterUsed_list"></include>
         order by assignTime desc
         limit #{startRow},#{pageSize}
     </select>
