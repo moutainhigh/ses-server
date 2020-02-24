@@ -193,7 +193,7 @@ release 为预上线分支，发布提测阶段，会release分支代码为基�
 > - body: 同样使用祈使句，在主体内容中我们需要把本次 commit 详细的描述一下，比如此次变更的动机，如需换行，则使用 |
 > - footer: 描述下与之关联的 issue 或 break change，详见案例
 
-* Type的类别说明：
+Type的类别说明：
 
 > - feat: 添加新特性
 > - fix: 修复bug
