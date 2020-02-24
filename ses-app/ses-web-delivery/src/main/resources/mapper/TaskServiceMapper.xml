@@ -153,64 +153,51 @@
         and driver.dr = 0
         group by id,driverFirstName,driverLastName,avatar
     </select>
+    <sql id="where_query_orderList">
+        <where>
+            and eorder.dr = 0
+            and eorder.tenant_id = #{tenantId}
+            and eorder.status = 1
+            <if test="filterIds != null and filterIds.size() != 0">
+                and eorder.id not in
+                <foreach collection="filterIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="recipientCity != null and recipientCity != ''">
+                and eorder.recipient_city=#{recipientCity}
+            </if>
+            <if test="recipientPostcode != null and recipientPostcode != ''">
+                and eorder.recipient_postcode = #{recipientPostcode}
+            </if>
+            <if test="createdStartTime != null and createdStartTime != '' and createdEndTime != null and createdEndTime != ''">
+                and (eorder.created_time between #{createdStartTime} and #{createdEndTime})
+            </if>
+            <if test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
+                and (eorder.expect_time_begin <![CDATA[ >= ]]> #{expectTimeStart} and eorder.expect_time_end
+                <![CDATA[ <= ]]> #{expectTimeEnd} )
+            </if>
+        </where>
+    </sql>
     <select id="orderListCount" resultType="int">
         select count(*)
         from cor_express_order eorder
-        where eorder.dr = 0
-        and eorder.tenant_id = #{tenantId}
-        and eorder.status = 1
-        <if test="filterIds != null and filterIds.size() != 0">
-            and eorder.id not in
-            <foreach collection="filterIds" index="index" item="item" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
-        <if test="recipientCity != null and recipientCity != ''">
-            and eorder.recipient_city=#{recipientCity}
-        </if>
-        <if test="recipientPostcode != null and recipientPostcode != ''">
-            and eorder.recipient_postcode = #{recipientPostcode}
-        </if>
-        <if test="createdStartTime != null and createdStartTime != '' and createdEndTime != null and createdEndTime != ''">
-            and (eorder.created_time between #{createdStartTime} and #{createdEndTime})
-        </if>
-        <if test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
-            and (eorder.expect_time_begin between #{expectTimeStart} and eorder.expect_time_end and #{expectTimeEnd} )
-        </if>
+        <include refid="where_query_orderList"/>
     </select>
+
     <select id="orderList" resultType="com.redescooter.ses.web.delivery.vo.task.OrderResult">
-        select eorder.id as id,
-        eorder.status as status,
-        eorder.recipient_country as recipientCountry,
-        eorder.recipient_province as recipientProvince,
-        eorder.recipient_city as recipientCity,
-        eorder.recipient_postcode as recipientPostcode,
-        eorder.recipient_address as recipientAddress,
-        eorder.expect_time_begin as expectTimeStart,
-        eorder.expect_time_end as expectTimeEnd
+        select eorder.id                 as id,
+        eorder.status                    as status,
+        eorder.recipient_country         as recipientCountry,
+        eorder.recipient_province        as recipientProvince,
+        eorder.recipient_city            as recipientCity,
+        eorder.recipient_postcode        as recipientPostcode,
+        eorder.recipient_address         as recipientAddress,
+        eorder.expect_time_begin         as expectTimeStart,
+        eorder.expect_time_end           as expectTimeEnd,
+        eorder.created_time              as createdTime
         from cor_express_order eorder
-        where eorder.dr = 0
-        and eorder.tenant_id = #{tenantId}
-        and eorder.status = 1
-        <if test="filterIds != null and filterIds.size() != 0">
-            and eorder.id not in
-            <foreach collection="filterIds" index="index" item="item" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
-        <if test="recipientCity != null and recipientCity != ''">
-            and eorder.recipient_city=#{recipientCity}
-        </if>
-        <if test="recipientPostcode != null and recipientPostcode != ''">
-            and eorder.recipient_postcode = #{recipientPostcode}
-        </if>
-        <if test="createdStartTime != null and createdStartTime != '' and createdEndTime != null and createdEndTime != ''">
-            and (eorder.created_time between #{createdStartTime} and #{createdEndTime})
-        </if>
-        <if test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
-            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end <![CDATA[ > ]]>
-            #{expectTimeEnd} )
-        </if>
+        <include refid="where_query_orderList"/>
         order by eorder.created_time desc
         limit #{startRow},#{pageSize}
     </select>
