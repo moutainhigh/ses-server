@@ -110,11 +110,9 @@
         express.delivery_end_time as deliveredTime,
         express.create_time as createdTime
         from cor_express_delivery express
-        inner join cor_driver driver on express.driver_id = driver.id and driver.dr = 0 and driver.status = 1
-        inner join cor_driver_scooter dscooter
-        on dscooter.driver_id = driver.id and dscooter.status = 1 and dscooter.dr = 0
+        inner join cor_driver driver on express.driver_id = driver.id and driver.dr = 0
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
-        inner join cor_tenant_scooter tscooter on tscooter.scooter_id = dscooter.scooter_id and tscooter.dr = 0
+        inner join cor_tenant_scooter tscooter on tscooter.scooter_id = express.scooter_id and tscooter.dr = 0
         where express.tenant_id =#{tenantId}
         and express.dr = 0
         and express.id =#{id}
@@ -161,16 +159,16 @@
         <include refid="where_orderList"></include>
     </select>
     <select id="orderList" resultType="com.redescooter.ses.web.delivery.vo.task.OrderResult">
-        select eorder.id                 as id,
-        eorder.status                    as status,
-        eorder.recipient_country         as recipientCountry,
-        eorder.recipient_province        as recipientProvince,
-        eorder.recipient_city            as recipientCity,
-        eorder.recipient_postcode        as recipientPostcode,
-        eorder.recipient_address         as recipientAddress,
-        eorder.expect_time_begin         as expectTimeStart,
-        eorder.expect_time_end           as expectTimeEnd,
-        eorder.created_time              as createdTime
+        select eorder.id as id,
+        eorder.status as status,
+        eorder.recipient_country as recipientCountry,
+        eorder.recipient_province as recipientProvince,
+        eorder.recipient_city as recipientCity,
+        eorder.recipient_postcode as recipientPostcode,
+        eorder.recipient_address as recipientAddress,
+        eorder.expect_time_begin as expectTimeStart,
+        eorder.expect_time_end as expectTimeEnd,
+        eorder.created_time as createdTime
         from cor_express_order eorder
         <include refid="where_orderList"></include>
         order by eorder.created_time desc

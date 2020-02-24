@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.redescooter.ses.api.foundation.service.base.CityBaseService;
-import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -23,7 +21,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
-import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
@@ -43,11 +40,12 @@ import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.api.common.vo.message.PushMsgBo;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.foundation.service.PushService;
+import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
+import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.TaskServiceMapper;
@@ -186,44 +184,19 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public TaskResult detail(IdEnter enter) {
-        TaskResult result = null;
-        // 查询司机信息
-        CorDriver corDriver = taskServiceMapper.queryDriverByTaskId(enter);
-        if (corDriver.getStatus().equals(DriverStatusEnum.WORKING.getValue())) {
-            result = taskServiceMapper.detail(enter);
-        } else {
-            CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(enter.getId());
-            if (corExpressDelivery == null) {
-                throw new SesWebDeliveryException(ExceptionCodeEnums.TASK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TASK_IS_NOT_EXIST.getMessage());
-            }
-            result = taskServiceMapper.driverOffUserProfileByDriverId(corExpressDelivery.getDriverId(), enter.getTenantId());
-            result.setId(corExpressDelivery.getId());
-            result.setStatus(corExpressDelivery.getStatus());
-            result.setCompleteCount(corExpressDelivery.getOrderCompleteNum());
-            result.setTotalCount(corExpressDelivery.getOrderSum());
-            result.setTaskTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryDate(), DateUtil.DEFAULT_DATETIME_FORMAT));
-            if (!result.getStatus().equals(TaskStatusEnums.PENDING.getValue())) {
-                result.setStartTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryStartTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
-            }
-            if (result.getStatus().equals(TaskStatusEnums.DELIVERED.getValue())) {
-                result.setDeliveredTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryEndTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
-            }
-            result.setCreatedTime(DateUtil.getDateTime(corExpressDelivery.getCreateTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
-        }
-        if (result == null) {
-            throw new SesWebDeliveryException(ExceptionCodeEnums.TASK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TASK_IS_NOT_EXIST.getMessage());
-        }
+        TaskResult result = taskServiceMapper.detail(enter);;
         List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(result.getScooterId());
-
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
-        TaskResult finalResult = result;
-        baseScooterResults.forEach(itme -> {
-            Optional.ofNullable(itme).ifPresent(it -> {
-                finalResult.setBattery(baseScooterResults.get(0).getBattery());
-                finalResult.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
+        if (CollectionUtils.isNotEmpty(baseScooterResults)){
+            TaskResult finalResult = result;
+            baseScooterResults.forEach(itme -> {
+                Optional.ofNullable(itme).ifPresent(it -> {
+                    finalResult.setBattery(baseScooterResults.get(0).getBattery());
+                    finalResult.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
+                });
             });
-        });
+        }
 
         return result;
     }
