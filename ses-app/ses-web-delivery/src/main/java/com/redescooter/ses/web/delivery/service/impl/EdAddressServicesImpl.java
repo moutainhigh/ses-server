@@ -6,6 +6,7 @@ import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.service.EdAddressServices;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.vo.edorder.GetAddressOfLonLatEnter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,15 +29,20 @@ public class EdAddressServicesImpl implements EdAddressServices {
 
         CorExpressOrder update = new CorExpressOrder();
         update.setId(enter.getId());
-        update.setRecipientLatitude(new BigDecimal(enter.getRecipientLatitude()));
-        update.setRecipientLongitude(new BigDecimal(enter.getRecipientLongitude()));
-        update.setRecipientGeohash(MapUtil.geoHash(enter.getRecipientLongitude(), enter.getRecipientLatitude()));
-        update.setSenderLatitude(new BigDecimal(enter.getSenderLatitude()));
-        update.setSenderLongitude(new BigDecimal(enter.getSenderLongitude()));
-        update.setSenderGeohash(MapUtil.geoHash(enter.getSenderLongitude(), enter.getSenderLatitude()));
-
+        if (StringUtils.isNoneBlank(enter.getRecipientLatitude(), enter.getRecipientLongitude())) {
+            update.setRecipientLatitude(new BigDecimal(enter.getRecipientLatitude()));
+            update.setRecipientLongitude(new BigDecimal(enter.getRecipientLongitude()));
+            update.setRecipientGeohash(MapUtil.geoHash(enter.getRecipientLongitude(), enter.getRecipientLatitude()));
+        }
+        if (StringUtils.isNoneBlank(enter.getSenderLatitude(), enter.getSenderLongitude())) {
+            update.setSenderLatitude(new BigDecimal(enter.getSenderLatitude()));
+            update.setSenderLongitude(new BigDecimal(enter.getSenderLongitude()));
+            update.setSenderGeohash(MapUtil.geoHash(enter.getSenderLongitude(), enter.getSenderLatitude()));
+        }
+        if (!StringUtils.isNoneBlank(enter.getRecipientLatitude(), enter.getRecipientLongitude(), enter.getSenderLatitude(), enter.getSenderLongitude())) {
+            return new GeneralResult(enter.getRequestId());
+        }
         expressOrderService.updateById(update);
-
         return new GeneralResult(enter.getRequestId());
     }
 }

@@ -266,6 +266,8 @@ public class TaskServiceImpl implements TaskService {
             CityResult recipientPostcode = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientCity())));
             enter.setRecipientCity(recipientCity != null ? recipientCity.getName() : null);
             enter.setRecipientPostcode(recipientPostcode != null ? recipientPostcode.getName() : null);
+
+            log.info("#################分配订单查询入参为{}",enter.toString());
         }
         int count = taskServiceMapper.orderListCount(enter);
         if (count == 0) {
