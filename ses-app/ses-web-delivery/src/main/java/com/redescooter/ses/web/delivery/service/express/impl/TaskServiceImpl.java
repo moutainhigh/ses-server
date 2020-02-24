@@ -261,18 +261,22 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public PageResult<OrderResult> orderList(OrderListEnter enter) {
-        if (StringUtils.isNoneBlank(enter.getRecipientCity(), enter.getRecipientPostcode())) {
-            CityResult recipientCity = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientCity())));
-            CityResult recipientPostcode = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientCity())));
-            enter.setRecipientCity(recipientCity != null ? recipientCity.getName() : null);
-            enter.setRecipientPostcode(recipientPostcode != null ? recipientPostcode.getName() : null);
 
-            log.info("#################分配订单查询入参为{}",enter.toString());
+        if(StringUtils.isNotBlank(enter.getRecipientCity())){
+            CityResult recipientCity = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientCity())));
+            enter.setRecipientCity(recipientCity != null ? recipientCity.getName() : null);
+
         }
+        if(StringUtils.isNotBlank(enter.getRecipientPostcode())){
+            CityResult recipientPostcode = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientPostcode())));
+            enter.setRecipientPostcode(recipientPostcode != null ? recipientPostcode.getName() : null);
+        }
+
         int count = taskServiceMapper.orderListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
+
         List<OrderResult> orderResultList = taskServiceMapper.orderList(enter);
         return PageResult.create(enter, count, orderResultList);
     }

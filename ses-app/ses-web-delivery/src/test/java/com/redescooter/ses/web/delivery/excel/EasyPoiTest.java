@@ -5,6 +5,7 @@ import com.redescooter.ses.starter.poi.EasyPoiUtils;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.system.ApplicationHome;
@@ -91,5 +92,15 @@ public class EasyPoiTest {
         //在开发测试模式时，得到的地址为：{项目跟目录}/target/static/images/upload/
         //在打包成jar正式发布时，得到的地址为：{发布jar包目录}/static/images/upload/
 
+    }
+
+    @Test
+    public void test09() {
+        String a = "a";
+        String b = "c";
+        String c = "c";
+        boolean noneBlank = StringUtils.isNoneBlank(a, b, c);
+
+        System.out.println(noneBlank);
     }
 }

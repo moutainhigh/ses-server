@@ -50,6 +50,21 @@ public class QueryExpressOrderByPageResult extends GeneralResult {
     @ApiModelProperty(value = "收件人地址")
     private String recipientAddress;
 
+    @ApiModelProperty(value = "收件人经纬度")
+    private String recipientLatitude;
+
+    @ApiModelProperty(value = "收件人经纬度")
+    private String recipientLongitude;
+
+    @ApiModelProperty(value = "寄件人地址")
+    private String senderAddress;
+
+    @ApiModelProperty(value = "寄件人经纬度")
+    private String senderLatitude;
+
+    @ApiModelProperty(value = "寄件人经纬度")
+    private String senderLongitude;
+
     @ApiModelProperty(value = "完成时间")
     private Date deliveredTime;
 
@@ -62,6 +77,6 @@ public class QueryExpressOrderByPageResult extends GeneralResult {
     @ApiModelProperty(value = "司机名字")
     private String driverLastName;
 
-    @ApiModelProperty(value="车牌号")
+    @ApiModelProperty(value = "车牌号")
     private String licensePlate;
 }

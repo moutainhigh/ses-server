@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @ClassName EdAddressServicesImpl
@@ -39,10 +40,13 @@ public class EdAddressServicesImpl implements EdAddressServices {
             update.setSenderLongitude(new BigDecimal(enter.getSenderLongitude()));
             update.setSenderGeohash(MapUtil.geoHash(enter.getSenderLongitude(), enter.getSenderLatitude()));
         }
-        if (!StringUtils.isNoneBlank(enter.getRecipientLatitude(), enter.getRecipientLongitude(), enter.getSenderLatitude(), enter.getSenderLongitude())) {
+        update.setUpdatedBy(enter.getUserId());
+        update.setUpdatedTime(new Date());
+        if (StringUtils.isAllEmpty(enter.getRecipientLatitude(), enter.getRecipientLongitude(), enter.getSenderLatitude(), enter.getSenderLongitude())) {
             return new GeneralResult(enter.getRequestId());
         }
         expressOrderService.updateById(update);
+
         return new GeneralResult(enter.getRequestId());
     }
 }
