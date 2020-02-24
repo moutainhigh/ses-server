@@ -139,7 +139,7 @@ mvn clean package -Dmaven.test.skip=true -Pprod
 
 ```
 #### 六、Git分支规范
-#####分支命名
+分支命名
 * master 分支
 ```text
 master 为主分支，也是用于部署生产环境的分支，确保master分支稳定性
