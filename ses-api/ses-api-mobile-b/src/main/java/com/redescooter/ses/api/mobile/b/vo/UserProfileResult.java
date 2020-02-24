@@ -1,14 +1,15 @@
 package com.redescooter.ses.api.mobile.b.vo;
 
+import java.util.Date;
+
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * @ClassName:UserProfileResult
@@ -71,6 +72,9 @@ public class UserProfileResult extends GeneralResult {
 
     @ApiModelProperty(value = "出生地")
     private String placeBirth;
+
+    @ApiModelProperty(value = "居住地")
+    private String address;
 
     // 合同、发票 两个字段只有TOC使用
     @ApiModelProperty(value = "发票编号")

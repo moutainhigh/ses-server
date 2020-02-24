@@ -1,16 +1,15 @@
 package com.redescooter.ses.service.hub.source.consumer.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.hub.exception.SeSHubException;
-import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
-import com.redescooter.ses.api.hub.vo.QueryDriverScooterResult;
-import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
-import com.redescooter.ses.service.hub.source.consumer.dao.HubConUserScooterMapper;
-import com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
+import com.redescooter.ses.api.hub.vo.QueryDriverScooterResult;
+import com.redescooter.ses.service.hub.source.consumer.dao.HubConUserScooterMapper;
+import com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter;
 
 /**
  * @ClassName:ScooterService
@@ -39,11 +38,11 @@ public class HubCustomerScooterServiceImpl implements CusotmerScooterService {
         }
         conUserScooterQueryWrapper.eq(HubConUserScooter.COL_DR, 0);
         HubConUserScooter hubConUserScooter = hubConUserScooterMapper.selectOne(conUserScooterQueryWrapper);
-        if (hubConUserScooter == null) {
-            throw new SeSHubException(ExceptionCodeEnums.USER_IS_NOT_HAVE_SCOOTER.getCode(), ExceptionCodeEnums.USER_IS_NOT_HAVE_SCOOTER.getMessage());
+        QueryDriverScooterResult result=null;
+        if (hubConUserScooter != null) {
+            result = new QueryDriverScooterResult();
+            BeanUtils.copyProperties(hubConUserScooter, result);
         }
-        QueryDriverScooterResult result = new QueryDriverScooterResult();
-        BeanUtils.copyProperties(hubConUserScooter, result);
         return result;
     }
 }

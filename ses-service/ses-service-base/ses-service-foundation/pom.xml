@@ -21,9 +21,6 @@
                 <profile-active>jerry</profile-active>
                 <log.path>logs/</log.path>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <id>local</id>
@@ -31,6 +28,9 @@
                 <profile-active>local</profile-active>
                 <log.path>logs/</log.path>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>dev</id>
