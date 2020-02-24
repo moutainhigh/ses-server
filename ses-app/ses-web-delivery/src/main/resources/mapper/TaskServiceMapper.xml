@@ -176,8 +176,7 @@
             and (eorder.created_time between #{createdStartTime} and #{createdEndTime})
         </if>
         <if test="expectTimeStart != null and expectTimeStart != '' and  expectTimeEnd != null and expectTimeEnd != ''">
-            and (eorder.expect_time_begin <![CDATA[ <= ]]> #{expectTimeStart} and eorder.expect_time_end
-            <![CDATA[ > ]]> #{expectTimeEnd} )
+            and (eorder.expect_time_begin between #{expectTimeStart} and eorder.expect_time_end and #{expectTimeEnd} )
         </if>
     </select>
     <select id="orderList" resultType="com.redescooter.ses.web.delivery.vo.task.OrderResult">
