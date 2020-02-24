@@ -101,9 +101,8 @@ public class EdOrderServiceImpl implements EdOrderService {
     private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
     @Autowired
     private CorDriverScooterService corDriverScooterService;
-    @Autowired
+    @Reference
     private IdAppService idAppService;
-
     @Reference
     private GenerateService generateService;
     @Reference
