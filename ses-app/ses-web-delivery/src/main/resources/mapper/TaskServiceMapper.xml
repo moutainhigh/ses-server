@@ -161,15 +161,16 @@
         <include refid="where_orderList"></include>
     </select>
     <select id="orderList" resultType="com.redescooter.ses.web.delivery.vo.task.OrderResult">
-        select eorder.id as id,
-        eorder.status as status,
-        eorder.recipient_country as recipientCountry,
-        eorder.recipient_province as recipientProvince,
-        eorder.recipient_city as recipientCity,
-        eorder.recipient_postcode as recipientPostcode,
-        eorder.recipient_address as recipientAddress,
-        eorder.expect_time_begin as expectTimeStart,
-        eorder.expect_time_end as expectTimeEnd
+        select eorder.id                 as id,
+        eorder.status                    as status,
+        eorder.recipient_country         as recipientCountry,
+        eorder.recipient_province        as recipientProvince,
+        eorder.recipient_city            as recipientCity,
+        eorder.recipient_postcode        as recipientPostcode,
+        eorder.recipient_address         as recipientAddress,
+        eorder.expect_time_begin         as expectTimeStart,
+        eorder.expect_time_end           as expectTimeEnd,
+        eorder.created_time              as createdTime
         from cor_express_order eorder
         <include refid="where_orderList"></include>
         order by eorder.created_time desc

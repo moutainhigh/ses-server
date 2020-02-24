@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
@@ -46,7 +49,6 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
-import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.TaskServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorDriver;
@@ -118,6 +120,8 @@ public class TaskServiceImpl implements TaskService {
     @Reference
     private PushService pushService;
 
+    @Reference
+    private CityBaseService cityBaseService;
 
     /**
      * 状态
@@ -182,29 +186,29 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public TaskResult detail(IdEnter enter) {
-        TaskResult result=null;
+        TaskResult result = null;
         // 查询司机信息
         CorDriver corDriver = taskServiceMapper.queryDriverByTaskId(enter);
         if (corDriver.getStatus().equals(DriverStatusEnum.WORKING.getValue())) {
-            result= taskServiceMapper.detail(enter);
-        }else {
+            result = taskServiceMapper.detail(enter);
+        } else {
             CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(enter.getId());
             if (corExpressDelivery == null) {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.TASK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TASK_IS_NOT_EXIST.getMessage());
             }
-            result=taskServiceMapper.driverOffUserProfileByDriverId(corExpressDelivery.getDriverId(),enter.getTenantId());
+            result = taskServiceMapper.driverOffUserProfileByDriverId(corExpressDelivery.getDriverId(), enter.getTenantId());
             result.setId(corExpressDelivery.getId());
             result.setStatus(corExpressDelivery.getStatus());
             result.setCompleteCount(corExpressDelivery.getOrderCompleteNum());
             result.setTotalCount(corExpressDelivery.getOrderSum());
-            result.setTaskTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryDate(),DateUtil.DEFAULT_DATETIME_FORMAT));
-            if (!result.getStatus().equals(TaskStatusEnums.PENDING.getValue())){
-                result.setStartTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryStartTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            result.setTaskTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryDate(), DateUtil.DEFAULT_DATETIME_FORMAT));
+            if (!result.getStatus().equals(TaskStatusEnums.PENDING.getValue())) {
+                result.setStartTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryStartTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
             }
-            if (result.getStatus().equals(TaskStatusEnums.DELIVERED.getValue())){
-                result.setDeliveredTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryEndTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            if (result.getStatus().equals(TaskStatusEnums.DELIVERED.getValue())) {
+                result.setDeliveredTime(DateUtil.getDateTime(corExpressDelivery.getDeliveryEndTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
             }
-            result.setCreatedTime(DateUtil.getDateTime(corExpressDelivery.getCreateTime(),DateUtil.DEFAULT_DATETIME_FORMAT));
+            result.setCreatedTime(DateUtil.getDateTime(corExpressDelivery.getCreateTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
         }
         if (result == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.TASK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TASK_IS_NOT_EXIST.getMessage());
@@ -214,8 +218,8 @@ public class TaskServiceImpl implements TaskService {
 
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
         TaskResult finalResult = result;
-        baseScooterResults.forEach(itme->{
-            Optional.ofNullable(itme).ifPresent(it->{
+        baseScooterResults.forEach(itme -> {
+            Optional.ofNullable(itme).ifPresent(it -> {
                 finalResult.setBattery(baseScooterResults.get(0).getBattery());
                 finalResult.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
             });
@@ -257,6 +261,12 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public PageResult<OrderResult> orderList(OrderListEnter enter) {
+        if (StringUtils.isNoneBlank(enter.getRecipientCity(), enter.getRecipientPostcode())) {
+            CityResult recipientCity = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientCity())));
+            CityResult recipientPostcode = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientCity())));
+            enter.setRecipientCity(recipientCity != null ? recipientCity.getName() : null);
+            enter.setRecipientPostcode(recipientPostcode != null ? recipientPostcode.getName() : null);
+        }
         int count = taskServiceMapper.orderListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -313,10 +323,10 @@ public class TaskServiceImpl implements TaskService {
                     throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
                 }
                 // 查询司机当前正在使用的车辆
-                QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper=new QueryWrapper<>();
-                corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID,corDriver.getId());
-                corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID,enter.getTenantId());
-                corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR,0);
+                QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper = new QueryWrapper<>();
+                corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, corDriver.getId());
+                corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
+                corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
                 corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
                 CorDriverScooter corDriverScooter = corDriverScooterService.getOne(corDriverScooterQueryWrapper);
 
@@ -351,7 +361,7 @@ public class TaskServiceImpl implements TaskService {
                     updateCorExpressOrderList.add(item);
                 }
                 //保存task
-                buildtask(enter, driverTaskEnter, tenantConfigInfoResult, taskId, saveCorExpressDeliveryList,corDriverScooter.getScooterId());
+                buildtask(enter, driverTaskEnter, tenantConfigInfoResult, taskId, saveCorExpressDeliveryList, corDriverScooter.getScooterId());
             });
 
             // 保存 TaskDetail

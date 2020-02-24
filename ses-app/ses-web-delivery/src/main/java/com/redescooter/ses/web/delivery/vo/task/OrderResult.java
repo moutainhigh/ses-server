@@ -12,6 +12,8 @@ import io.swagger.annotations.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.scheduling.support.SimpleTriggerContext;
 
+import java.util.Date;
+
 /**
  * @ClassName:OrderResult
  * @description: OrderResult
@@ -27,7 +29,7 @@ import org.springframework.scheduling.support.SimpleTriggerContext;
 @EqualsAndHashCode(callSuper = false)
 public class OrderResult extends GeneralResult {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "主键ID")
     private Long id;
 
     @ApiModelProperty(value = "状态")
@@ -51,12 +53,17 @@ public class OrderResult extends GeneralResult {
     @ApiModelProperty(value = "EDT")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    private String expectTimeStart;
+    private Date expectTimeStart;
 
     @ApiModelProperty(value = "EDT")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    private String expectTimeEnd;
+    private Date expectTimeEnd;
+
+    @ApiModelProperty(value = "订单导入时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date createdTime;
 
 
 }
