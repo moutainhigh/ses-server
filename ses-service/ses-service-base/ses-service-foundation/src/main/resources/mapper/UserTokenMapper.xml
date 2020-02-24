@@ -4,44 +4,46 @@
 
     <select id="checkPcUser" resultType="com.redescooter.ses.api.foundation.vo.login.AccountsDto">
 
-   select puser.ID               as userId,
-          puser.TENANT_ID        as tenantId,
-          puser.SYSTEM_ID        as systemId,
-          puser.APP_ID           as appId,
-          puser.LOGIN_NAME       as loginName,
-          puser.STATUS           as status,
-          puser.USER_TYPE        as userType,
-          puser.LAST_LOGIN_TOKEN as lastLoginToken
-     from pla_user puser
-     where puser.APP_ID =#{appId}
-       and puser.SYSTEM_ID = #{systemId}
-       and puser.LOGIN_NAME = #{loginName}
-       and puser.dr = 0
+        select puser.ID as userId,
+        puser.TENANT_ID as tenantId,
+        puser.SYSTEM_ID as systemId,
+        puser.APP_ID as appId,
+        puser.LOGIN_NAME as loginName,
+        puser.STATUS as status,
+        puser.USER_TYPE as userType,
+        puser.LAST_LOGIN_TOKEN as lastLoginToken
+        from pla_user puser
+        where puser.APP_ID =#{appId}
+        and puser.SYSTEM_ID = #{systemId}
+        and puser.LOGIN_NAME = #{loginName}
+        and puser.dr = 0
 
     </select>
     <select id="chectPermission" resultType="com.redescooter.ses.service.foundation.dm.base.PlaUserPermission">
-    select a.Id,a.USER_ID,a.SYSTEM_ID,a.APP_ID,a.STATUS
-     from pla_user_permission a
-    where a.dr = 0
-     and a.USER_ID =  #{userId}
-     and a.SYSTEM_ID=#{systemId}
-     and a.app_id=#{appId}
+        select a.Id,a.USER_ID,a.SYSTEM_ID,a.APP_ID,a.STATUS
+        from pla_user_permission a
+        where a.dr = 0
+        and a.USER_ID = #{userId}
+        and a.SYSTEM_ID=#{systemId}
+        and a.app_id=#{appId}
     </select>
     <select id="checkAPPUser" resultType="com.redescooter.ses.api.foundation.vo.login.AccountsDto">
 
-   select puser.ID               as userId,
-          puser.TENANT_ID        as tenantId,
-          puser.SYSTEM_ID        as systemId,
-          puser.APP_ID           as appId,
-          puser.LOGIN_NAME       as loginName,
-          puser.STATUS           as status,
-          puser.USER_TYPE        as userType,
-          puser.LAST_LOGIN_TOKEN as lastLoginToken
-     from pla_user puser
-     where puser.APP_ID =#{appId}
-       and puser.SYSTEM_ID = #{systemId}
-       and puser.LOGIN_NAME = #{loginName}
-       and puser.dr = 0
+        select puser.ID as userId,
+        puser.TENANT_ID as tenantId,
+        puser.SYSTEM_ID as systemId,
+        puser.APP_ID as appId,
+        puser.LOGIN_NAME as loginName,
+        puser.STATUS as status,
+        puser.USER_TYPE as userType,
+        puser.LAST_LOGIN_TOKEN as lastLoginToken,
+        ifnull(tenant.tenant_name, 'Individual') as tenantName
+        from pla_user puser
+        left join pla_tenant tenant on puser.TENANT_ID = tenant.id
+        where puser.APP_ID =#{appId}
+        and puser.SYSTEM_ID = #{systemId}
+        and puser.LOGIN_NAME = #{loginName}
+        and puser.dr = 0
 
     </select>
     <update id="lockBySaaSAccount">

@@ -37,5 +37,7 @@ public class AccountsDto extends GeneralEnter {
     private String lastLoginToken;
     @ApiModelProperty(value = "头像")
     private String picture;
+    @ApiModelProperty(value = "账户名字 个人端 返回默认值，企业端返回所属店铺名称")
+    private String tenantName;
 
 }
