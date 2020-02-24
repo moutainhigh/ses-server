@@ -26,16 +26,16 @@ public class GetAddressOfLonLatEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 不为空")
     private long id;
     @ApiModelProperty(value = "收件人纬度", required = true)
-    @NotNull(code = ValidationExceptionCode.LAT_IS_EMPTY, message = "纬度不为空")
+    //@NotNull(code = ValidationExceptionCode.LAT_IS_EMPTY, message = "纬度不为空")
     private String recipientLatitude;
     @ApiModelProperty(value = "收件人经度", required = true)
-    @NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY, message = "经度不为空")
+    //@NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY, message = "经度不为空")
     private String recipientLongitude;
     @ApiModelProperty(value = "寄件人纬度", required = true)
-    @NotNull(code = ValidationExceptionCode.LAT_IS_EMPTY, message = "纬度不为空")
+    //@NotNull(code = ValidationExceptionCode.LAT_IS_EMPTY, message = "纬度不为空")
     private String senderLatitude;
     @ApiModelProperty(value = "寄件人经度", required = true)
-    @NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY, message = "经度不为空")
+    //@NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY, message = "经度不为空")
     private String senderLongitude;
 
 
