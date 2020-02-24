@@ -78,8 +78,7 @@
         <if test="startStartTime != null and startStartTime != '' and startEndTime != null and startEndTime != ''">
             and (express.delivery_start_time between #{startStartTime} and #{startEndTime})
         </if>
-        <if
-                test="deliveredStartTime != null and deliveredStartTime != '' and  deliveredEndTime != null and deliveredEndTime != ''">
+        <if test="deliveredStartTime != null and deliveredStartTime != '' and  deliveredEndTime != null and deliveredEndTime != ''">
             and (express.delivery_end_time between #{deliveredStartTime} and #{deliveredEndTime})
         </if>
         <if test="keyword != null and keyword != ''">
