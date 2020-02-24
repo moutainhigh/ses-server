@@ -4,11 +4,15 @@ import java.math.BigDecimal;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @ClassName:SaveCustomerEnter
@@ -60,19 +64,19 @@ public class EditCustomerEnter extends GeneralEnter {
     private String industryType;
 
     @ApiModelProperty(value = "地址")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
+//    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
     private String address;
 
     @ApiModelProperty(value = "地点编号")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
+    //@NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
     private String placeId;
 
     @ApiModelProperty(value = "经度")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
+    //@NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
     private BigDecimal longitude;
 
     @ApiModelProperty(value = "纬度")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
+    //@NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址相关信息不能为空")
     private BigDecimal latitude;
 
     @ApiModelProperty(value = "联系人名字")
