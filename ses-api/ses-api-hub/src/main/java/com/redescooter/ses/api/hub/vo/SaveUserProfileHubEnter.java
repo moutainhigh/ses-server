@@ -55,6 +55,9 @@ public class SaveUserProfileHubEnter extends GeneralEnter {
     @ApiModelProperty(value="姓名")
     private String fullName;
 
+    @ApiModelProperty(value = "照片")
+    private String picture;
+
     /**
      * 邮箱
      */

@@ -94,7 +94,7 @@
         from cor_driver_scooter_history histroy
         inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
-        <include refid="where_assignEdScooterHistroy_List"></include>
+        <include refid="where_assignEdScooterHistroy_List"/>
     </select>
     <select id="usingAssignEdScooterHistroyCount" resultType="java.lang.Integer">
         select count(*)
@@ -103,7 +103,7 @@
         on scooter.scooter_id = histroy.scooter_id and scooter.begin_time = histroy.begin_time
         inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
-        <include refid="where_usingAssignEdScooterHistroy_List"></include>
+        <include refid="where_usingAssignEdScooterHistroy_List"/>
     </select>
     <select id="assignEdScooterHistroyList"
             resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult">
@@ -118,7 +118,7 @@
         from cor_driver_scooter_history histroy
         inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
-        <include refid="where_assignEdScooterHistroy_List"></include>
+        <include refid="where_assignEdScooterHistroy_List"/>
         order by histroy.begin_time desc
         limit #{startRow},#{pageSize}
     </select>
@@ -137,7 +137,7 @@
         on scooter.scooter_id = histroy.scooter_id and scooter.begin_time = histroy.begin_time
         inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
-        <include refid="where_usingAssignEdScooterHistroy_List"></include>
+        <include refid="where_usingAssignEdScooterHistroy_List"/>
         order by histroy.begin_time desc
         limit #{startRow},#{pageSize}
     </select>

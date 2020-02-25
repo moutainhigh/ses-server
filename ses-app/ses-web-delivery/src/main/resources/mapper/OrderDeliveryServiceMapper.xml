@@ -61,7 +61,7 @@
         inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
         inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
         inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
-        <include refid="where_orderDelivery_List"></include>
+        <include refid="where_orderDelivery_List"/>
         group by id, orderNo, status, label, recipient, recipientAddress, recipientEmail, recipientTel, countryCode,
         parcelQuantity, latitude, longitude, createdTime, deliveredTime, driverId, driverLastName, driverFirstName,
         licensePlate, scooterId
@@ -74,7 +74,7 @@
         inner join cor_user_profile cup on cdy.deliverer_id = cup.user_id and cup.dr = 0
         inner join cor_driver cd on cup.user_id = cd.user_id and cd.dr = 0
         inner join cor_tenant_scooter cts on cdy.scooter_id = cts.scooter_id and cts.dr = 0
-        <include refid="where_orderDelivery_List"></include>
+        <include refid="where_orderDelivery_List"/>
     </select>
     <select id="details" resultType="com.redescooter.ses.web.delivery.vo.DeliveryDetailsResult">
         select cdy.id,
