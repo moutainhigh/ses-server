@@ -13,7 +13,7 @@ dubbo:
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/corporate_prod118?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
     username: rede
     password: RedE2019!!
     druid:

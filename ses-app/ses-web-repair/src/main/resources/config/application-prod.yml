@@ -21,7 +21,7 @@ spring:
       enabled: true
   #数据库连接
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/consumer_prod118?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/consumer_prod?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
     username: rede
     password: RedE2019!!
     druid:

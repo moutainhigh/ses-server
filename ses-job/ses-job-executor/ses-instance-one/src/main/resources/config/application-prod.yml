@@ -23,6 +23,6 @@ xxl:
       ### xxl-job log path
       logpath: /data/java_service/logs/@profile-active@
       ### xxl-job log retention days
-      logretentiondays: -1
+      logretentiondays: 7
     ### xxl-job, access token
     accessToken: a02d4b20ab655ec85277c86e
