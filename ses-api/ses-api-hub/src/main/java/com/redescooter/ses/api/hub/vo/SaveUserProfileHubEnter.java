@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.hub.vo;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,6 +60,12 @@ public class SaveUserProfileHubEnter extends GeneralEnter {
      */
     @ApiModelProperty(value="邮箱")
     private String email1;
+
+    /**
+     * 电话号
+     */
+    @ApiModelProperty(value="国家代码")
+    private String countryCode1;
 
     /**
      * 电话号

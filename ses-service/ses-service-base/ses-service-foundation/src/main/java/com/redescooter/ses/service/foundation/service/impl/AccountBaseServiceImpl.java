@@ -145,7 +145,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                         .address(enter.getT().getAddress()).certificateType(enter.getT().getCertificateType())
                         .certificateNegativeAnnex(enter.getT().getCertificateNegativeAnnex())
                         .certificatePositiveAnnex(enter.getT().getCertificatePositiveAnnex())
-                        .telNumber1(enter.getT().getTelephone()).email1(enter.getT().getEmail()).build();
+                        .telNumber1(enter.getT().getTelephone()).email1(enter.getT().getEmail()).countryCode1(enter.getT().getCountryCode()).build();
         saveUserProfileHubEnter.setUserId(userId);
         saveUserProfileHubEnter.setTenantId(tenantId);
 
