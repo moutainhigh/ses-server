@@ -69,7 +69,7 @@
         inner join cor_driver driver on express.driver_id = driver.id and driver.dr = 0
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
         inner join cor_tenant_scooter tscooter on tscooter.scooter_id = express.scooter_id and tscooter.dr=0
-        <include refid="where_task_List"></include>
+        <include refid="where_task_List" />
     </select>
     <select id="taskList" resultType="com.redescooter.ses.web.delivery.vo.task.TaskResult">
 
@@ -89,7 +89,7 @@
         inner join cor_driver driver on express.driver_id = driver.id and driver.dr = 0
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
         inner join cor_tenant_scooter tscooter on tscooter.scooter_id = express.scooter_id and tscooter.dr=0
-        <include refid="where_task_List"></include>
+        <include refid="where_task_List" />
         order by express.create_time desc
         limit #{startRow},#{pageSize}
     </select>
