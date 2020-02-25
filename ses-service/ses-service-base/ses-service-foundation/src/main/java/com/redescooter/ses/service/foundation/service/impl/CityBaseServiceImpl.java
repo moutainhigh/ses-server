@@ -52,7 +52,7 @@ public class CityBaseServiceImpl implements CityBaseService {
         if (totalRows == null || totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        wrapper.orderByAsc(PlaCity.COL_NAME);
+        wrapper.orderByAsc(PlaCity.COL_CODE);
         List<PlaCity> plaCities = cityMapper.selectList(wrapper);
 
         for (PlaCity city : plaCities) {
@@ -104,7 +104,7 @@ public class CityBaseServiceImpl implements CityBaseService {
         } else {
             wrapper.eq(PlaCity.COL_P_ID, enter.getId());
         }
-        wrapper.orderByAsc(PlaCity.COL_NAME);
+        wrapper.orderByAsc(PlaCity.COL_CODE);
         List<PlaCity> plaCities = cityMapper.selectList(wrapper);
         for (PlaCity city : plaCities) {
             result = new CityResult();
