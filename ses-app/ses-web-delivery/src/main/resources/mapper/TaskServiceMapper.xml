@@ -89,7 +89,7 @@
         inner join cor_driver driver on express.driver_id = driver.id and driver.dr = 0
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
         inner join cor_tenant_scooter tscooter on tscooter.scooter_id = express.scooter_id and tscooter.dr=0
-        <include refid="where_task_List" />
+        <include refid="where_task_List"></include>
         order by express.create_time desc
         limit #{startRow},#{pageSize}
     </select>
@@ -156,7 +156,7 @@
     <select id="orderListCount" resultType="int">
         select count(*)
         from cor_express_order eorder
-        <include refid="where_orderList"></include>
+        <include refid="where_orderList"/>
     </select>
     <select id="orderList" resultType="com.redescooter.ses.web.delivery.vo.task.OrderResult">
         select eorder.id as id,
@@ -170,7 +170,7 @@
         eorder.expect_time_end as expectTimeEnd,
         eorder.created_time as createdTime
         from cor_express_order eorder
-        <include refid="where_orderList"></include>
+        <include refid="where_orderList"/>
         order by eorder.created_time desc
         limit #{startRow},#{pageSize}
     </select>
@@ -205,9 +205,9 @@
     <select id="queryDriverByTaskId" resultType="com.redescooter.ses.web.delivery.dm.CorDriver">
         select driver.*
         from cor_driver driver
-                 inner join cor_express_delivery delivery on driver.id = delivery.driver_id
-        where delivery.id = 1006387
-          and delivery.dr = 0
+        inner join cor_express_delivery delivery on driver.id = delivery.driver_id
+        where delivery.id = #{id}
+        and delivery.dr = 0
 
     </select>
     <select id="driverOffUserProfileByDriverId"

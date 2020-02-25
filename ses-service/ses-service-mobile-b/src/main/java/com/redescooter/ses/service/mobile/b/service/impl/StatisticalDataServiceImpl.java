@@ -1,5 +1,19 @@
 package com.redescooter.ses.service.mobile.b.service.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
@@ -7,21 +21,28 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
-import com.redescooter.ses.api.mobile.b.vo.*;
+import com.redescooter.ses.api.mobile.b.vo.AllMobileBScooterChartResult;
+import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
+import com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult;
+import com.redescooter.ses.api.mobile.b.vo.MonthlyDeliveryChartResult;
+import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryStatEnter;
 import com.redescooter.ses.service.mobile.b.constant.SequenceName;
 import com.redescooter.ses.service.mobile.b.dao.DeliveryServiceMapper;
 import com.redescooter.ses.service.mobile.b.dao.StatisticalDataServiceMapper;
-import com.redescooter.ses.service.mobile.b.dao.base.*;
-import com.redescooter.ses.service.mobile.b.dm.base.*;
+import com.redescooter.ses.service.mobile.b.dao.base.CorDriverMapper;
+import com.redescooter.ses.service.mobile.b.dao.base.CorDriverRideStatDetailMapper;
+import com.redescooter.ses.service.mobile.b.dao.base.CorDriverRideStatMapper;
+import com.redescooter.ses.service.mobile.b.dao.base.CorDriverScooterMapper;
+import com.redescooter.ses.service.mobile.b.dao.base.CorScooterRideStatDetailMapper;
+import com.redescooter.ses.service.mobile.b.dao.base.CorScooterRideStatMapper;
+import com.redescooter.ses.service.mobile.b.dm.base.CorDriver;
+import com.redescooter.ses.service.mobile.b.dm.base.CorDriverRideStat;
+import com.redescooter.ses.service.mobile.b.dm.base.CorDriverRideStatDetail;
+import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
+import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat;
+import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStatDetail;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.*;
 
 /**
  * @ClassName:StatisticalDataServiceImpl
@@ -230,7 +251,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
 
         List<MonthlyDeliveryChartResult> list = deliveryServiceMapper.mobileBDeliveryChart(enter);
 
-        if (list.size() == 0) {
+        if (CollectionUtils.isEmpty(list)) {
             return new MobileBDeliveryChartResult();
         } else {
             MonthlyDeliveryChartResult result = null;
@@ -289,11 +310,9 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
 
         enter.setUserId(corDriver.getId());
         List<MobileBScooterChartResult> list = statisticalDataServiceMapper.mobileBScooterChart(enter);
-
         // 获取指定日期格式向前N天时间集合
         List<String> dayList = new LinkedList();
         dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
-
         if (list.size() > 0) {
             MobileBScooterChartResult result = null;
 

@@ -63,7 +63,7 @@
         inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr = 0
         inner join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
         left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr = 0
-        <include refid="where_driver_list"></include>
+        <include refid="where_driver_list"/>
     </select>
     <select id="list" resultType="com.redescooter.ses.web.delivery.vo.ListDriverResult">
         select cdr.id as id,
@@ -84,7 +84,7 @@
         inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr = 0
         inner join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
         left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr = 0
-        <include refid="where_driver_list"></include>
+        <include refid="where_driver_list"/>
         group by id,
         status,
         userId,
@@ -168,7 +168,7 @@
         and cdsh.dr=0
         and cdsh.tenant_id=#{tenantId}
         and cdsh.driver_id=#{id}
-        <include refid="where_driverScooterUsed_list"></include>
+        <include refid="where_driverScooterUsed_list"/>
 
     </select>
 
@@ -181,7 +181,7 @@
         where scooter.status = 1
         and histroy.driver_id = #{id}
         and histroy.tenant_id = #{tenantId}
-        <include refid="where_driverScooterUsing_list"></include>
+        <include refid="where_driverScooterUsing_list"/>
     </select>
 
     <select id="driverScooterUsingHistroyList"
@@ -198,7 +198,7 @@
         where scooter.status = 1
         and histroy.driver_id = #{id}
         and histroy.tenant_id = #{tenantId}
-        <include refid="where_driverScooterUsing_list"></include>
+        <include refid="where_driverScooterUsing_list"/>
         order by histroy.begin_time desc
         limit #{startRow},#{pageSize}
     </select>
@@ -217,7 +217,7 @@
         and cdsh.dr=0
         and cdsh.tenant_id=#{tenantId}
         and cdsh.driver_id=#{id}
-        <include refid="where_driverScooterUsed_list"></include>
+        <include refid="where_driverScooterUsed_list"/>
         order by assignTime desc
         limit #{startRow},#{pageSize}
     </select>

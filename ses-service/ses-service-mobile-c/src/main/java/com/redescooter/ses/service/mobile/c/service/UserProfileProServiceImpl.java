@@ -1,5 +1,15 @@
 package com.redescooter.ses.service.mobile.c.service;
 
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
@@ -12,15 +22,6 @@ import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.c.service.base.ConUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * @ClassName:test
@@ -144,6 +145,9 @@ public class UserProfileProServiceImpl implements UserProfileProService {
         if (StringUtils.isNotBlank(enter.getTelNumber1()) && StringUtils.isNotBlank(enter.getCountryCode1())) {
             conUserProfile.setTelNumber1(enter.getTelNumber1());
             conUserProfile.setCountryCode1(enter.getCountryCode1());
+        }
+        if (StringUtils.isNotEmpty(enter.getPicture())){
+            conUserProfile.setPicture(enter.getPicture());
         }
         if (StringUtils.isNotBlank(enter.getCertificateType()) && StringUtils.isNotBlank(enter.getCertificateNegativeAnnex()) && StringUtils.isNotBlank(enter.getCertificatePositiveAnnex())) {
             conUserProfile.setCertificateType(enter.getCertificateType());
