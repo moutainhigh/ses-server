@@ -3,11 +3,14 @@ package com.redescooter.ses.web.ros.service.impl;
 import java.util.List;
 
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.dao.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.service.BomRosService;
 import com.redescooter.ses.web.ros.vo.bom.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.bom.CombinationResult;
@@ -31,6 +34,12 @@ import com.redescooter.ses.web.ros.vo.bom.SecResult;
 @Service
 public class BomRosServiceImpl implements BomRosService {
 
+    @Autowired
+    private BomRosServiceMapper bomRosServiceMapper;
+
+    @Autowired
+    private IdAppService idAppService;
+
     /**
      * @param enter
      * @desc: 车辆列表
@@ -42,6 +51,13 @@ public class BomRosServiceImpl implements BomRosService {
      */
     @Override
     public PageResult<ScooterListResult> scooterList(ScooterListEnter enter) {
+
+        int count=bomRosServiceMapper.scooterListCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<ScooterListResult> scooterListResultList =bomRosServiceMapper.scooterList(enter);
+
         return null;
     }
 
