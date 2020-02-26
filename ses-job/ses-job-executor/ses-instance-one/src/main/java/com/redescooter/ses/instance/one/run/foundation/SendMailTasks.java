@@ -1,4 +1,4 @@
-package com.redescooter.ses.instance.one.run.tasks;
+package com.redescooter.ses.instance.one.run.foundation;
 
 import com.redescooter.ses.api.common.enums.job.JobDefaultError;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
