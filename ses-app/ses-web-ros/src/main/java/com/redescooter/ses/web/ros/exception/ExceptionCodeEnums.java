@@ -70,6 +70,9 @@ public enum ExceptionCodeEnums {
 
     EMAIL_ALREADY_EXISTS(10026, "邮箱已存在"),
 
+    DATA_EXCEPTION(10027, "参数数据异常或格式错误"),
+
+
     //30之后是业务错误码
     FIRST_NAME_CANNOT_EMPTY(10030, "名字不能为空"),
 

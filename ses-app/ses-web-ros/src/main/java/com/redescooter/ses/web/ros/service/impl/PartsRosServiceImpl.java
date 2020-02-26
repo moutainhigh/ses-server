@@ -17,6 +17,8 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.PartsServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.ExcelService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsHistoryRecordService;
@@ -106,7 +108,12 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public GeneralResult edits(StringEnter enter) {
 
-        List<EditPartsEnter> enters = JSONArray.parseArray(enter.getSt(), EditPartsEnter.class);
+        List<EditPartsEnter> enters = null;
+        try {
+            enters = JSONArray.parseArray(enter.getSt(), EditPartsEnter.class);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
 
         List<OpeParts> updates = new ArrayList<>();
         List<OpePartsHistoryRecord> insters = new ArrayList<>();
@@ -152,7 +159,12 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public GeneralResult adds(StringEnter enter) {
 
-        List<AddPartsEnter> enters = JSONArray.parseArray(enter.getSt(), AddPartsEnter.class);
+        List<AddPartsEnter> enters = null;
+        try {
+            enters = JSONArray.parseArray(enter.getSt(), AddPartsEnter.class);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
 
         List<OpeParts> insters = new ArrayList<>();
 
@@ -186,7 +198,12 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public GeneralResult deletes(StringEnter enter) {
 
-        List<IdEnter> enters = JSONArray.parseArray(enter.getSt(), IdEnter.class);
+        List<IdEnter> enters = null;
+        try {
+            enters = JSONArray.parseArray(enter.getSt(), IdEnter.class);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
 
         List<Long> update = new ArrayList<>();
         List<OpePartsHistoryRecord> insters = new ArrayList<>();
