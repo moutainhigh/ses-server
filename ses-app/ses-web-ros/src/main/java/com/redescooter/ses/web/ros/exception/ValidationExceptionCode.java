@@ -62,7 +62,7 @@ public interface ValidationExceptionCode {
     int PRODUCT_NUM_IS_EMPTY=10046;
     // 产品英文名字为空
     int PRODUCT_EN_NAME_IS_EMPTY =10047;
-    //产品价格
+    //产品价格为空
     int PRODUCT_CYCLE_IS_EMPTY=10048;
     // 产品法文名字为空
     int PRODUCT_FR_NAME_IS_EMPTY=10049;

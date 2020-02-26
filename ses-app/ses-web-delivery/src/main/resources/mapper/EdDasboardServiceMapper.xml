@@ -19,15 +19,15 @@
         ifnull(count(detail.id), 0) as count
         from cor_driver driver
         inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
-        left join cor_express_delivery delivery on driver.id = delivery.driver_id and delivery.dr = 0 and
-        delivery.status = 3
+        left join cor_express_delivery delivery on driver.id = delivery.driver_id and delivery.dr = 0
+        left join cor_express_delivery_detail detail on detail.express_delivery_id = delivery.id and detail.dr = 0
+        where driver.tenant_id = #{tenantId}
+        and driver.dr = 0
+        and delivery.status = 3
+        and detail.status = 3
         <if test="date != null and date == true ">
             and YEARWEEK(date_format(delivery.updated_time, '%Y-%m-%d')) <![CDATA[ = ]]> YEARWEEK(now())
         </if>
-        left join cor_express_delivery_detail detail on detail.express_delivery_id = delivery.id and detail.dr = 0 and
-        detail.status = 4
-        where driver.tenant_id = #{tenantId}
-        and driver.dr = 0
         group by id, driverFirstName, driverLastName, avatar
         order by count desc;
     </select>
