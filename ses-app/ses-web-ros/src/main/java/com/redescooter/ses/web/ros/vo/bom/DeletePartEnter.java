@@ -1,0 +1,34 @@
+package com.redescooter.ses.web.ros.vo.bom;
+
+import java.util.List;
+
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+/**
+ * @ClassName:DeleteScooterPartEnter
+ * @description: DeleteScooterPartEnter
+ * @author: Alex
+ * @Version：1.3
+ * @create: 2020/02/25 13:21
+ */
+@ApiModel(value = "整车部件删除", description = "整车部件删除")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = true)
+public class DeletePartEnter extends GeneralEnter {
+    @ApiModelProperty(value = "Id")
+    private Long id;
+
+    @ApiModelProperty(value = "部件Id")
+    private List<Long> partIds;
+}

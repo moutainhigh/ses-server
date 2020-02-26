@@ -1,10 +1,22 @@
 package com.redescooter.ses.web.ros.service;
 
+import java.util.List;
+
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.bom.CombinationListEnter;
+import com.redescooter.ses.web.ros.vo.bom.CombinationResult;
+import com.redescooter.ses.web.ros.vo.bom.DeletePartEnter;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
+import com.redescooter.ses.web.ros.vo.bom.SaveCombinationEnter;
 import com.redescooter.ses.web.ros.vo.bom.SaveScooterEnter;
+import com.redescooter.ses.web.ros.vo.bom.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.ScooterListResult;
+import com.redescooter.ses.web.ros.vo.bom.SecResult;
 
 /**
  * @ClassName:BomRosService
@@ -35,5 +47,100 @@ public interface BomRosService {
      */
    GeneralResult saveScooter(SaveScooterEnter enter);
 
-//   List<SecResult>
+    /**
+     * @desc: sec 区域查询
+     * @param: enter
+     * @retrn: SecResult
+     * @auther: alex
+     * @date: 2020/2/25 12:33
+     * @Version: Ros 1.2
+     */
+   List<SecResult> secList(GeneralEnter enter);
+    /**
+     * @desc: 详情部件列表查询
+     * @param: SaveScooterPartListEnter
+     * @retrn: SaveScooterPartListResult
+     * @auther: alex
+     * @date: 2020/2/25 12:43
+     * @Version: Ros 1.2
+     */
+   PageResult<QueryPartListResult> partList(QueryPartListEnter enter);
+    /**
+     * @desc: 整车详情
+     * @param: enter
+     * @retrn: ScooterDetailResult
+     * @auther: alex
+     * @date: 2020/2/25 13:19
+     * @Version: Ros 1.2
+     */
+    ScooterDetailResult scooterDetail(IdEnter enter);
+    /**
+     * @desc: 删除整车的配件
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/2/25 13:20
+     * @Version: Ros 1.2
+     */
+    GeneralResult deleteScooterPart(DeletePartEnter enter);
+    /**
+     * @desc: 删除整车
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/2/25 14:37
+     * @Version: Ros 1.2
+     */
+    GeneralResult deleteScooter(IdEnter enter);
+
+    /**
+     * @desc: 套餐列表
+     * @paam: enter
+     * @retrn: CombinationListResult
+     * @auther: alex
+     * @date: 2020/2/25 14:03
+     * @Version: Ros 1.2
+     */
+    PageResult<CombinationResult> combinationList(CombinationListEnter enter);
+
+    /**
+     * @desc: 套餐详情
+     * @param: id
+     * @retrn: CombinationResult
+     * @auther: alex
+     * @date: 2020/2/25 14:05
+     * @Version: Ros 1.2
+     */
+    CombinationResult combinationDetail(IdEnter enter);
+
+    /**
+     * @desc: 删除套餐里的部件
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/2/25 14:07
+     * @Version: Ros 1.2
+     */
+    GeneralResult deleteCombinationPart(DeletePartEnter enter);
+    /**
+     * @desc: 删除套餐
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/2/25 14:08
+     * @Version: Ros 1.2
+     */
+    GeneralResult deleteCombination(IdEnter enter);
+
+    /**
+     * @desc: 保存套餐
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/2/25 14:29
+     * @Version: Ros 1.2
+     */
+    GeneralResult saveCombination(SaveCombinationEnter enter);
+
+    
 }

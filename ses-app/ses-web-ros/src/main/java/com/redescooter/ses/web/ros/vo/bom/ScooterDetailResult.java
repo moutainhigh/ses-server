@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.bom;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import java.util.List;
+
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,19 +13,19 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName:SaveScooterEnter
- * @description: SaveScooterEnter
+ * @ClassName:ScooterDetailResult
+ * @description: ScooterDetailResult
  * @author: Alex
  * @Version：1.3
- * @create: 2020/02/25 10:33
+ * @create: 2020/02/25 13:07
  */
-@ApiModel(value = "Bom车辆保存入参", description = "Bom车辆保存入参")
+@ApiModel(value = "整车详情出参", description = "整车详情出参")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class SaveScooterEnter extends GeneralEnter {
+public class ScooterDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "产品编号")
     private String productN;
@@ -34,6 +36,6 @@ public class SaveScooterEnter extends GeneralEnter {
     @ApiModelProperty(value = "生产周期")
     private int procurementCycle;
 
-    @ApiModelProperty(value = "配件列表，json 格式 ")
-    private String partList;
+    @ApiModelProperty(value = "配件列表")
+    private List<PartListEnter> partsList;
 }

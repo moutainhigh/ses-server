@@ -1,4 +1,6 @@
-package com.redescooter.ses.web.ros.vo.bom;
+package com.redescooter.ses.web.ros.vo.supplierChaim;
+
+import java.util.Date;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 
@@ -11,26 +13,26 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName:SecResult
- * @description: SecResult
+ * @ClassName:ProductPriceResult
+ * @description: ProductPriceResult
  * @author: Alex
  * @Version：1.3
- * @create: 2020/02/25 12:01
+ * @create: 2020/02/25 15:22
  */
-@ApiModel(value = "sec区域出参", description = "sec区域出参")
+@ApiModel(value = "产品价格", description = "产品价格")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class SecResult extends GeneralResult {
+public class ScProductPriceResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "名字")
-    private String name;
+    @ApiModelProperty(value = "产品价格")
+    private String productPrice;
 
-    @ApiModelProperty(value = "区域描述")
-    private String description;
+    @ApiModelProperty(value = "更新时间")
+    private Date refuseTime;
 }
