@@ -284,6 +284,10 @@ public class EdOrderServiceImpl implements EdOrderService {
             expressOrderList.forEach(item -> {
                 QueryOrderDetailResult orderResult = new QueryOrderDetailResult();
                 BeanUtils.copyProperties(item, orderResult);
+
+                orderResult.setRecipientLongitude(item.getRecipientLongitude() == null ? null : item.getRecipientLongitude().toString());
+                orderResult.setRecipientLatitude(item.getRecipientLatitude() == null ? null : item.getRecipientLatitude().toString());
+
                 orderResultList.add(orderResult);
             });
         }
@@ -320,7 +324,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         //订单数据
         List<QueryOrderDetailResult> orderList = expressOrderServiceMapper.driverOrderList(enter);
 
-        if(scooterListResult.size()>0){
+        if (scooterListResult.size() > 0) {
             result.setScooterId(scooterListResult.get(0).getId());
             result.setLicensePlate(scooterListResult.get(0).getLicensePlate());
             result.setBattery(scooterListResult.get(0).getBattery());
@@ -375,16 +379,16 @@ public class EdOrderServiceImpl implements EdOrderService {
         }
 
         // 查询司机当前正在使用的车辆
-        QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper=new QueryWrapper<>();
-        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID,enter.getDriverId());
-        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID,enter.getTenantId());
-        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR,0);
+        QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper = new QueryWrapper<>();
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, enter.getDriverId());
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_TENANT_ID, enter.getTenantId());
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
         corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
         CorDriverScooter corDriverScooter = corDriverScooterService.getOne(corDriverScooterQueryWrapper);
 
 
         // 生成大订单
-        CorExpressDelivery corExpressDelivery = saveCorExpressDelivery(enter,corDriverScooter.getScooterId());
+        CorExpressDelivery corExpressDelivery = saveCorExpressDelivery(enter, corDriverScooter.getScooterId());
         //生成 订单详情记录
         saveExpressDeliveyDetail(enter, corExpressDelivery);
 
@@ -464,7 +468,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: CorExpressDelivery
      * @desc: saveCorExpressDelivery
      */
-    private CorExpressDelivery saveCorExpressDelivery(ChanageExpressOrderEnter enter,Long scooterId) {
+    private CorExpressDelivery saveCorExpressDelivery(ChanageExpressOrderEnter enter, Long scooterId) {
         CorExpressDelivery corExpressDelivery;
         corExpressDelivery = new CorExpressDelivery();
         corExpressDelivery.setId(idAppService.getId(SequenceName.COR_EXPRESS_DELIVERY));
@@ -598,7 +602,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         } else {
             saverOrder.setRecipientLatitude(order.getRecipientLatitude());
             saverOrder.setRecipientLongitude(order.getRecipientLongitude());
-            saverOrder.setRecipientGeohash(MapUtil.geoHash(order.getRecipientLongitude().toString(),order.getRecipientLatitude().toString()));
+            saverOrder.setRecipientGeohash(MapUtil.geoHash(order.getRecipientLongitude().toString(), order.getRecipientLatitude().toString()));
         }
         if (order.getSenderLatitude() == null || order.getSenderLongitude() == null) {
             saverOrder.setSenderLatitude(new BigDecimal("0"));
@@ -607,7 +611,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         } else {
             saverOrder.setRecipientLatitude(order.getSenderLatitude());
             saverOrder.setRecipientLongitude(order.getSenderLongitude());
-            saverOrder.setRecipientGeohash(MapUtil.geoHash(order.getSenderLongitude().toString(),order.getSenderLatitude().toString()));
+            saverOrder.setRecipientGeohash(MapUtil.geoHash(order.getSenderLongitude().toString(), order.getSenderLatitude().toString()));
         }
         return saverOrder;
     }

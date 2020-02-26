@@ -30,10 +30,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -80,6 +77,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -134,6 +132,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
+
         return new GeneralResult(enter.getRequestId());
 
     }
@@ -180,6 +179,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -211,6 +211,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -242,6 +243,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -281,6 +283,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -303,6 +306,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -379,6 +383,20 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
             mailTaskMapper.updateBatch(mailTasks);
         }
         return new GeneralResult();
+    }
+
+    @Override
+    public void runTaskById(long id) {
+
+        PlaMailTask mailTask = mailTaskMapper.selectById(id);
+
+        Optional.ofNullable(mailTask).ifPresent(email -> {
+            Map<String, String> map = JSON.parseObject(email.getParameter(), Map.class);
+            iMailService.sendHtmlMail(email.getReceiveMail(), email.getSubject(), getContent(map, getTemplateByNo(email.getMailTemplateNo())));
+            email.setStatus(MailTaskStatusEnums.SUCCESS.getCode());
+            email.setUpdatedTime(new Date());
+            mailTaskMapper.updateById(email);
+        });
     }
 
     private Map<String, String> getParameterMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email) {
@@ -467,6 +485,8 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         jedisCluster.hmset(key, map);
         //默认为72小时
         jedisCluster.expire(key, seconds);
+        //触发该邮件的发送
+        runTaskById(mailTask.getId());
 
     }
 }

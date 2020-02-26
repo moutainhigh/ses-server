@@ -184,11 +184,12 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public TaskResult detail(IdEnter enter) {
-        TaskResult result = taskServiceMapper.detail(enter);;
+        TaskResult result = taskServiceMapper.detail(enter);
+        ;
         List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(result.getScooterId());
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
-        if (CollectionUtils.isNotEmpty(baseScooterResults)){
+        if (CollectionUtils.isNotEmpty(baseScooterResults)) {
             TaskResult finalResult = result;
             baseScooterResults.forEach(itme -> {
                 Optional.ofNullable(itme).ifPresent(it -> {
@@ -235,14 +236,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public PageResult<OrderResult> orderList(OrderListEnter enter) {
 
-        if(StringUtils.isNotBlank(enter.getRecipientCity())){
+        if (StringUtils.isNotBlank(enter.getRecipientCity())) {
             CityResult recipientCity = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientCity())));
-            enter.setRecipientCity(recipientCity != null ? recipientCity.getName() : null);
+            enter.setRecipientCity(recipientCity != null ? recipientCity.getName().trim() : null);
 
         }
-        if(StringUtils.isNotBlank(enter.getRecipientPostcode())){
+        if (StringUtils.isNotBlank(enter.getRecipientPostcode())) {
             CityResult recipientPostcode = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientPostcode())));
-            enter.setRecipientPostcode(recipientPostcode != null ? recipientPostcode.getName() : null);
+            enter.setRecipientPostcode(recipientPostcode != null ? recipientPostcode.getName().trim() : null);
         }
 
         int count = taskServiceMapper.orderListCount(enter);

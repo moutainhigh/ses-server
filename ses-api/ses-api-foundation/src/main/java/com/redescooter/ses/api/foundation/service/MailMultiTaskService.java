@@ -102,4 +102,12 @@ public interface MailMultiTaskService {
      * @return
      */
     GeneralResult runAllTask();
+
+    /**
+     * 执行指定邮件任务
+     *
+     * @param id
+     * @return
+     */
+    void runTaskById(long id);
 }
