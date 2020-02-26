@@ -2,9 +2,14 @@ package com.redescooter.ses.api.common.vo.base;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @ClassName:IdEnter
@@ -21,7 +26,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class IdEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "主键",required = true)
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
     private Long id;
 }

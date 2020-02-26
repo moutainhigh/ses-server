@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.bom;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -25,15 +27,18 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class SaveScooterEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "产品编号")
+    @ApiModelProperty(value = "产品编号",required = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_NUM_IS_EMPTY,message = "产品编号为空")
     private String productN;
 
-    @ApiModelProperty(value = "产品名字")
+    @ApiModelProperty(value = "产品名字",required = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_EN_NAME_IS_EMPTY,message = "产品名字为空")
     private String productName;
 
-    @ApiModelProperty(value = "生产周期")
-    private int procurementCycle;
+    @ApiModelProperty(value = "生产周期",required = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_CYCLE_IS_EMPTY,message = "产品生产周期为空")
+    private Integer procurementCycle;
 
-    @ApiModelProperty(value = "配件列表，json 格式 ")
+    @ApiModelProperty(value = "配件列表，json 格式 ",required = true)
     private String partList;
 }

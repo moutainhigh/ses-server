@@ -6,10 +6,13 @@ import java.util.Map;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.sales.ProductListEnter;
 import com.redescooter.ses.web.ros.vo.sales.ProductListResult;
-import com.redescooter.ses.web.ros.vo.sales.SccProductPriceEnter;
-import com.redescooter.ses.web.ros.vo.sales.SccProductPriceResult;
+import com.redescooter.ses.web.ros.vo.sales.SccPriceEnter;
+import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.sales.ServiceListResult;
 
 /**
  * @ClassName:SalseRosService
@@ -48,7 +51,7 @@ public interface SalseRosService {
      * @date: 2020/2/25 18:16
      * @Version: Ros 1.2
      */
-    SccProductPriceResult sccProductPrice(IdEnter enter);
+    SccPriceResult productPriceDetail(IdEnter enter);
 
     /**
      * @desc: 产品报价历史
@@ -58,7 +61,58 @@ public interface SalseRosService {
      * @date: 2020/2/25 18:18
      * @Version: Ros 1.2
      */
-    List<SccProductPriceResult> sccProductPriceHistroy(GeneralEnter enter);
+    List<SccPriceResult> productPriceHistroy(IdEnter enter);
 
-    GeneralResult saveSccProductPrice(SccProductPriceEnter enter);
+    /**
+     * @desc: 保存产品报价
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/2/26 9:52
+     * @Version: Ros 1.2
+     */
+    GeneralResult saveProductPrice(SccPriceEnter enter);
+
+    /**
+     * @desc: 服务列表
+     * @paam: enter
+     * @retrn: ServiceListResult
+     * @auther: alex
+     * @date: 2020/2/26 10:01
+     * @Version: Ros 1.2
+     */
+    PageResult<ServiceListResult> serviceList(PageEnter enter);
+
+    /**
+     * @desc: 产品报价
+     * @param: enter
+     * @retrn: SccProductPriceResult
+     * @auther: alex
+     * @date: 2020/2/25 18:16
+     * @Version: Ros 1.2
+     */
+    SccPriceResult servicePriceDetail(IdEnter enter);
+
+    /**
+     * @desc: 产品报价历史
+     * @param: enter
+     * @retrn: List<SccProductPriceResult>
+     * @auther: alex
+     * @date: 2020/2/25 18:18
+     * @Version: Ros 1.2
+     */
+    List<SccPriceResult> servicePriceHistroy(IdEnter enter);
+
+    /**
+     * @desc: 保存产品报价
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/2/26 9:52
+     * @Version: Ros 1.2
+     */
+    GeneralResult saveServicePrice(SccPriceEnter enter);
+
+
+
 }

@@ -30,16 +30,16 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class SupplierChaimListEnter extends PageEnter {
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "刷新开始时间",required = false)
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date refuseStartTime;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "刷新结束时间",required = false)
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
     private Date refuseEndTime;
 
-    @ApiModelProperty(value = "关键字")
+    @ApiModelProperty(value = "关键字",required = false)
     private String keyword;
 }

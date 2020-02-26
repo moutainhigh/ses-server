@@ -24,9 +24,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class QueryPartListEnter extends PageEnter {
-    @ApiModelProperty(value = "模糊搜索")
+    @ApiModelProperty(value = "模糊搜索",required = false)
     private String keyword;
 
-    @ApiModelProperty(value = "区域代码")
+    @ApiModelProperty(value = "区域代码",required = false)
     private String sec;
 }

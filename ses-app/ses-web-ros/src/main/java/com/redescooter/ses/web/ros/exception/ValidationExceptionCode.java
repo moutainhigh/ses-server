@@ -58,5 +58,19 @@ public interface ValidationExceptionCode {
     int CONTRACT_NUMBER_IS_EMPTY = 10044;
     //合同附件不能为空
     int CONTRACT_ANNEX_IS_EMPTY = 10045;
+    // 产品编号为空
+    int PRODUCT_NUM_IS_EMPTY=10046;
+    // 产品英文名字为空
+    int PRODUCT_EN_NAME_IS_EMPTY =10047;
+    //产品价格
+    int PRODUCT_CYCLE_IS_EMPTY=10048;
+    // 产品法文名字为空
+    int PRODUCT_FR_NAME_IS_EMPTY=10049;
+    //产品中文名字为空
+    int PRODUCT_CN_NAME_IS_EMPTY =10050;
+    // 产品法国报价为空
+    int PRODUCT_FR_PRICE_IS_EMPTY=10051;
+    // 产品英国报价为空
+    int PRODUCT_EN_PRICE_IS_EMPTY=10052;
 
 }

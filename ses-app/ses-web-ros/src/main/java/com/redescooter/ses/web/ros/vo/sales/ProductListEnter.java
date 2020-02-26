@@ -27,15 +27,18 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class ProductListEnter extends PageEnter {
 
-    @ApiModelProperty(value = "产品类型")
+    @ApiModelProperty(value = "销售产品类型",required = true)
+    private String serviceType;
+
+    @ApiModelProperty(value = "产品类型",required = false)
     private String type;
 
-    @ApiModelProperty(value = "刷新开始时间")
+    @ApiModelProperty(value = "刷新开始时间",required = false)
     private Date refuseStartTime;
 
-    @ApiModelProperty(value = "刷新结束时间")
+    @ApiModelProperty(value = "刷新结束时间",required = false)
     private Date refuseEndTime;
 
-    @ApiModelProperty(value = "关键字查询")
+    @ApiModelProperty(value = "关键字查询",required = false)
     private String keyword;
 }

@@ -2,7 +2,9 @@ package com.redescooter.ses.web.ros.vo.bom;
 
 import java.util.List;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -26,9 +28,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class DeletePartEnter extends GeneralEnter {
-    @ApiModelProperty(value = "Id")
+    @ApiModelProperty(value = "Id",required = true)
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "id 为空")
     private Long id;
 
-    @ApiModelProperty(value = "部件Id")
+    @ApiModelProperty(value = "部件Id",required = true)
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "id 为空")
     private List<Long> partIds;
 }

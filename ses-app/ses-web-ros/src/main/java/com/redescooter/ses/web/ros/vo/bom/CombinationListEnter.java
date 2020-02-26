@@ -25,6 +25,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class CombinationListEnter extends PageEnter {
 
-    @ApiModelProperty(value = "关键字搜索")
+    @ApiModelProperty(value = "关键字搜索",required = false)
     private String keyword;
 }
