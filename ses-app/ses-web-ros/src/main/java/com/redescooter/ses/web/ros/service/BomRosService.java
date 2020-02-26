@@ -31,23 +31,6 @@ import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 public interface BomRosService {
 
     /**
-     * 导入零部件
-     *
-     * @param enter
-     * @return
-     */
-    ImportExcelPartsResult importParts(ImportPartsEnter enter);
-
-    /**
-     * 导入零部件
-     *
-     * @param enter
-     * @return
-     */
-    GeneralResult savePartsList(List<ExpressPartsExcleData> list, ImportPartsEnter enter);
-
-
-    /**
      * @desc: 车辆列表
      * @param: enter
      * @retrn: PageResult

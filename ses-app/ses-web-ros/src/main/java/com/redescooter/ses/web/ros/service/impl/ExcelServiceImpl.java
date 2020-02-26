@@ -8,6 +8,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.BomRosService;
 import com.redescooter.ses.web.ros.service.ExcelService;
+import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
@@ -34,7 +35,7 @@ public class ExcelServiceImpl implements ExcelService {
     private ImportExcelService importExcelService;
 
     @Autowired
-    private BomRosService bomRosService;
+    private PartsRosService partsRosService;
 
 
     @Override
@@ -79,7 +80,7 @@ public class ExcelServiceImpl implements ExcelService {
             return result;
         }
 
-        bomRosService.savePartsList(successList, enter);
+        partsRosService.savePartsList(successList, enter);
 
         //数据返回
         result.setSuccess(Boolean.TRUE);

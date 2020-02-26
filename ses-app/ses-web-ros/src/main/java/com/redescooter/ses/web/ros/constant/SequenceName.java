@@ -73,5 +73,7 @@ public interface SequenceName {
 
     String OPE_PARTS="OPE_PARTS";
 
+    String OPE_PARTS_HISTORY_RECORD="OPE_PARTS_HISTORY_RECORD";
+
 
 }

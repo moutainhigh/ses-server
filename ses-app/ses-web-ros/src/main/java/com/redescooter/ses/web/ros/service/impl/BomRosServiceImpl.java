@@ -15,6 +15,7 @@ import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,63 +46,16 @@ import com.redescooter.ses.web.ros.vo.bom.SecResult;
  * @Version：1.3
  * @create: 2020/02/26 16:17
  */
+@Slf4j
 @Service
 public class BomRosServiceImpl implements BomRosService {
 
     @Autowired
     private BomRosServiceMapper bomRosServiceMapper;
 
-    @Autowired
-    private OpePartsService partsService;
-
-    @Autowired
-    private ExcelService excelService;
 
     @Reference
     private IdAppService idAppService;
-
-    @Reference
-    private GenerateService generateService;
-
-    @Override
-    public ImportExcelPartsResult importParts(ImportPartsEnter enter) {
-
-        return excelService.readExcelDataByParts(enter);
-    }
-
-    @Override
-    public GeneralResult savePartsList(List<ExpressPartsExcleData> list, ImportPartsEnter enter) {
-
-        OpeParts save = null;
-        List<OpeParts> saveList = new ArrayList<>();
-        String lot = generateService.getOrderNo();
-        for (ExpressPartsExcleData excleData : list) {
-            save = new OpeParts();
-            save.setId(idAppService.getId(SequenceName.OPE_PARTS));
-            save.setDr(0);
-            save.setTenantId(0L);
-            save.setUserId(enter.getUserId());
-            save.setImportLot(lot);
-            save.setStatus(PartsStatusEnums.NORMAL.getValue());
-            save.setPartsType(excleData.getType());
-            save.setSec(excleData.getEsc());
-            save.setPartsNumber(excleData.getPartsN());
-            save.setCnName(excleData.getCnName() == null ? null : excleData.getCnName());
-            save.setFrName(excleData.getFrName() == null ? null : excleData.getFrName());
-            save.setEnName(excleData.getEnName() == null ? null : excleData.getEnName());
-            save.setSnClassFlag(SNClassEnums.getValueByCode(excleData.getSnClass()));
-            save.setPartsQty(0);
-            save.setSupplierId(0L);
-            save.setRevision(0);
-            save.setCreatedBy(enter.getUserId());
-            save.setCreatedTime(new Date());
-            save.setUpdatedBy(enter.getUserId());
-            save.setUpdatedTime(new Date());
-            saveList.add(save);
-        }
-        partsService.batchInsert(saveList);
-        return new GeneralResult(enter.getRequestId());
-    }
 
     /**
      * @param enter
