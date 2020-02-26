@@ -390,7 +390,6 @@ public class EdOrderServiceImpl implements EdOrderService {
         corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
         CorDriverScooter corDriverScooter = corDriverScooterService.getOne(corDriverScooterQueryWrapper);
 
-
         // 生成大订单
         CorExpressDelivery corExpressDelivery = saveCorExpressDelivery(enter, corDriverScooter.getScooterId());
         //生成 订单详情记录

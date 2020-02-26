@@ -121,6 +121,7 @@ public enum ExceptionCodeEnums {
 
     CUSTOMER_INDUSTRYTYPE_IS_NOT_EDIT(10054, "正式客户客户行业不可编辑"),
 
+    FILE_TEMPLATE_IS_INVALID(10055, "文件模板不合法，请重新下载文件模板"),
 
     ;
 

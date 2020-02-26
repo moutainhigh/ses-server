@@ -1,7 +1,21 @@
 package com.redescooter.ses.web.ros.service.impl;
 
+import java.util.Date;
+
+import java.util.ArrayList;
 import java.util.List;
 
+import com.redescooter.ses.api.common.enums.bom.PartsStatusEnums;
+import com.redescooter.ses.api.common.enums.bom.SNClassEnums;
+import com.redescooter.ses.api.foundation.service.base.GenerateService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.service.ExcelService;
+import com.redescooter.ses.web.ros.service.base.OpePartsService;
+import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,7 +52,56 @@ public class BomRosServiceImpl implements BomRosService {
     private BomRosServiceMapper bomRosServiceMapper;
 
     @Autowired
+    private OpePartsService partsService;
+
+    @Autowired
+    private ExcelService excelService;
+
+    @Reference
     private IdAppService idAppService;
+
+    @Reference
+    private GenerateService generateService;
+
+    @Override
+    public ImportExcelPartsResult importParts(ImportPartsEnter enter) {
+
+        return excelService.readExcelDataByParts(enter);
+    }
+
+    @Override
+    public GeneralResult savePartsList(List<ExpressPartsExcleData> list, ImportPartsEnter enter) {
+
+        OpeParts save = null;
+        List<OpeParts> saveList = new ArrayList<>();
+        String lot = generateService.getOrderNo();
+        for (ExpressPartsExcleData excleData : list) {
+            save = new OpeParts();
+            save.setId(idAppService.getId(SequenceName.OPE_PARTS));
+            save.setDr(0);
+            save.setTenantId(0L);
+            save.setUserId(enter.getUserId());
+            save.setImportLot(lot);
+            save.setStatus(PartsStatusEnums.NORMAL.getValue());
+            save.setPartsType(excleData.getType());
+            save.setSec(excleData.getEsc());
+            save.setPartsNumber(excleData.getPartsN());
+            save.setCnName(excleData.getCnName() == null ? null : excleData.getCnName());
+            save.setFrName(excleData.getFrName() == null ? null : excleData.getFrName());
+            save.setEnName(excleData.getEnName() == null ? null : excleData.getEnName());
+            save.setSnClassFlag(SNClassEnums.getValueByCode(excleData.getSnClass()));
+            save.setPartsQty(0);
+            save.setSupplierId(0L);
+            save.setRevision(0);
+            save.setCreatedBy(enter.getUserId());
+            save.setCreatedTime(new Date());
+            save.setUpdatedBy(enter.getUserId());
+            save.setUpdatedTime(new Date());
+            saveList.add(save);
+        }
+        partsService.batchInsert(saveList);
+        return new GeneralResult(enter.getRequestId());
+    }
 
     /**
      * @param enter
@@ -52,11 +115,11 @@ public class BomRosServiceImpl implements BomRosService {
     @Override
     public PageResult<ScooterListResult> scooterList(ScooterListEnter enter) {
 
-        int count=bomRosServiceMapper.scooterListCount(enter);
+        int count = bomRosServiceMapper.scooterListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<ScooterListResult> scooterListResultList =bomRosServiceMapper.scooterList(enter);
+        List<ScooterListResult> scooterListResultList = bomRosServiceMapper.scooterList(enter);
 
         return null;
     }
