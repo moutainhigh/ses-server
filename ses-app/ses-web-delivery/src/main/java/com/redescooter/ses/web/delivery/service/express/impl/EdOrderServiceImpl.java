@@ -233,10 +233,14 @@ public class EdOrderServiceImpl implements EdOrderService {
             d.setTenantLat(tenantResult.getLatitude().toString());
             d.setTenantLng(tenantResult.getLongitude().toString());
 
-            d.setSendMileage(MapUtil.getDistance(tenantResult.getLatitude().toString(), tenantResult.getLongitude().toString(), d.getSenderLatitude().toString(),
-                    d.getSenderLongitude().toString()));
-            d.setRecipientMileage(MapUtil.getDistance(tenantResult.getLatitude().toString(), tenantResult.getLongitude().toString(), d.getRecipientLatitude().toString(),
-                    d.getRecipientLongitude().toString()));
+            d.setSendMileage(MapUtil.getDistance(tenantResult.getLatitude()==null?"0":tenantResult.getLatitude().toString(),
+                     tenantResult.getLongitude()==null?"0":tenantResult.getLongitude().toString(),
+                    d.getSenderLatitude()==null?"0":d.getSenderLatitude().toString(),
+                    d.getSenderLongitude()==null?"0":d.getSenderLongitude().toString()));
+            d.setRecipientMileage(MapUtil.getDistance(tenantResult.getLatitude()==null?"0":tenantResult.getLatitude().toString(),
+                    tenantResult.getLongitude()==null?"0":tenantResult.getLongitude().toString(),
+                    d.getRecipientLatitude()==null?"0":d.getRecipientLatitude().toString(),
+                    d.getRecipientLongitude()==null?"0":d.getRecipientLongitude().toString()));
 
             d.setExpressOrderTraceResultList(orderNode);
         });
