@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.impl;
 
 import java.math.BigDecimal;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.PartsEventEnums;
 import com.redescooter.ses.api.common.enums.bom.PartsStatusEnums;
@@ -9,6 +10,7 @@ import com.redescooter.ses.api.common.enums.bom.SNClassEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -102,7 +104,9 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Transient
     @Override
-    public GeneralResult edits(List<EditPartsEnter> enters) {
+    public GeneralResult edits(StringEnter enter) {
+
+        List<EditPartsEnter> enters = JSONArray.parseArray(enter.getSt(), EditPartsEnter.class);
 
         List<OpeParts> updates = new ArrayList<>();
         List<OpePartsHistoryRecord> insters = new ArrayList<>();
@@ -123,11 +127,11 @@ public class PartsRosServiceImpl implements PartsRosService {
                     update.setProductionCycle(pat.getProductionCycle());
                     update.setSupplierId(pat.getSupplierId() == 0 ? null : pat.getSupplierId());
                     update.setDwg(pat.getDwg());
-                    update.setUpdatedBy(pat.getUserId());
+                    update.setUpdatedBy(enter.getUserId());
                     update.setUpdatedTime(new Date());
                     //保存记录
                     if (StringUtils.isNotBlank(pat.getPartsNumber())) {
-                        insters.add(getPartsHistoryRecord(byId, PartsEventEnums.ADD.getValue(), pat.getUserId()));
+                        insters.add(getPartsHistoryRecord(byId, PartsEventEnums.ADD.getValue(), enter.getUserId()));
                     }
                     updates.add(update);
                 }
@@ -141,12 +145,14 @@ public class PartsRosServiceImpl implements PartsRosService {
         if (insters.size() > 0) {
             partsHistoryRecordService.saveBatch(insters);
         }
-        return new GeneralResult(enters.get(0).getRequestId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     @Transient
     @Override
-    public GeneralResult adds(List<AddPartsEnter> enters) {
+    public GeneralResult adds(StringEnter enter) {
+
+        List<AddPartsEnter> enters = JSONArray.parseArray(enter.getSt(), AddPartsEnter.class);
 
         List<OpeParts> insters = new ArrayList<>();
 
@@ -157,15 +163,15 @@ public class PartsRosServiceImpl implements PartsRosService {
                 BeanUtils.copyProperties(pat, parts);
                 parts.setId(idAppService.getId(SequenceName.OPE_PARTS));
                 parts.setDr(0);
-                parts.setTenantId(pat.getTenantId());
-                parts.setUserId(pat.getUserId());
+                parts.setTenantId(enter.getTenantId());
+                parts.setUserId(enter.getUserId());
                 parts.setImportLot(lot);
                 parts.setStatus(PartsStatusEnums.NORMAL.getValue());
                 parts.setSupplierId(pat.getSupplierId());
                 parts.setRevision(0);
-                parts.setCreatedBy(pat.getUserId());
+                parts.setCreatedBy(enter.getUserId());
                 parts.setCreatedTime(new Date());
-                parts.setUpdatedBy(pat.getUserId());
+                parts.setUpdatedBy(enter.getUserId());
                 parts.setUpdatedTime(new Date());
                 insters.add(parts);
             });
@@ -173,12 +179,15 @@ public class PartsRosServiceImpl implements PartsRosService {
         if (insters.size() > 0) {
             partsService.saveBatch(insters);
         }
-        return new GeneralResult(enters.get(0).getRequestId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     @Transient
     @Override
-    public GeneralResult deletes(List<IdEnter> enters) {
+    public GeneralResult deletes(StringEnter enter) {
+
+        List<IdEnter> enters = JSONArray.parseArray(enter.getSt(), IdEnter.class);
+
         List<Long> update = new ArrayList<>();
         List<OpePartsHistoryRecord> insters = new ArrayList<>();
         if (enters.size() > 0) {
@@ -186,7 +195,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                 if (dl.getId() != null || dl.getId() != 0) {
                     OpeParts byId = partsService.getById(dl.getId());
                     if (byId != null) {
-                        insters.add(getPartsHistoryRecord(byId, PartsEventEnums.DELETE.getValue(), dl.getUserId()));
+                        insters.add(getPartsHistoryRecord(byId, PartsEventEnums.DELETE.getValue(), enter.getUserId()));
                         update.add(byId.getId());
                     }
                 }
@@ -196,7 +205,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             partsService.removeByIds(update);
             partsHistoryRecordService.saveBatch(insters);
         }
-        return new GeneralResult(enters.get(0).getRequestId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     @Override

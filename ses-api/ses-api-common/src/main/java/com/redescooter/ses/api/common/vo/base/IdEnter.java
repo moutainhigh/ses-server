@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
  * @Version：1.3
  * @create: 2019/12/18 16:32
  */
-@ApiModel(value = "Id入参", description = "Id入参")
+@ApiModel(value = "主键参数", description = "主键参数")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数

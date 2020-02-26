@@ -42,20 +42,20 @@ public class PartsController {
 
     @PostMapping(value = "/adds")
     @ApiOperation(value = "批量添加零部件", response = AddPartsEnter.class)
-    public Response<GeneralResult> adds(@ModelAttribute @ApiParam("请求参数") List<AddPartsEnter> enters) {
-        return new Response<>(partsRosService.adds(enters));
+    public Response<GeneralResult> adds(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+        return new Response<>(partsRosService.adds(enter));
     }
 
     @PostMapping(value = "/edits")
     @ApiOperation(value = "批量编辑零部件", response = EditPartsEnter.class)
-    public Response<GeneralResult> edits(@ModelAttribute @ApiParam("请求参数") List<EditPartsEnter> enter) {
+    public Response<GeneralResult> edits(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(partsRosService.edits(enter));
     }
 
     @PostMapping(value = "/deletes")
-    @ApiOperation(value = "批量删除零部件", response = GeneralResult.class)
-    public Response<GeneralResult> deletes(@ModelAttribute @ApiParam("请求参数") List<IdEnter> enters) {
-        return new Response<>(partsRosService.deletes(enters));
+    @ApiOperation(value = "批量删除零部件", response = IdEnter.class)
+    public Response<GeneralResult> deletes(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+        return new Response<>(partsRosService.deletes(enter));
     }
 
     @PostMapping(value = "/details")

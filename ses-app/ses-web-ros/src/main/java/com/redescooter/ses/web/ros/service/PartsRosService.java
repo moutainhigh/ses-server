@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
 
 import java.util.List;
@@ -35,26 +36,26 @@ public interface PartsRosService {
     /**
      * 批量编辑部件
      *
-     * @param enters
+     * @param enter
      * @return
      */
-    GeneralResult edits(List<EditPartsEnter> enters);
+    GeneralResult edits(StringEnter enter);
 
     /**
      * 批量新增部品
      *
-     * @param enters
+     * @param enter
      * @return
      */
-    GeneralResult adds(List<AddPartsEnter> enters);
+    GeneralResult adds(StringEnter enter);
 
     /**
      * 批量删除
      *
-     * @param enters
+     * @param enter
      * @return
      */
-    GeneralResult deletes(List<IdEnter> enters);
+    GeneralResult deletes(StringEnter enter);
 
     /**
      * 详情
