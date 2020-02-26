@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.vo.bom.parts;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -21,5 +22,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class HistoryPartsResult extends GeneralResult {
 
+    @ApiModelProperty(value = "部品号")
     List<String> list = new ArrayList<>();
 }

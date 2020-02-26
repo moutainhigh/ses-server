@@ -35,19 +35,19 @@ public class PartsController {
     }
 
     @PostMapping(value = "/importParts")
-    @ApiOperation(value = "零部件表格导入", response = GeneralResult.class)
+    @ApiOperation(value = "零部件表格导入", response = ImportExcelPartsResult.class)
     public Response<ImportExcelPartsResult> importParts(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
         return new Response<>(partsRosService.importParts(enter));
     }
 
     @PostMapping(value = "/adds")
-    @ApiOperation(value = "批量添加零部件", response = GeneralResult.class)
+    @ApiOperation(value = "批量添加零部件", response = AddPartsEnter.class)
     public Response<GeneralResult> adds(@ModelAttribute @ApiParam("请求参数") List<AddPartsEnter> enters) {
         return new Response<>(partsRosService.adds(enters));
     }
 
     @PostMapping(value = "/edits")
-    @ApiOperation(value = "批量编辑零部件", response = GeneralResult.class)
+    @ApiOperation(value = "批量编辑零部件", response = EditPartsEnter.class)
     public Response<GeneralResult> edits(@ModelAttribute @ApiParam("请求参数") List<EditPartsEnter> enter) {
         return new Response<>(partsRosService.edits(enter));
     }
@@ -59,21 +59,22 @@ public class PartsController {
     }
 
     @PostMapping(value = "/details")
-    @ApiOperation(value = "零部件详情", response = FactoryResult.class)
+    @ApiOperation(value = "零部件详情", response = DetailsPartsResult.class)
     public Response<DetailsPartsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(partsRosService.details(enter));
     }
 
     @PostMapping(value = "/history")
-    @ApiOperation(value = "零部件历史", response = FactoryResult.class)
+    @ApiOperation(value = "零部件历史", response = HistoryPartsResult.class)
     public Response<HistoryPartsResult> history(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(partsRosService.history(enter));
     }
 
     @PostMapping(value = "/list")
-    @ApiOperation(value = "零部件列表", response = FactoryResult.class)
+    @ApiOperation(value = "零部件列表", response = DetailsPartsResult.class)
     public Response<PageResult<DetailsPartsResult>> list(@ModelAttribute @ApiParam("请求参数") PartListEnter page) {
         return new Response<>(partsRosService.list(page));
-
     }
+
+
 }

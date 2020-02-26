@@ -18,12 +18,6 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class AddPartsEnter extends GeneralEnter {
-    /**
-     * 主键 主键
-     */
-    @ApiModelProperty(value = "主键 主键")
-    private Long id;
-
 
     /**
      * 部品号 部品号

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.bom.parts;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
@@ -30,6 +31,12 @@ public class DetailsPartsResult extends GeneralResult {
      */
     @ApiModelProperty(value = "部品号 部品号")
     private String partsNumber;
+
+    /**
+     * 项目区域 项目区域，全部项目区域AllSEC，F04等该部件在车体什么位置，分类查询，数据来源为数据库设定。
+     */
+    @ApiModelProperty(value = "项目区域 项目区域，全部项目区域AllSEC，F04等该部件在车体什么位置，分类查询，数据来源为数据库设定。")
+    private String sec;
 
     /**
      * 中文名称 中文名称

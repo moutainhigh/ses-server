@@ -83,9 +83,9 @@ public class PartsRosServiceImpl implements PartsRosService {
             save.setPartsType(excleData.getType());
             save.setSec(excleData.getEsc());
             save.setPartsNumber(excleData.getPartsN());
-            save.setCnName(excleData.getCnName() == null ? null : excleData.getCnName());
-            save.setFrName(excleData.getFrName() == null ? null : excleData.getFrName());
-            save.setEnName(excleData.getEnName() == null ? null : excleData.getEnName());
+            save.setCnName(excleData.getCnName());
+            save.setFrName(excleData.getFrName());
+            save.setEnName(excleData.getEnName());
             save.setSnClassFlag(SNClassEnums.getValueByCode(excleData.getSnClass()));
             save.setPartsQty(0);
             save.setSupplierId(0L);
@@ -113,16 +113,16 @@ public class PartsRosServiceImpl implements PartsRosService {
                     //todo 更新验证
                     OpeParts update = new OpeParts();
                     update.setId(byId.getId());
-                    update.setPartsType(pat.getPartsType() == null ? null : pat.getPartsType());
-                    update.setSec(pat.getSec() == null ? null : pat.getSec());
-                    update.setPartsNumber(pat.getPartsNumber() == null ? null : pat.getPartsNumber());
-                    update.setCnName(pat.getCnName() == null ? null : pat.getCnName());
-                    update.setFrName(pat.getFrName() == null ? null : pat.getFrName());
-                    update.setEnName(pat.getEnName() == null ? null : pat.getEnName());
-                    update.setSnClassFlag(pat.getSnClassFlag() == null ? null : pat.getSnClassFlag());
-                    update.setProductionCycle(pat.getProductionCycle() == null ? null : pat.getProductionCycle());
+                    update.setPartsType(pat.getPartsType());
+                    update.setSec(pat.getSec());
+                    update.setPartsNumber(pat.getPartsNumber());
+                    update.setCnName(pat.getCnName());
+                    update.setFrName(pat.getFrName());
+                    update.setEnName(pat.getEnName());
+                    update.setSnClassFlag(pat.getSnClassFlag());
+                    update.setProductionCycle(pat.getProductionCycle());
                     update.setSupplierId(pat.getSupplierId() == 0 ? null : pat.getSupplierId());
-                    update.setDwg(pat.getDwg() == null ? null : pat.getDwg());
+                    update.setDwg(pat.getDwg());
                     update.setUpdatedBy(pat.getUserId());
                     update.setUpdatedTime(new Date());
                     //保存记录
@@ -154,22 +154,20 @@ public class PartsRosServiceImpl implements PartsRosService {
             String lot = generateService.getOrderNo();
             enters.forEach(pat -> {
                 OpeParts parts = new OpeParts();
-                if (pat.getId() == null || pat.getId() == 0) {
-                    BeanUtils.copyProperties(pat, parts);
-                    parts.setId(idAppService.getId(SequenceName.OPE_PARTS));
-                    parts.setDr(0);
-                    parts.setTenantId(pat.getTenantId());
-                    parts.setUserId(pat.getUserId());
-                    parts.setImportLot(lot);
-                    parts.setStatus(PartsStatusEnums.NORMAL.getValue());
-                    parts.setSupplierId(pat.getSupplierId());
-                    parts.setRevision(0);
-                    parts.setCreatedBy(pat.getUserId());
-                    parts.setCreatedTime(new Date());
-                    parts.setUpdatedBy(pat.getUserId());
-                    parts.setUpdatedTime(new Date());
-                    insters.add(parts);
-                }
+                BeanUtils.copyProperties(pat, parts);
+                parts.setId(idAppService.getId(SequenceName.OPE_PARTS));
+                parts.setDr(0);
+                parts.setTenantId(pat.getTenantId());
+                parts.setUserId(pat.getUserId());
+                parts.setImportLot(lot);
+                parts.setStatus(PartsStatusEnums.NORMAL.getValue());
+                parts.setSupplierId(pat.getSupplierId());
+                parts.setRevision(0);
+                parts.setCreatedBy(pat.getUserId());
+                parts.setCreatedTime(new Date());
+                parts.setUpdatedBy(pat.getUserId());
+                parts.setUpdatedTime(new Date());
+                insters.add(parts);
             });
         }
         if (insters.size() > 0) {
