@@ -38,5 +38,5 @@ public class ScooterListResult extends GeneralResult {
     private int qty;
 
     @ApiModelProperty(value = "生产周期")
-    private int productionCycle;
+    private String productionCycle;
 }

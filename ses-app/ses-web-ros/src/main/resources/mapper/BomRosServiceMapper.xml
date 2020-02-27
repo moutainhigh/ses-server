@@ -1,10 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.BomRosServiceMapper">
-    <select id="scooterListCount" resultType="java.lang.Integer">
 
+    <sql id="where_ScooterList">
+        where ass.dr = 0
+        <if test="keyword != null and keyword != ''">
+            and (ass.cn_name = #{keyword}
+            or ass.fr_name = #{keyword}
+            or ass.en_name= #{keyword}
+            or ass.ass_number = #{keyword}
+            )
+        </if>
+    </sql>
+
+    <sql id="where_ScotoerPartList">
+        where parts.dr = 0
+        and parts.sec = #{sec}
+        <if test="keyword != null and keyword != ''">
+            and (
+            parts.parts_number=#{keyword}
+            or parts.en_name = #{keyword}
+            or parts.cn_name = #{keyword}
+            )
+        </if>
+    </sql>
+
+    <select id="scooterListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_parts_assembly ass
+        <include refid="where_ScooterList"/>
     </select>
     <select id="scooterList" resultType="com.redescooter.ses.web.ros.vo.bom.ScooterListResult">
-
+        select ass.id as id,
+        ass.ass_number as productN,
+        ass.en_name as productName,
+        ass.in_qty as qty,
+        ass.production_cycle as productionCycle
+        from ope_parts_assembly ass
+        <include refid="where_ScooterList"/>
+        order by ass.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="UsingProductNumList" resultType="java.lang.String">
+        select productN.*
+        from (
+                 select parts.parts_number as productN
+                 from ope_parts parts
+                 where parts.dr=0
+                 union all
+                 select ass.ass_number as productN
+                 from ope_parts_assembly ass
+                 where ass.dr=0
+             ) productN
+    </select>
+    <select id="secList" resultType="com.redescooter.ses.web.ros.vo.bom.SecResult">
+        select sec.id   as id,
+               sec.name as name,
+               sec.code as code,
+               sec.note as description
+        from ope_parts_sec sec
+        where sec.dr = 0
+    </select>
+    <select id="ScotoerPartListCount" resultType="java.lang.Integer">
+        select *
+        from ope_parts parts
+        <include refid="where_ScotoerPartList"></include>
+    </select>
+    <select id="ScotoerPartList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
+        select parts.id as id,
+        parts.parts_number as partsN,
+        parts.sec as sec,
+        parts.en_name as partsEnName,
+        parts.cn_name as partsCnName,
+        parts.production_cycle as productionCycle
+        from ope_parts parts
+        <include refid="where_ScotoerPartList"></include>
+        order by parts.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="scooterDeatilPartList" resultType="com.redescooter.ses.web.ros.vo.bom.PartListEnter">
+        select parts.id as id,
+        parts.parts_number as partsN,
+        parts.sec as sec,
+        parts.en_name as partsEnName,
+        parts.cn_name as partsCnName,
+        parts.production_cycle as productionCycle,
+        ass.parts_qty as qty
+        from ope_parts_assembly_b ass
+        inner join ope_parts parts on ass.parts_id = parts.id and parts.dr = 0
+        where ass.dr = 0
+        and ass.parts_assembly_id =#{id}
     </select>
 </mapper>

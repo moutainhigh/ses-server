@@ -37,7 +37,7 @@ public class SaveScooterEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "生产周期",required = true)
     @NotNull(code = ValidationExceptionCode.PRODUCT_CYCLE_IS_EMPTY,message = "产品生产周期为空")
-    private Integer procurementCycle;
+    private String procurementCycle;
 
     @ApiModelProperty(value = "配件列表，json 格式 ",required = true)
     private String partList;
