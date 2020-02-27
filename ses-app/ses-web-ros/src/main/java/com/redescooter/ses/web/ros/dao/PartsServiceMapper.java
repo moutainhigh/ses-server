@@ -37,6 +37,6 @@ public interface PartsServiceMapper {
      * @param partsId
      * @return
      */
-    List<HistoryPartsDto> historyList(@Param("partsId") long partsId);
+    List<HistoryPartsDto> historyList(@Param("partsId") long partsId, @Param("userId") long userId);
 
 }
