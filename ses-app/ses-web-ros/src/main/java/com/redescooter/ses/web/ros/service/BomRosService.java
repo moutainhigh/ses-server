@@ -17,6 +17,9 @@ import com.redescooter.ses.web.ros.vo.bom.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.ScooterListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 
 /**
  * @ClassName:BomRosService
@@ -35,7 +38,7 @@ public interface BomRosService {
      * @date: 2020/2/25 10:31
      * @Version: Ros 1.2
      */
-   PageResult<ScooterListResult> scooterList(ScooterListEnter enter);
+    PageResult<ScooterListResult> scooterList(ScooterListEnter enter);
 
     /**
      * @desc: 保存整车
@@ -45,7 +48,7 @@ public interface BomRosService {
      * @date: 2020/2/25 10:36
      * @Version: Ros 1.2
      */
-   GeneralResult saveScooter(SaveScooterEnter enter);
+    GeneralResult saveScooter(SaveScooterEnter enter);
 
     /**
      * @desc: sec 区域查询
@@ -55,7 +58,8 @@ public interface BomRosService {
      * @date: 2020/2/25 12:33
      * @Version: Ros 1.2
      */
-   List<SecResult> secList(GeneralEnter enter);
+    List<SecResult> secList(GeneralEnter enter);
+
     /**
      * @desc: 详情部件列表查询
      * @param: SaveScooterPartListEnter
@@ -64,7 +68,8 @@ public interface BomRosService {
      * @date: 2020/2/25 12:43
      * @Version: Ros 1.2
      */
-   PageResult<QueryPartListResult> partList(QueryPartListEnter enter);
+    PageResult<QueryPartListResult> partList(QueryPartListEnter enter);
+
     /**
      * @desc: 整车详情
      * @param: enter
@@ -74,6 +79,7 @@ public interface BomRosService {
      * @Version: Ros 1.2
      */
     ScooterDetailResult scooterDetail(IdEnter enter);
+
     /**
      * @desc: 删除整车的配件
      * @param: enter
@@ -83,6 +89,7 @@ public interface BomRosService {
      * @Version: Ros 1.2
      */
     GeneralResult deleteScooterPart(DeletePartEnter enter);
+
     /**
      * @desc: 删除整车
      * @param: enter
@@ -122,6 +129,7 @@ public interface BomRosService {
      * @Version: Ros 1.2
      */
     GeneralResult deleteCombinationPart(DeletePartEnter enter);
+
     /**
      * @desc: 删除套餐
      * @param: enter
@@ -142,5 +150,5 @@ public interface BomRosService {
      */
     GeneralResult saveCombination(SaveCombinationEnter enter);
 
-    
+
 }

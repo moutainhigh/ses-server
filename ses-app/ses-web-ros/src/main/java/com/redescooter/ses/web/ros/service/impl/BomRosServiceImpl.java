@@ -1,24 +1,11 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.alibaba.fastjson.JSONArray;
-import com.redescooter.ses.api.common.enums.bom.BomServiceTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.BomRosServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpePartsAssembly;
-import com.redescooter.ses.web.ros.dm.OpePartsAssemblyB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.BomRosService;
@@ -27,7 +14,6 @@ import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyService;
 import com.redescooter.ses.web.ros.vo.bom.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.bom.CombinationResult;
 import com.redescooter.ses.web.ros.vo.bom.DeletePartEnter;
-import com.redescooter.ses.web.ros.vo.bom.PartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SaveCombinationEnter;
@@ -36,6 +22,12 @@ import com.redescooter.ses.web.ros.vo.bom.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.ScooterListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @ClassName:BomRosServiceImpl
@@ -44,13 +36,14 @@ import com.redescooter.ses.web.ros.vo.bom.SecResult;
  * @Version：1.3
  * @create: 2020/02/26 16:17
  */
+@Slf4j
 @Service
 public class BomRosServiceImpl implements BomRosService {
 
     @Autowired
     private BomRosServiceMapper bomRosServiceMapper;
 
-    @Autowired
+    @Reference
     private IdAppService idAppService;
 
     @Autowired

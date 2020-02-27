@@ -69,7 +69,8 @@ public enum ExceptionCodeEnums {
 
     EMAIL_ALREADY_EXISTS(10026, "邮箱已存在"),
 
-    DATA_ILLEGAL(10027,"数据非法，请重新输入"),
+    DATA_EXCEPTION(10027, "参数数据异常或格式错误"),
+
 
     //30之后是业务错误码
     FIRST_NAME_CANNOT_EMPTY(10030, "名字不能为空"),
@@ -122,14 +123,13 @@ public enum ExceptionCodeEnums {
 
     CUSTOMER_INDUSTRYTYPE_IS_NOT_EDIT(10054, "正式客户客户行业不可编辑"),
 
-    DATA_EXCEPTION(10055,"数据合适不正确"),
+    FILE_TEMPLATE_IS_INVALID(10055, "文件模板不合法，请重新下载文件模板"),
 
     PRODUCTN_IS_EXIST(10056,"产品编号已存在，请重新输入"),
 
     PRODUCT_IS_NOT_EXIST(10057,"产品不存在"),
 
     SCOOTER_HAS_NO_PARTS(10058,"车辆暂无部品,不可删除"),
-
 
 
     ;

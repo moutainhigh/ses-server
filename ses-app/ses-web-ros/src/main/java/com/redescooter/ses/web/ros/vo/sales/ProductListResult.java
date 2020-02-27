@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.vo.bom.PartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
