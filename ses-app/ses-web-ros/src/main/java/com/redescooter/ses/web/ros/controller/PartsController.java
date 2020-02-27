@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.controller;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.dm.OpePartsType;
 import com.redescooter.ses.web.ros.service.BomRosService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
@@ -37,6 +38,11 @@ public class PartsController {
     @ApiOperation(value = "状态统计", response = MapResult.class)
     public Response<MapResult> commonCountStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(partsRosService.commonCountStatus(enter));
+    }
+
+    @ApiOperation(value = "状态统计", response = MapResult.class)
+    public Response<List<PartsTypeResult>> typeCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(partsRosService.typeCount(enter));
     }
 
     @PostMapping(value = "/importParts")

@@ -53,8 +53,8 @@ public class RtDashboardController {
     }
 
     @PostMapping(value = "/map")
-    @ApiOperation(value = "地图", response = MapResult.class)
-    public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    @ApiOperation(value = "地图", response = MapRsesult.class)
+    public Response<MapRsesult> map(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(rtDashboardService.map(enter));
     }
 

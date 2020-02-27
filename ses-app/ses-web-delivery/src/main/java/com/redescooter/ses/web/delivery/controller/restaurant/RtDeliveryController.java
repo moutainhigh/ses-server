@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.delivery.controller.restaurant;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.MapResult;
 import com.redescooter.ses.web.delivery.service.RtDeliveryService;
 import com.redescooter.ses.web.delivery.vo.*;
 import io.swagger.annotations.Api;
@@ -72,8 +73,8 @@ public class RtDeliveryController {
     }
 
     @PostMapping(value = "/map")
-    @ApiOperation(value = "地图", response = MapResult.class)
-    public Response<MapResult> map(@ModelAttribute @ApiParam("请求参数") MapEnter enter) {
+    @ApiOperation(value = "地图", response = MapRsesult.class)
+    public Response<MapRsesult> map(@ModelAttribute @ApiParam("请求参数") MapEnter enter) {
         return new Response<>(rtDeliveryService.map(enter));
     }
 

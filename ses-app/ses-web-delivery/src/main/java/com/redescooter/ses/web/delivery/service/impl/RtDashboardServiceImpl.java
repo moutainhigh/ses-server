@@ -95,7 +95,7 @@ public class RtDashboardServiceImpl implements RtDashboardService {
      * @return
      */
     @Override
-    public MapResult map(GeneralEnter enter) {
+    public MapRsesult map(GeneralEnter enter) {
         // 查询门店信息
         QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
 
@@ -115,7 +115,7 @@ public class RtDashboardServiceImpl implements RtDashboardService {
             scooterMapResultList.add(scooter);
         });
 
-        return MapResult.builder()
+        return MapRsesult.builder()
                 .tenantId(tenant.getId())
                 .tenantLat(tenant.getLatitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLatitude()))
                 .tenantLng(tenant.getLongitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLongitude()))

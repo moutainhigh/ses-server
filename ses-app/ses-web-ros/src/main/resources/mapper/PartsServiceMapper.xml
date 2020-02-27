@@ -1,30 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.PartsServiceMapper">
-    <sql id="where_query_list">
+    <sql id="field_query_parts_listt">
+       op.id,
+       op.Import_lot,
+       op.parts_type,
+       op.sec,
+       op.parts_number,
+       op.cn_name,
+       op.fr_name,
+       op.en_name,
+       case when (op.sn_class_flag='1') then 'SC' else 'SSC' end as snClassFlag,
+       op.parts_qty,
+       op.production_cycle,
+       op.supplier_id,
+       op.dwg,
+       op.note,
+       op.revision,
+       op.updated_time,
+       case when (count(ophr.id) = 0) then false else true end as packCount
+    </sql>
+    <sql id="where_query_parts_list">
         <where>
-            and dr = 0
-            and user_id=#{userId}
+            and op.dr = 0
+            and op.user_id=#{userId}
             <if test="sec != null and sec != ''">
-                and sec =#{sec}
+                and op.sec =#{sec}
+            </if>
+            <if test="importLot != null and importLot != ''">
+                and op.Import_lot=#{importLot}
             </if>
             <if test="keyword != null and keyword != ''">
-                and (cn_name like concat("%",#{keyword},"%")
-                or en_name like concat("%",#{keyword},"%")
-                or fr_name like concat("%",#{keyword},"%"))
+                and (op.cn_name like concat("%",#{keyword},"%")
+                or op.en_name like concat("%",#{keyword},"%")
+                or op.fr_name like concat("%",#{keyword},"%"))
             </if>
         </where>
     </sql>
+    <sql id="group_by_parts_list">
+         op.id,
+         op.Import_lot,
+         op.parts_type,
+         op.sec,
+         op.parts_number,
+         op.cn_name,
+         op.fr_name,
+         op.en_name,
+         op.sn_class_flag,
+         op.parts_qty,
+         op.production_cycle,
+         op.supplier_id,
+         op.dwg,
+         op.note,
+         op.revision,
+         op.updated_time
+    </sql>
     <select id="listCount" resultType="int">
         select count(*)
-        from ope_parts
-        <include refid="where_query_list"/>
+        from ope_parts op
+        <include refid="where_query_parts_list"/>
     </select>
     <select id="list" resultType="com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult">
-        select *
-        from ope_parts
-        <include refid="where_query_list"/>
-        order by created_time desc
+        select
+        <include refid="field_query_parts_listt"/>
+        from ope_parts op
+        left join ope_parts_history_record ophr on op.id = ophr.parts_id and ophr.dr = 0
+        <include refid="where_query_parts_list"/>
+        group by
+        <include refid="group_by_parts_list"/>
+        order by op.created_time desc
         limit #{startRow},#{pageSize}
     </select>
 </mapper>

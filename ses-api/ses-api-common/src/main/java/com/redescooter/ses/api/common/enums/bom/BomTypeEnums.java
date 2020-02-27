@@ -14,12 +14,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum  BomTypeEnums {
+public enum BomTypeEnums {
 
-    All("All","所有的","1"),
-    PARTS("PARTS","零部件","2"),
-    ACCESSORY("ACCESSORY","配件","3"),
-    BATTERY("BATTERY","电池","4");
+    PARTS("PARTS", "零部件", "1"),
+    ACCESSORY("ACCESSORY", "配件", "2"),
+    BATTERY("BATTERY", "电池", "3");
 
     private String code;
 

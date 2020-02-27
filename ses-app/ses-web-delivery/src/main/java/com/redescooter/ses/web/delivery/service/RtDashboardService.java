@@ -44,7 +44,7 @@ public interface RtDashboardService {
      * @param enter
      * @return
      */
-    MapResult map(GeneralEnter enter);
+    MapRsesult map(GeneralEnter enter);
 
     /**
      * 仪表盘订单柱状图

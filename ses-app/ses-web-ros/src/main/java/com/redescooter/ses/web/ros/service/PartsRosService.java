@@ -24,6 +24,14 @@ public interface PartsRosService {
     MapResult commonCountStatus(GeneralEnter enter);
 
     /**
+     * 部品类型列表
+     *
+     * @param enter
+     * @return
+     */
+    List<PartsTypeResult> typeCount(GeneralEnter enter);
+
+    /**
      * 导入零部件
      *
      * @param enter
@@ -37,7 +45,7 @@ public interface PartsRosService {
      * @param enter
      * @return
      */
-    GeneralResult savePartsList(List<ExpressPartsExcleData> list, ImportPartsEnter enter);
+    ImportExcelPartsResult savePartsList(List<ExpressPartsExcleData> list, ImportPartsEnter enter);
 
 
     /**
