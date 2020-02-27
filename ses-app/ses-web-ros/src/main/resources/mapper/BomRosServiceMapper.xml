@@ -78,17 +78,17 @@
         order by parts.created_time desc
         limit #{startRow},#{pageSize}
     </select>
-    <select id="scooterDeatilPartList" resultType="com.redescooter.ses.web.ros.vo.bom.PartListEnter">
-        select parts.id as id,
-        parts.parts_number as partsN,
-        parts.sec as sec,
-        parts.en_name as partsEnName,
-        parts.cn_name as partsCnName,
-        parts.production_cycle as productionCycle,
-        ass.parts_qty as qty
-        from ope_parts_assembly_b ass
-        inner join ope_parts parts on ass.parts_id = parts.id and parts.dr = 0
-        where ass.dr = 0
-        and ass.parts_assembly_id =#{id}
-    </select>
+<!--    <select id="scooterDeatilPartList" resultType="com.redescooter.ses.web.ros.vo.bom.PartListEnter">-->
+    <!--        select parts.id as id,-->
+    <!--        parts.parts_number as partsN,-->
+    <!--        parts.sec as sec,-->
+    <!--        parts.en_name as partsEnName,-->
+    <!--        parts.cn_name as partsCnName,-->
+    <!--        parts.production_cycle as productionCycle,-->
+    <!--        ass.parts_qty as qty-->
+    <!--        from ope_parts_assembly_b ass-->
+    <!--        inner join ope_parts parts on ass.parts_id = parts.id and parts.dr = 0-->
+    <!--        where ass.dr = 0-->
+    <!--        and ass.parts_assembly_id =#{id}-->
+    <!--    </select>-->
 </mapper>

@@ -80,14 +80,7 @@ public class ExcelServiceImpl implements ExcelService {
             return result;
         }
 
-        partsRosService.savePartsList(successList, enter);
-
-        //数据返回
-        result.setSuccess(Boolean.TRUE);
-        result.setSuccessNum(successList.size());
-        result.setFailNum(failList.size());
-        result.setRequestId(enter.getRequestId());
-        return result;
+        return partsRosService.savePartsList(successList, enter);
     }
 
     @Override

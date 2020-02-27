@@ -68,7 +68,7 @@ import com.redescooter.ses.web.delivery.vo.DriverDeliveryInfoResult;
 import com.redescooter.ses.web.delivery.vo.ListDeliveryPage;
 import com.redescooter.ses.web.delivery.vo.ListDeliveryResult;
 import com.redescooter.ses.web.delivery.vo.MapEnter;
-import com.redescooter.ses.web.delivery.vo.MapResult;
+import com.redescooter.ses.web.delivery.vo.MapRsesult;
 import com.redescooter.ses.web.delivery.vo.SaveOrderDeliveryEnter;
 import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateEnter;
 import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateResult;
@@ -363,12 +363,12 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @return
      */
     @Override
-    public MapResult map(MapEnter enter) {
+    public MapRsesult map(MapEnter enter) {
         // 查询门店信息
         QueryTenantResult tenant = tenantBaseService.queryTenantById(new IdEnter(enter.getTenantId()));
 
         if (tenant == null) {
-            return new MapResult();
+            return new MapRsesult();
         }
         // 司机车辆分配数据
         List<ScooterMapResult> scooterMapList = orderDeliveryServiceMapper.scooterMap(enter);
@@ -393,7 +393,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
                 deliveryMapResultList.add(delivery);
             });
         }
-        return MapResult.builder()
+        return MapRsesult.builder()
                 .tenantId(tenant.getId())
                 .tenantLat(tenant.getLatitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLatitude()))
                 .tenantLng(tenant.getLongitude() == null ? String.valueOf(BigDecimal.ZERO) : String.valueOf(tenant.getLongitude()))

@@ -29,6 +29,9 @@ public class PartListEnter extends PageEnter {
     @ApiModelProperty(value = "部件区域")
     private String sec;
 
+    @ApiModelProperty(value = "导入批次号")
+    private String importLot;
+
     @ApiModelProperty(value = "关键字查询")
     private String keyword;
 

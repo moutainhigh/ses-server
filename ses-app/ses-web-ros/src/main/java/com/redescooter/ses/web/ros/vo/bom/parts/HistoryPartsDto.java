@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,8 +21,10 @@ import java.util.List;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class HistoryPartsResult extends GeneralResult {
-
+public class HistoryPartsDto extends GeneralResult {
     @ApiModelProperty(value = "部品号")
-    List<HistoryPartsDto> list = new ArrayList<>();
+    private String partsNumber;
+
+    @ApiModelProperty(value = "时间")
+    private Date createdTime;
 }

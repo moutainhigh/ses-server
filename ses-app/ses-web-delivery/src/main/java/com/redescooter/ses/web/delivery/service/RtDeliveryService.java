@@ -71,7 +71,7 @@ public interface RtDeliveryService {
      * @param enter
      * @return
      */
-    MapResult map(MapEnter enter);
+    MapRsesult map(MapEnter enter);
 
     /**
      * 车牌号列表

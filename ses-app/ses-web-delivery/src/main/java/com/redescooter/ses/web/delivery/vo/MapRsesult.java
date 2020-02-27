@@ -21,7 +21,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Builder
 @Data
-public class MapResult extends GeneralResult {
+public class MapRsesult extends GeneralResult {
 
     private Long tenantId;
 
