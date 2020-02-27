@@ -129,7 +129,7 @@ public enum ExceptionCodeEnums {
 
     PRODUCT_IS_NOT_EXIST(10057,"产品不存在"),
 
-    SCOOTER_HAS_NO_PARTS(10058,"车辆暂无部品,不可删除"),
+    PRODUCT_HAS_NO_PARTS(10058,"产品暂未添加部品,不可删除"),
 
 
     ;

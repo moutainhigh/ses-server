@@ -6,20 +6,18 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.bom.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.bom.CombinationResult;
-import com.redescooter.ses.web.ros.vo.bom.DeletePartEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
-import com.redescooter.ses.web.ros.vo.bom.SaveCombinationEnter;
-import com.redescooter.ses.web.ros.vo.bom.SaveScooterEnter;
-import com.redescooter.ses.web.ros.vo.bom.ScooterDetailResult;
-import com.redescooter.ses.web.ros.vo.bom.ScooterListEnter;
-import com.redescooter.ses.web.ros.vo.bom.ScooterListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
-import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationDetailResult;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult;
+import com.redescooter.ses.web.ros.vo.bom.combination.DeletePartEnter;
+import com.redescooter.ses.web.ros.vo.bom.combination.SaveCombinationEnter;
+import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
+import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
+import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
+import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
 
 /**
  * @ClassName:BomRosService
@@ -108,7 +106,17 @@ public interface BomRosService {
      * @date: 2020/2/25 14:03
      * @Version: Ros 1.2
      */
-    PageResult<CombinationResult> combinationList(CombinationListEnter enter);
+    PageResult<CombinationListResult> combinationList(CombinationListEnter enter);
+
+    /**
+     * @desc: 列表部件列表
+     * @param: enter
+     * @retrn: List<QueryPartListResult>
+     * @auther: alex
+     * @date: 2020/2/27 11:44
+     * @Version: Ros 1.2
+     */
+    List<QueryPartListResult> combinationListPartList(IdEnter enter);
 
     /**
      * @desc: 套餐详情
@@ -118,7 +126,7 @@ public interface BomRosService {
      * @date: 2020/2/25 14:05
      * @Version: Ros 1.2
      */
-    CombinationResult combinationDetail(IdEnter enter);
+    CombinationDetailResult combinationDetail(IdEnter enter);
 
     /**
      * @desc: 删除套餐里的部件

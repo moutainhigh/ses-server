@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.bom;
+package com.redescooter.ses.web.ros.vo.bom.combination;
 
 import java.util.List;
 

@@ -1,11 +1,20 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.PartsEventEnums;
-import com.redescooter.ses.api.common.enums.bom.PartsStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.SNClassEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -23,18 +32,16 @@ import com.redescooter.ses.web.ros.service.ExcelService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsHistoryRecordService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
-import com.redescooter.ses.web.ros.vo.bom.parts.*;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Transient;
+import com.redescooter.ses.web.ros.vo.bom.parts.AddPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.EditPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
+import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @ClassName PartsRosServiceImpl
@@ -83,7 +90,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             save.setTenantId(0L);
             save.setUserId(enter.getUserId());
             save.setImportLot(lot);
-            save.setStatus(PartsStatusEnums.NORMAL.getValue());
+            save.setStatus(BomStatusEnums.NORMAL.getValue());
             save.setPartsType(excleData.getType());
             save.setSec(excleData.getEsc());
             save.setPartsNumber(excleData.getPartsN());
@@ -178,7 +185,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                 parts.setTenantId(enter.getTenantId());
                 parts.setUserId(enter.getUserId());
                 parts.setImportLot(lot);
-                parts.setStatus(PartsStatusEnums.NORMAL.getValue());
+                parts.setStatus(BomStatusEnums.NORMAL.getValue());
                 parts.setSupplierId(pat.getSupplierId());
                 parts.setRevision(0);
                 parts.setCreatedBy(enter.getUserId());

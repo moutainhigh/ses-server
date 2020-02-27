@@ -39,6 +39,12 @@ public class QueryPartListResult extends GeneralResult {
     @ApiModelProperty(value = "中文名称")
     private String partsCnName;
 
+    @ApiModelProperty(value = "法文名称")
+    private String partsFrName;
+
     @ApiModelProperty(value = "生产周期")
     private String productionCycle;
+
+    @ApiModelProperty(value = "数量")
+    private Integer qty;
 }

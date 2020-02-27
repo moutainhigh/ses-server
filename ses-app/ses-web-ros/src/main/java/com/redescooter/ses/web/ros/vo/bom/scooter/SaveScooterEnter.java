@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.bom;
+package com.redescooter.ses.web.ros.vo.bom.scooter;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -26,6 +26,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class SaveScooterEnter extends GeneralEnter {
+
+    @ApiModelProperty(value = "id",required = false)
+    private Long id;
 
     @ApiModelProperty(value = "产品编号",required = true)
     @NotNull(code = ValidationExceptionCode.PRODUCT_NUM_IS_EMPTY,message = "产品编号为空")

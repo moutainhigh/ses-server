@@ -5,9 +5,11 @@ import java.util.List;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
-import com.redescooter.ses.web.ros.vo.bom.ScooterListEnter;
-import com.redescooter.ses.web.ros.vo.bom.ScooterListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult;
+import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
+import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
 
 /**
  * @ClassName:BomRosServiceMapper
@@ -40,6 +42,7 @@ public interface BomRosServiceMapper {
 
     /**
      * 使用中的产品编号
+     *
      * @param enter
      * @return
      */
@@ -63,7 +66,7 @@ public interface BomRosServiceMapper {
      * @date: 2020/2/26 19:03
      * @Version: Ros 1.2
      */
-    int ScotoerPartListCount(QueryPartListEnter enter);
+    int partListCount(QueryPartListEnter enter);
 
     /**
      * @desc: 保存整车的部件列表
@@ -73,15 +76,35 @@ public interface BomRosServiceMapper {
      * @date: 2020/2/26 19:03
      * @Version: Ros 1.2
      */
-    List<QueryPartListResult> ScotoerPartList(QueryPartListEnter enter);
+    List<QueryPartListResult> partList(QueryPartListEnter enter);
 
     /**
-     * @desc: 整车详情
+     * @desc: 产品的详情 部品列表（整车，套餐）
      * @paam: enter
      * @retrn: List<PartListEnter>
      * @auther: alex
      * @date: 2020/2/26 19:21
      * @Version: Ros 1.2
      */
-//    List<PartListEnter> scooterDeatilPartList(Long id);
+    List<QueryPartListResult> productDeatilPartList(Long id);
+
+    /**
+     * @desc: 套餐列表
+     * @paam: enter
+     * @retrn: int
+     * @auther: alex
+     * @date: 2020/2/27 11:24
+     * @Version: Ros 1.2
+     */
+    int combinationListCount(CombinationListEnter enter);
+
+    /**
+     * @desc: 套餐详情
+     * @param: enter
+     * @retrn: List<CombinationResult>
+     * @auther: alex
+     * @date: 2020/2/27 11:25
+     * @Version: Ros 1.2
+     */
+    List<CombinationListResult> combinationList(CombinationListEnter enter);
 }

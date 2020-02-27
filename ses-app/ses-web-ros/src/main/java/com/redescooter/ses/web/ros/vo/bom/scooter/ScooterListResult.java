@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.bom;
+package com.redescooter.ses.web.ros.vo.bom.scooter;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 
@@ -32,7 +32,13 @@ public class ScooterListResult extends GeneralResult {
     private String productN;
 
     @ApiModelProperty(value = "产品名称")
-    private String productName;
+    private String productCnName;
+
+    @ApiModelProperty(value = "产品名称")
+    private String productEnName;
+
+    @ApiModelProperty(value = "产品名称")
+    private String productFrName;
 
     @ApiModelProperty(value = "数量")
     private int qty;
