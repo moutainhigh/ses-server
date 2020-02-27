@@ -61,17 +61,17 @@ public interface ValidationExceptionCode {
     //合同附件不能为空
     int CONTRACT_ANNEX_IS_EMPTY = 10045;
     // 产品编号为空
-    int PRODUCT_NUM_IS_EMPTY = 10046;
+    int PRODUCT_NUM_IS_EMPTY=10046;
     // 产品英文名字为空
-    int PRODUCT_EN_NAME_IS_EMPTY = 10047;
+    int PRODUCT_EN_NAME_IS_EMPTY =10047;
     //产品价格为空
-    int PRODUCT_CYCLE_IS_EMPTY = 10048;
+    int PRODUCT_CYCLE_IS_EMPTY=10048;
     // 产品法文名字为空
-    int PRODUCT_FR_NAME_IS_EMPTY = 10049;
+    int PRODUCT_FR_NAME_IS_EMPTY=10049;
     //产品中文名字为空
-    int PRODUCT_CN_NAME_IS_EMPTY = 10050;
+    int PRODUCT_CN_NAME_IS_EMPTY =10050;
     // 产品法国报价为空
-    int PRODUCT_FR_PRICE_IS_EMPTY = 10051;
+    int PRODUCT_FR_PRICE_IS_EMPTY=10051;
     // 产品英国报价为空
     int PRODUCT_EN_PRICE_IS_EMPTY = 10052;
     //部品号为空
@@ -82,5 +82,8 @@ public interface ValidationExceptionCode {
     int PARTS_SEC_IS_EMPTY = 10055;
     //是否可销售为空
     int PARTS_SN_CLASS_IS_EMPTY = 10056;
+    int PRODUCT_EN_PRICE_IS_EMPTY=10052;
+    // 数量为空
+    int QTY_IS_EMPTY=10053;
 
 }
