@@ -22,6 +22,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class HistoryPartsResult extends GeneralResult {
 
-    @ApiModelProperty(value = "部品号")
+    @ApiModelProperty(value = "历史记录")
     List<HistoryPartsDto> list = new ArrayList<>();
 }

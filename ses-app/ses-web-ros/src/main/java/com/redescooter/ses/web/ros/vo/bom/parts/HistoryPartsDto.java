@@ -13,7 +13,6 @@ import java.util.Date;
  * @date 2020/02/26 23:09
  * @Description:
  */
-@ApiModel(value = "部品历史记录", description = "部品历史记录")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -21,7 +20,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 public class HistoryPartsDto extends GeneralResult {
 
-    @ApiModelProperty(value = "主键 主键")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
     @ApiModelProperty(value = "部品号")

@@ -31,7 +31,7 @@ public class AddPartsEnter extends GeneralEnter {
     /**
      * 部品号
      */
-    @ApiModelProperty(value = "部品号 ")
+    @ApiModelProperty(value = "部品号")
     @NotNull(code = ValidationExceptionCode.PARTS_NUM_IS_EMPTY, message = "部品号 为空")
     private String partsNumber;
 }

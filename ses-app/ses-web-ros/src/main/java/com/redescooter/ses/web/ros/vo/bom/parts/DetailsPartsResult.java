@@ -28,7 +28,7 @@ public class DetailsPartsResult extends GeneralResult {
     @ApiModelProperty(value = "主键")
     private Long id;
 
-    @ApiModelProperty(value="用户ID 用户ID")
+    @ApiModelProperty(value="用户ID")
     private Long userId;
 
     /**
