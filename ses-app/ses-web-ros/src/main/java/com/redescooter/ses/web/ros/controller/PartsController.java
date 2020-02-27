@@ -1,17 +1,35 @@
 package com.redescooter.ses.web.ros.controller;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.web.ros.service.BomRosService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
-import com.redescooter.ses.web.ros.vo.bom.parts.*;
-import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
+import com.redescooter.ses.web.ros.vo.bom.SecResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.AddPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.EditPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName PartsController
@@ -27,6 +45,9 @@ public class PartsController {
 
     @Autowired
     private PartsRosService partsRosService;
+
+    @Autowired
+    private BomRosService bomRosService;
 
     @PostMapping(value = "/countStatus")
     @ApiOperation(value = "状态统计", response = Map.class)
@@ -76,5 +97,10 @@ public class PartsController {
         return new Response<>(partsRosService.list(page));
     }
 
+    @PostMapping(value = "/secList")
+    @ApiOperation(value = "部件区域列表", response = SecResult.class)
+    public Response<List<SecResult>> secList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(bomRosService.secList(enter));
+    }
 
 }
