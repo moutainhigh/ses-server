@@ -14,7 +14,7 @@ import java.io.Serializable;
 @ApiModel(value = "公共结果集", description = "公共结果集")
 public class GeneralResult implements Serializable {
 
-    @ApiModelProperty(value = "请求id")
+    @ApiModelProperty(value = "请求id",hidden = true)
     private String requestId;
 
     public GeneralResult() {

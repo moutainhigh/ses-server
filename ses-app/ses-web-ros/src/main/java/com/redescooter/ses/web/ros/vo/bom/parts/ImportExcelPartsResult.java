@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.bom.parts;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -15,6 +16,7 @@ import java.util.Map;
  * @ClassName: ImportExcelOrderResult
  * @Function: TODO
  */
+@ApiModel(value = "表格导入结果集", description = "表格导入结果集")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
