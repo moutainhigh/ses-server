@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,26 +18,13 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @ClassName: RedisOne
  * @Function: TODO
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
+
 public class CollectionUtilTest {
 
     @Test
-    public void disjunction(){
-        List<Long> a=new ArrayList<>();
-        a.add(1L);
-        a.add(2L);
-
-        List<Long> b=new ArrayList<>();
-        a.add(3L);
-        a.add(4L);
-
-        Collection disjunction = CollectionUtils.disjunction(a,b);
-        disjunction.forEach(item->{
-            System.out.println(item);
-        });
-
-
+    public void disjunction() {
+        String checkESC = ESCUtils.checkESC("90");
+        System.out.println(checkESC);
     }
 
 

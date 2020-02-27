@@ -30,7 +30,7 @@ import java.util.Map;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/account/customer/")
-public class CustomerAccountController {
+public class CAccountController {
 
     @Autowired
     private CustomerRosService customerRosService;

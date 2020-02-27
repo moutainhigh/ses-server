@@ -3,6 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.PartsServiceMapper">
     <sql id="field_query_parts_list">
        op.id,
+       op.user_id,
        op.Import_lot,
        op.parts_type,
        op.sec,
@@ -39,23 +40,7 @@
         </where>
     </sql>
     <sql id="group_by_parts_list">
-         op.id,
-         op.Import_lot,
-         op.parts_type,
-         op.sec,
-         op.parts_number,
-         op.cn_name,
-         op.fr_name,
-         op.en_name,
-         op.sn_class_flag,
-         op.parts_qty,
-         op.production_cycle,
-         op.supplier_id,
-         op.dwg,
-         op.note,
-         op.revision,
-         op.updated_time,
-         os.supplier_name
+         op.id
     </sql>
     <resultMap id="resultMap_query_parts_list" type="com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult">
         <id column="id" jdbcType="BIGINT" property="id"/>

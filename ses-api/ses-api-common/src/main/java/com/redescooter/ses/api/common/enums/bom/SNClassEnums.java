@@ -1,6 +1,5 @@
 package com.redescooter.ses.api.common.enums.bom;
 
-import com.redescooter.ses.api.common.enums.delivery.DeliveryResultEnums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

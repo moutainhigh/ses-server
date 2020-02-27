@@ -62,7 +62,7 @@ spring:                                                                         
 
       Bom-api:
         #用户组api，可以配置多个组
-        group-name: Parts-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: Bom-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: ROS Bom接口
         #api组的标题，会在swagger-ui的标题处显示
         description: 产品Bom管理

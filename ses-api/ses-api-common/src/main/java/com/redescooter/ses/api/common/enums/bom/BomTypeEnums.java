@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum BomTypeEnums {
 
-    PARTS("PARTS", "零部件", "1"),
-    ACCESSORY("ACCESSORY", "配件", "2"),
-    BATTERY("BATTERY", "电池", "3");
+    PARTS("Parts", "零部件", "1"),
+    ACCESSORY("Accessory", "配件", "2"),
+    BATTERY("Battery", "电池", "3");
 
     private String code;
 

@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.impl;
 import java.util.*;
 
 import com.redescooter.ses.api.common.enums.bom.*;
+import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -123,9 +124,9 @@ public class PartsRosServiceImpl implements PartsRosService {
         for (ExpressPartsExcleData excleData : list) {
             EditSavePartsEnter saveParts = new EditSavePartsEnter();
             saveParts.setPartsNumber(excleData.getPartsN());
-            saveParts.setSec(excleData.getEsc());
-            saveParts.setPartsType(excleData.getType());
-            saveParts.setSnClassFlag(excleData.getSnClass());
+            saveParts.setSec(ESCUtils.checkESC(excleData.getEsc()));
+            saveParts.setPartsType(BomTypeEnums.checkCode(excleData.getType()));
+            saveParts.setSnClassFlag(SNClassEnums.getValueByCode(excleData.getSnClass()));
             saveParts.setCnName(excleData.getCnName());
             saveParts.setFrName(excleData.getFrName());
             saveParts.setEnName(excleData.getEnName());
@@ -287,7 +288,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         QueryWrapper<OpePartsHistoryRecord> wrapper = new QueryWrapper<>();
         wrapper.eq(OpePartsHistoryRecord.COL_PARTS_ID, enter.getId());
         wrapper.eq(OpePartsHistoryRecord.COL_DR, 0);
-
+        wrapper.eq(OpePartsHistoryRecord.COL_EVENT, PartsEventEnums.ADD.getValue());
         List<OpePartsHistoryRecord> historyLists = partsHistoryRecordService.list(wrapper);
         HistoryPartsResult historyPartsResult = new HistoryPartsResult();
 
@@ -339,9 +340,8 @@ public class PartsRosServiceImpl implements PartsRosService {
         }
 
         parts.setPartsType(BomTypeEnums.checkCode(enter.getPartsType()));
-        parts.setSnClassFlag(SNClassEnums.checkCode(enter.getSnClassFlag()));
-        parts.setSec(enter.getSec());
-
+        parts.setSnClassFlag(SNClassEnums.getValueByCode(enter.getSnClassFlag()));
+        parts.setSec(ESCUtils.checkESC(enter.getSec()));
         parts.setCnName(enter.getCnName());
         parts.setFrName(enter.getFrName());
         parts.setEnName(enter.getEnName());
@@ -361,7 +361,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         String partsNumber = enter.getPartsNumber();
         String snClassFlag = SNClassEnums.checkCode(enter.getSnClassFlag());
         String partsType = BomTypeEnums.checkCode(enter.getPartsType());
-        String sec = enter.getSec();
+        String sec = ESCUtils.checkESC(enter.getSec());
         if (StringUtils.isAnyBlank(partsNumber, snClassFlag, partsType, sec)) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
