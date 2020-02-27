@@ -1,12 +1,10 @@
 package com.redescooter.ses.web.ros.service;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:BomRosService
@@ -16,6 +14,14 @@ import java.util.List;
  * @create: 2020/02/25 10:18
  */
 public interface PartsRosService {
+
+    /**
+     * 公共状态统计
+     *
+     * @param enter
+     * @return
+     */
+    MapResult commonCountStatus(GeneralEnter enter);
 
     /**
      * 导入零部件
@@ -32,6 +38,7 @@ public interface PartsRosService {
      * @return
      */
     GeneralResult savePartsList(List<ExpressPartsExcleData> list, ImportPartsEnter enter);
+
 
     /**
      * 批量编辑部件

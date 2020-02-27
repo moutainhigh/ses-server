@@ -2,7 +2,9 @@ package com.redescooter.ses.web.ros.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -13,23 +15,23 @@ import org.springframework.data.annotation.Transient;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.bom.BomAssTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.PartsEventEnums;
 import com.redescooter.ses.api.common.enums.bom.SNClassEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.PartsServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.dm.OpePartsAssembly;
 import com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.ExcelService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
+import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyService;
 import com.redescooter.ses.web.ros.service.base.OpePartsHistoryRecordService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.vo.bom.parts.AddPartsEnter;
@@ -57,6 +59,9 @@ public class PartsRosServiceImpl implements PartsRosService {
     private OpePartsService partsService;
 
     @Autowired
+    private OpePartsAssemblyService partsAssemblyService;
+
+    @Autowired
     private OpePartsHistoryRecordService partsHistoryRecordService;
 
     @Autowired
@@ -70,6 +75,30 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Reference
     private GenerateService generateService;
+
+    @Override
+    public MapResult commonCountStatus(GeneralEnter enter) {
+        QueryWrapper<OpeParts> partsQueryWrapper = new QueryWrapper<>();
+        partsQueryWrapper.eq(OpeParts.COL_DR, 0);
+        int partsCount = partsService.count(partsQueryWrapper);
+
+        QueryWrapper<OpePartsAssembly> scooter = new QueryWrapper<>();
+        scooter.eq(OpePartsAssembly.COL_DR, 0);
+        scooter.eq(OpePartsAssembly.COL_ASS_TYPE, BomAssTypeEnums.SCOOTER.getValue());
+        int scooterConut = partsAssemblyService.count(scooter);
+
+        QueryWrapper<OpePartsAssembly> combination = new QueryWrapper<>();
+        combination.eq(OpePartsAssembly.COL_DR, 0);
+        combination.eq(OpePartsAssembly.COL_ASS_TYPE, BomAssTypeEnums.COMBINATION.getValue());
+        int combinationConut = partsAssemblyService.count(combination);
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put("partsCount", partsCount);
+        map.put("scooterConut", scooterConut);
+        map.put("combinationConut", combinationConut);
+
+        return new MapResult(map);
+    }
 
     @Override
     public ImportExcelPartsResult importParts(ImportPartsEnter enter) {
