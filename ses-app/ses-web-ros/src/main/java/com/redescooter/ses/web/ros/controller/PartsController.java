@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.controller;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.service.BomRosService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
+import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import io.swagger.annotations.Api;
@@ -28,12 +30,11 @@ public class PartsController {
     @Autowired
     private PartsRosService partsRosService;
 
-    @PostMapping(value = "/commonCountStatus")
     @Autowired
     private BomRosService bomRosService;
 
-    @PostMapping(value = "/countStatus")
-    @ApiOperation(value = "状态统计", response = Map.class)
+    @PostMapping(value = "/commonCountStatus")
+    @ApiOperation(value = "状态统计", response = MapResult.class)
     public Response<MapResult> commonCountStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(partsRosService.commonCountStatus(enter));
     }
