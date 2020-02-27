@@ -349,7 +349,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(scooter.getAssType().toString(),BomServiceTypeEnums.SCOOTER.getValue())){
+        if (!StringUtils.equals(scooter.getAssType().toString(),BomServiceTypeEnums.COMBINATION.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         return bomRosServiceMapper.productDeatilPartList(enter.getId());
