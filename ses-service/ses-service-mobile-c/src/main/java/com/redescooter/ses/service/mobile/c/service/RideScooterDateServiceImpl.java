@@ -81,7 +81,7 @@ public class RideScooterDateServiceImpl implements RideScooterDateService{
             conDriverRideStat.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
             conDriverRideStat.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
             conDriverRideStat.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
-            conDriverRideStat.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration())));
+            conDriverRideStat.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration()),BigDecimal.ROUND_HALF_UP));
             conDriverRideStat.setReadTime(null);
             conDriverRideStat.setTotalMileage(enter.getMileage());
             conDriverRideStat.setFirstRideTime(new Date());
@@ -93,7 +93,7 @@ public class RideScooterDateServiceImpl implements RideScooterDateService{
             conDriverRideStat.setCo2Total(conDriverRideStat.getCo2Total().add(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue()))));
             conDriverRideStat.setCo2Increment(conDriverRideStat.getCo2Increment().add(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue()))));
             conDriverRideStat.setSavedMoney(conDriverRideStat.getSavedMoney().add(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue()))));
-            BigDecimal svg=(conDriverRideStat.getTotalMileage().add(enter.getMileage())).divide(new BigDecimal(conDriverRideStat.getTotalDuration()+enter.getDuration()));
+            BigDecimal svg=(conDriverRideStat.getTotalMileage().add(enter.getMileage())).divide(new BigDecimal(conDriverRideStat.getTotalDuration()+enter.getDuration()),BigDecimal.ROUND_HALF_UP);
             conDriverRideStat.setSvgSpeed(svg);
             conDriverRideStat.setUpdateBy(enter.getUserId());
             conDriverRideStat.setUpdateTime(new Date());
@@ -115,7 +115,7 @@ public class RideScooterDateServiceImpl implements RideScooterDateService{
             conDriverRideStatDetail.setCo2HistoryTotal(conDriverRideStat.getCo2Total());
         }
         conDriverRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
-        conDriverRideStatDetail.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration())));
+        conDriverRideStatDetail.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration()),BigDecimal.ROUND_HALF_UP));
         conDriverRideStatDetail.setMileage(enter.getMileage());
         conDriverRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
         conDriverRideStatDetail.setCreateBy(enter.getUserId());
@@ -155,6 +155,7 @@ public class RideScooterDateServiceImpl implements RideScooterDateService{
             conScooterRideStat.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
             conScooterRideStat.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
             conScooterRideStat.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
+//            conScooterRideStat.setSvgSpeed();
             conScooterRideStat.setReadTime(null);
             conScooterRideStat.setTotalMileage(enter.getMileage());
             conScooterRideStat.setFirstRideTime(new Date());
@@ -169,7 +170,7 @@ public class RideScooterDateServiceImpl implements RideScooterDateService{
             conScooterRideStat.setCo2Total(conScooterRideStat.getCo2Total().add(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue()))));
             conScooterRideStat.setCo2Increment(conScooterRideStat.getCo2Increment().add(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue()))));
             conScooterRideStat.setSavedMoney(conScooterRideStat.getSavedMoney().add(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue()))));
-            BigDecimal svg=(conScooterRideStat.getTotalMileage().add(enter.getMileage())).divide(new BigDecimal(conScooterRideStat.getTotalDuration()+enter.getDuration()));
+            BigDecimal svg=(conScooterRideStat.getTotalMileage().add(enter.getMileage())).divide(new BigDecimal(conScooterRideStat.getTotalDuration()+enter.getDuration()),BigDecimal.ROUND_HALF_UP);
             conScooterRideStat.setSvgSpeed(svg);
         }
         conScooterRideStat.setUpdateBy(enter.getUserId());
@@ -190,7 +191,7 @@ public class RideScooterDateServiceImpl implements RideScooterDateService{
             conScooterRideStatDetail.setCo2HistoryTotal(conScooterRideStat.getCo2Total());
         }
         conScooterRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
-        conScooterRideStatDetail.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration())));
+        conScooterRideStatDetail.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration()),BigDecimal.ROUND_HALF_UP));
         conScooterRideStatDetail.setMileage(enter.getMileage());
         conScooterRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
         conScooterRideStatDetail.setCreateBy(enter.getUserId());

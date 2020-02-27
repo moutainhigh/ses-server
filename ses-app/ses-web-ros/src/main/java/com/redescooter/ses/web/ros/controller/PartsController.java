@@ -3,12 +3,14 @@ package com.redescooter.ses.web.ros.controller;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
+import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +29,10 @@ public class PartsController {
     private PartsRosService partsRosService;
 
     @PostMapping(value = "/commonCountStatus")
+    @Autowired
+    private BomRosService bomRosService;
+
+    @PostMapping(value = "/countStatus")
     @ApiOperation(value = "状态统计", response = Map.class)
     public Response<MapResult> commonCountStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(partsRosService.commonCountStatus(enter));
@@ -74,5 +80,10 @@ public class PartsController {
         return new Response<>(partsRosService.list(page));
     }
 
+    @PostMapping(value = "/secList")
+    @ApiOperation(value = "部件区域列表", response = SecResult.class)
+    public Response<List<SecResult>> secList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(bomRosService.secList(enter));
+    }
 
 }

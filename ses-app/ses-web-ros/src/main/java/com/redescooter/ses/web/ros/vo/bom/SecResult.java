@@ -31,6 +31,9 @@ public class SecResult extends GeneralResult {
     @ApiModelProperty(value = "名字")
     private String name;
 
+    @ApiModelProperty(value = "编码")
+    private String code;
+
     @ApiModelProperty(value = "区域描述")
     private String description;
 }

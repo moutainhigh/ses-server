@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.exception;
 
-import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -125,6 +124,13 @@ public enum ExceptionCodeEnums {
     CUSTOMER_INDUSTRYTYPE_IS_NOT_EDIT(10054, "正式客户客户行业不可编辑"),
 
     FILE_TEMPLATE_IS_INVALID(10055, "文件模板不合法，请重新下载文件模板"),
+
+    PRODUCTN_IS_EXIST(10056,"产品编号已存在，请重新输入"),
+
+    PRODUCT_IS_NOT_EXIST(10057,"产品不存在"),
+
+    SCOOTER_HAS_NO_PARTS(10058,"车辆暂无部品,不可删除"),
+
 
     ;
 

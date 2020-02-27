@@ -28,14 +28,17 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class ScooterDetailResult extends GeneralResult {
 
+    @ApiModelProperty(value = "主键")
+    private Long id;
+
     @ApiModelProperty(value = "产品编号")
     private String productN;
 
     @ApiModelProperty(value = "产品名字")
-    private String productName;
+    private String productCnName;
 
     @ApiModelProperty(value = "生产周期")
-    private int procurementCycle;
+    private String procurementCycle;
 
     @ApiModelProperty(value = "配件列表")
     private List<PartListEnter> partsList;
