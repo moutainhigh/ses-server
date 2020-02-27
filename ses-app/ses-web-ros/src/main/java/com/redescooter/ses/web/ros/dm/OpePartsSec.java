@@ -35,8 +35,7 @@ public class OpePartsSec implements Serializable {
      * 逻辑删除 逻辑删除
      */
     @TableField(value = "dr")
-    @TableLogic
-    @ApiModelProperty(value = "逻辑删除 逻辑删除")
+    @ApiModelProperty(value="逻辑删除 逻辑删除")
     private Integer dr;
 
     /**
@@ -73,6 +72,13 @@ public class OpePartsSec implements Serializable {
     @TableField(value = "code")
     @ApiModelProperty(value="项目区域编码 项目区域编码")
     private String code;
+
+    /**
+     * 值
+     */
+    @TableField(value = "value")
+    @ApiModelProperty(value="值")
+    private Integer value;
 
     /**
      * 备注 备注
@@ -166,6 +172,8 @@ public class OpePartsSec implements Serializable {
     public static final String COL_NAME = "name";
 
     public static final String COL_CODE = "code";
+
+    public static final String COL_VALUE = "value";
 
     public static final String COL_NOTE = "note";
 

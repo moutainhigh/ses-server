@@ -9,6 +9,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpePartsType;
 import com.redescooter.ses.web.ros.service.base.OpePartsTypeService;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,21 @@ public class PartsRosServiceImplTest {
 
     @Test
     public void typeCount() {
+
+        List<PartsTypeResult> resultList = new ArrayList<>();
+
+        List<OpePartsType> list = partsTypeService.list();
+        if (list.size() > 0) {
+            list.forEach(type -> {
+                PartsTypeResult result = new PartsTypeResult();
+                result.setId(type.getId());
+                result.setName(type.getName());
+                result.setValue(type.getValue());
+                resultList.add(result);
+            });
+        }
+
+        System.out.println(resultList.toString());
     }
 
 
@@ -47,23 +63,15 @@ public class PartsRosServiceImplTest {
             inster.setDr(0);
             inster.setTenantId(0L);
             inster.setUserId(0L);
-            inster.setStatus("");
-            inster.setName("");
-            inster.setCode("");
-            inster.setValue(0);
-            inster.setNote("");
-            inster.setRevision(0);
+            inster.setStatus("1");
+            inster.setName(typeEnums.getCode());
+            inster.setCode(typeEnums.getCode());
+            inster.setValue(Integer.parseInt(typeEnums.getValue()));
             inster.setCreatedBy(0L);
             inster.setCreatedTime(new Date());
             inster.setUpdatedBy(0L);
             inster.setUpdatedTime(new Date());
-            inster.setDef1("");
-            inster.setDef2("");
-            inster.setDef3("");
-            inster.setDef5("");
-            inster.setDef6(new BigDecimal("0"));
-
-
+            list.add(inster);
         }
 
         partsTypeService.saveBatch(list);
