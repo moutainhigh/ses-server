@@ -76,7 +76,7 @@ public class PartsController {
     @PostMapping(value = "/history")
     @ApiOperation(value = "零部件历史", response = HistoryPartsResult.class)
     public Response<HistoryPartsResult> history(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(partsRosService.history(enter));
+        return new Response<>(partsRosService.historys(enter));
     }
 
     @PostMapping(value = "/list")

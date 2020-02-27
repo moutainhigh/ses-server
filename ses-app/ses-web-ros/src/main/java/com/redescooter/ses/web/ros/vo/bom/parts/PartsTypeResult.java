@@ -20,27 +20,15 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class PartsTypeResult extends GeneralResult {
 
-    /**
-     * 主键 主键
-     */
     @ApiModelProperty(value = "主键")
     private Long id;
 
-    /**
-     * 部品类型名称 部品类型名称
-     */
     @ApiModelProperty(value = "部品类型名称")
     private String name;
 
-    /**
-     * 部品类型编码 部品类型编码
-     */
     @ApiModelProperty(value = "部品类型编码")
     private String code;
 
-    /**
-     * 部品类型对应值
-     */
     @ApiModelProperty(value = "部品类型编码")
     private int value;
 }

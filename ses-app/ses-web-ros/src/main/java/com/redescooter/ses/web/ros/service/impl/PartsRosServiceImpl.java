@@ -99,6 +99,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                 PartsTypeResult result = new PartsTypeResult();
                 result.setId(type.getId());
                 result.setName(type.getName());
+                result.setCode(type.getCode());
                 result.setValue(type.getValue());
                 resultList.add(result);
             });
@@ -164,7 +165,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         if (enters.size() > 0) {
             String lot = generateService.getOrderNo();
             enters.forEach(pat -> {
-                check(pat);
+                checkParts(pat);
                 if (pat.getId() == null || pat.getId() == 0) {
                     OpeParts parts = createParts(pat, lot, enter.getUserId());
                     insters.add(parts);
@@ -202,6 +203,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         List<OpeParts> update = new ArrayList<>();
         List<OpePartsHistoryRecord> instersHistory = new ArrayList<>();
+
         //判断是否进行部品号的迭代
         if (enters.size() > 0) {
             enters.forEach(pat -> {
@@ -265,6 +267,24 @@ public class PartsRosServiceImpl implements PartsRosService {
         DetailsPartsResult result = new DetailsPartsResult();
         BeanUtils.copyProperties(byId, result);
 
+        QueryWrapper<OpePartsHistoryRecord> wrapper = new QueryWrapper<>();
+        wrapper.eq(OpePartsHistoryRecord.COL_PARTS_ID, enter.getId());
+        wrapper.eq(OpePartsHistoryRecord.COL_DR, 0);
+        wrapper.eq(OpePartsHistoryRecord.COL_EVENT, PartsEventEnums.ADD.getValue());
+        List<OpePartsHistoryRecord> historyLists = partsHistoryRecordService.list(wrapper);
+        List<HistoryPartsDto> list = new ArrayList<>();
+
+        if (historyLists.size() > 0) {
+            historyLists.forEach(ht -> {
+                HistoryPartsDto dto = new HistoryPartsDto();
+                dto.setId(ht.getId());
+                dto.setPartsNumber(ht.getPartsNumber());
+                dto.setCreatedTime(ht.getCreatedTime());
+                list.add(dto);
+            });
+        }
+
+        result.setHistoryHist(list);
         return result;
     }
 
@@ -283,7 +303,7 @@ public class PartsRosServiceImpl implements PartsRosService {
     }
 
     @Override
-    public HistoryPartsResult history(IdEnter enter) {
+    public HistoryPartsResult historys(IdEnter enter) {
 
         QueryWrapper<OpePartsHistoryRecord> wrapper = new QueryWrapper<>();
         wrapper.eq(OpePartsHistoryRecord.COL_PARTS_ID, enter.getId());
@@ -297,6 +317,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         if (historyLists.size() > 0) {
             historyLists.forEach(ht -> {
                 HistoryPartsDto dto = new HistoryPartsDto();
+                dto.setId(ht.getId());
                 dto.setPartsNumber(ht.getPartsNumber());
                 dto.setCreatedTime(ht.getCreatedTime());
                 list.add(dto);
@@ -307,7 +328,6 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         return historyPartsResult;
     }
-
 
     private OpePartsHistoryRecord createPartsHistory(OpeParts parts, String event, long userId) {
         OpePartsHistoryRecord record = new OpePartsHistoryRecord();
@@ -356,7 +376,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     }
 
-    private void check(EditSavePartsEnter enter) {
+    private void checkParts(EditSavePartsEnter enter) {
 
         String partsNumber = enter.getPartsNumber();
         String snClassFlag = SNClassEnums.checkCode(enter.getSnClassFlag());

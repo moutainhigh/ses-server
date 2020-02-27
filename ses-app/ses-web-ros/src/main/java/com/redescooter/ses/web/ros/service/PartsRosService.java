@@ -47,7 +47,6 @@ public interface PartsRosService {
      */
     ImportExcelPartsResult savePartsList(List<ExpressPartsExcleData> list, ImportPartsEnter enter);
 
-
     /**
      * 批量编辑部件
      *
@@ -94,6 +93,6 @@ public interface PartsRosService {
      * @param enter
      * @return
      */
-    HistoryPartsResult history(IdEnter enter);
+    HistoryPartsResult historys(IdEnter enter);
 
 }
