@@ -62,7 +62,7 @@ public interface PartsRosService {
      * @param enter
      * @return
      */
-    GeneralResult adds(StringEnter enter);
+    GeneralResult iteration(StringEnter enter);
 
     /**
      * 批量删除

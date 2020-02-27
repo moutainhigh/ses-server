@@ -24,4 +24,13 @@ public enum BomAssTypeEnums {
     private String message;
 
     private String value;
+
+    public static String checkCode(String code) {
+        for (BomAssTypeEnums item : BomAssTypeEnums.values()) {
+            if (item.getCode().equals(code)) {
+                return item.getCode();
+            }
+        }
+        return null;
+    }
 }

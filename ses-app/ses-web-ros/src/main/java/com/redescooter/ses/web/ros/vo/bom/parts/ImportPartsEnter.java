@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.bom.parts;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -19,6 +21,7 @@ import lombok.*;
 public class ImportPartsEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "Excel地址")
+    @NotNull(code = ValidationExceptionCode.URL_IS_EMPTY, message = "Excel地址 为空")
     private String url;
     @ApiModelProperty(value = "是否包含重复数据")
     private Boolean repeatFlag;

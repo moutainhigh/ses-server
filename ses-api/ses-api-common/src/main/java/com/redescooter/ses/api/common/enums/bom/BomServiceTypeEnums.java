@@ -26,4 +26,13 @@ public enum  BomServiceTypeEnums {
 
     private String value;
 
+    public static String checkCode(String code) {
+        for (BomServiceTypeEnums item : BomServiceTypeEnums.values()) {
+            if (item.getCode().equals(code)) {
+                return item.getCode();
+            }
+        }
+        return null;
+    }
+
 }

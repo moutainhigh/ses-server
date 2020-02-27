@@ -5,9 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @ClassName HistoryPartsResult
@@ -22,6 +20,10 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class HistoryPartsDto extends GeneralResult {
+
+    @ApiModelProperty(value = "主键 主键")
+    private Long id;
+
     @ApiModelProperty(value = "部品号")
     private String partsNumber;
 

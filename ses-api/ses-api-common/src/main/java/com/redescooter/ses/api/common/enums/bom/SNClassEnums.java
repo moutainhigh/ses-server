@@ -37,4 +37,13 @@ public enum SNClassEnums {
         return SNClassEnums.SC.getValue();
     }
 
+    public static String checkCode(String code) {
+        for (SNClassEnums item : SNClassEnums.values()) {
+            if (item.getCode().equals(code)) {
+                return item.getCode();
+            }
+        }
+        return null;
+    }
+
 }

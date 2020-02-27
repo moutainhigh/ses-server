@@ -1,12 +1,10 @@
 package com.redescooter.ses.web.ros.controller;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.web.ros.dm.OpePartsType;
 import com.redescooter.ses.web.ros.service.BomRosService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
-import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName PartsController
@@ -40,7 +37,8 @@ public class PartsController {
         return new Response<>(partsRosService.commonCountStatus(enter));
     }
 
-    @ApiOperation(value = "状态统计", response = MapResult.class)
+    @PostMapping(value = "/typeCount")
+    @ApiOperation(value = "类型列表", response = PartsTypeResult.class)
     public Response<List<PartsTypeResult>> typeCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(partsRosService.typeCount(enter));
     }
@@ -51,14 +49,14 @@ public class PartsController {
         return new Response<>(partsRosService.importParts(enter));
     }
 
-    @PostMapping(value = "/adds")
-    @ApiOperation(value = "批量添加零部件", response = AddPartsEnter.class)
-    public Response<GeneralResult> adds(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
-        return new Response<>(partsRosService.adds(enter));
+    @PostMapping(value = "/iteration")
+    @ApiOperation(value = "部品号迭代", response = AddPartsEnter.class)
+    public Response<GeneralResult> iteration(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+        return new Response<>(partsRosService.iteration(enter));
     }
 
     @PostMapping(value = "/edits")
-    @ApiOperation(value = "批量编辑零部件", response = EditPartsEnter.class)
+    @ApiOperation(value = "批量编辑零部件", response = EditSavePartsEnter.class)
     public Response<GeneralResult> edits(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(partsRosService.edits(enter));
     }

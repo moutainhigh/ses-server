@@ -27,4 +27,13 @@ public enum PartsEventEnums {
     private String message;
 
     private String value;
+
+    public static String checkCode(String code) {
+        for (PartsEventEnums item : PartsEventEnums.values()) {
+            if (item.getCode().equals(code)) {
+                return item.getCode();
+            }
+        }
+        return null;
+    }
 }

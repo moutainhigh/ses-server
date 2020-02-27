@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.PartsServiceMapper">
-    <sql id="field_query_parts_listt">
+    <sql id="field_query_parts_list">
        op.id,
        op.Import_lot,
        op.parts_type,
@@ -18,7 +18,7 @@
        op.note,
        op.revision,
        op.updated_time,
-       case when (count(ophr.id) = 0) then false else true end as packCount
+       os.supplier_name
     </sql>
     <sql id="where_query_parts_list">
         <where>
@@ -33,7 +33,8 @@
             <if test="keyword != null and keyword != ''">
                 and (op.cn_name like concat("%",#{keyword},"%")
                 or op.en_name like concat("%",#{keyword},"%")
-                or op.fr_name like concat("%",#{keyword},"%"))
+                or op.fr_name like concat("%",#{keyword},"%")
+                or os.supplier_name like concat("%",#{keyword},"%"))
             </if>
         </where>
     </sql>
@@ -53,22 +54,55 @@
          op.dwg,
          op.note,
          op.revision,
-         op.updated_time
+         op.updated_time,
+         os.supplier_name
     </sql>
+    <resultMap id="resultMap_query_parts_list" type="com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="Import_lot" jdbcType="VARCHAR" property="importLot"/>
+        <result column="parts_type" jdbcType="VARCHAR" property="partsType"/>
+        <result column="sec" jdbcType="VARCHAR" property="sec"/>
+        <result column="parts_number" jdbcType="VARCHAR" property="partsNumber"/>
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName"/>
+        <result column="fr_name" jdbcType="VARCHAR" property="frName"/>
+        <result column="en_name" jdbcType="VARCHAR" property="enName"/>
+        <result column="sn_class_flag" jdbcType="VARCHAR" property="snClassFlag"/>
+        <result column="production_cycle" jdbcType="VARCHAR" property="productionCycle"/>
+        <result column="supplier_id" jdbcType="BIGINT" property="supplierId"/>
+        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
+        <result column="dwg" jdbcType="VARCHAR" property="dwg"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <collection property="historyHist"
+                    javaType="java.util.ArrayList"
+                    ofType="com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto"
+                    column="id"
+                    select="historyList"/>
+    </resultMap>
     <select id="listCount" resultType="int">
         select count(*)
         from ope_parts op
+        left join ope_supplier os on op.supplier_id = os.id and os.dr = 0
         <include refid="where_query_parts_list"/>
     </select>
-    <select id="list" resultType="com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult">
+    <select id="list" resultMap="resultMap_query_parts_list">
         select
-        <include refid="field_query_parts_listt"/>
+        <include refid="field_query_parts_list"/>
         from ope_parts op
-        left join ope_parts_history_record ophr on op.id = ophr.parts_id and ophr.dr = 0
+        left join ope_supplier os on op.supplier_id = os.id and os.dr = 0
         <include refid="where_query_parts_list"/>
         group by
         <include refid="group_by_parts_list"/>
         order by op.created_time desc
         limit #{startRow},#{pageSize}
+    </select>
+    <select id="historyList" resultType="com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto">
+     select id,parts_number,created_time
+     from ope_parts_history_record
+     where dr = 0
+       and event='2'
+       and parts_id =#{partsId}
+    order by created_time desc
     </select>
 </mapper>

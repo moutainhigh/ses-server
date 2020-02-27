@@ -1,13 +1,13 @@
 package com.redescooter.ses.web.ros.vo.bom.parts;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName AddPartsEnter
@@ -27,6 +27,9 @@ public class DetailsPartsResult extends GeneralResult {
      */
     @ApiModelProperty(value = "主键")
     private Long id;
+
+    @ApiModelProperty(value="用户ID 用户ID")
+    private Long userId;
 
     /**
      * 导入批次号
@@ -103,15 +106,11 @@ public class DetailsPartsResult extends GeneralResult {
     private Date updatedTime;
 
     /**
-     * 是否有子集
-     */
-    @ApiModelProperty(value = "是否有子集")
-    private boolean packCount;
-
-    /**
      * 备注 备注
      */
     @ApiModelProperty(value = "备注")
     private String note;
 
+    @ApiModelProperty(value = "历史部品号")
+    List<HistoryPartsDto> historyHist = new ArrayList<>();
 }

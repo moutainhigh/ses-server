@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.dao;
 
 import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto;
 import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -28,4 +30,13 @@ public interface PartsServiceMapper {
      * @return
      */
     List<DetailsPartsResult> list(PartListEnter enter);
+
+    /**
+     * 查询部品下的历史记录返回
+     *
+     * @param partsId
+     * @return
+     */
+    List<HistoryPartsDto> historyList(@Param("partsId") long partsId);
+
 }
