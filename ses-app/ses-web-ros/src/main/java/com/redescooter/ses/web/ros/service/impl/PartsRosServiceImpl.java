@@ -192,7 +192,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Transient
     @Override
-    public GeneralResult iteration(StringEnter enter) {
+    public GeneralResult iterations(StringEnter enter) {
 
         List<AddPartsEnter> enters = null;
         try {
