@@ -21,11 +21,11 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class AddPartsEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "主键",required = true)
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
-    @ApiModelProperty(value = "部品号")
+    @ApiModelProperty(value = "部品号",required = true)
     @NotNull(code = ValidationExceptionCode.PARTS_NUM_IS_EMPTY, message = "部品号 为空")
     private String partsNumber;
 }

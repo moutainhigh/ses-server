@@ -19,7 +19,7 @@ import java.util.List;
  * @date 2020/02/26 16:45
  * @Description:
  */
-@Api(tags = {"零部件管理"})
+@Api(tags = {"部件管理"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/bom/parts")

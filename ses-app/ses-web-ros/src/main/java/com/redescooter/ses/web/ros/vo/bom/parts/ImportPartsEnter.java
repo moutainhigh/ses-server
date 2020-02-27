@@ -20,7 +20,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class ImportPartsEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "Excel地址")
+    @ApiModelProperty(value = "Excel地址",required = true)
     @NotNull(code = ValidationExceptionCode.URL_IS_EMPTY, message = "Excel地址 为空")
     private String url;
     @ApiModelProperty(value = "是否包含重复数据")

@@ -15,6 +15,7 @@ import java.util.Date;
  * @date 2020/02/26 23:09
  * @Description:
  */
+@ApiModel(value = "历史记录", description = "历史记录")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -29,7 +30,7 @@ public class HistoryPartsDto extends GeneralResult {
     private String partsNumber;
 
     @ApiModelProperty(value = "时间")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createdTime;
 }

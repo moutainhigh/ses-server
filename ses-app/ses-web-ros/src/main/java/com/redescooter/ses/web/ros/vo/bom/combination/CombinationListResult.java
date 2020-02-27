@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
  * @Version：1.3
  * @create: 2020/02/25 13:56
  */
-@ApiModel(value = "套餐列表出参", description = "套餐列表出参")
+@ApiModel(value = "组合列表出参", description = "组合列表出参")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

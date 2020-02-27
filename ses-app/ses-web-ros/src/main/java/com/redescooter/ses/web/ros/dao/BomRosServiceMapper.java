@@ -79,7 +79,7 @@ public interface BomRosServiceMapper {
     List<QueryPartListResult> partList(QueryPartListEnter enter);
 
     /**
-     * @desc: 产品的详情 部品列表（整车，套餐）
+     * @desc: 产品的详情 部品列表（整车，组合）
      * @paam: enter
      * @retrn: List<PartListEnter>
      * @auther: alex
@@ -89,7 +89,7 @@ public interface BomRosServiceMapper {
     List<QueryPartListResult> productDeatilPartList(Long id);
 
     /**
-     * @desc: 套餐列表
+     * @desc: 组合列表
      * @paam: enter
      * @retrn: int
      * @auther: alex
@@ -99,7 +99,7 @@ public interface BomRosServiceMapper {
     int combinationListCount(CombinationListEnter enter);
 
     /**
-     * @desc: 套餐详情
+     * @desc: 组合详情
      * @param: enter
      * @retrn: List<CombinationResult>
      * @auther: alex

@@ -16,6 +16,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class StringEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "值")
+    @ApiModelProperty(value = "值",required = true)
     private String st;
 }

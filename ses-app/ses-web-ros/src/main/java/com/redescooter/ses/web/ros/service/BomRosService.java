@@ -99,7 +99,7 @@ public interface BomRosService {
     GeneralResult deleteScooter(IdEnter enter);
 
     /**
-     * @desc: 套餐列表
+     * @desc: 组合列表
      * @paam: enter
      * @retrn: CombinationListResult
      * @auther: alex
@@ -119,7 +119,7 @@ public interface BomRosService {
     List<QueryPartListResult> combinationListPartList(IdEnter enter);
 
     /**
-     * @desc: 套餐详情
+     * @desc: 组合详情
      * @param: id
      * @retrn: CombinationResult
      * @auther: alex
@@ -129,7 +129,7 @@ public interface BomRosService {
     CombinationDetailResult combinationDetail(IdEnter enter);
 
     /**
-     * @desc: 删除套餐里的部件
+     * @desc: 删除组合里的部件
      * @param: enter
      * @retrn: GeneralResult
      * @auther: alex
@@ -139,7 +139,7 @@ public interface BomRosService {
     GeneralResult deleteCombinationPart(DeletePartEnter enter);
 
     /**
-     * @desc: 删除套餐
+     * @desc: 删除组合
      * @param: enter
      * @retrn: GeneralResult
      * @auther: alex
@@ -149,7 +149,7 @@ public interface BomRosService {
     GeneralResult deleteCombination(IdEnter enter);
 
     /**
-     * @desc: 保存套餐
+     * @desc: 保存组合
      * @param: enter
      * @retrn: GeneralResult
      * @auther: alex

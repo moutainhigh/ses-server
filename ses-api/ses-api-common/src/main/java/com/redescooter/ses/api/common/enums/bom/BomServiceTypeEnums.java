@@ -18,7 +18,7 @@ public enum  BomServiceTypeEnums {
 
     PART("PART","部品","1"),
     SCOOTER("SCOOTER","整车","2"),
-    COMBINATION("COMBINATION","套餐","3");
+    COMBINATION("COMBINATION","组合","3");
 
     private String code;
 
