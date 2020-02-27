@@ -72,5 +72,7 @@ public interface ValidationExceptionCode {
     int PRODUCT_FR_PRICE_IS_EMPTY=10051;
     // 产品英国报价为空
     int PRODUCT_EN_PRICE_IS_EMPTY=10052;
+    // 数量为空
+    int QTY_IS_EMPTY=10053;
 
 }

@@ -96,7 +96,8 @@
         limit #{startRow},#{pageSize}
     </select>
     <select id="productDeatilPartList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
-        select parts.id as id,
+        select
+        ass.id as id,
         parts.parts_number as partsN,
         parts.sec as sec,
         parts.en_name as partsEnName,

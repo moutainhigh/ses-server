@@ -32,7 +32,7 @@ public class DeletePartEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "id 为空")
     private Long id;
 
-    @ApiModelProperty(value = "部件Id",required = true)
+    @ApiModelProperty(value = "条目Id",required = true)
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "id 为空")
-    private List<Long> partIds;
+    private List<Long> ids;
 }

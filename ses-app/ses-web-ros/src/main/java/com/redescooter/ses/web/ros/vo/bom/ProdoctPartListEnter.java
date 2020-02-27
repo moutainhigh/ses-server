@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.bom;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,9 +26,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class ProdoctPartListEnter extends GeneralEnter {
-    @ApiModelProperty(value = "部品Id")
+
+    @ApiModelProperty(value = "主键Id")
     private Long id;
 
     @ApiModelProperty(value = "数量")
+    @NotNull(code = ValidationExceptionCode.QTY_IS_EMPTY,message = "数量 为空")
     private Integer qty;
 }
