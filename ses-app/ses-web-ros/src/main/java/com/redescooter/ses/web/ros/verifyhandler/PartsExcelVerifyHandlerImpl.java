@@ -1,10 +1,12 @@
 package com.redescooter.ses.web.ros.verifyhandler;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
+
 import cn.afterturn.easypoi.excel.entity.result.ExcelVerifyHandlerResult;
 import cn.afterturn.easypoi.handler.inter.IExcelVerifyHandler;
-import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Mr.lijiating
@@ -23,7 +25,6 @@ public class PartsExcelVerifyHandlerImpl implements IExcelVerifyHandler<ExpressP
      */
     @Override
     public ExcelVerifyHandlerResult verifyHandler(ExpressPartsExcleData obj) {
-
         StringBuilder builder = new StringBuilder();
         if (StringUtils.isEmpty(obj.getPartsN())) {
             builder.append(ExpressPartsExcleData.PARTS_N + ",This is  not must null;");

@@ -1,10 +1,10 @@
-package com.redescooter.ses.web.ros.vo.bom;
+package com.redescooter.ses.web.ros.vo.bom.scooter;
 
 import java.util.List;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 
-import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -41,5 +41,5 @@ public class ScooterDetailResult extends GeneralResult {
     private String procurementCycle;
 
     @ApiModelProperty(value = "配件列表")
-    private List<PartListEnter> partsList;
+    private List<QueryPartListResult> partsList;
 }

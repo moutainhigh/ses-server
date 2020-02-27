@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.bom;
+package com.redescooter.ses.web.ros.vo.bom.combination;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -26,7 +26,6 @@ import lombok.NoArgsConstructor;
 public class SaveCombinationEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id",required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
     private Long id;
 
     @ApiModelProperty(value = "产品编号",required = true)
@@ -46,5 +45,5 @@ public class SaveCombinationEnter extends GeneralEnter {
     private String productFrName;
 
     @ApiModelProperty(value = "产品部件",required = true)
-    private String partsList;
+    private String partList;
 }

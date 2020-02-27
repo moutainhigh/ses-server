@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum PartsStatusEnums {
+public enum BomStatusEnums {
 
     /**
      * 正常

@@ -2,25 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.BomRosServiceMapper">
 
-    <sql id="where_ScooterList">
+    <sql id="where_combinationList">
         where ass.dr = 0
+        and ass.ass_type = 3
         <if test="keyword != null and keyword != ''">
-            and (ass.cn_name = #{keyword}
-            or ass.fr_name = #{keyword}
-            or ass.en_name= #{keyword}
-            or ass.ass_number = #{keyword}
+            and (ass.ass_number like concat('%',#{keyword},'%')
+            or ass.en_name like concat('%',#{keyword},'%')
+            or ass.cn_name like concat('%',#{keyword},'%')
+            or ass.fr_name like concat('%',#{keyword},'%')
             )
         </if>
     </sql>
 
-    <sql id="where_ScotoerPartList">
+    <sql id="where_ScooterList">
+        where ass.dr = 0
+        and ass.ass_type=2
+        <if test="keyword != null and keyword != ''">
+            and (ass.cn_name like concat('%',#{keyword},'%')
+            or ass.fr_name like concat('%',#{keyword},'%')
+            or ass.en_name like concat('%',#{keyword},'%')
+            or ass.ass_number like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <sql id="where_PartList">
         where parts.dr = 0
-        and parts.sec = #{sec}
+        <if test="sec != null and sec != ''">
+            and parts.sec = #{sec}
+        </if>
         <if test="keyword != null and keyword != ''">
             and (
-            parts.parts_number=#{keyword}
-            or parts.en_name = #{keyword}
-            or parts.cn_name = #{keyword}
+            parts.parts_number like concat('%',#{keyword},'%')
+            or parts.en_name like concat('%',#{keyword},'%')
+            or parts.cn_name like concat('%',#{keyword},'%')
             )
         </if>
     </sql>
@@ -30,10 +45,12 @@
         from ope_parts_assembly ass
         <include refid="where_ScooterList"/>
     </select>
-    <select id="scooterList" resultType="com.redescooter.ses.web.ros.vo.bom.ScooterListResult">
+    <select id="scooterList" resultType="com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult">
         select ass.id as id,
         ass.ass_number as productN,
-        ass.en_name as productName,
+        ass.en_name as productEnName,
+        ass.fr_name as productFrName,
+        ass.cn_name as productCnName,
         ass.in_qty as qty,
         ass.production_cycle as productionCycle
         from ope_parts_assembly ass
@@ -61,34 +78,54 @@
         from ope_parts_sec sec
         where sec.dr = 0
     </select>
-    <select id="ScotoerPartListCount" resultType="java.lang.Integer">
-        select *
+    <select id="partListCount" resultType="java.lang.Integer">
+        select count(*)
         from ope_parts parts
-        <include refid="where_ScotoerPartList"></include>
+        <include refid="where_PartList"></include>
     </select>
-    <select id="ScotoerPartList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
+    <select id="partList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
         select parts.id as id,
         parts.parts_number as partsN,
         parts.sec as sec,
         parts.en_name as partsEnName,
         parts.cn_name as partsCnName,
-        parts.production_cycle as productionCycle
+        ifnull(parts.production_cycle, 0) as productionCycle
         from ope_parts parts
-        <include refid="where_ScotoerPartList"></include>
+        <include refid="where_PartList"></include>
         order by parts.created_time desc
         limit #{startRow},#{pageSize}
     </select>
-<!--    <select id="scooterDeatilPartList" resultType="com.redescooter.ses.web.ros.vo.bom.PartListEnter">-->
-    <!--        select parts.id as id,-->
-    <!--        parts.parts_number as partsN,-->
-    <!--        parts.sec as sec,-->
-    <!--        parts.en_name as partsEnName,-->
-    <!--        parts.cn_name as partsCnName,-->
-    <!--        parts.production_cycle as productionCycle,-->
-    <!--        ass.parts_qty as qty-->
-    <!--        from ope_parts_assembly_b ass-->
-    <!--        inner join ope_parts parts on ass.parts_id = parts.id and parts.dr = 0-->
-    <!--        where ass.dr = 0-->
-    <!--        and ass.parts_assembly_id =#{id}-->
-    <!--    </select>-->
+    <select id="productDeatilPartList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
+        select parts.id as id,
+        parts.parts_number as partsN,
+        parts.sec as sec,
+        parts.en_name as partsEnName,
+        parts.cn_name as partsCnName,
+        parts.fr_name as partsFrName,
+        ifnull(parts.production_cycle, 0) as productionCycle,
+        ass.parts_qty as qty
+        from ope_parts_assembly_b ass
+        inner join ope_parts parts on ass.parts_id = parts.id and parts.dr = 0
+        where ass.dr = 0
+        and ass.parts_assembly_id =#{id}
+    </select>
+    <select id="combinationListCount" resultType="int">
+        select count(*)
+        from ope_parts_assembly ass
+        <include refid="where_combinationList"></include>
+    </select>
+    <select id="combinationList"
+            resultType="com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult">
+        select ass.id as id,
+        ass.ass_number as productN,
+        ass.fr_name as productFrName,
+        ass.en_name as productEnName,
+        ass.cn_name as productCnName,
+        ifnull(ass.in_qty, 0) as qty,
+        if(in_qty = 0, false, true) as partList
+        from ope_parts_assembly ass
+        <include refid="where_combinationList"></include>
+        order by ass.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
 </mapper>
