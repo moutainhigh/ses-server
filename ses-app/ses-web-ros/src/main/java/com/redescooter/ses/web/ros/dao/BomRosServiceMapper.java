@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.dao;
 import java.util.List;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.web.ros.vo.bom.PartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.ScooterListEnter;
@@ -84,5 +83,5 @@ public interface BomRosServiceMapper {
      * @date: 2020/2/26 19:21
      * @Version: Ros 1.2
      */
-    List<PartListEnter> scooterDeatilPartList(Long id);
+//    List<PartListEnter> scooterDeatilPartList(Long id);
 }
