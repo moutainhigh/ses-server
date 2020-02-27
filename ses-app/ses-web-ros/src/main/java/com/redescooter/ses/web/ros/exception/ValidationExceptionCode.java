@@ -74,16 +74,16 @@ public interface ValidationExceptionCode {
     int PRODUCT_FR_PRICE_IS_EMPTY=10051;
     // 产品英国报价为空
     int PRODUCT_EN_PRICE_IS_EMPTY = 10052;
-    //部品号为空
-    int PARTS_NUM_IS_EMPTY = 10053;
-    //部品类型为空
-    int PARTS_TYPE_IS_EMPTY = 10054;
-    //部品项目区域为空
-    int PARTS_SEC_IS_EMPTY = 10055;
-    //是否可销售为空
-    int PARTS_SN_CLASS_IS_EMPTY = 10056;
-    int PRODUCT_EN_PRICE_IS_EMPTY=10052;
     // 数量为空
     int QTY_IS_EMPTY=10053;
+    //部品号为空
+    int PARTS_NUM_IS_EMPTY = 10054;
+    //部品类型为空
+    int PARTS_TYPE_IS_EMPTY = 10055;
+    //部品项目区域为空
+    int PARTS_SEC_IS_EMPTY = 10056;
+    //是否可销售为空
+    int PARTS_SN_CLASS_IS_EMPTY = 10057;
+
 
 }
