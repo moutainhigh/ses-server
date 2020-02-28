@@ -383,7 +383,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         String partsType = BomTypeEnums.checkCode(enter.getPartsType());
         String sec = ESCUtils.checkESC(enter.getSec());
         if (StringUtils.isAnyBlank(partsNumber, snClassFlag, partsType, sec)) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_illegal.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_illegal.getMessage());
         }
         QueryWrapper<OpeParts> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(OpeParts.COL_DR, 0);
