@@ -1,5 +1,8 @@
 package com.redescooter.ses.web.ros.service.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import java.util.*;
 
 import com.redescooter.ses.api.common.enums.bom.*;
@@ -331,10 +334,26 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     private OpePartsHistoryRecord createPartsHistory(OpeParts parts, String event, long userId) {
         OpePartsHistoryRecord record = new OpePartsHistoryRecord();
-        BeanUtils.copyProperties(parts, record);
         record.setId(idAppService.getId(SequenceName.OPE_PARTS_HISTORY_RECORD));
+        record.setDr(0);
+        record.setTenantId(0L);
+        record.setUserId(userId);
+        record.setStatus(BomStatusEnums.NORMAL.getValue());
+        record.setPartsNumber(parts.getPartsNumber());
+        record.setImportLot(parts.getImportLot());
         record.setPartsId(parts.getId());
         record.setEvent(event);
+        record.setPartsType(parts.getPartsType());
+        record.setSec(parts.getSec());
+        record.setCnName(parts.getCnName());
+        record.setFrName(parts.getFrName());
+        record.setEnName(parts.getEnName());
+        record.setSnClassFlag(parts.getSnClassFlag());
+        record.setPartsQty(0);
+        record.setProductionCycle(parts.getProductionCycle());
+        record.setSupplierId(parts.getSupplierId());
+        record.setDwg(parts.getDwg());
+        record.setNote(parts.getNote());
         record.setRevision(0);
         record.setCreatedBy(userId);
         record.setCreatedTime(new Date());
@@ -345,20 +364,21 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     private OpeParts createParts(EditSavePartsEnter enter, String lot, long userId) {
         OpeParts parts = new OpeParts();
+
         if (enter.getId() == null || enter.getId() == 0) {
             parts.setId(idAppService.getId(SequenceName.OPE_PARTS));
-            parts.setPartsNumber(enter.getPartsNumber());
             parts.setDr(0);
             parts.setTenantId(0L);
             parts.setUserId(userId);
             parts.setStatus(BomStatusEnums.NORMAL.getValue());
             parts.setCreatedBy(userId);
             parts.setCreatedTime(new Date());
-            if (StringUtils.isBlank(parts.getImportLot())) {
-                parts.setImportLot(lot);
-            }
+            parts.setImportLot(lot);
+        } else {
+            parts.setId(enter.getId());
+            parts.setImportLot(enter.getImportLot());
         }
-
+        parts.setPartsNumber(enter.getPartsNumber());
         parts.setPartsType(BomTypeEnums.checkCode(enter.getPartsType()));
         parts.setSnClassFlag(SNClassEnums.getValueByCode(enter.getSnClassFlag()));
         parts.setSec(ESCUtils.checkESC(enter.getSec()));
@@ -385,12 +405,20 @@ public class PartsRosServiceImpl implements PartsRosService {
         if (StringUtils.isAnyBlank(partsNumber, snClassFlag, partsType, sec)) {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_illegal.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_illegal.getMessage());
         }
+        if (enter.getId() != null || enter.getId() != 0) {
+            if (StringUtils.isAnyBlank(enter.getImportLot())) {
+                throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_illegal.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_illegal.getMessage());
+            }
+        }
         QueryWrapper<OpeParts> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(OpeParts.COL_DR, 0);
         queryWrapper.eq(OpeParts.COL_PARTS_NUMBER, partsNumber);
-        int count = partsService.count(queryWrapper);
-        if (count > 0) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
+        if (enter.getId() == null || enter.getId() == 0) {
+            int count = partsService.count(queryWrapper);
+            if (count > 0) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
+            }
         }
+
     }
 }

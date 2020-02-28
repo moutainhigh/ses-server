@@ -25,6 +25,9 @@ public class EditSavePartsEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
+    @ApiModelProperty(value = "导入批次号")
+    private String importLot;
+
     @ApiModelProperty(value = "类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery",required = true)
     @NotNull(code = ValidationExceptionCode.PARTS_TYPE_IS_EMPTY, message = "类型 为空")
     private String partsType;

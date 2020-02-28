@@ -156,7 +156,7 @@ public class OpePartsHistoryRecord implements Serializable {
      */
     @TableField(value = "supplier_id")
     @ApiModelProperty(value = "供应商 供应商")
-    private String supplierId;
+    private Long supplierId;
 
     /**
      * 图纸 图纸
