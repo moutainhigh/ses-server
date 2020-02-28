@@ -2,13 +2,16 @@ package com.redescooter.ses.web.ros.service.impl;
 
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
+import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.BomRosService;
 import com.redescooter.ses.web.ros.service.ExcelService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
+import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
@@ -37,6 +40,8 @@ public class ExcelServiceImpl implements ExcelService {
     @Autowired
     private PartsRosService partsRosService;
 
+    @Autowired
+    private OpePartsService partsService;
 
     @Override
     public ImportExcelPartsResult readExcelDataByParts(ImportPartsEnter enter) {
@@ -79,6 +84,15 @@ public class ExcelServiceImpl implements ExcelService {
             result.setErrorMsgList(mapList);
             return result;
         }
+
+        successList.forEach(su -> {
+            QueryWrapper<OpeParts> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq(OpeParts.COL_DR, 0);
+            queryWrapper.eq(OpeParts.COL_PARTS_NUMBER, su.getPartsN());
+            if (partsService.count(queryWrapper) > 0) {
+                throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_EXIST.getCode(), ExceptionCodeEnums.PARTS_NUMBER_EXIST.getMessage());
+            }
+        });
 
         return partsRosService.savePartsList(successList, enter);
     }

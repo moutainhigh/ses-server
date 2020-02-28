@@ -1,28 +1,18 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
-import java.util.*;
-
-import com.redescooter.ses.api.common.enums.bom.*;
-import com.redescooter.ses.tool.utils.parts.ESCUtils;
-import com.redescooter.ses.web.ros.vo.bom.parts.*;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Transient;
-
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.bom.*;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.PartsServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.dm.OpePartsAssembly;
+import com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord;
+import com.redescooter.ses.web.ros.dm.OpePartsType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.ExcelService;
@@ -30,9 +20,17 @@ import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyService;
 import com.redescooter.ses.web.ros.service.base.OpePartsHistoryRecordService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
-
 import com.redescooter.ses.web.ros.service.base.OpePartsTypeService;
+import com.redescooter.ses.web.ros.vo.bom.parts.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
+
+import java.util.*;
 
 /**
  * @ClassName PartsRosServiceImpl
@@ -120,7 +118,6 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public ImportExcelPartsResult savePartsList(List<ExpressPartsExcleData> list, ImportPartsEnter enter) {
         ImportExcelPartsResult result = new ImportExcelPartsResult();
-        OpeParts save = null;
         List<OpeParts> saveList = new ArrayList<>();
         List<OpePartsHistoryRecord> instersHistory = new ArrayList<>();
 
@@ -169,14 +166,14 @@ public class PartsRosServiceImpl implements PartsRosService {
             String lot = generateService.getOrderNo();
             enters.forEach(pat -> {
                 checkParts(pat);
-                if (pat.getId() == null || pat.getId() == 0) {
+                if (org.springframework.util.StringUtils.isEmpty(pat.getId())) {
                     OpeParts parts = createParts(pat, lot, enter.getUserId());
                     insters.add(parts);
                     instersHistory.add(createPartsHistory(parts, PartsEventEnums.CREATE.getValue(), enter.getUserId()));
                 } else {
                     OpeParts parts = createParts(pat, null, enter.getUserId());
                     updates.add(parts);
-                    instersHistory.add(createPartsHistory(parts, PartsEventEnums.UPDATE.getValue(), enter.getUserId()));
+                    instersHistory.add(createPartsHistory(partsService.getById(pat.getId()), PartsEventEnums.UPDATE.getValue(), enter.getUserId()));
                 }
             });
         }
@@ -209,17 +206,24 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         //判断是否进行部品号的迭代
         if (enters.size() > 0) {
-            enters.forEach(pat -> {
-                OpeParts byId = partsService.getById(pat.getId());
-                Optional.ofNullable(byId).ifPresent(pid -> {
-                    //保存记录
-                    if (StringUtils.isNotBlank(pat.getPartsNumber()) && (!pat.getPartsNumber().equals(pid.getPartsNumber()))) {
-                        pid.setPartsNumber(pat.getPartsNumber());
-                        pid.setUpdatedBy(enter.getUserId());
-                        pid.setUpdatedTime(new Date());
-                        update.add(pid);
-                        instersHistory.add(createPartsHistory(pid, PartsEventEnums.ADD.getValue(), enter.getUserId()));
+            enters.forEach(ne -> {
+                OpeParts olod = partsService.getById(ne.getId());
+                Optional.ofNullable(olod).ifPresent(oloPid -> {
+                    //验证是否已存在
+                    QueryWrapper<OpeParts> queryWrapper = new QueryWrapper<>();
+                    queryWrapper.eq(OpeParts.COL_DR, 0);
+                    queryWrapper.eq(OpeParts.COL_PARTS_NUMBER, ne.getPartsNumber());
+                    if (partsService.count(queryWrapper) > 0) {
+                        throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_EXIST.getCode(), ExceptionCodeEnums.PARTS_NUMBER_EXIST.getMessage());
                     }
+                    //保存记录
+                    OpeParts news = new OpeParts();
+                    news.setId(oloPid.getId());
+                    news.setPartsNumber(ne.getPartsNumber());
+                    news.setUpdatedBy(enter.getUserId());
+                    news.setUpdatedTime(new Date());
+                    update.add(news);
+                    instersHistory.add(createPartsHistory(oloPid, PartsEventEnums.ADD.getValue(), enter.getUserId()));
                 });
             });
         }
@@ -246,7 +250,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         List<OpePartsHistoryRecord> insters = new ArrayList<>();
         if (enters.size() > 0) {
             enters.forEach(dl -> {
-                if (dl.getId() != null || dl.getId() != 0) {
+                if (!org.springframework.util.StringUtils.isEmpty(dl.getId())) {
                     OpeParts byId = partsService.getById(dl.getId());
                     if (byId != null) {
                         deletes.add(byId.getId());
@@ -365,7 +369,7 @@ public class PartsRosServiceImpl implements PartsRosService {
     private OpeParts createParts(EditSavePartsEnter enter, String lot, long userId) {
         OpeParts parts = new OpeParts();
 
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (org.springframework.util.StringUtils.isEmpty(enter.getId())) {
             parts.setId(idAppService.getId(SequenceName.OPE_PARTS));
             parts.setDr(0);
             parts.setTenantId(0L);
@@ -374,11 +378,10 @@ public class PartsRosServiceImpl implements PartsRosService {
             parts.setCreatedBy(userId);
             parts.setCreatedTime(new Date());
             parts.setImportLot(lot);
+            parts.setPartsNumber(enter.getPartsNumber());
         } else {
             parts.setId(enter.getId());
-            parts.setImportLot(enter.getImportLot());
         }
-        parts.setPartsNumber(enter.getPartsNumber());
         parts.setPartsType(BomTypeEnums.checkCode(enter.getPartsType()));
         parts.setSnClassFlag(SNClassEnums.getValueByCode(enter.getSnClassFlag()));
         parts.setSec(ESCUtils.checkESC(enter.getSec()));
@@ -405,7 +408,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         if (StringUtils.isAnyBlank(partsNumber, snClassFlag, partsType, sec)) {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_illegal.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_illegal.getMessage());
         }
-        if (enter.getId() != null || enter.getId() != 0) {
+        if (!org.springframework.util.StringUtils.isEmpty(enter.getId())) {
             if (StringUtils.isAnyBlank(enter.getImportLot())) {
                 throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_illegal.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_illegal.getMessage());
             }
@@ -413,10 +416,10 @@ public class PartsRosServiceImpl implements PartsRosService {
         QueryWrapper<OpeParts> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(OpeParts.COL_DR, 0);
         queryWrapper.eq(OpeParts.COL_PARTS_NUMBER, partsNumber);
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (org.springframework.util.StringUtils.isEmpty(enter.getId())) {
             int count = partsService.count(queryWrapper);
             if (count > 0) {
-                throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_EXIST.getCode(), ExceptionCodeEnums.PARTS_NUMBER_EXIST.getMessage());
             }
         }
 
