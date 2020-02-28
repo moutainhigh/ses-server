@@ -29,7 +29,7 @@ public interface SupplierChaimRosService {
      * @date: 2020/2/25 14:41
      * @Version: Ros 1.2
      */
-   Map<String,Integer> countByType(GeneralEnter enter);
+   Map<String,Integer> countByPartType(GeneralEnter enter);
 
     /**
      * @desc: 供应链列表

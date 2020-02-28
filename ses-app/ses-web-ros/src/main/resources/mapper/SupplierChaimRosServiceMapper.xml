@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.SupplierChaimRosServiceMapper">
+
+    <sql id="where_SupplierChaimList">
+        where part.dr = 0
+        <if test="partType != null and partType != ''">
+            and part.parts_type=#{partType}
+        </if>
+        <if test="refuseStartTime != null and  refuseEndTime != null">
+            and part.updated_time between #{refuseStartTime} and #{refuseEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and ( parts_number like concat('%',#{keyword},'%')
+            or part.cn_name like concat('%',#{keyword},'%')
+            or part.fr_name like concat('%',#{keyword},'%')
+            or part.en_name like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <select id="countByPartType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select part.parts_type as status,
+               count(*)        as totalCount
+        from ope_parts part
+        where part.dr = 0
+        group by part.parts_type
+    </select>
+
+    <select id="supplierChaimListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_parts part
+        <include refid="where_SupplierChaimList"></include>
+    </select>
+
+    <select id="supplierChaimList"
+            resultType="com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListResult">
+        select part.id as id,
+        part.parts_number as productN,
+        part.cn_name as productCnName,
+        part.en_name as productEnName,
+        part.fr_name as productFrName,
+        part.parts_type as type,
+        part.updated_time as refuseTime
+        from ope_parts part
+        <include refid="where_SupplierChaimList"></include>
+        order by part.updated_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+
+</mapper>
