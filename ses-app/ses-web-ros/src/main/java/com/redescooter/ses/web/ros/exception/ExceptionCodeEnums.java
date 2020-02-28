@@ -133,6 +133,8 @@ public enum ExceptionCodeEnums {
 
     PARTS_BASE_IS_illegal(10059,"部品基础信息不合法，如partsNumber,ImportLot,snClassFlag,partsType,sec等"),
 
+    PARTS_NUMBER_EXIST(10060,"部品号已存在"),
+
 
     ;
 
