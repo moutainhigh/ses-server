@@ -31,10 +31,16 @@ public class EditProductPriceEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "id 为空")
     private Long id;
 
-    @ApiModelProperty(value = "产品价格",required = true)
-    @NotNull(code = ValidationExceptionCode.PRODUCT_FR_NAME_IS_EMPTY,message = "产品价格 为空")
-    private String productPrice;
+    @ApiModelProperty(value = "法国报价，若业务只有一个报价，默认只传法国报价",required = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_FR_PRICE_IS_EMPTY,message = "产品法国报价为空 为空")
+    private String productFrPrice;
 
-    @ApiModelProperty(value = "货币单位，只是第一次 设置报价的时候传")
-    private String unit;
+    @ApiModelProperty(value = "报价单位 只是第一次 设置报价的时候传")
+    private String productFrUnit;
+
+    @ApiModelProperty(value = "英国报价")
+    private String productEnPrice;
+
+    @ApiModelProperty(value = "报价单位 只是第一次 设置报价的时候传")
+    private String productEnUnit;
 }

@@ -15,6 +15,7 @@
         <result column="en_name" jdbcType="VARCHAR" property="enName"/>
         <result column="in_qty" jdbcType="INTEGER" property="inQty"/>
         <result column="production_cycle" jdbcType="VARCHAR" property="productionCycle"/>
+        <result column="sn_class_flag" jdbcType="VARCHAR" property="snClassFlag"/>
         <result column="ass_type" jdbcType="INTEGER" property="assType"/>
         <result column="note" jdbcType="VARCHAR" property="note"/>
         <result column="revision" jdbcType="INTEGER" property="revision"/>
@@ -31,8 +32,8 @@
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
         id, dr, tenant_id, user_id, `status`, ass_number, cn_name, fr_name, en_name, in_qty,
-        production_cycle, ass_type, note, revision, created_by, created_time, updated_by,
-        updated_time, def1, def2, def3, def5, def6
+        production_cycle, sn_class_flag, ass_type, note, revision, created_by, created_time,
+        updated_by, updated_time, def1, def2, def3, def5, def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
@@ -86,6 +87,11 @@
             <trim prefix="production_cycle = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.productionCycle,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="sn_class_flag = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.snClassFlag,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="ass_type = case" suffix="end,">
@@ -158,36 +164,38 @@
         <!--@mbg.generated-->
         insert into ope_parts_assembly
         (id, dr, tenant_id, user_id, `status`, ass_number, cn_name, fr_name, en_name, in_qty,
-        production_cycle, ass_type, note, revision, created_by, created_time, updated_by,
-        updated_time, def1, def2, def3, def5, def6)
+        production_cycle, sn_class_flag, ass_type, note, revision, created_by, created_time,
+        updated_by, updated_time, def1, def2, def3, def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
             #{item.userId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, #{item.assNumber,jdbcType=VARCHAR},
             #{item.cnName,jdbcType=VARCHAR}, #{item.frName,jdbcType=VARCHAR}, #{item.enName,jdbcType=VARCHAR},
-            #{item.inQty,jdbcType=INTEGER}, #{item.productionCycle,jdbcType=VARCHAR}, #{item.assType,jdbcType=INTEGER},
-            #{item.note,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-            #{item.updatedTime,jdbcType=TIMESTAMP},
-            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
-            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL})
+            #{item.inQty,jdbcType=INTEGER}, #{item.productionCycle,jdbcType=VARCHAR},
+            #{item.snClassFlag,jdbcType=VARCHAR},
+            #{item.assType,jdbcType=INTEGER}, #{item.note,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER},
+            #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.updatedBy,jdbcType=BIGINT},
+            #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
+            #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL}
+            )
         </foreach>
     </insert>
     <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpePartsAssembly">
         <!--@mbg.generated-->
         insert into ope_parts_assembly
         (id, dr, tenant_id, user_id, `status`, ass_number, cn_name, fr_name, en_name, in_qty,
-        production_cycle, ass_type, note, revision, created_by, created_time, updated_by,
-        updated_time, def1, def2, def3, def5, def6)
+        production_cycle, sn_class_flag, ass_type, note, revision, created_by, created_time,
+        updated_by, updated_time, def1, def2, def3, def5, def6)
         values
         (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
         #{status,jdbcType=VARCHAR}, #{assNumber,jdbcType=VARCHAR}, #{cnName,jdbcType=VARCHAR},
         #{frName,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, #{inQty,jdbcType=INTEGER},
-        #{productionCycle,jdbcType=VARCHAR}, #{assType,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR},
-        #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
-        #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
-        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL}
-        )
+        #{productionCycle,jdbcType=VARCHAR}, #{snClassFlag,jdbcType=VARCHAR}, #{assType,jdbcType=INTEGER},
+        #{note,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT},
+        #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
+        #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
+        #{def6,jdbcType=DECIMAL})
         on duplicate key update
         id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
@@ -200,6 +208,7 @@
         en_name = #{enName,jdbcType=VARCHAR},
         in_qty = #{inQty,jdbcType=INTEGER},
         production_cycle = #{productionCycle,jdbcType=VARCHAR},
+        sn_class_flag = #{snClassFlag,jdbcType=VARCHAR},
         ass_type = #{assType,jdbcType=INTEGER},
         note = #{note,jdbcType=VARCHAR},
         revision = #{revision,jdbcType=INTEGER},
@@ -249,6 +258,9 @@
             </if>
             <if test="productionCycle != null">
                 production_cycle,
+            </if>
+            <if test="snClassFlag != null">
+                sn_class_flag,
             </if>
             <if test="assType != null">
                 ass_type,
@@ -322,6 +334,9 @@
             <if test="productionCycle != null">
                 #{productionCycle,jdbcType=VARCHAR},
             </if>
+            <if test="snClassFlag != null">
+                #{snClassFlag,jdbcType=VARCHAR},
+            </if>
             <if test="assType != null">
                 #{assType,jdbcType=INTEGER},
             </if>
@@ -393,6 +408,9 @@
             </if>
             <if test="productionCycle != null">
                 production_cycle = #{productionCycle,jdbcType=VARCHAR},
+            </if>
+            <if test="snClassFlag != null">
+                sn_class_flag = #{snClassFlag,jdbcType=VARCHAR},
             </if>
             <if test="assType != null">
                 ass_type = #{assType,jdbcType=INTEGER},

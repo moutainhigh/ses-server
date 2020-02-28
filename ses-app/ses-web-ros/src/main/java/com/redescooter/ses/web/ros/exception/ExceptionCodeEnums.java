@@ -133,8 +133,11 @@ public enum ExceptionCodeEnums {
 
     PARTS_BASE_IS_illegal(10059,"部品基础信息不合法，如partsNumber,snClassFlag,partsType,sec等"),
 
+    PRODUCT_PRICE_IS_NOT_EXIST(10060, "产品报价不存在"),
 
-    ;
+    CURRENCY_UNIT_IS_EMPTY(10061,"产品单位为空"),
+
+  ;
 
     private int code;
 

@@ -47,6 +47,4 @@
         order by part.updated_time desc
         limit #{startRow},#{pageSize}
     </select>
-
-
 </mapper>

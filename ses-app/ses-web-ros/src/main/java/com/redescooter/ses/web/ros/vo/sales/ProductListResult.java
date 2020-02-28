@@ -1,10 +1,8 @@
 package com.redescooter.ses.web.ros.vo.sales;
 
 import java.util.Date;
-import java.util.List;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -44,12 +42,18 @@ public class ProductListResult extends GeneralResult {
     @ApiModelProperty(value = "法国报价")
     private String productFrPrice;
 
+    @ApiModelProperty(value = "报价单位")
+    private String productFrUnit;
+
     @ApiModelProperty(value = "英国报价")
     private String productEnPrice;
+
+    @ApiModelProperty(value = "报价单位")
+    private String productEnUnit;
 
     @ApiModelProperty(value = "刷新时间")
     private Date refuseTime;
 
-    @ApiModelProperty(value = "部件列表")
-    private List<PartListEnter> partList;
+    @ApiModelProperty(value = "是否存在有列表详情")
+    private Boolean productListDetail=Boolean.FALSE;
 }
