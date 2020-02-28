@@ -131,6 +131,8 @@ public enum ExceptionCodeEnums {
 
     PRODUCT_HAS_NO_PARTS(10058,"产品暂未添加部品,不可删除"),
 
+    PARTS_BASE_IS_illegal(10059,"部品基础信息不合法，如partsNumber,snClassFlag,partsType,sec等"),
+
 
     ;
 
