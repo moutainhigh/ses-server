@@ -52,7 +52,7 @@
         <result column="cn_name" jdbcType="VARCHAR" property="cnName"/>
         <result column="fr_name" jdbcType="VARCHAR" property="frName"/>
         <result column="en_name" jdbcType="VARCHAR" property="enName"/>
-        <result column="sn_class_flag" jdbcType="VARCHAR" property="snClassFlag"/>
+        <result column="snClassFlag" jdbcType="VARCHAR" property="snClassFlag"/>
         <result column="production_cycle" jdbcType="VARCHAR" property="productionCycle"/>
         <result column="supplier_id" jdbcType="BIGINT" property="supplierId"/>
         <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>

@@ -52,7 +52,7 @@ public class DetailsPartsResult extends GeneralResult {
     @ApiModelProperty(value = "英文名称")
     private String enName;
 
-    @ApiModelProperty(value = "是否可销售,0:SC仅可采购，1:SSC可销售可采购")
+    @ApiModelProperty(value = "是否可销售,SC仅可采购，SSC可销售可采购")
     private String snClassFlag;
 
     @ApiModelProperty(value = "生产周期")
