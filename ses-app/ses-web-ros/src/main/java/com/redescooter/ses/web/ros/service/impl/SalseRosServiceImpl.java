@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.SalseRosServiceMapper;
 import com.redescooter.ses.web.ros.service.SalseRosService;
@@ -17,7 +17,6 @@ import com.redescooter.ses.web.ros.vo.sales.ProductListEnter;
 import com.redescooter.ses.web.ros.vo.sales.ProductListResult;
 import com.redescooter.ses.web.ros.vo.sales.SccPriceEnter;
 import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
-import com.redescooter.ses.web.ros.vo.sales.ServiceListResult;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,7 +45,14 @@ public class SalseRosServiceImpl implements SalseRosService {
      */
     @Override
     public Map<String, Integer> countByServiceType(GeneralEnter enter) {
-        return null;
+        Map<String,Integer> map=new HashMap<>();
+        // 产品数量
+        map.put("product",salseRosServiceMapper.productCount(enter));
+        // 售后产品数量
+        map.put("afterSale",salseRosServiceMapper.afterSaleCount(enter));
+        // 增值服务数量
+        map.put("service",0);
+        return map;
     }
 
     /**
@@ -65,6 +71,24 @@ public class SalseRosServiceImpl implements SalseRosService {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter,count,salseRosServiceMapper.productList(enter));
+    }
+
+    /**
+     * @param enter
+     * @desc: 售后产品列表
+     * @param: enter
+     * @retrn: ProductListResult
+     * @auther: alex
+     * @date: 2020/2/25 18:08
+     * @Version: Ros 1.2
+     */
+    @Override
+    public PageResult<ProductListResult> afterSaleList(ProductListEnter enter) {
+        int count=salseRosServiceMapper.afterSaleListCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter,count,salseRosServiceMapper.afterSaleList(enter));
     }
 
     /**
@@ -106,48 +130,6 @@ public class SalseRosServiceImpl implements SalseRosService {
      */
     @Override
     public GeneralResult saveProductPrice(SccPriceEnter enter) {
-        return null;
-    }
-
-    /**
-     * @param enter
-     * @desc: 服务列表
-     * @paam: enter
-     * @retrn: ServiceListResult
-     * @auther: alex
-     * @date: 2020/2/26 10:01
-     * @Version: Ros 1.2
-     */
-    @Override
-    public PageResult<ServiceListResult> serviceList(PageEnter enter) {
-        return null;
-    }
-
-    /**
-     * @param enter
-     * @desc: 产品报价历史
-     * @param: enter
-     * @retrn: List<SccProductPriceResult>
-     * @auther: alex
-     * @date: 2020/2/25 18:18
-     * @Version: Ros 1.2
-     */
-    @Override
-    public List<SccPriceResult> servicePriceHistroy(IdEnter enter) {
-        return null;
-    }
-
-    /**
-     * @param enter
-     * @desc: 保存产品报价
-     * @param: enter
-     * @retrn: GeneralResult
-     * @auther: alex
-     * @date: 2020/2/26 9:52
-     * @Version: Ros 1.2
-     */
-    @Override
-    public GeneralResult saveServicePrice(SccPriceEnter enter) {
         return null;
     }
 }

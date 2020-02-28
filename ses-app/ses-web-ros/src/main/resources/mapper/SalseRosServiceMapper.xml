@@ -28,6 +28,32 @@
           and ass.sn_class_flag = 1
     </sql>
 
+    <sql id="where_AfterSaleList">
+        select part.id                as id,
+               part.cn_name           as productCnName,
+               part.en_name           as productEnName,
+               part.fr_name           as productFrName,
+               part.parts_number      as productN,
+               part.parts_type        as type,
+               part.updated_time      as refuseTime,
+               if(1 = 0, true, false) as productListDetail
+        from ope_parts part
+        where part.parts_type ='Parts'
+          and part.sn_class_flag = 1
+        UNION ALL
+        select ass.id,
+               ass.cn_name                                    as productCnName,
+               ass.en_name                                    as productEnName,
+               ass.fr_name                                    as productFrName,
+               ass.ass_number                                 as productN,
+               if(ass.ass_type = 1, 'Scooter', 'Combination') as type,
+               ass.updated_time                               as refuseTime,
+               if(1 = 1, true, false)                         as productListDetail
+        from ope_parts_assembly ass
+        where ass.ass_type = 2
+          and ass.sn_class_flag = 1
+    </sql>
+
     <sql id="where_ProductList">
         where 1=1
         <if test="type != null and type != ''">
@@ -52,9 +78,35 @@
         from (<include refid="product_List"/>) a
         <include refid="where_ProductList"></include>
     </select>
+
     <select id="productList" resultType="com.redescooter.ses.web.ros.vo.sales.ProductListResult">
         select a.*
         from (<include refid="product_List"/>) a
+        <include refid="where_ProductList"></include>
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="productCount" resultType="java.lang.Integer">
+        select count(*)
+        from (<include refid="product_List"/>) a
+        <include refid="where_ProductList"></include>
+    </select>
+
+    <select id="afterSaleCount" resultType="java.lang.Integer">
+        select count(*)
+        from (<include refid="where_AfterSaleList"/>) a
+        <include refid="where_AfterSaleList"></include>
+    </select>
+
+    <select id="afterSaleListCount" resultType="java.lang.Integer">
+        select count(*)
+        from (<include refid="where_AfterSaleList"/>) a
+        <include refid="where_ProductList"></include>
+    </select>
+
+    <select id="afterSaleList" resultType="com.redescooter.ses.web.ros.vo.sales.ProductListResult">
+        select a.*
+        from (<include refid="where_AfterSaleList"/>) a
         <include refid="where_ProductList"></include>
         limit #{startRow},#{pageSize}
     </select>

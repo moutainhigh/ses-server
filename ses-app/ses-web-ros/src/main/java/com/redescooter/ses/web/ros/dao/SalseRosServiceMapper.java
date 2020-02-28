@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.dao;
 
 import java.util.List;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.vo.sales.ProductListEnter;
 import com.redescooter.ses.web.ros.vo.sales.ProductListResult;
 
@@ -33,4 +34,27 @@ public interface SalseRosServiceMapper {
      * @Version: Ros 1.2
      */
     List<ProductListResult> productList(ProductListEnter enter);
+
+    /**
+     * 产品数量统计
+     * @param enter
+     * @return
+     */
+    Integer productCount(GeneralEnter enter);
+
+    /**
+     * 售后产品统计
+     * @param enter
+     * @return
+     */
+    Integer afterSaleCount(GeneralEnter enter);
+
+    /**
+     * 售后产品列表
+     * @param enter
+     * @return
+     */
+    Integer afterSaleListCount(ProductListEnter enter);
+
+    List<ProductListResult> afterSaleList(ProductListEnter enter);
 }
