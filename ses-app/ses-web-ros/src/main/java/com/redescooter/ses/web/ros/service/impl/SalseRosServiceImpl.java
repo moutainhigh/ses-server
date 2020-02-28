@@ -1,29 +1,42 @@
-package com.redescooter.ses.web.ros.service;
+package com.redescooter.ses.web.ros.service.impl;
 
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.dao.SalseRosServiceMapper;
+import com.redescooter.ses.web.ros.service.SalseRosService;
 import com.redescooter.ses.web.ros.vo.sales.ProductListEnter;
 import com.redescooter.ses.web.ros.vo.sales.ProductListResult;
 import com.redescooter.ses.web.ros.vo.sales.SccPriceEnter;
 import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
 import com.redescooter.ses.web.ros.vo.sales.ServiceListResult;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
- * @ClassName:SalseRosService
- * @description: SalseRosService
+ * @ClassName:SalseRosServiceImpl
+ * @description: SalseRosServiceImpl
  * @author: Alex
- * @Version：1.2
- * @create: 2020/02/25 10:18
+ * @Version：1.3
+ * @create: 2020/02/28 13:04
  */
-public interface SalseRosService {
+@Service
+@Slf4j
+public class SalseRosServiceImpl implements SalseRosService {
+
+    @Autowired
+    private SalseRosServiceMapper salseRosServiceMapper;
 
     /**
+     * @param enter
      * @desc: 服务类型统计
      * @param: enter
      * @retrn: map
@@ -31,9 +44,13 @@ public interface SalseRosService {
      * @date: 2020/2/25 18:08
      * @Version: Ros 1.2
      */
-    Map<String,Integer> countByServiceType(GeneralEnter enter);
+    @Override
+    public Map<String, Integer> countByServiceType(GeneralEnter enter) {
+        return null;
+    }
 
     /**
+     * @param enter
      * @desc: 产品列表
      * @param: enter
      * @retrn: ProductListResult
@@ -41,9 +58,17 @@ public interface SalseRosService {
      * @date: 2020/2/25 18:08
      * @Version: Ros 1.2
      */
-    PageResult<ProductListResult> productList(ProductListEnter enter);
+    @Override
+    public PageResult<ProductListResult> productList(ProductListEnter enter) {
+        int count=salseRosServiceMapper.productListCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter,count,salseRosServiceMapper.productList(enter));
+    }
 
     /**
+     * @param enter
      * @desc: 产品报价
      * @param: enter
      * @retrn: SccProductPriceResult
@@ -51,9 +76,13 @@ public interface SalseRosService {
      * @date: 2020/2/25 18:16
      * @Version: Ros 1.2
      */
-    SccPriceResult productPriceDetail(IdEnter enter);
+    @Override
+    public SccPriceResult productPriceDetail(IdEnter enter) {
+        return null;
+    }
 
     /**
+     * @param enter
      * @desc: 产品报价历史
      * @param: enter
      * @retrn: List<SccProductPriceResult>
@@ -61,9 +90,13 @@ public interface SalseRosService {
      * @date: 2020/2/25 18:18
      * @Version: Ros 1.2
      */
-    List<SccPriceResult> productPriceHistroy(IdEnter enter);
+    @Override
+    public List<SccPriceResult> productPriceHistroy(IdEnter enter) {
+        return null;
+    }
 
     /**
+     * @param enter
      * @desc: 保存产品报价
      * @param: enter
      * @retrn: GeneralResult
@@ -71,9 +104,13 @@ public interface SalseRosService {
      * @date: 2020/2/26 9:52
      * @Version: Ros 1.2
      */
-    GeneralResult saveProductPrice(SccPriceEnter enter);
+    @Override
+    public GeneralResult saveProductPrice(SccPriceEnter enter) {
+        return null;
+    }
 
     /**
+     * @param enter
      * @desc: 服务列表
      * @paam: enter
      * @retrn: ServiceListResult
@@ -81,9 +118,13 @@ public interface SalseRosService {
      * @date: 2020/2/26 10:01
      * @Version: Ros 1.2
      */
-    PageResult<ServiceListResult> serviceList(PageEnter enter);
+    @Override
+    public PageResult<ServiceListResult> serviceList(PageEnter enter) {
+        return null;
+    }
 
     /**
+     * @param enter
      * @desc: 产品报价历史
      * @param: enter
      * @retrn: List<SccProductPriceResult>
@@ -91,9 +132,13 @@ public interface SalseRosService {
      * @date: 2020/2/25 18:18
      * @Version: Ros 1.2
      */
-    List<SccPriceResult> servicePriceHistroy(IdEnter enter);
+    @Override
+    public List<SccPriceResult> servicePriceHistroy(IdEnter enter) {
+        return null;
+    }
 
     /**
+     * @param enter
      * @desc: 保存产品报价
      * @param: enter
      * @retrn: GeneralResult
@@ -101,5 +146,8 @@ public interface SalseRosService {
      * @date: 2020/2/26 9:52
      * @Version: Ros 1.2
      */
-    GeneralResult saveServicePrice(SccPriceEnter enter);
+    @Override
+    public GeneralResult saveServicePrice(SccPriceEnter enter) {
+        return null;
+    }
 }

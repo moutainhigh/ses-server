@@ -20,7 +20,13 @@ public class SupplierChaimListResult extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "产品名字")
-    private String productName;
+    private String productEnName;
+
+    @ApiModelProperty(value = "产品名字")
+    private String productCnName;
+
+    @ApiModelProperty(value = "产品名字")
+    private String productFrName;
 
     @ApiModelProperty(value = "产品编码")
     private String productN;

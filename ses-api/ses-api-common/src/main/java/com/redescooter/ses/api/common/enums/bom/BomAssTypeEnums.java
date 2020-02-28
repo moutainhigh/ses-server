@@ -5,19 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName BomAssTypeEnums
- * @Author Jerry
- * @date 2020/02/27 10:50
- * @Description:
+ * @ClassName:BomServiceTypeEnums
+ * @description: BomServiceTypeEnums
+ * @author: Alex
+ * @Version：1.3
+ * @create: 2020/02/26 16:12
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public enum BomAssTypeEnums {
 
-    SCOOTER("SCOOTER", "SCOOTER", "1"),
-    COMBINATION("COMBINATION", "COMBINATION", "2"),
-    ;
+    SCOOTER("SCOOTER","整车","1"),
+    COMBINATION("COMBINATION","组合","2");
 
     private String code;
 
@@ -33,4 +33,5 @@ public enum BomAssTypeEnums {
         }
         return null;
     }
+
 }

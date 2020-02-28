@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.SalseRosServiceMapper">
+
+    <sql id="product_List">
+        select part.id                as id,
+               part.cn_name           as productCnName,
+               part.en_name           as productEnName,
+               part.fr_name           as productFrName,
+               part.parts_number      as productN,
+               part.parts_type        as type,
+               part.updated_time      as refuseTime,
+               if(1 = 0, true, false) as productListDetail
+        from ope_parts part
+        where part.parts_type in ('Battery', 'Accessory')
+          and part.sn_class_flag = 1
+        UNION ALL
+        select ass.id,
+               ass.cn_name                                    as productCnName,
+               ass.en_name                                    as productEnName,
+               ass.fr_name                                    as productFrName,
+               ass.ass_number                                 as productN,
+               if(ass.ass_type = 1, 'Scooter', 'Combination') as type,
+               ass.updated_time                               as refuseTime,
+               if(1 = 1, true, false)                         as productListDetail
+        from ope_parts_assembly ass
+        where ass.ass_type = 1
+          and ass.sn_class_flag = 1
+    </sql>
+
+    <sql id="where_ProductList">
+        where 1=1
+        <if test="type != null and type != ''">
+            and a.type=#{type}
+        </if>
+        <if test="refuseStartTime != null and refuseEndTime != null">
+            and a.refuseTime between #{refuseStartTime} and #{refuseEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            a.productCnName like concat('%',#{keyword},'%')
+            or a.productEnName like concat('%',#{keyword},'%')
+            or a.productFrName like concat('%',#{keyword},'%')
+            or a.productN like concat('%',#{keyword},'%')
+            )
+        </if>
+        order by a.refuseTime desc
+    </sql>
+
+    <select id="productListCount" resultType="java.lang.Integer">
+        select count(*)
+        from (<include refid="product_List"/>) a
+        <include refid="where_ProductList"></include>
+    </select>
+    <select id="productList" resultType="com.redescooter.ses.web.ros.vo.sales.ProductListResult">
+        select a.*
+        from (<include refid="product_List"/>) a
+        <include refid="where_ProductList"></include>
+        limit #{startRow},#{pageSize}
+    </select>
+</mapper>

@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.bom.ProductPriceDetailResult;
 import com.redescooter.ses.web.ros.vo.supplierChaim.EditProductPriceEnter;
 import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceChartResult;
 import com.redescooter.ses.web.ros.vo.supplierChaim.ScProductPriceResult;
@@ -29,7 +30,7 @@ public interface SupplierChaimRosService {
      * @date: 2020/2/25 14:41
      * @Version: Ros 1.2
      */
-   Map<String,Integer> countByType(GeneralEnter enter);
+   Map<String,Integer> countByPartType(GeneralEnter enter);
 
     /**
      * @desc: 供应链列表
@@ -50,6 +51,20 @@ public interface SupplierChaimRosService {
      * @Version: Ros 1.2
      */
     GeneralResult editProductPrice(EditProductPriceEnter enter);
+
+    /**
+     * 产品报价详情
+     * @param id
+     * @return
+     */
+    ProductPriceDetailResult productPriceDetail(IdEnter id);
+
+    /**
+     * 货币单位
+     * @param enter
+     * @return
+     */
+    Map<String,String> currencyUnit(GeneralEnter enter);
 
     /**
      * @desc: 产品价格列表

@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.web.ros.dm.OpePartsAssembly;
 
 @Transactional
-public interface OpePartsAssemblyService extends IService<OpePartsAssembly>{
+public interface OpePartsAssemblyService extends IService<OpePartsAssembly> {
 
 
     int updateBatch(List<OpePartsAssembly> list);
@@ -20,3 +20,4 @@ public interface OpePartsAssemblyService extends IService<OpePartsAssembly>{
     int insertOrUpdateSelective(OpePartsAssembly record);
 
 }
+

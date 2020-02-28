@@ -27,9 +27,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class ProductListEnter extends PageEnter {
 
-    @ApiModelProperty(value = "销售产品类型",required = true)
-    private String serviceType;
-
     @ApiModelProperty(value = "产品类型",required = false)
     private String type;
 
