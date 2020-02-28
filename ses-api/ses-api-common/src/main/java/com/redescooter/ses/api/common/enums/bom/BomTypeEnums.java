@@ -19,6 +19,7 @@ public enum BomTypeEnums {
     PARTS("Parts", "零部件", "1"),
     ACCESSORY("Accessory", "配件", "2"),
     BATTERY("Battery", "电池", "3"),
+    // 在sale 模块时 使用
     SCOOTER("Scooter","整车","4"),
     ;
 
