@@ -1,9 +1,7 @@
 package com.redescooter.ses.web.ros.vo.sales;
 
-import java.util.Date;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -11,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * @ClassName:ProductListEnter
@@ -30,10 +31,14 @@ public class ProductListEnter extends PageEnter {
     @ApiModelProperty(value = "产品类型",required = false)
     private String type;
 
-    @ApiModelProperty(value = "刷新开始时间",required = false)
+    @ApiModelProperty(value = "刷新开始时间", required = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date refuseStartTime;
 
-    @ApiModelProperty(value = "刷新结束时间",required = false)
+    @ApiModelProperty(value = "刷新结束时间", required = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date refuseEndTime;
 
     @ApiModelProperty(value = "关键字查询",required = false)

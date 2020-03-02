@@ -1,17 +1,16 @@
 package com.redescooter.ses.web.ros.dm;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,7 +34,6 @@ public class OpePriceSheetHistory implements Serializable {
      * 逻辑删除 逻辑删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value="逻辑删除 逻辑删除")
     private Integer dr;
 
@@ -71,8 +69,8 @@ public class OpePriceSheetHistory implements Serializable {
      * 报价表主键 用于关联报价表
      */
     @TableField(value = "price_sheet_id")
-    @ApiModelProperty(value="报价表主键 用于关联报价表")
-    private String priceSheetId;
+    @ApiModelProperty(value = "报价表主键 用于关联报价表")
+    private Long priceSheetId;
 
     /**
      * 价格 浮点型价格

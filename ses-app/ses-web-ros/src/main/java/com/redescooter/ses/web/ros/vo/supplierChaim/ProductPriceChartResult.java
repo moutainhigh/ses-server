@@ -1,9 +1,7 @@
 package com.redescooter.ses.web.ros.vo.supplierChaim;
 
-import java.util.List;
-
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-
+import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -11,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @ClassName:ProductPriceChartResult
@@ -34,5 +34,5 @@ public class ProductPriceChartResult extends GeneralResult {
     private String max;
 
     @ApiModelProperty(value = "产品报价")
-    private List<ScProductPriceResult>  priceResultList;
+    private List<SccPriceResult> priceResultList;
 }

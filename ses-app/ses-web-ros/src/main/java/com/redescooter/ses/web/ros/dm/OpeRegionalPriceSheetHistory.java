@@ -1,21 +1,19 @@
 package com.redescooter.ses.web.ros.dm;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeRegionalPriceSheetHistory")
 @Data
@@ -35,7 +33,6 @@ public class OpeRegionalPriceSheetHistory implements Serializable {
      * 逻辑删除 逻辑删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除 逻辑删除")
     private Integer dr;
 
@@ -65,21 +62,21 @@ public class OpeRegionalPriceSheetHistory implements Serializable {
      */
     @TableField(value = "regional_price_sheet_id")
     @ApiModelProperty(value = "区域报价主键 关联区域报价表")
-    private String regionalPriceSheetId;
+    private Long regionalPriceSheetId;
 
     /**
-     * 单一部品主键 用于关联部品
+     * 单个部品的产品 部品Id
      */
-    @TableField(value = "parts_id")
-    @ApiModelProperty(value = "单一部品主键 用于关联部品")
-    private Long partsId;
+    @TableField(value = "part_id")
+    @ApiModelProperty(value = "单个部品的产品 部品Id")
+    private Long partId;
 
     /**
-     * 组装成品主键 关联部品组装表，是真正意思的售价
+     * 整车、套餐 产品Id
      */
-    @TableField(value = "parts_assembly")
-    @ApiModelProperty(value = "组装成品主键 关联部品组装表，是真正意思的售价")
-    private String partsAssembly;
+    @TableField(value = "assembly_id")
+    @ApiModelProperty(value = "整车、套餐 产品Id")
+    private Long assemblyId;
 
     /**
      * 价格类型 如部品销售价1，组装成品销售价2等
@@ -228,9 +225,9 @@ public class OpeRegionalPriceSheetHistory implements Serializable {
 
     public static final String COL_REGIONAL_PRICE_SHEET_ID = "regional_price_sheet_id";
 
-    public static final String COL_PARTS_ID = "parts_id";
+    public static final String COL_PART_ID = "part_id";
 
-    public static final String COL_PARTS_ASSEMBLY = "parts_assembly";
+    public static final String COL_ASSEMBLY_ID = "assembly_id";
 
     public static final String COL_PRICE_TYPE = "price_type";
 

@@ -1,15 +1,9 @@
 package com.redescooter.ses.web.ros.dm;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,7 +11,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeRegionalPriceSheet")
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeRegionalPriceSheet")
 @Data
 @Builder
 @AllArgsConstructor
@@ -28,197 +26,196 @@ public class OpeRegionalPriceSheet implements Serializable {
      * 主键 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="主键 主键")
+    @ApiModelProperty(value = "主键 主键")
     private Long id;
 
     /**
      * 逻辑删除 逻辑删除
      */
     @TableField(value = "dr")
-    @TableLogic
-    @ApiModelProperty(value="逻辑删除 逻辑删除")
+    @ApiModelProperty(value = "逻辑删除 逻辑删除")
     private Integer dr;
 
     /**
      * 租户ID 租户ID
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value="租户ID 租户ID")
+    @ApiModelProperty(value = "租户ID 租户ID")
     private Long tenantId;
 
     /**
      * 用户ID 用户ID
      */
     @TableField(value = "user_id")
-    @ApiModelProperty(value="用户ID 用户ID")
+    @ApiModelProperty(value = "用户ID 用户ID")
     private Long userId;
 
     /**
      * 状态 状态
      */
     @TableField(value = "status")
-    @ApiModelProperty(value="状态 状态")
+    @ApiModelProperty(value = "状态 状态")
     private String status;
 
     /**
-     * 单一部品主键 用于关联部品
+     * 单个部品的产品 部品Id
      */
-    @TableField(value = "parts_id")
-    @ApiModelProperty(value="单一部品主键 用于关联部品")
-    private Long partsId;
+    @TableField(value = "part_id")
+    @ApiModelProperty(value = "单个部品的产品 部品Id")
+    private Long partId;
 
     /**
-     * 组装成品主键 关联部品组装表，是真正意思的售价
+     * 整车、套餐 产品Id
      */
-    @TableField(value = "parts_assembly")
-    @ApiModelProperty(value="组装成品主键 关联部品组装表，是真正意思的售价")
-    private String partsAssembly;
+    @TableField(value = "assembly_id")
+    @ApiModelProperty(value = "整车、套餐 产品Id")
+    private Long assemblyId;
 
     /**
      * 价格类型 如部品销售价1，组装成品销售价2等
      */
     @TableField(value = "price_type")
-    @ApiModelProperty(value="价格类型 如部品销售价1，组装成品销售价2等")
+    @ApiModelProperty(value = "价格类型 如部品销售价1，组装成品销售价2等")
     private String priceType;
 
     /**
      * 销售价格 浮点型价格
      */
     @TableField(value = "sales_price")
-    @ApiModelProperty(value="销售价格 浮点型价格")
+    @ApiModelProperty(value = "销售价格 浮点型价格")
     private BigDecimal salesPrice;
 
     /**
      * 生效时间 默认当前生效
      */
     @TableField(value = "effective_time")
-    @ApiModelProperty(value="生效时间 默认当前生效")
+    @ApiModelProperty(value = "生效时间 默认当前生效")
     private Date effectiveTime;
 
     /**
      * 有效标识 标识当前区域报价是否生效
      */
     @TableField(value = "valid_flag")
-    @ApiModelProperty(value="有效标识 标识当前区域报价是否生效")
+    @ApiModelProperty(value = "有效标识 标识当前区域报价是否生效")
     private String validFlag;
 
     /**
      * 货币类型 如英镑，美元，人民币
      */
     @TableField(value = "currency_type")
-    @ApiModelProperty(value="货币类型 如英镑，美元，人民币")
+    @ApiModelProperty(value = "货币类型 如英镑，美元，人民币")
     private String currencyType;
 
     /**
      * 货币单位 如¥，$，€，	￡
      */
     @TableField(value = "currency_unit")
-    @ApiModelProperty(value="货币单位 如¥，$，€，	￡")
+    @ApiModelProperty(value = "货币单位 如¥，$，€，	￡")
     private String currencyUnit;
 
     /**
      * 标准货币 用户货币转换
      */
     @TableField(value = "standard_currency")
-    @ApiModelProperty(value="标准货币 用户货币转换")
+    @ApiModelProperty(value = "标准货币 用户货币转换")
     private String standardCurrency;
 
     /**
      * 汇率 用于汇率转换
      */
     @TableField(value = "exchange_rate")
-    @ApiModelProperty(value="汇率 用于汇率转换")
+    @ApiModelProperty(value = "汇率 用于汇率转换")
     private String exchangeRate;
 
     /**
      * 国家编码 当前销售国家
      */
     @TableField(value = "country_code")
-    @ApiModelProperty(value="国家编码 当前销售国家")
+    @ApiModelProperty(value = "国家编码 当前销售国家")
     private String countryCode;
 
     /**
      * 国家城市 当然销售国家的城市
      */
     @TableField(value = "country_city")
-    @ApiModelProperty(value="国家城市 当然销售国家的城市")
+    @ApiModelProperty(value = "国家城市 当然销售国家的城市")
     private String countryCity;
 
     /**
      * 国家语言 当前销售国家语言
      */
     @TableField(value = "country_language")
-    @ApiModelProperty(value="国家语言 当前销售国家语言")
+    @ApiModelProperty(value = "国家语言 当前销售国家语言")
     private String countryLanguage;
 
     /**
      * 乐观锁 乐观锁
      */
     @TableField(value = "revision")
-    @ApiModelProperty(value="乐观锁 乐观锁")
+    @ApiModelProperty(value = "乐观锁 乐观锁")
     private Integer revision;
 
     /**
      * 创建人 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人 创建人")
+    @ApiModelProperty(value = "创建人 创建人")
     private Long createdBy;
 
     /**
      * 创建时间 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间 创建时间")
+    @ApiModelProperty(value = "创建时间 创建时间")
     private Date createdTime;
 
     /**
      * 更新人 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人 更新人")
+    @ApiModelProperty(value = "更新人 更新人")
     private Long updatedBy;
 
     /**
      * 更新时间 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间 更新时间")
+    @ApiModelProperty(value = "更新时间 更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段 冗余字段")
     private String def1;
 
     /**
      * 冗余字段 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段 冗余字段")
     private String def2;
 
     /**
      * 冗余字段 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段 冗余字段")
     private String def3;
 
     /**
      * 冗余字段 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段 冗余字段")
     private String def5;
 
     /**
      * 冗余字段 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段 冗余字段")
     private BigDecimal def6;
 
     private static final long serialVersionUID = 1L;
@@ -233,9 +230,9 @@ public class OpeRegionalPriceSheet implements Serializable {
 
     public static final String COL_STATUS = "status";
 
-    public static final String COL_PARTS_ID = "parts_id";
+    public static final String COL_PART_ID = "part_id";
 
-    public static final String COL_PARTS_ASSEMBLY = "parts_assembly";
+    public static final String COL_ASSEMBLY_ID = "assembly_id";
 
     public static final String COL_PRICE_TYPE = "price_type";
 
@@ -278,4 +275,8 @@ public class OpeRegionalPriceSheet implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeRegionalPriceSheetBuilder builder() {
+        return new OpeRegionalPriceSheetBuilder();
+    }
 }

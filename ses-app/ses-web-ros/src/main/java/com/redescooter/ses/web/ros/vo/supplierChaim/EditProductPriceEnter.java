@@ -27,12 +27,19 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class EditProductPriceEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "id",required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "id 为空")
+    @ApiModelProperty(value = "id 产品主键Id", required = true)
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
-    @ApiModelProperty(value = "法国报价，若业务只有一个报价，默认只传法国报价",required = true)
-    @NotNull(code = ValidationExceptionCode.PRODUCT_FR_PRICE_IS_EMPTY,message = "产品法国报价为空 为空")
+    @ApiModelProperty(value = "是否在sals服务 中调用，默认为false，", required = true)
+    private Boolean serviceType = Boolean.FALSE;
+
+    @ApiModelProperty(value = "价格类型，指（整车、部品、零部件），传值见TAPD", required = true)
+    @NotNull(code = ValidationExceptionCode.SALES_PRICE_TYPE_IS_EMPTY, message = "销售价格类型")
+    private String priceType;
+
+    @ApiModelProperty(value = "法国报价，若业务只有一个报价，默认只传法国报价", required = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_FR_PRICE_IS_EMPTY, message = "产品法国报价为空 为空")
     private String productFrPrice;
 
     @ApiModelProperty(value = "报价单位 只是第一次 设置报价的时候传")

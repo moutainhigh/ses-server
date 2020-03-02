@@ -1,17 +1,18 @@
 package com.redescooter.ses.web.ros.service;
 
-import java.util.Map;
-
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.bom.ProductPriceDetailResult;
+import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
 import com.redescooter.ses.web.ros.vo.supplierChaim.EditProductPriceEnter;
 import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceChartResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ScProductPriceResult;
+import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceHistroyListEnter;
+import com.redescooter.ses.web.ros.vo.supplierChaim.SccPriceEnter;
 import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListEnter;
 import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListResult;
+
+import java.util.Map;
 
 /**
  * @ClassName:SupplierChaimRosService
@@ -54,10 +55,11 @@ public interface SupplierChaimRosService {
 
     /**
      * 产品报价详情
+     *
      * @param id
      * @return
      */
-    ProductPriceDetailResult productPriceDetail(IdEnter id);
+    SccPriceResult productPriceDetail(SccPriceEnter id);
 
     /**
      * 货币单位
@@ -74,7 +76,7 @@ public interface SupplierChaimRosService {
      * @date: 2020/2/25 15:31
      * @Version: Ros 1.2
      */
-    PageResult<ScProductPriceResult> productPriceList(IdEnter enter);
+    PageResult<SccPriceResult> productPriceHistroyList(ProductPriceHistroyListEnter enter);
 
     /**
      * @desc: 价格图表
@@ -84,5 +86,5 @@ public interface SupplierChaimRosService {
      * @date: 2020/2/25 15:37
      * @Version: Ros 1.2
      */
-    ProductPriceChartResult productPriceChart(IdEnter enter);
+    ProductPriceChartResult productPriceHistroyChart(IdEnter enter);
 }

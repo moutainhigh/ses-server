@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.ros.service.impl.base;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.web.ros.dao.base.OpeRegionalPriceSheetHistoryMapper;
 import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetHistoryService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class OpeRegionalPriceSheetHistoryServiceImpl extends ServiceImpl<OpeRegionalPriceSheetHistoryMapper, OpeRegionalPriceSheetHistory> implements OpeRegionalPriceSheetHistoryService {
@@ -32,5 +31,12 @@ public class OpeRegionalPriceSheetHistoryServiceImpl extends ServiceImpl<OpeRegi
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+
+
+
+
+
+
 
 

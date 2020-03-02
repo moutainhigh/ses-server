@@ -5,22 +5,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName:CurrencyUnitEnums
- * @description: CurrencyUnitEnums
+ * @ClassName:PriceServiceTypeEnums
+ * @description: PriceServiceTypeEnums
  * @author: Alex
  * @Version：1.3
- * @create: 2020/02/28 13:43
+ * @create: 2020/03/02 10:29
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum CurrencyUnitEnums {
+public enum ProductPriceTypeEnums {
 
-    FR("FR", "€", "1"),
-    EN("EN", "£", "2"),
-    //用人民币作为标准单位
-    CN("CN", "￥", "3"),
-    ;
+    PART("Part", "零部件", "1"),
+    BATTERY("Battery", "电池", "2"),
+    ACCESSORY("Accessory", "配件", "3"),
+    SCOOTER("Scooter", "整车", "4");
 
 
     private String code;
@@ -46,5 +45,4 @@ public enum CurrencyUnitEnums {
         }
         return null;
     }
-
 }

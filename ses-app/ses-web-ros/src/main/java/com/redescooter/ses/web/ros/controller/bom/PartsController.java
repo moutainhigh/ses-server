@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.controller;
+package com.redescooter.ses.web.ros.controller.bom;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.BomRosService;

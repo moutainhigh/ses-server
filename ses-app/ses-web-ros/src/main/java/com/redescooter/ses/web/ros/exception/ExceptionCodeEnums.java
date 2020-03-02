@@ -129,16 +129,19 @@ public enum ExceptionCodeEnums {
 
     PRODUCT_IS_NOT_EXIST(10057,"产品不存在"),
 
-    PRODUCT_HAS_NO_PARTS(10058,"产品暂未添加部品,不可删除"),
+    PRODUCT_HAS_NO_PARTS(10058, "产品暂未添加部品,不可删除"),
 
-    PARTS_BASE_IS_illegal(10059,"部品基础信息不合法，如partsNumber,ImportLot,snClassFlag,partsType,sec等"),
+    PARTS_BASE_IS_illegal(10059, "部品基础信息不合法，如partsNumber,ImportLot,snClassFlag,partsType,sec等"),
 
-    PARTS_NUMBER_EXIST(10060,"部品号已存在"),
+    PARTS_NUMBER_EXIST(10060, "部品号已存在"),
 
     PRODUCT_PRICE_IS_NOT_EXIST(10061, "产品报价不存在"),
 
-    CURRENCY_UNIT_IS_EMPTY(10062,"产品单位为空"),
+    CURRENCY_UNIT_IS_EMPTY(10062, "产品单位为空"),
 
+    PRODUCT_PRICE_IS_EMPTY(10063, "产品报价为空"),
+
+    PRODUCT_UNIT_IS_EMPTY(10064, "货币单位为空"),
 
     ;
 
