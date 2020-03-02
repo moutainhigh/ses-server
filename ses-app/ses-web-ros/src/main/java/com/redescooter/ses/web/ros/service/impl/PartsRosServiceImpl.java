@@ -70,15 +70,18 @@ public class PartsRosServiceImpl implements PartsRosService {
     public MapResult commonCountStatus(GeneralEnter enter) {
         QueryWrapper<OpeParts> partsQueryWrapper = new QueryWrapper<>();
         partsQueryWrapper.eq(OpeParts.COL_DR, 0);
+        partsQueryWrapper.eq(OpeParts.COL_USER_ID,enter.getUserId());
         int partsCount = partsService.count(partsQueryWrapper);
 
         QueryWrapper<OpePartsAssembly> scooter = new QueryWrapper<>();
         scooter.eq(OpePartsAssembly.COL_DR, 0);
+        scooter.eq(OpePartsAssembly.COL_USER_ID,enter.getUserId());
         scooter.eq(OpePartsAssembly.COL_ASS_TYPE, BomAssTypeEnums.SCOOTER.getValue());
         int scooterConut = partsAssemblyService.count(scooter);
 
         QueryWrapper<OpePartsAssembly> combination = new QueryWrapper<>();
         combination.eq(OpePartsAssembly.COL_DR, 0);
+        combination.eq(OpePartsAssembly.COL_USER_ID,enter.getUserId());
         combination.eq(OpePartsAssembly.COL_ASS_TYPE, BomAssTypeEnums.COMBINATION.getValue());
         int combinationConut = partsAssemblyService.count(combination);
 
