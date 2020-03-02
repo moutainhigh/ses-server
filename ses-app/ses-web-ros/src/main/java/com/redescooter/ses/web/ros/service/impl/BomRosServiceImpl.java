@@ -477,7 +477,7 @@ public class BomRosServiceImpl implements BomRosService {
         OpePartsAssembly opePartsAssembly = OpePartsAssembly.builder()
                 .dr(0)
                 .tenantId(0L)
-                .userId(0L)
+                .userId(enter.getUserId())
                 .status(BomStatusEnums.NORMAL.getValue())
                 .assNumber(enter.getProductN())
                 .cnName(enter.getProductCnName())

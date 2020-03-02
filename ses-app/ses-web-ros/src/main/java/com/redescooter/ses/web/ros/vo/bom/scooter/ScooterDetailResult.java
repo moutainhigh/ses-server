@@ -40,6 +40,9 @@ public class ScooterDetailResult extends GeneralResult {
     @ApiModelProperty(value = "生产周期")
     private String procurementCycle;
 
+    @ApiModelProperty(value = "总数量")
+    private Integer qtySum;
+
     @ApiModelProperty(value = "配件列表")
     private List<QueryPartListResult> partsList;
 }

@@ -4,7 +4,8 @@
 
     <sql id="where_combinationList">
         where ass.dr = 0
-        and ass.ass_type = 3
+        and ass.ass_type = 2
+        and ass.user_id=#{userId}
         <if test="keyword != null and keyword != ''">
             and (ass.ass_number like concat('%',#{keyword},'%')
             or ass.en_name like concat('%',#{keyword},'%')
