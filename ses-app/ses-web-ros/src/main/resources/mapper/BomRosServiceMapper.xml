@@ -16,7 +16,8 @@
 
     <sql id="where_ScooterList">
         where ass.dr = 0
-        and ass.ass_type=2
+        and ass.user_id=#{userId}
+        and ass.ass_type=1
         <if test="keyword != null and keyword != ''">
             and (ass.cn_name like concat('%',#{keyword},'%')
             or ass.fr_name like concat('%',#{keyword},'%')
@@ -27,17 +28,20 @@
     </sql>
 
     <sql id="where_PartList">
-        where parts.dr = 0
-        <if test="sec != null and sec != ''">
-            and parts.sec = #{sec}
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            parts.parts_number like concat('%',#{keyword},'%')
-            or parts.en_name like concat('%',#{keyword},'%')
-            or parts.cn_name like concat('%',#{keyword},'%')
-            )
-        </if>
+        <where>
+            and user_id=#{userId}
+            and parts.dr = 0
+            <if test="sec != null and sec != ''">
+                and parts.sec = #{sec}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                parts.parts_number like concat('%',#{keyword},'%')
+                or parts.en_name like concat('%',#{keyword},'%')
+                or parts.cn_name like concat('%',#{keyword},'%')
+                )
+            </if>
+        </where>
     </sql>
 
     <select id="scooterListCount" resultType="java.lang.Integer">
@@ -64,10 +68,12 @@
                  select parts.parts_number as productN
                  from ope_parts parts
                  where parts.dr=0
-                 union all
+                 and  parts.user_id=#{userId}
+        union all
                  select ass.ass_number as productN
                  from ope_parts_assembly ass
                  where ass.dr=0
+                 and  ass.user_id=#{userId}
              ) productN
     </select>
     <select id="secList" resultType="com.redescooter.ses.web.ros.vo.bom.SecResult">

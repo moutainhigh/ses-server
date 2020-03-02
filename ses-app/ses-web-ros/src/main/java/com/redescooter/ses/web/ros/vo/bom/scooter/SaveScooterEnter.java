@@ -27,21 +27,21 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class SaveScooterEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "id",required = false)
+    @ApiModelProperty(value = "id", required = false)
     private Long id;
 
-    @ApiModelProperty(value = "产品编号",required = true)
-    @NotNull(code = ValidationExceptionCode.PRODUCT_NUM_IS_EMPTY,message = "产品编号为空")
+    @ApiModelProperty(value = "产品编号", required = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_NUM_IS_EMPTY, message = "产品编号为空")
     private String productN;
 
-    @ApiModelProperty(value = "产品名字",required = true)
-    @NotNull(code = ValidationExceptionCode.PRODUCT_EN_NAME_IS_EMPTY,message = "产品名字为空")
+    @ApiModelProperty(value = "产品名字", required = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_EN_NAME_IS_EMPTY, message = "产品名字为空")
     private String productName;
 
-    @ApiModelProperty(value = "生产周期",required = true)
-    @NotNull(code = ValidationExceptionCode.PRODUCT_CYCLE_IS_EMPTY,message = "产品生产周期为空")
+    @ApiModelProperty(value = "生产周期", required = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_CYCLE_IS_EMPTY, message = "产品生产周期为空")
     private String procurementCycle;
 
-    @ApiModelProperty(value = "配件列表，json 格式 ",required = true)
+    @ApiModelProperty(value = "Json配件列表，如[{\"id\":\"已选主键\",\"qty\":\"数量\"}]", required = true)
     private String partList;
 }
