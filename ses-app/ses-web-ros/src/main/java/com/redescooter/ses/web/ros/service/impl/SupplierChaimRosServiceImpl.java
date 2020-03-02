@@ -199,7 +199,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
                 frRegionalPriceSheet.setCreatedTime(new Date());
 
                 // 英国报价
-                OpeRegionalPriceSheet enRegionalPriceSheet = buildOpeRegionalPriceSheet(new OpeRegionalPriceSheet(), enter, enter.getProductFrUnit());
+                OpeRegionalPriceSheet enRegionalPriceSheet = buildOpeRegionalPriceSheet(new OpeRegionalPriceSheet(), enter, enter.getProductEnUnit());
                 enRegionalPriceSheet.setId(idAppService.getId(SequenceName.OPE_REGIONAL_PRICE_SHEET));
                 enRegionalPriceSheet.setCreatedBy(enter.getUserId());
                 enRegionalPriceSheet.setCreatedTime(new Date());
@@ -212,25 +212,40 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
                 regionalPriceSheetList.add(enRegionalPriceSheet);
                 regionalPriceSheetList.add(frRegionalPriceSheet);
             } else {
-                // 修改报价
-                regionalPriceSheetList.forEach(item -> {
-                    if (StringUtils.equals(CurrencyUnitEnums.FR.getValue(), enter.getProductFrUnit())) {
-                        // 报价修改
-                        if (StringUtils.equals(CurrencyUnitEnums.FR.getValue(), enter.getProductFrUnit())) {
-                            // 对价格不相等的进行更新
-                            if (item.getSalesPrice().subtract(new BigDecimal(enter.getProductFrPrice())).equals(BigDecimal.ZERO)) {
-                                OpeRegionalPriceSheet frRegionalPriceSheet = buildOpeRegionalPriceSheet(item, enter, enter.getProductFrUnit());
-                                // 生成节点
-                                opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistroy(enter, frRegionalPriceSheet.getId(), enter.getProductFrUnit()));
-                                regionalPriceSheetList.add(frRegionalPriceSheet);
-                            }
-                        } else {
-                            OpeRegionalPriceSheet enRegionalPriceSheet = buildOpeRegionalPriceSheet(item, enter, enter.getProductFrUnit());
-                            opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistroy(enter, enRegionalPriceSheet.getId(), enter.getProductFrUnit()));
-                            regionalPriceSheetList.add(enRegionalPriceSheet);
-                        }
-                    }
-                });
+//                // 修改报价
+//                regionalPriceSheetList.forEach(item -> {
+//                    if (StringUtils.equals(CurrencyUnitEnums.FR.getValue(), enter.getProductFrUnit())) {
+//                        // 报价修改
+//                        if (StringUtils.equals(CurrencyUnitEnums.FR.getValue(), enter.getProductFrUnit())) {
+//                            // 对价格不相等的进行更新
+//                            if (!item.getSalesPrice().subtract(new BigDecimal(enter.getProductFrPrice())).equals(BigDecimal.ZERO)) {
+//                                OpeRegionalPriceSheet frRegionalPriceSheet = buildOpeRegionalPriceSheet(item, enter, enter.getProductFrUnit());
+//                                // 生成节点
+//                                opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistroy(enter, frRegionalPriceSheet.getId(), enter.getProductFrUnit()));
+//                                regionalPriceSheetList.add(frRegionalPriceSheet);
+//                            }
+//                        } else {
+//                            OpeRegionalPriceSheet enRegionalPriceSheet = buildOpeRegionalPriceSheet(item, enter, enter.getProductFrUnit());
+//                            opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistroy(enter, enRegionalPriceSheet.getId(), enter.getProductFrUnit()));
+//                            regionalPriceSheetList.add(enRegionalPriceSheet);
+//                        }
+//                    }else {
+//                        // 报价修改
+//                        if (StringUtils.equals(CurrencyUnitEnums.EN.getValue(), enter.getProductEnUnit())) {
+//                            // 对价格不相等的进行更新
+//                            if (!item.getSalesPrice().subtract(new BigDecimal(enter.getProductFrPrice())).equals(BigDecimal.ZERO)) {
+//                                OpeRegionalPriceSheet enRegionalPriceSheet = buildOpeRegionalPriceSheet(item, enter, enter.getProductEnUnit());
+//                                // 生成节点
+//                                opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistroy(enter, enRegionalPriceSheet.getId(), enter.getProductEnUnit()));
+//                                regionalPriceSheetList.add(enRegionalPriceSheet);
+//                            }
+//                        } else {
+//                            OpeRegionalPriceSheet enRegionalPriceSheet = buildOpeRegionalPriceSheet(item, enter, enter.getProductEnUnit());
+//                            opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistroy(enter, enRegionalPriceSheet.getId(), enter.getProductEnUnit()));
+//                            regionalPriceSheetList.add(enRegionalPriceSheet);
+//                        }
+//                    }
+//                });
             }
             // 价格保存
             opeRegionalPriceSheetService.saveOrUpdateBatch(regionalPriceSheetList);
@@ -376,7 +391,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         saveOpePriceSheet.setUserId(enter.getUserId());
         saveOpePriceSheet.setStatus(BomStatusEnums.NORMAL.getValue());
         saveOpePriceSheet.setPrice(new BigDecimal(enter.getProductFrPrice()));
-        saveOpePriceSheet.setCurrencyType(StringUtils.isBlank(CurrencyUnitEnums.checkCode(enter.getProductFrUnit())) == true ? CurrencyUnitEnums.FR.getCode() :
+        saveOpePriceSheet.setCurrencyType(StringUtils.isBlank(CurrencyUnitEnums.checkValue(enter.getProductFrUnit())) == true ? CurrencyUnitEnums.FR.getCode() :
                 CurrencyUnitEnums.checkCode(enter.getProductFrUnit()));
         saveOpePriceSheet.setCurrencyUnit(enter.getProductFrUnit());
         saveOpePriceSheet.setStandardCurrency(CurrencyUnitEnums.CN.getValue());
@@ -443,6 +458,8 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         opeRegionalPriceSheetHistory.setCountryCity("0");
         opeRegionalPriceSheetHistory.setCountryLanguage(enter.getLanguage());
         opeRegionalPriceSheetHistory.setRevision(0);
+        opeRegionalPriceSheetHistory.setCreatedBy(enter.getUserId());
+        opeRegionalPriceSheetHistory.setCreatedTime(new Date());
         opeRegionalPriceSheetHistory.setUpdatedBy(enter.getUserId());
         opeRegionalPriceSheetHistory.setUpdatedTime(new Date());
         return opeRegionalPriceSheetHistory;
@@ -469,6 +486,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             opeRegionalPriceSheet.setCurrencyType(CurrencyUnitEnums.FR.getCode());
             opeRegionalPriceSheet.setCurrencyUnit(unit);
         } else {
+            opeRegionalPriceSheet.setSalesPrice(new BigDecimal(enter.getProductEnPrice()));
             opeRegionalPriceSheet.setSalesPrice(new BigDecimal(enter.getProductEnPrice()));
             opeRegionalPriceSheet.setCurrencyType(CurrencyUnitEnums.EN.getCode());
             opeRegionalPriceSheet.setCurrencyUnit(unit);

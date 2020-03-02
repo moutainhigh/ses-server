@@ -29,7 +29,7 @@ public enum ProductPriceTypeEnums {
     private String value;
 
     public static String checkCode(String code) {
-        for (CurrencyUnitEnums item : CurrencyUnitEnums.values()) {
+        for (ProductPriceTypeEnums item : ProductPriceTypeEnums.values()) {
             if (item.getCode().equals(code)) {
                 return item.getCode();
             }
