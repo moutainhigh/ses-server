@@ -84,7 +84,7 @@ public interface ValidationExceptionCode {
     int PARTS_SEC_IS_EMPTY = 10056;
     //是否可销售为空
     int PARTS_SN_CLASS_IS_EMPTY = 10057;
-    // 销售价格类型
+    // 销售价格类型为空
     int SALES_PRICE_TYPE_IS_EMPTY = 10058;
 
 

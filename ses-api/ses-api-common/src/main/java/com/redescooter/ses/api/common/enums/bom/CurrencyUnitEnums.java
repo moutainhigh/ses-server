@@ -47,4 +47,13 @@ public enum CurrencyUnitEnums {
         return null;
     }
 
+    public static CurrencyUnitEnums getEnumByValue(String value) {
+        for (CurrencyUnitEnums item : CurrencyUnitEnums.values()) {
+            if (item.getValue().equals(value)) {
+                return item;
+            }
+        }
+        return CurrencyUnitEnums.FR;
+    }
+
 }

@@ -1,15 +1,5 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomAssTypeEnums;
@@ -23,6 +13,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.BomRosServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.dm.OpePartsAssembly;
 import com.redescooter.ses.web.ros.dm.OpePartsAssemblyB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -30,6 +21,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.BomRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyService;
+import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.vo.bom.ProdoctPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
@@ -43,8 +35,17 @@ import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName:BomRosServiceImpl
@@ -68,6 +69,9 @@ public class BomRosServiceImpl implements BomRosService {
 
     @Autowired
     private OpePartsAssemblyService opePartsAssemblyService;
+
+    @Autowired
+    private OpePartsService opePartsService;
 
     /**
      * @param enter
@@ -473,6 +477,15 @@ public class BomRosServiceImpl implements BomRosService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+        // 配件过滤
+        List<Long> partIds = new ArrayList<>();
+        partList.forEach(item -> {
+            partIds.add(item.getId());
+        });
+        Collection<OpeParts> opePartList = opePartsService.listByIds(partIds);
+        if (CollectionUtils.isEmpty(opePartList) || opePartList.size() != partIds.size()) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
 
         int partAllQty = 0;
         List<OpePartsAssemblyB> opePartsAssemblyList = new ArrayList<>();
@@ -491,7 +504,6 @@ public class BomRosServiceImpl implements BomRosService {
                 .note(null)
                 .revision(0)
                 .build();
-
 
         if (enter.getId() == null || enter.getId() == 0) {
             // 产品编号过滤
