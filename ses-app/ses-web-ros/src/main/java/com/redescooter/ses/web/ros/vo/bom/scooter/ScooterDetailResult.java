@@ -41,7 +41,7 @@ public class ScooterDetailResult extends GeneralResult {
     private String procurementCycle;
 
     @ApiModelProperty(value = "总数量")
-    private double qtySum = 0;
+    private double qtySum;
 
     @ApiModelProperty(value = "配件列表")
     private List<QueryPartListResult> partList;

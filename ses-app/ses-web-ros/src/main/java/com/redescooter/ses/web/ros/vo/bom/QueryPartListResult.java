@@ -27,20 +27,23 @@ public class QueryPartListResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "部件主键")
+    private Long pratsId;
+
     @ApiModelProperty(value = "产品编号")
-    private String partsN;
+    private String partsNumber;
 
     @ApiModelProperty(value = "部件区域")
     private String sec;
 
     @ApiModelProperty(value = "英文名称")
-    private String partsEnName;
+    private String enName;
 
     @ApiModelProperty(value = "中文名称")
-    private String partsCnName;
+    private String cnName;
 
     @ApiModelProperty(value = "法文名称")
-    private String partsFrName;
+    private String frName;
 
     @ApiModelProperty(value = "生产周期")
     private String productionCycle;

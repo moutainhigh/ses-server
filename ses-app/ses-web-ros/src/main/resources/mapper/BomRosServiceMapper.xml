@@ -105,11 +105,12 @@
     <select id="productDeatilPartList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
         select
         ass.id as id,
-        parts.parts_number as partsN,
+        parts.id as pratsId,
+        parts.parts_number as partsNumber,
         parts.sec as sec,
-        parts.en_name as partsEnName,
-        parts.cn_name as partsCnName,
-        parts.fr_name as partsFrName,
+        parts.en_name as enName,
+        parts.cn_name as cnName,
+        parts.fr_name as frName,
         ifnull(parts.production_cycle, 0) as productionCycle,
         ass.parts_qty as qty
         from ope_parts_assembly_b ass
