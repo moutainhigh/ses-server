@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum ProductPriceTypeEnums {
 
-    PART("Part", "零部件", "1"),
+    PART("Parts", "零部件", "1"),
     BATTERY("Battery", "电池", "2"),
     ACCESSORY("Accessory", "配件", "3"),
     SCOOTER("Scooter", "整车", "4");
