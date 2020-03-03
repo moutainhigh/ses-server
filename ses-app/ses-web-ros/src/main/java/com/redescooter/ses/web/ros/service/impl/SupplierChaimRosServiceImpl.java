@@ -7,10 +7,7 @@ import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
 import com.redescooter.ses.api.common.enums.bom.PriceTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductPriceTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -340,12 +337,17 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
      * @return
      */
     @Override
-    public Map<String, String> currencyUnit(GeneralEnter enter) {
-        Map<String, String> result = new HashMap<>();
+    public ListMapResult currencyUnit(GeneralEnter enter) {
+        ListMapResult result = new ListMapResult();
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        Map<String, Object> resultMap = new HashMap<>();
         for (CurrencyUnitEnums item : CurrencyUnitEnums.values()) {
-            result.put(item.getValue(), item.getCode());
+            resultMap.put(item.getValue(), item.getCode());
         }
-        result.remove(CurrencyUnitEnums.CN.getValue());
+        resultMap.remove(CurrencyUnitEnums.CN.getValue());
+        list.add(resultMap);
+        result.setMapList(list);
         return result;
     }
 

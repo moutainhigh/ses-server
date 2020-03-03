@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.service;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
 import com.redescooter.ses.web.ros.vo.supplierChaim.EditProductPriceEnter;
 import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceChartResult;
@@ -66,7 +63,7 @@ public interface SupplierChaimRosService {
      * @param enter
      * @return
      */
-    Map<String,String> currencyUnit(GeneralEnter enter);
+    ListMapResult currencyUnit(GeneralEnter enter);
 
     /**
      * @desc: 产品价格列表
