@@ -295,7 +295,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
                     .id(opePriceSheet.getPartsId())
                     .productEnPrice(null)
                     .productEnUnit(null)
-                    .productFrPrice(opePriceSheet.getPrice())
+                    .productFrPrice(opePriceSheet.getPrice().toString())
                     .productFrUnit(opePriceSheet.getCurrencyUnit())
                     .refuseTime(opePriceSheet.getUpdatedTime())
                     .build();
@@ -320,10 +320,10 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
                 result.setId(StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode()) == true ? item.getAssemblyId() : item.getPartId());
 
                 if (StringUtils.equals(CurrencyUnitEnums.FR.getValue(), item.getCurrencyUnit())) {
-                    result.setProductFrPrice(item.getSalesPrice());
+                    result.setProductFrPrice(item.getSalesPrice().toString());
                     result.setProductFrUnit(item.getCurrencyUnit());
                 } else {
-                    result.setProductEnPrice(item.getSalesPrice());
+                    result.setProductEnPrice(item.getSalesPrice().toString());
                     result.setProductEnUnit(item.getCurrencyUnit());
                 }
                 result.setRefuseTime(item.getUpdatedTime());
@@ -380,7 +380,16 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             if (count == 0) {
                 result = PageResult.createZeroRowResult(enter);
             }
-            result = PageResult.create(enter, count, supplierChaimRosServiceMapper.sccPriceHistroyList(enter));
+            List<SccPriceResult> sccPriceResultList = supplierChaimRosServiceMapper.sccPriceHistroyList(enter);
+            sccPriceResultList.forEach(item -> {
+                if (StringUtils.isNotEmpty(item.getProductEnPrice())) {
+                    item.setProductEnUnit(CurrencyUnitEnums.EN.getValue());
+                }
+                if (StringUtils.isNotEmpty(item.getProductFrPrice())) {
+                    item.setProductFrUnit(CurrencyUnitEnums.FR.getValue());
+                }
+            });
+            result = PageResult.create(enter, count, sccPriceResultList);
         }
 
         return result;
