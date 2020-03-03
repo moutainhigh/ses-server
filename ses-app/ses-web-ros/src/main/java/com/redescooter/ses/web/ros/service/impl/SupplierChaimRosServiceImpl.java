@@ -23,6 +23,7 @@ import com.redescooter.ses.web.ros.service.base.OpePriceSheetHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpePriceSheetService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetService;
+import com.redescooter.ses.web.ros.vo.sales.PriceUnitResult;
 import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
 import com.redescooter.ses.web.ros.vo.supplierChaim.EditProductPriceEnter;
 import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceChartResult;
@@ -337,18 +338,20 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
      * @return
      */
     @Override
-    public ListMapResult currencyUnit(GeneralEnter enter) {
-        ListMapResult result = new ListMapResult();
-        List<Map<String, Object>> list = new ArrayList<>();
+    public List<PriceUnitResult> currencyUnit(GeneralEnter enter) {
+        List<PriceUnitResult> list = new ArrayList<>();
 
-        Map<String, Object> resultMap = new HashMap<>();
+        PriceUnitResult priceUnitResult = null;
+
         for (CurrencyUnitEnums item : CurrencyUnitEnums.values()) {
-            resultMap.put(item.getValue(), item.getCode());
+            priceUnitResult = new PriceUnitResult();
+            priceUnitResult.setCode(item.getCode());
+            priceUnitResult.setVlue(item.getValue());
+            priceUnitResult.setUnit(item.getName());
+            list.add(priceUnitResult);
         }
-        resultMap.remove(CurrencyUnitEnums.CN.getValue());
-        list.add(resultMap);
-        result.setMapList(list);
-        return result;
+
+        return list;
     }
 
     /**
