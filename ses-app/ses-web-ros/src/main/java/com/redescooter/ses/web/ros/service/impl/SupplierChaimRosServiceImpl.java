@@ -297,7 +297,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
                     .id(opePriceSheet.getPartsId())
                     .productEnPrice(null)
                     .productEnUnit(null)
-                    .productFrPrice(opePriceSheet.getPrice().toString())
+                    .productFrPrice(opePriceSheet.getPrice())
                     .productFrUnit(opePriceSheet.getCurrencyUnit())
                     .refuseTime(opePriceSheet.getUpdatedTime())
                     .build();
@@ -322,10 +322,10 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
                 result.setId(StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode()) == true ? item.getAssemblyId() : item.getPartId());
 
                 if (StringUtils.equals(CurrencyUnitEnums.FR.getValue(), item.getCurrencyUnit())) {
-                    result.setProductFrPrice(item.getSalesPrice().toString());
+                    result.setProductFrPrice(item.getSalesPrice());
                     result.setProductFrUnit(item.getCurrencyUnit());
                 } else {
-                    result.setProductEnPrice(item.getSalesPrice().toString());
+                    result.setProductEnPrice(item.getSalesPrice());
                     result.setProductEnUnit(item.getCurrencyUnit());
                 }
                 result.setRefuseTime(item.getUpdatedTime());
