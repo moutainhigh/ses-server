@@ -84,11 +84,11 @@ public class BomRosServiceImpl implements BomRosService {
      */
     @Override
     public PageResult<ScooterListResult> scooterList(ScooterListEnter enter) {
-        int count=bomRosServiceMapper.scooterListCount(enter);
+        int count = bomRosServiceMapper.scooterListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter,count,bomRosServiceMapper.scooterList(enter));
+        return PageResult.create(enter, count, bomRosServiceMapper.scooterList(enter));
     }
 
     /**
@@ -104,14 +104,14 @@ public class BomRosServiceImpl implements BomRosService {
     @Override
     public GeneralResult saveScooter(SaveScooterEnter enter) {
         // json 转换
-        List<ProdoctPartListEnter> partList=null;
+        List<ProdoctPartListEnter> partList = null;
         try {
-            partList = JSONArray.parseArray(enter.getPartList(), ProdoctPartListEnter.class );
+            partList = JSONArray.parseArray(enter.getPartList(), ProdoctPartListEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         List<OpePartsAssemblyB> opePartsAssemblyList = new ArrayList<>();
-        int partAllQty=0;
+        int partAllQty = 0;
 
         OpePartsAssembly opePartsAssembly = OpePartsAssembly.builder()
                 .dr(0)
@@ -128,16 +128,16 @@ public class BomRosServiceImpl implements BomRosService {
                 .revision(0)
                 .build();
 
-        if (enter.getId()==null || enter.getId()==0) {
+        if (enter.getId() == null || enter.getId() == 0) {
             //保存
             Long assemblyId = idAppService.getId(SequenceName.OPE_PARTS_ASSEMBLY);
             // 产品编号过滤
-            List<String> productNList=bomRosServiceMapper.UsingProductNumList(enter);
-            if (productNList.contains(enter.getProductN())){
-                throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(),ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
+            List<String> productNList = bomRosServiceMapper.UsingProductNumList(enter);
+            if (productNList.contains(enter.getProductN())) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
             }
             //子表都保存
-            if (CollectionUtils.isNotEmpty(partList)){
+            if (CollectionUtils.isNotEmpty(partList)) {
                 for (ProdoctPartListEnter item : partList) {
 
                     OpePartsAssemblyB opePartsAssemblyB = buildOpePartsAssemblyBSingle(enter.getUserId(), assemblyId, item);
@@ -153,24 +153,24 @@ public class BomRosServiceImpl implements BomRosService {
             opePartsAssembly.setId(assemblyId);
             opePartsAssembly.setCreatedBy(enter.getUserId());
             opePartsAssembly.setCreatedTime(new Date());
-        }else {
+        } else {
             // 修改
             OpePartsAssembly partsAssembly = opePartsAssemblyService.getById(enter.getId());
             if (partsAssembly == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
             //产品编号一致 跳过校验 ，不一致重新校验
-            if (!StringUtils.equals(partsAssembly.getAssNumber(),enter.getProductN())){
-                List<String> productNList=bomRosServiceMapper.UsingProductNumList(enter);
-                if (productNList.contains(enter.getProductN())){
-                    throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(),ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
+            if (!StringUtils.equals(partsAssembly.getAssNumber(), enter.getProductN())) {
+                List<String> productNList = bomRosServiceMapper.UsingProductNumList(enter);
+                if (productNList.contains(enter.getProductN())) {
+                    throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
                 }
             }
             // 进行 产品条目数据过滤
-            checkProductEntry(enter.getId(),PartsEventEnums.UPDATE.getValue(),partList,null);
+            checkProductEntry(enter.getId(), PartsEventEnums.UPDATE.getValue(), partList, null);
 
             // 子表修改
-            if (CollectionUtils.isNotEmpty(partList)){
+            if (CollectionUtils.isNotEmpty(partList)) {
                 for (ProdoctPartListEnter item : partList) {
                     OpePartsAssemblyB opePartsAssemblyB = buildOpePartsAssemblyBSingle(enter.getUserId(), enter.getId(), item);
                     opePartsAssemblyB.setId(item.getId());
@@ -215,11 +215,11 @@ public class BomRosServiceImpl implements BomRosService {
      */
     @Override
     public PageResult<QueryPartListResult> partList(QueryPartListEnter enter) {
-        int count=bomRosServiceMapper.partListCount(enter);
+        int count = bomRosServiceMapper.partListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter,count,bomRosServiceMapper.partList(enter));
+        return PageResult.create(enter, count, bomRosServiceMapper.partList(enter));
     }
 
     /**
@@ -235,17 +235,20 @@ public class BomRosServiceImpl implements BomRosService {
     public ScooterDetailResult scooterDetail(IdEnter enter) {
         OpePartsAssembly scooter = opePartsAssemblyService.getById(enter.getId());
         if (scooter == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        List<QueryPartListResult> partList =bomRosServiceMapper.productDeatilPartList(enter.getId());
+        List<QueryPartListResult> partList = bomRosServiceMapper.productDeatilPartList(enter.getId());
         ScooterDetailResult scooterDetailResult = ScooterDetailResult.builder()
                 .id(scooter.getId())
                 .productN(scooter.getAssNumber())
                 .productCnName(scooter.getCnName())
-                .procurementCycle(StringUtils.isBlank(scooter.getProductionCycle())==true ? "0":scooter.getProductionCycle())
+                .procurementCycle(StringUtils.isBlank(scooter.getProductionCycle()) == true ? "0" : scooter.getProductionCycle())
                 .build();
-        if (CollectionUtils.isNotEmpty(partList)){
-            scooterDetailResult.setPartsList(partList);
+        if (CollectionUtils.isNotEmpty(partList)) {
+            double sum = partList.stream().mapToDouble(QueryPartListResult::getQty).sum();
+            scooterDetailResult.setQtySum(sum);
+            scooterDetailResult.setPartList(partList);
+
         }
         return scooterDetailResult;
     }
@@ -263,20 +266,20 @@ public class BomRosServiceImpl implements BomRosService {
     @Override
     public GeneralResult deleteScooterPart(DeletePartEnter enter) {
 
-        if (CollectionUtils.isEmpty(enter.getIds())){
+        if (CollectionUtils.isEmpty(enter.getIds())) {
             return new GeneralResult(enter.getRequestId());
         }
         // 整车查询
         OpePartsAssembly scooter = opePartsAssemblyService.getById(enter.getId());
         if (scooter == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(scooter.getAssType().toString(), BomAssTypeEnums.SCOOTER.getValue())){
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        if (!StringUtils.equals(scooter.getAssType().toString(), BomAssTypeEnums.SCOOTER.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 进行 产品条目数据过滤
-        checkProductEntry(enter.getId(),PartsEventEnums.DELETE.getValue(),null,enter.getIds());
+        checkProductEntry(enter.getId(), PartsEventEnums.DELETE.getValue(), null, enter.getIds());
 
         //数据删除
         opePartsAssemblyBService.removeByIds(enter.getIds());
@@ -298,18 +301,18 @@ public class BomRosServiceImpl implements BomRosService {
         // 整车查询
         OpePartsAssembly scooter = opePartsAssemblyService.getById(enter.getId());
         if (scooter == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(scooter.getAssType().toString(), BomAssTypeEnums.SCOOTER.getValue())){
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        if (!StringUtils.equals(scooter.getAssType().toString(), BomAssTypeEnums.SCOOTER.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
         // 配件删除
-        if (scooter.getInQty()!=0){
-            QueryWrapper<OpePartsAssemblyB> opePartsAssemblyBQueryWrapper=new QueryWrapper<>();
-            opePartsAssemblyBQueryWrapper.eq(OpePartsAssemblyB.COL_PARTS_ASSEMBLY_ID,scooter.getId());
-            opePartsAssemblyBQueryWrapper.eq(OpePartsAssemblyB.COL_DR,0);
+        if (scooter.getInQty() != 0) {
+            QueryWrapper<OpePartsAssemblyB> opePartsAssemblyBQueryWrapper = new QueryWrapper<>();
+            opePartsAssemblyBQueryWrapper.eq(OpePartsAssemblyB.COL_PARTS_ASSEMBLY_ID, scooter.getId());
+            opePartsAssemblyBQueryWrapper.eq(OpePartsAssemblyB.COL_DR, 0);
             opePartsAssemblyBService.remove(opePartsAssemblyBQueryWrapper);
         }
 
@@ -329,11 +332,11 @@ public class BomRosServiceImpl implements BomRosService {
      */
     @Override
     public PageResult<CombinationListResult> combinationList(CombinationListEnter enter) {
-        int count=bomRosServiceMapper.combinationListCount(enter);
+        int count = bomRosServiceMapper.combinationListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter,count,bomRosServiceMapper.combinationList(enter));
+        return PageResult.create(enter, count, bomRosServiceMapper.combinationList(enter));
     }
 
     /**
@@ -350,11 +353,11 @@ public class BomRosServiceImpl implements BomRosService {
         // 整车查询
         OpePartsAssembly scooter = opePartsAssemblyService.getById(enter.getId());
         if (scooter == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(scooter.getAssType().toString(), BomAssTypeEnums.COMBINATION.getValue())){
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        if (!StringUtils.equals(scooter.getAssType().toString(), BomAssTypeEnums.COMBINATION.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         return bomRosServiceMapper.productDeatilPartList(enter.getId());
     }
@@ -372,9 +375,9 @@ public class BomRosServiceImpl implements BomRosService {
     public CombinationDetailResult combinationDetail(IdEnter enter) {
         OpePartsAssembly combination = opePartsAssemblyService.getById(enter.getId());
         if (combination == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        List<QueryPartListResult> partList =bomRosServiceMapper.productDeatilPartList(enter.getId());
+        List<QueryPartListResult> partList = bomRosServiceMapper.productDeatilPartList(enter.getId());
         CombinationDetailResult combinationDetailResult = CombinationDetailResult.builder()
                 .id(combination.getId())
                 .productN(combination.getAssNumber())
@@ -383,7 +386,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .productFrName(combination.getFrName())
                 .qty(combination.getInQty())
                 .build();
-        if (CollectionUtils.isNotEmpty(partList)){
+        if (CollectionUtils.isNotEmpty(partList)) {
             combinationDetailResult.setPartList(partList);
         }
         return combinationDetailResult;
@@ -400,20 +403,20 @@ public class BomRosServiceImpl implements BomRosService {
      */
     @Override
     public GeneralResult deleteCombinationPart(DeletePartEnter enter) {
-        if (CollectionUtils.isEmpty(enter.getIds())){
+        if (CollectionUtils.isEmpty(enter.getIds())) {
             return new GeneralResult(enter.getRequestId());
         }
         // 整车查询
         OpePartsAssembly combinationPart = opePartsAssemblyService.getById(enter.getId());
         if (combinationPart == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(combinationPart.getAssType().toString(), BomAssTypeEnums.COMBINATION.getValue())){
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        if (!StringUtils.equals(combinationPart.getAssType().toString(), BomAssTypeEnums.COMBINATION.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 进行 产品条目数据过滤
-        checkProductEntry(enter.getId(),PartsEventEnums.DELETE.getValue(),null,enter.getIds());
+        checkProductEntry(enter.getId(), PartsEventEnums.DELETE.getValue(), null, enter.getIds());
 
         //数据删除
         opePartsAssemblyBService.removeByIds(enter.getIds());
@@ -434,18 +437,18 @@ public class BomRosServiceImpl implements BomRosService {
     public GeneralResult deleteCombination(IdEnter enter) {
         OpePartsAssembly combination = opePartsAssemblyService.getById(enter.getId());
         if (combination == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(combination.getAssType().toString(), BomAssTypeEnums.COMBINATION.getValue())){
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        if (!StringUtils.equals(combination.getAssType().toString(), BomAssTypeEnums.COMBINATION.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
         // 配件删除
-        if (combination.getInQty()!=0){
-            QueryWrapper<OpePartsAssemblyB> opePartsAssemblyBQueryWrapper=new QueryWrapper<>();
-            opePartsAssemblyBQueryWrapper.eq(OpePartsAssemblyB.COL_PARTS_ASSEMBLY_ID,combination.getId());
-            opePartsAssemblyBQueryWrapper.eq(OpePartsAssemblyB.COL_DR,0);
+        if (combination.getInQty() != 0) {
+            QueryWrapper<OpePartsAssemblyB> opePartsAssemblyBQueryWrapper = new QueryWrapper<>();
+            opePartsAssemblyBQueryWrapper.eq(OpePartsAssemblyB.COL_PARTS_ASSEMBLY_ID, combination.getId());
+            opePartsAssemblyBQueryWrapper.eq(OpePartsAssemblyB.COL_DR, 0);
             opePartsAssemblyBService.remove(opePartsAssemblyBQueryWrapper);
         }
 
@@ -502,16 +505,16 @@ public class BomRosServiceImpl implements BomRosService {
                 .revision(0)
                 .build();
 
-        if (enter.getId()==null || enter.getId()==0) {
+        if (enter.getId() == null || enter.getId() == 0) {
             // 产品编号过滤
-            List<String> productNList=bomRosServiceMapper.UsingProductNumList(enter);
-            if (productNList.contains(enter.getProductN())){
-                throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(),ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
+            List<String> productNList = bomRosServiceMapper.UsingProductNumList(enter);
+            if (productNList.contains(enter.getProductN())) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
             }
-            Long assemblyId=idAppService.getId(SequenceName.OPE_PARTS_ASSEMBLY);
+            Long assemblyId = idAppService.getId(SequenceName.OPE_PARTS_ASSEMBLY);
 
             //子表都保存
-            if (CollectionUtils.isNotEmpty(partList)){
+            if (CollectionUtils.isNotEmpty(partList)) {
                 for (ProdoctPartListEnter item : partList) {
                     OpePartsAssemblyB opePartsAssemblyB = buildOpePartsAssemblyBSingle(enter.getUserId(), assemblyId, item);
                     opePartsAssemblyB.setId(idAppService.getId(SequenceName.OPE_PARTS_ASSEMBLY_B));
@@ -526,25 +529,25 @@ public class BomRosServiceImpl implements BomRosService {
             opePartsAssembly.setId(assemblyId);
             opePartsAssembly.setCreatedBy(enter.getUserId());
             opePartsAssembly.setCreatedTime(new Date());
-        }else {
+        } else {
             // 修改
             // 修改
             OpePartsAssembly partsAssembly = opePartsAssemblyService.getById(enter.getId());
             if (partsAssembly == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
             //产品编号一致 跳过校验 ，不一致重新校验
-            if (!StringUtils.equals(partsAssembly.getAssNumber(),enter.getProductN())){
-                List<String> productNList=bomRosServiceMapper.UsingProductNumList(enter);
-                if (productNList.contains(enter.getProductN())){
-                    throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(),ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
+            if (!StringUtils.equals(partsAssembly.getAssNumber(), enter.getProductN())) {
+                List<String> productNList = bomRosServiceMapper.UsingProductNumList(enter);
+                if (productNList.contains(enter.getProductN())) {
+                    throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
                 }
             }
 
             // 进行 产品条目数据过滤
-            checkProductEntry(enter.getId(),PartsEventEnums.UPDATE.getValue(),partList,null);
+            checkProductEntry(enter.getId(), PartsEventEnums.UPDATE.getValue(), partList, null);
             // 子表修改
-            if (CollectionUtils.isNotEmpty(partList)){
+            if (CollectionUtils.isNotEmpty(partList)) {
                 for (ProdoctPartListEnter item : partList) {
                     OpePartsAssemblyB opePartsAssemblyB = buildOpePartsAssemblyBSingle(enter.getUserId(), enter.getId(), item);
 
@@ -581,6 +584,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .updatedTime(new Date())
                 .build();
     }
+
     /**
      * @desc: 产品条目验证
      * @param: productId event partList ids
@@ -588,32 +592,32 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/27 18:19
      * @Version: Ros 1.2
      */
-    private void checkProductEntry(Long productId, String event,List<ProdoctPartListEnter> partList,List<Long> ids) {
+    private void checkProductEntry(Long productId, String event, List<ProdoctPartListEnter> partList, List<Long> ids) {
         // 查询整车配件
-        List<QueryPartListResult> productPartList =bomRosServiceMapper.productDeatilPartList(productId);
-        if (CollectionUtils.isEmpty(productPartList)){
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_HAS_NO_PARTS.getCode(),ExceptionCodeEnums.PRODUCT_HAS_NO_PARTS.getMessage());
+        List<QueryPartListResult> productPartList = bomRosServiceMapper.productDeatilPartList(productId);
+        if (CollectionUtils.isEmpty(productPartList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_HAS_NO_PARTS.getCode(), ExceptionCodeEnums.PRODUCT_HAS_NO_PARTS.getMessage());
         }
-        List<Long> partIdList=new ArrayList<>();
-        productPartList.forEach(item->{
+        List<Long> partIdList = new ArrayList<>();
+        productPartList.forEach(item -> {
             partIdList.add(item.getId());
         });
 
         // 删除数据时验证
-        if (StringUtils.equals(event,PartsEventEnums.DELETE.getValue())){
+        if (StringUtils.equals(event, PartsEventEnums.DELETE.getValue())) {
             // 过滤 传入的部品id 是否合法
-            ids.forEach(item->{
-                if (!partIdList.contains(item)){
-                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            ids.forEach(item -> {
+                if (!partIdList.contains(item)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
             });
         }
         // 修改数据时验证
-        if (StringUtils.equals(event,PartsEventEnums.UPDATE.getValue())) {
+        if (StringUtils.equals(event, PartsEventEnums.UPDATE.getValue())) {
             // 过滤 传入的部品id 是否合法
-            partList.forEach(item->{
-                if (!partIdList.contains(item.getId())){
-                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            partList.forEach(item -> {
+                if (!partIdList.contains(item.getId())) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
             });
         }
