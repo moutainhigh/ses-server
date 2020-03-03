@@ -1,10 +1,6 @@
 package com.redescooter.ses.web.ros.controller.bom;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.SupplierChaimRosService;
 import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
 import com.redescooter.ses.web.ros.vo.supplierChaim.EditProductPriceEnter;
@@ -67,7 +63,7 @@ public class SupplierChaimController {
 
     @PostMapping(value = "/currencyUnit")
     @ApiOperation(value = "货币单位列表", response = Map.class)
-    public Response<Map<String, String>> currencyUnit(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<ListMapResult> currencyUnit(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(supplierChaimRosService.currencyUnit(enter));
     }
 

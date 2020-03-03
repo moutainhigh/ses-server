@@ -1,5 +1,11 @@
 package com.redescooter.ses.web.ros.vo.supplierChaim;
 
+import java.util.Date;
+
+
+import com.redescooter.ses.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModel;
@@ -9,9 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
 
 
 /**
@@ -29,19 +33,19 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class SupplierChaimListEnter extends PageEnter {
 
-    @ApiModelProperty(value = "部品类型，all 不传",required = false)
+    @ApiModelProperty(value = "部品类型，all 不传")
     private String partType;
 
-    @ApiModelProperty(value = "刷新开始时间",required = false)
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
+    @ApiModelProperty(value = "刷新开始时间")
+    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
     private Date refuseStartTime;
 
-    @ApiModelProperty(value = "刷新结束时间",required = false)
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
+    @ApiModelProperty(value = "刷新结束时间")
+    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
     private Date refuseEndTime;
 
-    @ApiModelProperty(value = "关键字",required = false)
+    @ApiModelProperty(value = "关键字")
     private String keyword;
 }

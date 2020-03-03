@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.tool.utils.DateUtil;
 import io.swagger.annotations.ApiModel;
