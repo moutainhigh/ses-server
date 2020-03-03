@@ -157,6 +157,11 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
                 opePriceSheet.setCreatedBy(queryOpePriceSheet.getCreatedBy());
                 opePriceSheet.setCreatedTime(queryOpePriceSheet.getCreatedTime());
             }
+            if (queryOpePriceSheet != null) {
+                if (queryOpePriceSheet.getPrice().subtract(new BigDecimal(enter.getProductFrPrice())).intValue() == BigDecimal.ZERO.intValue()) {
+                    return new GeneralResult(enter.getRequestId());
+                }
+            }
             opePriceSheetService.saveOrUpdate(opePriceSheet);
             //生成日志
             OpePriceSheetHistory opePriceSheetHistory = buildOpePriceSheetHistorySingle(enter, opePriceSheet.getId(), opePriceSheet.getCurrencyUnit());
