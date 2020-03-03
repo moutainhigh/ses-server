@@ -11,6 +11,7 @@ import com.redescooter.ses.service.common.service.CityAppService;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
+import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -29,6 +30,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+
+    @Autowired
+    private OpeCustomerService opeCustomerService;
     @Reference
     private CityAppService cityAppService;
 
@@ -96,5 +100,26 @@ public class CustomerServiceImpl implements CustomerService {
 
         opeCustomerMapper.updateById(opeCustomer);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 根据属性确定客户信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult updateCustomerInfoByAnyProperty(BaseCustomerEnter enter) {
+        QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
+        opeCustomerQueryWrapper.eq(OpeCustomer.COL_DR, 0);
+        opeCustomerQueryWrapper.eq(OpeCustomer.COL_TENANT_ID, 0);
+        opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_TYPE, enter.getCustomerType());
+        opeCustomerQueryWrapper.eq(OpeCustomer.COL_INDUSTRY_TYPE, enter.getIndustryType());
+        OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
+        if (opeCustomer == null) {
+
+        }
+
+        return null;
     }
 }

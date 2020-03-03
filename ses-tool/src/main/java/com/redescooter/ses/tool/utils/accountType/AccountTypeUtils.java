@@ -43,22 +43,22 @@ public class AccountTypeUtils {
 
     public static String getAppId(Integer accountType) {
 
-        if (AccountTypeEnums.WEB_EXPRESS.getAccountType() == accountType) {
+        if (AccountTypeEnums.WEB_EXPRESS.getAccountType().equals(accountType)) {
             return AppIDEnums.getAppIdValue(AccountTypeEnums.WEB_EXPRESS.getAppId());
         }
 
-        if (AccountTypeEnums.WEB_RESTAURANT.getAccountType() == accountType) {
+        if (AccountTypeEnums.WEB_RESTAURANT.getAccountType().equals(accountType)) {
             return AppIDEnums.getAppIdValue(AccountTypeEnums.WEB_RESTAURANT.getAppId());
         }
 
-        if (AccountTypeEnums.APP_EXPRESS.getAccountType() == accountType) {
+        if (AccountTypeEnums.APP_EXPRESS.getAccountType().equals(accountType)) {
             return AppIDEnums.getAppIdValue(AccountTypeEnums.APP_EXPRESS.getAppId());
         }
 
-        if (AccountTypeEnums.APP_RESTAURANT.getAccountType() == accountType) {
+        if (AccountTypeEnums.APP_RESTAURANT.getAccountType().equals(accountType)) {
             return AppIDEnums.getAppIdValue(AccountTypeEnums.APP_RESTAURANT.getAppId());
         }
-        if (AccountTypeEnums.APP_PERSONAL.getAccountType() == accountType) {
+        if (AccountTypeEnums.APP_PERSONAL.getAccountType().equals(accountType)) {
             return AppIDEnums.getAppIdValue(AccountTypeEnums.APP_PERSONAL.getAppId());
         }
         return null;
@@ -87,5 +87,4 @@ public class AccountTypeUtils {
         }
         return null;
     }
-
 }

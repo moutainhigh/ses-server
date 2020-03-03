@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -28,10 +29,10 @@ import java.util.List;
 public class ProductPriceChartResult extends GeneralResult {
 
     @ApiModelProperty(value = "平均值")
-    private String avg;
+    private BigDecimal avg;
 
     @ApiModelProperty(value = "最大值")
-    private String max;
+    private BigDecimal max;
 
     @ApiModelProperty(value = "产品报价")
     private List<SccPriceResult> priceResultList;

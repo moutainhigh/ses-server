@@ -105,6 +105,8 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
             BeanUtils.copyProperties(enter, saveUserProfileHubEnter);
             saveUserProfileHubEnter.setId(enter.getId());
             userProfileService.saveUserProfile2C(saveUserProfileHubEnter);
+            // 回传ros 数据
+
         }
         return new GeneralResult(enter.getRequestId());
     }

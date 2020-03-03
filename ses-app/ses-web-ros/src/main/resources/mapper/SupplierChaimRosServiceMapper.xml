@@ -30,6 +30,7 @@
         '' as productEnUnit
         from ope_regional_price_sheet_history frhistroy
         where frhistroy.user_id=#{userId}
+        and frhistroy.assembly_id = #{id}
         union all
         select enhistroy.id as id,
         enhistroy.sales_price as productEnPrice,
@@ -40,7 +41,7 @@
         '' as productFrUnit
         from ope_regional_price_sheet_history enhistroy
         where enhistroy.user_id=#{userId}
-
+        and enhistroy.assembly_id = #{id}
         )
     </sql>
 
@@ -82,6 +83,8 @@
         select count(*)
         from ope_price_sheet_history histroy
         where histroy.user_id=#{userId}
+        and histroy.dr=0
+        and histroy.parts_id=#{id}
     </select>
     <select id="scPriceHistroyList" resultType="com.redescooter.ses.web.ros.vo.sales.SccPriceResult">
         select histroy.id as id,

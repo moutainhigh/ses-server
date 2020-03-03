@@ -28,4 +28,12 @@ public interface CustomerService {
      * @return
      */
     GeneralResult updateCustomerInfo(BaseCustomerEnter enter);
+
+    /**
+     * 根据属性确定客户信息
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult updateCustomerInfoByAnyProperty(BaseCustomerEnter enter);
 }

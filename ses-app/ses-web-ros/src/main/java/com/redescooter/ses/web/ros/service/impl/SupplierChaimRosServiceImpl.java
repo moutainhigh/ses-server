@@ -279,7 +279,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
     @Override
     public SccPriceResult productPriceDetail(SccPriceEnter enter) {
         // 价格类型
-        if (StringUtils.isBlank(ProductPriceTypeEnums.checkValue(enter.getPriceType()))) {
+        if (StringUtils.isBlank(ProductPriceTypeEnums.checkCode(enter.getPriceType()))) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         SccPriceResult result = null;
@@ -317,6 +317,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             if (CollectionUtils.isEmpty(regionalPriceSheetList)) {
                 return new SccPriceResult();
             }
+            result = new SccPriceResult();
             for (OpeRegionalPriceSheet item : regionalPriceSheetList) {
                 result.setId(StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode()) == true ? item.getAssemblyId() : item.getPartId());
 
