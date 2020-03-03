@@ -58,7 +58,7 @@
         select count(*)
         from ope_parts part
         left join ope_price_sheet sheet on part.id = sheet.parts_id and sheet.dr = 0
-        <include refid="where_SupplierChaimList"></include>
+        <include refid="where_SupplierChaimList"/>
     </select>
 
     <select id="supplierChaimList"
@@ -74,8 +74,8 @@
         sheet.currency_unit as unit
         from ope_parts part
         left join ope_price_sheet sheet on part.id = sheet.parts_id and sheet.dr = 0
-        <include refid="where_SupplierChaimList"></include>
-        order by part.updated_time desc
+        <include refid="where_SupplierChaimList"/>
+        order by part.created_time desc
         limit #{startRow},#{pageSize}
     </select>
 

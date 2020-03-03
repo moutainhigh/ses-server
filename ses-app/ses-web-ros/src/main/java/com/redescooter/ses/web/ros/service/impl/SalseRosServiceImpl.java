@@ -1,16 +1,21 @@
 package com.redescooter.ses.web.ros.service.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.SalseRosServiceMapper;
 import com.redescooter.ses.web.ros.service.SalseRosService;
 import com.redescooter.ses.web.ros.vo.sales.ProductListEnter;
 import com.redescooter.ses.web.ros.vo.sales.ProductListResult;
+import com.redescooter.ses.web.ros.vo.sales.SalesServiceResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -77,10 +82,33 @@ public class SalseRosServiceImpl implements SalseRosService {
      */
     @Override
     public PageResult<ProductListResult> afterSaleList(ProductListEnter enter) {
-        int count=salseRosServiceMapper.afterSaleListCount(enter);
+        int count = salseRosServiceMapper.afterSaleListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter,count,salseRosServiceMapper.afterSaleList(enter));
+        return PageResult.create(enter, count, salseRosServiceMapper.afterSaleList(enter));
+    }
+
+    /**
+     * @param enter
+     * @desc: 销售产品描述
+     * @param: enter
+     * @retrn: SalesServiceResult
+     * @auther: alex
+     * @date: 2020/3/3 17:41
+     * @Version: Ros 1.2
+     */
+    @Override
+    public PageResult<SalesServiceResult> salesServiceList(PageEnter enter) {
+        int count = 2;
+        List<SalesServiceResult> result = new ArrayList<>();
+        result.add(SalesServiceResult.builder()
+                .id(1000000L)
+                .service("License")
+                .desc("车辆上牌")
+                .productFrPrice(BigDecimal.ONE)
+                .build());
+
+        return null;
     }
 }

@@ -88,14 +88,15 @@
     <select id="partListCount" resultType="java.lang.Integer">
         select count(*)
         from ope_parts parts
-        <include refid="where_PartList"></include>
+        <include refid="where_PartList"/>
     </select>
     <select id="partList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
         select parts.id as id,
         parts.parts_number as partsN,
         parts.sec as sec,
-        parts.en_name as partsEnName,
-        parts.cn_name as partsCnName,
+        parts.en_name as enName,
+        parts.cn_name as cnName,
+        parts.fr_name as frName,
         ifnull(parts.production_cycle, 0) as productionCycle
         from ope_parts parts
         <include refid="where_PartList"></include>

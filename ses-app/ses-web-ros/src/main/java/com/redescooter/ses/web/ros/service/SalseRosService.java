@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.sales.ProductListEnter;
 import com.redescooter.ses.web.ros.vo.sales.ProductListResult;
+import com.redescooter.ses.web.ros.vo.sales.SalesServiceResult;
 
 import java.util.Map;
 
@@ -45,4 +47,14 @@ public interface SalseRosService {
      * @Version: Ros 1.2
      */
     PageResult<ProductListResult> afterSaleList(ProductListEnter enter);
+
+    /**
+     * @desc: 销售产品描述
+     * @param: enter
+     * @retrn: SalesServiceResult
+     * @auther: alex
+     * @date: 2020/3/3 17:41
+     * @Version: Ros 1.2
+     */
+    PageResult<SalesServiceResult> salesServiceList(PageEnter enter);
 }
