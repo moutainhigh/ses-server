@@ -143,6 +143,8 @@ public enum ExceptionCodeEnums {
 
     PRODUCT_UNIT_IS_EMPTY(10064, "货币单位为空"),
 
+    PART_IS_NOT_EXIST(10065, "部品不存在"),
+
     ;
 
     private int code;
