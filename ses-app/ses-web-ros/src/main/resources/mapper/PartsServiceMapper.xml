@@ -11,7 +11,7 @@
        op.cn_name,
        op.fr_name,
        op.en_name,
-       case when (op.sn_class_flag='1') then 'SC' else 'SSC' end as snClassFlag,
+       case when (op.sn_class='1') then 'SC' else 'SSC' end as snClassFlag,
        op.parts_qty,
        op.production_cycle,
        op.supplier_id,

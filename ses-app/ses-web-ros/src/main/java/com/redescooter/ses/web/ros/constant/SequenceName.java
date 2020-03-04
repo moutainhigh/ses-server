@@ -39,4 +39,6 @@ public interface SequenceName {
 
     String OPE_REGIONAL_PRICE_SHEET_HISTORY = "OPE_REGIONAL_PRICE_SHEET_HISTORY";
 
+    String OPE_EXCLE_IMPORT = "OPE_EXCLE_IMPORT";
+
 }

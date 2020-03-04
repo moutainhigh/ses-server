@@ -95,4 +95,12 @@ public interface PartsRosService {
      */
     HistoryPartsResult historys(IdEnter enter);
 
+    /**
+     * 部品编辑完成进行同步
+     * TODO 很重要
+     *
+     * @return
+     */
+    GeneralResult partsSynchronize(GeneralEnter enter);
+
 }

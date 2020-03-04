@@ -60,11 +60,6 @@ public class BomRosServiceImpl implements BomRosService {
     @Reference
     private IdAppService idAppService;
 
-    @Autowired
-    private OpePartsAssemblyBService opePartsAssemblyBService;
-
-    @Autowired
-    private OpePartsAssemblyService opePartsAssemblyService;
 
     @Autowired
     private OpePartsService opePartsService;
