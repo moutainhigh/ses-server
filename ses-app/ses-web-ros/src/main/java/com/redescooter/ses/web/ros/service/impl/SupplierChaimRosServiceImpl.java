@@ -172,7 +172,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_DR, 0);
             opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_USER_ID, enter.getUserId());
             if (StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode())) {
-                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_ASSEMBLY_ID, enter.getId());
+                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PARTS_PRODUCT_ID, enter.getId());
                 opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PRICE_TYPE, PriceTypeEnums.COMBINATION.getValue());
             } else {
                 opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PART_ID, enter.getId());
@@ -305,7 +305,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_DR, 0);
             opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_USER_ID, enter.getUserId());
             if (StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode())) {
-                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_ASSEMBLY_ID, enter.getId());
+                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PARTS_PRODUCT_ID, enter.getId());
                 opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PRICE_TYPE, PriceTypeEnums.COMBINATION.getValue());
             } else {
                 opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PART_ID, enter.getId());
@@ -317,7 +317,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             }
             result = new SccPriceResult();
             for (OpeRegionalPriceSheet item : regionalPriceSheetList) {
-                result.setId(StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode()) == true ? item.getAssemblyId() : item.getPartId());
+                result.setId(StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode()) == true ? item.getPartsProductId() : item.getPartId());
 
                 if (StringUtils.equals(CurrencyUnitEnums.FR.getValue(), item.getCurrencyUnit())) {
                     result.setProductFrPrice(item.getSalesPrice().toString());
@@ -437,7 +437,6 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         opePriceSheetHistory.setDr(0);
         opePriceSheetHistory.setTenantId(0L);
         opePriceSheetHistory.setUserId(enter.getUserId());
-        opePriceSheetHistory.setStatus(BomStatusEnums.NORMAL.getValue());
         opePriceSheetHistory.setPrice(new BigDecimal(enter.getProductFrPrice()));
         opePriceSheetHistory.setPriceSheetId(id);
         opePriceSheetHistory.setCurrencyType(StringUtils.isBlank(CurrencyUnitEnums.checkCode(unit)) == true ? CurrencyUnitEnums.FR.getCode() :
@@ -460,16 +459,14 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         opeRegionalPriceSheetHistory.setDr(0);
         opeRegionalPriceSheetHistory.setTenantId(0L);
         opeRegionalPriceSheetHistory.setUserId(enter.getUserId());
-        opeRegionalPriceSheetHistory.setStatus(BomStatusEnums.NORMAL.getValue());
+        opeRegionalPriceSheetHistory.setPartsProductId(enter.getId());
+
         if (StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode())) {
-            opeRegionalPriceSheetHistory.setAssemblyId(enter.getId());
-            opeRegionalPriceSheetHistory.setPartId(0L);
             opeRegionalPriceSheetHistory.setPriceType(PriceTypeEnums.COMBINATION.getValue());
         } else {
-            opeRegionalPriceSheetHistory.setAssemblyId(0L);
-            opeRegionalPriceSheetHistory.setPartId(enter.getId());
             opeRegionalPriceSheetHistory.setPriceType(PriceTypeEnums.PART.getValue());
         }
+
         opeRegionalPriceSheetHistory.setRegionalPriceSheetId(regionalPriceSheetId);
         if (StringUtils.equals(CurrencyUnitEnums.FR.getValue(), unit)) {
             opeRegionalPriceSheetHistory.setSalesPrice(new BigDecimal(enter.getProductFrPrice()));
@@ -498,13 +495,10 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         opeRegionalPriceSheet.setTenantId(0L);
         opeRegionalPriceSheet.setUserId(enter.getUserId());
         opeRegionalPriceSheet.setStatus(BomStatusEnums.NORMAL.getValue());
+        opeRegionalPriceSheet.setPartsProductId(enter.getId());
         if (StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode())) {
-            opeRegionalPriceSheet.setAssemblyId(enter.getId());
-            opeRegionalPriceSheet.setPartId(0L);
             opeRegionalPriceSheet.setPriceType(PriceTypeEnums.COMBINATION.getValue());
         } else {
-            opeRegionalPriceSheet.setAssemblyId(0L);
-            opeRegionalPriceSheet.setPartId(enter.getId());
             opeRegionalPriceSheet.setPriceType(PriceTypeEnums.PART.getValue());
         }
         opeRegionalPriceSheet.setEffectiveTime(new Date());
