@@ -45,7 +45,7 @@ public class SalesController {
     }
 
     @PostMapping(value = "/productList")
-    @ApiOperation(value = "商品列表", response = ProductListResult.class)
+    @ApiOperation(value = "产品列表", response = ProductListResult.class)
     public Response<PageResult<ProductListResult>> productList(@ModelAttribute @ApiParam("请求参数") ProductListEnter enter) {
         return new Response<>(salseRosService.productList(enter));
     }
