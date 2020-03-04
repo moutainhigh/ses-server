@@ -7,6 +7,7 @@ import com.redescooter.ses.web.ros.vo.sales.ProductListEnter;
 import com.redescooter.ses.web.ros.vo.sales.ProductListResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesServiceResult;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,4 +58,12 @@ public interface SalseRosService {
      * @Version: Ros 1.2
      */
     PageResult<SalesServiceResult> salesServiceList(PageEnter enter);
+
+    /**
+     * 产品类型
+     *
+     * @param enter
+     * @return
+     */
+    List<String> productTypeList(GeneralEnter enter);
 }

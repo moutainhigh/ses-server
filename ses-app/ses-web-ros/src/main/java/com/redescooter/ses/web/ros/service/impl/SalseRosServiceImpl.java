@@ -1,8 +1,11 @@
 package com.redescooter.ses.web.ros.service.impl;
 
+import com.redescooter.ses.api.common.enums.bom.BomTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.dao.SalseRosServiceMapper;
 import com.redescooter.ses.web.ros.service.SalseRosService;
 import com.redescooter.ses.web.ros.vo.sales.ProductListEnter;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,15 +104,36 @@ public class SalseRosServiceImpl implements SalseRosService {
      */
     @Override
     public PageResult<SalesServiceResult> salesServiceList(PageEnter enter) {
-        int count = 2;
+        int count = 1;
         List<SalesServiceResult> result = new ArrayList<>();
         result.add(SalesServiceResult.builder()
                 .id(1000000L)
                 .service("License")
                 .desc("车辆上牌")
                 .productFrPrice(BigDecimal.ONE)
+                .productFrUnit(CurrencyUnitEnums.FR.getValue())
+                .productEnPrice(BigDecimal.ONE)
+                .productEnUnit(CurrencyUnitEnums.EN.getValue())
+                .refuseTime(new Date())
                 .build());
 
-        return null;
+        return PageResult.create(enter, count, result);
+    }
+
+    /**
+     * 产品类型
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<String> productTypeList(GeneralEnter enter) {
+        List<String> result = new ArrayList<>();
+        for (BomTypeEnums item : BomTypeEnums.values()) {
+            if (!StringUtils.equals(item.getCode(), BomTypeEnums.PARTS.getCode())) {
+                result.add(item.getCode());
+            }
+        }
+        return result;
     }
 }
