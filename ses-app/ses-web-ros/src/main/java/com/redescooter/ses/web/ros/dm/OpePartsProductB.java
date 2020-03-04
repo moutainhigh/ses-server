@@ -1,15 +1,9 @@
 package com.redescooter.ses.web.ros.dm;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,13 +11,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartsAssemblyB")
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartsProductB")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_parts_assembly_b")
-public class OpePartsAssemblyB implements Serializable {
+@TableName(value = "ope_parts_product_b")
+public class OpePartsProductB implements Serializable {
+    public static final String COL_PARTS_ASSEMBLY_ID = "parts_assembly_id";
     /**
      * 主键 主键
      */
@@ -35,7 +34,6 @@ public class OpePartsAssemblyB implements Serializable {
      * 逻辑删除 逻辑删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除 逻辑删除")
     private Integer dr;
 
@@ -70,9 +68,9 @@ public class OpePartsAssemblyB implements Serializable {
     /**
      * 部品组装表主键 部品组装表主键
      */
-    @TableField(value = "parts_assembly_id")
+    @TableField(value = "parts_product_id")
     @ApiModelProperty(value = "部品组装表主键 部品组装表主键")
-    private Long partsAssemblyId;
+    private Long partsProductId;
 
     /**
      * 部品数量 数量
@@ -172,7 +170,7 @@ public class OpePartsAssemblyB implements Serializable {
 
     public static final String COL_PARTS_ID = "parts_id";
 
-    public static final String COL_PARTS_ASSEMBLY_ID = "parts_assembly_id";
+    public static final String COL_PARTS_PRODUCT_ID = "parts_product_id";
 
     public static final String COL_PARTS_QTY = "parts_qty";
 
@@ -198,7 +196,7 @@ public class OpePartsAssemblyB implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpePartsAssemblyBBuilder builder() {
-        return new OpePartsAssemblyBBuilder();
+    public static OpePartsProductBBuilder builder() {
+        return new OpePartsProductBBuilder();
     }
 }

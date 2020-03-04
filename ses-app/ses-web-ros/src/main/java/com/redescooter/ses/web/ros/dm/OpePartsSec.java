@@ -28,133 +28,133 @@ public class OpePartsSec implements Serializable {
      * 主键 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="主键 主键")
+    @ApiModelProperty(value = "主键 主键")
     private Long id;
 
     /**
      * 逻辑删除 逻辑删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除 逻辑删除")
+    @ApiModelProperty(value = "逻辑删除 逻辑删除")
     private Integer dr;
 
     /**
      * 租户ID 租户ID
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value="租户ID 租户ID")
+    @ApiModelProperty(value = "租户ID 租户ID")
     private Long tenantId;
 
     /**
      * 用户ID 用户ID
      */
     @TableField(value = "user_id")
-    @ApiModelProperty(value="用户ID 用户ID")
+    @ApiModelProperty(value = "用户ID 用户ID")
     private Long userId;
 
     /**
      * 状态 状态
      */
     @TableField(value = "status")
-    @ApiModelProperty(value="状态 状态")
+    @ApiModelProperty(value = "状态 状态")
     private String status;
 
     /**
      * 项目区域名称 项目区域名称
      */
     @TableField(value = "name")
-    @ApiModelProperty(value="项目区域名称 项目区域名称")
+    @ApiModelProperty(value = "项目区域名称 项目区域名称")
     private String name;
 
     /**
      * 项目区域编码 项目区域编码
      */
     @TableField(value = "code")
-    @ApiModelProperty(value="项目区域编码 项目区域编码")
+    @ApiModelProperty(value = "项目区域编码 项目区域编码")
     private String code;
 
     /**
      * 值
      */
     @TableField(value = "value")
-    @ApiModelProperty(value="值")
+    @ApiModelProperty(value = "值")
     private Integer value;
 
     /**
      * 备注 备注
      */
     @TableField(value = "note")
-    @ApiModelProperty(value="备注 备注")
+    @ApiModelProperty(value = "备注 备注")
     private String note;
 
     /**
      * 乐观锁 乐观锁
      */
     @TableField(value = "revision")
-    @ApiModelProperty(value="乐观锁 乐观锁")
+    @ApiModelProperty(value = "乐观锁 乐观锁")
     private Integer revision;
 
     /**
      * 创建人 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人 创建人")
+    @ApiModelProperty(value = "创建人 创建人")
     private Long createdBy;
 
     /**
      * 创建时间 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间 创建时间")
+    @ApiModelProperty(value = "创建时间 创建时间")
     private Date createdTime;
 
     /**
      * 更新人 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人 更新人")
+    @ApiModelProperty(value = "更新人 更新人")
     private Long updatedBy;
 
     /**
      * 更新时间 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间 更新时间")
+    @ApiModelProperty(value = "更新时间 更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段 冗余字段")
     private String def1;
 
     /**
      * 冗余字段 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段 冗余字段")
     private String def2;
 
     /**
      * 冗余字段 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段 冗余字段")
     private String def3;
 
     /**
      * 冗余字段 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段 冗余字段")
     private String def5;
 
     /**
      * 冗余字段 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段 冗余字段")
     private BigDecimal def6;
 
     private static final long serialVersionUID = 1L;
@@ -196,4 +196,8 @@ public class OpePartsSec implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpePartsSecBuilder builder() {
+        return new OpePartsSecBuilder();
+    }
 }
