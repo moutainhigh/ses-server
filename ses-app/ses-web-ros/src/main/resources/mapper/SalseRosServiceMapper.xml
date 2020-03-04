@@ -79,22 +79,18 @@
 
     <sql id="where_SccPriceHistroyList">
         select priceResoult.id,
-
-        nullif(sum(priceResoult.enPrice), 0) as productFrPrice,
-        nullif(sum(priceResoult.frPrice), 0) as productEnPrice,
+        nullif(sum(priceResoult.enPrice), 0) as productEnPrice,
+        nullif(sum(priceResoult.frPrice), 0) as productfrPrice,
         priceResoult.createdTime as refuseTime
         from (select orpsh.assembly_id as id,
-
-        format(orpsh.sales_price, 2) as enPrice,
+        orpsh.sales_price as enPrice,
         orpsh.currency_type as enCurrencyType,
         orpsh.created_time as createdTime,
         0 as frPrice,
         null as frCurrencyType
         from ope_regional_price_sheet_history orpsh
         where 1 = 1
-        <if test="id!=null and id != 0">
-            and (orpsh.assembly_id = #{id} or orpsh.part_id = #{id})
-        </if>
+        and orpsh.assembly_id = #{id}
         and orpsh.dr = 0
         group by enPrice, enCurrencyType, createdTime, id
         having enCurrencyType = 'EN'
@@ -103,13 +99,11 @@
         0 as enPrice,
         null as enCurrencyType,
         orpsh.created_time as createdTime,
-        format(orpsh.sales_price, 2) as frPrice,
+        orpsh.sales_price as frPrice,
         orpsh.currency_type as frCurrencyType
         from ope_regional_price_sheet_history orpsh
         where 1 = 1
-        <if test="id!=null and id != 0">
-            and (orpsh.assembly_id = #{id} or orpsh.part_id = #{id})
-        </if>
+        and orpsh.assembly_id = #{id}
         and orpsh.dr = 0
         group by frPrice, frCurrencyType, createdTime, id
         having frCurrencyType = 'FR') priceResoult
@@ -172,5 +166,6 @@
         from (
         <include refid="where_SccPriceHistroyList"/>
         ) result
+        order by refuseTime desc
     </select>
 </mapper>
