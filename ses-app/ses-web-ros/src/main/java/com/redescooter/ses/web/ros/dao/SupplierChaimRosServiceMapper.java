@@ -71,26 +71,6 @@ public interface SupplierChaimRosServiceMapper {
     List<SccPriceResult> scPriceHistroyList(ProductPriceHistroyListEnter enter);
 
     /**
-     * @desc: 销售产品产品价格历史
-     * @param: enter
-     * @retrn: int
-     * @auther: alex
-     * @date: 2020/3/2 15:49
-     * @Version: Ros 1.2
-     */
-    int sccPriceHistroyCount(ProductPriceHistroyListEnter enter);
-
-    /**
-     * @desc: 销售产品产品价格历史
-     * @param: enter
-     * @retrn: List<SccPriceResult>
-     * @auther: alex
-     * @date: 2020/3/2 15:49
-     * @Version: Ros 1.2
-     */
-    List<SccPriceResult> sccPriceHistroyList(ProductPriceHistroyListEnter enter);
-
-    /**
      * @desc: 获取图表最值
      * @param: enter
      * @retrn: ProductPriceChartResult

@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -32,13 +33,13 @@ public class SccPriceResult extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "法国报价")
-    private String productFrPrice;
+    private BigDecimal productFrPrice;
 
     @ApiModelProperty(value = "报价单位")
     private String productFrUnit;
 
     @ApiModelProperty(value = "英国报价")
-    private String productEnPrice;
+    private BigDecimal productEnPrice;
 
     @ApiModelProperty(value = "报价单位")
     private String productEnUnit;

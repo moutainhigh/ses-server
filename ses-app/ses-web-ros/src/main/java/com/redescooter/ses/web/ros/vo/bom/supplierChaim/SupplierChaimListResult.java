@@ -11,7 +11,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @ClassName:SupplierChaimListResult
@@ -46,7 +47,7 @@ public class SupplierChaimListResult extends GeneralResult {
     private String type;
 
     @ApiModelProperty(value = "价格")
-    private String productPrice;
+    private BigDecimal productPrice;
 
     @ApiModelProperty(value = "货币单位")
     private String unit;

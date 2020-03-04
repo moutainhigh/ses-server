@@ -1,15 +1,12 @@
 package com.redescooter.ses.web.ros.collectionUtilsTest;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author Mr.lijiating
@@ -25,6 +22,22 @@ public class CollectionUtilTest {
     public void disjunction() {
         String checkESC = ESCUtils.checkESC("90");
         System.out.println(checkESC);
+    }
+
+    @Test
+    public void set() {
+        Set<String> productN = new HashSet<>();
+        productN.add("a");
+        productN.add("b");
+        productN.add("a");
+        Iterator<String> iterator = productN.iterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+
+        new ArrayList<>(productN).forEach(item -> {
+            System.out.println(item);
+        });
     }
 
 

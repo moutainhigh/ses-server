@@ -27,6 +27,7 @@ import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -184,7 +185,7 @@ public class SalseRosServiceImpl implements SalseRosService {
     public PageResult<SalesServiceResult> salesServiceList(PageEnter enter) {
         int count = 1;
         List<SalesServiceResult> result = new ArrayList<>();
-        result.add(SalesServiceResult.builder()
+        SalesServiceResult serviceResult = SalesServiceResult.builder()
                 .id(1000000L)
                 .service("License")
                 .desc("车辆上牌")
@@ -193,8 +194,19 @@ public class SalseRosServiceImpl implements SalseRosService {
                 .productEnPrice(BigDecimal.ONE)
                 .productEnUnit(CurrencyUnitEnums.EN.getValue())
                 .refuseTime(new Date())
-                .build());
-
+                .build();
+        // 查询价格详情
+        IdEnter idEnter = new IdEnter();
+        BeanUtils.copyProperties(enter, idEnter);
+        idEnter.setId(1000000L);
+        SccPriceResult sccPriceResult = priceDetail(idEnter);
+        if (sccPriceResult != null) {
+            serviceResult.setProductFrPrice(sccPriceResult.getProductFrPrice());
+            serviceResult.setProductFrUnit(CurrencyUnitEnums.FR.getValue());
+            serviceResult.setProductEnPrice(sccPriceResult.getProductEnPrice());
+            serviceResult.setProductEnUnit(CurrencyUnitEnums.EN.getValue());
+        }
+        result.add(serviceResult);
         return PageResult.create(enter, count, result);
     }
 
@@ -254,7 +266,7 @@ public class SalseRosServiceImpl implements SalseRosService {
             regionalPriceSheetList.forEach(item -> {
                 if (StringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.FR.getValue())) {
                     // 对价格不相等的进行更新 价格相等时不进行 任何操作
-                    if (item.getSalesPrice().subtract(new BigDecimal(enter.getProductFrPrice())).intValue() != BigDecimal.ZERO.intValue()) {
+                    if (!item.getSalesPrice().equals(new BigDecimal(enter.getProductFrPrice()))) {
                         opeRegionalPriceList.add(buildOpeRegionalPriceSheetSingle(item, enter, CurrencyUnitEnums.FR.getValue()));
                         // 生成节点
                         opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistory(enter, item.getId(), CurrencyUnitEnums.FR.getValue()));
@@ -262,7 +274,7 @@ public class SalseRosServiceImpl implements SalseRosService {
                 } else {
                     if (StringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.EN.getValue())) {
                         // 对价格不相等的进行更新 价格相等时不进行 任何操作
-                        if (item.getSalesPrice().subtract(new BigDecimal(enter.getProductEnPrice())).intValue() != BigDecimal.ZERO.intValue()) {
+                        if (!item.getSalesPrice().equals(enter.getProductEnPrice())) {
                             opeRegionalPriceList.add(buildOpeRegionalPriceSheetSingle(item, enter, CurrencyUnitEnums.EN.getValue()));
                             // 生成节点
                             opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistory(enter, item.getId(), CurrencyUnitEnums.EN.getValue()));
@@ -413,7 +425,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         if (CollectionUtils.isNotEmpty(opeRegionalPriceSheetHistoryList)) {
             opeRegionalPriceSheetHistoryService.saveOrUpdateBatch(opeRegionalPriceSheetHistoryList);
         }
-        return null;
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -434,12 +446,13 @@ public class SalseRosServiceImpl implements SalseRosService {
         if (CollectionUtils.isNotEmpty(regionalPriceSheetList)) {
             regionalPriceSheetList.forEach(item -> {
                 if (item.getCurrencyUnit().equals(CurrencyUnitEnums.EN.getValue())) {
-                    result.setProductEnPrice(item.getSalesPrice().toString());
+                    result.setProductEnPrice(item.getSalesPrice());
                     result.setProductEnUnit(item.getCurrencyUnit());
                 } else {
-                    result.setProductFrPrice(item.getSalesPrice().toString());
+                    result.setProductFrPrice(item.getSalesPrice());
                     result.setProductFrUnit(item.getCurrencyUnit());
                 }
+                result.setRefuseTime(item.getUpdatedTime());
             });
         }
         return result;
@@ -460,10 +473,10 @@ public class SalseRosServiceImpl implements SalseRosService {
         List<SccPriceResult> results = salseRosServiceMapper.sccPriceHistroyList(enter);
 
         results.forEach(item -> {
-            if (StringUtils.isNotEmpty(item.getProductEnPrice())) {
+            if (item.getProductEnPrice() != null) {
                 item.setProductEnUnit(CurrencyUnitEnums.EN.getValue());
             }
-            if (StringUtils.isNotEmpty(item.getProductFrPrice())) {
+            if (item.getProductFrPrice() != null) {
                 item.setProductFrUnit(CurrencyUnitEnums.FR.getValue());
             }
         });

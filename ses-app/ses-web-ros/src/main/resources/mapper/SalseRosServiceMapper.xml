@@ -75,7 +75,6 @@
             or a.productN like concat('%',#{keyword},'%')
             )
         </if>
-        order by a.refuseTime desc
     </sql>
 
     <sql id="where_SccPriceHistroyList">

@@ -1,12 +1,14 @@
 package com.redescooter.ses.web.ros.service;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
 import com.redescooter.ses.web.ros.vo.bom.sales.PriceUnitResult;
 import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.EditProductPriceEnter;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult;
-import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
-import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ScPriceEnter;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
 
@@ -30,7 +32,7 @@ public interface SupplierChaimRosService {
      * @date: 2020/2/25 14:41
      * @Version: Ros 1.2
      */
-   Map<String,Integer> countByPartType(GeneralEnter enter);
+    Map<String, Integer> countByPartType(GeneralEnter enter);
 
     /**
      * @desc: 供应链列表
@@ -52,16 +54,17 @@ public interface SupplierChaimRosService {
      */
     GeneralResult editProductPrice(EditProductPriceEnter enter);
 
- /**
-  * 产品报价详情
-  *
-  * @param id
-  * @return
-  */
- SccPriceResult productPriceDetail(ScPriceEnter id);
+    /**
+     * 产品报价详情
+     *
+     * @param id
+     * @return
+     */
+    SccPriceResult productPriceDetail(IdEnter id);
 
     /**
      * 货币单位
+     *
      * @param enter
      * @return
      */
