@@ -22,7 +22,6 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "ope_parts_product_b")
 public class OpePartsProductB implements Serializable {
-    public static final String COL_PARTS_ASSEMBLY_ID = "parts_assembly_id";
     /**
      * 主键 主键
      */
