@@ -2,14 +2,14 @@ package com.redescooter.ses.web.ros.controller.bom;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.SupplierChaimRosService;
-import com.redescooter.ses.web.ros.vo.sales.PriceUnitResult;
-import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.EditProductPriceEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceChartResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceHistroyListEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SccPriceEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.PriceUnitResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.EditProductPriceEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult;
+import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ScPriceEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -59,7 +59,7 @@ public class SupplierChaimController {
 
     @PostMapping(value = "/productPriceDetail")
     @ApiOperation(value = "产品价格详情", response = SccPriceResult.class)
-    public Response<SccPriceResult> productPriceDetail(@ModelAttribute @ApiParam("请求参数") SccPriceEnter enter) {
+    public Response<SccPriceResult> productPriceDetail(@ModelAttribute @ApiParam("请求参数") ScPriceEnter enter) {
         return new Response<>(supplierChaimRosService.productPriceDetail(enter));
     }
 

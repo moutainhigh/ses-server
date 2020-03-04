@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.sales;
+package com.redescooter.ses.web.ros.vo.bom.sales;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -14,22 +14,37 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 /**
- * @ClassName:SccProductPriceResult
- * @description: SccProductPriceResult
+ * @ClassName:ProductListResult
+ * @description: ProductListResult
  * @author: Alex
  * @Version：1.3
- * @create: 2020/02/25 18:11
+ * @create: 2020/02/25 17:34
  */
-@ApiModel(value = "产品报价出参", description = "产品报价出参")
+@ApiModel(value = "产品列表出参", description = "产品列表出参")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class SccPriceResult extends GeneralResult {
+public class ProductListResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;
+
+    @ApiModelProperty(value = "产品名字")
+    private String productEnName;
+
+    @ApiModelProperty(value = "产品名字")
+    private String productFrName;
+
+    @ApiModelProperty(value = "产品名字")
+    private String productCnName;
+
+    @ApiModelProperty(value = "产品编码")
+    private String productN;
+
+    @ApiModelProperty(value = "类型")
+    private String type;
 
     @ApiModelProperty(value = "法国报价")
     private String productFrPrice;
@@ -43,8 +58,11 @@ public class SccPriceResult extends GeneralResult {
     @ApiModelProperty(value = "报价单位")
     private String productEnUnit;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "刷新时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date refuseTime;
+
+    @ApiModelProperty(value = "是否存在有列表详情")
+    private Boolean productListDetail=Boolean.FALSE;
 }

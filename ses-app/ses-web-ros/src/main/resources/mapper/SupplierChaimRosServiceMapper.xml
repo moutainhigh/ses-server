@@ -76,7 +76,7 @@
     </select>
 
     <select id="supplierChaimList"
-            resultType="com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListResult">
+            resultType="com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult">
         select part.id as id,
         part.parts_number as productN,
         part.cn_name as productCnName,
@@ -100,7 +100,7 @@
         and histroy.dr=0
         and histroy.parts_id=#{id}
     </select>
-    <select id="scPriceHistroyList" resultType="com.redescooter.ses.web.ros.vo.sales.SccPriceResult">
+    <select id="scPriceHistroyList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
         select histroy.id as id,
         histroy.price as productFrPrice,
         histroy.currency_unit as productFrUnit,
@@ -119,14 +119,14 @@
         <include refid="where_SccPriceHistroyList"/>
         ) result
     </select>
-    <select id="sccPriceHistroyList" resultType="com.redescooter.ses.web.ros.vo.sales.SccPriceResult">
+    <select id="sccPriceHistroyList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
         select *
         from (
         <include refid="where_SccPriceHistroyList"/>
         ) result
     </select>
     <select id="productPriceHistroyChart"
-            resultType="com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceChartResult">
+            resultType="com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult">
         select ifnull(avg(histroy.price), 0) as avg,
         ifnull(max(histroy.price), 0) as max
         from ope_price_sheet_history histroy
@@ -135,7 +135,7 @@
         and histroy.parts_id=#{id}
         order by histroy.updated_time desc
     </select>
-    <select id="productPriceHistroyChartList" resultType="com.redescooter.ses.web.ros.vo.sales.SccPriceResult">
+    <select id="productPriceHistroyChartList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
         select histroy.id as id,
         histroy.price as productFrPrice,
         histroy.currency_unit as productFrUnit,

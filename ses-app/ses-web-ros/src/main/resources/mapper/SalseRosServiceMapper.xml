@@ -78,13 +78,52 @@
         order by a.refuseTime desc
     </sql>
 
+    <sql id="where_SccPriceHistroyList">
+        select priceResoult.id,
+
+        nullif(sum(priceResoult.enPrice), 0) as productFrPrice,
+        nullif(sum(priceResoult.frPrice), 0) as productEnPrice,
+        priceResoult.createdTime as refuseTime
+        from (select orpsh.assembly_id as id,
+
+        format(orpsh.sales_price, 2) as enPrice,
+        orpsh.currency_type as enCurrencyType,
+        orpsh.created_time as createdTime,
+        0 as frPrice,
+        null as frCurrencyType
+        from ope_regional_price_sheet_history orpsh
+        where 1 = 1
+        <if test="id!=null and id != 0">
+            and (orpsh.assembly_id = #{id} or orpsh.part_id = #{id})
+        </if>
+        and orpsh.dr = 0
+        group by enPrice, enCurrencyType, createdTime, id
+        having enCurrencyType = 'EN'
+        union all
+        select orpsh.assembly_id as id,
+        0 as enPrice,
+        null as enCurrencyType,
+        orpsh.created_time as createdTime,
+        format(orpsh.sales_price, 2) as frPrice,
+        orpsh.currency_type as frCurrencyType
+        from ope_regional_price_sheet_history orpsh
+        where 1 = 1
+        <if test="id!=null and id != 0">
+            and (orpsh.assembly_id = #{id} or orpsh.part_id = #{id})
+        </if>
+        and orpsh.dr = 0
+        group by frPrice, frCurrencyType, createdTime, id
+        having frCurrencyType = 'FR') priceResoult
+        group by priceResoult.createdTime, id
+    </sql>
+
     <select id="productListCount" resultType="java.lang.Integer">
         select count(*)
         from (<include refid="product_List"/>) a
         <include refid="where_ProductList"></include>
     </select>
 
-    <select id="productList" resultType="com.redescooter.ses.web.ros.vo.sales.ProductListResult">
+    <select id="productList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult">
         select a.*
         from (<include refid="product_List"/>) a
         <include refid="where_ProductList"></include>
@@ -93,26 +132,46 @@
 
     <select id="productCount" resultType="java.lang.Integer">
         select count(*)
-        from (<include refid="product_List"/>) a
-        <include refid="where_ProductList"></include>
+        from (
+        <include refid="product_List"/>
+        ) a
     </select>
 
     <select id="afterSaleCount" resultType="java.lang.Integer">
         select count(*)
         from (<include refid="where_AfterSaleList"/>) a
-        <include refid="where_AfterSaleList"></include>
     </select>
 
     <select id="afterSaleListCount" resultType="java.lang.Integer">
         select count(*)
         from (<include refid="where_AfterSaleList"/>) a
-        <include refid="where_ProductList"></include>
+        <include refid="where_ProductList"/>
     </select>
 
-    <select id="afterSaleList" resultType="com.redescooter.ses.web.ros.vo.sales.ProductListResult">
+    <select id="afterSaleList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult">
         select a.*
         from (<include refid="where_AfterSaleList"/>) a
-        <include refid="where_ProductList"></include>
+        <include refid="where_ProductList"/>
         limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="productPriceList" resultType="com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheet">
+        select *
+        from ope_regional_price_sheet sheet
+        where sheet.dr = 0
+        and sheet.user_id = #{userId}
+        and (sheet.assembly_id = #{id} or sheet.part_id =#{id} )
+    </select>
+    <select id="sccPriceHistroyCount" resultType="java.lang.Integer">
+        select count(*)
+        from (
+        <include refid="where_SccPriceHistroyList"/>
+        ) result
+    </select>
+    <select id="sccPriceHistroyList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
+        select *
+        from (
+        <include refid="where_SccPriceHistroyList"/>
+        ) result
     </select>
 </mapper>

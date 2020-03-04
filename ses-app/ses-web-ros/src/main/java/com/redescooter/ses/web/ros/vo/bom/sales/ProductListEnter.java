@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.sales;
+package com.redescooter.ses.web.ros.vo.bom.sales;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.PageEnter;

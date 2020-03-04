@@ -1,10 +1,14 @@
 package com.redescooter.ses.web.ros.dao;
 
-import java.util.List;
-
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.web.ros.vo.sales.ProductListEnter;
-import com.redescooter.ses.web.ros.vo.sales.ProductListResult;
+import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheet;
+import com.redescooter.ses.web.ros.vo.bom.sales.ProductListEnter;
+import com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceEnter;
+import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
+
+import java.util.List;
 
 /**
  * @ClassName:SalseRosServiceMapper
@@ -51,10 +55,35 @@ public interface SalseRosServiceMapper {
 
     /**
      * 售后产品列表
+     *
      * @param enter
      * @return
      */
     Integer afterSaleListCount(ProductListEnter enter);
 
     List<ProductListResult> afterSaleList(ProductListEnter enter);
+
+    /**
+     * 查询产品的报价
+     *
+     * @param enter
+     * @return
+     */
+    List<OpeRegionalPriceSheet> productPriceList(SccPriceEnter enter);
+
+    /**
+     * 产品价格历史列表
+     *
+     * @param enter
+     * @return
+     */
+    int sccPriceHistroyCount(ProductPriceHistroyListEnter enter);
+
+    /**
+     * 产品价格历史列表
+     *
+     * @param enter
+     * @return
+     */
+    List<SccPriceResult> sccPriceHistroyList(ProductPriceHistroyListEnter enter);
 }

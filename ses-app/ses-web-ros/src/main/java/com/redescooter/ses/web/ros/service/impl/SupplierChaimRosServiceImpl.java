@@ -23,14 +23,14 @@ import com.redescooter.ses.web.ros.service.base.OpePriceSheetHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpePriceSheetService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetService;
-import com.redescooter.ses.web.ros.vo.sales.PriceUnitResult;
-import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.EditProductPriceEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceChartResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceHistroyListEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SccPriceEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.PriceUnitResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.EditProductPriceEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult;
+import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ScPriceEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -164,42 +164,43 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             //生成日志
             OpePriceSheetHistory opePriceSheetHistory = buildOpePriceSheetHistorySingle(enter, opePriceSheet.getId(), opePriceSheet.getCurrencyUnit());
             opePriceSheetHistoryService.save(opePriceSheetHistory);
-        } else {
-            // 货币单位校验
-            checkUnit(enter);
-            // 价格校验 确定是否为第一次插入
-            QueryWrapper<OpeRegionalPriceSheet> opeRegionalPriceSheetQueryWrapper = new QueryWrapper<>();
-            opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_DR, 0);
-            opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_USER_ID, enter.getUserId());
-            if (StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode())) {
-                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_ASSEMBLY_ID, enter.getId());
-                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PRICE_TYPE, PriceTypeEnums.COMBINATION.getValue());
-            } else {
-                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PART_ID, enter.getId());
-                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PRICE_TYPE, PriceTypeEnums.COMBINATION.getValue());
-            }
-            List<OpeRegionalPriceSheet> regionalPriceSheetList = opeRegionalPriceSheetService.list(opeRegionalPriceSheetQueryWrapper);
-
-            List<OpeRegionalPriceSheetHistory> opeRegionalPriceSheetHistoryList = new ArrayList<>();
-            List<OpeRegionalPriceSheet> saveOrUpdateOpeRegionalPriceSheetList = new ArrayList<>();
-            // 第一次保存
-            if (CollectionUtils.isEmpty(regionalPriceSheetList)) {
-                savePrice(enter, regionalPriceSheetList, opeRegionalPriceSheetHistoryList, saveOrUpdateOpeRegionalPriceSheetList);
-            } else {
-                // 修改报价
-                regionalPriceSheetList.forEach(item -> {
-                    buildPrice(enter, regionalPriceSheetList, opeRegionalPriceSheetHistoryList, item, saveOrUpdateOpeRegionalPriceSheetList);
-                });
-            }
-            // 价格保存
-            if (CollectionUtils.isNotEmpty(saveOrUpdateOpeRegionalPriceSheetList)) {
-                opeRegionalPriceSheetService.saveOrUpdateBatch(saveOrUpdateOpeRegionalPriceSheetList);
-            }
-            // 节点保存
-            if (CollectionUtils.isNotEmpty(opeRegionalPriceSheetHistoryList)) {
-                opeRegionalPriceSheetHistoryService.saveBatch(opeRegionalPriceSheetHistoryList);
-            }
         }
+//        } else {
+//            // 货币单位校验
+//            checkUnit(enter);
+//            // 价格校验 确定是否为第一次插入
+//            QueryWrapper<OpeRegionalPriceSheet> opeRegionalPriceSheetQueryWrapper = new QueryWrapper<>();
+//            opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_DR, 0);
+//            opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_USER_ID, enter.getUserId());
+//            if (StringUtils.equals(enter.getPriceType(), ProductPriceTypeEnums.SCOOTER.getCode())) {
+//                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_ASSEMBLY_ID, enter.getId());
+//                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PRICE_TYPE, PriceTypeEnums.COMBINATION.getValue());
+//            } else {
+//                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PART_ID, enter.getId());
+//                opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PRICE_TYPE, PriceTypeEnums.COMBINATION.getValue());
+//            }
+//            List<OpeRegionalPriceSheet> regionalPriceSheetList = opeRegionalPriceSheetService.list(opeRegionalPriceSheetQueryWrapper);
+//
+//            List<OpeRegionalPriceSheetHistory> opeRegionalPriceSheetHistoryList = new ArrayList<>();
+//            List<OpeRegionalPriceSheet> saveOrUpdateOpeRegionalPriceSheetList = new ArrayList<>();
+//            // 第一次保存
+//            if (CollectionUtils.isEmpty(regionalPriceSheetList)) {
+//                savePrice(enter, regionalPriceSheetList, opeRegionalPriceSheetHistoryList, saveOrUpdateOpeRegionalPriceSheetList);
+//            } else {
+//                // 修改报价
+//                regionalPriceSheetList.forEach(item -> {
+//                    buildPrice(enter, regionalPriceSheetList, opeRegionalPriceSheetHistoryList, item, saveOrUpdateOpeRegionalPriceSheetList);
+//                });
+//            }
+//            // 价格保存
+//            if (CollectionUtils.isNotEmpty(saveOrUpdateOpeRegionalPriceSheetList)) {
+//                opeRegionalPriceSheetService.saveOrUpdateBatch(saveOrUpdateOpeRegionalPriceSheetList);
+//            }
+//            // 节点保存
+//            if (CollectionUtils.isNotEmpty(opeRegionalPriceSheetHistoryList)) {
+//                opeRegionalPriceSheetHistoryService.saveBatch(opeRegionalPriceSheetHistoryList);
+//            }
+//        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -275,7 +276,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
      * @return
      */
     @Override
-    public SccPriceResult productPriceDetail(SccPriceEnter enter) {
+    public SccPriceResult productPriceDetail(ScPriceEnter enter) {
         // 价格类型
         if (StringUtils.isBlank(ProductPriceTypeEnums.checkCode(enter.getPriceType()))) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());

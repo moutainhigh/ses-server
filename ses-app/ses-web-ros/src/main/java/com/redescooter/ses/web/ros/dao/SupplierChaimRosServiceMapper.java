@@ -3,11 +3,11 @@ package com.redescooter.ses.web.ros.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceChartResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceHistroyListEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult;
+import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
 
 import java.util.List;
 

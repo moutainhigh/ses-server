@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.supplierChaim;
+package com.redescooter.ses.web.ros.vo.bom.supplierChaim;
 
 import java.util.Date;
 

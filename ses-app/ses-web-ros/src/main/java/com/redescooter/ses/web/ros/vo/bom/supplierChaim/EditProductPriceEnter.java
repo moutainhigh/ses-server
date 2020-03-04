@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.supplierChaim;
+package com.redescooter.ses.web.ros.vo.bom.supplierChaim;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
