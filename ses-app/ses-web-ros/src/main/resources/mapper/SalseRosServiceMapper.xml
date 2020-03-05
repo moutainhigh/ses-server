@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.SalseRosServiceMapper">
+<mapper namespace="com.redescooter.ses.web.ros.dao.bom.SalseRosServiceMapper">
 
     <sql id="product_List">
-        select part.id                as id,
+        select part.id as id,
         part.cn_name as productCnName,
         part.en_name as productEnName,
         part.fr_name as productFrName,

@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service;
+package com.redescooter.ses.web.ros.service.bom;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;

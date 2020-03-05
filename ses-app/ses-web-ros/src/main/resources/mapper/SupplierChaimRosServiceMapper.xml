@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.SupplierChaimRosServiceMapper">
+<mapper namespace="com.redescooter.ses.web.ros.dao.bom.SupplierChaimRosServiceMapper">
 
     <sql id="where_SupplierChaimList">
         where part.dr = 0
@@ -92,6 +92,6 @@
         where histroy.dr=0
         and histroy.user_id=#{userId}
         and histroy.parts_id=#{id}
-        order by histroy.updated_time desc
+        order by histroy.created_time asc
     </select>
 </mapper>

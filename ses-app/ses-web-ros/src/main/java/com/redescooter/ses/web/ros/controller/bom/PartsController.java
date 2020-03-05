@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.controller.bom;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.web.ros.service.BomRosService;
-import com.redescooter.ses.web.ros.service.PartsRosService;
+import com.redescooter.ses.web.ros.service.bom.BomRosService;
+import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
 import io.swagger.annotations.Api;

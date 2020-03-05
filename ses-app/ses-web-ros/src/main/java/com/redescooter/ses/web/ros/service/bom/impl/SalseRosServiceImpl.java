@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.impl;
+package com.redescooter.ses.web.ros.service.bom.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
@@ -12,10 +12,10 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.SalseRosServiceMapper;
+import com.redescooter.ses.web.ros.dao.bom.SalseRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheet;
 import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory;
-import com.redescooter.ses.web.ros.service.SalseRosService;
+import com.redescooter.ses.web.ros.service.bom.SalseRosService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetService;
 import com.redescooter.ses.web.ros.vo.bom.sales.ProductListEnter;

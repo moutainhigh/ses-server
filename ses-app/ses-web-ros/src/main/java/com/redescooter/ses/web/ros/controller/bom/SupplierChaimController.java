@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.web.ros.service.SupplierChaimRosService;
+import com.redescooter.ses.web.ros.service.bom.SupplierChaimRosService;
 import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
 import com.redescooter.ses.web.ros.vo.bom.sales.PriceUnitResult;
 import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;

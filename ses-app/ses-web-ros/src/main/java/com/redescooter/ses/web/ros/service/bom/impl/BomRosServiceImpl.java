@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.impl;
+package com.redescooter.ses.web.ros.service.bom.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,13 +12,13 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.BomRosServiceMapper;
+import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.dm.OpePartsAssembly;
 import com.redescooter.ses.web.ros.dm.OpePartsAssemblyB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.BomRosService;
+import com.redescooter.ses.web.ros.service.bom.BomRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;

@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.dao;
+package com.redescooter.ses.web.ros.dao.bom;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;

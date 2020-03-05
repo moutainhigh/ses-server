@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.impl;
+package com.redescooter.ses.web.ros.service.bom.impl;
 
 import com.redescooter.ses.api.common.enums.supplier.SupplierEventEnum;
 import com.redescooter.ses.api.common.enums.supplier.SupplierStatusEnum;
@@ -13,7 +13,7 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.SupplierServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
 import com.redescooter.ses.web.ros.dm.OpeSupplierTrace;
-import com.redescooter.ses.web.ros.service.SupplierRosService;
+import com.redescooter.ses.web.ros.service.bom.SupplierRosService;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierTraceService;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierEditEnter;

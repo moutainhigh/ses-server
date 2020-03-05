@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.controller;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.web.ros.service.SupplierRosService;
+import com.redescooter.ses.web.ros.service.bom.SupplierRosService;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierEditEnter;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierPage;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierResult;

@@ -8,7 +8,7 @@ import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.ExcelService;
-import com.redescooter.ses.web.ros.service.PartsRosService;
+import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
