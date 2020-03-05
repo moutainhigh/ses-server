@@ -2,117 +2,105 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.SalseRosServiceMapper">
 
-    <sql id="product_List">
-        select part.id                as id,
-        part.cn_name as productCnName,
-        part.en_name as productEnName,
-        part.fr_name as productFrName,
-        part.parts_number as productN,
-        part.parts_type as type,
-        part.updated_time as refuseTime,
-        if(1 = 0, true, false) as productListDetail
-        from ope_parts part
-        where part.parts_type in ('Battery', 'Accessory')
-        and part.sn_class_flag = 1
-        and part.user_id=#{userId}
-        UNION ALL
-        select ass.id,
-        ass.cn_name as productCnName,
-        ass.en_name as productEnName,
-        ass.fr_name as productFrName,
-        ass.ass_number as productN,
-        if(ass.ass_type = 1, 'Scooter', 'Combination') as type,
-        ass.updated_time as refuseTime,
-        if(1 = 1, true, false) as productListDetail
-        from ope_parts_assembly ass
-        where ass.ass_type = 1
-        and ass.sn_class_flag = 1
-        and ass.user_id=#{userId}
+    <sql id="field_product">
+       opp.id,
+       opp.product_type,
+       opp.product_number,
+       opp.cn_name,
+       opp.fr_name,
+       opp.en_name,
+       opp.sum_parts_qty,
+       opp.model,
+       opp.pictures,
+       opp.color,
+       opp.after_sales_flag,
+       opp.added_services_flag,
+       opp.note,
+       opp.updated_time    as refuseTime,
+       orpsf.sales_price   as productFrPrice,
+       orpsf.currency_unit as productFrUnit,
+       orpse.sales_price   as productEnPrice,
+       orpse.currency_unit as productEnUnit
+    </sql>
+    <sql id="join_productList">
+         left join ope_regional_price_sheet orpsf on opp.id = orpsf.parts_product_id and orpsf.currency_type = 'FR' and orpsf.dr=0
+         left join ope_regional_price_sheet orpse on opp.id = orpse.parts_product_id and orpse.currency_type = 'EN' and orpse.dr=0
+    </sql>
+    <sql id="where_productList">
+        <where>
+            and opp.dr=0
+            and opp.user_id=#{userId}
+            <if test="type != null and type != ''">
+                and opp.product_type =#{type}
+            </if>
+            <if test="refuseStartTime != null and refuseEndTime != null">
+                and opp.updated_time between #{refuseStartTime} and #{refuseEndTime}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                opp.cn_name like concat('%',#{keyword},'%')
+                or opp.fr_name like concat('%',#{keyword},'%')
+                or opp.en_name like concat('%',#{keyword},'%')
+                or opp.product_number like concat('%',#{keyword},'%')
+                )
+            </if>
+        </where>
     </sql>
 
-    <sql id="where_AfterSaleList">
-        select part.id                as id,
-        part.cn_name as productCnName,
-        part.en_name as productEnName,
-        part.fr_name as productFrName,
-        part.parts_number as productN,
-        part.parts_type as type,
-        part.updated_time as refuseTime,
-        if(1 = 0, true, false) as productListDetail
-        from ope_parts part
-        where part.parts_type ='Parts'
-        and part.sn_class_flag = 1
-        and part.user_id=#{userId}
-        UNION ALL
-        select ass.id,
-        ass.cn_name as productCnName,
-        ass.en_name as productEnName,
-        ass.fr_name as productFrName,
-        ass.ass_number as productN,
-        if(ass.ass_type = 1, 'Scooter', 'Combination') as type,
-        ass.updated_time as refuseTime,
-        if(1 = 1, true, false) as productListDetail
-        from ope_parts_assembly ass
-        where ass.ass_type = 2
-        and ass.sn_class_flag = 1
-        and ass.user_id=#{userId}
-
-    </sql>
-
-    <sql id="where_ProductList">
-        where 1=1
-        <if test="type != null and type != ''">
-            and a.type=#{type}
-        </if>
-        <if test="refuseStartTime != null and refuseEndTime != null">
-            and a.refuseTime between #{refuseStartTime} and #{refuseEndTime}
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            a.productCnName like concat('%',#{keyword},'%')
-            or a.productEnName like concat('%',#{keyword},'%')
-            or a.productFrName like concat('%',#{keyword},'%')
-            or a.productN like concat('%',#{keyword},'%')
-            )
-        </if>
-        order by a.refuseTime desc
+    <sql id="where_afterSaleList">
+        <where>
+            and opp.dr=0
+            and opp.user_id=#{userId}
+            and opp.after_sales_flag= true
+            <if test="type != null and type != ''">
+                and opp.product_type =#{type}
+            </if>
+            <if test="refuseStartTime != null and refuseEndTime != null">
+                and opp.updated_time between #{refuseStartTime} and #{refuseEndTime}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                opp.cn_name like concat('%',#{keyword},'%')
+                or opp.fr_name like concat('%',#{keyword},'%')
+                or opp.en_name like concat('%',#{keyword},'%')
+                or opp.product_number like concat('%',#{keyword},'%')
+                )
+            </if>
+        </where>
     </sql>
 
     <select id="productListCount" resultType="java.lang.Integer">
         select count(*)
-        from (<include refid="product_List"/>) a
-        <include refid="where_ProductList"></include>
+        from ope_parts_product opp
+        <include refid="join_productList"/>
+        <include refid="where_productList"/>
+        order by opp.updated_time desc
     </select>
 
     <select id="productList" resultType="com.redescooter.ses.web.ros.vo.sales.ProductListResult">
-        select a.*
-        from (<include refid="product_List"/>) a
-        <include refid="where_ProductList"></include>
+        select
+        <include refid="field_product"/>
+        from ope_parts_product opp
+        <include refid="join_productList"/>
+        <include refid="where_productList"/>
+        order by opp.updated_time desc
         limit #{startRow},#{pageSize}
-    </select>
-
-    <select id="productCount" resultType="java.lang.Integer">
-        select count(*)
-        from (<include refid="product_List"/>) a
-        <include refid="where_ProductList"></include>
-    </select>
-
-    <select id="afterSaleCount" resultType="java.lang.Integer">
-        select count(*)
-        from (<include refid="where_AfterSaleList"/>) a
-        <include refid="where_AfterSaleList"></include>
     </select>
 
     <select id="afterSaleListCount" resultType="java.lang.Integer">
         select count(*)
-        from (<include refid="where_AfterSaleList"/>) a
-        <include refid="where_ProductList"></include>
+        from ope_parts_product opp
+        <include refid="join_productList"/>
+        <include refid="where_afterSaleList"/>
     </select>
 
     <select id="afterSaleList" resultType="com.redescooter.ses.web.ros.vo.sales.ProductListResult">
-        select a.*
-        from (<include refid="where_AfterSaleList"/>) a
-        <include refid="where_ProductList"></include>
+        select
+        <include refid="field_product"/>
+        from ope_parts_product opp
+        <include refid="join_productList"/>
+        <include refid="where_afterSaleList"/>
+        order by opp.updated_time desc
         limit #{startRow},#{pageSize}
     </select>
 </mapper>

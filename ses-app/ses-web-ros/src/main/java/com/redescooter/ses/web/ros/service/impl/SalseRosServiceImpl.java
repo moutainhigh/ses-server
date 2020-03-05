@@ -47,13 +47,13 @@ public class SalseRosServiceImpl implements SalseRosService {
      */
     @Override
     public Map<String, Integer> countByServiceType(GeneralEnter enter) {
-        Map<String,Integer> map=new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
         // 产品数量
-        map.put("product",salseRosServiceMapper.productCount(enter));
+        map.put("product", 0);
         // 售后产品数量
-        map.put("afterSale",salseRosServiceMapper.afterSaleCount(enter));
+        map.put("afterSale", 0);
         // 增值服务数量
-        map.put("service",0);
+        map.put("service", 0);
         return map;
     }
 
@@ -68,11 +68,11 @@ public class SalseRosServiceImpl implements SalseRosService {
      */
     @Override
     public PageResult<ProductListResult> productList(ProductListEnter enter) {
-        int count=salseRosServiceMapper.productListCount(enter);
+        int count = salseRosServiceMapper.productListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter,count,salseRosServiceMapper.productList(enter));
+        return PageResult.create(enter, count, salseRosServiceMapper.productList(enter));
     }
 
     /**
