@@ -35,7 +35,9 @@
                 and (op.cn_name like concat("%",#{keyword},"%")
                 or op.en_name like concat("%",#{keyword},"%")
                 or op.fr_name like concat("%",#{keyword},"%")
-                or os.supplier_name like concat("%",#{keyword},"%"))
+                or os.supplier_name like concat("%",#{keyword},"%")
+                or op.parts_number LIKE CONCAT("%",#{keyword},"%")
+                )
             </if>
         </where>
     </sql>
