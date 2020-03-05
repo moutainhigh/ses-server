@@ -417,6 +417,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         parts.setSupplierId(enter.getSupplierId());
         parts.setDwg(enter.getDwg());
         parts.setNote(enter.getNote());
+        parts.setSynchronizeFlag(Boolean.FALSE);
         parts.setRevision(0);
         parts.setUpdatedBy(userId);
         parts.setUpdatedTime(new Date());

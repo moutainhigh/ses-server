@@ -2,28 +2,48 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.BomRosServiceMapper">
 
+    <sql id="field_partList">
+        opp.id as id,
+        opp.ass_number as productN,
+        opp.en_name as productEnName,
+        opp.fr_name as productFrName,
+        opp.cn_name as productCnName,
+        opp.in_qty as qty,
+        opp.production_cycle as productionCycle
+    </sql>
+
+    <sql id="field_combinationList">
+       opp.id                                 as id,
+       opp.product_type                       as productN,
+       opp.fr_name                            as productFrName,
+       opp.en_name                            as productEnName,
+       opp.cn_name                            as productCnName,
+       ifnull(opp.sum_parts_qty, 0)           as qty,
+       if(opp.sum_parts_qty = 0, false, true) as partList
+    </sql>
+
     <sql id="where_combinationList">
-        where ass.dr = 0
-        and ass.ass_type = 2
-        and ass.user_id=#{userId}
+        where opp.dr = 0
+        and opp.product_type = 2
+        and opp.user_id=#{userId}
         <if test="keyword != null and keyword != ''">
-            and (ass.ass_number like concat('%',#{keyword},'%')
-            or ass.en_name like concat('%',#{keyword},'%')
-            or ass.cn_name like concat('%',#{keyword},'%')
-            or ass.fr_name like concat('%',#{keyword},'%')
+            and (opp.product_number like concat('%',#{keyword},'%')
+            or opp.en_name like concat('%',#{keyword},'%')
+            or opp.cn_name like concat('%',#{keyword},'%')
+            or opp.fr_name like concat('%',#{keyword},'%')
             )
         </if>
     </sql>
 
     <sql id="where_ScooterList">
-        where ass.dr = 0
-        and ass.user_id=#{userId}
-        and ass.ass_type=1
+        where opp.dr = 0
+        and opp.user_id=#{userId}
+        and opp.product_type=1
         <if test="keyword != null and keyword != ''">
-            and (ass.cn_name like concat('%',#{keyword},'%')
-            or ass.fr_name like concat('%',#{keyword},'%')
-            or ass.en_name like concat('%',#{keyword},'%')
-            or ass.ass_number like concat('%',#{keyword},'%')
+            and (opp.cn_name like concat('%',#{keyword},'%')
+            or opp.fr_name like concat('%',#{keyword},'%')
+            or opp.en_name like concat('%',#{keyword},'%')
+            or opp.product_number like concat('%',#{keyword},'%')
             )
         </if>
     </sql>
@@ -47,20 +67,15 @@
 
     <select id="scooterListCount" resultType="java.lang.Integer">
         select count(*)
-        from ope_parts_assembly ass
+        from ope_parts_product opp
         <include refid="where_ScooterList"/>
     </select>
     <select id="scooterList" resultType="com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult">
-        select ass.id as id,
-        ass.ass_number as productN,
-        ass.en_name as productEnName,
-        ass.fr_name as productFrName,
-        ass.cn_name as productCnName,
-        ass.in_qty as qty,
-        ass.production_cycle as productionCycle
-        from ope_parts_assembly ass
+        select
+        <include refid="field_partList"/>
+        from ope_parts_product opp
         <include refid="where_ScooterList"/>
-        order by ass.created_time desc
+        order by opp.created_time desc
         limit #{startRow},#{pageSize}
     </select>
     <select id="UsingProductNumList" resultType="java.lang.String">
@@ -121,21 +136,16 @@
     </select>
     <select id="combinationListCount" resultType="int">
         select count(*)
-        from ope_parts_assembly ass
+        from ope_parts_product opp
         <include refid="where_combinationList"></include>
     </select>
     <select id="combinationList"
             resultType="com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult">
-        select ass.id as id,
-        ass.ass_number as productN,
-        ass.fr_name as productFrName,
-        ass.en_name as productEnName,
-        ass.cn_name as productCnName,
-        ifnull(ass.in_qty, 0) as qty,
-        if(in_qty = 0, false, true) as partList
-        from ope_parts_assembly ass
-        <include refid="where_combinationList"></include>
-        order by ass.created_time desc
+        select
+        <include refid="field_combinationList"/>
+        from ope_parts_product opp
+        <include refid="where_combinationList"/>
+        order by opp.created_time desc
         limit #{startRow},#{pageSize}
     </select>
 </mapper>
