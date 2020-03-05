@@ -3,9 +3,7 @@ package com.redescooter.ses.web.ros.collectionUtilsTest;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -30,12 +28,11 @@ public class CollectionUtilTest {
         productN.add("a");
         productN.add("b");
         productN.add("a");
-        Iterator<String> iterator = productN.iterator();
-        while (iterator.hasNext()) {
-            System.out.println(iterator.next());
-        }
-
-        new ArrayList<>(productN).forEach(item -> {
+//        Iterator<String> iterator = productN.iterator();
+//        while (iterator.hasNext()) {
+//            System.out.println(iterator.next());
+//        }
+        productN.forEach(item -> {
             System.out.println(item);
         });
     }

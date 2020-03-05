@@ -50,8 +50,8 @@ public class PartsController {
     }
 
     @PostMapping(value = "/iterations")
-    @ApiOperation(value = "部品号迭代", response = AddPartsEnter.class)
-    public Response<GeneralResult> iterations(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+    @ApiOperation(value = "部品号迭代", response = DetailsPartsResult.class)
+    public Response<List<DetailsPartsResult>> iterations(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(partsRosService.iterations(enter));
     }
 

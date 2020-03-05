@@ -1,10 +1,20 @@
 package com.redescooter.ses.web.ros.service.bom;
 
-import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.web.ros.vo.bom.parts.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.MapResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
+import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName:BomRosService
@@ -61,7 +71,7 @@ public interface PartsRosService {
      * @param enter
      * @return
      */
-    GeneralResult iterations(StringEnter enter);
+    List<DetailsPartsResult> iterations(StringEnter enter);
 
     /**
      * 批量删除

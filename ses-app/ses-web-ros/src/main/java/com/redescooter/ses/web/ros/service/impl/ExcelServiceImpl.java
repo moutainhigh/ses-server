@@ -2,14 +2,13 @@ package com.redescooter.ses.web.ros.service.impl;
 
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
-import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.ExcelService;
-import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
+import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
@@ -46,6 +45,9 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Autowired
     private OpePartsService partsService;
+
+    @Autowired
+    private BomRosServiceMapper bomRosServiceMapper;
 
     @Override
     public ImportExcelPartsResult readExcelDataByParts(ImportPartsEnter enter) {
@@ -99,11 +101,13 @@ public class ExcelServiceImpl implements ExcelService {
         }
 
         //2.判断与数据库中是否有已存在的产品编号
-        QueryWrapper<OpeParts> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(OpeParts.COL_DR, 0);
-        queryWrapper.in(OpeParts.COL_PARTS_NUMBER, new ArrayList<>(productNSet));
-        if (partsService.count(queryWrapper) > 0) {
-            throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_EXIST.getCode(), ExceptionCodeEnums.PARTS_NUMBER_EXIST.getMessage());
+        List<String> usingProductNumList = bomRosServiceMapper.UsingProductNumList(enter);
+        if (CollectionUtils.isNotEmpty(usingProductNumList)) {
+            productNSet.forEach(item -> {
+                if (usingProductNumList.contains(item)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_EXIST.getCode(), ExceptionCodeEnums.PARTS_NUMBER_EXIST.getMessage());
+                }
+            });
         }
         return partsRosService.savePartsList(successList, enter);
     }

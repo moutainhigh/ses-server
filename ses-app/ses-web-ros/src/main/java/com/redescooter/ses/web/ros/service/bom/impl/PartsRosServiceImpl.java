@@ -2,8 +2,17 @@ package com.redescooter.ses.web.ros.service.bom.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.bom.*;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.enums.bom.BomAssTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
+import com.redescooter.ses.api.common.enums.bom.BomTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.PartsEventEnums;
+import com.redescooter.ses.api.common.enums.bom.SNClassEnums;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.MapResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
@@ -16,13 +25,23 @@ import com.redescooter.ses.web.ros.dm.OpePartsType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.ExcelService;
-import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyService;
 import com.redescooter.ses.web.ros.service.base.OpePartsHistoryRecordService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.service.base.OpePartsTypeService;
-import com.redescooter.ses.web.ros.vo.bom.parts.*;
+import com.redescooter.ses.web.ros.service.bom.PartsRosService;
+import com.redescooter.ses.web.ros.vo.bom.parts.AddPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.EditSavePartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
+import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto;
+import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -30,7 +49,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @ClassName PartsRosServiceImpl
@@ -195,7 +219,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Transient
     @Override
-    public GeneralResult iterations(StringEnter enter) {
+    public List<DetailsPartsResult> iterations(StringEnter enter) {
 
         List<AddPartsEnter> enters = null;
         try {
@@ -206,6 +230,10 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         List<OpeParts> update = new ArrayList<>();
         List<OpePartsHistoryRecord> instersHistory = new ArrayList<>();
+
+
+        DetailsPartsResult detailsPartsResult = new DetailsPartsResult();
+        List<DetailsPartsResult> result = new ArrayList<>();
 
         //判断是否进行部品号的迭代
         if (enters.size() > 0) {
@@ -227,6 +255,30 @@ public class PartsRosServiceImpl implements PartsRosService {
                     news.setUpdatedTime(new Date());
                     update.add(news);
                     instersHistory.add(createPartsHistory(oloPid, PartsEventEnums.ADD.getValue(), enter.getUserId()));
+
+
+                    // 查询历史的订单编号
+                    QueryWrapper<OpePartsHistoryRecord> opePartsHistoryRecordQueryWrapper = new QueryWrapper<>();
+                    opePartsHistoryRecordQueryWrapper.eq(OpePartsHistoryRecord.COL_PARTS_ID, news.getId());
+                    opePartsHistoryRecordQueryWrapper.eq(OpePartsHistoryRecord.COL_DR, 0);
+
+                    List<OpePartsHistoryRecord> opePartsHistoryRecordList = partsHistoryRecordService.list(opePartsHistoryRecordQueryWrapper);
+                    if (CollectionUtils.isEmpty(opePartsHistoryRecordList)) {
+                        opePartsHistoryRecordList = new ArrayList<>();
+                    }
+                    opePartsHistoryRecordList.addAll(instersHistory);
+                    List<HistoryPartsDto> historyPartsDtoList = new ArrayList<>();
+                    opePartsHistoryRecordList.forEach(item -> {
+                        historyPartsDtoList.add(HistoryPartsDto.builder()
+                                .id(item.getId())
+                                .createdTime(item.getCreatedTime())
+                                .partsNumber(item.getPartsNumber())
+                                .build());
+                    });
+                    detailsPartsResult.setId(news.getId());
+                    detailsPartsResult.setPartsNumber(news.getPartsNumber());
+                    detailsPartsResult.setHistoryHist(historyPartsDtoList);
+                    result.add(detailsPartsResult);
                 });
             });
         }
@@ -235,7 +287,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             partsHistoryRecordService.saveBatch(instersHistory);
         }
 
-        return new GeneralResult(enter.getRequestId());
+        return result;
     }
 
     @Transient
