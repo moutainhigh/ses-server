@@ -4,11 +4,11 @@
 
     <sql id="field_partList">
         opp.id as id,
-        opp.ass_number as productN,
+        opp.product_number as productN,
         opp.en_name as productEnName,
         opp.fr_name as productFrName,
         opp.cn_name as productCnName,
-        opp.in_qty as qty,
+        opp.sum_parts_qty as qty,
         opp.production_cycle as productionCycle
     </sql>
 
@@ -24,7 +24,7 @@
 
     <sql id="where_combinationList">
         where opp.dr = 0
-        and opp.product_type = 2
+        and opp.product_type = 5
         and opp.user_id=#{userId}
         <if test="keyword != null and keyword != ''">
             and (opp.product_number like concat('%',#{keyword},'%')
@@ -38,7 +38,7 @@
     <sql id="where_ScooterList">
         where opp.dr = 0
         and opp.user_id=#{userId}
-        and opp.product_type=1
+        and opp.product_type=4
         <if test="keyword != null and keyword != ''">
             and (opp.cn_name like concat('%',#{keyword},'%')
             or opp.fr_name like concat('%',#{keyword},'%')
@@ -46,23 +46,6 @@
             or opp.product_number like concat('%',#{keyword},'%')
             )
         </if>
-    </sql>
-
-    <sql id="where_PartList">
-        <where>
-            and user_id=#{userId}
-            and parts.dr = 0
-            <if test="sec != null and sec != ''">
-                and parts.sec = #{sec}
-            </if>
-            <if test="keyword != null and keyword != ''">
-                and (
-                parts.parts_number like concat('%',#{keyword},'%')
-                or parts.en_name like concat('%',#{keyword},'%')
-                or parts.cn_name like concat('%',#{keyword},'%')
-                )
-            </if>
-        </where>
     </sql>
 
     <select id="scooterListCount" resultType="java.lang.Integer">
@@ -86,10 +69,10 @@
                  where parts.dr=0
                  and  parts.user_id=#{userId}
         union all
-                 select ass.ass_number as productN
-                 from ope_parts_assembly ass
-                 where ass.dr=0
-                 and  ass.user_id=#{userId}
+                 select opp.product_number as productN
+                 from ope_parts_product opp
+                 where opp.dr=0
+                 and  opp.user_id=#{userId}
              ) productN
     </select>
     <select id="secList" resultType="com.redescooter.ses.web.ros.vo.bom.SecResult">
@@ -100,45 +83,14 @@
         from ope_parts_sec sec
         where sec.dr = 0
     </select>
-    <select id="partListCount" resultType="java.lang.Integer">
-        select count(*)
-        from ope_parts parts
-        <include refid="where_PartList"/>
-    </select>
-    <select id="partList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
-        select parts.id as id,
-        parts.parts_number as partsN,
-        parts.sec as sec,
-        parts.en_name as enName,
-        parts.cn_name as cnName,
-        parts.fr_name as frName,
-        ifnull(parts.production_cycle, 0) as productionCycle
-        from ope_parts parts
-        <include refid="where_PartList"></include>
-        order by parts.created_time desc
-        limit #{startRow},#{pageSize}
-    </select>
-    <select id="productDeatilPartList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
-        select
-        ass.id as id,
-        parts.id as pratsId,
-        parts.parts_number as partsNumber,
-        parts.sec as sec,
-        parts.en_name as enName,
-        parts.cn_name as cnName,
-        parts.fr_name as frName,
-        ifnull(parts.production_cycle, 0) as productionCycle,
-        ass.parts_qty as qty
-        from ope_parts_assembly_b ass
-        inner join ope_parts parts on ass.parts_id = parts.id and parts.dr = 0
-        where ass.dr = 0
-        and ass.parts_assembly_id =#{id}
-    </select>
+
+
     <select id="combinationListCount" resultType="int">
         select count(*)
         from ope_parts_product opp
         <include refid="where_combinationList"></include>
     </select>
+
     <select id="combinationList"
             resultType="com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult">
         select
@@ -148,4 +100,23 @@
         order by opp.created_time desc
         limit #{startRow},#{pageSize}
     </select>
+
+    <select id="productDeatilPartList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
+        select
+        oppb.id as id,
+        parts.id as pratsId,
+        parts.parts_number as partsNumber,
+        parts.sec as sec,
+        parts.en_name as enName,
+        parts.cn_name as cnName,
+        parts.fr_name as frName,
+        ifnull(parts.production_cycle, 0) as productionCycle,
+        oppb.parts_qty as qty
+        from ope_parts_product_b oppb
+        inner join ope_parts parts on oppb.parts_id = parts.id and parts.dr = 0
+        where oppb.dr = 0
+        and oppb.parts_product_id =#{id}
+        and oppb.user_id=#{userId}
+    </select>
+
 </mapper>

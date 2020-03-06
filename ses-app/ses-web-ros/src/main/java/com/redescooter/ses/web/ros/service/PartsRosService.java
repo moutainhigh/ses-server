@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.service;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
 
 import java.util.List;
@@ -102,5 +104,15 @@ public interface PartsRosService {
      * @return
      */
     GeneralResult partsSynchronize(GeneralEnter enter);
+
+    /**
+     * @desc: 详情部件列表查询
+     * @param: SaveScooterPartListEnter
+     * @retrn: SaveScooterPartListResult
+     * @auther: alex
+     * @date: 2020/2/25 12:43
+     * @Version: Ros 1.2
+     */
+    PageResult<QueryPartListResult> partList(QueryPartListEnter enter);
 
 }

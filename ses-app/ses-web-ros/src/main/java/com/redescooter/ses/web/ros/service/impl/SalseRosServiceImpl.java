@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import com.redescooter.ses.api.common.enums.bom.BomTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -129,8 +129,8 @@ public class SalseRosServiceImpl implements SalseRosService {
     @Override
     public List<String> productTypeList(GeneralEnter enter) {
         List<String> result = new ArrayList<>();
-        for (BomTypeEnums item : BomTypeEnums.values()) {
-            if (!StringUtils.equals(item.getCode(), BomTypeEnums.PARTS.getCode())) {
+        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
+            if (!StringUtils.equals(item.getCode(), BomCommonTypeEnums.PARTS.getCode())) {
                 result.add(item.getCode());
             }
         }

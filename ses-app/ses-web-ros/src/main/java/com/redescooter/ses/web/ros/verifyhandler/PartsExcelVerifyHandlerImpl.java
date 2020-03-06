@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.verifyhandler;
 
-import com.redescooter.ses.api.common.enums.bom.BomTypeEnums;
-import com.redescooter.ses.api.common.enums.bom.SNClassEnums;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -41,12 +41,12 @@ public class PartsExcelVerifyHandlerImpl implements IExcelVerifyHandler<ExpressP
             builder.append(ExpressPartsExcleData.TYPE + ",This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
-        if (StringUtils.isEmpty(BomTypeEnums.checkCode(obj.getType()))) {
+        if (StringUtils.isEmpty(BomCommonTypeEnums.checkCode(obj.getType()))) {
             builder.append(ExpressPartsExcleData.TYPE + ",Invalid input, please check;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
 
-        if (StringUtils.isEmpty(SNClassEnums.checkCode(obj.getSnClass()))) {
+        if (StringUtils.isEmpty(BomSnClassEnums.checkCode(obj.getSnClass()))) {
             builder.append(ExpressPartsExcleData.SN_CLASS + ",Invalid input, please check;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }

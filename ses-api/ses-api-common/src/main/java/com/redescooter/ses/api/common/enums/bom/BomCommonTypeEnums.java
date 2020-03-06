@@ -5,19 +5,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName:BomServiceTypeEnums
- * @description: BomServiceTypeEnums
+ * @ClassName:BomTypeEnums
+ * @description: BomCommonTypeEnums
  * @author: Alex
  * @Version：1.3
- * @create: 2020/02/26 16:12
+ * @create: 2020/02/26 14:21
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum BomAssTypeEnums {
+public enum BomCommonTypeEnums {
 
-    SCOOTER("SCOOTER","整车","1"),
-    COMBINATION("COMBINATION","组合","2");
+    /********BOM及产品通用使用********/
+    PARTS("Parts", "零部件", "1"),
+    ACCESSORY("Accessory", "配件", "2"),
+    BATTERY("Battery", "电池", "3"),
+
+    /********产品创建时使用********/
+    SCOOTER("Scooter", "整车", "4"),
+    COMBINATION("COMBINATION", "组合", "5");
 
     private String code;
 
@@ -26,12 +32,13 @@ public enum BomAssTypeEnums {
     private String value;
 
     public static String checkCode(String code) {
-        for (BomAssTypeEnums item : BomAssTypeEnums.values()) {
+        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
             if (item.getCode().equals(code)) {
                 return item.getCode();
             }
         }
         return null;
     }
+
 
 }

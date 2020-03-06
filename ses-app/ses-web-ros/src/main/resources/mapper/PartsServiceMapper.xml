@@ -21,6 +21,24 @@
        op.updated_time,
        os.supplier_name
     </sql>
+
+    <sql id="where_PartList">
+        <where>
+            and user_id=#{userId}
+            and parts.dr = 0
+            <if test="sec != null and sec != ''">
+                and parts.sec = #{sec}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                parts.parts_number like concat('%',#{keyword},'%')
+                or parts.en_name like concat('%',#{keyword},'%')
+                or parts.cn_name like concat('%',#{keyword},'%')
+                )
+            </if>
+        </where>
+    </sql>
+
     <sql id="where_query_parts_list">
         <where>
             and op.dr = 0
@@ -90,5 +108,25 @@
        and parts_id =#{partsId}
        and user_id =#{userId}
     order by created_time desc
+    </select>
+
+    <select id="partListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_parts parts
+        <include refid="where_PartList"/>
+    </select>
+
+    <select id="partList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
+        select parts.id as id,
+        parts.parts_number as partsN,
+        parts.sec as sec,
+        parts.en_name as enName,
+        parts.cn_name as cnName,
+        parts.fr_name as frName,
+        ifnull(parts.production_cycle, 0) as productionCycle
+        from ope_parts parts
+        <include refid="where_PartList"></include>
+        order by parts.created_time desc
+        limit #{startRow},#{pageSize}
     </select>
 </mapper>

@@ -2,7 +2,8 @@ package com.redescooter.ses.web.ros.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.bom.BomAssTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.PartsEventEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -119,13 +120,15 @@ public class BomRosServiceImpl implements BomRosService {
                 .tenantId(0L)
                 .userId(enter.getUserId())
                 .status(BomStatusEnums.NORMAL.getValue())
+                .snClass(BomSnClassEnums.SSC.getValue())
                 .productNumber(enter.getProductN())
                 .cnName(enter.getProductName())
                 .frName(enter.getProductName())
                 .enName(enter.getProductName())
                 .productionCycle(enter.getProcurementCycle())
-                .productType(Integer.valueOf(BomAssTypeEnums.SCOOTER.getValue()))
+                .productType(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))
                 .note(null)
+                .afterSalesFlag(Boolean.TRUE)
                 .revision(0)
                 .build();
 
@@ -209,24 +212,6 @@ public class BomRosServiceImpl implements BomRosService {
 
     /**
      * @param enter
-     * @desc: 详情部件列表查询
-     * @param: SaveScooterPartListEnter
-     * @retrn: SaveScooterPartListResult
-     * @auther: alex
-     * @date: 2020/2/25 12:43
-     * @Version: Ros 1.2
-     */
-    @Override
-    public PageResult<QueryPartListResult> partList(QueryPartListEnter enter) {
-        int count = bomRosServiceMapper.partListCount(enter);
-        if (count == 0) {
-            return PageResult.createZeroRowResult(enter);
-        }
-        return PageResult.create(enter, count, bomRosServiceMapper.partList(enter));
-    }
-
-    /**
-     * @param enter
      * @desc: 整车详情
      * @param: enter
      * @retrn: ScooterDetailResult
@@ -240,7 +225,7 @@ public class BomRosServiceImpl implements BomRosService {
         if (scooter == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        List<QueryPartListResult> partList = bomRosServiceMapper.productDeatilPartList(enter.getId());
+        List<QueryPartListResult> partList = bomRosServiceMapper.productDeatilPartList(enter);
         ScooterDetailResult scooterDetailResult = ScooterDetailResult.builder()
                 .id(scooter.getId())
                 .productN(scooter.getProductNumber())
@@ -278,7 +263,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(scooter.getProductType().toString(), BomAssTypeEnums.SCOOTER.getValue())) {
+        if (!StringUtils.equals(scooter.getProductType().toString(), BomCommonTypeEnums.SCOOTER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 进行 产品条目数据过滤
@@ -307,7 +292,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(scooter.getProductType().toString(), BomAssTypeEnums.SCOOTER.getValue())) {
+        if (!StringUtils.equals(scooter.getProductType().toString(), BomCommonTypeEnums.SCOOTER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
@@ -359,10 +344,10 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(scooter.getProductType().toString(), BomAssTypeEnums.COMBINATION.getValue())) {
+        if (!StringUtils.equals(scooter.getProductType().toString(), BomCommonTypeEnums.COMBINATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        return bomRosServiceMapper.productDeatilPartList(enter.getId());
+        return bomRosServiceMapper.productDeatilPartList(enter);
     }
 
     /**
@@ -380,7 +365,7 @@ public class BomRosServiceImpl implements BomRosService {
         if (combination == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        List<QueryPartListResult> partList = bomRosServiceMapper.productDeatilPartList(enter.getId());
+        List<QueryPartListResult> partList = bomRosServiceMapper.productDeatilPartList(enter);
         CombinationDetailResult combinationDetailResult = CombinationDetailResult.builder()
                 .id(combination.getId())
                 .productN(combination.getProductNumber())
@@ -415,7 +400,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(combinationPart.getProductType().toString(), BomAssTypeEnums.COMBINATION.getValue())) {
+        if (!StringUtils.equals(combinationPart.getProductType().toString(), BomCommonTypeEnums.COMBINATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 进行 产品条目数据过滤
@@ -443,7 +428,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(combination.getProductType().toString(), BomAssTypeEnums.COMBINATION.getValue())) {
+        if (!StringUtils.equals(combination.getProductType().toString(), BomCommonTypeEnums.COMBINATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
@@ -497,14 +482,16 @@ public class BomRosServiceImpl implements BomRosService {
                 .dr(0)
                 .tenantId(0L)
                 .userId(enter.getUserId())
+                .snClass(BomSnClassEnums.SSC.getValue())
                 .status(BomStatusEnums.NORMAL.getValue())
                 .productNumber(enter.getProductN())
                 .cnName(enter.getProductCnName())
                 .frName(enter.getProductFrName())
                 .enName(enter.getProductEnName())
                 .productionCycle(null)
-                .productType(Integer.valueOf(BomAssTypeEnums.COMBINATION.getValue()))
+                .productType(Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()))
                 .note(null)
+                .afterSalesFlag(Boolean.TRUE)
                 .revision(0)
                 .build();
 
@@ -533,7 +520,6 @@ public class BomRosServiceImpl implements BomRosService {
             opePartsProduct.setCreatedBy(enter.getUserId());
             opePartsProduct.setCreatedTime(new Date());
         } else {
-            // 修改
             // 修改
             OpePartsProduct partsProduct = opePartsProductService.getById(enter.getId());
             if (partsProduct == null) {
@@ -602,7 +588,10 @@ public class BomRosServiceImpl implements BomRosService {
         // 删除数据时验证
         if (StringUtils.equals(event, PartsEventEnums.DELETE.getValue())) {
             // 查询整车配件
-            List<QueryPartListResult> productPartList = bomRosServiceMapper.productDeatilPartList(productId);
+            IdEnter idEnter = new IdEnter();
+            idEnter.setId(productId);
+            idEnter.setUserId(userId);
+            List<QueryPartListResult> productPartList = bomRosServiceMapper.productDeatilPartList(idEnter);
             if (CollectionUtils.isEmpty(productPartList)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_HAS_NO_PARTS.getCode(), ExceptionCodeEnums.PRODUCT_HAS_NO_PARTS.getMessage());
             }

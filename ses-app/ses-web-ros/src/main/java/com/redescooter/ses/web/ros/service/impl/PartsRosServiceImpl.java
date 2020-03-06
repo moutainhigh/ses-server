@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.service.impl;
 
 import java.util.Date;
 
-import cn.hutool.json.JSONString;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.*;
@@ -18,6 +17,8 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.ExcelService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -75,13 +76,13 @@ public class PartsRosServiceImpl implements PartsRosService {
         QueryWrapper<OpePartsProduct> scooter = new QueryWrapper<>();
         scooter.eq(OpePartsProduct.COL_DR, 0);
         scooter.eq(OpePartsProduct.COL_USER_ID, enter.getUserId());
-        scooter.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomAssTypeEnums.SCOOTER.getValue());
+        scooter.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.SCOOTER.getValue());
         int scooterConut = partsProductService.count(scooter);
 
         QueryWrapper<OpePartsProduct> combination = new QueryWrapper<>();
         combination.eq(OpePartsProduct.COL_DR, 0);
         combination.eq(OpePartsProduct.COL_USER_ID, enter.getUserId());
-        combination.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomAssTypeEnums.COMBINATION.getValue());
+        combination.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.COMBINATION.getValue());
         int combinationConut = partsProductService.count(combination);
 
         Map<String, Integer> map = new HashMap<>();
@@ -128,8 +129,8 @@ public class PartsRosServiceImpl implements PartsRosService {
             EditSavePartsEnter saveParts = new EditSavePartsEnter();
             saveParts.setPartsNumber(excleData.getPartsN());
             saveParts.setSec(ESCUtils.checkESC(excleData.getEsc()));
-            saveParts.setPartsType(BomTypeEnums.checkCode(excleData.getType()));
-            saveParts.setSnClassFlag(SNClassEnums.getValueByCode(excleData.getSnClass()));
+            saveParts.setPartsType(BomCommonTypeEnums.checkCode(excleData.getType()));
+            saveParts.setSnClassFlag(BomSnClassEnums.getValueByCode(excleData.getSnClass()));
             saveParts.setCnName(excleData.getCnName());
             saveParts.setFrName(excleData.getFrName());
             saveParts.setEnName(excleData.getEnName());
@@ -361,6 +362,15 @@ public class PartsRosServiceImpl implements PartsRosService {
         return null;
     }
 
+    @Override
+    public PageResult<QueryPartListResult> partList(QueryPartListEnter enter) {
+        int count = partsServiceMapper.partListCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter, count, partsServiceMapper.partList(enter));
+    }
+
     private OpePartsHistoryRecord createPartsHistory(OpeParts parts, String event, long userId) {
         OpePartsHistoryRecord record = new OpePartsHistoryRecord();
         record.setId(idAppService.getId(SequenceName.OPE_PARTS_HISTORY_RECORD));
@@ -407,8 +417,8 @@ public class PartsRosServiceImpl implements PartsRosService {
         } else {
             parts.setId(enter.getId());
         }
-        parts.setPartsType(BomTypeEnums.checkCode(enter.getPartsType()));
-        parts.setSnClass(SNClassEnums.getValueByCode(enter.getSnClassFlag()));
+        parts.setPartsType(BomCommonTypeEnums.checkCode(enter.getPartsType()));
+        parts.setSnClass(BomSnClassEnums.getValueByCode(enter.getSnClassFlag()));
         parts.setSec(ESCUtils.checkESC(enter.getSec()));
         parts.setCnName(enter.getCnName());
         parts.setFrName(enter.getFrName());
@@ -428,8 +438,8 @@ public class PartsRosServiceImpl implements PartsRosService {
     private void checkParts(EditSavePartsEnter enter) {
 
         String partsNumber = enter.getPartsNumber();
-        String snClassFlag = SNClassEnums.checkCode(enter.getSnClassFlag());
-        String partsType = BomTypeEnums.checkCode(enter.getPartsType());
+        String snClassFlag = BomSnClassEnums.checkCode(enter.getSnClassFlag());
+        String partsType = BomCommonTypeEnums.checkCode(enter.getPartsType());
         String sec = ESCUtils.checkESC(enter.getSec());
         if (StringUtils.isAnyBlank(partsNumber, snClassFlag, partsType, sec)) {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_illegal.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_illegal.getMessage());
