@@ -46,5 +46,11 @@ public interface InquiryService {
      */
     InquiryResult inquiryDetail(IdEnter enter);
 
-
+    /**
+     * 接受询价单 转化为潜在客户
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult acceptInquiry(IdEnter enter);
 }
