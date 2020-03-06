@@ -29,6 +29,7 @@
     <sql id="where_productList">
         <where>
             and opp.dr=0
+            and opp.product_type in ('2','3','4')
             and opp.user_id=#{userId}
             <if test="type != null and type != ''">
                 and opp.product_type =#{type}

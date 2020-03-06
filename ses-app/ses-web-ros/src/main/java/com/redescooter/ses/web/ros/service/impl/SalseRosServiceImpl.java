@@ -58,13 +58,11 @@ public class SalseRosServiceImpl implements SalseRosService {
     }
 
     /**
+     * 销售产品列表
+     * 包含整车，电池，配件
+     *
      * @param enter
-     * @desc: 产品列表
-     * @param: enter
-     * @retrn: ProductListResult
-     * @auther: alex
-     * @date: 2020/2/25 18:08
-     * @Version: Ros 1.2
+     * @return
      */
     @Override
     public PageResult<ProductListResult> productList(ProductListEnter enter) {
