@@ -1,14 +1,16 @@
-package com.redescooter.ses.web.ros.service;
+package com.redescooter.ses.web.ros.service.bom;
 
-import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.web.ros.vo.sales.PriceUnitResult;
-import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.EditProductPriceEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceChartResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceHistroyListEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SccPriceEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
+import com.redescooter.ses.web.ros.vo.bom.sales.PriceUnitResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.EditProductPriceEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,7 @@ public interface SupplierChaimRosService {
      * @date: 2020/2/25 14:41
      * @Version: Ros 1.2
      */
-   Map<String,Integer> countByPartType(GeneralEnter enter);
+    Map<String, Integer> countByPartType(GeneralEnter enter);
 
     /**
      * @desc: 供应链列表
@@ -58,10 +60,11 @@ public interface SupplierChaimRosService {
      * @param id
      * @return
      */
-    SccPriceResult productPriceDetail(SccPriceEnter id);
+    SccPriceResult productPriceDetail(IdEnter id);
 
     /**
      * 货币单位
+     *
      * @param enter
      * @return
      */

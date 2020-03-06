@@ -1,7 +1,7 @@
-package com.redescooter.ses.web.ros.vo.supplierChaim;
+package com.redescooter.ses.web.ros.vo.bom.supplierChaim;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

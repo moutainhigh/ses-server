@@ -2,16 +2,13 @@ package com.redescooter.ses.web.ros.service.impl;
 
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
-import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.BomRosService;
 import com.redescooter.ses.web.ros.service.ExcelService;
-import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
+import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
@@ -22,7 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * @ClassName ExcelServiceImpl
@@ -42,6 +45,9 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Autowired
     private OpePartsService partsService;
+
+    @Autowired
+    private BomRosServiceMapper bomRosServiceMapper;
 
     @Override
     public ImportExcelPartsResult readExcelDataByParts(ImportPartsEnter enter) {
@@ -85,15 +91,24 @@ public class ExcelServiceImpl implements ExcelService {
             return result;
         }
 
+        //1.判断productNList里面是否有重复的产品编号
+        Set<String> productNSet = new HashSet<>();
         successList.forEach(su -> {
-            QueryWrapper<OpeParts> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq(OpeParts.COL_DR, 0);
-            queryWrapper.eq(OpeParts.COL_PARTS_NUMBER, su.getPartsN());
-            if (partsService.count(queryWrapper) > 0) {
-                throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_EXIST.getCode(), ExceptionCodeEnums.PARTS_NUMBER_EXIST.getMessage());
-            }
+            productNSet.add(su.getPartsN());
         });
+        if (productNSet.size() != successList.size()) {
+            throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_REPEAT.getCode(), ExceptionCodeEnums.PARTS_NUMBER_REPEAT.getMessage());
+        }
 
+        //2.判断与数据库中是否有已存在的产品编号
+        List<String> usingProductNumList = bomRosServiceMapper.UsingProductNumList(enter);
+        if (CollectionUtils.isNotEmpty(usingProductNumList)) {
+            productNSet.forEach(item -> {
+                if (usingProductNumList.contains(item)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_EXIST.getCode(), ExceptionCodeEnums.PARTS_NUMBER_EXIST.getMessage());
+                }
+            });
+        }
         return partsRosService.savePartsList(successList, enter);
     }
 

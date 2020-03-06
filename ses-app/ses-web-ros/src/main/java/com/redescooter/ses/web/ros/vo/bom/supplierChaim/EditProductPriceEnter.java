@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.supplierChaim;
+package com.redescooter.ses.web.ros.vo.bom.supplierChaim;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -31,9 +31,6 @@ public class EditProductPriceEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
-    @ApiModelProperty(value = "是否在sals服务 中调用，默认为false，", required = true)
-    private Boolean serviceType = Boolean.FALSE;
-
     @ApiModelProperty(value = "价格类型，指（整车、部品、零部件），传值见TAPD", required = true)
     @NotNull(code = ValidationExceptionCode.SALES_PRICE_TYPE_IS_EMPTY, message = "销售价格类型")
     private String priceType;
@@ -44,10 +41,4 @@ public class EditProductPriceEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "报价单位 只是第一次 设置报价的时候传")
     private String productFrUnit;
-
-    @ApiModelProperty(value = "英国报价")
-    private String productEnPrice;
-
-    @ApiModelProperty(value = "报价单位 只是第一次 设置报价的时候传")
-    private String productEnUnit;
 }

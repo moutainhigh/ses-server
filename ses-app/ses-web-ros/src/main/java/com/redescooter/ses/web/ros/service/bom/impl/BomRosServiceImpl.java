@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.impl;
+package com.redescooter.ses.web.ros.service.bom.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -13,15 +13,15 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.BomRosServiceMapper;
+import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.BomRosService;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
+import com.redescooter.ses.web.ros.service.bom.BomRosService;
+import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyBService;
+import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.vo.bom.ProdoctPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
@@ -61,6 +61,9 @@ public class BomRosServiceImpl implements BomRosService {
 
     @Autowired
     private BomRosServiceMapper bomRosServiceMapper;
+
+    @Reference
+    private IdAppService idAppService;
 
     @Autowired
     private OpePartsProductService opePartsProductService;
@@ -208,6 +211,24 @@ public class BomRosServiceImpl implements BomRosService {
     @Override
     public List<SecResult> secList(GeneralEnter enter) {
         return bomRosServiceMapper.secList(enter);
+    }
+
+    /**
+     * @param enter
+     * @desc: 详情部件列表查询
+     * @param: SaveScooterPartListEnter
+     * @retrn: SaveScooterPartListResult
+     * @auther: alex
+     * @date: 2020/2/25 12:43
+     * @Version: Ros 1.2
+     */
+    @Override
+    public PageResult<QueryPartListResult> partList(QueryPartListEnter enter) {
+        int count = bomRosServiceMapper.partListCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter, count, bomRosServiceMapper.partList(enter));
     }
 
     /**

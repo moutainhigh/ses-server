@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.supplierChaim;
+package com.redescooter.ses.web.ros.vo.bom;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -28,11 +28,4 @@ public class ProductPriceHistroyListEnter extends PageEnter {
     @ApiModelProperty(value = "id", required = true)
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 不为空")
     private Long id;
-
-    @ApiModelProperty(value = "是否在salse 模块调用，默认为false")
-    private Boolean serviceType = Boolean.FALSE;
-
-    @ApiModelProperty(value = "价格类型，见TAPD", required = true)
-    @NotNull(code = ValidationExceptionCode.SALES_PRICE_TYPE_IS_EMPTY, message = "销售价格类型")
-    private String priceType;
 }

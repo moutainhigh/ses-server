@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.supplierChaim;
+package com.redescooter.ses.web.ros.vo.bom.supplierChaim;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class SccPriceEnter extends GeneralEnter {
+public class ScPriceEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id")
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 不为空")

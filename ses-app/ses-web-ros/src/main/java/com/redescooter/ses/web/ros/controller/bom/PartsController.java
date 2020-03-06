@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.controller.bom;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.web.ros.service.BomRosService;
-import com.redescooter.ses.web.ros.service.PartsRosService;
+import com.redescooter.ses.web.ros.service.bom.BomRosService;
+import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
 import io.swagger.annotations.Api;
@@ -50,8 +50,8 @@ public class PartsController {
     }
 
     @PostMapping(value = "/iterations")
-    @ApiOperation(value = "部品号迭代", response = AddPartsEnter.class)
-    public Response<GeneralResult> iterations(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+    @ApiOperation(value = "部品号迭代", response = DetailsPartsResult.class)
+    public Response<List<DetailsPartsResult>> iterations(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(partsRosService.iterations(enter));
     }
 

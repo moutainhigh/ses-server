@@ -104,4 +104,25 @@
         order by opp.updated_time desc
         limit #{startRow},#{pageSize}
     </select>
+
+    <select id="productPriceList" resultType="com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheet">
+        select *
+        from ope_regional_price_sheet sheet
+        where sheet.dr = 0
+        and sheet.user_id = #{userId}
+        and (sheet.assembly_id = #{id} or sheet.part_id =#{id} )
+    </select>
+    <select id="sccPriceHistroyCount" resultType="java.lang.Integer">
+        select count(*)
+        from (
+        <include refid="where_SccPriceHistroyList"/>
+        ) result
+    </select>
+    <select id="sccPriceHistroyList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
+        select *
+        from (
+        <include refid="where_SccPriceHistroyList"/>
+        ) result
+        order by refuseTime desc
+    </select>
 </mapper>

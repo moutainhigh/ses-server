@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.sales;
+package com.redescooter.ses.web.ros.vo.bom.supplierChaim;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -15,39 +15,42 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * @ClassName:SalesServiceResult
- * @description: SalesServiceResult
+ * @ClassName:SupplierChaimListResult
+ * @description: SupplierChaimListResult
  * @author: Alex
  * @Version：1.3
- * @create: 2020/03/03 17:33
+ * @create: 2020/02/25 14:47
  */
-@ApiModel(value = "增值产品列表出参", description = "增值产品列表出参")
+@ApiModel(value = "供应链列表", description = "供应链列表")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class SalesServiceResult extends GeneralResult {
+public class SupplierChaimListResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "产品编码")
+    private String productN;
+
     @ApiModelProperty(value = "产品名字")
-    private String service;
+    private String productEnName;
 
-    @ApiModelProperty(value = "产品描述")
-    private String desc;
+    @ApiModelProperty(value = "产品名字")
+    private String productCnName;
 
-    @ApiModelProperty(value = "法国报价")
-    private BigDecimal productFrPrice;
+    @ApiModelProperty(value = "产品名字")
+    private String productFrName;
 
-    @ApiModelProperty(value = "报价单位")
-    private String productFrUnit;
+    @ApiModelProperty(value = "类型")
+    private String type;
 
-    @ApiModelProperty(value = "英国报价")
-    private BigDecimal productEnPrice;
+    @ApiModelProperty(value = "价格")
+    private BigDecimal productPrice;
 
-    @ApiModelProperty(value = "报价单位")
-    private String productEnUnit;
+    @ApiModelProperty(value = "货币单位")
+    private String unit;
 
     @ApiModelProperty(value = "刷新时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

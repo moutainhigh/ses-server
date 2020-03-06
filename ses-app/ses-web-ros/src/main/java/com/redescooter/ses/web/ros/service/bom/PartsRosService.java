@@ -6,7 +6,6 @@ import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName:BomRosService
@@ -63,7 +62,7 @@ public interface PartsRosService {
      * @param enter
      * @return
      */
-    GeneralResult iterations(StringEnter enter);
+    List<DetailsPartsResult> iterations(StringEnter enter);
 
     /**
      * 批量删除

@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.web.ros.service.bom.BomRosService;
 import com.redescooter.ses.web.ros.service.BomRosService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;

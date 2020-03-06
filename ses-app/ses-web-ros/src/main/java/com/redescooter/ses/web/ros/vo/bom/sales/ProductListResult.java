@@ -77,4 +77,7 @@ public class ProductListResult extends GeneralResult {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date refuseTime;
+
+    @ApiModelProperty(value = "是否存在有列表详情")
+    private Boolean productListDetail=Boolean.FALSE;
 }

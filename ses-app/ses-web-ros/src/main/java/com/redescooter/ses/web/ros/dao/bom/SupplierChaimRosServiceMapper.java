@@ -1,13 +1,13 @@
-package com.redescooter.ses.web.ros.dao;
+package com.redescooter.ses.web.ros.dao.bom;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.sales.SccPriceResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceChartResult;
-import com.redescooter.ses.web.ros.vo.supplierChaim.ProductPriceHistroyListEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListEnter;
-import com.redescooter.ses.web.ros.vo.supplierChaim.SupplierChaimListResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult;
+import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
+import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
 
 import java.util.List;
 
@@ -69,26 +69,6 @@ public interface SupplierChaimRosServiceMapper {
      * @Version: Ros 1.2
      */
     List<SccPriceResult> scPriceHistroyList(ProductPriceHistroyListEnter enter);
-
-    /**
-     * @desc: 销售产品产品价格历史
-     * @param: enter
-     * @retrn: int
-     * @auther: alex
-     * @date: 2020/3/2 15:49
-     * @Version: Ros 1.2
-     */
-    int sccPriceHistroyCount(ProductPriceHistroyListEnter enter);
-
-    /**
-     * @desc: 销售产品产品价格历史
-     * @param: enter
-     * @retrn: List<SccPriceResult>
-     * @auther: alex
-     * @date: 2020/3/2 15:49
-     * @Version: Ros 1.2
-     */
-    List<SccPriceResult> sccPriceHistroyList(ProductPriceHistroyListEnter enter);
 
     /**
      * @desc: 获取图表最值

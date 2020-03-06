@@ -1,11 +1,16 @@
-package com.redescooter.ses.web.ros.service;
+package com.redescooter.ses.web.ros.service.bom;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.sales.ProductListEnter;
-import com.redescooter.ses.web.ros.vo.sales.ProductListResult;
-import com.redescooter.ses.web.ros.vo.sales.SalesServiceResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.ProductListEnter;
+import com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.SalesServiceResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceEnter;
+import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
 
 import java.util.List;
 import java.util.Map;
@@ -66,4 +71,44 @@ public interface SalseRosService {
      * @return
      */
     List<String> productTypeList(GeneralEnter enter);
+
+    /**
+     * 销售产品报价
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult editSalesProductPrice(SccPriceEnter enter);
+
+    /**
+     * 销售产品报价
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult editAfterProductPrice(SccPriceEnter enter);
+
+    /**
+     * 销售产品报价
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult editServiceProductPrice(SccPriceEnter enter);
+
+    /**
+     * 产品价格详情
+     *
+     * @param enter
+     * @return
+     */
+    SccPriceResult priceDetail(IdEnter enter);
+
+    /**
+     * 价格列表
+     *
+     * @param enter
+     * @return
+     */
+    PageResult<SccPriceResult> priceList(ProductPriceHistroyListEnter enter);
 }

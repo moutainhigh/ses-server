@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -47,30 +47,32 @@ public class SalseRosServiceImpl implements SalseRosService {
      */
     @Override
     public Map<String, Integer> countByServiceType(GeneralEnter enter) {
-        Map<String, Integer> map = new HashMap<>();
+        Map<String,Integer> map=new HashMap<>();
         // 产品数量
-        map.put("product", 0);
+        map.put("product",salseRosServiceMapper.productCount(enter));
         // 售后产品数量
-        map.put("afterSale", 0);
+        map.put("afterSale",salseRosServiceMapper.afterSaleCount(enter));
         // 增值服务数量
-        map.put("service", 0);
+        map.put("service",0);
         return map;
     }
 
     /**
-     * 销售产品列表
-     * 包含整车，电池，配件
-     *
      * @param enter
-     * @return
+     * @desc: 产品列表
+     * @param: enter
+     * @retrn: ProductListResult
+     * @auther: alex
+     * @date: 2020/2/25 18:08
+     * @Version: Ros 1.2
      */
     @Override
     public PageResult<ProductListResult> productList(ProductListEnter enter) {
-        int count = salseRosServiceMapper.productListCount(enter);
+        int count=salseRosServiceMapper.productListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, count, salseRosServiceMapper.productList(enter));
+        return PageResult.create(enter,count,salseRosServiceMapper.productList(enter));
     }
 
     /**
@@ -127,8 +129,8 @@ public class SalseRosServiceImpl implements SalseRosService {
     @Override
     public List<String> productTypeList(GeneralEnter enter) {
         List<String> result = new ArrayList<>();
-        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            if (!StringUtils.equals(item.getCode(), BomCommonTypeEnums.PARTS.getCode())) {
+        for (BomTypeEnums item : BomTypeEnums.values()) {
+            if (!StringUtils.equals(item.getCode(), BomTypeEnums.PARTS.getCode())) {
                 result.add(item.getCode());
             }
         }

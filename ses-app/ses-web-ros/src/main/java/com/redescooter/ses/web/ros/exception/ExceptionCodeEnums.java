@@ -145,6 +145,8 @@ public enum ExceptionCodeEnums {
 
     PART_IS_NOT_EXIST(10065, "部品不存在"),
 
+    PARTS_NUMBER_REPEAT(10066, "导入数据的部品号重复，请更改"),
+
     ;
 
     private int code;

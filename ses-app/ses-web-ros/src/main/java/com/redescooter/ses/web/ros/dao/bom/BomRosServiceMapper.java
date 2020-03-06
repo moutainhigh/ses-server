@@ -1,6 +1,4 @@
-package com.redescooter.ses.web.ros.dao;
-
-import java.util.List;
+package com.redescooter.ses.web.ros.dao.bom;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -11,6 +9,8 @@ import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
+
+import java.util.List;
 
 /**
  * @ClassName:BomRosServiceMapper
