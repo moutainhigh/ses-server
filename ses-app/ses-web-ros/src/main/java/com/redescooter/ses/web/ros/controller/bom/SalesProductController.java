@@ -33,21 +33,15 @@ public class SalesProductController {
     @Autowired
     private SalseRosService salseRosService;
 
-    @PostMapping(value = "/productTypeList")
-    @ApiOperation(value = "产品类型----作废", response = String.class)
-    public Response<List<String>> productTypeList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(salseRosService.productTypeList(enter));
-    }
-
-    @PostMapping(value = "/getType")
-    @ApiOperation(value = "筛选类型", response = String.class)
+    @PostMapping(value = "/commonCountStatus")
+    @ApiOperation(value = "公共统计", response = String.class)
     public Response<Map<String, Integer>> commonCountStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(salseRosService.commonCountStatus(enter));
     }
 
     @PostMapping(value = "/getType")
     @ApiOperation(value = "筛选类型", response = String.class)
-    public Response<Map<String, Integer>> getType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<ProductGetTypeResult>> getType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(salseRosService.getProductType(enter));
     }
 

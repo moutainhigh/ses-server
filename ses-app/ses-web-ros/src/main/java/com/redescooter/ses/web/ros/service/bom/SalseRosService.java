@@ -36,7 +36,7 @@ public interface SalseRosService {
      * @param enter
      * @return
      */
-    Map<String, Integer> getProductType(GeneralEnter enter);
+    List<ProductGetTypeResult> getProductType(GeneralEnter enter);
 
     /**
      * @desc: 产品列表
@@ -63,7 +63,7 @@ public interface SalseRosService {
      * @param enter
      * @return
      */
-    Map<String, Integer> getAfterProductType(GeneralEnter enter);
+    List<ProductGetTypeResult>  getAfterProductType(GeneralEnter enter);
 
     /**
      * @desc: 售后产品列表

@@ -73,16 +73,27 @@ public class SalseRosServiceImpl implements SalseRosService {
     }
 
     @Override
-    public Map<String, Integer> getProductType(GeneralEnter enter) {
+    public List<ProductGetTypeResult> getProductType(GeneralEnter enter) {
+        List<ProductGetTypeResult> list = new ArrayList<>();
 
-        Map<String, Integer> map = new HashMap<>();
-        for (BomCommonTypeEnums typeEnums : BomCommonTypeEnums.values()) {
-            map.put(typeEnums.getCode(), Integer.valueOf(typeEnums.getValue()));
-        }
+        ProductGetTypeResult type1 = new ProductGetTypeResult();
+        type1.setKey(BomCommonTypeEnums.ACCESSORY.getCode());
+        type1.setValue(Integer.valueOf(BomCommonTypeEnums.ACCESSORY.getValue()));
 
-        map.remove(BomCommonTypeEnums.PARTS.getCode());
-        map.remove(BomCommonTypeEnums.COMBINATION.getCode());
-        return map;
+
+        ProductGetTypeResult type2 = new ProductGetTypeResult();
+        type2.setKey(BomCommonTypeEnums.BATTERY.getCode());
+        type2.setValue(Integer.valueOf(BomCommonTypeEnums.BATTERY.getValue()));
+
+
+        ProductGetTypeResult type3 = new ProductGetTypeResult();
+        type3.setKey(BomCommonTypeEnums.SCOOTER.getCode());
+        type3.setValue(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()));
+
+        list.add(type1);
+        list.add(type2);
+        list.add(type3);
+        return list;
     }
 
     /**
@@ -138,18 +149,22 @@ public class SalseRosServiceImpl implements SalseRosService {
     }
 
     @Override
-    public Map<String, Integer> getAfterProductType(GeneralEnter enter) {
+    public List<ProductGetTypeResult> getAfterProductType(GeneralEnter enter) {
 
-        Map<String, Integer> map = new HashMap<>();
-        for (BomCommonTypeEnums typeEnums : BomCommonTypeEnums.values()) {
-            map.put(typeEnums.getCode(), Integer.valueOf(typeEnums.getValue()));
-        }
+        List<ProductGetTypeResult> list = new ArrayList<>();
 
-        map.remove(BomCommonTypeEnums.ACCESSORY.getCode());
-        map.remove(BomCommonTypeEnums.BATTERY.getCode());
-        map.remove(BomCommonTypeEnums.SCOOTER.getCode());
+        ProductGetTypeResult type1 = new ProductGetTypeResult();
+        type1.setKey(BomCommonTypeEnums.PARTS.getCode());
+        type1.setValue(Integer.valueOf(BomCommonTypeEnums.PARTS.getValue()));
 
-        return map;
+        ProductGetTypeResult type2 = new ProductGetTypeResult();
+        type2.setKey(BomCommonTypeEnums.COMBINATION.getCode());
+        type2.setValue(Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()));
+
+        list.add(type1);
+        list.add(type2);
+
+        return list;
     }
 
     /**
