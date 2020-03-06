@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.inquiry;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -26,11 +28,14 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class InquiryListEnter extends PageEnter {
 
+    @ApiModelProperty(value = "状态")
+    private String status;
+
     @ApiModelProperty(value = "城市")
-    private Long city;
+    private Long cityId;
 
     @ApiModelProperty(value = "区域")
-    private Long distrust;
+    private Long distrustId;
 
     @ApiModelProperty(value = "行业类型")
     private String industyType;
@@ -39,9 +44,13 @@ public class InquiryListEnter extends PageEnter {
     private String customerType;
 
     @ApiModelProperty(value = "处理时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date acceptanceStartTime;
 
     @ApiModelProperty(value = "处理时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date acceptanceEndTime;
 
     @ApiModelProperty(value = "关键字")

@@ -61,7 +61,7 @@ public enum ExceptionCodeEnums {
 
     PRIMARY_KEY_CANNOT_EMPTY(10022, "主键不能为空"),
 
-    STATUS_CANNOT_EMPTY(10023, "状态不能为空"),
+    STATUS_ILLEGAL(10023, "状态非法"),
 
     TENANT_NOT_EXIST(10024, "租户不存在"),
 
@@ -146,6 +146,8 @@ public enum ExceptionCodeEnums {
     PART_IS_NOT_EXIST(10065, "部品不存在"),
 
     PARTS_NUMBER_REPEAT(10066, "导入数据的部品号重复，请更改"),
+
+    INQUIRY_IS_NOT_EXIST(10067, "询价单不存在"),
 
     ;
 

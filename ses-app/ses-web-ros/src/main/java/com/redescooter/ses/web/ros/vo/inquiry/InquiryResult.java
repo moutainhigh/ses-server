@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.inquiry;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -23,8 +25,11 @@ import java.util.Date;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class InquiryResult extends GeneralResult {
+
+    @ApiModelProperty(value = "客户名字")
     private Long id;
 
+    @ApiModelProperty(value = "公司名字")
     private String companyName;
 
     @ApiModelProperty(value = "客户名字")
@@ -49,13 +54,19 @@ public class InquiryResult extends GeneralResult {
     private String email;
 
     @ApiModelProperty(value = "联系人姓氏")
-    private String tel;
+    private String telephone;
 
     @ApiModelProperty(value = "城市")
-    private Long city;
+    private Long cityId;
+
+    @ApiModelProperty(value = "城市名称")
+    private String cityName;
 
     @ApiModelProperty(value = "区域")
-    private Long distrust;
+    private Long distrustId;
+
+    @ApiModelProperty(value = "区域名称")
+    private String distrustName;
 
     @ApiModelProperty(value = "状态")
     private String status;
@@ -73,5 +84,7 @@ public class InquiryResult extends GeneralResult {
     private String remark;
 
     @ApiModelProperty(value = "接受时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date acceptanceTime;
 }

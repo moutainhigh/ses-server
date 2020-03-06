@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum CustomerIndustryEnums {
-    RESTAURANT("RESTAURANT", "餐厅","1"),
-    EXPRESS_DELIVERY("EXPRESS_DELIVERY","快递","2");
+    RESTAURANT("RESTAURANT", "餐厅", "1"),
+    EXPRESS_DELIVERY("EXPRESS_DELIVERY", "快递", "2");
 
     private String code;
 
@@ -27,6 +27,15 @@ public enum CustomerIndustryEnums {
     public static CustomerIndustryEnums getIndustryEnumByCode(String code) {
         for (CustomerIndustryEnums item : CustomerIndustryEnums.values()) {
             if (item.getCode().equals(code)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public static CustomerIndustryEnums getIndustryEnumByValue(String value) {
+        for (CustomerIndustryEnums item : CustomerIndustryEnums.values()) {
+            if (item.getValue().equals(value)) {
                 return item;
             }
         }

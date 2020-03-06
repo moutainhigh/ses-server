@@ -1,11 +1,14 @@
 package com.redescooter.ses.web.ros.service;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
+
+import java.util.Map;
 
 /**
  * @ClassName:InquiryService
@@ -15,6 +18,9 @@ import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
  * @create: 2020/03/05 14:47
  */
 public interface InquiryService {
+
+
+    Map<String, Integer> countStatus(GeneralEnter enter);
 
     /**
      * @desc: 保存询价单
@@ -53,4 +59,12 @@ public interface InquiryService {
      * @return
      */
     GeneralResult acceptInquiry(IdEnter enter);
+
+    /**
+     * 拒绝询价单
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult declineInquiry(IdEnter enter);
 }

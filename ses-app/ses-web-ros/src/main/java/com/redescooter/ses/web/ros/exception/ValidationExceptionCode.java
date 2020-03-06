@@ -86,6 +86,11 @@ public interface ValidationExceptionCode {
     int PARTS_SN_CLASS_IS_EMPTY = 10057;
     // 销售价格类型为空
     int SALES_PRICE_TYPE_IS_EMPTY = 10058;
-
+    // 国家城市代码为空
+    int COUNTRY_CITY_MSG_IS_EMPTY = 10059;
+    // 客户类型为空
+    int CUSTOMER_TYPE_IS_EMPTY = 10060;
+    // 行业类型
+    int INDUSTY_TYPE_IS_EMPTY = 10061;
 
 }

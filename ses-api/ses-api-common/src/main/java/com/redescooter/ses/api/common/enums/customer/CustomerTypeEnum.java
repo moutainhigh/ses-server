@@ -32,4 +32,13 @@ public enum CustomerTypeEnum {
         return null;
     }
 
+    public static CustomerTypeEnum getEnumByValue(String value) {
+        for (CustomerTypeEnum item : CustomerTypeEnum.values()) {
+            if (item.getValue().equals(value)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
 }
