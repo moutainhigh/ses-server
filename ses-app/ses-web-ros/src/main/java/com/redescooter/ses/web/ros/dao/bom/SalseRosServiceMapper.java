@@ -1,12 +1,10 @@
 package com.redescooter.ses.web.ros.dao.bom;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheet;
-import com.redescooter.ses.web.ros.vo.bom.sales.ProductListEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult;
-import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
 import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
+import com.redescooter.ses.web.ros.vo.bom.sales.*;
 
 import java.util.List;
 
@@ -18,6 +16,22 @@ import java.util.List;
  * @create: 2020/02/28 13:05
  */
 public interface SalseRosServiceMapper {
+
+    /**
+     * 销售产品统计
+     *
+     * @param enter
+     * @return
+     */
+    int productCount(GeneralEnter enter);
+
+    /**
+     * 销售售后产品统计
+     *
+     * @param enter
+     * @return
+     */
+    int afterProductCount(GeneralEnter enter);
 
     /**
      * @desc: 产品列表
@@ -40,18 +54,13 @@ public interface SalseRosServiceMapper {
     List<ProductListResult> productList(ProductListEnter enter);
 
     /**
-     * 产品数量统计
+     * 产品子条目
+     * 根据产品主键
+     *
      * @param enter
      * @return
      */
-    Integer productCount(GeneralEnter enter);
-
-    /**
-     * 售后产品统计
-     * @param enter
-     * @return
-     */
-    Integer afterSaleCount(GeneralEnter enter);
+    List<ProductSubentryResult> productItems(IdEnter enter);
 
     /**
      * 售后产品列表
@@ -61,6 +70,12 @@ public interface SalseRosServiceMapper {
      */
     Integer afterSaleListCount(ProductListEnter enter);
 
+    /**
+     * 售后产品列表
+     *
+     * @param enter
+     * @return
+     */
     List<ProductListResult> afterSaleList(ProductListEnter enter);
 
     /**

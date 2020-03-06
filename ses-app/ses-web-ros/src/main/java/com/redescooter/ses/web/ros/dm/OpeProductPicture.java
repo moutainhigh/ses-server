@@ -1,15 +1,9 @@
 package com.redescooter.ses.web.ros.dm;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,13 +11,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpePartsType")
+import java.io.Serializable;
+import java.util.Date;
+
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductPicture")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_parts_type")
-public class OpePartsType implements Serializable {
+@TableName(value = "ope_product_picture")
+public class OpeProductPicture implements Serializable {
     /**
      * 主键
      */
@@ -32,74 +29,32 @@ public class OpePartsType implements Serializable {
     private Long id;
 
     /**
-     * 逻辑删除
+     * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value = "逻辑删除")
+    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**
-     * 租户ID
+     * 产品主键
      */
-    @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "租户ID")
-    private Long tenantId;
+    @TableField(value = "product_id")
+    @ApiModelProperty(value = "产品主键")
+    private Long productId;
 
     /**
-     * 用户ID
+     * 图片地址
      */
-    @TableField(value = "user_id")
-    @ApiModelProperty(value = "用户ID")
-    private Long userId;
+    @TableField(value = "image_url")
+    @ApiModelProperty(value = "图片地址")
+    private String imageUrl;
 
     /**
-     * 状态
+     * 排序
      */
-    @TableField(value = "status")
-    @ApiModelProperty(value = "状态")
-    private String status;
-
-    /**
-     * 部品类型名称
-     */
-    @TableField(value = "name")
-    @ApiModelProperty(value = "部品类型名称")
-    private String name;
-
-    /**
-     * 部品类型编码
-     */
-    @TableField(value = "code")
-    @ApiModelProperty(value = "部品类型编码")
-    private String code;
-
-    /**
-     * 值
-     */
-    @TableField(value = "value")
-    @ApiModelProperty(value = "值")
-    private Integer value;
-
-    /**
-     * 备注
-     */
-    @TableField(value = "note")
-    @ApiModelProperty(value = "备注")
-    private String note;
-
-    /**
-     * 是否可销售,0:SC仅可采购，1:SSC可销售可采购
-     */
-    @TableField(value = "sn_class_flag")
-    @ApiModelProperty(value = "是否可销售,0:SC仅可采购，1:SSC可销售可采购")
-    private String snClassFlag;
-
-    /**
-     * 乐观锁
-     */
-    @TableField(value = "revision")
-    @ApiModelProperty(value = "乐观锁")
-    private Integer revision;
+    @TableField(value = "sort")
+    @ApiModelProperty(value = "排序")
+    private Integer sort;
 
     /**
      * 创建人
@@ -162,7 +117,7 @@ public class OpePartsType implements Serializable {
      */
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
-    private BigDecimal def6;
+    private Double def6;
 
     private static final long serialVersionUID = 1L;
 
@@ -170,23 +125,11 @@ public class OpePartsType implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_TENANT_ID = "tenant_id";
+    public static final String COL_PRODUCT_ID = "product_id";
 
-    public static final String COL_USER_ID = "user_id";
+    public static final String COL_IMAGE_URL = "image_url";
 
-    public static final String COL_STATUS = "status";
-
-    public static final String COL_NAME = "name";
-
-    public static final String COL_CODE = "code";
-
-    public static final String COL_VALUE = "value";
-
-    public static final String COL_NOTE = "note";
-
-    public static final String COL_SN_CLASS_FLAG = "sn_class_flag";
-
-    public static final String COL_REVISION = "revision";
+    public static final String COL_SORT = "sort";
 
     public static final String COL_CREATED_BY = "created_by";
 
@@ -206,7 +149,7 @@ public class OpePartsType implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpePartsTypeBuilder builder() {
-        return new OpePartsTypeBuilder();
+    public static OpeProductPictureBuilder builder() {
+        return new OpeProductPictureBuilder();
     }
 }

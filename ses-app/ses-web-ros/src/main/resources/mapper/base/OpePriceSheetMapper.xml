@@ -4,33 +4,35 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpePriceSheet">
         <!--@mbg.generated-->
         <!--@Table ope_price_sheet-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
-        <result column="user_id" jdbcType="BIGINT" property="userId"/>
-        <result column="status" jdbcType="VARCHAR" property="status"/>
-        <result column="price" jdbcType="DECIMAL" property="price"/>
-        <result column="currency_type" jdbcType="VARCHAR" property="currencyType"/>
-        <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit"/>
-        <result column="standard_currency" jdbcType="VARCHAR" property="standardCurrency"/>
-        <result column="exchange_rate" jdbcType="VARCHAR" property="exchangeRate"/>
-        <result column="parts_id" jdbcType="BIGINT" property="partsId"/>
-        <result column="revision" jdbcType="INTEGER" property="revision"/>
-        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
-        <result column="def1" jdbcType="VARCHAR" property="def1"/>
-        <result column="def2" jdbcType="VARCHAR" property="def2"/>
-        <result column="def3" jdbcType="VARCHAR" property="def3"/>
-        <result column="def5" jdbcType="VARCHAR" property="def5"/>
-        <result column="def6" jdbcType="DECIMAL" property="def6"/>
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+        <result column="user_id" jdbcType="BIGINT" property="userId" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="price" jdbcType="DECIMAL" property="price" />
+        <result column="currency_type" jdbcType="VARCHAR" property="currencyType" />
+        <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit" />
+        <result column="standard_currency" jdbcType="VARCHAR" property="standardCurrency" />
+        <result column="exchange_rate" jdbcType="VARCHAR" property="exchangeRate" />
+        <result column="parts_id" jdbcType="BIGINT" property="partsId" />
+        <result column="begin_date" jdbcType="DATE" property="beginDate" />
+        <result column="end_date" jdbcType="DATE" property="endDate" />
+        <result column="revision" jdbcType="INTEGER" property="revision" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="def1" jdbcType="VARCHAR" property="def1" />
+        <result column="def2" jdbcType="VARCHAR" property="def2" />
+        <result column="def3" jdbcType="VARCHAR" property="def3" />
+        <result column="def5" jdbcType="VARCHAR" property="def5" />
+        <result column="def6" jdbcType="DECIMAL" property="def6" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
         id, dr, tenant_id, user_id, `status`, price, currency_type, currency_unit, standard_currency,
-        exchange_rate, parts_id, revision, created_by, created_time, updated_by, updated_time,
-        def1, def2, def3, def5, def6
+        exchange_rate, parts_id, begin_date, end_date, revision, created_by, created_time,
+        updated_by, updated_time, def1, def2, def3, def5, def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
@@ -84,6 +86,16 @@
             <trim prefix="parts_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.partsId,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="begin_date = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.beginDate,jdbcType=DATE}
+                </foreach>
+            </trim>
+            <trim prefix="end_date = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.endDate,jdbcType=DATE}
                 </foreach>
             </trim>
             <trim prefix="revision = case" suffix="end,">
@@ -146,36 +158,35 @@
         <!--@mbg.generated-->
         insert into ope_price_sheet
         (id, dr, tenant_id, user_id, `status`, price, currency_type, currency_unit, standard_currency,
-        exchange_rate, parts_id, revision, created_by, created_time, updated_by, updated_time,
-        def1, def2, def3, def5, def6)
+        exchange_rate, parts_id, begin_date, end_date, revision, created_by, created_time,
+        updated_by, updated_time, def1, def2, def3, def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
             #{item.userId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL},
-            #{item.currencyType,jdbcType=VARCHAR}, #{item.currencyUnit,jdbcType=VARCHAR},
-            #{item.standardCurrency,jdbcType=VARCHAR},
-            #{item.exchangeRate,jdbcType=VARCHAR}, #{item.partsId,jdbcType=BIGINT}, #{item.revision,jdbcType=INTEGER},
-            #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
-            #{item.updatedBy,jdbcType=BIGINT},
-            #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
-            #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL}
-            )
+            #{item.currencyType,jdbcType=VARCHAR}, #{item.currencyUnit,jdbcType=VARCHAR}, #{item.standardCurrency,jdbcType=VARCHAR},
+            #{item.exchangeRate,jdbcType=VARCHAR}, #{item.partsId,jdbcType=BIGINT}, #{item.beginDate,jdbcType=DATE},
+            #{item.endDate,jdbcType=DATE}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
+            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL})
         </foreach>
     </insert>
     <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpePriceSheet">
         <!--@mbg.generated-->
         insert into ope_price_sheet
         (id, dr, tenant_id, user_id, `status`, price, currency_type, currency_unit, standard_currency,
-        exchange_rate, parts_id, revision, created_by, created_time, updated_by, updated_time,
-        def1, def2, def3, def5, def6)
+        exchange_rate, parts_id, begin_date, end_date, revision, created_by, created_time,
+        updated_by, updated_time, def1, def2, def3, def5, def6)
         values
         (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
         #{status,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{currencyType,jdbcType=VARCHAR},
         #{currencyUnit,jdbcType=VARCHAR}, #{standardCurrency,jdbcType=VARCHAR}, #{exchangeRate,jdbcType=VARCHAR},
-        #{partsId,jdbcType=BIGINT}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT},
-        #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
-        #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
-        #{def6,jdbcType=DECIMAL})
+        #{partsId,jdbcType=BIGINT}, #{beginDate,jdbcType=DATE}, #{endDate,jdbcType=DATE},
+        #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+        #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
+        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL}
+        )
         on duplicate key update
         id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
@@ -188,6 +199,8 @@
         standard_currency = #{standardCurrency,jdbcType=VARCHAR},
         exchange_rate = #{exchangeRate,jdbcType=VARCHAR},
         parts_id = #{partsId,jdbcType=BIGINT},
+        begin_date = #{beginDate,jdbcType=DATE},
+        end_date = #{endDate,jdbcType=DATE},
         revision = #{revision,jdbcType=INTEGER},
         created_by = #{createdBy,jdbcType=BIGINT},
         created_time = #{createdTime,jdbcType=TIMESTAMP},
@@ -235,6 +248,12 @@
             </if>
             <if test="partsId != null">
                 parts_id,
+            </if>
+            <if test="beginDate != null">
+                begin_date,
+            </if>
+            <if test="endDate != null">
+                end_date,
             </if>
             <if test="revision != null">
                 revision,
@@ -302,6 +321,12 @@
             <if test="partsId != null">
                 #{partsId,jdbcType=BIGINT},
             </if>
+            <if test="beginDate != null">
+                #{beginDate,jdbcType=DATE},
+            </if>
+            <if test="endDate != null">
+                #{endDate,jdbcType=DATE},
+            </if>
             <if test="revision != null">
                 #{revision,jdbcType=INTEGER},
             </if>
@@ -367,6 +392,12 @@
             </if>
             <if test="partsId != null">
                 parts_id = #{partsId,jdbcType=BIGINT},
+            </if>
+            <if test="beginDate != null">
+                begin_date = #{beginDate,jdbcType=DATE},
+            </if>
+            <if test="endDate != null">
+                end_date = #{endDate,jdbcType=DATE},
             </if>
             <if test="revision != null">
                 revision = #{revision,jdbcType=INTEGER},

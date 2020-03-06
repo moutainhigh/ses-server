@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.bom.BomRosService;
+import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
@@ -42,6 +43,9 @@ public class ScooterController {
     @Autowired
     private BomRosService bomRosService;
 
+    @Autowired
+    private PartsRosService partsRosService;
+
     @PostMapping(value = "/scooterList")
     @ApiOperation(value = "车辆列表", response = ScooterListResult.class)
     public Response<PageResult<ScooterListResult>> scooterList(@ModelAttribute @ApiParam("请求参数") ScooterListEnter enter) {
@@ -63,7 +67,7 @@ public class ScooterController {
     @PostMapping(value = "/partList")
     @ApiOperation(value = "部品列表", response = QueryPartListResult.class)
     public Response<PageResult<QueryPartListResult>> partList(@ModelAttribute @ApiParam("请求参数") QueryPartListEnter enter) {
-        return new Response<>(bomRosService.partList(enter));
+        return new Response<>(partsRosService.partList(enter));
     }
 
     @PostMapping(value = "/scooterDetail")

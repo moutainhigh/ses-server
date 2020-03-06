@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.service.bom.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
-import com.redescooter.ses.api.common.enums.bom.BomTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -88,12 +88,13 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         for (CountByStatusResult item : countByPartType) {
             map.put(item.getStatus(), item.getTotalCount());
         }
-        for (BomTypeEnums type : BomTypeEnums.values()) {
+        for (BomCommonTypeEnums type : BomCommonTypeEnums.values()) {
             if (!map.containsKey(type.getCode())) {
                 map.put(type.getCode(), 0);
             }
         }
-        map.remove(BomTypeEnums.SCOOTER.getCode());
+        map.remove(BomCommonTypeEnums.SCOOTER.getCode());
+        map.remove(BomCommonTypeEnums.COMBINATION.getCode());
         return map;
     }
 
@@ -268,7 +269,6 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         opePriceSheetHistory.setDr(0);
         opePriceSheetHistory.setTenantId(0L);
         opePriceSheetHistory.setUserId(enter.getUserId());
-        opePriceSheetHistory.setStatus(BomStatusEnums.NORMAL.getValue());
         opePriceSheetHistory.setPrice(new BigDecimal(enter.getProductFrPrice()));
         opePriceSheetHistory.setPriceSheetId(id);
         opePriceSheetHistory.setCurrencyType(StringUtils.isBlank(CurrencyUnitEnums.checkCode(unit)) == true ? CurrencyUnitEnums.FR.getCode() :

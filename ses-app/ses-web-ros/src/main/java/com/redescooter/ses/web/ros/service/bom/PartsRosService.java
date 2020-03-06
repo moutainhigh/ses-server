@@ -1,18 +1,9 @@
-package com.redescooter.ses.web.ros.service.bom;
+package com.redescooter.ses.web.ros.service;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.MapResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
-import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
-import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.*;
 
 import java.util.List;
 
@@ -104,5 +95,23 @@ public interface PartsRosService {
      * @return
      */
     HistoryPartsResult historys(IdEnter enter);
+
+    /**
+     * 部品编辑完成进行同步
+     * TODO 很重要
+     *
+     * @return
+     */
+    GeneralResult partsSynchronize(GeneralEnter enter);
+
+    /**
+     * @desc: 详情部件列表查询
+     * @param: SaveScooterPartListEnter
+     * @retrn: SaveScooterPartListResult
+     * @auther: alex
+     * @date: 2020/2/25 12:43
+     * @Version: Ros 1.2
+     */
+    PageResult<QueryPartListResult> partList(QueryPartListEnter enter);
 
 }

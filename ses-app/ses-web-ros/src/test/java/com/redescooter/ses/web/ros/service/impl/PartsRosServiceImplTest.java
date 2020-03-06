@@ -1,10 +1,9 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 
-import com.redescooter.ses.api.common.enums.bom.BomTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpePartsType;
@@ -57,7 +56,7 @@ public class PartsRosServiceImplTest {
 
         List<OpePartsType> list = new ArrayList<>();
 
-        for (BomTypeEnums typeEnums : BomTypeEnums.values()) {
+        for (BomCommonTypeEnums typeEnums : BomCommonTypeEnums.values()) {
             OpePartsType inster = new OpePartsType();
             inster.setId(idAppService.getId(SequenceName.OPE_PARTS_TYPE));
             inster.setDr(0);

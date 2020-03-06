@@ -1,15 +1,9 @@
 package com.redescooter.ses.web.ros.controller.bom;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.bom.SalseRosService;
 import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.ProductListEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult;
-import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,6 +13,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:SalesAfterController
@@ -35,6 +32,12 @@ public class SalesAfterProductController {
 
     @Autowired
     private SalseRosService salseRosService;
+
+    @PostMapping(value = "/getType")
+    @ApiOperation(value = "筛选类型", response = String.class)
+    public Response<List<ProductGetTypeResult>> getType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(salseRosService.getAfterProductType(enter));
+    }
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "售后产品列表", response = ProductListResult.class)

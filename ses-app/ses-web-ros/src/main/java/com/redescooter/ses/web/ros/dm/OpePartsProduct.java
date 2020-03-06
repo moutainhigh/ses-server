@@ -1,15 +1,9 @@
 package com.redescooter.ses.web.ros.dm;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,18 +11,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartsHistoryRecord")
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartsProduct")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_parts_history_record")
-public class OpePartsHistoryRecord implements Serializable {
+@TableName(value = "ope_parts_product")
+public class OpePartsProduct implements Serializable {
     /**
-     * 主键
+     * 主键 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "主键 主键")
     private Long id;
 
     /**
@@ -53,53 +51,39 @@ public class OpePartsHistoryRecord implements Serializable {
     private Long userId;
 
     /**
-     * 产品部品表主键
-     */
-    @TableField(value = "parts_id")
-    @ApiModelProperty(value = "产品部品表主键")
-    private Long partsId;
-
-    /**
-     * 操作事件
-     */
-    @TableField(value = "event")
-    @ApiModelProperty(value = "操作事件")
-    private String event;
-
-    /**
-     * 导入批次号
-     */
-    @TableField(value = "import_lot")
-    @ApiModelProperty(value = "导入批次号")
-    private String importLot;
-
-    /**
-     * 状态
+     * 状态 up上架，down下架(默认)
      */
     @TableField(value = "status")
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "状态 up上架，down下架(默认)")
     private String status;
 
     /**
-     * 类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery
+     * 是否可销售,0:SC仅可采购，1:SSC可销售可采购
      */
-    @TableField(value = "parts_type")
-    @ApiModelProperty(value = "类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery")
-    private String partsType;
+    @TableField(value = "sn_class")
+    @ApiModelProperty(value = "是否可销售,0:SC仅可采购，1:SSC可销售可采购")
+    private String snClass;
 
     /**
-     * 项目区域，全部项目区域AllSEC，F04等该部件在车体什么位置，分类查询，数据来源为数据库设定。
+     * 产品类型 如1整车，2组装套件，电池
      */
-    @TableField(value = "sec")
-    @ApiModelProperty(value = "项目区域，全部项目区域AllSEC，F04等该部件在车体什么位置，分类查询，数据来源为数据库设定。")
-    private String sec;
+    @TableField(value = "product_type")
+    @ApiModelProperty(value = "产品类型 如1整车，2组装套件，电池")
+    private Integer productType;
 
     /**
-     * 部品号
+     * 产品编码
      */
-    @TableField(value = "parts_number")
-    @ApiModelProperty(value = "部品号")
-    private String partsNumber;
+    @TableField(value = "product_code")
+    @ApiModelProperty(value = "产品编码")
+    private String productCode;
+
+    /**
+     * 产品编号
+     */
+    @TableField(value = "product_number")
+    @ApiModelProperty(value = "产品编号")
+    private String productNumber;
 
     /**
      * 中文名称
@@ -123,20 +107,6 @@ public class OpePartsHistoryRecord implements Serializable {
     private String enName;
 
     /**
-     * 是否可销售,0:SC仅可采购，1:SSC可销售可采购
-     */
-    @TableField(value = "sn_class")
-    @ApiModelProperty(value = "是否可销售,0:SC仅可采购，1:SSC可销售可采购")
-    private String snClass;
-
-    /**
-     * 部品数量
-     */
-    @TableField(value = "parts_qty")
-    @ApiModelProperty(value = "部品数量")
-    private Integer partsQty;
-
-    /**
      * 生产周期
      */
     @TableField(value = "production_cycle")
@@ -144,25 +114,60 @@ public class OpePartsHistoryRecord implements Serializable {
     private String productionCycle;
 
     /**
-     * 成本
+     * 已选部品数量
      */
-    @TableField(value = "cost")
-    @ApiModelProperty(value = "成本")
-    private String cost;
+    @TableField(value = "sum_parts_qty")
+    @ApiModelProperty(value = "已选部品数量")
+    private Integer sumPartsQty;
 
     /**
-     * 供应商
+     * 型号
      */
-    @TableField(value = "supplier_id")
-    @ApiModelProperty(value = "供应商")
-    private Long supplierId;
+    @TableField(value = "model")
+    @ApiModelProperty(value = "型号")
+    private String model;
 
     /**
-     * 图纸
+     * 图片
      */
-    @TableField(value = "dwg")
-    @ApiModelProperty(value = "图纸")
-    private String dwg;
+    @TableField(value = "pictures")
+    @ApiModelProperty(value = "图片")
+    private String pictures;
+
+    /**
+     * 颜色
+     */
+    @TableField(value = "color")
+    @ApiModelProperty(value = "颜色")
+    private String color;
+
+    /**
+     * 是否支持售后服务
+     */
+    @TableField(value = "after_sales_flag")
+    @ApiModelProperty(value = "是否支持售后服务")
+    private Boolean afterSalesFlag;
+
+    /**
+     * 是否支持增值服务
+     */
+    @TableField(value = "added_services_flag")
+    @ApiModelProperty(value = "是否支持增值服务")
+    private Boolean addedServicesFlag;
+
+    /**
+     * 产品参数 存储JSON
+     */
+    @TableField(value = "mater_parameter")
+    @ApiModelProperty(value = "产品参数 存储JSON")
+    private String materParameter;
+
+    /**
+     * 其他参数 存储JSON
+     */
+    @TableField(value = "other_parameter")
+    @ApiModelProperty(value = "其他参数 存储JSON")
+    private String otherParameter;
 
     /**
      * 备注
@@ -251,19 +256,15 @@ public class OpePartsHistoryRecord implements Serializable {
 
     public static final String COL_USER_ID = "user_id";
 
-    public static final String COL_PARTS_ID = "parts_id";
-
-    public static final String COL_EVENT = "event";
-
-    public static final String COL_IMPORT_LOT = "import_lot";
-
     public static final String COL_STATUS = "status";
 
-    public static final String COL_PARTS_TYPE = "parts_type";
+    public static final String COL_SN_CLASS = "sn_class";
 
-    public static final String COL_SEC = "sec";
+    public static final String COL_PRODUCT_TYPE = "product_type";
 
-    public static final String COL_PARTS_NUMBER = "parts_number";
+    public static final String COL_PRODUCT_CODE = "product_code";
+
+    public static final String COL_PRODUCT_NUMBER = "product_number";
 
     public static final String COL_CN_NAME = "cn_name";
 
@@ -271,17 +272,23 @@ public class OpePartsHistoryRecord implements Serializable {
 
     public static final String COL_EN_NAME = "en_name";
 
-    public static final String COL_SN_CLASS = "sn_class";
-
-    public static final String COL_PARTS_QTY = "parts_qty";
-
     public static final String COL_PRODUCTION_CYCLE = "production_cycle";
 
-    public static final String COL_COST = "cost";
+    public static final String COL_SUM_PARTS_QTY = "sum_parts_qty";
 
-    public static final String COL_SUPPLIER_ID = "supplier_id";
+    public static final String COL_MODEL = "model";
 
-    public static final String COL_DWG = "dwg";
+    public static final String COL_PICTURES = "pictures";
+
+    public static final String COL_COLOR = "color";
+
+    public static final String COL_AFTER_SALES_FLAG = "after_sales_flag";
+
+    public static final String COL_ADDED_SERVICES_FLAG = "added_services_flag";
+
+    public static final String COL_MATER_PARAMETER = "mater_parameter";
+
+    public static final String COL_OTHER_PARAMETER = "other_parameter";
 
     public static final String COL_NOTE = "note";
 
@@ -305,7 +312,7 @@ public class OpePartsHistoryRecord implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpePartsHistoryRecordBuilder builder() {
-        return new OpePartsHistoryRecordBuilder();
+    public static OpePartsProductBuilder builder() {
+        return new OpePartsProductBuilder();
     }
 }
