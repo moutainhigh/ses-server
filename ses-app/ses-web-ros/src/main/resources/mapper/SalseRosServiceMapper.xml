@@ -29,7 +29,8 @@
     <sql id="where_productList">
         <where>
             and opp.dr=0
-            and opp.product_type in ('2','3','4')
+            and opp.sn_class=2
+            and opp.product_type not in ('1','5')
             and opp.user_id=#{userId}
             <if test="type != null and type != ''">
                 and opp.product_type =#{type}
@@ -51,8 +52,10 @@
     <sql id="where_afterSaleList">
         <where>
             and opp.dr=0
-            and opp.user_id=#{userId}
+            and opp.sn_class=2
+            and opp.product_type not in ('2','3','4')
             and opp.after_sales_flag= true
+            and opp.user_id=#{userId}
             <if test="type != null and type != ''">
                 and opp.product_type =#{type}
             </if>
@@ -143,7 +146,7 @@
         from ope_regional_price_sheet sheet
         where sheet.dr = 0
         and sheet.user_id = #{userId}
-        and (sheet.assembly_id = #{id} or sheet.part_id =#{id} )
+        and parts_product_id =#{id}
     </select>
     <select id="sccPriceHistroyCount" resultType="java.lang.Integer">
         select count(*)
@@ -158,5 +161,36 @@
         ) result
         order by refuseTime desc
         limit #{startRow},#{pageSize}
+    </select>
+    <select id="productItems" resultType="com.redescooter.ses.web.ros.vo.bom.sales.ProductSubentryResult">
+        select
+             oppb.id,
+             oppb.parts_qty as qty,
+             op.cn_name,
+             op.en_name,
+             op.fr_name,
+             op.parts_number
+        from ope_parts_product_b oppb
+                 inner join ope_parts op on op.id = oppb.parts_id and op.dr = 0
+        where oppb.dr = 0
+          and oppb.user_id = #{userId}
+          and oppb.parts_product_id = #{id}
+    </select>
+    <select id="productCount" resultType="int">
+        select count(id)
+        from ope_parts_product opp
+        where opp.product_type in ('2', '3', '4')
+          and opp.sn_class = 2
+          and opp.dr = 0
+          and opp.user_id=#{userId}
+    </select>
+    <select id="afterProductCount" resultType="int">
+        select count(id)
+        from ope_parts_product opp
+        where opp.product_type in ('1', '5')
+          and opp.sn_class = 2
+          and opp.after_sales_flag =1
+          and opp.dr = 0
+          and opp.user_id=#{userId}
     </select>
 </mapper>

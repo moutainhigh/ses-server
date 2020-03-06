@@ -5,11 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.bom.sales.ProductListEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult;
-import com.redescooter.ses.web.ros.vo.bom.sales.SalesServiceResult;
-import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.*;
 import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
 
 import java.util.List;
@@ -32,7 +28,15 @@ public interface SalseRosService {
      * @date: 2020/2/25 18:08
      * @Version: Ros 1.2
      */
-    Map<String,Integer> countByServiceType(GeneralEnter enter);
+    Map<String, Integer> commonCountStatus(GeneralEnter enter);
+
+    /**
+     * 获取销售产品类型
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> getProductType(GeneralEnter enter);
 
     /**
      * @desc: 产品列表
@@ -43,6 +47,23 @@ public interface SalseRosService {
      * @Version: Ros 1.2
      */
     PageResult<ProductListResult> productList(ProductListEnter enter);
+
+    /**
+     * 产品子条目
+     * 根据产品主键查询
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductSubentryResult> items(IdEnter enter);
+
+    /**
+     * 获取售后产品类型
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> getAfterProductType(GeneralEnter enter);
 
     /**
      * @desc: 售后产品列表

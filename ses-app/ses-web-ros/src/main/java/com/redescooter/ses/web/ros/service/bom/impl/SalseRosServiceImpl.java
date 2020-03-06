@@ -4,26 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.enums.bom.SalseTabEnums;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.SalseRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheet;
 import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory;
-import com.redescooter.ses.web.ros.service.bom.SalseRosService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetService;
-import com.redescooter.ses.web.ros.vo.bom.sales.ProductListEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult;
-import com.redescooter.ses.web.ros.vo.bom.sales.SalesServiceResult;
-import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.service.bom.SalseRosService;
 import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
+import com.redescooter.ses.web.ros.vo.bom.sales.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -33,11 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName:SalseRosServiceImpl
@@ -72,14 +61,27 @@ public class SalseRosServiceImpl implements SalseRosService {
      * @Version: Ros 1.2
      */
     @Override
-    public Map<String, Integer> countByServiceType(GeneralEnter enter) {
+    public Map<String, Integer> commonCountStatus(GeneralEnter enter) {
         Map<String, Integer> map = new HashMap<>();
         // 产品数量
-        map.put("product", 0);
+        map.put(SalseTabEnums.SALES_PRODUCTS.getCode(), salseRosServiceMapper.productCount(enter));
         // 售后产品数量
-        map.put("afterSale", 0);
-        // 增值服务数量
-        map.put("service", 1);
+        map.put(SalseTabEnums.AFTER_SALES_PRODUCTS.getCode(), salseRosServiceMapper.afterProductCount(enter));
+        // 增值服务数量,目前就一个
+        map.put(SalseTabEnums.VALUE_ADDED_PRODUCTS.getCode(), 1);
+        return map;
+    }
+
+    @Override
+    public Map<String, Integer> getProductType(GeneralEnter enter) {
+
+        Map<String, Integer> map = new HashMap<>();
+        for (BomCommonTypeEnums typeEnums : BomCommonTypeEnums.values()) {
+            map.put(typeEnums.getCode(), Integer.valueOf(typeEnums.getValue()));
+        }
+
+        map.remove(BomCommonTypeEnums.PARTS.getCode());
+        map.remove(BomCommonTypeEnums.COMBINATION.getCode());
         return map;
     }
 
@@ -116,7 +118,6 @@ public class SalseRosServiceImpl implements SalseRosService {
                         result.setProductEnUnit(item.getCurrencyUnit());
                     }
                     if (result.getId().equals(item.getPartsProductId()) && item.getCurrencyUnit().equals(CurrencyUnitEnums.FR.getValue())) {
-
                         result.setProductFrPrice(item.getSalesPrice().toString());
                         result.setProductFrUnit(item.getCurrencyUnit());
                     }
@@ -126,6 +127,29 @@ public class SalseRosServiceImpl implements SalseRosService {
         }
 
         return PageResult.create(enter, count, results);
+    }
+
+    @Override
+    public List<ProductSubentryResult> items(IdEnter enter) {
+
+        List<ProductSubentryResult> results = salseRosServiceMapper.productItems(enter);
+
+        return results;
+    }
+
+    @Override
+    public Map<String, Integer> getAfterProductType(GeneralEnter enter) {
+
+        Map<String, Integer> map = new HashMap<>();
+        for (BomCommonTypeEnums typeEnums : BomCommonTypeEnums.values()) {
+            map.put(typeEnums.getCode(), Integer.valueOf(typeEnums.getValue()));
+        }
+
+        map.remove(BomCommonTypeEnums.ACCESSORY.getCode());
+        map.remove(BomCommonTypeEnums.BATTERY.getCode());
+        map.remove(BomCommonTypeEnums.SCOOTER.getCode());
+
+        return map;
     }
 
     /**
@@ -524,7 +548,6 @@ public class SalseRosServiceImpl implements SalseRosService {
         opeRegionalPrice.setUserId(enter.getUserId());
         opeRegionalPrice.setTenantId(0L);
         opeRegionalPrice.setStatus(BomStatusEnums.NORMAL.getValue());
-        opeRegionalPrice.setPartId(0L);
         opeRegionalPrice.setPartsProductId(enter.getId());
         opeRegionalPrice.setEffectiveTime(new Date());
         opeRegionalPrice.setValidFlag("1");
