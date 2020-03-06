@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName SNClassEnums
+ * @ClassName BomSnClassEnums
  * @Author Jerry
  * @date 2020/02/26 18:38
  * @Description:
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum SNClassEnums {
+public enum BomSnClassEnums {
 
     SC("SC", "仅可采购", "1"),
     SSC("SSC", "可销售可采购", "2"),
@@ -28,16 +28,16 @@ public enum SNClassEnums {
 
 
     public static String getValueByCode(String code) {
-        for (SNClassEnums item : SNClassEnums.values()) {
+        for (BomSnClassEnums item : BomSnClassEnums.values()) {
             if (item.getCode().equals(code)) {
                 return item.getValue();
             }
         }
-        return SNClassEnums.SC.getValue();
+        return BomSnClassEnums.SC.getValue();
     }
 
     public static String checkCode(String code) {
-        for (SNClassEnums item : SNClassEnums.values()) {
+        for (BomSnClassEnums item : BomSnClassEnums.values()) {
             if (item.getCode().equals(code)) {
                 return item.getCode();
             }

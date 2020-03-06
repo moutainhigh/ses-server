@@ -4,43 +4,43 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord">
         <!--@mbg.generated-->
         <!--@Table ope_parts_history_record-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
-        <result column="user_id" jdbcType="BIGINT" property="userId"/>
-        <result column="parts_id" jdbcType="BIGINT" property="partsId"/>
-        <result column="event" jdbcType="VARCHAR" property="event"/>
-        <result column="Import_lot" jdbcType="VARCHAR" property="importLot"/>
-        <result column="status" jdbcType="VARCHAR" property="status"/>
-        <result column="parts_type" jdbcType="VARCHAR" property="partsType"/>
-        <result column="sec" jdbcType="VARCHAR" property="sec"/>
-        <result column="parts_number" jdbcType="VARCHAR" property="partsNumber"/>
-        <result column="cn_name" jdbcType="VARCHAR" property="cnName"/>
-        <result column="fr_name" jdbcType="VARCHAR" property="frName"/>
-        <result column="en_name" jdbcType="VARCHAR" property="enName"/>
-        <result column="sn_class_flag" jdbcType="VARCHAR" property="snClassFlag"/>
-        <result column="parts_qty" jdbcType="INTEGER" property="partsQty"/>
-        <result column="production_cycle" jdbcType="VARCHAR" property="productionCycle"/>
-        <result column="cost" jdbcType="VARCHAR" property="cost"/>
-        <result column="supplier_id" jdbcType="VARCHAR" property="supplierId"/>
-        <result column="dwg" jdbcType="VARCHAR" property="dwg"/>
-        <result column="note" jdbcType="VARCHAR" property="note"/>
-        <result column="revision" jdbcType="INTEGER" property="revision"/>
-        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
-        <result column="def1" jdbcType="VARCHAR" property="def1"/>
-        <result column="def2" jdbcType="VARCHAR" property="def2"/>
-        <result column="def3" jdbcType="VARCHAR" property="def3"/>
-        <result column="def5" jdbcType="VARCHAR" property="def5"/>
-        <result column="def6" jdbcType="DECIMAL" property="def6"/>
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+        <result column="user_id" jdbcType="BIGINT" property="userId" />
+        <result column="parts_id" jdbcType="BIGINT" property="partsId" />
+        <result column="event" jdbcType="VARCHAR" property="event" />
+        <result column="import_lot" jdbcType="VARCHAR" property="importLot" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="parts_type" jdbcType="VARCHAR" property="partsType" />
+        <result column="sec" jdbcType="VARCHAR" property="sec" />
+        <result column="parts_number" jdbcType="VARCHAR" property="partsNumber" />
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
+        <result column="fr_name" jdbcType="VARCHAR" property="frName" />
+        <result column="en_name" jdbcType="VARCHAR" property="enName" />
+        <result column="sn_class" jdbcType="VARCHAR" property="snClass" />
+        <result column="parts_qty" jdbcType="INTEGER" property="partsQty" />
+        <result column="production_cycle" jdbcType="VARCHAR" property="productionCycle" />
+        <result column="cost" jdbcType="VARCHAR" property="cost" />
+        <result column="supplier_id" jdbcType="BIGINT" property="supplierId" />
+        <result column="dwg" jdbcType="VARCHAR" property="dwg" />
+        <result column="note" jdbcType="VARCHAR" property="note" />
+        <result column="revision" jdbcType="INTEGER" property="revision" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="def1" jdbcType="VARCHAR" property="def1" />
+        <result column="def2" jdbcType="VARCHAR" property="def2" />
+        <result column="def3" jdbcType="VARCHAR" property="def3" />
+        <result column="def5" jdbcType="VARCHAR" property="def5" />
+        <result column="def6" jdbcType="DECIMAL" property="def6" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        id, dr, tenant_id, user_id, parts_id, event, Import_lot, `status`, parts_type, sec,
-        parts_number, cn_name, fr_name, en_name, sn_class_flag, parts_qty, production_cycle,
-        cost, supplier_id, dwg, note, revision, created_by, created_time, updated_by, updated_time,
+        id, dr, tenant_id, user_id, parts_id, event, import_lot, `status`, parts_type, sec,
+        parts_number, cn_name, fr_name, en_name, sn_class, parts_qty, production_cycle, cost,
+        supplier_id, dwg, note, revision, created_by, created_time, updated_by, updated_time,
         def1, def2, def3, def5, def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
@@ -72,7 +72,7 @@
                     when id = #{item.id,jdbcType=BIGINT} then #{item.event,jdbcType=VARCHAR}
                 </foreach>
             </trim>
-            <trim prefix="Import_lot = case" suffix="end,">
+            <trim prefix="import_lot = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.importLot,jdbcType=VARCHAR}
                 </foreach>
@@ -112,9 +112,9 @@
                     when id = #{item.id,jdbcType=BIGINT} then #{item.enName,jdbcType=VARCHAR}
                 </foreach>
             </trim>
-            <trim prefix="sn_class_flag = case" suffix="end,">
+            <trim prefix="sn_class = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.snClassFlag,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.snClass,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="parts_qty = case" suffix="end,">
@@ -134,7 +134,7 @@
             </trim>
             <trim prefix="supplier_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.supplierId,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.supplierId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="dwg = case" suffix="end,">
@@ -206,8 +206,8 @@
     <insert id="batchInsert" parameterType="map">
         <!--@mbg.generated-->
         insert into ope_parts_history_record
-        (id, dr, tenant_id, user_id, parts_id, event, Import_lot, `status`, parts_type, sec,
-        parts_number, cn_name, fr_name, en_name, sn_class_flag, parts_qty, production_cycle,
+        (id, dr, tenant_id, user_id, parts_id, event, import_lot, `status`, parts_type, sec,
+        parts_number, cn_name, fr_name, en_name, sn_class, parts_qty, production_cycle,
         cost, supplier_id, dwg, note, revision, created_by, created_time, updated_by, updated_time,
         def1, def2, def3, def5, def6)
         values
@@ -216,11 +216,10 @@
             #{item.userId,jdbcType=BIGINT}, #{item.partsId,jdbcType=BIGINT}, #{item.event,jdbcType=VARCHAR},
             #{item.importLot,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR}, #{item.partsType,jdbcType=VARCHAR},
             #{item.sec,jdbcType=VARCHAR}, #{item.partsNumber,jdbcType=VARCHAR}, #{item.cnName,jdbcType=VARCHAR},
-            #{item.frName,jdbcType=VARCHAR}, #{item.enName,jdbcType=VARCHAR}, #{item.snClassFlag,jdbcType=VARCHAR},
+            #{item.frName,jdbcType=VARCHAR}, #{item.enName,jdbcType=VARCHAR}, #{item.snClass,jdbcType=VARCHAR},
             #{item.partsQty,jdbcType=INTEGER}, #{item.productionCycle,jdbcType=VARCHAR}, #{item.cost,jdbcType=VARCHAR},
-            #{item.supplierId,jdbcType=VARCHAR}, #{item.dwg,jdbcType=VARCHAR}, #{item.note,jdbcType=VARCHAR},
-            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.supplierId,jdbcType=BIGINT}, #{item.dwg,jdbcType=VARCHAR}, #{item.note,jdbcType=VARCHAR},
+            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
             #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
             #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
             #{item.def6,jdbcType=DECIMAL})
@@ -229,8 +228,8 @@
     <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord">
         <!--@mbg.generated-->
         insert into ope_parts_history_record
-        (id, dr, tenant_id, user_id, parts_id, event, Import_lot, `status`, parts_type, sec,
-        parts_number, cn_name, fr_name, en_name, sn_class_flag, parts_qty, production_cycle,
+        (id, dr, tenant_id, user_id, parts_id, event, import_lot, `status`, parts_type, sec,
+        parts_number, cn_name, fr_name, en_name, sn_class, parts_qty, production_cycle,
         cost, supplier_id, dwg, note, revision, created_by, created_time, updated_by, updated_time,
         def1, def2, def3, def5, def6)
         values
@@ -238,8 +237,8 @@
         #{partsId,jdbcType=BIGINT}, #{event,jdbcType=VARCHAR}, #{importLot,jdbcType=VARCHAR},
         #{status,jdbcType=VARCHAR}, #{partsType,jdbcType=VARCHAR}, #{sec,jdbcType=VARCHAR},
         #{partsNumber,jdbcType=VARCHAR}, #{cnName,jdbcType=VARCHAR}, #{frName,jdbcType=VARCHAR},
-        #{enName,jdbcType=VARCHAR}, #{snClassFlag,jdbcType=VARCHAR}, #{partsQty,jdbcType=INTEGER},
-        #{productionCycle,jdbcType=VARCHAR}, #{cost,jdbcType=VARCHAR}, #{supplierId,jdbcType=VARCHAR},
+        #{enName,jdbcType=VARCHAR}, #{snClass,jdbcType=VARCHAR}, #{partsQty,jdbcType=INTEGER},
+        #{productionCycle,jdbcType=VARCHAR}, #{cost,jdbcType=VARCHAR}, #{supplierId,jdbcType=BIGINT},
         #{dwg,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER},
         #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
         #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
@@ -251,7 +250,7 @@
         user_id = #{userId,jdbcType=BIGINT},
         parts_id = #{partsId,jdbcType=BIGINT},
         event = #{event,jdbcType=VARCHAR},
-        Import_lot = #{importLot,jdbcType=VARCHAR},
+        import_lot = #{importLot,jdbcType=VARCHAR},
         `status` = #{status,jdbcType=VARCHAR},
         parts_type = #{partsType,jdbcType=VARCHAR},
         sec = #{sec,jdbcType=VARCHAR},
@@ -259,11 +258,11 @@
         cn_name = #{cnName,jdbcType=VARCHAR},
         fr_name = #{frName,jdbcType=VARCHAR},
         en_name = #{enName,jdbcType=VARCHAR},
-        sn_class_flag = #{snClassFlag,jdbcType=VARCHAR},
+        sn_class = #{snClass,jdbcType=VARCHAR},
         parts_qty = #{partsQty,jdbcType=INTEGER},
         production_cycle = #{productionCycle,jdbcType=VARCHAR},
         cost = #{cost,jdbcType=VARCHAR},
-        supplier_id = #{supplierId,jdbcType=VARCHAR},
+        supplier_id = #{supplierId,jdbcType=BIGINT},
         dwg = #{dwg,jdbcType=VARCHAR},
         note = #{note,jdbcType=VARCHAR},
         revision = #{revision,jdbcType=INTEGER},
@@ -300,7 +299,7 @@
                 event,
             </if>
             <if test="importLot != null">
-                Import_lot,
+                import_lot,
             </if>
             <if test="status != null">
                 `status`,
@@ -323,8 +322,8 @@
             <if test="enName != null">
                 en_name,
             </if>
-            <if test="snClassFlag != null">
-                sn_class_flag,
+            <if test="snClass != null">
+                sn_class,
             </if>
             <if test="partsQty != null">
                 parts_qty,
@@ -419,8 +418,8 @@
             <if test="enName != null">
                 #{enName,jdbcType=VARCHAR},
             </if>
-            <if test="snClassFlag != null">
-                #{snClassFlag,jdbcType=VARCHAR},
+            <if test="snClass != null">
+                #{snClass,jdbcType=VARCHAR},
             </if>
             <if test="partsQty != null">
                 #{partsQty,jdbcType=INTEGER},
@@ -432,7 +431,7 @@
                 #{cost,jdbcType=VARCHAR},
             </if>
             <if test="supplierId != null">
-                #{supplierId,jdbcType=VARCHAR},
+                #{supplierId,jdbcType=BIGINT},
             </if>
             <if test="dwg != null">
                 #{dwg,jdbcType=VARCHAR},
@@ -492,7 +491,7 @@
                 event = #{event,jdbcType=VARCHAR},
             </if>
             <if test="importLot != null">
-                Import_lot = #{importLot,jdbcType=VARCHAR},
+                import_lot = #{importLot,jdbcType=VARCHAR},
             </if>
             <if test="status != null">
                 `status` = #{status,jdbcType=VARCHAR},
@@ -515,8 +514,8 @@
             <if test="enName != null">
                 en_name = #{enName,jdbcType=VARCHAR},
             </if>
-            <if test="snClassFlag != null">
-                sn_class_flag = #{snClassFlag,jdbcType=VARCHAR},
+            <if test="snClass != null">
+                sn_class = #{snClass,jdbcType=VARCHAR},
             </if>
             <if test="partsQty != null">
                 parts_qty = #{partsQty,jdbcType=INTEGER},
@@ -528,7 +527,7 @@
                 cost = #{cost,jdbcType=VARCHAR},
             </if>
             <if test="supplierId != null">
-                supplier_id = #{supplierId,jdbcType=VARCHAR},
+                supplier_id = #{supplierId,jdbcType=BIGINT},
             </if>
             <if test="dwg != null">
                 dwg = #{dwg,jdbcType=VARCHAR},

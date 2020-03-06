@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.bom;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
@@ -59,26 +60,6 @@ public interface BomRosServiceMapper {
     List<SecResult> secList(GeneralEnter enter);
 
     /**
-     * @desc: 保存整车的部件列表
-     * @paam: enter
-     * @retrn: int
-     * @auther: alex
-     * @date: 2020/2/26 19:03
-     * @Version: Ros 1.2
-     */
-    int partListCount(QueryPartListEnter enter);
-
-    /**
-     * @desc: 保存整车的部件列表
-     * @paam: enter
-     * @retrn: QueryPartListResult
-     * @auther: alex
-     * @date: 2020/2/26 19:03
-     * @Version: Ros 1.2
-     */
-    List<QueryPartListResult> partList(QueryPartListEnter enter);
-
-    /**
      * @desc: 产品的详情 部品列表（整车，组合）
      * @paam: enter
      * @retrn: List<PartListEnter>
@@ -86,7 +67,7 @@ public interface BomRosServiceMapper {
      * @date: 2020/2/26 19:21
      * @Version: Ros 1.2
      */
-    List<QueryPartListResult> productDeatilPartList(Long id);
+    List<QueryPartListResult> productDeatilPartList(IdEnter enter);
 
     /**
      * @desc: 组合列表

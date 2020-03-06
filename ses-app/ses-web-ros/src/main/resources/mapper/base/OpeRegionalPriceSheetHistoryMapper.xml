@@ -4,40 +4,38 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory">
         <!--@mbg.generated-->
         <!--@Table ope_regional_price_sheet_history-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
-        <result column="user_id" jdbcType="BIGINT" property="userId"/>
-        <result column="status" jdbcType="VARCHAR" property="status"/>
-        <result column="regional_price_sheet_id" jdbcType="BIGINT" property="regionalPriceSheetId"/>
-        <result column="part_id" jdbcType="BIGINT" property="partId"/>
-        <result column="assembly_id" jdbcType="BIGINT" property="assemblyId"/>
-        <result column="price_type" jdbcType="VARCHAR" property="priceType"/>
-        <result column="sales_price" jdbcType="DECIMAL" property="salesPrice"/>
-        <result column="currency_type" jdbcType="VARCHAR" property="currencyType"/>
-        <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit"/>
-        <result column="standard_currency" jdbcType="VARCHAR" property="standardCurrency"/>
-        <result column="exchange_rate" jdbcType="VARCHAR" property="exchangeRate"/>
-        <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
-        <result column="country_city" jdbcType="VARCHAR" property="countryCity"/>
-        <result column="country_language" jdbcType="VARCHAR" property="countryLanguage"/>
-        <result column="revision" jdbcType="INTEGER" property="revision"/>
-        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
-        <result column="def1" jdbcType="VARCHAR" property="def1"/>
-        <result column="def2" jdbcType="VARCHAR" property="def2"/>
-        <result column="def3" jdbcType="VARCHAR" property="def3"/>
-        <result column="def5" jdbcType="VARCHAR" property="def5"/>
-        <result column="def6" jdbcType="DECIMAL" property="def6"/>
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+        <result column="user_id" jdbcType="BIGINT" property="userId" />
+        <result column="regional_price_sheet_id" jdbcType="BIGINT" property="regionalPriceSheetId" />
+        <result column="parts_product_id" jdbcType="BIGINT" property="partsProductId" />
+        <result column="price_type" jdbcType="VARCHAR" property="priceType" />
+        <result column="sales_price" jdbcType="DECIMAL" property="salesPrice" />
+        <result column="currency_type" jdbcType="VARCHAR" property="currencyType" />
+        <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit" />
+        <result column="standard_currency" jdbcType="VARCHAR" property="standardCurrency" />
+        <result column="exchange_rate" jdbcType="VARCHAR" property="exchangeRate" />
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+        <result column="country_city" jdbcType="VARCHAR" property="countryCity" />
+        <result column="country_language" jdbcType="VARCHAR" property="countryLanguage" />
+        <result column="revision" jdbcType="INTEGER" property="revision" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="def1" jdbcType="VARCHAR" property="def1" />
+        <result column="def2" jdbcType="VARCHAR" property="def2" />
+        <result column="def3" jdbcType="VARCHAR" property="def3" />
+        <result column="def5" jdbcType="VARCHAR" property="def5" />
+        <result column="def6" jdbcType="DECIMAL" property="def6" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        id, dr, tenant_id, user_id, `status`, regional_price_sheet_id, part_id, assembly_id,
-        price_type, sales_price, currency_type, currency_unit, standard_currency, exchange_rate,
-        country_code, country_city, country_language, revision, created_by, created_time,
-        updated_by, updated_time, def1, def2, def3, def5, def6
+        id, dr, tenant_id, user_id, regional_price_sheet_id, parts_product_id, price_type,
+        sales_price, currency_type, currency_unit, standard_currency, exchange_rate, country_code,
+        country_city, country_language, revision, created_by, created_time, updated_by, updated_time,
+        def1, def2, def3, def5, def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
@@ -58,24 +56,14 @@
                     when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
                 </foreach>
             </trim>
-            <trim prefix="`status` = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
             <trim prefix="regional_price_sheet_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.regionalPriceSheetId,jdbcType=BIGINT}
                 </foreach>
             </trim>
-            <trim prefix="part_id = case" suffix="end,">
+            <trim prefix="parts_product_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.partId,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="assembly_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.partsProductId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="price_type = case" suffix="end,">
@@ -182,54 +170,46 @@
     <insert id="batchInsert" parameterType="map">
         <!--@mbg.generated-->
         insert into ope_regional_price_sheet_history
-        (id, dr, tenant_id, user_id, `status`, regional_price_sheet_id, part_id, assembly_id,
-        price_type, sales_price, currency_type, currency_unit, standard_currency, exchange_rate,
-        country_code, country_city, country_language, revision, created_by, created_time,
-        updated_by, updated_time, def1, def2, def3, def5, def6)
+        (id, dr, tenant_id, user_id, regional_price_sheet_id, parts_product_id, price_type,
+        sales_price, currency_type, currency_unit, standard_currency, exchange_rate, country_code,
+        country_city, country_language, revision, created_by, created_time, updated_by,
+        updated_time, def1, def2, def3, def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
-            #{item.userId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR},
-            #{item.regionalPriceSheetId,jdbcType=BIGINT},
-            #{item.partId,jdbcType=BIGINT}, #{item.assemblyId,jdbcType=BIGINT}, #{item.priceType,jdbcType=VARCHAR},
-            #{item.salesPrice,jdbcType=DECIMAL}, #{item.currencyType,jdbcType=VARCHAR},
-            #{item.currencyUnit,jdbcType=VARCHAR},
-            #{item.standardCurrency,jdbcType=VARCHAR}, #{item.exchangeRate,jdbcType=VARCHAR},
-            #{item.countryCode,jdbcType=VARCHAR}, #{item.countryCity,jdbcType=VARCHAR},
-            #{item.countryLanguage,jdbcType=VARCHAR},
-            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP},
-            #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
-            #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
-            #{item.def6,jdbcType=DECIMAL})
+            #{item.userId,jdbcType=BIGINT}, #{item.regionalPriceSheetId,jdbcType=BIGINT}, #{item.partsProductId,jdbcType=BIGINT},
+            #{item.priceType,jdbcType=VARCHAR}, #{item.salesPrice,jdbcType=DECIMAL}, #{item.currencyType,jdbcType=VARCHAR},
+            #{item.currencyUnit,jdbcType=VARCHAR}, #{item.standardCurrency,jdbcType=VARCHAR},
+            #{item.exchangeRate,jdbcType=VARCHAR}, #{item.countryCode,jdbcType=VARCHAR}, #{item.countryCity,jdbcType=VARCHAR},
+            #{item.countryLanguage,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
+            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL})
         </foreach>
     </insert>
     <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory">
         <!--@mbg.generated-->
         insert into ope_regional_price_sheet_history
-        (id, dr, tenant_id, user_id, `status`, regional_price_sheet_id, part_id, assembly_id,
-        price_type, sales_price, currency_type, currency_unit, standard_currency, exchange_rate,
-        country_code, country_city, country_language, revision, created_by, created_time,
-        updated_by, updated_time, def1, def2, def3, def5, def6)
+        (id, dr, tenant_id, user_id, regional_price_sheet_id, parts_product_id, price_type,
+        sales_price, currency_type, currency_unit, standard_currency, exchange_rate, country_code,
+        country_city, country_language, revision, created_by, created_time, updated_by,
+        updated_time, def1, def2, def3, def5, def6)
         values
         (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
-        #{status,jdbcType=VARCHAR}, #{regionalPriceSheetId,jdbcType=BIGINT}, #{partId,jdbcType=BIGINT},
-        #{assemblyId,jdbcType=BIGINT}, #{priceType,jdbcType=VARCHAR}, #{salesPrice,jdbcType=DECIMAL},
-        #{currencyType,jdbcType=VARCHAR}, #{currencyUnit,jdbcType=VARCHAR}, #{standardCurrency,jdbcType=VARCHAR},
-        #{exchangeRate,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR}, #{countryCity,jdbcType=VARCHAR},
-        #{countryLanguage,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT},
-        #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
-        #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
-        #{def6,jdbcType=DECIMAL})
+        #{regionalPriceSheetId,jdbcType=BIGINT}, #{partsProductId,jdbcType=BIGINT}, #{priceType,jdbcType=VARCHAR},
+        #{salesPrice,jdbcType=DECIMAL}, #{currencyType,jdbcType=VARCHAR}, #{currencyUnit,jdbcType=VARCHAR},
+        #{standardCurrency,jdbcType=VARCHAR}, #{exchangeRate,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR},
+        #{countryCity,jdbcType=VARCHAR}, #{countryLanguage,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER},
+        #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+        #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
+        #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL})
         on duplicate key update
         id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
         tenant_id = #{tenantId,jdbcType=BIGINT},
         user_id = #{userId,jdbcType=BIGINT},
-        `status` = #{status,jdbcType=VARCHAR},
         regional_price_sheet_id = #{regionalPriceSheetId,jdbcType=BIGINT},
-        part_id = #{partId,jdbcType=BIGINT},
-        assembly_id = #{assemblyId,jdbcType=BIGINT},
+        parts_product_id = #{partsProductId,jdbcType=BIGINT},
         price_type = #{priceType,jdbcType=VARCHAR},
         sales_price = #{salesPrice,jdbcType=DECIMAL},
         currency_type = #{currencyType,jdbcType=VARCHAR},
@@ -266,17 +246,11 @@
             <if test="userId != null">
                 user_id,
             </if>
-            <if test="status != null">
-                `status`,
-            </if>
             <if test="regionalPriceSheetId != null">
                 regional_price_sheet_id,
             </if>
-            <if test="partId != null">
-                part_id,
-            </if>
-            <if test="assemblyId != null">
-                assembly_id,
+            <if test="partsProductId != null">
+                parts_product_id,
             </if>
             <if test="priceType != null">
                 price_type,
@@ -350,17 +324,11 @@
             <if test="userId != null">
                 #{userId,jdbcType=BIGINT},
             </if>
-            <if test="status != null">
-                #{status,jdbcType=VARCHAR},
-            </if>
             <if test="regionalPriceSheetId != null">
                 #{regionalPriceSheetId,jdbcType=BIGINT},
             </if>
-            <if test="partId != null">
-                #{partId,jdbcType=BIGINT},
-            </if>
-            <if test="assemblyId != null">
-                #{assemblyId,jdbcType=BIGINT},
+            <if test="partsProductId != null">
+                #{partsProductId,jdbcType=BIGINT},
             </if>
             <if test="priceType != null">
                 #{priceType,jdbcType=VARCHAR},
@@ -434,17 +402,11 @@
             <if test="userId != null">
                 user_id = #{userId,jdbcType=BIGINT},
             </if>
-            <if test="status != null">
-                `status` = #{status,jdbcType=VARCHAR},
-            </if>
             <if test="regionalPriceSheetId != null">
                 regional_price_sheet_id = #{regionalPriceSheetId,jdbcType=BIGINT},
             </if>
-            <if test="partId != null">
-                part_id = #{partId,jdbcType=BIGINT},
-            </if>
-            <if test="assemblyId != null">
-                assembly_id = #{assemblyId,jdbcType=BIGINT},
+            <if test="partsProductId != null">
+                parts_product_id = #{partsProductId,jdbcType=BIGINT},
             </if>
             <if test="priceType != null">
                 price_type = #{priceType,jdbcType=VARCHAR},

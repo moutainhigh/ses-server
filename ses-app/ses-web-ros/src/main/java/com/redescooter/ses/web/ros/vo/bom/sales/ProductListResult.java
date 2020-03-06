@@ -32,19 +32,31 @@ public class ProductListResult extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "产品名字")
-    private String productEnName;
+    private String productNumber;
 
-    @ApiModelProperty(value = "产品名字")
-    private String productFrName;
+    @ApiModelProperty(value = "产品类型")
+    private String productType;
 
-    @ApiModelProperty(value = "产品名字")
-    private String productCnName;
+    @ApiModelProperty(value = "中文名称")
+    private String cnName;
 
-    @ApiModelProperty(value = "产品编码")
-    private String productN;
+    @ApiModelProperty(value = "法文名称")
+    private String frName;
 
-    @ApiModelProperty(value = "类型")
-    private String type;
+    @ApiModelProperty(value = "英文名称")
+    private String enName;
+
+    @ApiModelProperty(value = "产品照片")
+    private String pictures;
+
+    @ApiModelProperty(value = "产品型号")
+    private String model;
+
+    @ApiModelProperty(value = "产品颜色")
+    private String color;
+
+    @ApiModelProperty(value = "总条目数")
+    private String sumPartsQty;
 
     @ApiModelProperty(value = "法国报价")
     private String productFrPrice;
@@ -58,11 +70,12 @@ public class ProductListResult extends GeneralResult {
     @ApiModelProperty(value = "报价单位")
     private String productEnUnit;
 
+    @ApiModelProperty(value = "备注")
+    private String note;
+
     @ApiModelProperty(value = "刷新时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date refuseTime;
 
-    @ApiModelProperty(value = "是否存在有列表详情")
-    private Boolean productListDetail=Boolean.FALSE;
 }

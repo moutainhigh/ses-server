@@ -23,39 +23,32 @@ import java.util.Date;
 @TableName(value = "ope_regional_price_sheet_history")
 public class OpeRegionalPriceSheetHistory implements Serializable {
     /**
-     * 主键 主键
+     * 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "主键 主键")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
     /**
-     * 逻辑删除 逻辑删除
+     * 逻辑删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value = "逻辑删除 逻辑删除")
+    @ApiModelProperty(value = "逻辑删除")
     private Integer dr;
 
     /**
-     * 租户ID 租户ID
+     * 租户ID
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "租户ID 租户ID")
+    @ApiModelProperty(value = "租户ID")
     private Long tenantId;
 
     /**
-     * 用户ID 用户ID
+     * 用户ID
      */
     @TableField(value = "user_id")
-    @ApiModelProperty(value = "用户ID 用户ID")
+    @ApiModelProperty(value = "用户ID")
     private Long userId;
-
-    /**
-     * 状态 状态
-     */
-    @TableField(value = "status")
-    @ApiModelProperty(value = "状态 状态")
-    private String status;
 
     /**
      * 区域报价主键 关联区域报价表
@@ -65,24 +58,17 @@ public class OpeRegionalPriceSheetHistory implements Serializable {
     private Long regionalPriceSheetId;
 
     /**
-     * 单个部品的产品 部品Id
+     * 产品ID
      */
-    @TableField(value = "part_id")
-    @ApiModelProperty(value = "单个部品的产品 部品Id")
-    private Long partId;
+    @TableField(value = "parts_product_id")
+    @ApiModelProperty(value = "产品ID")
+    private Long partsProductId;
 
     /**
-     * 整车、套餐 产品Id
-     */
-    @TableField(value = "assembly_id")
-    @ApiModelProperty(value = "整车、套餐 产品Id")
-    private Long assemblyId;
-
-    /**
-     * 价格类型 如部品销售价1，组装成品销售价2等
+     * 价格类型，1.销售价，2采购价，3其他价格
      */
     @TableField(value = "price_type")
-    @ApiModelProperty(value = "价格类型 如部品销售价1，组装成品销售价2等")
+    @ApiModelProperty(value = "价格类型，1.销售价，2采购价，3其他价格")
     private String priceType;
 
     /**
@@ -142,73 +128,73 @@ public class OpeRegionalPriceSheetHistory implements Serializable {
     private String countryLanguage;
 
     /**
-     * 乐观锁 乐观锁
+     * 乐观锁
      */
     @TableField(value = "revision")
-    @ApiModelProperty(value = "乐观锁 乐观锁")
+    @ApiModelProperty(value = "乐观锁")
     private Integer revision;
 
     /**
-     * 创建人 创建人
+     * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value = "创建人 创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
-     * 创建时间 创建时间
+     * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value = "创建时间 创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
-     * 更新人 更新人
+     * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value = "更新人 更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
-     * 更新时间 更新时间
+     * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value = "更新时间 更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
-     * 冗余字段 冗余字段
+     * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value = "冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
-     * 冗余字段 冗余字段
+     * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value = "冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
-     * 冗余字段 冗余字段
+     * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value = "冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
-     * 冗余字段 冗余字段
+     * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value = "冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def5;
 
     /**
-     * 冗余字段 冗余字段
+     * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value = "冗余字段 冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private BigDecimal def6;
 
     private static final long serialVersionUID = 1L;
@@ -221,13 +207,9 @@ public class OpeRegionalPriceSheetHistory implements Serializable {
 
     public static final String COL_USER_ID = "user_id";
 
-    public static final String COL_STATUS = "status";
-
     public static final String COL_REGIONAL_PRICE_SHEET_ID = "regional_price_sheet_id";
 
-    public static final String COL_PART_ID = "part_id";
-
-    public static final String COL_ASSEMBLY_ID = "assembly_id";
+    public static final String COL_PARTS_PRODUCT_ID = "parts_product_id";
 
     public static final String COL_PRICE_TYPE = "price_type";
 

@@ -2,44 +2,25 @@ package com.redescooter.ses.web.ros.service.bom.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.bom.BomAssTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
-import com.redescooter.ses.api.common.enums.bom.BomTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.PartsEventEnums;
-import com.redescooter.ses.api.common.enums.bom.SNClassEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.MapResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.PartsServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeParts;
-import com.redescooter.ses.web.ros.dm.OpePartsAssembly;
-import com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord;
-import com.redescooter.ses.web.ros.dm.OpePartsType;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.ExcelService;
-import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyService;
-import com.redescooter.ses.web.ros.service.base.OpePartsHistoryRecordService;
-import com.redescooter.ses.web.ros.service.base.OpePartsService;
-import com.redescooter.ses.web.ros.service.base.OpePartsTypeService;
-import com.redescooter.ses.web.ros.service.bom.PartsRosService;
-import com.redescooter.ses.web.ros.vo.bom.parts.AddPartsEnter;
-import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.EditSavePartsEnter;
-import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
-import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto;
-import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
-import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
+import com.redescooter.ses.web.ros.service.PartsRosService;
+import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,12 +30,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @ClassName PartsRosServiceImpl
@@ -70,8 +46,10 @@ public class PartsRosServiceImpl implements PartsRosService {
     private OpePartsService partsService;
 
     @Autowired
-    private OpePartsAssemblyService partsAssemblyService;
+    private OpeExcleImportService excleImportService;
 
+    @Autowired
+    private OpePartsProductService partsProductService;
     @Autowired
     private OpePartsHistoryRecordService partsHistoryRecordService;
 
@@ -94,20 +72,20 @@ public class PartsRosServiceImpl implements PartsRosService {
     public MapResult commonCountStatus(GeneralEnter enter) {
         QueryWrapper<OpeParts> partsQueryWrapper = new QueryWrapper<>();
         partsQueryWrapper.eq(OpeParts.COL_DR, 0);
-        partsQueryWrapper.eq(OpeParts.COL_USER_ID,enter.getUserId());
+        partsQueryWrapper.eq(OpeParts.COL_USER_ID, enter.getUserId());
         int partsCount = partsService.count(partsQueryWrapper);
 
-        QueryWrapper<OpePartsAssembly> scooter = new QueryWrapper<>();
-        scooter.eq(OpePartsAssembly.COL_DR, 0);
-        scooter.eq(OpePartsAssembly.COL_USER_ID,enter.getUserId());
-        scooter.eq(OpePartsAssembly.COL_ASS_TYPE, BomAssTypeEnums.SCOOTER.getValue());
-        int scooterConut = partsAssemblyService.count(scooter);
+        QueryWrapper<OpePartsProduct> scooter = new QueryWrapper<>();
+        scooter.eq(OpePartsProduct.COL_DR, 0);
+        scooter.eq(OpePartsProduct.COL_USER_ID, enter.getUserId());
+        scooter.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.SCOOTER.getValue());
+        int scooterConut = partsProductService.count(scooter);
 
-        QueryWrapper<OpePartsAssembly> combination = new QueryWrapper<>();
-        combination.eq(OpePartsAssembly.COL_DR, 0);
-        combination.eq(OpePartsAssembly.COL_USER_ID,enter.getUserId());
-        combination.eq(OpePartsAssembly.COL_ASS_TYPE, BomAssTypeEnums.COMBINATION.getValue());
-        int combinationConut = partsAssemblyService.count(combination);
+        QueryWrapper<OpePartsProduct> combination = new QueryWrapper<>();
+        combination.eq(OpePartsProduct.COL_DR, 0);
+        combination.eq(OpePartsProduct.COL_USER_ID, enter.getUserId());
+        combination.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.COMBINATION.getValue());
+        int combinationConut = partsProductService.count(combination);
 
         Map<String, Integer> map = new HashMap<>();
         map.put("partsCount", partsCount);
@@ -153,8 +131,8 @@ public class PartsRosServiceImpl implements PartsRosService {
             EditSavePartsEnter saveParts = new EditSavePartsEnter();
             saveParts.setPartsNumber(excleData.getPartsN());
             saveParts.setSec(ESCUtils.checkESC(excleData.getEsc()));
-            saveParts.setPartsType(BomTypeEnums.checkCode(excleData.getType()));
-            saveParts.setSnClassFlag(SNClassEnums.getValueByCode(excleData.getSnClass()));
+            saveParts.setPartsType(BomCommonTypeEnums.checkCode(excleData.getType()));
+            saveParts.setSnClassFlag(BomSnClassEnums.getValueByCode(excleData.getSnClass()));
             saveParts.setCnName(excleData.getCnName());
             saveParts.setFrName(excleData.getFrName());
             saveParts.setEnName(excleData.getEnName());
@@ -162,6 +140,23 @@ public class PartsRosServiceImpl implements PartsRosService {
             saveList.add(parts);
             instersHistory.add(createPartsHistory(parts, PartsEventEnums.CREATE.getValue(), enter.getUserId()));
         }
+
+        OpeExcleImport excleImport = new OpeExcleImport();
+        excleImport.setId(idAppService.getId(SequenceName.OPE_EXCLE_IMPORT));
+        excleImport.setDr(0);
+        excleImport.setStatus(BomStatusEnums.NORMAL.getValue());
+        excleImport.setBatchNo(lot);
+        excleImport.setCount(saveList.size());
+        excleImport.setAttachment(enter.getUrl());
+        excleImport.setServiceType("BOM导入");
+        excleImport.setMessage("BOM物料部件导入");
+        excleImport.setCreatedBy(enter.getUserId());
+        excleImport.setCreatedTime(new Date());
+        excleImport.setUpdatedBy(enter.getUserId());
+        excleImport.setUpdatedTime(new Date());
+        excleImport.setDataJson(JSONArray.toJSONString(list));
+
+        excleImportService.save(excleImport);
         partsService.batchInsert(saveList);
         partsHistoryRecordService.saveBatch(instersHistory);
 
@@ -391,6 +386,20 @@ public class PartsRosServiceImpl implements PartsRosService {
         return historyPartsResult;
     }
 
+    @Override
+    public GeneralResult partsSynchronize(GeneralEnter enter) {
+        return null;
+    }
+
+    @Override
+    public PageResult<QueryPartListResult> partList(QueryPartListEnter enter) {
+        int count = partsServiceMapper.partListCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter, count, partsServiceMapper.partList(enter));
+    }
+
     private OpePartsHistoryRecord createPartsHistory(OpeParts parts, String event, long userId) {
         OpePartsHistoryRecord record = new OpePartsHistoryRecord();
         record.setId(idAppService.getId(SequenceName.OPE_PARTS_HISTORY_RECORD));
@@ -407,7 +416,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         record.setCnName(parts.getCnName());
         record.setFrName(parts.getFrName());
         record.setEnName(parts.getEnName());
-        record.setSnClassFlag(parts.getSnClassFlag());
+        record.setSnClass(parts.getSnClass());
         record.setPartsQty(0);
         record.setProductionCycle(parts.getProductionCycle());
         record.setSupplierId(parts.getSupplierId());
@@ -437,8 +446,8 @@ public class PartsRosServiceImpl implements PartsRosService {
         } else {
             parts.setId(enter.getId());
         }
-        parts.setPartsType(BomTypeEnums.checkCode(enter.getPartsType()));
-        parts.setSnClassFlag(SNClassEnums.getValueByCode(enter.getSnClassFlag()));
+        parts.setPartsType(BomCommonTypeEnums.checkCode(enter.getPartsType()));
+        parts.setSnClass(BomSnClassEnums.getValueByCode(enter.getSnClassFlag()));
         parts.setSec(ESCUtils.checkESC(enter.getSec()));
         parts.setCnName(enter.getCnName());
         parts.setFrName(enter.getFrName());
@@ -447,6 +456,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         parts.setSupplierId(enter.getSupplierId());
         parts.setDwg(enter.getDwg());
         parts.setNote(enter.getNote());
+        parts.setSynchronizeFlag(Boolean.FALSE);
         parts.setRevision(0);
         parts.setUpdatedBy(userId);
         parts.setUpdatedTime(new Date());
@@ -457,8 +467,8 @@ public class PartsRosServiceImpl implements PartsRosService {
     private void checkParts(EditSavePartsEnter enter) {
 
         String partsNumber = enter.getPartsNumber();
-        String snClassFlag = SNClassEnums.checkCode(enter.getSnClassFlag());
-        String partsType = BomTypeEnums.checkCode(enter.getPartsType());
+        String snClassFlag = BomSnClassEnums.checkCode(enter.getSnClassFlag());
+        String partsType = BomCommonTypeEnums.checkCode(enter.getPartsType());
         String sec = ESCUtils.checkESC(enter.getSec());
         if (StringUtils.isAnyBlank(partsNumber, snClassFlag, partsType, sec)) {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_illegal.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_illegal.getMessage());

@@ -59,16 +59,6 @@ public interface BomRosService {
     List<SecResult> secList(GeneralEnter enter);
 
     /**
-     * @desc: 详情部件列表查询
-     * @param: SaveScooterPartListEnter
-     * @retrn: SaveScooterPartListResult
-     * @auther: alex
-     * @date: 2020/2/25 12:43
-     * @Version: Ros 1.2
-     */
-    PageResult<QueryPartListResult> partList(QueryPartListEnter enter);
-
-    /**
      * @desc: 整车详情
      * @param: enter
      * @retrn: ScooterDetailResult

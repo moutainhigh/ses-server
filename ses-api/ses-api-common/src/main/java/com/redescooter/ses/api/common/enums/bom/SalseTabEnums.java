@@ -5,33 +5,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName:BomServiceTypeEnums
- * @description: BomServiceTypeEnums
- * @author: Alex
- * @Version：1.3
- * @create: 2020/02/26 16:12
+ * @ClassName SalseTabEnums
+ * @Author Jerry
+ * @date 2020/03/06 15:57
+ * @Description:
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum BomAssTypeEnums {
+public enum SalseTabEnums {
 
-    SCOOTER("SCOOTER","整车","1"),
-    COMBINATION("COMBINATION","组合","2");
+    SALES_PRODUCTS("product", "销售产品", "1"),
+    AFTER_SALES_PRODUCTS("afterSale", "售后产品", "2"),
+    VALUE_ADDED_PRODUCTS("service", "增值服务", "3"),
+    ;
 
     private String code;
 
-    private String message;
+    private String name;
 
     private String value;
 
+
     public static String checkCode(String code) {
-        for (BomAssTypeEnums item : BomAssTypeEnums.values()) {
+        for (SalseTabEnums item : SalseTabEnums.values()) {
             if (item.getCode().equals(code)) {
                 return item.getCode();
             }
         }
         return null;
     }
-
 }
