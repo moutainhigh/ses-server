@@ -33,7 +33,7 @@
     </sql>
 
     <sql id="InquiryResult">
-        inquiry.id                                         as id,
+            inquiry.id                                         as id,
            inquiry.first_name                                 as customerFirstName,
            inquiry.last_name                                  as customerLastName,
            inquiry.full_name                                  as customerFullName,
@@ -49,8 +49,9 @@
            inquiry.industry                                   as industyType,
            inquiry.scooter_quantity                           as scooterQty,
            inquiry.remarks                                    as remark,
-           if(inquiry.status = 2, inquiry.updated_time, null) as acceptanceTime,
-           inquiry.company_name                                as companyName
+           if(inquiry.status = 3, inquiry.updated_time, null) as acceptanceTime,
+           inquiry.company_name                                as companyName,
+           inquiry.country_code                              as countryCode
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">

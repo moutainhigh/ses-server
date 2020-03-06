@@ -56,6 +56,9 @@ public class InquiryResult extends GeneralResult {
     @ApiModelProperty(value = "联系人姓氏")
     private String telephone;
 
+    @ApiModelProperty(value = "国家代码")
+    private String countryCode;
+
     @ApiModelProperty(value = "城市")
     private Long cityId;
 
