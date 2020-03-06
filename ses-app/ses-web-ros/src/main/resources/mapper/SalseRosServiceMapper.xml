@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.SalseRosServiceMapper">
+<mapper namespace="com.redescooter.ses.web.ros.dao.bom.SalseRosServiceMapper">
 
     <sql id="field_product">
        opp.id,
@@ -70,6 +70,39 @@
         </where>
     </sql>
 
+    <sql id="where_SccPriceHistroyList">
+        select priceResoult.id,
+        nullif(sum(priceResoult.enPrice), 0) as productEnPrice,
+        nullif(sum(priceResoult.frPrice), 0) as productfrPrice,
+        priceResoult.createdTime             as refuseTime
+        from (select orpsh.parts_product_id   as id,
+        orpsh.sales_price   as enPrice,
+        orpsh.currency_type as enCurrencyType,
+        orpsh.created_time  as createdTime,
+        0                   as frPrice,
+        null                as frCurrencyType
+        from ope_regional_price_sheet_history orpsh
+        where 1 = 1
+        and orpsh.parts_product_id = #{id}
+        and orpsh.dr = 0
+        group by enPrice, enCurrencyType, createdTime, id
+        having enCurrencyType = 'EN'
+        union all
+        select orpsh.parts_product_id   as id,
+        0                   as enPrice,
+        null                as enCurrencyType,
+        orpsh.created_time  as createdTime,
+        orpsh.sales_price   as frPrice,
+        orpsh.currency_type as frCurrencyType
+        from ope_regional_price_sheet_history orpsh
+        where 1 = 1
+        and orpsh.parts_product_id = #{id}
+        and orpsh.dr = 0
+        group by frPrice, frCurrencyType, createdTime, id
+        having frCurrencyType = 'FR') priceResoult
+        group by priceResoult.createdTime, id
+    </sql>
+
     <select id="productListCount" resultType="java.lang.Integer">
         select count(*)
         from ope_parts_product opp
@@ -78,7 +111,7 @@
         order by opp.updated_time desc
     </select>
 
-    <select id="productList" resultType="com.redescooter.ses.web.ros.vo.sales.ProductListResult">
+    <select id="productList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult">
         select
         <include refid="field_product"/>
         from ope_parts_product opp
@@ -95,7 +128,7 @@
         <include refid="where_afterSaleList"/>
     </select>
 
-    <select id="afterSaleList" resultType="com.redescooter.ses.web.ros.vo.sales.ProductListResult">
+    <select id="afterSaleList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult">
         select
         <include refid="field_product"/>
         from ope_parts_product opp
@@ -124,5 +157,6 @@
         <include refid="where_SccPriceHistroyList"/>
         ) result
         order by refuseTime desc
+        limit #{startRow},#{pageSize}
     </select>
 </mapper>

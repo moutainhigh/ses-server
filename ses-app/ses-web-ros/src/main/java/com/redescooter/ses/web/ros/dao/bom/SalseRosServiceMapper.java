@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.dao.bom;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheet;
 import com.redescooter.ses.web.ros.vo.bom.sales.ProductListEnter;
 import com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult;

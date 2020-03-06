@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.service.bom.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
-import com.redescooter.ses.api.common.enums.bom.BomTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -75,9 +75,9 @@ public class SalseRosServiceImpl implements SalseRosService {
     public Map<String, Integer> countByServiceType(GeneralEnter enter) {
         Map<String, Integer> map = new HashMap<>();
         // 产品数量
-        map.put("product", salseRosServiceMapper.productCount(enter));
+        map.put("product", 0);
         // 售后产品数量
-        map.put("afterSale", salseRosServiceMapper.afterSaleCount(enter));
+        map.put("afterSale", 0);
         // 增值服务数量
         map.put("service", 1);
         return map;
@@ -106,16 +106,16 @@ public class SalseRosServiceImpl implements SalseRosService {
         QueryWrapper<OpeRegionalPriceSheet> opeRegionalPriceSheetQueryWrapper = new QueryWrapper<>();
         opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_DR, 0);
         opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_USER_ID, enter.getUserId());
-        opeRegionalPriceSheetQueryWrapper.in(OpeRegionalPriceSheet.COL_ASSEMBLY_ID, assIdList);
+        opeRegionalPriceSheetQueryWrapper.in(OpeRegionalPriceSheet.COL_PARTS_PRODUCT_ID, assIdList);
         List<OpeRegionalPriceSheet> opeRegionalPriceSheetList = opeRegionalPriceSheetService.list(opeRegionalPriceSheetQueryWrapper);
         if (CollectionUtils.isNotEmpty(opeRegionalPriceSheetList)) {
             results.forEach(result -> {
                 opeRegionalPriceSheetList.forEach(item -> {
-                    if (result.getId().equals(item.getAssemblyId()) && item.getCurrencyUnit().equals(CurrencyUnitEnums.EN.getValue())) {
+                    if (result.getId().equals(item.getPartsProductId()) && item.getCurrencyUnit().equals(CurrencyUnitEnums.EN.getValue())) {
                         result.setProductEnPrice(item.getSalesPrice().toString());
                         result.setProductEnUnit(item.getCurrencyUnit());
                     }
-                    if (result.getId().equals(item.getAssemblyId()) && item.getCurrencyUnit().equals(CurrencyUnitEnums.FR.getValue())) {
+                    if (result.getId().equals(item.getPartsProductId()) && item.getCurrencyUnit().equals(CurrencyUnitEnums.FR.getValue())) {
 
                         result.setProductFrPrice(item.getSalesPrice().toString());
                         result.setProductFrUnit(item.getCurrencyUnit());
@@ -152,16 +152,16 @@ public class SalseRosServiceImpl implements SalseRosService {
         QueryWrapper<OpeRegionalPriceSheet> opeRegionalPriceSheetQueryWrapper = new QueryWrapper<>();
         opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_DR, 0);
         opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_USER_ID, enter.getUserId());
-        opeRegionalPriceSheetQueryWrapper.in(OpeRegionalPriceSheet.COL_ASSEMBLY_ID, assIdList);
+        opeRegionalPriceSheetQueryWrapper.in(OpeRegionalPriceSheet.COL_PARTS_PRODUCT_ID, assIdList);
         List<OpeRegionalPriceSheet> opeRegionalPriceSheetList = opeRegionalPriceSheetService.list(opeRegionalPriceSheetQueryWrapper);
         if (CollectionUtils.isNotEmpty(opeRegionalPriceSheetList)) {
             results.forEach(result -> {
                 opeRegionalPriceSheetList.forEach(item -> {
-                    if (result.getId().equals(item.getAssemblyId()) && item.getCurrencyUnit().equals(CurrencyUnitEnums.EN.getValue())) {
+                    if (result.getId().equals(item.getPartsProductId()) && item.getCurrencyUnit().equals(CurrencyUnitEnums.EN.getValue())) {
                         result.setProductEnPrice(item.getSalesPrice().toString());
                         result.setProductEnUnit(item.getCurrencyUnit());
                     }
-                    if (result.getId().equals(item.getAssemblyId()) && item.getCurrencyUnit().equals(CurrencyUnitEnums.FR.getValue())) {
+                    if (result.getId().equals(item.getPartsProductId()) && item.getCurrencyUnit().equals(CurrencyUnitEnums.FR.getValue())) {
 
                         result.setProductFrPrice(item.getSalesPrice().toString());
                         result.setProductFrUnit(item.getCurrencyUnit());
@@ -219,8 +219,8 @@ public class SalseRosServiceImpl implements SalseRosService {
     @Override
     public List<String> productTypeList(GeneralEnter enter) {
         List<String> result = new ArrayList<>();
-        for (BomTypeEnums item : BomTypeEnums.values()) {
-            if (!StringUtils.equals(item.getCode(), BomTypeEnums.PARTS.getCode())) {
+        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
+            if (!StringUtils.equals(item.getCode(), BomCommonTypeEnums.PARTS.getCode())) {
                 result.add(item.getCode());
             }
         }
@@ -439,7 +439,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         QueryWrapper<OpeRegionalPriceSheet> opeRegionalPriceSheetQueryWrapper = new QueryWrapper<>();
         opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_USER_ID, enter.getUserId());
         opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_DR, 0);
-        opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_ASSEMBLY_ID, enter.getId());
+        opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_PARTS_PRODUCT_ID, enter.getId());
         List<OpeRegionalPriceSheet> regionalPriceSheetList = opeRegionalPriceSheetService.list(opeRegionalPriceSheetQueryWrapper);
         if (CollectionUtils.isNotEmpty(regionalPriceSheetList)) {
             regionalPriceSheetList.forEach(item -> {
@@ -488,10 +488,8 @@ public class SalseRosServiceImpl implements SalseRosService {
         opeRegionalPriceSheetHistory.setDr(0);
         opeRegionalPriceSheetHistory.setTenantId(0L);
         opeRegionalPriceSheetHistory.setUserId(enter.getUserId());
-        opeRegionalPriceSheetHistory.setStatus(BomStatusEnums.NORMAL.getValue());
 
-        opeRegionalPriceSheetHistory.setAssemblyId(enter.getId());
-        opeRegionalPriceSheetHistory.setPartId(0L);
+        opeRegionalPriceSheetHistory.setPartsProductId(enter.getId());
         opeRegionalPriceSheetHistory.setPriceType("0");
 
         opeRegionalPriceSheetHistory.setRegionalPriceSheetId(regionalPriceSheetId);
@@ -527,7 +525,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         opeRegionalPrice.setTenantId(0L);
         opeRegionalPrice.setStatus(BomStatusEnums.NORMAL.getValue());
         opeRegionalPrice.setPartId(0L);
-        opeRegionalPrice.setAssemblyId(enter.getId());
+        opeRegionalPrice.setPartsProductId(enter.getId());
         opeRegionalPrice.setEffectiveTime(new Date());
         opeRegionalPrice.setValidFlag("1");
         opeRegionalPrice.setPriceType("1");

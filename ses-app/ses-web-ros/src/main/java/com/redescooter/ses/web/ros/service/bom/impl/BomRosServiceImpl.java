@@ -19,9 +19,9 @@ import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
+import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.bom.BomRosService;
-import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyBService;
-import com.redescooter.ses.web.ros.service.base.OpePartsAssemblyService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.vo.bom.ProdoctPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
@@ -70,10 +70,6 @@ public class BomRosServiceImpl implements BomRosService {
 
     @Autowired
     private OpePartsProductBService opePartsProductBService;
-
-    @Reference
-    private IdAppService idAppService;
-
 
     @Autowired
     private OpePartsService opePartsService;
@@ -213,23 +209,6 @@ public class BomRosServiceImpl implements BomRosService {
         return bomRosServiceMapper.secList(enter);
     }
 
-    /**
-     * @param enter
-     * @desc: 详情部件列表查询
-     * @param: SaveScooterPartListEnter
-     * @retrn: SaveScooterPartListResult
-     * @auther: alex
-     * @date: 2020/2/25 12:43
-     * @Version: Ros 1.2
-     */
-    @Override
-    public PageResult<QueryPartListResult> partList(QueryPartListEnter enter) {
-        int count = bomRosServiceMapper.partListCount(enter);
-        if (count == 0) {
-            return PageResult.createZeroRowResult(enter);
-        }
-        return PageResult.create(enter, count, bomRosServiceMapper.partList(enter));
-    }
 
     /**
      * @param enter

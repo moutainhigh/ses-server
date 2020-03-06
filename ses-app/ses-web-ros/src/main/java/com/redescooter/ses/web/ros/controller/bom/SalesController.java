@@ -1,17 +1,9 @@
 package com.redescooter.ses.web.ros.controller.bom;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.MapResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.bom.SalseRosService;
 import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.ProductListEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult;
-import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceEnter;
-import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
+import com.redescooter.ses.web.ros.vo.bom.sales.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -69,12 +61,6 @@ public class SalesController {
     @ApiOperation(value = "产品类型", response = String.class)
     public Response<List<String>> productTypeList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(salseRosService.productTypeList(enter));
-    }
-
-    @PostMapping(value = "/list")
-    @ApiOperation(value = "商品列表", response = ProductListResult.class)
-    public Response<PageResult<ProductListResult>> productList(@ModelAttribute @ApiParam("请求参数") ProductListEnter enter) {
-        return new Response<>(salseRosService.productList(enter));
     }
 
     @PostMapping(value = "/editPrice")
