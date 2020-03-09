@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 /**
- * @ClassName ProductSubentryResult
+ * @ClassName SubentryProductResult
  * @Author Jerry
  * @date 2020/03/06 14:28
  * @Description:
@@ -17,7 +17,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ProductSubentryResult extends GeneralResult {
+public class SubentryProductResult extends GeneralResult {
 
     @ApiModelProperty(value = "主键")
     private Long id;

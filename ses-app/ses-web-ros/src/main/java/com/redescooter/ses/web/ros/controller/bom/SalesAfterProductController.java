@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName:SalesAfterController
@@ -43,6 +42,12 @@ public class SalesAfterProductController {
     @ApiOperation(value = "售后产品列表", response = ProductListResult.class)
     public Response<PageResult<ProductListResult>> afterSaleList(@ModelAttribute @ApiParam("请求参数") ProductListEnter enter) {
         return new Response<>(salseRosService.afterSaleList(enter));
+    }
+
+    @PostMapping(value = "/item")
+    @ApiOperation(value = "产品子条目", response = ProductListResult.class)
+    public Response<List<SubentryProductResult>> items(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(salseRosService.items(enter));
     }
 
     @PostMapping(value = "/editPrice")

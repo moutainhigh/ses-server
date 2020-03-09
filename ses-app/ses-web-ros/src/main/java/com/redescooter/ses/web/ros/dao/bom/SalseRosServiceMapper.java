@@ -54,15 +54,6 @@ public interface SalseRosServiceMapper {
     List<ProductListResult> productList(ProductListEnter enter);
 
     /**
-     * 产品子条目
-     * 根据产品主键
-     *
-     * @param enter
-     * @return
-     */
-    List<ProductSubentryResult> productItems(IdEnter enter);
-
-    /**
      * 售后产品列表
      *
      * @param enter
@@ -77,6 +68,15 @@ public interface SalseRosServiceMapper {
      * @return
      */
     List<ProductListResult> afterSaleList(ProductListEnter enter);
+
+    /**
+     * 产品子条目
+     * 根据产品主键
+     *
+     * @param enter
+     * @return
+     */
+    List<SubentryProductResult> productItems(IdEnter enter);
 
     /**
      * 查询产品的报价

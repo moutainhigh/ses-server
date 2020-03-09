@@ -162,7 +162,7 @@
         order by refuseTime desc
         limit #{startRow},#{pageSize}
     </select>
-    <select id="productItems" resultType="com.redescooter.ses.web.ros.vo.bom.sales.ProductSubentryResult">
+    <select id="productItems" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SubentryProductResult">
         select
              oppb.id,
              oppb.parts_qty as qty,
@@ -193,4 +193,5 @@
           and opp.dr = 0
           and opp.user_id=#{userId}
     </select>
+
 </mapper>

@@ -55,7 +55,7 @@ public interface SalseRosService {
      * @param enter
      * @return
      */
-    List<ProductSubentryResult> items(IdEnter enter);
+    List<SubentryProductResult> items(IdEnter enter);
 
     /**
      * 获取售后产品类型
