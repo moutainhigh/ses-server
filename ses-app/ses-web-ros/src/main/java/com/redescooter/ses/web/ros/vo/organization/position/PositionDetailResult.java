@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.position;
+package com.redescooter.ses.web.ros.vo.organization.position;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
@@ -24,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class PositionAuthorityResult extends GeneralResult {
+public class PositionDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "负责的销售区域")
     private List<Long> salesTerritoryList;

@@ -45,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -108,6 +109,14 @@ public class BomRosServiceImpl implements BomRosService {
         try {
             partList = JSONArray.parseArray(enter.getPartList(), ProdoctPartListEnter.class);
         } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        // 数据重复性过滤
+        HashSet<Long> partIds = new HashSet<>();
+        partList.forEach(item -> {
+            partIds.add(item.getId());
+        });
+        if (partIds.size() != partList.size()) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         List<OpePartsProductB> opePartsProductList = new ArrayList<>();
@@ -464,12 +473,21 @@ public class BomRosServiceImpl implements BomRosService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        // 配件过滤
-        List<Long> partIds = new ArrayList<>();
+        // 数据重复性过滤
+        HashSet<Long> partIds = new HashSet<>();
         partList.forEach(item -> {
             partIds.add(item.getId());
         });
-        Collection<OpeParts> opePartList = opePartsService.listByIds(partIds);
+        if (partIds.size() != partList.size()) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        // 配件过滤
+        List<Long> partIdList = new ArrayList<>();
+        partList.forEach(item -> {
+            partIdList.add(item.getId());
+        });
+        Collection<OpeParts> opePartList = opePartsService.listByIds(partIdList);
 
         if (CollectionUtils.isEmpty(opePartList)) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());

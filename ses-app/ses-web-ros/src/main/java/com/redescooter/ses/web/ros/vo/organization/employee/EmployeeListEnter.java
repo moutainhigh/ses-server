@@ -1,5 +1,6 @@
-package com.redescooter.ses.web.ros.vo.employee;
+package com.redescooter.ses.web.ros.vo.organization.employee;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,7 +25,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class EmployeeListEnter extends PageEnter {
+public class EmployeeListEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "部门Id")
     private Long deptId;

@@ -68,9 +68,9 @@ public class DetailsPartsResult extends GeneralResult {
     private String dwg;
 
     @ApiModelProperty(value = "更新时间")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
-    private Date updatedTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date createdTime;
 
     @ApiModelProperty(value = "备注")
     private String note;

@@ -18,7 +18,7 @@
        op.dwg,
        op.note,
        op.revision,
-       op.updated_time,
+       op.created_time,
        os.supplier_name
     </sql>
 

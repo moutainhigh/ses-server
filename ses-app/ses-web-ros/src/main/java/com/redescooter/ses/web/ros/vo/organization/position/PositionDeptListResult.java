@@ -1,29 +1,30 @@
-package com.redescooter.ses.web.ros.vo.position;
+package com.redescooter.ses.web.ros.vo.organization.position;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import io.swagger.annotations.*;
+import java.util.List;
 
 /**
- * @ClassName:PositionListEnter
- * @description: PositionListEnter
+ * @ClassName:PositionResult
+ * @description: PositionResult
  * @author: Alex
  * @Version：1.3
- * @create: 2020/03/06 17:41
+ * @create: 2020/03/06 16:43
  */
-@ApiModel(value = "职位出参", description = "职位出参")
+@ApiModel(value = "职位部门列表", description = "职位部门列表")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class PositionListResult extends GeneralResult {
-
+public class PositionDeptListResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
@@ -35,4 +36,7 @@ public class PositionListResult extends GeneralResult {
 
     @ApiModelProperty(value = "数量")
     private String count;
+
+    @ApiModelProperty(value = "职位列表")
+    private List<PositionListResult> positionListResult;
 }

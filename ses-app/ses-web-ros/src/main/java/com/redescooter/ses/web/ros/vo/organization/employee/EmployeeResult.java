@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.employee;
+package com.redescooter.ses.web.ros.vo.organization.employee;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;

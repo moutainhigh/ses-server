@@ -1,11 +1,8 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
-import java.math.BigDecimal;
-
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -13,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 /**
  * @ClassName:SaveCustomerEnter
@@ -120,5 +119,9 @@ public class EditCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "合同附件")
     private String contractAnnex;
+
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
 
 }

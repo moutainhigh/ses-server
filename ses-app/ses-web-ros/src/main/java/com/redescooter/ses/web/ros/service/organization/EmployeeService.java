@@ -1,13 +1,15 @@
-package com.redescooter.ses.web.ros.service;
+package com.redescooter.ses.web.ros.service.organization;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.employee.EmployeeDeptResult;
-import com.redescooter.ses.web.ros.vo.employee.EmployeeListEnter;
-import com.redescooter.ses.web.ros.vo.employee.EmployeeResult;
-import com.redescooter.ses.web.ros.vo.position.SaveEmployeeEnter;
+import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptEnter;
+import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult;
+import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListEnter;
+import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListResult;
+import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeResult;
+import com.redescooter.ses.web.ros.vo.organization.employee.SaveEmployeeEnter;
+
+import java.util.List;
 
 /**
  * @ClassName:EmployeeService
@@ -23,7 +25,7 @@ public interface EmployeeService {
      * @param enter
      * @return
      */
-    PageResult<EmployeeResult> employeeList(EmployeeListEnter enter);
+    List<EmployeeListResult> employeeList(EmployeeListEnter enter);
 
     /**
      * 员工详情
@@ -47,7 +49,7 @@ public interface EmployeeService {
      * @param enter
      * @return
      */
-    EmployeeDeptResult employeeDeptList(GeneralEnter enter);
+    List<EmployeeDeptResult> employeeDeptList(EmployeeDeptEnter enter);
 
     /**
      * 删除员工

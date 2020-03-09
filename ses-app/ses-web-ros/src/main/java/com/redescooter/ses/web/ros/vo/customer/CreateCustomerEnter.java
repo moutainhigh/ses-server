@@ -118,5 +118,8 @@ public class CreateCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "合同附件")
     private String contractAnnex;
 
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
 
 }

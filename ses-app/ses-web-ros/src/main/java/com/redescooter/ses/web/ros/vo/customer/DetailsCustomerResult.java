@@ -1,16 +1,18 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author Mr.lijiating
@@ -168,8 +170,8 @@ public class DetailsCustomerResult extends GeneralResult {
     private Long updatedBy;
 
     @ApiModelProperty(value = "更新时间")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date updatedTime;
 
     @ApiModelProperty(value = "信息完善度")
@@ -177,6 +179,9 @@ public class DetailsCustomerResult extends GeneralResult {
 
     @ApiModelProperty(value = "邮件发送剩余时间")
     private Long ttl;
+
+    @ApiModelProperty(value = "备注")
+    private String remark;
 
 
 }

@@ -1,9 +1,10 @@
 package com.redescooter.ses.web.ros.service.impl;
 
-import java.util.Date;
-
-
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
+import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpePartsType;
@@ -17,7 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -26,6 +31,9 @@ public class PartsRosServiceImplTest {
 
     @Autowired
     private OpePartsTypeService partsTypeService;
+
+    @Reference
+    private CityBaseService cityBaseService;
 
     @Reference
     private IdAppService idAppService;
@@ -76,4 +84,40 @@ public class PartsRosServiceImplTest {
         partsTypeService.saveBatch(list);
 
     }
+
+    @Test
+    public void City() {
+        CityByPageEnter cityByPageEnter = new CityByPageEnter();
+        cityByPageEnter.setPageSize(10000);
+        PageResult<CityResult> cityResultPageResult = cityBaseService.queryCityByParameterPage(cityByPageEnter);
+
+        HashSet<Integer> level = new HashSet<Integer>();
+
+        List<CityResult> list = cityResultPageResult.getList();
+        list.forEach(item -> {
+            level.add(item.getLevel());
+        });
+        Iterator<Integer> iterator = level.iterator();
+        Map[] country = new Map[level.size()];
+        Object[] objects = level.toArray();
+
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < level.size(); j++) {
+                if (country != null) {
+                }
+            }
+        }
+
+    }
+
+//        Object[] toArray = level.toArray();
+//        for (int i = 0; i <toArray.length; i++) {
+//            for (int j = 0; j < list.size(); j++) {
+//               if (toArray[i]==list.get(j).getLevel()){
+//
+//                   System.out.println(list.get(j).toString());
+//               }
+//            }
+//        }
+//    }
 }

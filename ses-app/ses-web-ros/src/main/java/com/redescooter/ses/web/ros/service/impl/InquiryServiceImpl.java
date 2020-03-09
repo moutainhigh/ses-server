@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
+import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
@@ -186,6 +188,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult declineInquiry(IdEnter enter) {
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
@@ -287,6 +290,10 @@ public class InquiryServiceImpl implements InquiryService {
             opeCustomer.setContactLastName(opeCustomerInquiry.getLastName());
             opeCustomer.setContactFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
         }
+        opeCustomer.setCertificateType("0");
+        opeCustomer.setScooterQuantity(opeCustomerInquiry.getScooterQuantity());
+        opeCustomer.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
+        opeCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         opeCustomer.setContactFirstName(opeCustomerInquiry.getContactFirst());
         opeCustomer.setContactLastName(opeCustomerInquiry.getContactLast());
         opeCustomer.setContactFullName(new StringBuilder(opeCustomerInquiry.getContactFirst()).append(" ").append(opeCustomerInquiry.getContactLast()).toString());
