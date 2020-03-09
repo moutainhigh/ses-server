@@ -6,6 +6,7 @@ import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpePartsType;
 import com.redescooter.ses.web.ros.service.base.OpePartsTypeService;
@@ -120,4 +121,11 @@ public class PartsRosServiceImplTest {
 //            }
 //        }
 //    }
+
+    @Test
+    public void Timeout() {
+        if (DateUtil.timeComparison("2020-03-06 02:02:02", "2020-03-06 02:02:03")) {
+            System.out.println("2020-03-06 02:02:03");
+        }
+    }
 }

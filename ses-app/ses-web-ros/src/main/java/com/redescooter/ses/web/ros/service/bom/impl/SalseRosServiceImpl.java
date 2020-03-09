@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
 import com.redescooter.ses.api.common.enums.bom.SalseTabEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.SalseRosServiceMapper;
@@ -132,7 +133,10 @@ public class SalseRosServiceImpl implements SalseRosService {
                         result.setProductFrPrice(item.getSalesPrice().toString());
                         result.setProductFrUnit(item.getCurrencyUnit());
                     }
-                    result.setRefuseTime(item.getUpdatedTime());
+                    // 将价格的最新修改时间进行处理返回
+                    if (result.getId().equals(item.getPartsProductId()) && result.getRefuseTime() != null && DateUtil.timeComolete(result.getRefuseTime(), item.getUpdatedTime()) > 0) {
+                        result.setRefuseTime(item.getUpdatedTime());
+                    }
                 });
             });
         }
@@ -193,6 +197,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         opeRegionalPriceSheetQueryWrapper.eq(OpeRegionalPriceSheet.COL_USER_ID, enter.getUserId());
         opeRegionalPriceSheetQueryWrapper.in(OpeRegionalPriceSheet.COL_PARTS_PRODUCT_ID, assIdList);
         List<OpeRegionalPriceSheet> opeRegionalPriceSheetList = opeRegionalPriceSheetService.list(opeRegionalPriceSheetQueryWrapper);
+
         if (CollectionUtils.isNotEmpty(opeRegionalPriceSheetList)) {
             results.forEach(result -> {
                 opeRegionalPriceSheetList.forEach(item -> {
@@ -204,6 +209,10 @@ public class SalseRosServiceImpl implements SalseRosService {
 
                         result.setProductFrPrice(item.getSalesPrice().toString());
                         result.setProductFrUnit(item.getCurrencyUnit());
+                    }
+                    // 将价格的最新修改时间进行处理返回
+                    if (result.getId().equals(item.getPartsProductId()) && result.getRefuseTime() != null && DateUtil.timeComolete(result.getRefuseTime(), item.getUpdatedTime()) > 0) {
+                        result.setRefuseTime(item.getUpdatedTime());
                     }
                 });
             });
@@ -489,7 +498,10 @@ public class SalseRosServiceImpl implements SalseRosService {
                     result.setProductFrPrice(item.getSalesPrice());
                     result.setProductFrUnit(item.getCurrencyUnit());
                 }
-                result.setRefuseTime(item.getUpdatedTime());
+                // 将价格的最新修改时间进行处理返回
+                if (result.getId().equals(item.getPartsProductId()) && result.getRefuseTime() != null && DateUtil.timeComolete(result.getRefuseTime(), item.getUpdatedTime()) > 0) {
+                    result.setRefuseTime(item.getUpdatedTime());
+                }
             });
         }
         return result;

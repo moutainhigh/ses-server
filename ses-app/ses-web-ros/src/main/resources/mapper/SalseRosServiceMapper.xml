@@ -16,7 +16,7 @@
        opp.after_sales_flag,
        opp.added_services_flag,
        opp.note,
-       opp.updated_time    as refuseTime,
+       orpsf.updated_time    as refuseTime,
        orpsf.sales_price   as productFrPrice,
        orpsf.currency_unit as productFrUnit,
        orpse.sales_price   as productEnPrice,
