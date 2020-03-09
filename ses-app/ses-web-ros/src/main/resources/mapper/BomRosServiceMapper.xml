@@ -14,7 +14,7 @@
 
     <sql id="field_combinationList">
        opp.id                                 as id,
-       opp.product_type                       as productN,
+       opp.product_number                       as productN,
        opp.fr_name                            as productFrName,
        opp.en_name                            as productEnName,
        opp.cn_name                            as productCnName,

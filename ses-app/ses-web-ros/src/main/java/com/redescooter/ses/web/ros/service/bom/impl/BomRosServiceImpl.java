@@ -21,10 +21,9 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
-import com.redescooter.ses.web.ros.service.bom.BomRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
+import com.redescooter.ses.web.ros.service.bom.BomRosService;
 import com.redescooter.ses.web.ros.vo.bom.ProdoctPartListEnter;
-import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationDetailResult;
@@ -471,7 +470,8 @@ public class BomRosServiceImpl implements BomRosService {
             partIds.add(item.getId());
         });
         Collection<OpeParts> opePartList = opePartsService.listByIds(partIds);
-        if (CollectionUtils.isEmpty(opePartList) || opePartList.size() != partIds.size()) {
+
+        if (CollectionUtils.isEmpty(opePartList)) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
 

@@ -97,8 +97,8 @@
         from ope_parts op
         left join ope_supplier os on op.supplier_id = os.id and os.dr = 0
         <include refid="where_query_parts_list"/>
-        group by
-        <include refid="group_by_parts_list"/>
+<!--        group by-->
+<!--        <include refid="group_by_parts_list"/>-->
         order by op.created_time desc
         limit #{startRow},#{pageSize}
     </select>
