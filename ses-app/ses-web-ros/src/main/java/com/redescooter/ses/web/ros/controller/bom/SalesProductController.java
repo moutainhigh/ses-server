@@ -53,7 +53,7 @@ public class SalesProductController {
 
     @PostMapping(value = "/item")
     @ApiOperation(value = "产品子条目", response = ProductListResult.class)
-    public Response<List<ProductSubentryResult>> items(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<List<SubentryProductResult>> items(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(salseRosService.items(enter));
     }
 

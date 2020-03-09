@@ -141,9 +141,9 @@ public class SalseRosServiceImpl implements SalseRosService {
     }
 
     @Override
-    public List<ProductSubentryResult> items(IdEnter enter) {
+    public List<SubentryProductResult> items(IdEnter enter) {
 
-        List<ProductSubentryResult> results = salseRosServiceMapper.productItems(enter);
+        List<SubentryProductResult> results = salseRosServiceMapper.productItems(enter);
 
         return results;
     }
