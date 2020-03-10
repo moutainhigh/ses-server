@@ -1,38 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.com.redescooter.ses.service.mobile.c.base.OpeSysUserMapper">
-  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysUser">
-    <!--@mbg.generated-->
-    <id column="id" property="id" />
-    <result column="dr" property="dr" />
-    <result column="org_department_id" property="orgDepartmentId" />
-    <result column="org_staff_id" property="orgStaffId" />
-    <result column="app_id" property="appId" />
-    <result column="system_id" property="systemId" />
-    <result column="password" property="password" />
-    <result column="salt" property="salt" />
-    <result column="status" property="status" />
-    <result column="login_name" property="loginName" />
-    <result column="last_login_time" property="lastLoginTime" />
-    <result column="last_login_token" property="lastLoginToken" />
-    <result column="last_login_ip" property="lastLoginIp" />
-    <result column="activation_time" property="activationTime" />
-    <result column="expire_date" property="expireDate" />
-    <result column="created_by" property="createdBy" />
-    <result column="created_time" property="createdTime" />
-    <result column="updated_by" property="updatedBy" />
-    <result column="updated_time" property="updatedTime" />
-    <result column="def1" property="def1" />
-    <result column="def2" property="def2" />
-    <result column="def3" property="def3" />
-    <result column="def5" property="def5" />
-    <result column="def6" property="def6" />
-  </resultMap>
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSysUserMapper">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysUser">
+        <!--@mbg.generated-->
+        <!--@Table ope_sys_user-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="dept_id" jdbcType="BIGINT" property="deptId"/>
+        <result column="org_staff_id" jdbcType="BIGINT" property="orgStaffId"/>
+        <result column="app_id" jdbcType="VARCHAR" property="appId"/>
+        <result column="system_id" jdbcType="VARCHAR" property="systemId"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="salt" jdbcType="VARCHAR" property="salt"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="login_name" jdbcType="VARCHAR" property="loginName"/>
+        <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime"/>
+        <result column="last_login_token" jdbcType="VARCHAR" property="lastLoginToken"/>
+        <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp"/>
+        <result column="activation_time" jdbcType="DATE" property="activationTime"/>
+        <result column="expire_date" jdbcType="DATE" property="expireDate"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="def1" jdbcType="VARCHAR" property="def1"/>
+        <result column="def2" jdbcType="VARCHAR" property="def2"/>
+        <result column="def3" jdbcType="VARCHAR" property="def3"/>
+        <result column="def5" jdbcType="VARCHAR" property="def5"/>
+        <result column="def6" jdbcType="DOUBLE" property="def6"/>
+    </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, org_department_id, org_staff_id, app_id, system_id, `password`, salt, `status`, 
-    login_name, last_login_time, last_login_token, last_login_ip, activation_time, expire_date, 
-    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      id, dr, dept_id, org_staff_id, app_id, system_id, `password`, salt, `status`, login_name,
+      last_login_time, last_login_token, last_login_ip, activation_time, expire_date, created_by,
+      created_time, updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -40,202 +41,210 @@
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.dr}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
         </foreach>
       </trim>
-      <trim prefix="org_department_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.orgDepartmentId}
-        </foreach>
-      </trim>
+        <trim prefix="dept_id = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
+            </foreach>
+        </trim>
       <trim prefix="org_staff_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.orgStaffId}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.orgStaffId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="app_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.appId}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.appId,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="system_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.systemId}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.systemId,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="`password` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.password}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.password,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="salt = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.salt}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.salt,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.status}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="login_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.loginName}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.loginName,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="last_login_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.lastLoginTime}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.lastLoginTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="last_login_token = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.lastLoginToken}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.lastLoginToken,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="last_login_ip = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.lastLoginIp}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.lastLoginIp,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="activation_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.activationTime}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.activationTime,jdbcType=DATE}
         </foreach>
       </trim>
       <trim prefix="expire_date = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.expireDate}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.expireDate,jdbcType=DATE}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.createdBy}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="created_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.createdTime}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.updatedBy}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.updatedTime}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="def1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def1}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def2}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def3 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def3}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def5 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def5}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def6 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def6}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
         </foreach>
       </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id}
+        #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_sys_user
-    (id, dr, org_department_id, org_staff_id, app_id, system_id, `password`, salt, `status`, 
-      login_name, last_login_time, last_login_token, last_login_ip, activation_time, 
-      expire_date, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def5, def6)
-    values
-    <foreach collection="list" item="item" separator=",">
-      (#{item.id}, #{item.dr}, #{item.orgDepartmentId}, #{item.orgStaffId}, #{item.appId}, 
-        #{item.systemId}, #{item.password}, #{item.salt}, #{item.status}, #{item.loginName}, 
-        #{item.lastLoginTime}, #{item.lastLoginToken}, #{item.lastLoginIp}, #{item.activationTime}, 
-        #{item.expireDate}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, 
-        #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6}
-        )
-    </foreach>
+      insert into ope_sys_user
+      (id, dr, dept_id, org_staff_id, app_id, system_id, `password`, salt, `status`, login_name,
+      last_login_time, last_login_token, last_login_ip, activation_time, expire_date,
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
+      values
+      <foreach collection="list" item="item" separator=",">
+          (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.deptId,jdbcType=BIGINT},
+          #{item.orgStaffId,jdbcType=BIGINT}, #{item.appId,jdbcType=VARCHAR}, #{item.systemId,jdbcType=VARCHAR},
+          #{item.password,jdbcType=VARCHAR}, #{item.salt,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR},
+          #{item.loginName,jdbcType=VARCHAR}, #{item.lastLoginTime,jdbcType=TIMESTAMP},
+          #{item.lastLoginToken,jdbcType=VARCHAR},
+          #{item.lastLoginIp,jdbcType=VARCHAR}, #{item.activationTime,jdbcType=DATE}, #{item.expireDate,jdbcType=DATE},
+          #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+          #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
+          #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+          )
+      </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUser">
     <!--@mbg.generated-->
-    insert into ope_sys_user
-    (id, dr, org_department_id, org_staff_id, app_id, system_id, `password`, salt, `status`, 
-      login_name, last_login_time, last_login_token, last_login_ip, activation_time, 
-      expire_date, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def5, def6)
-    values
-    (#{id}, #{dr}, #{orgDepartmentId}, #{orgStaffId}, #{appId}, #{systemId}, #{password}, 
-      #{salt}, #{status}, #{loginName}, #{lastLoginTime}, #{lastLoginToken}, #{lastLoginIp}, 
-      #{activationTime}, #{expireDate}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
-      #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
-    on duplicate key update 
-    id = #{id}, 
-    dr = #{dr}, 
-    org_department_id = #{orgDepartmentId}, 
-    org_staff_id = #{orgStaffId}, 
-    app_id = #{appId}, 
-    system_id = #{systemId}, 
-    `password` = #{password}, 
-    salt = #{salt}, 
-    `status` = #{status}, 
-    login_name = #{loginName}, 
-    last_login_time = #{lastLoginTime}, 
-    last_login_token = #{lastLoginToken}, 
-    last_login_ip = #{lastLoginIp}, 
-    activation_time = #{activationTime}, 
-    expire_date = #{expireDate}, 
-    created_by = #{createdBy}, 
-    created_time = #{createdTime}, 
-    updated_by = #{updatedBy}, 
-    updated_time = #{updatedTime}, 
-    def1 = #{def1}, 
-    def2 = #{def2}, 
-    def3 = #{def3}, 
-    def5 = #{def5}, 
-    def6 = #{def6}
+      insert into ope_sys_user
+      (id, dr, dept_id, org_staff_id, app_id, system_id, `password`, salt, `status`, login_name,
+      last_login_time, last_login_token, last_login_ip, activation_time, expire_date,
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
+      values
+      (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{deptId,jdbcType=BIGINT}, #{orgStaffId,jdbcType=BIGINT},
+      #{appId,jdbcType=VARCHAR}, #{systemId,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+      #{salt,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR},
+      #{lastLoginTime,jdbcType=TIMESTAMP}, #{lastLoginToken,jdbcType=VARCHAR}, #{lastLoginIp,jdbcType=VARCHAR},
+      #{activationTime,jdbcType=DATE}, #{expireDate,jdbcType=DATE}, #{createdBy,jdbcType=BIGINT},
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
+      #{def6,jdbcType=DOUBLE})
+      on duplicate key update
+      id = #{id,jdbcType=BIGINT},
+      dr = #{dr,jdbcType=INTEGER},
+      dept_id = #{deptId,jdbcType=BIGINT},
+      org_staff_id = #{orgStaffId,jdbcType=BIGINT},
+      app_id = #{appId,jdbcType=VARCHAR},
+      system_id = #{systemId,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR},
+      salt = #{salt,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=VARCHAR},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      last_login_token = #{lastLoginToken,jdbcType=VARCHAR},
+      last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+      activation_time = #{activationTime,jdbcType=DATE},
+      expire_date = #{expireDate,jdbcType=DATE},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      def1 = #{def1,jdbcType=VARCHAR},
+      def2 = #{def2,jdbcType=VARCHAR},
+      def3 = #{def3,jdbcType=VARCHAR},
+      def5 = #{def5,jdbcType=VARCHAR},
+      def6 = #{def6,jdbcType=DOUBLE}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUser">
     <!--@mbg.generated-->
     insert into ope_sys_user
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="dr != null">
-        dr,
-      </if>
-      <if test="orgDepartmentId != null">
-        org_department_id,
-      </if>
-      <if test="orgStaffId != null">
-        org_staff_id,
-      </if>
-      <if test="appId != null">
-        app_id,
-      </if>
-      <if test="systemId != null">
-        system_id,
-      </if>
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="id != null">
+              id,
+          </if>
+          <if test="dr != null">
+              dr,
+          </if>
+          <if test="deptId != null">
+              dept_id,
+          </if>
+          <if test="orgStaffId != null">
+              org_staff_id,
+          </if>
+          <if test="appId != null">
+              app_id,
+          </if>
+          <if test="systemId != null">
+              system_id,
+          </if>
       <if test="password != null">
         `password`,
       </if>
@@ -292,153 +301,153 @@
       </if>
     </trim>
     values
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id},
-      </if>
-      <if test="dr != null">
-        #{dr},
-      </if>
-      <if test="orgDepartmentId != null">
-        #{orgDepartmentId},
-      </if>
-      <if test="orgStaffId != null">
-        #{orgStaffId},
-      </if>
-      <if test="appId != null">
-        #{appId},
-      </if>
-      <if test="systemId != null">
-        #{systemId},
-      </if>
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="id != null">
+              #{id,jdbcType=BIGINT},
+          </if>
+          <if test="dr != null">
+              #{dr,jdbcType=INTEGER},
+          </if>
+          <if test="deptId != null">
+              #{deptId,jdbcType=BIGINT},
+          </if>
+          <if test="orgStaffId != null">
+              #{orgStaffId,jdbcType=BIGINT},
+          </if>
+          <if test="appId != null">
+              #{appId,jdbcType=VARCHAR},
+          </if>
+          <if test="systemId != null">
+              #{systemId,jdbcType=VARCHAR},
+          </if>
       <if test="password != null">
-        #{password},
+          #{password,jdbcType=VARCHAR},
       </if>
       <if test="salt != null">
-        #{salt},
+          #{salt,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        #{status},
+          #{status,jdbcType=VARCHAR},
       </if>
       <if test="loginName != null">
-        #{loginName},
+          #{loginName,jdbcType=VARCHAR},
       </if>
       <if test="lastLoginTime != null">
-        #{lastLoginTime},
+          #{lastLoginTime,jdbcType=TIMESTAMP},
       </if>
       <if test="lastLoginToken != null">
-        #{lastLoginToken},
+          #{lastLoginToken,jdbcType=VARCHAR},
       </if>
       <if test="lastLoginIp != null">
-        #{lastLoginIp},
+          #{lastLoginIp,jdbcType=VARCHAR},
       </if>
       <if test="activationTime != null">
-        #{activationTime},
+          #{activationTime,jdbcType=DATE},
       </if>
       <if test="expireDate != null">
-        #{expireDate},
+          #{expireDate,jdbcType=DATE},
       </if>
       <if test="createdBy != null">
-        #{createdBy},
+          #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="createdTime != null">
-        #{createdTime},
+          #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy},
+          #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
-        #{updatedTime},
+          #{updatedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="def1 != null">
-        #{def1},
+          #{def1,jdbcType=VARCHAR},
       </if>
       <if test="def2 != null">
-        #{def2},
+          #{def2,jdbcType=VARCHAR},
       </if>
       <if test="def3 != null">
-        #{def3},
+          #{def3,jdbcType=VARCHAR},
       </if>
       <if test="def5 != null">
-        #{def5},
+          #{def5,jdbcType=VARCHAR},
       </if>
       <if test="def6 != null">
-        #{def6},
+          #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
-    on duplicate key update 
-    <trim suffixOverrides=",">
-      <if test="id != null">
-        id = #{id},
-      </if>
-      <if test="dr != null">
-        dr = #{dr},
-      </if>
-      <if test="orgDepartmentId != null">
-        org_department_id = #{orgDepartmentId},
-      </if>
-      <if test="orgStaffId != null">
-        org_staff_id = #{orgStaffId},
-      </if>
-      <if test="appId != null">
-        app_id = #{appId},
-      </if>
-      <if test="systemId != null">
-        system_id = #{systemId},
-      </if>
+    on duplicate key update
+      <trim suffixOverrides=",">
+          <if test="id != null">
+              id = #{id,jdbcType=BIGINT},
+          </if>
+          <if test="dr != null">
+              dr = #{dr,jdbcType=INTEGER},
+          </if>
+          <if test="deptId != null">
+              dept_id = #{deptId,jdbcType=BIGINT},
+          </if>
+          <if test="orgStaffId != null">
+              org_staff_id = #{orgStaffId,jdbcType=BIGINT},
+          </if>
+          <if test="appId != null">
+              app_id = #{appId,jdbcType=VARCHAR},
+          </if>
+          <if test="systemId != null">
+              system_id = #{systemId,jdbcType=VARCHAR},
+          </if>
       <if test="password != null">
-        `password` = #{password},
+          `password` = #{password,jdbcType=VARCHAR},
       </if>
       <if test="salt != null">
-        salt = #{salt},
+          salt = #{salt,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        `status` = #{status},
+          `status` = #{status,jdbcType=VARCHAR},
       </if>
       <if test="loginName != null">
-        login_name = #{loginName},
+          login_name = #{loginName,jdbcType=VARCHAR},
       </if>
       <if test="lastLoginTime != null">
-        last_login_time = #{lastLoginTime},
+          last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
       </if>
       <if test="lastLoginToken != null">
-        last_login_token = #{lastLoginToken},
+          last_login_token = #{lastLoginToken,jdbcType=VARCHAR},
       </if>
       <if test="lastLoginIp != null">
-        last_login_ip = #{lastLoginIp},
+          last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
       </if>
       <if test="activationTime != null">
-        activation_time = #{activationTime},
+          activation_time = #{activationTime,jdbcType=DATE},
       </if>
       <if test="expireDate != null">
-        expire_date = #{expireDate},
+          expire_date = #{expireDate,jdbcType=DATE},
       </if>
       <if test="createdBy != null">
-        created_by = #{createdBy},
+          created_by = #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="createdTime != null">
-        created_time = #{createdTime},
+          created_time = #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy},
+          updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
-        updated_time = #{updatedTime},
+          updated_time = #{updatedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="def1 != null">
-        def1 = #{def1},
+          def1 = #{def1,jdbcType=VARCHAR},
       </if>
       <if test="def2 != null">
-        def2 = #{def2},
+          def2 = #{def2,jdbcType=VARCHAR},
       </if>
       <if test="def3 != null">
-        def3 = #{def3},
+          def3 = #{def3,jdbcType=VARCHAR},
       </if>
       <if test="def5 != null">
-        def5 = #{def5},
+          def5 = #{def5,jdbcType=VARCHAR},
       </if>
       <if test="def6 != null">
-        def6 = #{def6},
+          def6 = #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>

@@ -1,16 +1,25 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
-
-@ApiModel(value = "com.redescooter.ses.web.ros.dm.OpeSysUser")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysUser")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "ope_sys_user")
 public class OpeSysUser implements Serializable {
     /**
@@ -29,11 +38,11 @@ public class OpeSysUser implements Serializable {
     private Integer dr;
 
     /**
-     * 组织部门ID
+     * 部门ID
      */
-    @TableField(value = "org_department_id")
-    @ApiModelProperty(value = "组织部门ID")
-    private Long orgDepartmentId;
+    @TableField(value = "dept_id")
+    @ApiModelProperty(value = "部门ID")
+    private Long deptId;
 
     /**
      * 员工主键
@@ -184,9 +193,11 @@ public class OpeSysUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String COL_ID = "id";
+
     public static final String COL_DR = "dr";
 
-    public static final String COL_ORG_DEPARTMENT_ID = "org_department_id";
+    public static final String COL_DEPT_ID = "dept_id";
 
     public static final String COL_ORG_STAFF_ID = "org_staff_id";
 
@@ -229,4 +240,8 @@ public class OpeSysUser implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeSysUserBuilder builder() {
+        return new OpeSysUserBuilder();
+    }
 }
