@@ -32,7 +32,7 @@ public class EmployeeListResult extends GeneralResult {
     private String deptName;
 
     @ApiModelProperty(value = "统计")
-    private Integer count;
+    private Integer totalCount;
 
     @ApiModelProperty(value = "员工")
     private List<EmployeeResult> employeeResult;

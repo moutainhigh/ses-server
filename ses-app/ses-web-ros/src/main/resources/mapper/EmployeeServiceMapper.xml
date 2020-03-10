@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.organization.EmployeeServiceMapper">
+
+    <sql id="select_ EmployeeDeptResult">
+        dept.id   as id,
+        dept.name as name
+    </sql>
+
+    <select id="deptList" resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListResult">
+        select dept.id as deptId,
+        dept.name as deptName,
+        count(user.id) as totalCount
+        from ope_sys_dept dept
+        left join ope_sys_user user on dept.id = user.dept_id and user.dr = 0
+        where dept.dr = 0
+        and dept.level = 1
+        <if test="deptId != null">
+            and dept.id=#{deptId}
+        </if>
+        group by dept.id, deptName
+    </select>
+
+    <select id="employeeList" resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeResult">
+
+    </select>
+
+    <!--每次查询部门的子集-->
+    <select id="getEmployeeDeptChildList" resultType="java.lang.Long">
+        select rela.ancestor
+        from ope_sys_dept_relation rela
+        where rela.dr = 0
+        and rela.descendant=1000022
+        <if test="ids != null and ids.size() != 0">
+            and rela.descendant in
+            <foreach collection="ids" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getEmployeeDeptFatherList" resultType="java.lang.Long">
+
+    </select>
+
+    <select id="getEmployeeDeptList"
+            resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
+        select
+        <include refid="select_ EmployeeDeptResult"/>
+        from ope_sys_dept dept
+        where dept.dr = 0
+        <if test="ids != null and ids.size() != 0">
+            and dept.id in
+            <foreach collection="ids" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        order by id asc
+    </select>
+
+    <select id="getEmployeePositionList"
+            resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
+
+    </select>
+
+    <select id="getEmployeeOfficeareaList"
+            resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
+
+    </select>
+
+    <select id="getEmployeeCompanyList"
+            resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
+        select
+        <include refid="select_ EmployeeDeptResult"/>
+        from ope_sys_dept dept
+        where dept.level = 0
+        and dept.dr = 0
+        and dept.tenant_id = 0
+    </select>
+</mapper>

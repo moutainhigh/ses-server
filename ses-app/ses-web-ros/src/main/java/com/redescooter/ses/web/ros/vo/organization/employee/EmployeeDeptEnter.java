@@ -26,4 +26,7 @@ public class EmployeeDeptEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "类型，根据类型 查 部门、职位、办公区域、职位列表、公司列表")
     private String type;
+
+    @ApiModelProperty(value = "业务Id，需要进行联动的时候传上一级Id")
+    private Long bizId;
 }
