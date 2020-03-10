@@ -122,8 +122,14 @@ public class InquiryServiceImpl implements InquiryService {
         }
         List<InquiryResult> inquiryResultList = inquiryServiceMapper.inquiryList(enter);
         inquiryResultList.forEach(item -> {
-            String city = cityBaseService.queryCityDeatliById(new IdEnter(item.getCityId())).getCode();
-            String distrust = cityBaseService.queryCityDeatliById(new IdEnter(item.getCityId())).getCode();
+            String city = null;
+            String distrust = null;
+            if (item.getCityId() != null && item.getCityId() != 0) {
+                city = cityBaseService.queryCityDeatliById(new IdEnter(item.getCityId())).getName();
+            }
+            if (item.getDistrustId() != null && item.getDistrustId() != 0) {
+                distrust = cityBaseService.queryCityDeatliById(new IdEnter(item.getDistrustId())).getName();
+            }
             item.setCityName(city);
             item.setDistrustName(distrust);
         });
@@ -145,8 +151,15 @@ public class InquiryServiceImpl implements InquiryService {
         if (inquiryResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
-        String city = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getCityId())).getCode();
-        String distrust = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getCityId())).getCode();
+
+        String city = null;
+        String distrust = null;
+        if (inquiryResult.getCityId() != null && inquiryResult.getCityId() != 0) {
+            city = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getCityId())).getName();
+        }
+        if (inquiryResult.getDistrustId() != null && inquiryResult.getDistrustId() != 0) {
+            distrust = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getDistrustId())).getName();
+        }
         inquiryResult.setCityName(city);
         inquiryResult.setDistrustName(distrust);
         return inquiryResult;
