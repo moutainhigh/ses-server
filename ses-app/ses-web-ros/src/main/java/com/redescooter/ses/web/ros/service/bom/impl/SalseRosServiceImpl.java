@@ -234,7 +234,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         int count = 1;
         List<SalesServiceResult> result = new ArrayList<>();
         SalesServiceResult serviceResult = SalesServiceResult.builder()
-                .id(1000000L)
+                .id(1L)
                 .service("License")
                 .desc("车辆上牌")
                 .productFrPrice(BigDecimal.ONE)
@@ -246,7 +246,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         // 查询价格详情
         IdEnter idEnter = new IdEnter();
         BeanUtils.copyProperties(enter, idEnter);
-        idEnter.setId(1000000L);
+        idEnter.setId(1L);
         SccPriceResult sccPriceResult = priceDetail(idEnter);
         if (sccPriceResult != null) {
             serviceResult.setProductFrPrice(sccPriceResult.getProductFrPrice());
