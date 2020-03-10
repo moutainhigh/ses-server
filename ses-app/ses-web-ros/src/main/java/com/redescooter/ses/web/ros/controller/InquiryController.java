@@ -6,7 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.web.ros.service.InquiryService;
+import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;

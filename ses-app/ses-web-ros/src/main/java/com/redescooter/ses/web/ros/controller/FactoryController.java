@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.controller;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.web.ros.service.FactoryRosService;
+import com.redescooter.ses.web.ros.service.factory.FactoryRosService;
 import com.redescooter.ses.web.ros.vo.factory.FactoryEditEnter;
 import com.redescooter.ses.web.ros.vo.factory.FactoryPage;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;

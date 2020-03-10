@@ -9,7 +9,7 @@ import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.tool.utils.ValidationUtil;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.TokenRosService;
+import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;

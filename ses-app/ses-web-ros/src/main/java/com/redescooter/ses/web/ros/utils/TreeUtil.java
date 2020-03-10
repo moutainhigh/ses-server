@@ -5,7 +5,7 @@ package com.redescooter.ses.web.ros.utils;//package com.redescooter.ses.app.crm.
 //import com.redescooter.ses.app.crm.web.vo.bo.TreeNode;
 //import com.redescooter.ses.api.common.vo.GeneralEnter;
 //import lombok.experimental.UtilityClass;
-//import org.springframework.beans.BeanUtils;
+//import organization.springframework.beans.BeanUtils;
 //
 //import java.util.ArrayList;
 //import java.util.List;
