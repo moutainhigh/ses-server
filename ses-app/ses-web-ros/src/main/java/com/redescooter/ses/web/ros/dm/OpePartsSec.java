@@ -1,15 +1,10 @@
 package com.redescooter.ses.web.ros.dm;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,7 +12,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpePartsSec")
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartsSec")
 @Data
 @Builder
 @AllArgsConstructor
@@ -35,6 +34,7 @@ public class OpePartsSec implements Serializable {
      * 逻辑删除 逻辑删除
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除 逻辑删除")
     private Integer dr;
 

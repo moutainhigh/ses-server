@@ -1,8 +1,10 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Mr.lijiating
@@ -11,6 +13,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomer;
  * @ClassName: ${NAME}
  * @Function: TODO
  */
+@Transactional
 public interface OpeCustomerService extends IService<OpeCustomer> {
 
 

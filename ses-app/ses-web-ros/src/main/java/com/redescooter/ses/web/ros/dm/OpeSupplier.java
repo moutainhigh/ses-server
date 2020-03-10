@@ -32,7 +32,8 @@ public class OpeSupplier implements Serializable {
      * 逻辑删除标识
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除标识")
+    @TableLogic
+    @ApiModelProperty(value = "逻辑删除标识")
     private Integer dr;
 
     /**
