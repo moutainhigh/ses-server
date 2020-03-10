@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSysUserRoleMapper">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysUserRole">
+        <!--@mbg.generated-->
+        <!--@Table ope_sys_user_role-->
+        <id column="user_id" jdbcType="INTEGER" property="userId"/>
+        <id column="role_id" jdbcType="BIGINT" property="roleId"/>
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        user_id, role_id, id, dr, created_by, created_time, updated_by, updated_time
+    </sql>
+    <update id="updateBatch" parameterType="java.util.List">
+        <!--@mbg.generated-->
+        update ope_sys_user_role
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when user_id = #{item.userId,jdbcType=INTEGER} then #{item.id,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="dr = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when user_id = #{item.userId,jdbcType=INTEGER} then #{item.dr,jdbcType=INTEGER}
+                </foreach>
+            </trim>
+            <trim prefix="created_by = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when user_id = #{item.userId,jdbcType=INTEGER} then #{item.createdBy,jdbcType=INTEGER}
+                </foreach>
+            </trim>
+            <trim prefix="created_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when user_id = #{item.userId,jdbcType=INTEGER} then #{item.createdTime,jdbcType=TIMESTAMP}
+                </foreach>
+            </trim>
+            <trim prefix="updated_by = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when user_id = #{item.userId,jdbcType=INTEGER} then #{item.updatedBy,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="updated_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when user_id = #{item.userId,jdbcType=INTEGER} then #{item.updatedTime,jdbcType=TIMESTAMP}
+                </foreach>
+            </trim>
+        </trim>
+        where user_id in
+        <foreach close=")" collection="list" item="item" open="(" separator=", ">
+            #{item.userId,jdbcType=INTEGER}
+        </foreach>
+    </update>
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into ope_sys_user_role
+        (user_id, role_id, id, dr, created_by, created_time, updated_by, updated_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId,jdbcType=INTEGER}, #{item.roleId,jdbcType=BIGINT}, #{item.id,jdbcType=BIGINT},
+            #{item.dr,jdbcType=INTEGER}, #{item.createdBy,jdbcType=INTEGER}, #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserRole">
+        <!--@mbg.generated-->
+        insert into ope_sys_user_role
+        (user_id, role_id, id, dr, created_by, created_time, updated_by, updated_time)
+        values
+        (#{userId,jdbcType=INTEGER}, #{roleId,jdbcType=BIGINT}, #{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER},
+        #{createdBy,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+        #{updatedTime,jdbcType=TIMESTAMP})
+        on duplicate key update
+        user_id = #{userId,jdbcType=INTEGER},
+        role_id = #{roleId,jdbcType=BIGINT},
+        id = #{id,jdbcType=BIGINT},
+        dr = #{dr,jdbcType=INTEGER},
+        created_by = #{createdBy,jdbcType=INTEGER},
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    </insert>
+    <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserRole">
+        <!--@mbg.generated-->
+        insert into ope_sys_user_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        on duplicate key update
+        <trim suffixOverrides=",">
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+</mapper>
