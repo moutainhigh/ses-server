@@ -94,7 +94,7 @@ dubbo:                                                                          
 mybatis:                                                                                                                #MYBATIS配置
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: organization.apache.ibatis.logging.stdout.StdOutImpl                                                               #打印sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl                                                               #打印sql
 
 mybatis-plus:                                                                                                           #mybaits-plus配置，此配置 不影响原始的mybatis
   mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml
