@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class SysSalesAreaServiceImplTest {
     @Test
     public void list() {
 
-        List<SalesAreaTressResult> list = sysSalesAreaService.list(new GeneralEnter());
+        List<SalesAreaTressResult> list = sysSalesAreaService.list(new IdEnter());
 
         System.out.println(JSON.toJSONString(list));
 

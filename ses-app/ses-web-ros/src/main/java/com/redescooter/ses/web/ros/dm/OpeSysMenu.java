@@ -66,7 +66,7 @@ public class OpeSysMenu implements Serializable {
     /**
      * 父菜单ID
      */
-    @TableField(value = "parent_id")
+    @TableField(value = "p_id")
     @ApiModelProperty(value = "父菜单ID")
     private Long pId;
 
@@ -133,7 +133,7 @@ public class OpeSysMenu implements Serializable {
 
     public static final String COL_PATH = "path";
 
-    public static final String COL_PARENT_ID = "parent_id";
+    public static final String COL_P_ID = "p_id";
 
     public static final String COL_ICON = "icon";
 

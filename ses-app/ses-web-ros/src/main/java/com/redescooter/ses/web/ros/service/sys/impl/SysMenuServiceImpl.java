@@ -40,6 +40,9 @@ public class SysMenuServiceImpl implements SysMenuService {
 
         OpeSysMenu menu = new OpeSysMenu();
         BeanUtils.copyProperties(enter, menu);
+        if (menu.getPId() == null || menu.getPId() == 0) {
+            menu.setPId(Constant.MENU_TREE_ROOT_ID);
+        }
         menu.setId(idAppService.getId(SequenceName.OPE_SYS_MENU));
         menu.setDr(Constant.DR_FALSE);
         menu.setCreatedBy(enter.getUserId());
