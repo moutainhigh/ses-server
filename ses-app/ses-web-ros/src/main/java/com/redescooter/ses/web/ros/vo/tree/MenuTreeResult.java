@@ -12,7 +12,7 @@ import lombok.*;
  * create: 2019-05-30 14:34
  */
 
-@ApiModel(value = "菜单列表")
+@ApiModel(value = "菜单树")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

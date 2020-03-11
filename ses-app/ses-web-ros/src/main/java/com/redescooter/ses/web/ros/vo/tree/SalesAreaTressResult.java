@@ -11,7 +11,7 @@ import lombok.*;
  * @date 2020/03/11 14:25
  * @Description:
  */
-@ApiModel(value = "部品详情")
+@ApiModel(value = "销售区域树")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
