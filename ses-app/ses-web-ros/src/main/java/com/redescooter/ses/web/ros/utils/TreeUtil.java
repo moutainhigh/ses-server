@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.utils;//package com.redescooter.ses.app.crm.web.utils;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.vo.tree.SysMenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.TreeNode;
 import lombok.experimental.UtilityClass;
+import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,19 +86,18 @@ public class TreeUtil {
      * @param root
      * @return
      */
-    public List<SysMenuTreeResult> buildTree(List<SysMenu> menus, GeneralEnter enter, int root) {
+    public List<SysMenuTreeResult> buildTree(List<OpeSysMenu> menus, GeneralEnter enter, int root) {
         List<SysMenuTreeResult> trees = new ArrayList<>();
         SysMenuTreeResult node;
-        for (SysMenu menu : menus) {
+        for (OpeSysMenu menu : menus) {
             node = new SysMenuTreeResult();
             BeanUtils.copyProperties(enter, node);
             node.setId(menu.getId());
-            node.setPId(menu.getPId());
+            node.setPId(menu.getParentId());
             node.setName(menu.getName());
             node.setPath(menu.getPath());
             node.setCode(menu.getPermission());
             node.setLabel(menu.getName());
-            node.setComponent(menu.getComponent());
             node.setIcon(menu.getIcon());
             node.setKeepAlive(menu.getKeepAlive());
             trees.add(node);
