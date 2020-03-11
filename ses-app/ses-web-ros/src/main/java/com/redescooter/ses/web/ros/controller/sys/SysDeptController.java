@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -18,15 +20,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/sys/dept")
 public class SysDeptController {
 
+    @Autowired
+    private SysDeptService sysDeptService;
+
     @PostMapping(value = "/save")
     @ApiOperation(value = "部门创建", response = GeneralResult.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
-    }
-
-    @PostMapping(value = "/list")
-    @ApiOperation(value = "部门列表", response = GeneralResult.class)
-    public Response<PageResult<GeneralResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>();
     }
 
@@ -49,7 +48,7 @@ public class SysDeptController {
     }
 
     @PostMapping(value = "/tree")
-    @ApiOperation(value = "树形菜单", response = GeneralResult.class)
+    @ApiOperation(value = "部门树列表", response = GeneralResult.class)
     public Response<GeneralResult> tree(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>();
     }
