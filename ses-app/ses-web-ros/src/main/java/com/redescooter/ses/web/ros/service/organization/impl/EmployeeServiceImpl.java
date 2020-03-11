@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.enums.organization.EmployeeStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.organization.EmployeeServiceMapper;
@@ -75,6 +76,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private OpeSysRoleService opeSysRoleService;
+
+    @Autowired
+    private JedisService jedisService;
 
     @Reference
     private IdAppService idAppService;
@@ -280,8 +284,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!StringUtils.equals(opeSysStaff.getStatus(), EmployeeStatusEnums.IN_SERVICE.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
+        //todo暂时不允许对admin 进行离职操作
+        if (opeSysStaff.getSysUserId().equals(Constant.ADMINUSERID)) {
+            throw new RuntimeException();
+        }
         // 删除员工
         opeSysStaffService.removeById(opeSysStaff);
+        // 清空token
+        OpeSysUser opeSysUser = opeSysUserService.getById(opeSysStaff.getSysUserId());
+        if (StringUtils.isNotBlank(opeSysUser.getLastLoginToken())) {
+            jedisService.delKey(opeSysUser.getLastLoginToken());
+        }
         // 删除员工账户
         opeSysUserService.removeById(opeSysStaff.getSysUserId());
         // 删除员工信息
