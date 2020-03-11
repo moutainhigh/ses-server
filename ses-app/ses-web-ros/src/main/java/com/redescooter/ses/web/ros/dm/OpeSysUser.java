@@ -22,6 +22,12 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "ope_sys_user")
 public class OpeSysUser implements Serializable {
+    public static final String COL_ORG_STAFF_ID = "org_staff_id";
+    public static final String COL_DEF1 = "def1";
+    public static final String COL_DEF2 = "def2";
+    public static final String COL_DEF3 = "def3";
+    public static final String COL_DEF5 = "def5";
+    public static final String COL_DEF6 = "def6";
     /**
      * ID
      */
@@ -38,18 +44,18 @@ public class OpeSysUser implements Serializable {
     private Integer dr;
 
     /**
-     * 部门ID
+     * 状态 Normal,Lock,Cancel，Expired
      */
-    @TableField(value = "dept_id")
-    @ApiModelProperty(value = "部门ID")
-    private Long deptId;
+    @TableField(value = "status")
+    @ApiModelProperty(value = "状态 Normal,Lock,Cancel，Expired")
+    private String status;
 
     /**
-     * 员工主键
+     * 所属租户
      */
-    @TableField(value = "org_staff_id")
-    @ApiModelProperty(value = "员工主键")
-    private Long orgStaffId;
+    @TableField(value = "tenant_id")
+    @ApiModelProperty(value = "所属租户")
+    private Long tenantId;
 
     /**
      * 应用ID
@@ -66,6 +72,20 @@ public class OpeSysUser implements Serializable {
     private String systemId;
 
     /**
+     * 部门ID
+     */
+    @TableField(value = "dept_id")
+    @ApiModelProperty(value = "部门ID")
+    private Long deptId;
+
+    /**
+     * 登录名
+     */
+    @TableField(value = "login_name")
+    @ApiModelProperty(value = "登录名")
+    private String loginName;
+
+    /**
      * 密码
      */
     @TableField(value = "password")
@@ -80,18 +100,11 @@ public class OpeSysUser implements Serializable {
     private String salt;
 
     /**
-     * 状态 Normal,Lock,Cancel，Expired
+     * 最后登录TOKEN
      */
-    @TableField(value = "status")
-    @ApiModelProperty(value = "状态 Normal,Lock,Cancel，Expired")
-    private String status;
-
-    /**
-     * 登录名
-     */
-    @TableField(value = "login_name")
-    @ApiModelProperty(value = "登录名")
-    private String loginName;
+    @TableField(value = "last_login_token")
+    @ApiModelProperty(value = "最后登录TOKEN")
+    private String lastLoginToken;
 
     /**
      * 最后登录时间
@@ -99,13 +112,6 @@ public class OpeSysUser implements Serializable {
     @TableField(value = "last_login_time")
     @ApiModelProperty(value = "最后登录时间")
     private Date lastLoginTime;
-
-    /**
-     * 最后登录TOKEN
-     */
-    @TableField(value = "last_login_token")
-    @ApiModelProperty(value = "最后登录TOKEN")
-    private String lastLoginToken;
 
     /**
      * 最后登录IP地址
@@ -156,66 +162,31 @@ public class OpeSysUser implements Serializable {
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def1")
-    @ApiModelProperty(value = "冗余字段")
-    private String def1;
-
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def2")
-    @ApiModelProperty(value = "冗余字段")
-    private String def2;
-
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def3")
-    @ApiModelProperty(value = "冗余字段")
-    private String def3;
-
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def5")
-    @ApiModelProperty(value = "冗余字段")
-    private String def5;
-
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def6")
-    @ApiModelProperty(value = "冗余字段")
-    private Double def6;
-
     private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_DEPT_ID = "dept_id";
+    public static final String COL_STATUS = "status";
 
-    public static final String COL_ORG_STAFF_ID = "org_staff_id";
+    public static final String COL_TENANT_ID = "tenant_id";
 
     public static final String COL_APP_ID = "app_id";
 
     public static final String COL_SYSTEM_ID = "system_id";
 
+    public static final String COL_DEPT_ID = "dept_id";
+
+    public static final String COL_LOGIN_NAME = "login_name";
+
     public static final String COL_PASSWORD = "password";
 
     public static final String COL_SALT = "salt";
 
-    public static final String COL_STATUS = "status";
-
-    public static final String COL_LOGIN_NAME = "login_name";
+    public static final String COL_LAST_LOGIN_TOKEN = "last_login_token";
 
     public static final String COL_LAST_LOGIN_TIME = "last_login_time";
-
-    public static final String COL_LAST_LOGIN_TOKEN = "last_login_token";
 
     public static final String COL_LAST_LOGIN_IP = "last_login_ip";
 
@@ -230,16 +201,6 @@ public class OpeSysUser implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
-
-    public static final String COL_DEF1 = "def1";
-
-    public static final String COL_DEF2 = "def2";
-
-    public static final String COL_DEF3 = "def3";
-
-    public static final String COL_DEF5 = "def5";
-
-    public static final String COL_DEF6 = "def6";
 
     public static OpeSysUserBuilder builder() {
         return new OpeSysUserBuilder();

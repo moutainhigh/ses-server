@@ -18,3 +18,4 @@ public interface OpeSysUserRoleService extends IService<OpeSysUserRole> {
     int insertOrUpdateSelective(OpeSysUserRole record);
 
 }
+

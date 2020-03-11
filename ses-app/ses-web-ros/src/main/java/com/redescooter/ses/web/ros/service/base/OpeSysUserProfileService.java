@@ -26,3 +26,5 @@ public interface OpeSysUserProfileService extends IService<OpeSysUserProfile> {
     int insertOrUpdateSelective(OpeSysUserProfile record);
 
 }
+
+

@@ -188,10 +188,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         saveVo.setCustomerSource(CustomerSourceEnum.SYSTEM.getValue());
         if (enter.getCustomerType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
             saveVo.setContactFullName(new StringBuffer().append(saveVo.getContactFirstName()).append(" ").append(saveVo.getContactLastName()).toString());
-            // 企业个人信息 也要赋值给客户的名字
-            saveVo.setCustomerFirstName(saveVo.getContactFirstName());
-            saveVo.setCustomerLastName(saveVo.getContactLastName());
-            saveVo.setCustomerFullName(saveVo.getContactFullName());
+//            // 企业个人信息 也要赋值给客户的名字
+//            saveVo.setCustomerFirstName(saveVo.getContactFirstName());
+//            saveVo.setCustomerLastName(saveVo.getContactLastName());
+//            saveVo.setCustomerFullName(saveVo.getContactFullName());
         } else {
             saveVo.setCustomerFullName(new StringBuffer().append(saveVo.getCustomerFirstName()).append(" ").append(saveVo.getCustomerLastName()).toString());
         }

@@ -75,7 +75,7 @@ public interface EmployeeServiceMapper {
      * @param bizId
      * @return
      */
-    List<EmployeeDeptResult> getEmployeePositionList(@Param("tenantId") Long tenantId, @Param("bizId") Long bizId);
+    List<EmployeeDeptResult> getEmployeePositionList(@Param("tenantId") Long tenantId, @Param("ids") List<Long> ids);
 
     /**
      * 员工模块 办公区域列表

@@ -7,13 +7,19 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value = "com.redescooter.ses.web.ros.dm.OpeSysUserProfile")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysUserProfile")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "ope_sys_user_profile")
 public class OpeSysUserProfile implements Serializable {
     /**
@@ -30,6 +36,13 @@ public class OpeSysUserProfile implements Serializable {
     @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
+
+    /**
+     * 所属租户
+     */
+    @TableField(value = "tenant_id")
+    @ApiModelProperty(value = "所属租户")
+    private Long tenantId;
 
     /**
      * 维修店ID
@@ -109,25 +122,60 @@ public class OpeSysUserProfile implements Serializable {
     private Date birthday;
 
     /**
-     * 身份证号
-     */
-    @TableField(value = "identity")
-    @ApiModelProperty(value = "身份证号")
-    private String identity;
-
-    /**
-     * 角色 STAFF-维修工；MANAGE-管理者
-     */
-    @TableField(value = "role")
-    @ApiModelProperty(value = "角色 STAFF-维修工；MANAGE-管理者")
-    private String role;
-
-    /**
      * 出生地
      */
     @TableField(value = "place_birth")
     @ApiModelProperty(value = "出生地")
     private String placeBirth;
+
+    /**
+     * 地址国家编码，如手机号 中国 +86
+     */
+    @TableField(value = "address_country_code")
+    @ApiModelProperty(value = "地址国家编码，如手机号 中国 +86")
+    private String addressCountryCode;
+
+    /**
+     * 地址
+     */
+    @TableField(value = "address")
+    @ApiModelProperty(value = "地址")
+    private String address;
+
+    /**
+     * 证件类型1身份证，2驾驶证，3护照
+     */
+    @TableField(value = "certificate_type")
+    @ApiModelProperty(value = "证件类型1身份证，2驾驶证，3护照")
+    private String certificateType;
+
+    /**
+     * 证件编号
+     */
+    @TableField(value = "certificate_number")
+    @ApiModelProperty(value = "证件编号")
+    private String certificateNumber;
+
+    /**
+     * 证件反面图片
+     */
+    @TableField(value = "certificate_negative_annex")
+    @ApiModelProperty(value = "证件反面图片")
+    private String certificateNegativeAnnex;
+
+    /**
+     * 证件正面图片
+     */
+    @TableField(value = "certificate_positive_annex")
+    @ApiModelProperty(value = "证件正面图片")
+    private String certificatePositiveAnnex;
+
+    /**
+     * 加入日期
+     */
+    @TableField(value = "join_date")
+    @ApiModelProperty(value = "加入日期")
+    private Date joinDate;
 
     /**
      * 创建人
@@ -194,7 +242,11 @@ public class OpeSysUserProfile implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String COL_ID = "id";
+
     public static final String COL_DR = "dr";
+
+    public static final String COL_TENANT_ID = "tenant_id";
 
     public static final String COL_REPAIR_SHOP_ID = "repair_shop_Id";
 
@@ -218,11 +270,21 @@ public class OpeSysUserProfile implements Serializable {
 
     public static final String COL_BIRTHDAY = "birthday";
 
-    public static final String COL_IDENTITY = "identity";
-
-    public static final String COL_ROLE = "role";
-
     public static final String COL_PLACE_BIRTH = "place_birth";
+
+    public static final String COL_ADDRESS_COUNTRY_CODE = "address_country_code";
+
+    public static final String COL_ADDRESS = "address";
+
+    public static final String COL_CERTIFICATE_TYPE = "certificate_type";
+
+    public static final String COL_CERTIFICATE_NUMBER = "certificate_number";
+
+    public static final String COL_CERTIFICATE_NEGATIVE_ANNEX = "certificate_negative_annex";
+
+    public static final String COL_CERTIFICATE_POSITIVE_ANNEX = "certificate_positive_annex";
+
+    public static final String COL_JOIN_DATE = "join_date";
 
     public static final String COL_CREATED_BY = "created_by";
 

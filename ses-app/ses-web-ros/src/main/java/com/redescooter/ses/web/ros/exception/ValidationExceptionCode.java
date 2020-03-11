@@ -92,5 +92,24 @@ public interface ValidationExceptionCode {
     int CUSTOMER_TYPE_IS_EMPTY = 10060;
     // 行业类型
     int INDUSTY_TYPE_IS_EMPTY = 10061;
-
+    // 办公区域为空
+    int ADDRESS_BUREAU_IS_EMPTY = 10062;
+    // 部门为空
+    int DEPT_IS_EMPTY = 10063;
+    // 职位为空
+    int POSITION_IS_EMPTY = 10064;
+    // 名 为空
+    int FIRST_NAME_IS_EMPTY = 10065;
+    // 姓为空
+    int LAST_NAME_IS_EMPTY = 10066;
+    // 生日为空
+    int BIRTHDAY_IS_EMPTY = 10067;
+    // 证件类型为空
+    int CERTIFICATE_TYPE_IS_EMPTY = 10068;
+    // 证件正面图片为空
+    int CERTIFICATE_POSITIVE_PICTURE_IS_EMPTY = 10069;
+    //地址字符不合法
+    int ADDRESS_CHAR_IS_NOT_ILLEGAL = 10070;
+    // 邮箱长度不合法
+    int EMAIL_CHAR_IS_NOT_ILLEGAL = 10071;
 }

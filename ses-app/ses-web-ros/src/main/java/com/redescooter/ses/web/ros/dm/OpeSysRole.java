@@ -22,6 +22,8 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "ope_sys_role")
 public class OpeSysRole implements Serializable {
+    public static final String COL_DS_TYPE = "ds_type";
+    public static final String COL_DS_SCOPE = "ds_scope";
     /**
      * 主键Id
      */
@@ -66,31 +68,14 @@ public class OpeSysRole implements Serializable {
     private String roleDesc;
 
     /**
-     * 角色类型
-     */
-    @TableField(value = "ds_type")
-    @ApiModelProperty(value = "角色类型")
-    private String dsType;
-
-    /**
-     * 角色范围
-     */
-    @TableField(value = "ds_scope")
-    @ApiModelProperty(value = "角色范围")
-    private String dsScope;
-
-    /**
      * 创建人
      */
     @TableField(value = "created_by")
     @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
-    /**
-     * 创建时间
-     */
     @TableField(value = "create_time")
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "")
     private Date createTime;
 
     /**
@@ -98,13 +83,10 @@ public class OpeSysRole implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Long updatedBy;
+    private Integer updatedBy;
 
-    /**
-     * 更新时间
-     */
     @TableField(value = "update_time")
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;
@@ -121,10 +103,6 @@ public class OpeSysRole implements Serializable {
 
     public static final String COL_ROLE_DESC = "role_desc";
 
-    public static final String COL_DS_TYPE = "ds_type";
-
-    public static final String COL_DS_SCOPE = "ds_scope";
-
     public static final String COL_CREATED_BY = "created_by";
 
     public static final String COL_CREATE_TIME = "create_time";
@@ -132,4 +110,8 @@ public class OpeSysRole implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATE_TIME = "update_time";
+
+    public static OpeSysRoleBuilder builder() {
+        return new OpeSysRoleBuilder();
+    }
 }

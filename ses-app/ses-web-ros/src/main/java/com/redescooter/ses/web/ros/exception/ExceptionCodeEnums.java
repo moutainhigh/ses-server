@@ -149,6 +149,14 @@ public enum ExceptionCodeEnums {
 
     INQUIRY_IS_NOT_EXIST(10067, "询价单不存在"),
 
+    EMPLOYEE_IS_NOT_EXIST(10068, "员工不存在"),
+
+    EMPLOYEE_IS_NOT_BING_POSITION(10069, "员工没有绑定职位"),
+
+    DEPT_IS_NOT_EXIST(10070, "部门不存在"),
+
+    POSITION_IS_NOT_EXIST(10071, "职位不存在"),
+
     ;
 
     private int code;

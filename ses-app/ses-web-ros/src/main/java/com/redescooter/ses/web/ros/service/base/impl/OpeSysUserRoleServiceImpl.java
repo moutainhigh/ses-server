@@ -31,3 +31,4 @@ public class OpeSysUserRoleServiceImpl extends ServiceImpl<OpeSysUserRoleMapper,
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

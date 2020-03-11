@@ -3,8 +3,49 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.organization.EmployeeServiceMapper">
 
     <sql id="select_ EmployeeDeptResult">
-        dept.id   as id,
-        dept.name as name
+    </sql>
+
+    <sql id="select_EmployeeResult">
+         staff.id                            as id,
+               profile.first_name                 as employeeFirstName,
+               profile.last_name                  as employeeLastName,
+               profile.country_code               as countryCode,
+               profile.tel_number                 as telephone,
+               profile.email                      as email,
+               dept.id                            as deptId,
+               dept.name                          as deptName,
+               role.id                            as positionId,
+               role.role_name                     as positionName,
+               profile.birthday                   as birthday,
+               profile.join_date                  as entryDate,
+               profile.address_country_code       as addressCountryCode,
+               profile.address                    as address,
+               profile.certificate_type           as certificateType,
+               profile.certificate_positive_annex as positivePicture,
+               profile.certificate_negative_annex as negativePicture
+        from ope_sys_user user
+                 inner join ope_sys_staff staff on user.id = staff.sys_user_id
+                 left join ope_sys_user_profile profile on user.id = profile.sys_user_id and profile.dr = 0
+                 left join ope_sys_dept dept on user.dept_id = dept.id and dept.dr = 0
+                 left join ope_sys_user_role urole on urole.user_id = user.id
+                 left join ope_sys_role role on role.id = urole.role_id and role.dr = 0
+    </sql>
+
+    <sql id="where_EmployeeList">
+        where user.dr = 0
+        <if test="positionId != null">
+            and role.id = #{positionId}
+        </if>
+        <if test="deptId != null">
+            and dept.id = #{deptId}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (profile.first_name like concat("%",#{keyword},"%")
+            or profile.last_name like concat("%",#{keyword},"%")
+            or profile.full_name like concat("%",#{keyword},"%")
+            or profile.tel_number like concat("%",#{keyword},"%")
+            or profile.email like concat("%",#{keyword},"%")
+        </if>
     </sql>
 
     <select id="deptList" resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListResult">
@@ -22,7 +63,17 @@
     </select>
 
     <select id="employeeList" resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeResult">
+        select
+        <include refid="select_EmployeeResult"/>
+        <include refid="where_EmployeeList"/>
+    </select>
 
+    <select id="employeeDetail"
+            resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeResult">
+        select
+        <include refid="select_EmployeeResult"/>
+        where user.dr = 0
+        user.id=#{id}
     </select>
 
     <!--每次查询部门的子集-->
@@ -30,7 +81,6 @@
         select rela.ancestor
         from ope_sys_dept_relation rela
         where rela.dr = 0
-        and rela.descendant=1000022
         <if test="ids != null and ids.size() != 0">
             and rela.descendant in
             <foreach collection="ids" item="item" separator="," open="(" close=")">
@@ -46,7 +96,8 @@
     <select id="getEmployeeDeptList"
             resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
         select
-        <include refid="select_ EmployeeDeptResult"/>
+        dept.id as id,
+        dept.name as name
         from ope_sys_dept dept
         where dept.dr = 0
         <if test="ids != null and ids.size() != 0">
@@ -60,7 +111,16 @@
 
     <select id="getEmployeePositionList"
             resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
-
+        select role.id as id,
+        from ope_sys_role_dept roleDept
+        inner join ope_sys_role role on roleDept.role_id = role.id and role.dr = 0
+        where 1=1
+        <if test="ids != null and ids.size() != 0">
+            and roleDept.dept_id in
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
 
     <select id="getEmployeeOfficeareaList"
@@ -71,7 +131,8 @@
     <select id="getEmployeeCompanyList"
             resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
         select
-        <include refid="select_ EmployeeDeptResult"/>
+         dept.id   as id,
+         dept.name as name
         from ope_sys_dept dept
         where dept.level = 0
         and dept.dr = 0

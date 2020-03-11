@@ -6,11 +6,10 @@
         <!--@Table ope_sys_dept-->
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
         <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
         <result column="level" jdbcType="INTEGER" property="level"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="code" jdbcType="VARCHAR" property="code"/>
         <result column="sort" jdbcType="INTEGER" property="sort"/>
         <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
@@ -19,8 +18,8 @@
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        id, dr, parent_id, tenant_id, `level`, `name`, code, sort, created_by, created_time,
-        updated_by, updated_time
+        id, dr, tenant_id, parent_id, `level`, `name`, sort, created_by, created_time, updated_by,
+        updated_time
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
@@ -31,14 +30,14 @@
                     when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
                 </foreach>
             </trim>
-            <trim prefix="parent_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.parentId,jdbcType=BIGINT}
-                </foreach>
-            </trim>
             <trim prefix="tenant_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="parent_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.parentId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="`level` = case" suffix="end,">
@@ -49,11 +48,6 @@
             <trim prefix="`name` = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.name,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="code = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.code,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="sort = case" suffix="end,">
@@ -90,14 +84,15 @@
     <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
         <!--@mbg.generated-->
         insert into ope_sys_dept
-        (dr, parent_id, tenant_id, `level`, `name`, code, sort, created_by, created_time,
-        updated_by, updated_time)
+        (dr, tenant_id, parent_id, `level`, `name`, sort, created_by, created_time, updated_by,
+        updated_time)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.dr,jdbcType=INTEGER}, #{item.parentId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT},
-            #{item.level,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR},
-            #{item.sort,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
-            #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP})
+            (#{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, #{item.parentId,jdbcType=BIGINT},
+            #{item.level,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.sort,jdbcType=INTEGER},
+            #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.updatedBy,jdbcType=BIGINT},
+            #{item.updatedTime,jdbcType=TIMESTAMP})
         </foreach>
     </insert>
     <insert id="insertOrUpdate" keyColumn="id" keyProperty="id"
@@ -109,11 +104,10 @@
                 id,
             </if>
             dr,
-            parent_id,
             tenant_id,
+            parent_id,
             `level`,
             `name`,
-            code,
             sort,
             created_by,
             created_time,
@@ -126,11 +120,10 @@
                 #{id,jdbcType=BIGINT},
             </if>
             #{dr,jdbcType=INTEGER},
-            #{parentId,jdbcType=BIGINT},
             #{tenantId,jdbcType=BIGINT},
+            #{parentId,jdbcType=BIGINT},
             #{level,jdbcType=INTEGER},
             #{name,jdbcType=VARCHAR},
-            #{code,jdbcType=VARCHAR},
             #{sort,jdbcType=INTEGER},
             #{createdBy,jdbcType=BIGINT},
             #{createdTime,jdbcType=TIMESTAMP},
@@ -143,11 +136,10 @@
                 id = #{id,jdbcType=BIGINT},
             </if>
             dr = #{dr,jdbcType=INTEGER},
-            parent_id = #{parentId,jdbcType=BIGINT},
             tenant_id = #{tenantId,jdbcType=BIGINT},
+            parent_id = #{parentId,jdbcType=BIGINT},
             `level` = #{level,jdbcType=INTEGER},
             `name` = #{name,jdbcType=VARCHAR},
-            code = #{code,jdbcType=VARCHAR},
             sort = #{sort,jdbcType=INTEGER},
             created_by = #{createdBy,jdbcType=BIGINT},
             created_time = #{createdTime,jdbcType=TIMESTAMP},
@@ -166,20 +158,17 @@
             <if test="dr != null">
                 dr,
             </if>
-            <if test="parentId != null">
-                parent_id,
-            </if>
             <if test="tenantId != null">
                 tenant_id,
+            </if>
+            <if test="parentId != null">
+                parent_id,
             </if>
             <if test="level != null">
                 `level`,
             </if>
             <if test="name != null">
                 `name`,
-            </if>
-            <if test="code != null">
-                code,
             </if>
             <if test="sort != null">
                 sort,
@@ -205,20 +194,17 @@
             <if test="dr != null">
                 #{dr,jdbcType=INTEGER},
             </if>
-            <if test="parentId != null">
-                #{parentId,jdbcType=BIGINT},
-            </if>
             <if test="tenantId != null">
                 #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=BIGINT},
             </if>
             <if test="level != null">
                 #{level,jdbcType=INTEGER},
             </if>
             <if test="name != null">
                 #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="code != null">
-                #{code,jdbcType=VARCHAR},
             </if>
             <if test="sort != null">
                 #{sort,jdbcType=INTEGER},
@@ -244,20 +230,17 @@
             <if test="dr != null">
                 dr = #{dr,jdbcType=INTEGER},
             </if>
-            <if test="parentId != null">
-                parent_id = #{parentId,jdbcType=BIGINT},
-            </if>
             <if test="tenantId != null">
                 tenant_id = #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId,jdbcType=BIGINT},
             </if>
             <if test="level != null">
                 `level` = #{level,jdbcType=INTEGER},
             </if>
             <if test="name != null">
                 `name` = #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="code != null">
-                code = #{code,jdbcType=VARCHAR},
             </if>
             <if test="sort != null">
                 sort = #{sort,jdbcType=INTEGER},

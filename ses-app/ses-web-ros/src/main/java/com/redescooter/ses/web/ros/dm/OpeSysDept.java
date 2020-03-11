@@ -22,6 +22,7 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "ope_sys_dept")
 public class OpeSysDept implements Serializable {
+    public static final String COL_CODE = "code";
     @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "")
     private Long id;
@@ -35,18 +36,18 @@ public class OpeSysDept implements Serializable {
     private Integer dr;
 
     /**
-     * 父级部门id
-     */
-    @TableField(value = "parent_id")
-    @ApiModelProperty(value = "父级部门id")
-    private Long parentId;
-
-    /**
      * 租户id
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户id")
     private Long tenantId;
+
+    /**
+     * 父级部门id
+     */
+    @TableField(value = "parent_id")
+    @ApiModelProperty(value = "父级部门id")
+    private Long parentId;
 
     /**
      * 级别0公司，1部门
@@ -55,19 +56,9 @@ public class OpeSysDept implements Serializable {
     @ApiModelProperty(value = "级别0公司，1部门")
     private Integer level;
 
-    /**
-     * 部门名称
-     */
     @TableField(value = "name")
-    @ApiModelProperty(value = "部门名称")
+    @ApiModelProperty(value = "")
     private String name;
-
-    /**
-     * 部门code
-     */
-    @TableField(value = "code")
-    @ApiModelProperty(value = "部门code")
-    private String code;
 
     /**
      * 排序
@@ -110,15 +101,13 @@ public class OpeSysDept implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_PARENT_ID = "parent_id";
-
     public static final String COL_TENANT_ID = "tenant_id";
+
+    public static final String COL_PARENT_ID = "parent_id";
 
     public static final String COL_LEVEL = "level";
 
     public static final String COL_NAME = "name";
-
-    public static final String COL_CODE = "code";
 
     public static final String COL_SORT = "sort";
 
@@ -129,4 +118,8 @@ public class OpeSysDept implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
+
+    public static OpeSysDeptBuilder builder() {
+        return new OpeSysDeptBuilder();
+    }
 }

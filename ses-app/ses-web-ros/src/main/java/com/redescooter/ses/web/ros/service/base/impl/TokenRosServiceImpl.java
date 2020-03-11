@@ -258,7 +258,6 @@ public class TokenRosServiceImpl implements TokenRosService {
             sysUserProfile.setFullName(sysUser.getLoginName());
         }
         sysUserProfile.setGender("male");
-        sysUserProfile.setRole("staff");
         sysUserProfile.setCreatedBy(enter.getUserId());
         sysUserProfile.setCreatedTime(new Date());
         sysUserProfile.setUpdatedBy(enter.getUserId());

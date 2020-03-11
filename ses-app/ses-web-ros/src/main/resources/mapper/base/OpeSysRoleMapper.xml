@@ -10,17 +10,15 @@
         <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
         <result column="role_code" jdbcType="VARCHAR" property="roleCode"/>
         <result column="role_desc" jdbcType="VARCHAR" property="roleDesc"/>
-        <result column="ds_type" jdbcType="CHAR" property="dsType"/>
-        <result column="ds_scope" jdbcType="VARCHAR" property="dsScope"/>
         <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+        <result column="updated_by" jdbcType="INTEGER" property="updatedBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        id, dr, tenant_id, role_name, role_code, role_desc, ds_type, ds_scope, created_by,
-        create_time, updated_by, update_time
+        id, dr, tenant_id, role_name, role_code, role_desc, created_by, create_time, updated_by,
+        update_time
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
@@ -51,16 +49,6 @@
                     when id = #{item.id,jdbcType=BIGINT} then #{item.roleDesc,jdbcType=VARCHAR}
                 </foreach>
             </trim>
-            <trim prefix="ds_type = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.dsType,jdbcType=CHAR}
-                </foreach>
-            </trim>
-            <trim prefix="ds_scope = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.dsScope,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
             <trim prefix="created_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
@@ -73,7 +61,7 @@
             </trim>
             <trim prefix="updated_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="update_time = case" suffix="end,">
@@ -90,14 +78,15 @@
     <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
         <!--@mbg.generated-->
         insert into ope_sys_role
-        (dr, tenant_id, role_name, role_code, role_desc, ds_type, ds_scope, created_by, create_time,
-        updated_by, update_time)
+        (dr, tenant_id, role_name, role_code, role_desc, created_by, create_time, updated_by,
+        update_time)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, #{item.roleName,jdbcType=VARCHAR},
-            #{item.roleCode,jdbcType=VARCHAR}, #{item.roleDesc,jdbcType=VARCHAR}, #{item.dsType,jdbcType=CHAR},
-            #{item.dsScope,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createTime,jdbcType=TIMESTAMP},
-            #{item.updatedBy,jdbcType=BIGINT}, #{item.updateTime,jdbcType=TIMESTAMP})
+            #{item.roleCode,jdbcType=VARCHAR}, #{item.roleDesc,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=INTEGER},
+            #{item.updateTime,jdbcType=TIMESTAMP}
+            )
         </foreach>
     </insert>
     <insert id="insertOrUpdate" keyColumn="id" keyProperty="id"
@@ -113,8 +102,6 @@
             role_name,
             role_code,
             role_desc,
-            ds_type,
-            ds_scope,
             created_by,
             create_time,
             updated_by,
@@ -130,11 +117,9 @@
             #{roleName,jdbcType=VARCHAR},
             #{roleCode,jdbcType=VARCHAR},
             #{roleDesc,jdbcType=VARCHAR},
-            #{dsType,jdbcType=CHAR},
-            #{dsScope,jdbcType=VARCHAR},
             #{createdBy,jdbcType=BIGINT},
             #{createTime,jdbcType=TIMESTAMP},
-            #{updatedBy,jdbcType=BIGINT},
+            #{updatedBy,jdbcType=INTEGER},
             #{updateTime,jdbcType=TIMESTAMP},
         </trim>
         on duplicate key update
@@ -147,11 +132,9 @@
             role_name = #{roleName,jdbcType=VARCHAR},
             role_code = #{roleCode,jdbcType=VARCHAR},
             role_desc = #{roleDesc,jdbcType=VARCHAR},
-            ds_type = #{dsType,jdbcType=CHAR},
-            ds_scope = #{dsScope,jdbcType=VARCHAR},
             created_by = #{createdBy,jdbcType=BIGINT},
             create_time = #{createTime,jdbcType=TIMESTAMP},
-            updated_by = #{updatedBy,jdbcType=BIGINT},
+            updated_by = #{updatedBy,jdbcType=INTEGER},
             update_time = #{updateTime,jdbcType=TIMESTAMP},
         </trim>
     </insert>
@@ -177,12 +160,6 @@
             </if>
             <if test="roleDesc != null">
                 role_desc,
-            </if>
-            <if test="dsType != null">
-                ds_type,
-            </if>
-            <if test="dsScope != null">
-                ds_scope,
             </if>
             <if test="createdBy != null">
                 created_by,
@@ -217,12 +194,6 @@
             <if test="roleDesc != null">
                 #{roleDesc,jdbcType=VARCHAR},
             </if>
-            <if test="dsType != null">
-                #{dsType,jdbcType=CHAR},
-            </if>
-            <if test="dsScope != null">
-                #{dsScope,jdbcType=VARCHAR},
-            </if>
             <if test="createdBy != null">
                 #{createdBy,jdbcType=BIGINT},
             </if>
@@ -230,7 +201,7 @@
                 #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updatedBy != null">
-                #{updatedBy,jdbcType=BIGINT},
+                #{updatedBy,jdbcType=INTEGER},
             </if>
             <if test="updateTime != null">
                 #{updateTime,jdbcType=TIMESTAMP},
@@ -256,12 +227,6 @@
             <if test="roleDesc != null">
                 role_desc = #{roleDesc,jdbcType=VARCHAR},
             </if>
-            <if test="dsType != null">
-                ds_type = #{dsType,jdbcType=CHAR},
-            </if>
-            <if test="dsScope != null">
-                ds_scope = #{dsScope,jdbcType=VARCHAR},
-            </if>
             <if test="createdBy != null">
                 created_by = #{createdBy,jdbcType=BIGINT},
             </if>
@@ -269,7 +234,7 @@
                 create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updatedBy != null">
-                updated_by = #{updatedBy,jdbcType=BIGINT},
+                updated_by = #{updatedBy,jdbcType=INTEGER},
             </if>
             <if test="updateTime != null">
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
