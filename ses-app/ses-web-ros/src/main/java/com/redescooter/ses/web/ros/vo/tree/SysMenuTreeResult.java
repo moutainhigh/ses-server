@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.vo.tree;
 
-import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 

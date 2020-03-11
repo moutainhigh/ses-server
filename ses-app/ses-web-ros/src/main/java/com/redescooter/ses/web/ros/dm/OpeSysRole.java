@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysRole")
+@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSysRole")
 @Data
 @Builder
 @AllArgsConstructor
@@ -26,85 +25,64 @@ public class OpeSysRole implements Serializable {
      * 主键Id
      */
     @TableId(value = "id", type = IdType.AUTO)
-    @ApiModelProperty(value = "主键Id")
+    @ApiModelProperty(value="主键Id")
     private Long id;
 
     /**
      * 逻辑删除标识
      */
     @TableField(value = "dr")
-    @TableLogic
-    @ApiModelProperty(value = "逻辑删除标识")
+    @ApiModelProperty(value="逻辑删除标识")
     private Integer dr;
 
     /**
      * 租户id
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "租户id")
+    @ApiModelProperty(value="租户id")
     private Long tenantId;
 
     /**
      * 角色名称
      */
     @TableField(value = "role_name")
-    @ApiModelProperty(value = "角色名称")
+    @ApiModelProperty(value="角色名称")
     private String roleName;
 
     /**
      * 角色编码
      */
     @TableField(value = "role_code")
-    @ApiModelProperty(value = "角色编码")
+    @ApiModelProperty(value="角色编码")
     private String roleCode;
 
     /**
      * 角色描述
      */
     @TableField(value = "role_desc")
-    @ApiModelProperty(value = "角色描述")
+    @ApiModelProperty(value="角色描述")
     private String roleDesc;
-
-    /**
-     * 角色类型
-     */
-    @TableField(value = "ds_type")
-    @ApiModelProperty(value = "角色类型")
-    private String dsType;
-
-    /**
-     * 角色范围
-     */
-    @TableField(value = "ds_scope")
-    @ApiModelProperty(value = "角色范围")
-    private String dsScope;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value = "创建人")
+    @ApiModelProperty(value="创建人")
     private Long createdBy;
 
-    /**
-     * 创建时间
-     */
     @TableField(value = "create_time")
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value="")
     private Date createTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value = "更新人")
+    @ApiModelProperty(value="更新人")
     private Long updatedBy;
 
-    /**
-     * 更新时间
-     */
     @TableField(value = "update_time")
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value="")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;
@@ -120,10 +98,6 @@ public class OpeSysRole implements Serializable {
     public static final String COL_ROLE_CODE = "role_code";
 
     public static final String COL_ROLE_DESC = "role_desc";
-
-    public static final String COL_DS_TYPE = "ds_type";
-
-    public static final String COL_DS_SCOPE = "ds_scope";
 
     public static final String COL_CREATED_BY = "created_by";
 

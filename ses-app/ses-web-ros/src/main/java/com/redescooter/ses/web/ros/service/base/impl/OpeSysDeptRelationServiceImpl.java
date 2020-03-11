@@ -12,24 +12,15 @@ import java.util.List;
 public class OpeSysDeptRelationServiceImpl extends ServiceImpl<OpeSysDeptRelationMapper, OpeSysDeptRelation> implements OpeSysDeptRelationService {
 
     @Override
-    public int updateBatch(List<OpeSysDeptRelation> list) {
-        return baseMapper.updateBatch(list);
-    }
-
-    @Override
     public int batchInsert(List<OpeSysDeptRelation> list) {
         return baseMapper.batchInsert(list);
     }
-
     @Override
     public int insertOrUpdate(OpeSysDeptRelation record) {
         return baseMapper.insertOrUpdate(record);
     }
-
     @Override
     public int insertOrUpdateSelective(OpeSysDeptRelation record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
-
-

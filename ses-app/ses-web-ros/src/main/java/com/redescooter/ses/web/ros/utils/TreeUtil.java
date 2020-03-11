@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.utils;//package com.redescooter.ses.app.crm.web.utils;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.vo.tree.SysMenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.TreeNode;
 import lombok.experimental.UtilityClass;

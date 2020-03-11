@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -33,29 +32,35 @@ public class OpeSysMenu implements Serializable {
      * 逻辑删除标识
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识")
     private Integer dr;
 
     /**
-     * 菜单名字
+     * 菜单名称
      */
     @TableField(value = "name")
-    @ApiModelProperty(value = "菜单名字")
+    @ApiModelProperty(value = "菜单名称")
     private String name;
 
     /**
-     * 菜单权限
+     * 菜单编码
+     */
+    @TableField(value = "code")
+    @ApiModelProperty(value = "菜单编码")
+    private String code;
+
+    /**
+     * 权限码
      */
     @TableField(value = "permission")
-    @ApiModelProperty(value = "菜单权限")
+    @ApiModelProperty(value = "权限码")
     private String permission;
 
     /**
-     * 菜单路径
+     * 路由
      */
     @TableField(value = "path")
-    @ApiModelProperty(value = "菜单路径")
+    @ApiModelProperty(value = "路由")
     private String path;
 
     /**
@@ -66,25 +71,18 @@ public class OpeSysMenu implements Serializable {
     private Long parentId;
 
     /**
-     * 菜单icon
+     * 图表
      */
     @TableField(value = "icon")
-    @ApiModelProperty(value = "菜单icon")
+    @ApiModelProperty(value = "图表")
     private String icon;
 
     /**
-     * 排序值
+     * 菜单权重
      */
     @TableField(value = "sort")
-    @ApiModelProperty(value = "排序值")
+    @ApiModelProperty(value = "菜单权重")
     private Integer sort;
-
-    /**
-     * 是否激活
-     */
-    @TableField(value = "keep_alive")
-    @ApiModelProperty(value = "是否激活")
-    private String keepAlive;
 
     /**
      * 菜单类型
@@ -129,6 +127,8 @@ public class OpeSysMenu implements Serializable {
 
     public static final String COL_NAME = "name";
 
+    public static final String COL_CODE = "code";
+
     public static final String COL_PERMISSION = "permission";
 
     public static final String COL_PATH = "path";
@@ -139,8 +139,6 @@ public class OpeSysMenu implements Serializable {
 
     public static final String COL_SORT = "sort";
 
-    public static final String COL_KEEP_ALIVE = "keep_alive";
-
     public static final String COL_TYPE = "type";
 
     public static final String COL_CREATED_BY = "created_by";
@@ -150,4 +148,8 @@ public class OpeSysMenu implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
+
+    public static OpeSysMenuBuilder builder() {
+        return new OpeSysMenuBuilder();
+    }
 }
