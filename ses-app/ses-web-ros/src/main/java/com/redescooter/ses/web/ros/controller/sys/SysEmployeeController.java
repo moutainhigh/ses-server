@@ -3,7 +3,7 @@ package com.redescooter.ses.web.ros.controller.sys;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.web.ros.service.organization.EmployeeService;
+import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptEnter;
 import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult;
 import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListEnter;

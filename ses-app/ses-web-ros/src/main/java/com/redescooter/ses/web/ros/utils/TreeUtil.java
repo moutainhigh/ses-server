@@ -5,7 +5,6 @@ import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult;
-import com.redescooter.ses.web.ros.vo.tree.SysMenuTreeResult;
 import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 

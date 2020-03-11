@@ -362,7 +362,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private OpeSysUserProfile buildOpeSysUserProfile(SaveEmployeeEnter enter) {
         OpeSysUserProfile opeSysUserProfile = new OpeSysUserProfile();
         opeSysUserProfile.setDr(0);
-        opeSysUserProfile.setTenantId(0L);
         opeSysUserProfile.setRepairShopId(0L);
         opeSysUserProfile.setPicture(null);
         opeSysUserProfile.setFirstName(enter.getEmployeeFirstName());
