@@ -37,6 +37,6 @@ public class SysSalesAreaController {
     @PostMapping(value = "/trees")
     @ApiOperation(value = "销售区域树列表", response = SalesAreaTressResult.class)
     public Response<List<SalesAreaTressResult>> trees(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(sysSalesAreaService.list(enter));
+        return new Response<>(sysSalesAreaService.trees(enter));
     }
 }

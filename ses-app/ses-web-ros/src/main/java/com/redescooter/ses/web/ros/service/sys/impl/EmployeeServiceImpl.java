@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.organization.impl;
+package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.redescooter.ses.api.common.enums.organization.EmployeeDeptTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -7,7 +7,7 @@ import com.redescooter.ses.web.ros.dao.organization.EmployeeServiceMapper;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
-import com.redescooter.ses.web.ros.service.organization.EmployeeService;
+import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptEnter;
 import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult;
 import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListEnter;

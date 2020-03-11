@@ -1,7 +1,5 @@
 package com.redescooter.ses.web.ros.service.sys;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 

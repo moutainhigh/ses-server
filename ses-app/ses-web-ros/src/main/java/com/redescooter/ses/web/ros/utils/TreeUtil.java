@@ -3,7 +3,7 @@ package com.redescooter.ses.web.ros.utils;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
-import com.redescooter.ses.web.ros.vo.tree.SysMenuTreeResult;
+import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 
@@ -84,19 +84,22 @@ public class TreeUtil {
      * @param root
      * @return
      */
-    public List<SysMenuTreeResult> buildTree(List<OpeSysMenu> menus, GeneralEnter enter, int root) {
-        List<SysMenuTreeResult> trees = new ArrayList<>();
-        SysMenuTreeResult node;
+    public List<MenuTreeResult> buildTree(List<OpeSysMenu> menus, GeneralEnter enter, long root) {
+        List<MenuTreeResult> trees = new ArrayList<>();
+        MenuTreeResult node;
         for (OpeSysMenu menu : menus) {
-            node = new SysMenuTreeResult();
+            node = new MenuTreeResult();
             BeanUtils.copyProperties(enter, node);
             node.setId(menu.getId());
             node.setPId(menu.getPId());
             node.setName(menu.getName());
             node.setPath(menu.getPath());
             node.setCode(menu.getPermission());
-            node.setLabel(menu.getName());
             node.setIcon(menu.getIcon());
+            node.setSort(menu.getSort());
+            node.setChecked(Boolean.FALSE);
+            node.setDisabled(Boolean.FALSE);
+            node.setSpread(Boolean.FALSE);
             trees.add(node);
         }
         return TreeUtil.build(trees, root);

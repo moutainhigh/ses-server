@@ -1,8 +1,8 @@
-package com.redescooter.ses.web.ros.service.organization.impl;
+package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.service.organization.PositionService;
+import com.redescooter.ses.web.ros.service.sys.PositionService;
 import com.redescooter.ses.web.ros.vo.organization.position.PositionDeptListResult;
 import com.redescooter.ses.web.ros.vo.organization.position.PositionDetailResult;
 import com.redescooter.ses.web.ros.vo.organization.position.PositionListEnter;

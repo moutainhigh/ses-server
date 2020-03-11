@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.organization;
+package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;

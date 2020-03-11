@@ -43,4 +43,6 @@ public interface SequenceName {
 
     String OPE_CUSTOMER_INQUIRY = "OPE_CUSTOMER_INQUIRY";
 
+    String OPE_SYS_MENU = "OPE_SYS_MENU";
+
 }

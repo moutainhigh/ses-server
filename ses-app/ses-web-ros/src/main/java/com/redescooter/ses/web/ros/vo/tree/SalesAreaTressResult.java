@@ -27,5 +27,7 @@ public class SalesAreaTressResult extends TreeNode {
     private Boolean checked;
     @ApiModelProperty(value = "是否禁用")
     private Boolean disabled;
+    @ApiModelProperty(value = "是否展开")
+    private boolean spread = false;
 
 }
