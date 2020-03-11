@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
+import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -25,8 +26,8 @@ public class SysDeptController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "部门创建", response = GeneralResult.class)
-    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveDeptEnter enter) {
+        return new Response<>(sysDeptService.save(enter));
     }
 
     @PostMapping(value = "/edit")

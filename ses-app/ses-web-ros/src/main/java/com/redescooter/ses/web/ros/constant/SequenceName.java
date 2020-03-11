@@ -13,9 +13,9 @@ public interface SequenceName {
 
     String OPE_CUSTOMER = "OPE_CUSTOMER";
 
-    String OPE_FACTORY="OPE_FACTORY";
+    String OPE_FACTORY = "OPE_FACTORY";
 
-    String OPE_FACTORY_TRACE="OPE_FACTORY_TRACE";
+    String OPE_FACTORY_TRACE = "OPE_FACTORY_TRACE";
 
     String OPE_SUPPLIER="OPE_SUPPLIER";
 
@@ -46,5 +46,7 @@ public interface SequenceName {
     String OPE_SYS_MENU = "OPE_SYS_MENU";
 
     String OPE_SYS_STAFF = "OPE_SYS_STAFF";
+
+    String OPE_SYS_DEPT = "OPE_SYS_DEPT";
 
 }
