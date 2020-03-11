@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSysMenuMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysMenu">
+    <!--@mbg.generated-->
+    <!--@Table ope_sys_menu-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="type" jdbcType="CHAR" property="type" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, `name`, code, permission, `path`, parent_id, icon, sort, `type`, created_by, 
+    created_time, updated_by, updated_time
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_sys_menu
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="`name` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.name,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.code,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="permission = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.permission,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`path` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.path,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="parent_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.parentId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="icon = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.icon,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="sort = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.sort,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="`type` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.type,jdbcType=CHAR}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into ope_sys_menu
+    (dr, `name`, code, permission, `path`, parent_id, icon, sort, `type`, created_by, 
+      created_time, updated_by, updated_time)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.dr,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR}, 
+        #{item.permission,jdbcType=VARCHAR}, #{item.path,jdbcType=VARCHAR}, #{item.parentId,jdbcType=BIGINT}, 
+        #{item.icon,jdbcType=VARCHAR}, #{item.sort,jdbcType=INTEGER}, #{item.type,jdbcType=CHAR}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysMenu" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into ope_sys_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      dr,
+      `name`,
+      code,
+      permission,
+      `path`,
+      parent_id,
+      icon,
+      sort,
+      `type`,
+      created_by,
+      created_time,
+      updated_by,
+      updated_time,
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      #{dr,jdbcType=INTEGER},
+      #{name,jdbcType=VARCHAR},
+      #{code,jdbcType=VARCHAR},
+      #{permission,jdbcType=VARCHAR},
+      #{path,jdbcType=VARCHAR},
+      #{parentId,jdbcType=BIGINT},
+      #{icon,jdbcType=VARCHAR},
+      #{sort,jdbcType=INTEGER},
+      #{type,jdbcType=CHAR},
+      #{createdBy,jdbcType=BIGINT},
+      #{createdTime,jdbcType=TIMESTAMP},
+      #{updatedBy,jdbcType=BIGINT},
+      #{updatedTime,jdbcType=TIMESTAMP},
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      dr = #{dr,jdbcType=INTEGER},
+      `name` = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      permission = #{permission,jdbcType=VARCHAR},
+      `path` = #{path,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      icon = #{icon,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      `type` = #{type,jdbcType=CHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    </trim>
+  </insert>
+  <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysMenu" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into ope_sys_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="permission != null">
+        permission,
+      </if>
+      <if test="path != null">
+        `path`,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="permission != null">
+        #{permission,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=CHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="permission != null">
+        permission = #{permission,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        `path` = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=CHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

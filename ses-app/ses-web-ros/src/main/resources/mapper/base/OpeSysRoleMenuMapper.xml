@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSysRoleMenuMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysRoleMenu">
+    <!--@mbg.generated-->
+    <!--@Table ope_sys_role_menu-->
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="menu_id" jdbcType="BIGINT" property="menuId" />
+  </resultMap>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_sys_role_menu
+    (role_id, menu_id)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.roleId,jdbcType=INTEGER}, #{item.menuId,jdbcType=BIGINT})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleMenu">
+    <!--@mbg.generated-->
+    insert into ope_sys_role_menu
+    (role_id, menu_id)
+    values
+    (#{roleId,jdbcType=INTEGER}, #{menuId,jdbcType=BIGINT})
+    on duplicate key update 
+    role_id = #{roleId,jdbcType=INTEGER}, 
+    menu_id = #{menuId,jdbcType=BIGINT}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleMenu">
+    <!--@mbg.generated-->
+    insert into ope_sys_role_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="menuId != null">
+        menu_id,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="menuId != null">
+        #{menuId,jdbcType=BIGINT},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="menuId != null">
+        menu_id = #{menuId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+</mapper>

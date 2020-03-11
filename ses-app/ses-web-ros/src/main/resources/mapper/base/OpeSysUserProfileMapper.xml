@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysUserProfile">
+    <!--@mbg.generated-->
+    <!--@Table ope_sys_user_profile-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="repair_shop_Id" jdbcType="BIGINT" property="repairShopId" />
+    <result column="sys_user_id" jdbcType="BIGINT" property="sysUserId" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="first_name" jdbcType="VARCHAR" property="firstName" />
+    <result column="last_name" jdbcType="VARCHAR" property="lastName" />
+    <result column="full_name" jdbcType="VARCHAR" property="fullName" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+    <result column="tel_number" jdbcType="VARCHAR" property="telNumber" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
+    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="identity" jdbcType="VARCHAR" property="identity" />
+    <result column="role" jdbcType="VARCHAR" property="role" />
+    <result column="place_birth" jdbcType="VARCHAR" property="placeBirth" />
+    <result column="address_country_code" jdbcType="VARCHAR" property="addressCountryCode" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="address_bureau" jdbcType="VARCHAR" property="addressBureau" />
+    <result column="id_card_type" jdbcType="VARCHAR" property="idCardType" />
+    <result column="certificate_type" jdbcType="VARCHAR" property="certificateType" />
+    <result column="certificate_negative_annex" jdbcType="VARCHAR" property="certificateNegativeAnnex" />
+    <result column="certificate_positive_annex" jdbcType="VARCHAR" property="certificatePositiveAnnex" />
+    <result column="join_date" jdbcType="DATE" property="joinDate" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DOUBLE" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name, email, 
+    country_code, tel_number, gender, birthday, `identity`, `role`, place_birth, address_country_code, 
+    address, address_bureau, id_card_type, certificate_type, certificate_negative_annex, 
+    certificate_positive_annex, join_date, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_sys_user_profile
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="repair_shop_Id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.repairShopId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="sys_user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.sysUserId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="picture = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.picture,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="first_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.firstName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="last_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.lastName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="full_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.fullName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.email,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="tel_number = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.telNumber,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="gender = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.gender,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="birthday = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.birthday,jdbcType=DATE}
+        </foreach>
+      </trim>
+      <trim prefix="`identity` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.identity,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`role` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.role,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="place_birth = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.placeBirth,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="address_country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.addressCountryCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.address,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="address_bureau = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.addressBureau,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="id_card_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.idCardType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="certificate_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="certificate_negative_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.certificateNegativeAnnex,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="certificate_positive_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.certificatePositiveAnnex,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="join_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.joinDate,jdbcType=DATE}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_sys_user_profile
+    (id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name, 
+      email, country_code, tel_number, gender, birthday, `identity`, `role`, place_birth, 
+      address_country_code, address, address_bureau, id_card_type, certificate_type, 
+      certificate_negative_annex, certificate_positive_annex, join_date, created_by, 
+      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.repairShopId,jdbcType=BIGINT}, 
+        #{item.sysUserId,jdbcType=BIGINT}, #{item.picture,jdbcType=VARCHAR}, #{item.firstName,jdbcType=VARCHAR}, 
+        #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 
+        #{item.countryCode,jdbcType=VARCHAR}, #{item.telNumber,jdbcType=VARCHAR}, #{item.gender,jdbcType=VARCHAR}, 
+        #{item.birthday,jdbcType=DATE}, #{item.identity,jdbcType=VARCHAR}, #{item.role,jdbcType=VARCHAR}, 
+        #{item.placeBirth,jdbcType=VARCHAR}, #{item.addressCountryCode,jdbcType=VARCHAR}, 
+        #{item.address,jdbcType=VARCHAR}, #{item.addressBureau,jdbcType=VARCHAR}, #{item.idCardType,jdbcType=VARCHAR}, 
+        #{item.certificateType,jdbcType=VARCHAR}, #{item.certificateNegativeAnnex,jdbcType=VARCHAR}, 
+        #{item.certificatePositiveAnnex,jdbcType=VARCHAR}, #{item.joinDate,jdbcType=DATE}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserProfile">
+    <!--@mbg.generated-->
+    insert into ope_sys_user_profile
+    (id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name, 
+      email, country_code, tel_number, gender, birthday, `identity`, `role`, place_birth, 
+      address_country_code, address, address_bureau, id_card_type, certificate_type, 
+      certificate_negative_annex, certificate_positive_annex, join_date, created_by, 
+      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{repairShopId,jdbcType=BIGINT}, 
+      #{sysUserId,jdbcType=BIGINT}, #{picture,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR}, 
+      #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{countryCode,jdbcType=VARCHAR}, #{telNumber,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, 
+      #{birthday,jdbcType=DATE}, #{identity,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}, 
+      #{placeBirth,jdbcType=VARCHAR}, #{addressCountryCode,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{addressBureau,jdbcType=VARCHAR}, #{idCardType,jdbcType=VARCHAR}, #{certificateType,jdbcType=VARCHAR}, 
+      #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
+      #{joinDate,jdbcType=DATE}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    repair_shop_Id = #{repairShopId,jdbcType=BIGINT}, 
+    sys_user_id = #{sysUserId,jdbcType=BIGINT}, 
+    picture = #{picture,jdbcType=VARCHAR}, 
+    first_name = #{firstName,jdbcType=VARCHAR}, 
+    last_name = #{lastName,jdbcType=VARCHAR}, 
+    full_name = #{fullName,jdbcType=VARCHAR}, 
+    email = #{email,jdbcType=VARCHAR}, 
+    country_code = #{countryCode,jdbcType=VARCHAR}, 
+    tel_number = #{telNumber,jdbcType=VARCHAR}, 
+    gender = #{gender,jdbcType=VARCHAR}, 
+    birthday = #{birthday,jdbcType=DATE}, 
+    `identity` = #{identity,jdbcType=VARCHAR}, 
+    `role` = #{role,jdbcType=VARCHAR}, 
+    place_birth = #{placeBirth,jdbcType=VARCHAR}, 
+    address_country_code = #{addressCountryCode,jdbcType=VARCHAR}, 
+    address = #{address,jdbcType=VARCHAR}, 
+    address_bureau = #{addressBureau,jdbcType=VARCHAR}, 
+    id_card_type = #{idCardType,jdbcType=VARCHAR}, 
+    certificate_type = #{certificateType,jdbcType=VARCHAR}, 
+    certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR}, 
+    certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
+    join_date = #{joinDate,jdbcType=DATE}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
+    def6 = #{def6,jdbcType=DOUBLE}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserProfile">
+    <!--@mbg.generated-->
+    insert into ope_sys_user_profile
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="repairShopId != null">
+        repair_shop_Id,
+      </if>
+      <if test="sysUserId != null">
+        sys_user_id,
+      </if>
+      <if test="picture != null">
+        picture,
+      </if>
+      <if test="firstName != null">
+        first_name,
+      </if>
+      <if test="lastName != null">
+        last_name,
+      </if>
+      <if test="fullName != null">
+        full_name,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="countryCode != null">
+        country_code,
+      </if>
+      <if test="telNumber != null">
+        tel_number,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="identity != null">
+        `identity`,
+      </if>
+      <if test="role != null">
+        `role`,
+      </if>
+      <if test="placeBirth != null">
+        place_birth,
+      </if>
+      <if test="addressCountryCode != null">
+        address_country_code,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="addressBureau != null">
+        address_bureau,
+      </if>
+      <if test="idCardType != null">
+        id_card_type,
+      </if>
+      <if test="certificateType != null">
+        certificate_type,
+      </if>
+      <if test="certificateNegativeAnnex != null">
+        certificate_negative_annex,
+      </if>
+      <if test="certificatePositiveAnnex != null">
+        certificate_positive_annex,
+      </if>
+      <if test="joinDate != null">
+        join_date,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="repairShopId != null">
+        #{repairShopId,jdbcType=BIGINT},
+      </if>
+      <if test="sysUserId != null">
+        #{sysUserId,jdbcType=BIGINT},
+      </if>
+      <if test="picture != null">
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="firstName != null">
+        #{firstName,jdbcType=VARCHAR},
+      </if>
+      <if test="lastName != null">
+        #{lastName,jdbcType=VARCHAR},
+      </if>
+      <if test="fullName != null">
+        #{fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null">
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="telNumber != null">
+        #{telNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=DATE},
+      </if>
+      <if test="identity != null">
+        #{identity,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="placeBirth != null">
+        #{placeBirth,jdbcType=VARCHAR},
+      </if>
+      <if test="addressCountryCode != null">
+        #{addressCountryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="addressBureau != null">
+        #{addressBureau,jdbcType=VARCHAR},
+      </if>
+      <if test="idCardType != null">
+        #{idCardType,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateType != null">
+        #{certificateType,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateNegativeAnnex != null">
+        #{certificateNegativeAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="certificatePositiveAnnex != null">
+        #{certificatePositiveAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="joinDate != null">
+        #{joinDate,jdbcType=DATE},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="repairShopId != null">
+        repair_shop_Id = #{repairShopId,jdbcType=BIGINT},
+      </if>
+      <if test="sysUserId != null">
+        sys_user_id = #{sysUserId,jdbcType=BIGINT},
+      </if>
+      <if test="picture != null">
+        picture = #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="firstName != null">
+        first_name = #{firstName,jdbcType=VARCHAR},
+      </if>
+      <if test="lastName != null">
+        last_name = #{lastName,jdbcType=VARCHAR},
+      </if>
+      <if test="fullName != null">
+        full_name = #{fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null">
+        country_code = #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="telNumber != null">
+        tel_number = #{telNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=DATE},
+      </if>
+      <if test="identity != null">
+        `identity` = #{identity,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        `role` = #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="placeBirth != null">
+        place_birth = #{placeBirth,jdbcType=VARCHAR},
+      </if>
+      <if test="addressCountryCode != null">
+        address_country_code = #{addressCountryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="addressBureau != null">
+        address_bureau = #{addressBureau,jdbcType=VARCHAR},
+      </if>
+      <if test="idCardType != null">
+        id_card_type = #{idCardType,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateType != null">
+        certificate_type = #{certificateType,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateNegativeAnnex != null">
+        certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="certificatePositiveAnnex != null">
+        certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="joinDate != null">
+        join_date = #{joinDate,jdbcType=DATE},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+</mapper>
