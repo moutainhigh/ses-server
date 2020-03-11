@@ -10,7 +10,7 @@
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="permission" jdbcType="VARCHAR" property="permission" />
     <result column="path" jdbcType="VARCHAR" property="path" />
-    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="p_id" jdbcType="BIGINT" property="pId" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="type" jdbcType="CHAR" property="type" />
@@ -21,8 +21,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, `name`, code, permission, `path`, parent_id, icon, sort, `type`, created_by, 
-    created_time, updated_by, updated_time
+    id, dr, `name`, code, permission, `path`, p_id, icon, sort, `type`, created_by, created_time,
+    updated_by, updated_time
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -53,9 +53,9 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.path,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="parent_id = case" suffix="end,">
+      <trim prefix="p_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.parentId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.pId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="icon = case" suffix="end,">
@@ -102,15 +102,15 @@
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into ope_sys_menu
-    (dr, `name`, code, permission, `path`, parent_id, icon, sort, `type`, created_by, 
-      created_time, updated_by, updated_time)
+    (dr, `name`, code, permission, `path`, p_id, icon, sort, `type`, created_by, created_time,
+    updated_by, updated_time)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.dr,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR}, 
-        #{item.permission,jdbcType=VARCHAR}, #{item.path,jdbcType=VARCHAR}, #{item.parentId,jdbcType=BIGINT}, 
-        #{item.icon,jdbcType=VARCHAR}, #{item.sort,jdbcType=INTEGER}, #{item.type,jdbcType=CHAR}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP})
+      (#{item.dr,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR},
+      #{item.permission,jdbcType=VARCHAR}, #{item.path,jdbcType=VARCHAR}, #{item.pId,jdbcType=BIGINT},
+      #{item.icon,jdbcType=VARCHAR}, #{item.sort,jdbcType=INTEGER}, #{item.type,jdbcType=CHAR},
+      #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+      #{item.updatedTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysMenu" useGeneratedKeys="true">
@@ -125,7 +125,7 @@
       code,
       permission,
       `path`,
-      parent_id,
+      p_id,
       icon,
       sort,
       `type`,
@@ -144,7 +144,7 @@
       #{code,jdbcType=VARCHAR},
       #{permission,jdbcType=VARCHAR},
       #{path,jdbcType=VARCHAR},
-      #{parentId,jdbcType=BIGINT},
+      #{pId,jdbcType=BIGINT},
       #{icon,jdbcType=VARCHAR},
       #{sort,jdbcType=INTEGER},
       #{type,jdbcType=CHAR},
@@ -153,7 +153,7 @@
       #{updatedBy,jdbcType=BIGINT},
       #{updatedTime,jdbcType=TIMESTAMP},
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
@@ -163,7 +163,7 @@
       code = #{code,jdbcType=VARCHAR},
       permission = #{permission,jdbcType=VARCHAR},
       `path` = #{path,jdbcType=VARCHAR},
-      parent_id = #{parentId,jdbcType=BIGINT},
+      p_id = #{pId,jdbcType=BIGINT},
       icon = #{icon,jdbcType=VARCHAR},
       sort = #{sort,jdbcType=INTEGER},
       `type` = #{type,jdbcType=CHAR},
@@ -195,8 +195,8 @@
       <if test="path != null">
         `path`,
       </if>
-      <if test="parentId != null">
-        parent_id,
+      <if test="pId != null">
+        p_id,
       </if>
       <if test="icon != null">
         icon,
@@ -240,8 +240,8 @@
       <if test="path != null">
         #{path,jdbcType=VARCHAR},
       </if>
-      <if test="parentId != null">
-        #{parentId,jdbcType=BIGINT},
+      <if test="pId != null">
+        #{pId,jdbcType=BIGINT},
       </if>
       <if test="icon != null">
         #{icon,jdbcType=VARCHAR},
@@ -265,7 +265,7 @@
         #{updatedTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
@@ -285,8 +285,8 @@
       <if test="path != null">
         `path` = #{path,jdbcType=VARCHAR},
       </if>
-      <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=BIGINT},
+      <if test="pId != null">
+        p_id = #{pId,jdbcType=BIGINT},
       </if>
       <if test="icon != null">
         icon = #{icon,jdbcType=VARCHAR},

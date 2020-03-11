@@ -24,7 +24,7 @@ public class OpeSysMenu implements Serializable {
     /**
      * 菜单ID
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.UUID)
     @ApiModelProperty(value = "菜单ID")
     private Long id;
 
@@ -68,7 +68,7 @@ public class OpeSysMenu implements Serializable {
      */
     @TableField(value = "parent_id")
     @ApiModelProperty(value = "父菜单ID")
-    private Long parentId;
+    private Long pId;
 
     /**
      * 图表

@@ -1,6 +1,8 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
@@ -108,6 +110,22 @@ public class CityBaseServiceImpl implements CityBaseService {
         List<PlaCity> plaCities = cityMapper.selectList(wrapper);
         for (PlaCity city : plaCities) {
             result = new CityResult();
+            BeanUtils.copyProperties(city, result);
+            resultlist.add(result);
+        }
+        return resultlist;
+    }
+
+    @Override
+    public List<CityResult> list(GeneralEnter enter) {
+
+        QueryWrapper<PlaCity> wrapper = new QueryWrapper<>();
+        wrapper.eq(PlaCity.COL_DR, Constant.DR_FALSE);
+        List<PlaCity> plaCities = cityMapper.selectList(wrapper);
+
+        List<CityResult> resultlist = new ArrayList<>();
+        for (PlaCity city : plaCities) {
+            CityResult result = new CityResult();
             BeanUtils.copyProperties(city, result);
             resultlist.add(result);
         }

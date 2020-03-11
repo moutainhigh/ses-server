@@ -1,6 +1,8 @@
-package com.redescooter.ses.web.ros.vo.tree;
+package com.redescooter.ses.api.common.vo.tree;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -11,19 +13,20 @@ import java.util.List;
  * author: jerry.li
  * create: 2019-05-30 16:58
  */
-
+@ApiModel(value = "基础树形节点")
 @Data //生成getter,setter等函数
-@AllArgsConstructor //生成全参数构造函数
-@NoArgsConstructor//生成无参构造函数
-@Builder
-@EqualsAndHashCode(callSuper = false)
 public class TreeNode extends GeneralEnter {
+
+    @ApiModelProperty(value = "当前节点id")
     protected long id;
+
+    @ApiModelProperty(value = "父节点id")
     protected long pId;
+
+    @ApiModelProperty(value = "子节点列表")
     protected List<TreeNode> children = new ArrayList<TreeNode>();
 
     public void add(TreeNode node) {
         children.add(node);
     }
-
 }

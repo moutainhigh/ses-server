@@ -1,9 +1,9 @@
-package com.redescooter.ses.web.ros.utils;//package com.redescooter.ses.app.crm.web.utils;
+package com.redescooter.ses.web.ros.utils;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.vo.tree.SysMenuTreeResult;
-import com.redescooter.ses.web.ros.vo.tree.TreeNode;
 import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 
@@ -28,11 +28,9 @@ public class TreeUtil {
         List<T> trees = new ArrayList<>();
 
         for (T treeNode : treeNodes) {
-
             if (root.equals(treeNode.getPId())) {
                 trees.add(treeNode);
             }
-
             for (T it : treeNodes) {
                 if (it.getPId() == treeNode.getId()) {
                     if (treeNode.getChildren() == null) {
@@ -78,7 +76,7 @@ public class TreeUtil {
         }
         return treeNode;
     }
-
+    
     /**
      * 通过sysMenu创建树形节点
      *
@@ -93,7 +91,7 @@ public class TreeUtil {
             node = new SysMenuTreeResult();
             BeanUtils.copyProperties(enter, node);
             node.setId(menu.getId());
-            node.setPId(menu.getParentId());
+            node.setPId(menu.getPId());
             node.setName(menu.getName());
             node.setPath(menu.getPath());
             node.setCode(menu.getPermission());

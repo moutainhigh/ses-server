@@ -7,28 +7,54 @@ package com.redescooter.ses.api.common.constant;
  */
 public interface Constant {
 
-    public static final String DEFAULT_LANGUAGE = "en";
+    String DEFAULT_LANGUAGE = "en";
 
-    public static final String DEFAULT_COUNTRY = "US";
+    String DEFAULT_COUNTRY = "US";
+
+    /**
+     * 逻辑删除标识，删除
+     */
+    int DR_TRUE = 1;
+
+    /**
+     * 逻辑删除标识，正常保留
+     */
+    int DR_FALSE = 0;
 
     /**
      * 默认编码格式
      */
-    public static final String UTF_8 = "UTF_8";
+    String UTF_8 = "UTF_8";
+
+    /**
+     * 菜单树根节点
+     */
+    long MENU_TREE_ROOT_ID = -1;
+
+    /**
+     * 部门树根节点
+     */
+    long DEPT_TREE_ROOT_ID = -1;
+
+    /**
+     * 区域树根节点
+     */
+    long AREA_TREE_ROOT_ID = 0;
+
 
     /**
      * 超级管理员用户名,原始adminRedE
      */
-    public static final String ADMIN_USER_NAME = "sysAdmin";
+    String ADMIN_USER_NAME = "sysAdmin";
 
     /**
      * 默认密码
      */
-    public static final String DEFAULT_PASSWORD = "RedEScooter2019";
+    String DEFAULT_PASSWORD = "RedEScooter2019";
 
     /**
      * Excel批量导入车辆模板地址
      */
-    public static final String Import_Excel_Template = "https://rede.oss-cn-shanghai.aliyuncs.com/1567490261085.xlsx";
+    String Import_Excel_Template = "https://rede.oss-cn-shanghai.aliyuncs.com/1567490261085.xlsx";
 
 }

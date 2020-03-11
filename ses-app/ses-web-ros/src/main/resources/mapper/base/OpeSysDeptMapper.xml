@@ -6,9 +6,9 @@
     <!--@Table ope_sys_dept-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="p_id" jdbcType="BIGINT" property="pId" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
-    <result column="principal" jdbcType="BIGINT" property="principal" />
+    <result column="principal" jdbcType="INTEGER" property="principal" />
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
@@ -20,8 +20,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, parent_id, tenant_id, principal, `level`, `name`, code, sort, created_by, 
-    created_time, updated_by, updated_time
+    id, dr, p_id, tenant_id, principal, `level`, `name`, code, sort, created_by, created_time,
+    updated_by, updated_time
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -32,9 +32,9 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
         </foreach>
       </trim>
-      <trim prefix="parent_id = case" suffix="end,">
+      <trim prefix="p_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.parentId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.pId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="tenant_id = case" suffix="end,">
@@ -44,7 +44,7 @@
       </trim>
       <trim prefix="principal = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.principal,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.principal,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="`level` = case" suffix="end,">
@@ -96,15 +96,15 @@
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into ope_sys_dept
-    (dr, parent_id, tenant_id, principal, `level`, `name`, code, sort, created_by, created_time, 
-      updated_by, updated_time)
+    (dr, p_id, tenant_id, principal, `level`, `name`, code, sort, created_by, created_time,
+    updated_by, updated_time)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.dr,jdbcType=INTEGER}, #{item.parentId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT}, 
-        #{item.principal,jdbcType=BIGINT}, #{item.level,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, 
-        #{item.code,jdbcType=VARCHAR}, #{item.sort,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}
-        )
+      (#{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT},
+      #{item.principal,jdbcType=INTEGER}, #{item.level,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR},
+      #{item.code,jdbcType=VARCHAR}, #{item.sort,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
+      #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}
+      )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysDept" useGeneratedKeys="true">
@@ -115,7 +115,7 @@
         id,
       </if>
       dr,
-      parent_id,
+      p_id,
       tenant_id,
       principal,
       `level`,
@@ -133,9 +133,9 @@
         #{id,jdbcType=BIGINT},
       </if>
       #{dr,jdbcType=INTEGER},
-      #{parentId,jdbcType=BIGINT},
+      #{pId,jdbcType=BIGINT},
       #{tenantId,jdbcType=BIGINT},
-      #{principal,jdbcType=BIGINT},
+      #{principal,jdbcType=INTEGER},
       #{level,jdbcType=INTEGER},
       #{name,jdbcType=VARCHAR},
       #{code,jdbcType=VARCHAR},
@@ -145,15 +145,15 @@
       #{updatedBy,jdbcType=BIGINT},
       #{updatedTime,jdbcType=TIMESTAMP},
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
       </if>
       dr = #{dr,jdbcType=INTEGER},
-      parent_id = #{parentId,jdbcType=BIGINT},
+      p_id = #{pId,jdbcType=BIGINT},
       tenant_id = #{tenantId,jdbcType=BIGINT},
-      principal = #{principal,jdbcType=BIGINT},
+      principal = #{principal,jdbcType=INTEGER},
       `level` = #{level,jdbcType=INTEGER},
       `name` = #{name,jdbcType=VARCHAR},
       code = #{code,jdbcType=VARCHAR},
@@ -174,8 +174,8 @@
       <if test="dr != null">
         dr,
       </if>
-      <if test="parentId != null">
-        parent_id,
+      <if test="pId != null">
+        p_id,
       </if>
       <if test="tenantId != null">
         tenant_id,
@@ -216,14 +216,14 @@
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
       </if>
-      <if test="parentId != null">
-        #{parentId,jdbcType=BIGINT},
+      <if test="pId != null">
+        #{pId,jdbcType=BIGINT},
       </if>
       <if test="tenantId != null">
         #{tenantId,jdbcType=BIGINT},
       </if>
       <if test="principal != null">
-        #{principal,jdbcType=BIGINT},
+        #{principal,jdbcType=INTEGER},
       </if>
       <if test="level != null">
         #{level,jdbcType=INTEGER},
@@ -250,7 +250,7 @@
         #{updatedTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
@@ -258,14 +258,14 @@
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
       </if>
-      <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=BIGINT},
+      <if test="pId != null">
+        p_id = #{pId,jdbcType=BIGINT},
       </if>
       <if test="tenantId != null">
         tenant_id = #{tenantId,jdbcType=BIGINT},
       </if>
       <if test="principal != null">
-        principal = #{principal,jdbcType=BIGINT},
+        principal = #{principal,jdbcType=INTEGER},
       </if>
       <if test="level != null">
         `level` = #{level,jdbcType=INTEGER},

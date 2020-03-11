@@ -1,8 +1,15 @@
 package com.redescooter.ses.web.ros.vo.tree;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
+import com.redescooter.ses.web.ros.utils.TreeUtil;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
+import org.springframework.beans.BeanUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -47,7 +54,7 @@ public class SysMenuTreeResult extends TreeNode {
 
     public SysMenuTreeResult(OpeSysMenu menuVo) {
         this.id = menuVo.getId();
-        this.pId = menuVo.getParentId();
+        this.pId = menuVo.getPId();
         this.icon = menuVo.getIcon();
         this.name = menuVo.getName();
         this.path = menuVo.getPath();
@@ -55,5 +62,7 @@ public class SysMenuTreeResult extends TreeNode {
         this.label = menuVo.getName();
         this.sort = menuVo.getSort();
     }
+
+
 
 }

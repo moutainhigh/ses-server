@@ -2,6 +2,7 @@ package com.redescooter.ses.api.foundation.service.base;
 
 import java.util.List;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
@@ -38,4 +39,12 @@ public interface CityBaseService {
      * @return
      */
     List<CityResult> queryChildlevel(IdEnter enter);
+
+    /**
+     * 获取城市列表
+     *
+     * @param enter
+     * @return
+     */
+    List<CityResult> list(GeneralEnter enter);
 }
