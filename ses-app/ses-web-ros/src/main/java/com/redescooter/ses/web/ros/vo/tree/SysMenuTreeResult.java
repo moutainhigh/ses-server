@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.tree;
 
+import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
@@ -22,7 +23,6 @@ public class SysMenuTreeResult extends TreeNode {
     private String component;
     private String authority;
     private String redirect;
-    private String keepAlive;
     private String code;
     private String type;
     private String label;
@@ -54,7 +54,6 @@ public class SysMenuTreeResult extends TreeNode {
         this.type = menuVo.getType();
         this.label = menuVo.getName();
         this.sort = menuVo.getSort();
-        this.keepAlive = menuVo.getKeepAlive();
     }
 
 }
