@@ -13,13 +13,13 @@ public interface SequenceName {
 
     String OPE_CUSTOMER = "OPE_CUSTOMER";
 
-    String OPE_FACTORY="OPE_FACTORY";
+    String OPE_FACTORY = "OPE_FACTORY";
 
-    String OPE_FACTORY_TRACE="OPE_FACTORY_TRACE";
+    String OPE_FACTORY_TRACE = "OPE_FACTORY_TRACE";
 
-    String OPE_SUPPLIER="OPE_SUPPLIER";
+    String OPE_SUPPLIER = "OPE_SUPPLIER";
 
-    String OPE_SUPPLIER_TRACE="OPE_SUPPLIER_TRACE";
+    String OPE_SUPPLIER_TRACE = "OPE_SUPPLIER_TRACE";
 
     String OPE_PARTS_PRODUCT = "OPE_PARTS_PRODUCT";
 
@@ -44,5 +44,7 @@ public interface SequenceName {
     String OPE_CUSTOMER_INQUIRY = "OPE_CUSTOMER_INQUIRY";
 
     String OPE_SYS_MENU = "OPE_SYS_MENU";
+
+    String OPE_SYS_DEPT = "OPE_SYS_DEPT";
 
 }
