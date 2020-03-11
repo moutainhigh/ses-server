@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.dm.OpeSysDept;
 
 import java.util.List;
 
+@Transactional
 public interface OpeSysDeptService extends IService<OpeSysDept> {
 
 

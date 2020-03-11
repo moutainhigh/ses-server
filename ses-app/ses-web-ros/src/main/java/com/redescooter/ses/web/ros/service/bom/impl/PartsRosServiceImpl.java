@@ -501,11 +501,11 @@ public class PartsRosServiceImpl implements PartsRosService {
         String partsType = BomCommonTypeEnums.checkCode(enter.getPartsType());
         String sec = ESCUtils.checkESC(enter.getSec());
         if (StringUtils.isAnyBlank(partsNumber, snClassFlag, partsType, sec)) {
-            throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_illegal.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_illegal.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_ILLEGAL.getMessage());
         }
         if (!org.springframework.util.StringUtils.isEmpty(enter.getId())) {
             if (StringUtils.isAnyBlank(enter.getImportLot())) {
-                throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_illegal.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_illegal.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_ILLEGAL.getMessage());
             }
         }
         QueryWrapper<OpeParts> queryWrapper = new QueryWrapper<>();

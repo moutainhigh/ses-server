@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.dm;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSysUserRole")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysUserRole")
 @Data
 @Builder
 @AllArgsConstructor
@@ -38,4 +40,8 @@ public class OpeSysUserRole implements Serializable {
     public static final String COL_USER_ID = "user_id";
 
     public static final String COL_ROLE_ID = "role_id";
+
+    public static OpeSysUserRoleBuilder builder() {
+        return new OpeSysUserRoleBuilder();
+    }
 }

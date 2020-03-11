@@ -45,4 +45,6 @@ public interface SequenceName {
 
     String OPE_SYS_MENU = "OPE_SYS_MENU";
 
+    String OPE_SYS_STAFF = "OPE_SYS_STAFF";
+
 }

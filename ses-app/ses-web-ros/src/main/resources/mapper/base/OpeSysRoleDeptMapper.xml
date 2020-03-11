@@ -31,8 +31,8 @@
     (role_id, dept_id)
     values
     (#{roleId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT})
-    on duplicate key update 
-    role_id = #{roleId,jdbcType=BIGINT}, 
+    on duplicate key update
+    role_id = #{roleId,jdbcType=BIGINT},
     dept_id = #{deptId,jdbcType=BIGINT}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleDept">
@@ -55,7 +55,7 @@
         #{deptId,jdbcType=BIGINT},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="roleId != null">
         role_id = #{roleId,jdbcType=BIGINT},

@@ -40,10 +40,10 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name, email, 
-    country_code, tel_number, gender, birthday, `identity`, `role`, place_birth, address_country_code, 
-    address, address_bureau, id_card_type, certificate_type, certificate_negative_annex, 
-    certificate_positive_annex, join_date, created_by, created_time, updated_by, updated_time, 
+    id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name, email,
+    country_code, tel_number, gender, birthday, `identity`, `role`, place_birth, address_country_code,
+    address, address_bureau, id_card_type, certificate_type, certificate_negative_annex,
+    certificate_positive_annex, join_date, created_by, created_time, updated_by, updated_time,
     def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
@@ -219,24 +219,24 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_sys_user_profile
-    (id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name, 
-      email, country_code, tel_number, gender, birthday, `identity`, `role`, place_birth, 
-      address_country_code, address, address_bureau, id_card_type, certificate_type, 
-      certificate_negative_annex, certificate_positive_annex, join_date, created_by, 
+    (id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name,
+      email, country_code, tel_number, gender, birthday, `identity`, `role`, place_birth,
+      address_country_code, address, address_bureau, id_card_type, certificate_type,
+      certificate_negative_annex, certificate_positive_annex, join_date, created_by,
       created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.repairShopId,jdbcType=BIGINT}, 
-        #{item.sysUserId,jdbcType=BIGINT}, #{item.picture,jdbcType=VARCHAR}, #{item.firstName,jdbcType=VARCHAR}, 
-        #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 
-        #{item.countryCode,jdbcType=VARCHAR}, #{item.telNumber,jdbcType=VARCHAR}, #{item.gender,jdbcType=VARCHAR}, 
-        #{item.birthday,jdbcType=DATE}, #{item.identity,jdbcType=VARCHAR}, #{item.role,jdbcType=VARCHAR}, 
-        #{item.placeBirth,jdbcType=VARCHAR}, #{item.addressCountryCode,jdbcType=VARCHAR}, 
-        #{item.address,jdbcType=VARCHAR}, #{item.addressBureau,jdbcType=VARCHAR}, #{item.idCardType,jdbcType=VARCHAR}, 
-        #{item.certificateType,jdbcType=VARCHAR}, #{item.certificateNegativeAnnex,jdbcType=VARCHAR}, 
-        #{item.certificatePositiveAnnex,jdbcType=VARCHAR}, #{item.joinDate,jdbcType=DATE}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.repairShopId,jdbcType=BIGINT},
+        #{item.sysUserId,jdbcType=BIGINT}, #{item.picture,jdbcType=VARCHAR}, #{item.firstName,jdbcType=VARCHAR},
+        #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR},
+        #{item.countryCode,jdbcType=VARCHAR}, #{item.telNumber,jdbcType=VARCHAR}, #{item.gender,jdbcType=VARCHAR},
+        #{item.birthday,jdbcType=DATE}, #{item.identity,jdbcType=VARCHAR}, #{item.role,jdbcType=VARCHAR},
+        #{item.placeBirth,jdbcType=VARCHAR}, #{item.addressCountryCode,jdbcType=VARCHAR},
+        #{item.address,jdbcType=VARCHAR}, #{item.addressBureau,jdbcType=VARCHAR}, #{item.idCardType,jdbcType=VARCHAR},
+        #{item.certificateType,jdbcType=VARCHAR}, #{item.certificateNegativeAnnex,jdbcType=VARCHAR},
+        #{item.certificatePositiveAnnex,jdbcType=VARCHAR}, #{item.joinDate,jdbcType=DATE},
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
         #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
         )
     </foreach>
@@ -244,57 +244,57 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserProfile">
     <!--@mbg.generated-->
     insert into ope_sys_user_profile
-    (id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name, 
-      email, country_code, tel_number, gender, birthday, `identity`, `role`, place_birth, 
-      address_country_code, address, address_bureau, id_card_type, certificate_type, 
-      certificate_negative_annex, certificate_positive_annex, join_date, created_by, 
+    (id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name,
+      email, country_code, tel_number, gender, birthday, `identity`, `role`, place_birth,
+      address_country_code, address, address_bureau, id_card_type, certificate_type,
+      certificate_negative_annex, certificate_positive_annex, join_date, created_by,
       created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{repairShopId,jdbcType=BIGINT}, 
-      #{sysUserId,jdbcType=BIGINT}, #{picture,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR}, 
-      #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
-      #{countryCode,jdbcType=VARCHAR}, #{telNumber,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, 
-      #{birthday,jdbcType=DATE}, #{identity,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}, 
-      #{placeBirth,jdbcType=VARCHAR}, #{addressCountryCode,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{addressBureau,jdbcType=VARCHAR}, #{idCardType,jdbcType=VARCHAR}, #{certificateType,jdbcType=VARCHAR}, 
-      #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
-      #{joinDate,jdbcType=DATE}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{repairShopId,jdbcType=BIGINT},
+      #{sysUserId,jdbcType=BIGINT}, #{picture,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR},
+      #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+      #{countryCode,jdbcType=VARCHAR}, #{telNumber,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR},
+      #{birthday,jdbcType=DATE}, #{identity,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR},
+      #{placeBirth,jdbcType=VARCHAR}, #{addressCountryCode,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{addressBureau,jdbcType=VARCHAR}, #{idCardType,jdbcType=VARCHAR}, #{certificateType,jdbcType=VARCHAR},
+      #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{certificatePositiveAnnex,jdbcType=VARCHAR},
+      #{joinDate,jdbcType=DATE}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
       #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
       )
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    repair_shop_Id = #{repairShopId,jdbcType=BIGINT}, 
-    sys_user_id = #{sysUserId,jdbcType=BIGINT}, 
-    picture = #{picture,jdbcType=VARCHAR}, 
-    first_name = #{firstName,jdbcType=VARCHAR}, 
-    last_name = #{lastName,jdbcType=VARCHAR}, 
-    full_name = #{fullName,jdbcType=VARCHAR}, 
-    email = #{email,jdbcType=VARCHAR}, 
-    country_code = #{countryCode,jdbcType=VARCHAR}, 
-    tel_number = #{telNumber,jdbcType=VARCHAR}, 
-    gender = #{gender,jdbcType=VARCHAR}, 
-    birthday = #{birthday,jdbcType=DATE}, 
-    `identity` = #{identity,jdbcType=VARCHAR}, 
-    `role` = #{role,jdbcType=VARCHAR}, 
-    place_birth = #{placeBirth,jdbcType=VARCHAR}, 
-    address_country_code = #{addressCountryCode,jdbcType=VARCHAR}, 
-    address = #{address,jdbcType=VARCHAR}, 
-    address_bureau = #{addressBureau,jdbcType=VARCHAR}, 
-    id_card_type = #{idCardType,jdbcType=VARCHAR}, 
-    certificate_type = #{certificateType,jdbcType=VARCHAR}, 
-    certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR}, 
-    certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
-    join_date = #{joinDate,jdbcType=DATE}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def5 = #{def5,jdbcType=VARCHAR}, 
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    repair_shop_Id = #{repairShopId,jdbcType=BIGINT},
+    sys_user_id = #{sysUserId,jdbcType=BIGINT},
+    picture = #{picture,jdbcType=VARCHAR},
+    first_name = #{firstName,jdbcType=VARCHAR},
+    last_name = #{lastName,jdbcType=VARCHAR},
+    full_name = #{fullName,jdbcType=VARCHAR},
+    email = #{email,jdbcType=VARCHAR},
+    country_code = #{countryCode,jdbcType=VARCHAR},
+    tel_number = #{telNumber,jdbcType=VARCHAR},
+    gender = #{gender,jdbcType=VARCHAR},
+    birthday = #{birthday,jdbcType=DATE},
+    `identity` = #{identity,jdbcType=VARCHAR},
+    `role` = #{role,jdbcType=VARCHAR},
+    place_birth = #{placeBirth,jdbcType=VARCHAR},
+    address_country_code = #{addressCountryCode,jdbcType=VARCHAR},
+    address = #{address,jdbcType=VARCHAR},
+    address_bureau = #{addressBureau,jdbcType=VARCHAR},
+    id_card_type = #{idCardType,jdbcType=VARCHAR},
+    certificate_type = #{certificateType,jdbcType=VARCHAR},
+    certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR},
+    certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR},
+    join_date = #{joinDate,jdbcType=DATE},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def5 = #{def5,jdbcType=VARCHAR},
     def6 = #{def6,jdbcType=DOUBLE}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserProfile">
@@ -503,7 +503,7 @@
         #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},

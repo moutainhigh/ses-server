@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,14 +33,15 @@ public class OpeSysUserProfile implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
+    @TableLogic
+    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**
      * 维修店ID
      */
     @TableField(value = "repair_shop_Id")
-    @ApiModelProperty(value="维修店ID")
+    @ApiModelProperty(value = "维修店ID")
     private Long repairShopId;
 
     /**
@@ -67,70 +69,70 @@ public class OpeSysUserProfile implements Serializable {
      * 姓
      */
     @TableField(value = "last_name")
-    @ApiModelProperty(value="姓")
+    @ApiModelProperty(value = "姓")
     private String lastName;
 
     /**
      * 全名
      */
     @TableField(value = "full_name")
-    @ApiModelProperty(value="全名")
+    @ApiModelProperty(value = "全名")
     private String fullName;
 
     /**
      * 邮箱
      */
     @TableField(value = "email")
-    @ApiModelProperty(value="邮箱")
+    @ApiModelProperty(value = "邮箱")
     private String email;
 
     /**
      * 国家编码如+86
      */
     @TableField(value = "country_code")
-    @ApiModelProperty(value="国家编码如+86")
+    @ApiModelProperty(value = "国家编码如+86")
     private String countryCode;
 
     /**
      * 电话号
      */
     @TableField(value = "tel_number")
-    @ApiModelProperty(value="电话号")
+    @ApiModelProperty(value = "电话号")
     private String telNumber;
 
     /**
      * 性别 Male 男 Female 女
      */
     @TableField(value = "gender")
-    @ApiModelProperty(value="性别 Male 男 Female 女")
+    @ApiModelProperty(value = "性别 Male 男 Female 女")
     private String gender;
 
     /**
      * 生日
      */
     @TableField(value = "birthday")
-    @ApiModelProperty(value="生日")
+    @ApiModelProperty(value = "生日")
     private Date birthday;
 
     /**
      * 身份证号
      */
     @TableField(value = "identity")
-    @ApiModelProperty(value="身份证号")
+    @ApiModelProperty(value = "身份证号")
     private String identity;
 
     /**
      * 角色 STAFF-维修工；MANAGE-管理者
      */
     @TableField(value = "role")
-    @ApiModelProperty(value="角色 STAFF-维修工；MANAGE-管理者")
+    @ApiModelProperty(value = "角色 STAFF-维修工；MANAGE-管理者")
     private String role;
 
     /**
      * 出生地
      */
     @TableField(value = "place_birth")
-    @ApiModelProperty(value="出生地")
+    @ApiModelProperty(value = "出生地")
     private String placeBirth;
 
     /**
@@ -193,63 +195,63 @@ public class OpeSysUserProfile implements Serializable {
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;

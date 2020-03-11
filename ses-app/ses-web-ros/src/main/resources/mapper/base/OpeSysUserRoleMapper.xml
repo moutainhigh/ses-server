@@ -31,8 +31,8 @@
     (user_id, role_id)
     values
     (#{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT})
-    on duplicate key update 
-    user_id = #{userId,jdbcType=BIGINT}, 
+    on duplicate key update
+    user_id = #{userId,jdbcType=BIGINT},
     role_id = #{roleId,jdbcType=BIGINT}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserRole">
@@ -55,7 +55,7 @@
         #{roleId,jdbcType=BIGINT},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="userId != null">
         user_id = #{userId,jdbcType=BIGINT},

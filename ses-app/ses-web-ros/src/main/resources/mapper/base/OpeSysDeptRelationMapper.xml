@@ -22,8 +22,8 @@
     (ancestor, descendant)
     values
     (#{ancestor,jdbcType=BIGINT}, #{descendant,jdbcType=BIGINT})
-    on duplicate key update 
-    ancestor = #{ancestor,jdbcType=BIGINT}, 
+    on duplicate key update
+    ancestor = #{ancestor,jdbcType=BIGINT},
     descendant = #{descendant,jdbcType=BIGINT}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysDeptRelation">
@@ -46,7 +46,7 @@
         #{descendant,jdbcType=BIGINT},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="ancestor != null">
         ancestor = #{ancestor,jdbcType=BIGINT},

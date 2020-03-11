@@ -45,10 +45,10 @@ public interface EmployeeServiceMapper {
      * 根据父级deptId 查询所有子集deptId
      *
      * @param tenantId
-     * @param ids
+     * @param id
      * @return
      */
-    List<Long> getEmployeeDeptChildList(@Param("tenantId") Long tenantId, @Param("ids") List<Long> ids);
+    List<Long> getEmployeeDeptChildList(@Param("tenantId") Long tenantId, @Param("id") Long id);
 
     /**
      * 根据当前级deptId 查询所有父级deptId
@@ -75,7 +75,7 @@ public interface EmployeeServiceMapper {
      * @param bizId
      * @return
      */
-    List<EmployeeDeptResult> getEmployeePositionList(@Param("tenantId") Long tenantId, @Param("bizId") Long bizId);
+    List<EmployeeDeptResult> getEmployeePositionList(@Param("tenantId") Long tenantId, @Param("ids") List<Long> ids);
 
     /**
      * 员工模块 办公区域列表

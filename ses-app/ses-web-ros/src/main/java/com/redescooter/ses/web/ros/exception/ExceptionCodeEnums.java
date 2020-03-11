@@ -125,13 +125,13 @@ public enum ExceptionCodeEnums {
 
     FILE_TEMPLATE_IS_INVALID(10055, "文件模板不合法，请重新下载文件模板"),
 
-    PRODUCTN_IS_EXIST(10056,"产品编号已存在，请重新输入"),
+    PRODUCTN_IS_EXIST(10056, "产品编号已存在，请重新输入"),
 
-    PRODUCT_IS_NOT_EXIST(10057,"产品不存在"),
+    PRODUCT_IS_NOT_EXIST(10057, "产品不存在"),
 
     PRODUCT_HAS_NO_PARTS(10058, "产品暂未添加部品,不可删除"),
 
-    PARTS_BASE_IS_illegal(10059, "部品基础信息不合法，如partsNumber,ImportLot,snClassFlag,partsType,sec等"),
+    PARTS_BASE_IS_ILLEGAL(10059, "部品基础信息不合法，如partsNumber,ImportLot,snClassFlag,partsType,sec等"),
 
     PARTS_NUMBER_EXIST(10060, "部品号已存在"),
 
@@ -148,6 +148,14 @@ public enum ExceptionCodeEnums {
     PARTS_NUMBER_REPEAT(10066, "导入数据的部品号重复，请更改"),
 
     INQUIRY_IS_NOT_EXIST(10067, "询价单不存在"),
+
+    EMPLOYEE_IS_NOT_EXIST(10068, "员工不存在"),
+
+    EMPLOYEE_IS_NOT_BING_POSITION(10069, "员工没有绑定职位"),
+
+    DEPT_IS_NOT_EXIST(10070, "部门不存在"),
+
+    POSITION_IS_NOT_EXIST(10071, "职位不存在"),
 
     ;
 

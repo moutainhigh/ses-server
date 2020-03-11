@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,7 +33,8 @@ public class OpeSysRole implements Serializable {
      * 逻辑删除标识
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除标识")
+    @TableLogic
+    @ApiModelProperty(value = "逻辑删除标识")
     private Integer dr;
 
     /**
@@ -71,7 +73,7 @@ public class OpeSysRole implements Serializable {
     private Long createdBy;
 
     @TableField(value = "create_time")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
     /**
@@ -81,8 +83,11 @@ public class OpeSysRole implements Serializable {
     @ApiModelProperty(value="更新人")
     private Long updatedBy;
 
+    /**
+     * 更新时间
+     */
     @TableField(value = "update_time")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "更新时间")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;
@@ -106,4 +111,8 @@ public class OpeSysRole implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATE_TIME = "update_time";
+
+    public static OpeSysRoleBuilder builder() {
+        return new OpeSysRoleBuilder();
+    }
 }

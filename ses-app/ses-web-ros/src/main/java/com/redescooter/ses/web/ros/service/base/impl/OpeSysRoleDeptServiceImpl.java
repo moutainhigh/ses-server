@@ -15,14 +15,17 @@ public class OpeSysRoleDeptServiceImpl extends ServiceImpl<OpeSysRoleDeptMapper,
     public int updateBatch(List<OpeSysRoleDept> list) {
         return baseMapper.updateBatch(list);
     }
+
     @Override
     public int batchInsert(List<OpeSysRoleDept> list) {
         return baseMapper.batchInsert(list);
     }
+
     @Override
     public int insertOrUpdate(OpeSysRoleDept record) {
         return baseMapper.insertOrUpdate(record);
     }
+
     @Override
     public int insertOrUpdateSelective(OpeSysRoleDept record) {
         return baseMapper.insertOrUpdateSelective(record);

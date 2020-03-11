@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 
 import java.util.List;
 
+@Transactional
 public interface OpeSysMenuService extends IService<OpeSysMenu> {
 
 

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.organization.employee;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -42,7 +44,7 @@ public class EmployeeResult extends GeneralResult {
     private String countryCode;
 
     @ApiModelProperty(value = "电话")
-    private String tel;
+    private String telephone;
 
     @ApiModelProperty(value = "邮件")
     private String email;
@@ -60,10 +62,17 @@ public class EmployeeResult extends GeneralResult {
     private String positionName;
 
     @ApiModelProperty(value = "加入时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date entryDate;
 
     @ApiModelProperty(value = "生日")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date birthday;
+
+    @ApiModelProperty(value = "地址国家代码")
+    private String addressCountryCode;
 
     @ApiModelProperty(value = "地址")
     private String address;

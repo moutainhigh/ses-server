@@ -22,8 +22,8 @@
     (role_id, menu_id)
     values
     (#{roleId,jdbcType=INTEGER}, #{menuId,jdbcType=BIGINT})
-    on duplicate key update 
-    role_id = #{roleId,jdbcType=INTEGER}, 
+    on duplicate key update
+    role_id = #{roleId,jdbcType=INTEGER},
     menu_id = #{menuId,jdbcType=BIGINT}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleMenu">
@@ -46,7 +46,7 @@
         #{menuId,jdbcType=BIGINT},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="roleId != null">
         role_id = #{roleId,jdbcType=INTEGER},

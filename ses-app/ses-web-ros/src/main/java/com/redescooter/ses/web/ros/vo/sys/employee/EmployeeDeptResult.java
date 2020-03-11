@@ -31,5 +31,5 @@ public class EmployeeDeptResult extends GeneralResult {
     private String name;
 
     @ApiModelProperty(value = "描述")
-    private String desc;
+    private String description;
 }

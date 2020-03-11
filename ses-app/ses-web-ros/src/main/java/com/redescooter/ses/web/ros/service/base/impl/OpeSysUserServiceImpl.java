@@ -8,6 +8,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author Mr.lijiating
+ * @version V1.0
+ * @Date: 19/12/2019 3:29 上午
+ * @ClassName: ${NAME}
+ * @Function: TODO
+ */
 @Service
 public class OpeSysUserServiceImpl extends ServiceImpl<OpeSysUserMapper, OpeSysUser> implements OpeSysUserService {
 
