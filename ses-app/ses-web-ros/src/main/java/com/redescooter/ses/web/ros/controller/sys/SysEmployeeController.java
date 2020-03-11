@@ -47,7 +47,7 @@ public class SysEmployeeController {
     @PostMapping(value = "/detail")
     @ApiOperation(value = "员工详情", response = EmployeeResult.class)
     public Response<EmployeeResult> employeeList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<EmployeeResult>(employeeService.employeeDetail(enter));
+        return new Response<>(employeeService.employeeDetail(enter));
     }
 
     @PostMapping(value = "/save")
@@ -59,7 +59,7 @@ public class SysEmployeeController {
     @PostMapping(value = "/companyDeptPositionList")
     @ApiOperation(value = "公司部门职位列表", response = EmployeeDeptResult.class)
     public Response<List<EmployeeDeptResult>> employeeDeptList(@ModelAttribute @ApiParam("请求参数") EmployeeDeptEnter enter) {
-        return new Response<List<EmployeeDeptResult>>(employeeService.employeeDeptList(enter));
+        return new Response<>(employeeService.employeeDeptList(enter));
     }
 
     @PostMapping(value = "/trush")

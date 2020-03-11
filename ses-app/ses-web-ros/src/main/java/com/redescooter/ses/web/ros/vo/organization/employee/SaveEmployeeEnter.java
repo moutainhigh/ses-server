@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.organization.employee;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
@@ -12,6 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -71,6 +73,8 @@ public class SaveEmployeeEnter extends GeneralEnter {
     private String email;
 
     @ApiModelProperty(value = "生日", required = true)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     @NotNull(code = ValidationExceptionCode.BIRTHDAY_IS_EMPTY, message = "生日为空")
     private Date birthday;
 

@@ -135,7 +135,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     @Override
     public GeneralResult saveEmployee(SaveEmployeeEnter enter) {
-        // 部门、职位、办公区域校验
+        // 部门、职位、办公区域、邮箱校验
         checkSaveEmployeeParameter(enter);
 
         //todo 邮箱去重校验
@@ -238,7 +238,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 // 根据父级id 查询所有子集id
                 Boolean hasNextBoolean = Boolean.TRUE;
                 do {
-                    childIdList = employeeServiceMapper.getEmployeeDeptChildList(enter.getTenantId(), ids);
+                    childIdList = employeeServiceMapper.getEmployeeDeptChildList(enter.getTenantId(), CollectionUtils.isNotEmpty(ids) == true ? ids.get(ids.size() - 1) : null);
                     if (CollectionUtils.isEmpty(childIdList)) {
                         hasNextBoolean = Boolean.FALSE;
                     }
@@ -261,7 +261,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             default:
                 return new ArrayList<>();
         }
-        return new ArrayList<>();
+        return result;
     }
 
     /**
@@ -299,40 +299,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     /**
      * 返回父级或者子集的所有 部门列表
      *
-     * @param bizId
-     * @param level
      * @return
      */
-    private List<EmployeeDeptResult> getDeptList(Long bizId, Boolean level, Long tenantId) {
-        List<EmployeeDeptResult> result = null;
-        Boolean hasNextBoolean = Boolean.TRUE;
+    private List<EmployeeDeptResult> getDeptList() {
 
-        List<Long> ids = new ArrayList<>();
-        ids.add(bizId);
-        List<Long> idList = null;
-        // 默认返回所有子集
-        if (level) {
-            do {
-                idList = employeeServiceMapper.getEmployeeDeptChildList(tenantId, ids);
-                if (CollectionUtils.isEmpty(idList)) {
-                    hasNextBoolean = Boolean.FALSE;
-                }
-                ids.addAll(idList);
-            } while (hasNextBoolean);
-            result = employeeServiceMapper.getEmployeeDeptList(tenantId, ids);
-        } else {
-            //返回所有父级
-            do {
-                idList = employeeServiceMapper.getEmployeeDeptFatherList(tenantId, ids);
-                if (CollectionUtils.isEmpty(idList)) {
-                    hasNextBoolean = Boolean.FALSE;
-                }
-                ids.addAll(idList);
-            } while (hasNextBoolean);
-            result = employeeServiceMapper.getEmployeeDeptList(tenantId, ids);
-        }
 
-        return result;
+//        List<EmployeeDeptResult>  result = employeeServiceMapper.getEmployeeDeptList(tenantId, ids);
+        return null;
     }
 
 
@@ -409,6 +382,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         // 办公区域校验
         if (true) {
 
+        }
+        //邮箱过滤
+        if (!enter.getEmail().contains("@")) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
     }
 }

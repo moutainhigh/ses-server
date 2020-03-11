@@ -73,20 +73,15 @@
         select
         <include refid="select_EmployeeResult"/>
         where user.dr = 0
-        user.id=#{id}
+        and staff.id=#{id}
     </select>
 
     <!--每次查询部门的子集-->
     <select id="getEmployeeDeptChildList" resultType="java.lang.Long">
-        select rela.ancestor
+        select rela.descendant
         from ope_sys_dept_relation rela
-        where rela.dr = 0
-        <if test="ids != null and ids.size() != 0">
-            and rela.descendant in
-            <foreach collection="ids" item="item" separator="," open="(" close=")">
-                #{item}
-            </foreach>
-        </if>
+        where 1 = 1
+        and rela.ancestor =#{id}
     </select>
 
     <select id="getEmployeeDeptFatherList" resultType="java.lang.Long">
@@ -112,9 +107,10 @@
     <select id="getEmployeePositionList"
             resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
         select role.id as id,
+        role.role_name as name
         from ope_sys_role_dept roleDept
         inner join ope_sys_role role on roleDept.role_id = role.id and role.dr = 0
-        where 1=1
+        where 1 = 1
         <if test="ids != null and ids.size() != 0">
             and roleDept.dept_id in
             <foreach collection="ids" item="item" open="(" separator="," close=")">
@@ -130,12 +126,11 @@
 
     <select id="getEmployeeCompanyList"
             resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
-        select
-         dept.id   as id,
-         dept.name as name
+        select dept.id   as id,
+               dept.name as name
         from ope_sys_dept dept
         where dept.level = 0
-        and dept.dr = 0
-        and dept.tenant_id = 0
+          and dept.dr = 0
+          and dept.tenant_id = 0
     </select>
 </mapper>

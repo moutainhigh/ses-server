@@ -45,10 +45,10 @@ public interface EmployeeServiceMapper {
      * 根据父级deptId 查询所有子集deptId
      *
      * @param tenantId
-     * @param ids
+     * @param id
      * @return
      */
-    List<Long> getEmployeeDeptChildList(@Param("tenantId") Long tenantId, @Param("ids") List<Long> ids);
+    List<Long> getEmployeeDeptChildList(@Param("tenantId") Long tenantId, @Param("id") Long id);
 
     /**
      * 根据当前级deptId 查询所有父级deptId
