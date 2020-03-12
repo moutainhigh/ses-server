@@ -7,7 +7,6 @@ import com.redescooter.ses.web.ros.service.base.OpeSysRoleSalesCidyService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 @Service
 public class OpeSysRoleSalesCidyServiceImpl extends ServiceImpl<OpeSysRoleSalesCidyMapper, OpeSysRoleSalesCidy> implements OpeSysRoleSalesCidyService {
 
@@ -15,10 +14,12 @@ public class OpeSysRoleSalesCidyServiceImpl extends ServiceImpl<OpeSysRoleSalesC
     public int batchInsert(List<OpeSysRoleSalesCidy> list) {
         return baseMapper.batchInsert(list);
     }
+
     @Override
     public int insertOrUpdate(OpeSysRoleSalesCidy record) {
         return baseMapper.insertOrUpdate(record);
     }
+
     @Override
     public int insertOrUpdateSelective(OpeSysRoleSalesCidy record) {
         return baseMapper.insertOrUpdateSelective(record);

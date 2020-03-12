@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.organization.employee;
+package com.redescooter.ses.web.ros.vo.sys.employee;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 
 /**
  * @ClassName:EmployeeListResult

@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.organization.employee;
+package com.redescooter.ses.web.ros.vo.sys.employee;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.MaximumLength;

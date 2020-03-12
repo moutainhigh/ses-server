@@ -37,8 +37,4 @@ public class OpeSysRoleMenu implements Serializable {
     public static final String COL_ROLE_ID = "role_id";
 
     public static final String COL_MENU_ID = "menu_id";
-
-    public static OpeSysRoleMenuBuilder builder() {
-        return new OpeSysRoleMenuBuilder();
-    }
 }

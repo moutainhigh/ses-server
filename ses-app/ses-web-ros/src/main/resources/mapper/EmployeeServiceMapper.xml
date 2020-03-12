@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.organization.EmployeeServiceMapper">
+<mapper namespace="com.redescooter.ses.web.ros.dao.sys.EmployeeServiceMapper">
 
     <sql id="select_ EmployeeDeptResult">
     </sql>
@@ -48,7 +48,7 @@
         </if>
     </sql>
 
-    <select id="deptList" resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListResult">
+    <select id="deptList" resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListResult">
         select dept.id as deptId,
         dept.name as deptName,
         count(user.id) as totalCount
@@ -62,14 +62,14 @@
         group by dept.id, deptName
     </select>
 
-    <select id="employeeList" resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeResult">
+    <select id="employeeList" resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult">
         select
         <include refid="select_EmployeeResult"/>
         <include refid="where_EmployeeList"/>
     </select>
 
     <select id="employeeDetail"
-            resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeResult">
+            resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult">
         select
         <include refid="select_EmployeeResult"/>
         where user.dr = 0
@@ -89,7 +89,7 @@
     </select>
 
     <select id="getEmployeeDeptList"
-            resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
+            resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult">
         select
         dept.id as id,
         dept.name as name
@@ -105,7 +105,7 @@
     </select>
 
     <select id="getEmployeePositionList"
-            resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
+            resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult">
         select role.id as id,
         role.role_name as name
         from ope_sys_role_dept roleDept
@@ -120,12 +120,12 @@
     </select>
 
     <select id="getEmployeeOfficeareaList"
-            resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
+            resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult">
 
     </select>
 
     <select id="getEmployeeCompanyList"
-            resultType="com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult">
+            resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult">
         select dept.id   as id,
                dept.name as name
         from ope_sys_dept dept

@@ -2,9 +2,10 @@ package com.redescooter.ses.web.ros.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 public interface OpeSysStaffMapper extends BaseMapper<OpeSysStaff> {
     int updateBatch(List<OpeSysStaff> list);

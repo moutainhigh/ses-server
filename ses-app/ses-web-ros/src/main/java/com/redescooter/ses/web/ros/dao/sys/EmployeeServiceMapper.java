@@ -1,10 +1,10 @@
-package com.redescooter.ses.web.ros.dao.organization;
+package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult;
-import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListEnter;
-import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListResult;
-import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -72,7 +72,7 @@ public interface EmployeeServiceMapper {
      * 员工模块 职位列表
      *
      * @param tenantId
-     * @param bizId
+     * @param ids
      * @return
      */
     List<EmployeeDeptResult> getEmployeePositionList(@Param("tenantId") Long tenantId, @Param("ids") List<Long> ids);

@@ -25,7 +25,7 @@ public class OpeSysMenu implements Serializable {
     /**
      * 菜单ID
      */
-    @TableId(value = "id", type = IdType.UUID)
+    @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "菜单ID")
     private Long id;
 
@@ -38,24 +38,17 @@ public class OpeSysMenu implements Serializable {
     private Integer dr;
 
     /**
-     * 菜单名称
+     * 名称
      */
     @TableField(value = "name")
-    @ApiModelProperty(value = "菜单名称")
+    @ApiModelProperty(value = "名称")
     private String name;
 
     /**
-     * 菜单编码
-     */
-    @TableField(value = "code")
-    @ApiModelProperty(value = "菜单编码")
-    private String code;
-
-    /**
-     * 权限码
+     * 权限
      */
     @TableField(value = "permission")
-    @ApiModelProperty(value = "权限码")
+    @ApiModelProperty(value = "权限")
     private String permission;
 
     /**
@@ -80,10 +73,10 @@ public class OpeSysMenu implements Serializable {
     private String icon;
 
     /**
-     * 菜单权重
+     * 排序值
      */
     @TableField(value = "sort")
-    @ApiModelProperty(value = "菜单权重")
+    @ApiModelProperty(value = "排序值")
     private Integer sort;
 
     /**
@@ -129,8 +122,6 @@ public class OpeSysMenu implements Serializable {
 
     public static final String COL_NAME = "name";
 
-    public static final String COL_CODE = "code";
-
     public static final String COL_PERMISSION = "permission";
 
     public static final String COL_PATH = "path";
@@ -150,8 +141,4 @@ public class OpeSysMenu implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
-
-    public static OpeSysMenuBuilder builder() {
-        return new OpeSysMenuBuilder();
-    }
 }

@@ -26,7 +26,7 @@ public class OpeSysUserProfile implements Serializable {
      * ID
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="ID")
+    @ApiModelProperty(value = "ID")
     private Long id;
 
     /**
@@ -36,6 +36,13 @@ public class OpeSysUserProfile implements Serializable {
     @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
+
+    /**
+     * 所属租户
+     */
+    @TableField(value = "tenant_id")
+    @ApiModelProperty(value = "所属租户")
+    private Long tenantId;
 
     /**
      * 维修店ID
@@ -115,20 +122,6 @@ public class OpeSysUserProfile implements Serializable {
     private Date birthday;
 
     /**
-     * 身份证号
-     */
-    @TableField(value = "identity")
-    @ApiModelProperty(value = "身份证号")
-    private String identity;
-
-    /**
-     * 角色 STAFF-维修工；MANAGE-管理者
-     */
-    @TableField(value = "role")
-    @ApiModelProperty(value = "角色 STAFF-维修工；MANAGE-管理者")
-    private String role;
-
-    /**
      * 出生地
      */
     @TableField(value = "place_birth")
@@ -146,35 +139,28 @@ public class OpeSysUserProfile implements Serializable {
      * 地址
      */
     @TableField(value = "address")
-    @ApiModelProperty(value="地址")
+    @ApiModelProperty(value = "地址")
     private String address;
-
-    /**
-     * 办公地点
-     */
-    @TableField(value = "address_bureau")
-    @ApiModelProperty(value="办公地点")
-    private String addressBureau;
-
-    /**
-     * 证件类型ID_CARD 身份证 Passport 护照  Driver_License 驾驶证
-     */
-    @TableField(value = "id_card_type")
-    @ApiModelProperty(value="证件类型ID_CARD 身份证 Passport 护照  Driver_License 驾驶证")
-    private String idCardType;
 
     /**
      * 证件类型1身份证，2驾驶证，3护照
      */
     @TableField(value = "certificate_type")
-    @ApiModelProperty(value="证件类型1身份证，2驾驶证，3护照")
+    @ApiModelProperty(value = "证件类型1身份证，2驾驶证，3护照")
     private String certificateType;
+
+    /**
+     * 证件编号
+     */
+    @TableField(value = "certificate_number")
+    @ApiModelProperty(value = "证件编号")
+    private String certificateNumber;
 
     /**
      * 证件反面图片
      */
     @TableField(value = "certificate_negative_annex")
-    @ApiModelProperty(value="证件反面图片")
+    @ApiModelProperty(value = "证件反面图片")
     private String certificateNegativeAnnex;
 
     /**
@@ -260,6 +246,8 @@ public class OpeSysUserProfile implements Serializable {
 
     public static final String COL_DR = "dr";
 
+    public static final String COL_TENANT_ID = "tenant_id";
+
     public static final String COL_REPAIR_SHOP_ID = "repair_shop_Id";
 
     public static final String COL_SYS_USER_ID = "sys_user_id";
@@ -282,21 +270,15 @@ public class OpeSysUserProfile implements Serializable {
 
     public static final String COL_BIRTHDAY = "birthday";
 
-    public static final String COL_IDENTITY = "identity";
-
-    public static final String COL_ROLE = "role";
-
     public static final String COL_PLACE_BIRTH = "place_birth";
 
     public static final String COL_ADDRESS_COUNTRY_CODE = "address_country_code";
 
     public static final String COL_ADDRESS = "address";
 
-    public static final String COL_ADDRESS_BUREAU = "address_bureau";
-
-    public static final String COL_ID_CARD_TYPE = "id_card_type";
-
     public static final String COL_CERTIFICATE_TYPE = "certificate_type";
+
+    public static final String COL_CERTIFICATE_NUMBER = "certificate_number";
 
     public static final String COL_CERTIFICATE_NEGATIVE_ANNEX = "certificate_negative_annex";
 

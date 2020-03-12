@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.organization.position;
+package com.redescooter.ses.web.ros.vo.sys.position;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;

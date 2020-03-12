@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.dao.base.OpeSysDeptRelationMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptRelationService;
