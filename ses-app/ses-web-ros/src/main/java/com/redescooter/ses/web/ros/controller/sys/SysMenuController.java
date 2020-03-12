@@ -39,7 +39,7 @@ public class SysMenuController {
 
     @PostMapping(value = "/tree")
     @ApiOperation(value = "树形菜单", response = GeneralResult.class)
-    public Response<List<MenuTreeResult>> trees(@ModelAttribute @ApiParam("请求参数") SaveMenuEnter enter) {
+    public Response<List<MenuTreeResult>> trees(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(sysMenuService.trees(enter));
     }
 
