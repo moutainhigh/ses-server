@@ -45,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:EmployeeService
@@ -107,8 +108,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             return deptList;
         }
         //剔除 admin
-//        employeeList.stream().filter(item -> StringUtils.equals(Constant.ADMIN_USER_NAME)==true);
-        deptList.forEach(dept -> {
+        employeeList = employeeList.stream().filter(item -> StringUtils.equals(Constant.ADMIN_USER_NAME, item.getEmail()) == false).collect(Collectors.toList());
+        for (EmployeeListResult dept : deptList) {
             List<EmployeeResult> employeeResultList = new ArrayList<>();
             employeeList.forEach(item -> {
                 if (dept.getDeptId().equals(item.getDeptId())) {
@@ -116,7 +117,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 }
             });
             dept.setEmployeeResult(employeeResultList);
-        });
+        }
         return deptList;
 
     }
@@ -325,17 +326,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!StringUtils.equals(opeSysStaff.getStatus(), EmployeeStatusEnums.IN_SERVICE.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        //todo暂时不允许对admin 进行离职操作
-        if (opeSysStaff.getSysUserId().equals(Constant.ADMINUSERID)) {
-            throw new RuntimeException();
-        }
-        // 删除员工
-        opeSysStaffService.removeById(opeSysStaff);
         // 清空token
         OpeSysUser opeSysUser = opeSysUserService.getById(opeSysStaff.getSysUserId());
+        //todo暂时不允许对admin 进行离职操作
+        if (opeSysUser.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+            return null;
+        }
         if (StringUtils.isNotBlank(opeSysUser.getLastLoginToken())) {
             jedisService.delKey(opeSysUser.getLastLoginToken());
         }
+        // 删除员工
+        opeSysStaffService.removeById(opeSysStaff);
         // 删除员工账户
         opeSysUserService.removeById(opeSysStaff.getSysUserId());
         // 删除员工信息

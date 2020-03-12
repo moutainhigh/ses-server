@@ -54,7 +54,7 @@
         dept.name as deptName,
         count(user.id) as totalCount
         from ope_sys_dept dept
-        left join ope_sys_user user on dept.id = user.dept_id and user.dr = 0
+        left join ope_sys_user user on dept.id = user.dept_id and user.dr = 0 and user.login_name !='sysAdmin'
         where dept.dr = 0
         and dept.level = 1
         <if test="deptId != null">
