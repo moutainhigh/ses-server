@@ -67,6 +67,11 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public GeneralResult edit(SaveDeptEnter enter) {
+        //更新部门
+        //删除部门关系
+        //重建部门关系
+
+
         return null;
     }
 
