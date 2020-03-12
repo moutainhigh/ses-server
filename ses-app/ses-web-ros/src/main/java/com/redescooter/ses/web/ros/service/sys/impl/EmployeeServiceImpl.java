@@ -104,11 +104,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         });
         // 查出所有员工 进行 部门分组 员工 证件信息没有封装
         List<EmployeeResult> employeeList = employeeServiceMapper.employeeList(enter);
+        //剔除 admin
+        employeeList = employeeList.stream().filter(item -> StringUtils.equals(Constant.ADMIN_USER_NAME, item.getEmail()) == false).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(employeeList)) {
             return deptList;
         }
-        //剔除 admin
-        employeeList = employeeList.stream().filter(item -> StringUtils.equals(Constant.ADMIN_USER_NAME, item.getEmail()) == false).collect(Collectors.toList());
         for (EmployeeListResult dept : deptList) {
             List<EmployeeResult> employeeResultList = new ArrayList<>();
             employeeList.forEach(item -> {
@@ -369,7 +369,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         opeSysUser.setId(idAppService.getId(SequenceName.OPE_SYS_USER));
         opeSysUser.setDr(0);
         opeSysUser.setStatus(SysUserStatusEnum.NORMAL.getCode());
-        opeSysUser.setTenantId(0L);
         opeSysUser.setAppId(AppIDEnums.SES_ROS.getValue());
         opeSysUser.setSystemId(AppIDEnums.SES_ROS.getSystemId());
         opeSysUser.setDeptId(enter.getDeptId());

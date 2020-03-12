@@ -3,17 +3,17 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.Date;
 
 @ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSysUser")
 @Data
@@ -33,7 +33,6 @@ public class OpeSysUser implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -43,13 +42,6 @@ public class OpeSysUser implements Serializable {
     @TableField(value = "status")
     @ApiModelProperty(value="状态 Normal,Lock,Cancel，Expired")
     private String status;
-
-    /**
-     * 所属租户
-     */
-    @TableField(value = "tenant_id")
-    @ApiModelProperty(value="所属租户")
-    private Long tenantId;
 
     /**
      * 应用ID
@@ -163,8 +155,6 @@ public class OpeSysUser implements Serializable {
     public static final String COL_DR = "dr";
 
     public static final String COL_STATUS = "status";
-
-    public static final String COL_TENANT_ID = "tenant_id";
 
     public static final String COL_APP_ID = "app_id";
 

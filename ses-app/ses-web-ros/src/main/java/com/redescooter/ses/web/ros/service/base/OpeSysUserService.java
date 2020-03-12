@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
 @Transactional
 public interface OpeSysUserService extends IService<OpeSysUser> {
 
@@ -18,3 +19,5 @@ public interface OpeSysUserService extends IService<OpeSysUser> {
     int insertOrUpdateSelective(OpeSysUser record);
 
 }
+
+
