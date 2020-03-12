@@ -75,6 +75,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         BeanUtils.copyProperties(enter, dept);
         sysDeptService.updateById(dept);
         //删除部门关系
+
         //重建部门关系
 
         return new GeneralResult(enter.getRequestId());

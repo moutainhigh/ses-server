@@ -32,6 +32,9 @@ public class MenuTreeResult extends TreeNode {
     @ApiModelProperty(value = "路由")
     private String path;
 
+    @ApiModelProperty(value = "对应路由组件component")
+    private String component;
+
     @ApiModelProperty(value = "菜单类型")
     private String type;
 

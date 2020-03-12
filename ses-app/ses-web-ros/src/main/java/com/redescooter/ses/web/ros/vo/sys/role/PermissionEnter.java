@@ -12,7 +12,7 @@ import java.util.Set;
  * @date 2020/03/12 14:01
  * @Description:
  */
-@ApiModel(value = "角色权限")
+@ApiModel(value = "岗位权限")
 @Data
 public class PermissionEnter extends GeneralEnter {
 

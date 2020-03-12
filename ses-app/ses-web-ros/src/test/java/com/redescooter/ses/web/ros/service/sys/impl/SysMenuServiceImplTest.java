@@ -3,7 +3,12 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.enums.menu.MenuTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.router.RouterMeta;
+import com.redescooter.ses.api.common.vo.router.VueRouter;
+import com.redescooter.ses.web.ros.dm.OpeSysMenu;
+import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
+import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import org.junit.Test;
@@ -12,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -20,6 +26,8 @@ public class SysMenuServiceImplTest {
 
     @Autowired
     private SysMenuService sysMenuService;
+    @Autowired
+    private OpeSysMenuService menuService;
 
     @Test
     public void save() {
@@ -82,4 +90,26 @@ public class SysMenuServiceImplTest {
 //        sysMenuService.save(save);
     }
 
+    @Test
+    public void getUserRouters() {
+        List<VueRouter<MenuTreeResult>> routes = new ArrayList<>();
+        //   List<MenuTreeResult> menus = sysMenuService.trees(new GeneralEnter());
+
+        List<OpeSysMenu> list = menuService.list();
+
+        list.forEach(menu -> {
+            VueRouter<MenuTreeResult> route = new VueRouter<>();
+            route.setId(String.valueOf(menu.getId()));
+            route.setParentId(String.valueOf(menu.getPId()));
+            route.setPath(menu.getPath());
+            route.setComponent(menu.getComponent());
+            route.setName(menu.getName());
+            route.setMeta(new RouterMeta(menu.getName(), menu.getIcon(), true));
+            routes.add(route);
+        });
+
+        List<VueRouter<MenuTreeResult>> vueRouters = TreeUtil.buildVueRouter(routes);
+        System.out.println(JSON.toJSONString(vueRouters));
+
+    }
 }

@@ -1,8 +1,11 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.router.RouterMeta;
+import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
@@ -61,6 +64,25 @@ public class SysMenuServiceImpl implements SysMenuService {
         List<OpeSysMenu> list = sysMenuService.list();
 
         return this.buildTree(list, enter, Constant.MENU_TREE_ROOT_ID);
+    }
+
+    @Override
+    public List<VueRouter<MenuTreeResult>> userRouters(GeneralEnter enter) {
+
+        List<VueRouter<MenuTreeResult>> routes = new ArrayList<>();
+        List<OpeSysMenu> list = sysMenuService.list();
+
+        list.forEach(menu -> {
+            VueRouter<MenuTreeResult> route = new VueRouter<>();
+            route.setId(String.valueOf(menu.getId()));
+            route.setParentId(String.valueOf(menu.getPId()));
+            route.setPath(menu.getPath());
+            route.setComponent(menu.getComponent());
+            route.setName(menu.getName());
+            route.setMeta(new RouterMeta(menu.getName(), menu.getIcon(), true));
+            routes.add(route);
+        });
+        return TreeUtil.buildVueRouter(routes);
     }
 
     /**

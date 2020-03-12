@@ -1,11 +1,8 @@
 package com.redescooter.ses.web.ros.utils;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.api.common.vo.tree.TreeNode;
-import com.redescooter.ses.web.ros.dm.OpeSysMenu;
-import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import lombok.experimental.UtilityClass;
-import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +13,8 @@ import java.util.List;
  */
 @UtilityClass
 public class TreeUtil {
+
+    private final static String TOP_NODE_ID = "-1";
 
     /**
      * 两层循环实现建树
@@ -78,30 +77,45 @@ public class TreeUtil {
     }
 
     /**
-     * 通过sysMenu创建树形节点
+     * 构造前端路由
      *
-     * @param menus
-     * @param root
-     * @return
+     * @param routes routes
+     * @param <T>    T
+     * @return ArrayList<VueRouter < T>>
      */
-    public List<MenuTreeResult> buildTree(List<OpeSysMenu> menus, GeneralEnter enter, long root) {
-        List<MenuTreeResult> trees = new ArrayList<>();
-        MenuTreeResult node;
-        for (OpeSysMenu menu : menus) {
-            node = new MenuTreeResult();
-            BeanUtils.copyProperties(enter, node);
-            node.setId(menu.getId());
-            node.setPId(menu.getPId());
-            node.setName(menu.getName());
-            node.setPath(menu.getPath());
-            node.setCode(menu.getPermission());
-            node.setIcon(menu.getIcon());
-            node.setSort(menu.getSort());
-            node.setChecked(Boolean.FALSE);
-            node.setDisabled(Boolean.FALSE);
-            node.setSpread(Boolean.FALSE);
-            trees.add(node);
+    public static <T> List<VueRouter<T>> buildVueRouter(List<VueRouter<T>> routes) {
+        if (routes == null) {
+            return null;
         }
-        return TreeUtil.build(trees, root);
+        List<VueRouter<T>> topRoutes = new ArrayList<>();
+        VueRouter<T> router = new VueRouter<>();
+        routes.forEach(route -> {
+            String parentId = route.getParentId();
+            if (parentId == null || TOP_NODE_ID.equals(parentId)) {
+                topRoutes.add(route);
+                return;
+            }
+            for (VueRouter<T> parent : routes) {
+                String id = parent.getId();
+                if (id != null && id.equals(parentId)) {
+                    if (parent.getChildren() == null) {
+                        parent.initChildren();
+                    }
+                    parent.getChildren().add(route);
+                    parent.setAlwaysShow(true);
+                    parent.setHasChildren(true);
+                    route.setHasParent(true);
+                    parent.setHasParent(true);
+                    return;
+                }
+            }
+        });
+        VueRouter<T> router404 = new VueRouter<>();
+        router404.setName("404");
+        router404.setComponent("error-page/404");
+        router404.setPath("*");
+
+        topRoutes.add(router404);
+        return topRoutes;
     }
 }

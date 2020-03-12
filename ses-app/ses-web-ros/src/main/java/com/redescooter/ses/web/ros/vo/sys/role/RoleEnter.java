@@ -16,7 +16,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class SaveRoleEnter extends PermissionEnter {
+public class RoleEnter extends PermissionEnter {
 
     @ApiModelProperty(value = "部门ID")
     private Long deptId;
