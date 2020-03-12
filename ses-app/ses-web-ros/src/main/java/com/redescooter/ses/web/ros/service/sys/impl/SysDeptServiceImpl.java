@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -10,6 +11,7 @@ import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
+import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +52,22 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public List<DeptTreeReslt> trees(GeneralEnter enter) {
+
+        List<OpeSysDept> list = sysDeptService.list();
+
+        List<DeptTreeReslt> trees = new ArrayList<>();
+        if (CollUtil.isNotEmpty(list)) {
+            list.forEach(ls -> {
+                DeptTreeReslt dept = new DeptTreeReslt();
+                BeanUtils.copyProperties(ls, dept);
+                trees.add(dept);
+            });
+        }
+        return TreeUtil.build(trees, Constant.DEPT_TREE_ROOT_ID);
+    }
+
+    @Override
+    public GeneralResult edit(SaveDeptEnter enter) {
         return null;
     }
 

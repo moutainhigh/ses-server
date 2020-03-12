@@ -29,4 +29,12 @@ public interface SysDeptService {
      * @return
      */
     List<DeptTreeReslt> trees(GeneralEnter enter);
+
+    /**
+     * 部门编辑
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult edit(SaveDeptEnter enter);
 }

@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.impl;
+package com.redescooter.ses.web.ros.service.parts.impl;
 
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.vo.base.PageResult;
