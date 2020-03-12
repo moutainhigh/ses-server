@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,6 +60,34 @@ public class SysMenuServiceImpl implements SysMenuService {
 
         List<OpeSysMenu> list = sysMenuService.list();
 
-        return TreeUtil.buildTree(list, enter, Constant.MENU_TREE_ROOT_ID);
+        return this.buildTree(list, enter, Constant.MENU_TREE_ROOT_ID);
+    }
+
+    /**
+     * 通过sysMenu创建树形节点
+     *
+     * @param menus
+     * @param root
+     * @return
+     */
+    private List<MenuTreeResult> buildTree(List<OpeSysMenu> menus, GeneralEnter enter, long root) {
+        List<MenuTreeResult> trees = new ArrayList<>();
+        MenuTreeResult node;
+        for (OpeSysMenu menu : menus) {
+            node = new MenuTreeResult();
+            BeanUtils.copyProperties(enter, node);
+            node.setId(menu.getId());
+            node.setPId(menu.getPId());
+            node.setName(menu.getName());
+            node.setPath(menu.getPath());
+            node.setCode(menu.getPermission());
+            node.setIcon(menu.getIcon());
+            node.setSort(menu.getSort());
+            node.setChecked(Boolean.FALSE);
+            node.setDisabled(Boolean.FALSE);
+            node.setSpread(Boolean.FALSE);
+            trees.add(node);
+        }
+        return TreeUtil.build(trees, root);
     }
 }

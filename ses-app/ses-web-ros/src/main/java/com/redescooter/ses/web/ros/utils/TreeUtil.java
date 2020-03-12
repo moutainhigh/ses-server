@@ -1,12 +1,7 @@
 package com.redescooter.ses.web.ros.utils;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.tree.TreeNode;
-import com.redescooter.ses.web.ros.dm.OpeSysMenu;
-import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
-import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult;
 import lombok.experimental.UtilityClass;
-import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,36 +73,4 @@ public class TreeUtil {
         return treeNode;
     }
 
-    /**
-     * 通过sysMenu创建树形节点
-     *
-     * @param menus
-     * @param root
-     * @return
-     */
-    public List<MenuTreeResult> buildTree(List<OpeSysMenu> menus, GeneralEnter enter, long root) {
-        List<MenuTreeResult> trees = new ArrayList<>();
-        MenuTreeResult node;
-        for (OpeSysMenu menu : menus) {
-            node = new MenuTreeResult();
-            BeanUtils.copyProperties(enter, node);
-            node.setId(menu.getId());
-            node.setPId(menu.getPId());
-            node.setName(menu.getName());
-            node.setPath(menu.getPath());
-            node.setCode(menu.getPermission());
-            node.setIcon(menu.getIcon());
-            node.setSort(menu.getSort());
-            node.setChecked(Boolean.FALSE);
-            node.setDisabled(Boolean.FALSE);
-            node.setSpread(Boolean.FALSE);
-            trees.add(node);
-        }
-        return TreeUtil.build(trees, root);
-    }
-
-    public <T extends EmployeeDeptResult> T test(List<T> treeNodes, Object object) {
-
-        return null;
-    }
 }

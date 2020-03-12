@@ -33,4 +33,13 @@ public class DeptTreeReslt extends TreeNode {
 
     @ApiModelProperty(value = "排序")
     private Integer sort;
+
+    @ApiModelProperty(value = "是否选中")
+    private boolean checked;
+
+    @ApiModelProperty(value = "是否禁用")
+    private boolean disabled;
+
+    @ApiModelProperty(value = "是否展开")
+    private boolean spread = false;
 }
