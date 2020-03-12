@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
@@ -40,6 +41,12 @@ public class SysMenuController {
     @ApiOperation(value = "树形菜单", response = GeneralResult.class)
     public Response<List<MenuTreeResult>> trees(@ModelAttribute @ApiParam("请求参数") SaveMenuEnter enter) {
         return new Response<>(sysMenuService.trees(enter));
+    }
+
+    @PostMapping(value = "/userRouters")
+    @ApiOperation(value = "vue路由", response = GeneralResult.class)
+    public Response<List<VueRouter<MenuTreeResult>>> userRouters(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(sysMenuService.userRouters(enter));
     }
 
     @PostMapping(value = "/userTrees")

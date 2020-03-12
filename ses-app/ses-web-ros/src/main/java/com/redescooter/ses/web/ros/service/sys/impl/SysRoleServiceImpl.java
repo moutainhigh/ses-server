@@ -10,7 +10,7 @@ import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
-import com.redescooter.ses.web.ros.vo.sys.role.SaveRoleEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,32 +36,62 @@ public class SysRoleServiceImpl implements SysRoleService {
     private RolePermissionService rolePermissionService;
 
     @Override
-    public GeneralResult save(SaveRoleEnter enter) {
+    public GeneralResult save(RoleEnter enter) {
         //保存岗位角色
-        OpeSysRole role = this.builderRole(enter);
+        OpeSysRole role = this.builderRole(null, enter);
         roleService.save(role);
-        //创建岗位销售区域关系
-        rolePermissionService.insertRoleSalesPermissions(role.getId(), enter.getSalesPermissionIds());
-        //创建岗位菜单权限关系
-        rolePermissionService.insertRoleMenuPermissions(role.getId(), enter.getMeunPermissionIds());
-        //创建岗位部门权限关系
-        rolePermissionService.insertRoleDeptPermissions(role.getId(), enter.getDeptId());
+
+        enter.setRoleId(role.getId());
+        this.insertRoleAouth(enter);
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public GeneralResult edit(RoleEnter enter) {
+        OpeSysRole role = this.builderRole(enter.getRoleId(), enter);
+        roleService.updateById(role);
+
+        this.updateRoleAouth(enter);
+
         return new GeneralResult(enter.getRequestId());
     }
 
 
-    private OpeSysRole builderRole(SaveRoleEnter enter) {
+    private OpeSysRole builderRole(Long id, RoleEnter enter) {
         OpeSysRole role = new OpeSysRole();
-        role.setId(idAppService.getId(SequenceName.OPE_SYS_ROLE));
-        role.setDr(Constant.DR_FALSE);
+        if (id == null || id == 0) {
+            role.setId(idAppService.getId(SequenceName.OPE_SYS_ROLE));
+            role.setDr(Constant.DR_FALSE);
+            role.setCreatedBy(enter.getUserId());
+            role.setCreateTime(new Date());
+        } else {
+            role.setId(id);
+        }
         role.setTenantId(enter.getTenantId());
         role.setRoleName(enter.getRoleName());
         role.setRoleCode(enter.getRoleCode());
         role.setRoleDesc(enter.getDescription());
-        role.setCreatedBy(enter.getUserId());
-        role.setCreateTime(new Date());
         role.setUpdatedBy(enter.getUserId());
         role.setUpdateTime(new Date());
         return role;
+    }
+
+    private void insertRoleAouth(RoleEnter enter) {
+        //创建岗位销售区域关系
+        rolePermissionService.insertRoleSalesPermissions(enter.getRoleId(), enter.getSalesPermissionIds());
+        //创建岗位菜单权限关系
+        rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(), enter.getMeunPermissionIds());
+        //创建岗位部门权限关系
+        rolePermissionService.insertRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
+    }
+
+    private void updateRoleAouth(RoleEnter enter) {
+        //删除历史权限
+        rolePermissionService.deleteRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
+        rolePermissionService.deleteRoleMenuPermissions(enter.getRoleId(), enter.getMeunPermissionIds());
+        rolePermissionService.deleteRoleSalesPermissions(enter.getRoleId(), enter.getSalesPermissionIds());
+        //重建权限
+        this.insertRoleAouth(enter);
     }
 }

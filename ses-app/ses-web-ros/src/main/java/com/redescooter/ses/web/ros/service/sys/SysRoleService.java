@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.vo.sys.role.SaveRoleEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 
 /**
  * @ClassName SysRoleService
@@ -17,5 +17,13 @@ public interface SysRoleService {
      * @param enter
      * @return
      */
-    GeneralResult save(SaveRoleEnter enter);
+    GeneralResult save(RoleEnter enter);
+
+    /**
+     * 岗位编辑
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult edit(RoleEnter enter);
 }

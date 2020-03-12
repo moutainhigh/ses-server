@@ -2,7 +2,7 @@ package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
-import com.redescooter.ses.web.ros.vo.sys.role.SaveRoleEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,14 +26,14 @@ public class SysRoleController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "岗位创建", response = GeneralResult.class)
-    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveRoleEnter enter) {
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") RoleEnter enter) {
         return new Response<>(roleService.save(enter));
     }
 
     @PostMapping(value = "/edit")
     @ApiOperation(value = "岗位编辑", response = GeneralResult.class)
-    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") RoleEnter enter) {
+        return new Response<>(roleService.edit(enter));
     }
 
     @PostMapping(value = "/delete")

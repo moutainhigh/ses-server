@@ -31,6 +31,9 @@ public class SaveMenuEnter extends GeneralEnter {
     @ApiModelProperty(value = "路由")
     private String path;
 
+    @ApiModelProperty(value = "对应路由组件component")
+    private String component;
+
     @ApiModelProperty(value = "父菜单ID")
     private Long pId;
 
