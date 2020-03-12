@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
@@ -12,6 +13,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
+import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
@@ -67,13 +69,54 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public GeneralResult edit(SaveDeptEnter enter) {
+    public GeneralResult edit(EditDeptEnter enter) {
         //更新部门
+        OpeSysDept dept = new OpeSysDept();
+        BeanUtils.copyProperties(enter, dept);
+        sysDeptService.updateById(dept);
         //删除部门关系
         //重建部门关系
 
+        return new GeneralResult(enter.getRequestId());
+    }
 
-        return null;
+    @Override
+    public GeneralResult delete(IdEnter enter) {
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public DeptTreeReslt details(IdEnter enter) {
+
+        OpeSysDept dept = sysDeptService.getById(enter.getId());
+
+        DeptTreeReslt reslt = new DeptTreeReslt();
+
+        if (reslt != null) {
+            BeanUtils.copyProperties(dept, reslt);
+        }
+
+        return reslt;
+    }
+
+    @Override
+    public DeptTreeReslt getDescendants(IdEnter enter) {
+
+        List<OpeSysDept> list = sysDeptService.list();
+
+        List<DeptTreeReslt> trees = new ArrayList<>();
+        if (CollUtil.isNotEmpty(list)) {
+            list.forEach(ls -> {
+                DeptTreeReslt dept = new DeptTreeReslt();
+                BeanUtils.copyProperties(ls, dept);
+                trees.add(dept);
+            });
+        }
+
+        DeptTreeReslt children = new DeptTreeReslt();
+        children.setId(enter.getId());
+
+        return TreeUtil.findChildren(children, trees);
     }
 
     private OpeSysDept buildDept(SaveDeptEnter enter) {

@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysRoleMenu">
     <!--@mbg.generated-->
     <!--@Table ope_sys_role_menu-->
-    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="menu_id" jdbcType="BIGINT" property="menuId" />
   </resultMap>
   <insert id="batchInsert" parameterType="map">
@@ -13,7 +13,7 @@
     (role_id, menu_id)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.roleId,jdbcType=INTEGER}, #{item.menuId,jdbcType=BIGINT})
+      (#{item.roleId,jdbcType=BIGINT}, #{item.menuId,jdbcType=BIGINT})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleMenu">
@@ -21,9 +21,9 @@
     insert into ope_sys_role_menu
     (role_id, menu_id)
     values
-    (#{roleId,jdbcType=INTEGER}, #{menuId,jdbcType=BIGINT})
+    (#{roleId,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT})
     on duplicate key update
-    role_id = #{roleId,jdbcType=INTEGER},
+    role_id = #{roleId,jdbcType=BIGINT},
     menu_id = #{menuId,jdbcType=BIGINT}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleMenu">
@@ -40,7 +40,7 @@
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="roleId != null">
-        #{roleId,jdbcType=INTEGER},
+        #{roleId,jdbcType=BIGINT},
       </if>
       <if test="menuId != null">
         #{menuId,jdbcType=BIGINT},
@@ -49,7 +49,7 @@
     on duplicate key update
     <trim suffixOverrides=",">
       <if test="roleId != null">
-        role_id = #{roleId,jdbcType=INTEGER},
+        role_id = #{roleId,jdbcType=BIGINT},
       </if>
       <if test="menuId != null">
         menu_id = #{menuId,jdbcType=BIGINT},

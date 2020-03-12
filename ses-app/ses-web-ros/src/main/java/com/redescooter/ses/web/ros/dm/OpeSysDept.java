@@ -30,7 +30,6 @@ public class OpeSysDept implements Serializable {
      * 逻辑删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除")
     private Integer dr;
 
@@ -62,9 +61,26 @@ public class OpeSysDept implements Serializable {
     @ApiModelProperty(value = "级别0公司，1部门")
     private Integer level;
 
+    /**
+     * 部门名称
+     */
     @TableField(value = "name")
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "部门名称")
     private String name;
+
+    /**
+     * 部门编码
+     */
+    @TableField(value = "code")
+    @ApiModelProperty(value = "部门编码")
+    private String code;
+
+    /**
+     * 描述说明
+     */
+    @TableField(value = "description")
+    @ApiModelProperty(value = "描述说明")
+    private String description;
 
     /**
      * 排序
@@ -117,6 +133,10 @@ public class OpeSysDept implements Serializable {
 
     public static final String COL_NAME = "name";
 
+    public static final String COL_CODE = "code";
+
+    public static final String COL_DESCRIPTION = "description";
+
     public static final String COL_SORT = "sort";
 
     public static final String COL_CREATED_BY = "created_by";
@@ -126,4 +146,8 @@ public class OpeSysDept implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
+
+    public static OpeSysDeptBuilder builder() {
+        return new OpeSysDeptBuilder();
+    }
 }

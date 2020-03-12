@@ -12,7 +12,7 @@
     <result column="role_desc" jdbcType="VARCHAR" property="roleDesc" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="updated_by" jdbcType="INTEGER" property="updatedBy"/>
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -61,7 +61,7 @@
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="update_time = case" suffix="end,">
@@ -84,8 +84,7 @@
     <foreach collection="list" item="item" separator=",">
       (#{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, #{item.roleName,jdbcType=VARCHAR},
       #{item.roleCode,jdbcType=VARCHAR}, #{item.roleDesc,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
-      #{item.createTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=INTEGER},
-      #{item.updateTime,jdbcType=TIMESTAMP}
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updateTime,jdbcType=TIMESTAMP}
       )
     </foreach>
   </insert>
@@ -118,7 +117,7 @@
       #{roleDesc,jdbcType=VARCHAR},
       #{createdBy,jdbcType=BIGINT},
       #{createTime,jdbcType=TIMESTAMP},
-      #{updatedBy,jdbcType=INTEGER},
+      #{updatedBy,jdbcType=BIGINT},
       #{updateTime,jdbcType=TIMESTAMP},
     </trim>
     on duplicate key update
@@ -133,7 +132,7 @@
       role_desc = #{roleDesc,jdbcType=VARCHAR},
       created_by = #{createdBy,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      updated_by = #{updatedBy,jdbcType=INTEGER},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
     </trim>
   </insert>
@@ -199,7 +198,7 @@
         #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy,jdbcType=INTEGER},
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
@@ -232,7 +231,7 @@
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=INTEGER},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
