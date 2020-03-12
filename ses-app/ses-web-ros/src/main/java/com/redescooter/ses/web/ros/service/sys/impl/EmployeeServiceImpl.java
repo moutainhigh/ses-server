@@ -13,6 +13,7 @@ import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.EmployeeServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
@@ -105,6 +106,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (CollectionUtils.isEmpty(employeeList)) {
             return deptList;
         }
+        //剔除 admin
+//        employeeList.stream().filter(item -> StringUtils.equals(Constant.ADMIN_USER_NAME)==true);
         deptList.forEach(dept -> {
             List<EmployeeResult> employeeResultList = new ArrayList<>();
             employeeList.forEach(item -> {
@@ -127,7 +130,37 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResult employeeDetail(IdEnter enter) {
         //todo 缺少公司名字
-        return employeeServiceMapper.employeeDetail(enter);
+        EmployeeResult employeeResult = employeeServiceMapper.employeeDetail(enter);
+
+        // 返回公司
+        // 查询所有部门
+        List<OpeSysDept> deptList = opeSysDeptService.list();
+        OpeSysDept dept = null;
+        for (OpeSysDept item : deptList) {
+            if (item.getId().equals(employeeResult.getDeptId())) {
+                dept = item;
+                break;
+
+            }
+        }
+        OpeSysDept company = findCompany(deptList, dept);
+        employeeResult.setCompanyId(company.getId());
+        employeeResult.setCompanyName(company.getName());
+        return employeeResult;
+    }
+
+
+    private OpeSysDept findCompany(List<OpeSysDept> deptList, OpeSysDept child) {
+        for (OpeSysDept item : deptList) {
+            if (child.getPId() == 0) {
+                return child;
+            }
+            if (item.getId().equals(child.getPId())) {
+                child = item;
+                findCompany(deptList, child);
+            }
+        }
+        return null;
     }
 
     /**
@@ -142,7 +175,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         // 部门、职位、办公区域、邮箱校验
         checkSaveEmployeeParameter(enter);
 
-        //todo 邮箱去重校验
+        //邮箱去重校验
         QueryWrapper<OpeSysUser> checkSysUserQueryWrapper = new QueryWrapper<>();
         checkSysUserQueryWrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getEmail());
         OpeSysUser checkMail = opeSysUserService.getOne(checkSysUserQueryWrapper);
@@ -235,7 +268,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (enter.getBizId() != null && enter.getBizId() != 0) {
             ids.add(enter.getBizId());
         }
-        List<EmployeeDeptResult> result = null;
+        List<EmployeeDeptResult> result = new ArrayList<>();
         List<Long> childIdList = null;
         switch (EmployeeDeptTypeEnums.getEnumByValue(enter.getType())) {
             case DEPT:
@@ -257,7 +290,15 @@ public class EmployeeServiceImpl implements EmployeeService {
                 result = employeeServiceMapper.getEmployeePositionList(enter.getTenantId(), ids);
                 break;
             case OFFICEAREA:
-                result = employeeServiceMapper.getEmployeeOfficeareaList(enter.getTenantId());
+//                result = employeeServiceMapper.getEmployeeOfficeareaList(enter.getTenantId());
+                result.add(EmployeeDeptResult.builder()
+                        .id(1000000L)
+                        .name("Paris")
+                        .build());
+                result.add(EmployeeDeptResult.builder()
+                        .id(1000001L)
+                        .name("ShangHai")
+                        .build());
                 break;
             case COMPANY:
                 result = employeeServiceMapper.getEmployeeCompanyList(enter.getTenantId(), null);
@@ -309,19 +350,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    /**
-     * 返回父级或者子集的所有 部门列表
-     *
-     * @return
-     */
-    private List<EmployeeDeptResult> getDeptList() {
-
-
-//        List<EmployeeDeptResult>  result = employeeServiceMapper.getEmployeeDeptList(tenantId, ids);
-        return null;
-    }
-
-
     private void saveEmployeeSingle(SaveEmployeeEnter enter, Long userId) {
         OpeSysStaff opeSysStaff = new OpeSysStaff();
         opeSysStaff.setId(idAppService.getId(SequenceName.OPE_SYS_STAFF));
@@ -363,10 +391,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         OpeSysUserProfile opeSysUserProfile = new OpeSysUserProfile();
         opeSysUserProfile.setDr(0);
         opeSysUserProfile.setRepairShopId(0L);
-        opeSysUserProfile.setPicture(null);
+        opeSysUserProfile.setPicture(StringUtils.isEmpty(enter.getAvatar()) == true ? null : enter.getAvatar());
         opeSysUserProfile.setFirstName(enter.getEmployeeFirstName());
-        opeSysUserProfile.setLastName(enter.getEmpployeeLastName());
-        opeSysUserProfile.setFullName(new StringBuilder(enter.getEmployeeFirstName()).append(" ").append(enter.getEmpployeeLastName()).toString());
+        opeSysUserProfile.setLastName(enter.getEmployeeLastName());
+        opeSysUserProfile.setFullName(new StringBuilder(enter.getEmployeeFirstName()).append(" ").append(enter.getEmployeeLastName()).toString());
         opeSysUserProfile.setEmail(enter.getEmail());
         opeSysUserProfile.setCountryCode(enter.getTelCountryCode());
         opeSysUserProfile.setTelNumber(enter.getTelephone());

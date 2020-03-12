@@ -104,9 +104,4 @@ public class TreeUtil {
         }
         return TreeUtil.build(trees, root);
     }
-
-//    public <T extends EmployeeDeptResult> T test(List<T> treeNodes, Object object) {
-//
-//        return null;
-//    }
 }

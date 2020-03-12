@@ -31,6 +31,9 @@ public class EmployeeResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "公司Id", required = false)
+    private Long companyId;
+
     @ApiModelProperty(value = "公司名称")
     private String companyName;
 
@@ -40,8 +43,8 @@ public class EmployeeResult extends GeneralResult {
     @ApiModelProperty(value = "员工名字")
     private String employeeLastName;
 
-    @ApiModelProperty(value = "国家代码")
-    private String countryCode;
+    @ApiModelProperty(value = "电话国家代码", required = true)
+    private String telCountryCode;
 
     @ApiModelProperty(value = "电话")
     private String telephone;
@@ -86,7 +89,12 @@ public class EmployeeResult extends GeneralResult {
     @ApiModelProperty(value = "证件反面")
     private String negativePicture;
 
+    @ApiModelProperty(value = "办公区域Id", required = true)
+    private Long addressBureauId;
+
     @ApiModelProperty(value = "办公区域")
     private String addressBureau;
 
+    @ApiModelProperty(value = "头像", required = false)
+    private String avatar;
 }
