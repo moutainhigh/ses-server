@@ -7,14 +7,13 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.io.Serializable;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysDept")
 @Data
@@ -23,9 +22,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "ope_sys_dept")
 public class OpeSysDept implements Serializable {
-
-    @TableId(value = "id", type = IdType.UUID)
-    @ApiModelProperty(value = "主键")
+    @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(value = "")
     private Long id;
 
     /**
@@ -55,7 +53,7 @@ public class OpeSysDept implements Serializable {
      */
     @TableField(value = "principal")
     @ApiModelProperty(value = "负责人")
-    private Integer principal;
+    private Long principal;
 
     /**
      * 级别0公司，1部门
@@ -64,19 +62,9 @@ public class OpeSysDept implements Serializable {
     @ApiModelProperty(value = "级别0公司，1部门")
     private Integer level;
 
-    /**
-     * 部门名称
-     */
     @TableField(value = "name")
-    @ApiModelProperty(value = "部门名称")
+    @ApiModelProperty(value = "")
     private String name;
-
-    /**
-     * 部门编码
-     */
-    @TableField(value = "code")
-    @ApiModelProperty(value = "部门编码")
-    private String code;
 
     /**
      * 排序
@@ -129,8 +117,6 @@ public class OpeSysDept implements Serializable {
 
     public static final String COL_NAME = "name";
 
-    public static final String COL_CODE = "code";
-
     public static final String COL_SORT = "sort";
 
     public static final String COL_CREATED_BY = "created_by";
@@ -140,8 +126,4 @@ public class OpeSysDept implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
-
-    public static OpeSysDeptBuilder builder() {
-        return new OpeSysDeptBuilder();
-    }
 }

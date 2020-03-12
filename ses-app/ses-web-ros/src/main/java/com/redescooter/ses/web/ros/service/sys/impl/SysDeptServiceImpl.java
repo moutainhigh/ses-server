@@ -33,6 +33,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class SysDeptServiceImpl implements SysDeptService {
+
     @Autowired
     private OpeSysDeptService sysDeptService;
     @Autowired

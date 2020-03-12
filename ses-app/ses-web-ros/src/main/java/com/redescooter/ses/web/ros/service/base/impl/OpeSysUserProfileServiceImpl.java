@@ -15,16 +15,20 @@ public class OpeSysUserProfileServiceImpl extends ServiceImpl<OpeSysUserProfileM
     public int updateBatch(List<OpeSysUserProfile> list) {
         return baseMapper.updateBatch(list);
     }
+
     @Override
     public int batchInsert(List<OpeSysUserProfile> list) {
         return baseMapper.batchInsert(list);
     }
+
     @Override
     public int insertOrUpdate(OpeSysUserProfile record) {
         return baseMapper.insertOrUpdate(record);
     }
+
     @Override
     public int insertOrUpdateSelective(OpeSysUserProfile record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

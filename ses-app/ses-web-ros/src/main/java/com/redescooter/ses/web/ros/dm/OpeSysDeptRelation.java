@@ -37,8 +37,4 @@ public class OpeSysDeptRelation implements Serializable {
     public static final String COL_ANCESTOR = "ancestor";
 
     public static final String COL_DESCENDANT = "descendant";
-
-    public static OpeSysDeptRelationBuilder builder() {
-        return new OpeSysDeptRelationBuilder();
-    }
 }

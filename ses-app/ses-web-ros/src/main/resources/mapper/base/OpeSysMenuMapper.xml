@@ -7,7 +7,6 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="permission" jdbcType="VARCHAR" property="permission" />
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="p_id" jdbcType="BIGINT" property="pId" />
@@ -21,7 +20,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, `name`, code, permission, `path`, p_id, icon, sort, `type`, created_by, created_time,
+    id, dr, `name`, permission, `path`, p_id, icon, sort, `type`, created_by, created_time,
     updated_by, updated_time
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
@@ -36,11 +35,6 @@
       <trim prefix="`name` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.name,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="code = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.code,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="permission = case" suffix="end,">
@@ -102,15 +96,16 @@
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into ope_sys_menu
-    (dr, `name`, code, permission, `path`, p_id, icon, sort, `type`, created_by, created_time,
+    (dr, `name`, permission, `path`, p_id, icon, sort, `type`, created_by, created_time,
     updated_by, updated_time)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.dr,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR},
-      #{item.permission,jdbcType=VARCHAR}, #{item.path,jdbcType=VARCHAR}, #{item.pId,jdbcType=BIGINT},
-      #{item.icon,jdbcType=VARCHAR}, #{item.sort,jdbcType=INTEGER}, #{item.type,jdbcType=CHAR},
-      #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-      #{item.updatedTime,jdbcType=TIMESTAMP})
+      (#{item.dr,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.permission,jdbcType=VARCHAR},
+      #{item.path,jdbcType=VARCHAR}, #{item.pId,jdbcType=BIGINT}, #{item.icon,jdbcType=VARCHAR},
+      #{item.sort,jdbcType=INTEGER}, #{item.type,jdbcType=CHAR}, #{item.createdBy,jdbcType=BIGINT},
+      #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+      #{item.updatedTime,jdbcType=TIMESTAMP}
+      )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysMenu" useGeneratedKeys="true">
@@ -122,7 +117,6 @@
       </if>
       dr,
       `name`,
-      code,
       permission,
       `path`,
       p_id,
@@ -141,7 +135,6 @@
       </if>
       #{dr,jdbcType=INTEGER},
       #{name,jdbcType=VARCHAR},
-      #{code,jdbcType=VARCHAR},
       #{permission,jdbcType=VARCHAR},
       #{path,jdbcType=VARCHAR},
       #{pId,jdbcType=BIGINT},
@@ -160,7 +153,6 @@
       </if>
       dr = #{dr,jdbcType=INTEGER},
       `name` = #{name,jdbcType=VARCHAR},
-      code = #{code,jdbcType=VARCHAR},
       permission = #{permission,jdbcType=VARCHAR},
       `path` = #{path,jdbcType=VARCHAR},
       p_id = #{pId,jdbcType=BIGINT},
@@ -185,9 +177,6 @@
       </if>
       <if test="name != null">
         `name`,
-      </if>
-      <if test="code != null">
-        code,
       </if>
       <if test="permission != null">
         permission,
@@ -231,9 +220,6 @@
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="code != null">
-        #{code,jdbcType=VARCHAR},
-      </if>
       <if test="permission != null">
         #{permission,jdbcType=VARCHAR},
       </if>
@@ -275,9 +261,6 @@
       </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="code != null">
-        code = #{code,jdbcType=VARCHAR},
       </if>
       <if test="permission != null">
         permission = #{permission,jdbcType=VARCHAR},

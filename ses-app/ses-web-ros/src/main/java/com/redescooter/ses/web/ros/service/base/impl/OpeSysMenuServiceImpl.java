@@ -1,12 +1,17 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.util.List;
+
 import com.redescooter.ses.web.ros.dao.base.OpeSysMenuMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class OpeSysMenuServiceImpl extends ServiceImpl<OpeSysMenuMapper, OpeSysMenu> implements OpeSysMenuService {
@@ -25,10 +30,8 @@ public class OpeSysMenuServiceImpl extends ServiceImpl<OpeSysMenuMapper, OpeSysM
     public int insertOrUpdate(OpeSysMenu record) {
         return baseMapper.insertOrUpdate(record);
     }
-
     @Override
     public int insertOrUpdateSelective(OpeSysMenu record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
-

@@ -3,10 +3,10 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.service.sys.PositionService;
-import com.redescooter.ses.web.ros.vo.organization.position.PositionDeptListResult;
-import com.redescooter.ses.web.ros.vo.organization.position.PositionDetailResult;
-import com.redescooter.ses.web.ros.vo.organization.position.PositionListEnter;
-import com.redescooter.ses.web.ros.vo.organization.position.SavePositionEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionDeptListResult;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionDetailResult;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionListEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.SavePositionEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
 

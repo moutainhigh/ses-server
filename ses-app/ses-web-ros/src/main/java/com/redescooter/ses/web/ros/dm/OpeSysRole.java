@@ -73,21 +73,18 @@ public class OpeSysRole implements Serializable {
     private Long createdBy;
 
     @TableField(value = "create_time")
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "")
     private Date createTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
-    private Long updatedBy;
+    @ApiModelProperty(value = "更新人")
+    private Integer updatedBy;
 
-    /**
-     * 更新时间
-     */
     @TableField(value = "update_time")
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;
@@ -111,8 +108,4 @@ public class OpeSysRole implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATE_TIME = "update_time";
-
-    public static OpeSysRoleBuilder builder() {
-        return new OpeSysRoleBuilder();
-    }
 }

@@ -5,7 +5,6 @@ import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
 @Transactional
 public interface OpeSysRoleService extends IService<OpeSysRole> {
 

@@ -156,41 +156,6 @@ public class OpeSysUser implements Serializable {
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def1")
-    @ApiModelProperty(value = "冗余字段")
-    private String def1;
-
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def2")
-    @ApiModelProperty(value = "冗余字段")
-    private String def2;
-
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def3")
-    @ApiModelProperty(value = "冗余字段")
-    private String def3;
-
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def5")
-    @ApiModelProperty(value = "冗余字段")
-    private String def5;
-
-    /**
-     * 冗余字段
-     */
-    @TableField(value = "def6")
-    @ApiModelProperty(value = "冗余字段")
-    private Double def6;
-
     private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
@@ -230,8 +195,4 @@ public class OpeSysUser implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
-
-    public static OpeSysUserBuilder builder() {
-        return new OpeSysUserBuilder();
-    }
 }

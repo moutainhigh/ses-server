@@ -2,12 +2,12 @@ package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptEnter;
-import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeDeptResult;
-import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListEnter;
-import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeListResult;
-import com.redescooter.ses.web.ros.vo.organization.employee.EmployeeResult;
-import com.redescooter.ses.web.ros.vo.organization.employee.SaveEmployeeEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 
 import java.util.List;
 

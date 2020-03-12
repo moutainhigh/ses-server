@@ -134,33 +134,34 @@
     <!--@mbg.generated-->
     insert into ope_sys_user
     (id, dr, `status`, tenant_id, app_id, system_id, dept_id, login_name, `password`,
-      salt, last_login_token, last_login_time, last_login_ip, activation_time, expire_date,
-      created_by, created_time, updated_by, updated_time)
+    salt, last_login_token, last_login_time, last_login_ip, activation_time, expire_date,
+    created_by, created_time, updated_by, updated_time)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR},
-        #{item.tenantId,jdbcType=BIGINT}, #{item.appId,jdbcType=VARCHAR}, #{item.systemId,jdbcType=VARCHAR},
-        #{item.deptId,jdbcType=BIGINT}, #{item.loginName,jdbcType=VARCHAR}, #{item.password,jdbcType=VARCHAR},
-        #{item.salt,jdbcType=VARCHAR}, #{item.lastLoginToken,jdbcType=VARCHAR}, #{item.lastLoginTime,jdbcType=TIMESTAMP},
-        #{item.lastLoginIp,jdbcType=VARCHAR}, #{item.activationTime,jdbcType=DATE}, #{item.expireDate,jdbcType=DATE},
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-        #{item.updatedTime,jdbcType=TIMESTAMP})
+      #{item.tenantId,jdbcType=BIGINT}, #{item.appId,jdbcType=VARCHAR}, #{item.systemId,jdbcType=VARCHAR},
+      #{item.deptId,jdbcType=BIGINT}, #{item.loginName,jdbcType=VARCHAR}, #{item.password,jdbcType=VARCHAR},
+      #{item.salt,jdbcType=VARCHAR}, #{item.lastLoginToken,jdbcType=VARCHAR},
+      #{item.lastLoginTime,jdbcType=TIMESTAMP},
+      #{item.lastLoginIp,jdbcType=VARCHAR}, #{item.activationTime,jdbcType=DATE}, #{item.expireDate,jdbcType=DATE},
+      #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+      #{item.updatedTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUser">
     <!--@mbg.generated-->
     insert into ope_sys_user
     (id, dr, `status`, tenant_id, app_id, system_id, dept_id, login_name, `password`,
-      salt, last_login_token, last_login_time, last_login_ip, activation_time, expire_date,
-      created_by, created_time, updated_by, updated_time)
+    salt, last_login_token, last_login_time, last_login_ip, activation_time, expire_date,
+    created_by, created_time, updated_by, updated_time)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT},
-      #{appId,jdbcType=VARCHAR}, #{systemId,jdbcType=VARCHAR}, #{deptId,jdbcType=BIGINT},
-      #{loginName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR},
-      #{lastLoginToken,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{lastLoginIp,jdbcType=VARCHAR},
-      #{activationTime,jdbcType=DATE}, #{expireDate,jdbcType=DATE}, #{createdBy,jdbcType=BIGINT},
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}
-      )
+    #{appId,jdbcType=VARCHAR}, #{systemId,jdbcType=VARCHAR}, #{deptId,jdbcType=BIGINT},
+    #{loginName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR},
+    #{lastLoginToken,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{lastLoginIp,jdbcType=VARCHAR},
+    #{activationTime,jdbcType=DATE}, #{expireDate,jdbcType=DATE}, #{createdBy,jdbcType=BIGINT},
+    #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}
+    )
     on duplicate key update
     id = #{id,jdbcType=BIGINT},
     dr = #{dr,jdbcType=INTEGER},
