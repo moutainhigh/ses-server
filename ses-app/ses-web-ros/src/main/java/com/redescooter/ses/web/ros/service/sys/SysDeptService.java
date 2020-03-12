@@ -2,6 +2,8 @@ package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 
@@ -36,5 +38,29 @@ public interface SysDeptService {
      * @param enter
      * @return
      */
-    GeneralResult edit(SaveDeptEnter enter);
+    GeneralResult edit(EditDeptEnter enter);
+
+    /**
+     * 部门删除
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult delete(IdEnter enter);
+
+    /**
+     * 部门详情
+     *
+     * @param enter
+     * @return
+     */
+    DeptTreeReslt details(IdEnter enter);
+
+    /**
+     * 获取部门子列表
+     *
+     * @param enter
+     * @return
+     */
+    DeptTreeReslt getDescendants(IdEnter enter);
 }
