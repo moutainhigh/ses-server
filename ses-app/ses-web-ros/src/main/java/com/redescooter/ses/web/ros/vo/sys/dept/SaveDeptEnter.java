@@ -19,6 +19,9 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class SaveDeptEnter extends GeneralEnter {
 
+    @ApiModelProperty(value = "部门主键")
+    private Long id;
+
     @ApiModelProperty(value = "父级部门id")
     private Long pId;
 
