@@ -12,10 +12,6 @@ import lombok.*;
  */
 @ApiModel(value = "部门创建")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@EqualsAndHashCode(callSuper = true)
 public class EditDeptEnter extends SaveDeptEnter {
 
     @ApiModelProperty(value = "部门主键")

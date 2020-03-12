@@ -26,14 +26,13 @@ public class OpeSysRole implements Serializable {
      * 主键Id
      */
     @TableId(value = "id", type = IdType.AUTO)
-    @ApiModelProperty(value="主键Id")
+    @ApiModelProperty(value = "主键Id")
     private Long id;
 
     /**
      * 逻辑删除标识
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识")
     private Integer dr;
 
@@ -41,35 +40,35 @@ public class OpeSysRole implements Serializable {
      * 租户id
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value="租户id")
+    @ApiModelProperty(value = "租户id")
     private Long tenantId;
 
     /**
      * 角色名称
      */
     @TableField(value = "role_name")
-    @ApiModelProperty(value="角色名称")
+    @ApiModelProperty(value = "角色名称")
     private String roleName;
 
     /**
      * 角色编码
      */
     @TableField(value = "role_code")
-    @ApiModelProperty(value="角色编码")
+    @ApiModelProperty(value = "角色编码")
     private String roleCode;
 
     /**
      * 角色描述
      */
     @TableField(value = "role_desc")
-    @ApiModelProperty(value="角色描述")
+    @ApiModelProperty(value = "角色描述")
     private String roleDesc;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     @TableField(value = "create_time")
@@ -81,7 +80,7 @@ public class OpeSysRole implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Integer updatedBy;
+    private Long updatedBy;
 
     @TableField(value = "update_time")
     @ApiModelProperty(value = "")
@@ -108,4 +107,8 @@ public class OpeSysRole implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATE_TIME = "update_time";
+
+    public static OpeSysRoleBuilder builder() {
+        return new OpeSysRoleBuilder();
+    }
 }

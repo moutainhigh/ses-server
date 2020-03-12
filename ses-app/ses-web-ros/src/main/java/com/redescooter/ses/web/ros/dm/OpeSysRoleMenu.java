@@ -23,7 +23,7 @@ public class OpeSysRoleMenu implements Serializable {
      */
     @TableField(value = "role_id")
     @ApiModelProperty(value="角色ID")
-    private Integer roleId;
+    private Long roleId;
 
     /**
      * 菜单ID

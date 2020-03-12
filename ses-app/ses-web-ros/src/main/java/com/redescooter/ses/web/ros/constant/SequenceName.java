@@ -49,4 +49,7 @@ public interface SequenceName {
 
     String OPE_SYS_DEPT = "OPE_SYS_DEPT";
 
+    String OPE_SYS_ROLE = "OPE_SYS_ROLE";
+
+
 }

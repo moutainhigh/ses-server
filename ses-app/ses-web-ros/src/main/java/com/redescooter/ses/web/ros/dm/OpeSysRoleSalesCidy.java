@@ -22,8 +22,8 @@ public class OpeSysRoleSalesCidy implements Serializable {
      * 用户ID
      */
     @TableField(value = "role_id")
-    @ApiModelProperty(value = "用户ID")
-    private Integer roleId;
+    @ApiModelProperty(value="用户ID")
+    private Long roleId;
 
     /**
      * 城市ID

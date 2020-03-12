@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy">
     <!--@mbg.generated-->
     <!--@Table ope_sys_role_sales_cidy-->
-    <result column="role_id" jdbcType="INTEGER" property="roleId"/>
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="city_id" jdbcType="BIGINT" property="cityId" />
   </resultMap>
   <insert id="batchInsert" parameterType="map">
@@ -13,7 +13,7 @@
     (role_id, city_id)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.roleId,jdbcType=INTEGER}, #{item.cityId,jdbcType=BIGINT})
+      (#{item.roleId,jdbcType=BIGINT}, #{item.cityId,jdbcType=BIGINT})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy">
@@ -21,9 +21,9 @@
     insert into ope_sys_role_sales_cidy
     (role_id, city_id)
     values
-    (#{roleId,jdbcType=INTEGER}, #{cityId,jdbcType=BIGINT})
+    (#{roleId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT})
     on duplicate key update
-    role_id = #{roleId,jdbcType=INTEGER},
+    role_id = #{roleId,jdbcType=BIGINT},
     city_id = #{cityId,jdbcType=BIGINT}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy">
@@ -40,16 +40,16 @@
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="roleId != null">
-        #{roleId,jdbcType=INTEGER},
+        #{roleId,jdbcType=BIGINT},
       </if>
       <if test="cityId != null">
         #{cityId,jdbcType=BIGINT},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="roleId != null">
-        role_id = #{roleId,jdbcType=INTEGER},
+        role_id = #{roleId,jdbcType=BIGINT},
       </if>
       <if test="cityId != null">
         city_id = #{cityId,jdbcType=BIGINT},
