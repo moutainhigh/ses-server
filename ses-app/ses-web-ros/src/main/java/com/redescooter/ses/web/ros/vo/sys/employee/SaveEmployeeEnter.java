@@ -56,7 +56,7 @@ public class SaveEmployeeEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "员工姓名", required = true)
     @NotNull(code = ValidationExceptionCode.LAST_NAME_IS_EMPTY, message = "姓为空")
-    private String empployeeLastName;
+    private String employeeLastName;
 
     @ApiModelProperty(value = "电话国家代码", required = true)
     @NotNull(code = ValidationExceptionCode.COUNTRY_CODE_IS_EMPTY, message = "国家代码为空")

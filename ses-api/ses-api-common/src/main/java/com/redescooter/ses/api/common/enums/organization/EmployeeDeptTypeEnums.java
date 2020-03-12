@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum EmployeeDeptTypeEnums {
 
-    DEPT("DEPT", "部门", "1"),
-    POSITION("POSITION", "职位", "2"),
-    OFFICEAREA("OFFICEAREA", "办公区域", "3"),
-    COMPANY("COMPANY", "公司", "4"),
+    COMPANY("COMPANY", "公司", "1"),
+    DEPT("DEPT", "部门", "2"),
+    POSITION("POSITION", "职位", "3"),
+    OFFICEAREA("OFFICEAREA", "办公区域", "4"),
     ;
 
     private String code;
