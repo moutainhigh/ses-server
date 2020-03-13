@@ -1,9 +1,9 @@
 package com.redescooter.ses.api.common.vo.tree;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
  */
 @ApiModel(value = "基础树形节点")
 @Data //生成getter,setter等函数
-public class TreeNode extends GeneralEnter {
+public class TreeNode extends GeneralResult {
 
     @ApiModelProperty(value = "当前节点id")
     protected long id;
