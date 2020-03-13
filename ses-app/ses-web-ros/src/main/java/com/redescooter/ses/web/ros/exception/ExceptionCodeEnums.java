@@ -166,6 +166,10 @@ public enum ExceptionCodeEnums {
     NON_REPEATABLE_CREATION_ROOT_LEVEL_DEPT(10075, "不可重复创建根级部门"),
 
     NON_CREATION_TWO_LEVEL_DEPT(10076, "不可创建二级部门"),
+
+    MENU_IS_NOT_EXIST(10077, "菜单不存在"),
+
+    THE_ROOT_NODE_MENU_CANNOT_BE_EDIT(10078, "根节点菜单不可编辑"),
     ;
 
     private int code;

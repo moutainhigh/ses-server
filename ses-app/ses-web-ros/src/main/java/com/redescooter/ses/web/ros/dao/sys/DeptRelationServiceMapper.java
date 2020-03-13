@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
 
 /**
@@ -13,9 +12,9 @@ public interface DeptRelationServiceMapper {
 
     /**
      * 更新部门关系
+     *
      * @return
      */
-    GeneralResult updateDeptRelations(OpeSysDeptRelation deptRelation);
+    void updateDeptRelations(OpeSysDeptRelation deptRelation);
 
 
-}
