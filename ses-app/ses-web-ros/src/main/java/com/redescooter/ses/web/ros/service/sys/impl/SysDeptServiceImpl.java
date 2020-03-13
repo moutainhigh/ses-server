@@ -1,5 +1,4 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
-
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -9,7 +8,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.base.OpeSysDeptRelationMapper;
 import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
@@ -65,6 +63,20 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Transactional
     @Override
     public GeneralResult save(SaveDeptEnter enter) {
+        List<OpeSysDept> sysDeptList = sysDeptService.list();
+
+        if (CollectionUtils.isNotEmpty(sysDeptList)) {
+            sysDeptList.forEach(item -> {
+                //不可重复创建 根级部门
+                if (item.getPId().equals(enter.getPId()) && enter.getPId().equals(Constant.DEPT_TREE_ROOT_ID)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.NON_REPEATABLE_CREATION_ROOT_LEVEL_DEPT.getCode(), ExceptionCodeEnums.NON_REPEATABLE_CREATION_ROOT_LEVEL_DEPT.getMessage());
+                }
+                // 不能创建二级部门
+                if (item.getPId().equals(enter.getPId()) && item.getLevel().equals(DeptLevelEnums.DEPARTMENT)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.NON_CREATION_TWO_LEVEL_DEPT.getCode(), ExceptionCodeEnums.NON_CREATION_TWO_LEVEL_DEPT.getMessage());
+                }
+            });
+        }
         OpeSysDept dept = this.buildDept(enter);
         sysDeptService.save(dept);
         sysDeptRelationService.insertDeptRelation(dept);

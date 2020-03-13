@@ -163,7 +163,9 @@ public enum ExceptionCodeEnums {
 
     NOT_DELETE_ROOT_LEVEL(10074, "不可删除根级部门"),
 
+    NON_REPEATABLE_CREATION_ROOT_LEVEL_DEPT(10075, "不可重复创建根级部门"),
 
+    NON_CREATION_TWO_LEVEL_DEPT(10076, "不可创建二级部门"),
     ;
 
     private int code;
