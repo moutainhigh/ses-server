@@ -13,6 +13,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
+import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
@@ -133,6 +134,11 @@ public class SysMenuServiceImpl implements SysMenuService {
         if (CollUtil.isNotEmpty(list)) {
             //删除儿子
             sysMenuService.remove(wrapper);
+            //删除角色菜单关系
+            QueryWrapper<OpeSysRoleMenu> delete = new QueryWrapper<>();
+            delete.eq(OpeSysRoleMenu.COL_MENU_ID, enter.getId());
+            roleMenuService.remove(delete);
+
         }
 
         QueryWrapper<OpeSysMenu> myself = new QueryWrapper<>();
