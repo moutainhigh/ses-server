@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
+import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
@@ -13,7 +14,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -77,8 +82,8 @@ public class SysMenuController {
 
     @PostMapping(value = "/edit")
     @ApiOperation(value = "菜单编辑", response = GeneralResult.class)
-    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") EditMenuEnter enter) {
+        return new Response<>(sysMenuService.edit(enter));
     }
 
     @PostMapping(value = "/delete")

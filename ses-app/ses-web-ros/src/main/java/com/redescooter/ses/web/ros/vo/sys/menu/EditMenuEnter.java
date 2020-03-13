@@ -15,5 +15,5 @@ import lombok.Data;
 public class EditMenuEnter extends SaveMenuEnter {
 
     @ApiModelProperty(value = "菜单主键")
-    private String menuId;
+    private Long menuId;
 }

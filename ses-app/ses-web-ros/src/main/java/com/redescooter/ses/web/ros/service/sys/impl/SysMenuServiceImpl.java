@@ -29,7 +29,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName SysMenuServiceImpl
@@ -171,11 +175,18 @@ public class SysMenuServiceImpl implements SysMenuService {
         if (opeSysMenu.getPId().equals(Constant.MENU_TREE_ROOT_ID) || enter.getPId().equals(Constant.MENU_TREE_ROOT_ID)) {
             throw new SesWebRosException(ExceptionCodeEnums.THE_ROOT_NODE_MENU_CANNOT_BE_EDIT.getCode(), ExceptionCodeEnums.THE_ROOT_NODE_MENU_CANNOT_BE_EDIT.getMessage());
         }
-        // 查出所有菜单
-        List<OpeSysMenu> opeSysMenuList = opeSysMenuService.list();
-
-
-        return null;
+        opeSysMenu.setPId(enter.getPId());
+        opeSysMenu.setPath(enter.getPath());
+        opeSysMenu.setName(enter.getName());
+        opeSysMenu.setPermission(enter.getPermission());
+        opeSysMenu.setComponent(enter.getComponent());
+        opeSysMenu.setType(enter.getType());
+        opeSysMenu.setIcon(enter.getIcon());
+        opeSysMenu.setSort(enter.getSort());
+        opeSysMenu.setUpdatedBy(enter.getUserId());
+        opeSysMenu.setUpdatedTime(new Date());
+        opeSysMenuService.updateById(opeSysMenu);
+        return new GeneralResult(enter.getRequestId());
     }
 
     private OpeSysMenu buildMenu(Long id, SaveMenuEnter enter) {
