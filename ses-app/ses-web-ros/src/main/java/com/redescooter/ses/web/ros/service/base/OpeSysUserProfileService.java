@@ -20,3 +20,6 @@ public interface OpeSysUserProfileService extends IService<OpeSysUserProfile> {
 
 }
 
+
+
+

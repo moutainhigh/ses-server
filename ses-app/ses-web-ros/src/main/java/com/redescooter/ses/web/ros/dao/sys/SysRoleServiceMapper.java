@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
+import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.vo.sys.position.RoleListEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
 
@@ -21,4 +22,12 @@ public interface SysRoleServiceMapper {
      * @return
      */
     List<RoleResult> list(RoleListEnter enter);
+
+    /**
+     * 角色部门列表
+     *
+     * @param enter
+     * @return
+     */
+    List<OpeSysDept> roleDeptlist(RoleListEnter enter);
 }

@@ -90,16 +90,12 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     public DeptRoleListResult list(RoleListEnter enter) {
-        //查询所有部门
-//        QueryWrapper<OpeSysDept> opeSysDeptQueryWrapper = new QueryWrapper<>();
-//        if (enter.getDeptId() != null || enter.getDeptId() != 0) {
-//            opeSysDeptQueryWrapper.eq(OpeSysDept.COL_ID,enter.getDeptId());
-//        }
-//        List<OpeSysDept> opeSysDeptList = opeSysDeptService.list(opeSysDeptQueryWrapper);
+//        //查询所有部门
+//        List<OpeSysDept> opeSysDeptList = sysRoleServiceMapper.roleDeptlist(enter);
 //        //若查出来存在公司 剔除掉
 //        opeSysDeptList.removeIf(item -> item.getPId().equals(-1));
 //
-//        List<RoleResult> roleList=sysRoleServiceMapper.list(enter);
+//        List<RoleResult> roleList=sysRoleServiceMapper.list(enter,);
 
         DeptRoleListResult result = DeptRoleListResult.builder()
                 .deptId(1000013L)

@@ -8,10 +8,13 @@
         role.role_code as roleCode,
         role.role_desc as description
         from ope_sys_role role
-
         where 1=1
         <if test="deptId != null">
 
         </if>
+    </select>
+
+    <select id="roleDeptlist" resultType="com.redescooter.ses.web.ros.dm.OpeSysDept">
+
     </select>
 </mapper>

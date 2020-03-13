@@ -3,25 +3,27 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.util.Date;
-
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSysUserProfile")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysUserProfile")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_sys_user_profile")
 public class OpeSysUserProfile implements Serializable {
+    public static final String COL_IDENTITY = "identity";
+    public static final String COL_ROLE = "role";
     /**
      * ID
      */
@@ -33,16 +35,8 @@ public class OpeSysUserProfile implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
-
-    /**
-     * 所属租户
-     */
-    @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "所属租户")
-    private Long tenantId;
 
     /**
      * 维修店ID
@@ -55,21 +49,21 @@ public class OpeSysUserProfile implements Serializable {
      * 用户ID
      */
     @TableField(value = "sys_user_id")
-    @ApiModelProperty(value="用户ID")
+    @ApiModelProperty(value = "用户ID")
     private Long sysUserId;
 
     /**
      * 照片
      */
     @TableField(value = "picture")
-    @ApiModelProperty(value="照片")
+    @ApiModelProperty(value = "照片")
     private String picture;
 
     /**
      * 名
      */
     @TableField(value = "first_name")
-    @ApiModelProperty(value="名")
+    @ApiModelProperty(value = "名")
     private String firstName;
 
     /**
@@ -129,10 +123,10 @@ public class OpeSysUserProfile implements Serializable {
     private String placeBirth;
 
     /**
-     * 地址国家编码，如手机号 中国 +86
+     * 地址国家编码
      */
     @TableField(value = "address_country_code")
-    @ApiModelProperty(value="地址国家编码，如手机号 中国 +86")
+    @ApiModelProperty(value = "地址国家编码")
     private String addressCountryCode;
 
     /**
@@ -143,38 +137,38 @@ public class OpeSysUserProfile implements Serializable {
     private String address;
 
     /**
-     * 证件类型1身份证，2驾驶证，3护照
+     * 办公地点
+     */
+    @TableField(value = "address_bureau")
+    @ApiModelProperty(value = "办公地点")
+    private String addressBureau;
+
+    /**
+     * 证件类型，1身份证，2驾驶证，3护照
      */
     @TableField(value = "certificate_type")
-    @ApiModelProperty(value = "证件类型1身份证，2驾驶证，3护照")
+    @ApiModelProperty(value = "证件类型，1身份证，2驾驶证，3护照")
     private String certificateType;
 
     /**
-     * 证件编号
-     */
-    @TableField(value = "certificate_number")
-    @ApiModelProperty(value = "证件编号")
-    private String certificateNumber;
-
-    /**
-     * 证件反面图片
+     * 证件正面
      */
     @TableField(value = "certificate_negative_annex")
-    @ApiModelProperty(value = "证件反面图片")
+    @ApiModelProperty(value = "证件正面")
     private String certificateNegativeAnnex;
 
     /**
-     * 证件正面图片
+     * 证件背面
      */
     @TableField(value = "certificate_positive_annex")
-    @ApiModelProperty(value="证件正面图片")
+    @ApiModelProperty(value = "证件背面")
     private String certificatePositiveAnnex;
 
     /**
-     * 加入日期
+     * 入职加入时间
      */
     @TableField(value = "join_date")
-    @ApiModelProperty(value="加入日期")
+    @ApiModelProperty(value = "入职加入时间")
     private Date joinDate;
 
     /**
@@ -246,8 +240,6 @@ public class OpeSysUserProfile implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_TENANT_ID = "tenant_id";
-
     public static final String COL_REPAIR_SHOP_ID = "repair_shop_Id";
 
     public static final String COL_SYS_USER_ID = "sys_user_id";
@@ -276,9 +268,9 @@ public class OpeSysUserProfile implements Serializable {
 
     public static final String COL_ADDRESS = "address";
 
-    public static final String COL_CERTIFICATE_TYPE = "certificate_type";
+    public static final String COL_ADDRESS_BUREAU = "address_bureau";
 
-    public static final String COL_CERTIFICATE_NUMBER = "certificate_number";
+    public static final String COL_CERTIFICATE_TYPE = "certificate_type";
 
     public static final String COL_CERTIFICATE_NEGATIVE_ANNEX = "certificate_negative_annex";
 
@@ -303,4 +295,8 @@ public class OpeSysUserProfile implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeSysUserProfileBuilder builder() {
+        return new OpeSysUserProfileBuilder();
+    }
 }
