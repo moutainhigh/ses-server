@@ -121,7 +121,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         List<OpeSysDept> sysDeptList = opeSysDeptService.list();
         List<Long> ids = new ArrayList<>();
         sysDeptList.forEach(item -> {
-            if (enter.getId().equals(item.getId()) && item.getPId() == -1) {
+            if (enter.getId().equals(item.getId()) && item.getPId() == Constant.DEPT_TREE_ROOT_ID) {
                 throw new SesWebRosException(ExceptionCodeEnums.NOT_DELETE_ROOT_LEVEL.getCode(), ExceptionCodeEnums.NOT_DELETE_ROOT_LEVEL.getMessage());
             }
             if (item.getPId().equals(enter.getId())) {
