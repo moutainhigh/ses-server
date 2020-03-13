@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 
 import java.util.List;

@@ -17,6 +17,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptListReslut;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
@@ -77,6 +78,11 @@ public class SysDeptServiceImpl implements SysDeptService {
             });
         }
         return TreeUtil.build(trees, Constant.DEPT_TREE_ROOT_ID);
+    }
+
+    @Override
+    public List<DeptListReslut> list(GeneralEnter enter) {
+        return null;
     }
 
     @Override
@@ -165,6 +171,8 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         return TreeUtil.findChildren(children, trees);
     }
+
+
 
     private OpeSysDept buildDept(SaveDeptEnter enter) {
 

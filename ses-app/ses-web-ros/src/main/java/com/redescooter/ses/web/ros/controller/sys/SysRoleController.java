@@ -45,6 +45,12 @@ public class SysRoleController {
         return new Response<>(roleService.edit(enter));
     }
 
+    @PostMapping(value = "/authorityDetails")
+    @ApiOperation(value = "岗位权限详情", response = GeneralResult.class)
+    public Response<DeptAuthorityDetailsResult> authorityDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(roleService.authorityDetails(enter));
+    }
+
     @PostMapping(value = "/delete")
     @ApiOperation(value = "岗位删除", response = GeneralResult.class)
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {

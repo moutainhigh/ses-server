@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.sys;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptListReslut;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
@@ -31,6 +32,14 @@ public interface SysDeptService {
      * @return
      */
     List<DeptTreeReslt> trees(GeneralEnter enter);
+
+    /**
+     * 部门角色列表
+     *
+     * @param enter
+     * @return
+     */
+    List<DeptListReslut> list(GeneralEnter enter);
 
     /**
      * 部门编辑
@@ -63,4 +72,6 @@ public interface SysDeptService {
      * @return
      */
     DeptTreeReslt getDescendants(IdEnter enter);
+
+
 }

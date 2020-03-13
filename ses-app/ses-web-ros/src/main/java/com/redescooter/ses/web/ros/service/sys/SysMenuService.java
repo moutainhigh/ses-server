@@ -2,7 +2,10 @@ package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
+import com.redescooter.ses.web.ros.dm.OpeSysRole;
+import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 
@@ -30,8 +33,14 @@ public interface SysMenuService {
      * @param enter
      * @return
      */
-    List<MenuTreeResult> trees(GeneralEnter enter);
+    List<MenuTreeResult> trees(IdEnter enter);
 
-
+    /**
+     * 创建vue动态路由
+     *
+     * @param enter
+     * @return
+     */
     List<VueRouter<MenuTreeResult>> userRouters(GeneralEnter enter);
+
 }

@@ -62,18 +62,20 @@ public class SysSalesAreaServiceImpl implements SysSalesAreaService {
             });
         }
 
-        QueryWrapper<OpeSysRoleSalesCidy> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(OpeSysRoleSalesCidy.COL_ROLE_ID, enter.getId());
-        List<OpeSysRoleSalesCidy> salesCidies = sysRoleSalesCidyService.list(queryWrapper);
+        if (enter.getId() != 0) {
+            QueryWrapper<OpeSysRoleSalesCidy> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq(OpeSysRoleSalesCidy.COL_ROLE_ID, enter.getId());
+            List<OpeSysRoleSalesCidy> salesCidies = sysRoleSalesCidyService.list(queryWrapper);
 
-        if (salesCidies.size() > 0) {
-            salesCidies.forEach(city -> {
-                treeList.forEach(tr -> {
-                    if (city.getCityId() == tr.getId()) {
-                        tr.setChecked(Boolean.TRUE);
-                    }
+            if (salesCidies.size() > 0) {
+                salesCidies.forEach(city -> {
+                    treeList.forEach(tr -> {
+                        if (city.getCityId() == tr.getId()) {
+                            tr.setChecked(Boolean.TRUE);
+                        }
+                    });
                 });
-            });
+            }
         }
         return treeList;
     }

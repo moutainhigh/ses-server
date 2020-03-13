@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
+import java.util.Date;
+
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -8,17 +10,10 @@ import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
-import com.redescooter.ses.web.ros.vo.sys.position.RoleDeptListResult;
-import com.redescooter.ses.web.ros.vo.sys.position.RoleListEnter;
-import com.redescooter.ses.web.ros.vo.sys.position.RoleResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @ClassName SysRoleServiceImpl
@@ -30,6 +25,12 @@ import java.util.List;
 @Slf4j
 @Service
 public class SysRoleServiceImpl implements SysRoleService {
+
+    @Autowired
+    private SysSalesAreaService sysSalesAreaService;
+
+    @Autowired
+    private SysMenuService menuService;
 
     @Autowired
     private OpeSysRoleService roleService;
@@ -81,6 +82,22 @@ public class SysRoleServiceImpl implements SysRoleService {
         result.setPositionListResult(roleResultList);
         return result;
     }
+    @Override
+    public DeptAuthorityDetailsResult authorityDetails(IdEnter enter) {
+
+        //根据岗位ID获取部门菜单权限树
+        List<MenuTreeResult> muns = menuService.trees(enter);
+
+        //根据岗位ID获取销售区域树
+        List<SalesAreaTressResult> areas = sysSalesAreaService.list(enter);
+
+        DeptAuthorityDetailsResult result = new DeptAuthorityDetailsResult();
+        result.setMenuTreeResult(muns);
+        result.setSalesAreaTressResult(areas);
+        result.setRequestId(enter.getRequestId());
+        return result;
+    }
+
 
     private OpeSysRole builderRole(Long id, RoleEnter enter) {
         OpeSysRole role = new OpeSysRole();
