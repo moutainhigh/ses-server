@@ -1,13 +1,22 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
+import com.redescooter.ses.web.ros.vo.sys.position.RoleDeptListResult;
+import com.redescooter.ses.web.ros.vo.sys.position.RoleListEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassName SysRoleController
@@ -43,9 +52,9 @@ public class SysRoleController {
     }
 
     @PostMapping(value = "/list")
-    @ApiOperation(value = "岗位列表", response = GeneralResult.class)
-    public Response<PageResult<GeneralResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    @ApiOperation(value = "岗位列表", response = RoleDeptListResult.class)
+    public Response<RoleDeptListResult> list(@ModelAttribute @ApiParam("请求参数") RoleListEnter enter) {
+        return new Response<>(roleService.list(enter));
     }
 
     @PostMapping(value = "/details")

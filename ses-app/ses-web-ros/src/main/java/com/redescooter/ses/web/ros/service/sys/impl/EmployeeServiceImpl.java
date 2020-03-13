@@ -106,11 +106,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<EmployeeResult> employeeList = employeeServiceMapper.employeeList(enter);
         //剔除 admin
         employeeList = employeeList.stream().filter(item -> StringUtils.equals(Constant.ADMIN_USER_NAME, item.getEmail()) == false).collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(employeeList)) {
-            return deptList;
-        }
         for (EmployeeListResult dept : deptList) {
             List<EmployeeResult> employeeResultList = new ArrayList<>();
+            if (CollectionUtils.isEmpty(employeeList)) {
+                dept.setEmployeeResult(new ArrayList<>());
+                continue;
+            }
             employeeList.forEach(item -> {
                 if (dept.getDeptId().equals(item.getDeptId())) {
                     employeeResultList.add(item);

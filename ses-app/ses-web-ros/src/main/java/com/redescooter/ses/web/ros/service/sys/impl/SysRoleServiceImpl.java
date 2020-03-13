@@ -1,7 +1,5 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
-import java.util.Date;
-
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -10,10 +8,17 @@ import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
+import com.redescooter.ses.web.ros.vo.sys.position.RoleDeptListResult;
+import com.redescooter.ses.web.ros.vo.sys.position.RoleListEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.RoleResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName SysRoleServiceImpl
@@ -57,6 +62,25 @@ public class SysRoleServiceImpl implements SysRoleService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 角色列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public RoleDeptListResult list(RoleListEnter enter) {
+        RoleDeptListResult result = RoleDeptListResult.builder()
+                .id(1000013L)
+                .name("产品部")
+                .count(1)
+                .desc(null)
+                .build();
+        List<RoleResult> roleResultList = new ArrayList<>();
+        roleResultList.add(RoleResult.builder().id(1000000L).name("管理员").desc("admin").build());
+        result.setPositionListResult(roleResultList);
+        return result;
+    }
 
     private OpeSysRole builderRole(Long id, RoleEnter enter) {
         OpeSysRole role = new OpeSysRole();

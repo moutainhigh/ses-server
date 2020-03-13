@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.vo.sys.position;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,18 +14,22 @@ import io.swagger.annotations.*;
  * @description: PositionListEnter
  * @author: Alex
  * @Version：1.3
- * @create: 2020/03/06 17:34
+ * @create: 2020/03/06 17:41
  */
-@ApiModel(value = "职位列表", description = "职位列表")
+@ApiModel(value = "职位出参", description = "职位出参")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class PositionListEnter extends GeneralEnter {
-    @ApiModelProperty(value = "部门Id")
-    private Long deptId;
+public class RoleResult extends GeneralResult {
 
-    @ApiModelProperty(value = "关键字")
-    private String keyword;
+    @ApiModelProperty(value = "id")
+    private Long id;
+
+    @ApiModelProperty(value = "名字")
+    private String name;
+
+    @ApiModelProperty(value = "描述")
+    private String desc;
 }
