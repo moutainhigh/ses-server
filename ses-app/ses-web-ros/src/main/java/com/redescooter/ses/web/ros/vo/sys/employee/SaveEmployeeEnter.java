@@ -36,6 +36,7 @@ public class SaveEmployeeEnter extends GeneralEnter {
     private Long id;
 
     @ApiModelProperty(value = "公司Id", required = false)
+    @NotNull(code = ValidationExceptionCode.COMPANY_IS_EMPTY, message = "公司为空")
     private Long companyId;
 
     @ApiModelProperty(value = "办公区域Id", required = true)
