@@ -100,9 +100,14 @@ public class SysRoleServiceImpl implements SysRoleService {
         if (CollectionUtils.isEmpty(roleList)) {
             return opeSysDeptList;
         }
-        roleList.forEach(item -> {
+        opeSysDeptList.forEach(item -> {
             List<RoleResult> roleResultList = new ArrayList<>();
-            roleResultList.add(item);
+            roleList.forEach(role -> {
+                if (item.getDeptId().equals(role.getDeptId())) {
+                    roleResultList.add(role);
+                }
+            });
+            item.setRoleList(roleResultList);
         });
         return opeSysDeptList;
     }

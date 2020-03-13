@@ -157,6 +157,13 @@ public enum ExceptionCodeEnums {
 
     POSITION_IS_NOT_EXIST(10071, "职位不存在"),
 
+    REMOVE_ITSELF_CHILD_DEPT(10072, "请删除它的子部门"),
+
+    REMOVE_DEPT_UNDER_POSITION(10073, "请移除下面的职位"),
+
+    NOT_DELETE_ROOT_LEVEL(10074, "不可删除根级部门"),
+
+
     ;
 
     private int code;
