@@ -1,5 +1,4 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
@@ -154,7 +153,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private OpeSysDept findCompany(List<OpeSysDept> deptList, OpeSysDept child) {
         for (OpeSysDept item : deptList) {
-            if (child.getPId() == 0) {
+            if (child.getPId() == Constant.DEPT_TREE_ROOT_ID) {
                 return child;
             }
             if (item.getId().equals(child.getPId())) {

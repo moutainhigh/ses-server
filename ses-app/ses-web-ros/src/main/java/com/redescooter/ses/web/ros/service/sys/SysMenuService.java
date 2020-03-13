@@ -82,4 +82,6 @@ public interface SysMenuService {
      * @return
      */
     GeneralResult delete(IdEnter enter);
+
+    GeneralResult edit();
 }
