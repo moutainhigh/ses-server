@@ -43,7 +43,7 @@ public class SaveMenuEnter extends GeneralEnter {
     @ApiModelProperty(value = "菜单权重")
     private Integer sort;
 
-    @ApiModelProperty(value = "菜单类型,-1:目录 0:菜单 1:按钮")
+    @ApiModelProperty(value = "菜单类型 0:菜单 1:按钮")
     private String type;
 
 }

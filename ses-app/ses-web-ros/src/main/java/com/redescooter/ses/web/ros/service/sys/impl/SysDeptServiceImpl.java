@@ -52,7 +52,6 @@ public class SysDeptServiceImpl implements SysDeptService {
     private OpeSysDeptService sysDeptService;
     @Autowired
     private SysDeptRelationService sysDeptRelationService;
-
     @Autowired
     private OpeSysRoleDeptService opeSysRoleDeptService;
 
@@ -60,9 +59,6 @@ public class SysDeptServiceImpl implements SysDeptService {
     private OpeSysDeptRelationService opeSysDeptRelationService;
     @Autowired
     private OpeSysDeptService opeSysDeptService;
-
-    @Autowired
-    private OpeSysDeptRelationMapper sysDeptRelationMapper;
     @Autowired
     private IdAppService idAppService;
 

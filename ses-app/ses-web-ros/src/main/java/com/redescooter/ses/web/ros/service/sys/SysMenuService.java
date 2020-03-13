@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 
@@ -50,4 +51,12 @@ public interface SysMenuService {
      * @return
      */
     List<MenuTreeResult> userMenuTrees(GeneralEnter enter);
+
+    /**
+     * 模块权限列表
+     *
+     * @param enter
+     * @return
+     */
+    List<ModulePermissionsResult> modulePermissions(IdEnter enter);
 }
