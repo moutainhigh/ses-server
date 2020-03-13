@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.DeptEmployeeListResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 
@@ -25,7 +25,7 @@ public interface EmployeeService {
      * @param enter
      * @return
      */
-    List<EmployeeListResult> employeeList(EmployeeListEnter enter);
+    List<DeptEmployeeListResult> employeeList(EmployeeListEnter enter);
 
     /**
      * 员工详情

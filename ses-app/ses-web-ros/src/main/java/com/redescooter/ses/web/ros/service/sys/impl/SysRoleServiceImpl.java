@@ -12,10 +12,10 @@ import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
 import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
-import com.redescooter.ses.web.ros.vo.sys.position.RoleDeptListResult;
 import com.redescooter.ses.web.ros.vo.sys.position.RoleListEnter;
-import com.redescooter.ses.web.ros.vo.sys.position.RoleResult;
+import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
@@ -81,18 +81,18 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @return
      */
     @Override
-    public RoleDeptListResult list(RoleListEnter enter) {
-        RoleDeptListResult result = RoleDeptListResult.builder()
-                .id(1000013L)
-                .name("产品部")
-                .count(1)
-                .desc(null)
+    public DeptRoleListResult list(RoleListEnter enter) {
+        DeptRoleListResult result = DeptRoleListResult.builder()
+                .deptId(1000013L)
+                .deptName("产品部")
+                .totalCount(1)
                 .build();
         List<RoleResult> roleResultList = new ArrayList<>();
-        roleResultList.add(RoleResult.builder().id(1000000L).name("管理员").desc("admin").build());
-        result.setPositionListResult(roleResultList);
+        roleResultList.add(RoleResult.builder().id(1000000L).roleName("管理员").description("admin").build());
+        result.setRoleList(roleResultList);
         return result;
     }
+
     @Override
     public DeptAuthorityDetailsResult authorityDetails(IdEnter enter) {
 

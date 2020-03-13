@@ -1,4 +1,5 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
+
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -78,11 +79,6 @@ public class SysDeptServiceImpl implements SysDeptService {
             });
         }
         return TreeUtil.build(trees, Constant.DEPT_TREE_ROOT_ID);
-    }
-
-    @Override
-    public List<DeptListReslut> list(GeneralEnter enter) {
-        return null;
     }
 
     @Override

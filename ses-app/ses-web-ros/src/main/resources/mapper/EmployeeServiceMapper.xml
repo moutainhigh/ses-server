@@ -49,7 +49,7 @@
         </if>
     </sql>
 
-    <select id="deptList" resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListResult">
+    <select id="deptList" resultType="com.redescooter.ses.web.ros.vo.sys.employee.DeptEmployeeListResult">
         select dept.id as deptId,
         dept.name as deptName,
         count(user.id) as totalCount
