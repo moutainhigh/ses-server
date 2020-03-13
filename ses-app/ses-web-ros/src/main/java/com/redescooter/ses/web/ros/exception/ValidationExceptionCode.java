@@ -61,17 +61,17 @@ public interface ValidationExceptionCode {
     //合同附件不能为空
     int CONTRACT_ANNEX_IS_EMPTY = 10045;
     // 产品编号为空
-    int PRODUCT_NUM_IS_EMPTY=10046;
+    int PRODUCT_NUM_IS_EMPTY = 10046;
     // 产品英文名字为空
-    int PRODUCT_EN_NAME_IS_EMPTY =10047;
+    int PRODUCT_EN_NAME_IS_EMPTY = 10047;
     //产品周期为空
-    int PRODUCT_CYCLE_IS_EMPTY=10048;
+    int PRODUCT_CYCLE_IS_EMPTY = 10048;
     // 产品法文名字为空
-    int PRODUCT_FR_NAME_IS_EMPTY=10049;
+    int PRODUCT_FR_NAME_IS_EMPTY = 10049;
     //产品中文名字为空
-    int PRODUCT_CN_NAME_IS_EMPTY =10050;
+    int PRODUCT_CN_NAME_IS_EMPTY = 10050;
     // 产品法国报价为空
-    int PRODUCT_FR_PRICE_IS_EMPTY=10051;
+    int PRODUCT_FR_PRICE_IS_EMPTY = 10051;
     // 产品英国报价为空
     int PRODUCT_EN_PRICE_IS_EMPTY = 10052;
     // 数量为空
@@ -112,4 +112,16 @@ public interface ValidationExceptionCode {
     int ADDRESS_CHAR_IS_NOT_ILLEGAL = 10070;
     // 邮箱长度不合法
     int EMAIL_CHAR_IS_NOT_ILLEGAL = 10071;
+    // 公司为空
+    int COMPANY_IS_EMPTY = 10072;
+    // 父级Id 为空
+    int PID_IS_EMPTY = 10073;
+    //部门名字为空
+    int DEPT_NAME_IS_EMPTY = 10074;
+    // 菜单的名字为空
+    int MENU_NAME_IS_EMPTY = 10075;
+    // 菜单路径为空
+    int MENU_PATH_IS_EMPTY = 10076;
+    //菜单类型为空
+    int MENU_TYPE_IS_EMPTY = 10077;
 }

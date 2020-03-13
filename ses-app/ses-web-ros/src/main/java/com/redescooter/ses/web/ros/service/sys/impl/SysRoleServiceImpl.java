@@ -3,9 +3,17 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.sys.SysRoleServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRole;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
+import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
@@ -19,6 +27,8 @@ import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +62,21 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Autowired
     private RolePermissionService rolePermissionService;
 
+    @Autowired
+    private OpeSysDeptService opeSysDeptService;
+
+    @Autowired
+    private OpeSysRoleService opeSysRoleService;
+
+    @Autowired
+    private SysRoleServiceMapper sysRoleServiceMapper;
+
+    @Autowired
+    private OpeSysMenuService opeSysMenuService;
+
+    @Reference
+    private CityBaseService ctiyBaseService;
+
     @Override
     public GeneralResult save(RoleEnter enter) {
         //保存岗位角色
@@ -81,16 +106,26 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @return
      */
     @Override
-    public DeptRoleListResult list(RoleListEnter enter) {
-        DeptRoleListResult result = DeptRoleListResult.builder()
-                .deptId(1000013L)
-                .deptName("产品部")
-                .totalCount(1)
-                .build();
-        List<RoleResult> roleResultList = new ArrayList<>();
-        roleResultList.add(RoleResult.builder().id(1000000L).roleName("管理员").description("admin").build());
-        result.setRoleList(roleResultList);
-        return result;
+    public List<DeptRoleListResult> list(RoleListEnter enter) {
+        //查询所有部门
+        List<DeptRoleListResult> opeSysDeptList = sysRoleServiceMapper.roleDeptlist(enter);
+        if (CollectionUtils.isEmpty(opeSysDeptList)) {
+            return new ArrayList<>();
+        }
+        List<RoleResult> roleList = sysRoleServiceMapper.list(enter);
+        if (CollectionUtils.isEmpty(roleList)) {
+            return opeSysDeptList;
+        }
+        opeSysDeptList.forEach(item -> {
+            List<RoleResult> roleResultList = new ArrayList<>();
+            roleList.forEach(role -> {
+                if (item.getDeptId().equals(role.getDeptId())) {
+                    roleResultList.add(role);
+                }
+            });
+            item.setRoleList(roleResultList);
+        });
+        return opeSysDeptList;
     }
 
     @Override
@@ -115,6 +150,9 @@ public class SysRoleServiceImpl implements SysRoleService {
             role.setCreatedBy(enter.getUserId());
             role.setCreateTime(new Date());
         } else {
+            if (opeSysRoleService.getById(enter.getRoleId()) == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
+            }
             role.setId(id);
         }
         role.setTenantId(enter.getTenantId());
@@ -127,6 +165,34 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     private void insertRoleAouth(RoleEnter enter) {
+        // 部门过滤
+        if (opeSysDeptService.getById(enter.getDeptId()) == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
+        }
+        //销售区域
+        List<CityResult> cityList = ctiyBaseService.list(enter);
+        List<Long> cityIds = new ArrayList<>();
+        cityList.forEach(item -> {
+            cityIds.add(item.getId());
+        });
+        enter.getSalesPermissionIds().forEach(item -> {
+            if (!cityIds.contains(item)) {
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+        });
+        // 菜单过滤
+        List<OpeSysMenu> sysMenuList = opeSysMenuService.list();
+        List<Long> sysMenuIds = new ArrayList<>();
+
+        sysMenuList.forEach(item -> {
+            sysMenuIds.add(item.getId());
+        });
+        enter.getMeunPermissionIds().forEach(item -> {
+            if (!sysMenuIds.contains(item)) {
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+        });
+
         //创建岗位销售区域关系
         rolePermissionService.insertRoleSalesPermissions(enter.getRoleId(), enter.getSalesPermissionIds());
         //创建岗位菜单权限关系

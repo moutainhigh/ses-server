@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
-
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -8,14 +8,15 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.base.OpeSysDeptRelationMapper;
 import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
+import com.redescooter.ses.web.ros.dm.OpeSysRoleDept;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptRelationService;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
@@ -50,6 +51,9 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Autowired
     private SysDeptRelationService sysDeptRelationService;
     @Autowired
+    private OpeSysRoleDeptService opeSysRoleDeptService;
+
+    @Autowired
     private OpeSysDeptRelationService opeSysDeptRelationService;
     @Autowired
     private OpeSysDeptService opeSysDeptService;
@@ -59,6 +63,20 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Transactional
     @Override
     public GeneralResult save(SaveDeptEnter enter) {
+        List<OpeSysDept> sysDeptList = sysDeptService.list();
+
+        if (CollectionUtils.isNotEmpty(sysDeptList)) {
+            sysDeptList.forEach(item -> {
+                //不可重复创建 根级部门
+                if (item.getPId().equals(enter.getPId()) && enter.getPId().equals(Constant.DEPT_TREE_ROOT_ID)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.NON_REPEATABLE_CREATION_ROOT_LEVEL_DEPT.getCode(), ExceptionCodeEnums.NON_REPEATABLE_CREATION_ROOT_LEVEL_DEPT.getMessage());
+                }
+                // 不能创建二级部门
+                if (item.getPId().equals(enter.getPId()) && item.getLevel().equals(DeptLevelEnums.DEPARTMENT)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.NON_CREATION_TWO_LEVEL_DEPT.getCode(), ExceptionCodeEnums.NON_CREATION_TWO_LEVEL_DEPT.getMessage());
+                }
+            });
+        }
         OpeSysDept dept = this.buildDept(enter);
         sysDeptService.save(dept);
         sysDeptRelationService.insertDeptRelation(dept);
@@ -98,38 +116,33 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public GeneralResult delete(IdEnter enter) {
+        //不可删除根基部门（公司）
 
-        OpeSysDept opeSysDept = opeSysDeptService.getById(enter.getId());
-        if (opeSysDept == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
-        }
-        // 查询所有部门关系
-        List<OpeSysDeptRelation> opeSysDeptRelationList = opeSysDeptRelationService.list();
-        // 拿到需要删除的部门Id
-        List<Long> childDept = findChildDept(opeSysDeptRelationList, enter.getId(), null);
-
-        childDept.stream().forEach(System.out::println);
-        return new GeneralResult(enter.getRequestId());
-    }
-
-    private List<Long> findChildDept(List<OpeSysDeptRelation> opeSysDeptRelationList, Long id, List<Long> ids) {
-        if (CollectionUtils.isEmpty(ids)) {
-            ids = new ArrayList<>();
-        }
-        if (CollectionUtils.isEmpty(opeSysDeptRelationList)) {
-            return new ArrayList<>();
-        }
-
-        for (OpeSysDeptRelation item : opeSysDeptRelationList) {
-            if (item.getAncestor().equals(id)) {
-                ids.add(item.getDescendant());
-                id = item.getDescendant();
-                opeSysDeptRelationList.remove(item);
-                findChildDept(opeSysDeptRelationList, id, ids);
+        List<OpeSysDept> sysDeptList = opeSysDeptService.list();
+        List<Long> ids = new ArrayList<>();
+        sysDeptList.forEach(item -> {
+            if (enter.getId().equals(item.getId()) && item.getPId() == -1) {
+                throw new SesWebRosException(ExceptionCodeEnums.NOT_DELETE_ROOT_LEVEL.getCode(), ExceptionCodeEnums.NOT_DELETE_ROOT_LEVEL.getMessage());
             }
+            if (item.getPId().equals(enter.getId())) {
+                ids.add(item.getId());
+            }
+        });
+        if (CollectionUtils.isNotEmpty(ids)) {
+            throw new SesWebRosException(ExceptionCodeEnums.REMOVE_ITSELF_CHILD_DEPT.getCode(), ExceptionCodeEnums.REMOVE_ITSELF_CHILD_DEPT.getMessage());
         }
-
-        return new ArrayList<>();
+        // 将自己放到删除集合中
+        ids.add(enter.getId());
+        // 查询相关联的角色
+        QueryWrapper<OpeSysRoleDept> opeSysRoleDeptQueryWrapper = new QueryWrapper<>();
+        opeSysRoleDeptQueryWrapper.in(OpeSysRoleDept.COL_DEPT_ID, ids);
+        List<OpeSysRoleDept> sysRoleDeptList = opeSysRoleDeptService.list(opeSysRoleDeptQueryWrapper);
+        if (CollectionUtils.isNotEmpty(sysRoleDeptList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.REMOVE_DEPT_UNDER_POSITION.getCode(), ExceptionCodeEnums.REMOVE_DEPT_UNDER_POSITION.getMessage());
+        }
+        // 删除部门
+        opeSysDeptService.removeById(enter.getId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     @Override
@@ -168,7 +181,6 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public DeptTreeReslt topDepartment(IdEnter enter) {
-
         return null;
     }
 
@@ -182,7 +194,8 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         dept.setId(idAppService.getId(SequenceName.OPE_SYS_DEPT));
         dept.setDr(Constant.DR_FALSE);
-        dept.setLevel((DeptLevelEnums.getEnumByValue(enter.getLevel().toString()) == null ? Integer.valueOf(DeptLevelEnums.COMPANY.getValue()) : Integer.valueOf(DeptLevelEnums.getEnumByValue(enter.getLevel().toString()).getValue())));
+        dept.setLevel((DeptLevelEnums.getEnumByValue(enter.getLevel().toString()) == null ? Integer.valueOf(DeptLevelEnums.COMPANY.getValue()) :
+                Integer.valueOf(DeptLevelEnums.getEnumByValue(enter.getLevel().toString()).getValue())));
         dept.setCreatedBy(enter.getUserId());
         dept.setCreatedTime(new Date());
         dept.setUpdatedBy(enter.getUserId());
