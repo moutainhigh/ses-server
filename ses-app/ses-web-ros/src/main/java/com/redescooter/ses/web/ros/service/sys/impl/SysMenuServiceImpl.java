@@ -161,10 +161,12 @@ public class SysMenuServiceImpl implements SysMenuService {
             throw new SesWebRosException(ExceptionCodeEnums.MENU_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MENU_IS_NOT_EXIST.getMessage());
         }
         // 根节点不可编辑
-        if (opeSysMenu.getPId().equals(Constant.MENU_TREE_ROOT_ID)) {
+        if (opeSysMenu.getPId().equals(Constant.MENU_TREE_ROOT_ID) || enter.getPId().equals(Constant.MENU_TREE_ROOT_ID)) {
             throw new SesWebRosException(ExceptionCodeEnums.THE_ROOT_NODE_MENU_CANNOT_BE_EDIT.getCode(), ExceptionCodeEnums.THE_ROOT_NODE_MENU_CANNOT_BE_EDIT.getMessage());
         }
-//        if (){}
+        // 查出所有菜单
+        List<OpeSysMenu> opeSysMenuList = opeSysMenuService.list();
+
 
         return null;
     }
