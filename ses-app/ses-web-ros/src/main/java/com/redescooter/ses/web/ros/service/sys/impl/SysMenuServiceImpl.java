@@ -195,6 +195,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             node.setName(menu.getName());
             node.setPath(menu.getPath());
             node.setCode(menu.getCode());
+            node.setType(menu.getType());
             node.setPermission(menu.getPermission());
             node.setIcon(menu.getIcon());
             node.setSort(menu.getSort());

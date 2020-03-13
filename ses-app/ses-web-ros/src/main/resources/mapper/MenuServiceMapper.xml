@@ -14,7 +14,7 @@
         <result column="id" jdbcType="INTEGER" property="id"/>
         <collection property="permissions"
                     javaType="java.util.ArrayList"
-                    ofType="com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto"
+                    ofType="com.redescooter.ses.web.ros.vo.tree.MenuTreeResult"
                     column="id"
                     select="queryMenuSon"/>
     </resultMap>
