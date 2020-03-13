@@ -31,4 +31,7 @@ public class RoleResult extends GeneralResult {
     @ApiModelProperty(value = "角色描述")
     private String description;
 
+    @ApiModelProperty(value = "部门Id")
+    private Long deptId;
+
 }

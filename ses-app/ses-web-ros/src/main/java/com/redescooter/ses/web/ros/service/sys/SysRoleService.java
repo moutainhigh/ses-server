@@ -7,6 +7,8 @@ import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.position.RoleListEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 
+import java.util.List;
+
 /**
  * @ClassName SysRoleService
  * @Author Jerry
@@ -37,7 +39,7 @@ public interface SysRoleService {
      * @param enter
      * @return
      */
-    DeptRoleListResult list(RoleListEnter enter);
+    List<DeptRoleListResult> list(RoleListEnter enter);
 
 
     /**

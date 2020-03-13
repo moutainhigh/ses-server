@@ -8,13 +8,28 @@
         role.role_code as roleCode,
         role.role_desc as description
         from ope_sys_role role
+        inner join ope_sys_role_dept dept on role.id = dept.role_id
         where 1=1
         <if test="deptId != null">
-
+            and dept.dept_id=#{deptId}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and role.role_name like concat ("%",#{keyword},"%")
         </if>
     </select>
 
-    <select id="roleDeptlist" resultType="com.redescooter.ses.web.ros.dm.OpeSysDept">
-
+    <select id="roleDeptlist" resultType="com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult">
+        select dept.id as deptId,
+        dept.name as deptName,
+        count(role.id) as totalCount
+        from ope_sys_dept dept
+        left join ope_sys_role_dept drole on dept.id = drole.dept_id
+        left join ope_sys_role role on role.id = drole.role_id
+        where dept.level != 0
+        <if test="deptId != null">
+            and dept.id=#{deptId}
+        </if>
+        group by deptId,
+        deptName
     </select>
 </mapper>

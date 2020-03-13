@@ -21,6 +21,7 @@ import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,23 +90,21 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @return
      */
     @Override
-    public DeptRoleListResult list(RoleListEnter enter) {
-//        //查询所有部门
-//        List<OpeSysDept> opeSysDeptList = sysRoleServiceMapper.roleDeptlist(enter);
-//        //若查出来存在公司 剔除掉
-//        opeSysDeptList.removeIf(item -> item.getPId().equals(-1));
-//
-//        List<RoleResult> roleList=sysRoleServiceMapper.list(enter,);
-
-        DeptRoleListResult result = DeptRoleListResult.builder()
-                .deptId(1000013L)
-                .deptName("产品部")
-                .totalCount(1)
-                .build();
-        List<RoleResult> roleResultList = new ArrayList<>();
-        roleResultList.add(RoleResult.builder().id(1000000L).roleName("管理员").description("admin").build());
-        result.setRoleList(roleResultList);
-        return result;
+    public List<DeptRoleListResult> list(RoleListEnter enter) {
+        //查询所有部门
+        List<DeptRoleListResult> opeSysDeptList = sysRoleServiceMapper.roleDeptlist(enter);
+        if (CollectionUtils.isEmpty(opeSysDeptList)) {
+            return new ArrayList<>();
+        }
+        List<RoleResult> roleList = sysRoleServiceMapper.list(enter);
+        if (CollectionUtils.isEmpty(roleList)) {
+            return opeSysDeptList;
+        }
+        roleList.forEach(item -> {
+            List<RoleResult> roleResultList = new ArrayList<>();
+            roleResultList.add(item);
+        });
+        return opeSysDeptList;
     }
 
     @Override

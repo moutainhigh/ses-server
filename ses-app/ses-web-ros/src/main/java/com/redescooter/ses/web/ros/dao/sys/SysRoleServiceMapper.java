@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
-import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.vo.sys.position.RoleListEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
 
 import java.util.List;
@@ -29,5 +29,5 @@ public interface SysRoleServiceMapper {
      * @param enter
      * @return
      */
-    List<OpeSysDept> roleDeptlist(RoleListEnter enter);
+    List<DeptRoleListResult> roleDeptlist(RoleListEnter enter);
 }
