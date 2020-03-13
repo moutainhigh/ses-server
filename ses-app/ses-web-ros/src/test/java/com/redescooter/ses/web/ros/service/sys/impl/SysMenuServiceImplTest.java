@@ -72,7 +72,6 @@ public class SysMenuServiceImplTest {
 //        sysMenuService.save(save);
 //        ++i;
         save.setName("Inquiry");
-        save.setCode("Inquiry");
         save.setPermission("SYS::SYS");
         save.setPath("/");
         save.setPId(pId);
