@@ -16,5 +16,6 @@ public interface DeptRelationServiceMapper {
      * @return
      */
     void updateDeptRelations(OpeSysDeptRelation deptRelation);
+}
 
 
