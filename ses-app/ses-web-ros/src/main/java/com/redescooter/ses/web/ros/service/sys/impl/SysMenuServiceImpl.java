@@ -111,6 +111,37 @@ public class SysMenuServiceImpl implements SysMenuService {
         return resultMap;
     }
 
+    @Override
+    public MenuTreeResult details(IdEnter enter) {
+
+        OpeSysMenu byId = sysMenuService.getById(enter.getId());
+
+        MenuTreeResult result = new MenuTreeResult();
+        BeanUtils.copyProperties(byId, result);
+
+        return result;
+    }
+
+    @Override
+    public GeneralResult delete(IdEnter enter) {
+
+        QueryWrapper<OpeSysMenu> wrapper = new QueryWrapper<>();
+        wrapper.eq(OpeSysMenu.COL_P_ID, enter.getId());
+        wrapper.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
+        List<OpeSysMenu> list = sysMenuService.list(wrapper);
+
+        if (CollUtil.isNotEmpty(list)) {
+            sysMenuService.remove(wrapper);
+        }
+
+        QueryWrapper<OpeSysMenu> myself = new QueryWrapper<>();
+        myself.eq(OpeSysMenu.COL_ID, enter.getId());
+        myself.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
+        sysMenuService.remove(wrapper);
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
 
     private OpeSysMenu buildMenu(Long id, SaveMenuEnter enter) {
         OpeSysMenu menu = new OpeSysMenu();
@@ -127,7 +158,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
         menu.setDr(Constant.DR_FALSE);
         menu.setName(enter.getName());
-        menu.setCode(enter.getCode());
+        menu.setCode(menu.getId() + ":::" + enter.getName());
         menu.setPermission(enter.getPermission());
         menu.setPath(enter.getPath());
         menu.setComponent(enter.getComponent());

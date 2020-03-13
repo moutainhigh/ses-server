@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 

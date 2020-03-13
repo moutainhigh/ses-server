@@ -66,4 +66,20 @@ public interface SysMenuService {
      * @return
      */
     Map<String, ModulePermissionsResult> modulePermissions(IdEnter enter);
+
+    /**
+     * 菜单详情
+     *
+     * @param enter
+     * @return
+     */
+    MenuTreeResult details(IdEnter enter);
+
+    /**
+     * 菜单删除
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult delete(IdEnter enter);
 }

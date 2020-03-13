@@ -72,7 +72,7 @@ public class SysMenuController {
     @PostMapping(value = "/details")
     @ApiOperation(value = "菜单详情", response = GeneralResult.class)
     public Response<MenuTreeResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>();
+        return new Response<>(sysMenuService.details(enter));
     }
 
     @PostMapping(value = "/edit")
@@ -84,6 +84,6 @@ public class SysMenuController {
     @PostMapping(value = "/delete")
     @ApiOperation(value = "菜单删除", response = GeneralResult.class)
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>();
+        return new Response<>(sysMenuService.delete(enter));
     }
 }
