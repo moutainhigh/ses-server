@@ -1,26 +1,26 @@
 package com.redescooter.ses.web.ros.vo.sys.dept;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.tree.TreeNode;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.List;
+
 /**
- * @ClassName SaveDeptEnter
+ * @ClassName DeptTreeReslt
  * @Author Jerry
- * @date 2020/03/11 20:09
+ * @date 2020/03/11 20:18
  * @Description:
  */
-@ApiModel(value = "部门创建")
+@ApiModel(value = "部门树")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class SaveDeptEnter extends GeneralEnter {
-
-    @ApiModelProperty(value = "父级部门id")
-    private Long pId;
+public class DeptListReslut extends TreeNode {
 
     @ApiModelProperty(value = "负责人")
     private Integer principal;
@@ -34,7 +34,12 @@ public class SaveDeptEnter extends GeneralEnter {
     @ApiModelProperty(value = "部门编码")
     private String code;
 
-    @ApiModelProperty(value = "排序")
-    private Integer sort;
+    @ApiModelProperty(value = "岗位列表")
+    private List<RoleResult> roles;
 
+    @ApiModelProperty(value = "是否选中")
+    private boolean checked;
+
+    @ApiModelProperty(value = "是否展开")
+    private boolean spread = false;
 }

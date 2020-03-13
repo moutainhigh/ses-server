@@ -1,15 +1,20 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.RouterMeta;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
+import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
@@ -37,6 +42,9 @@ public class SysMenuServiceImpl implements SysMenuService {
     private OpeSysMenuService sysMenuService;
 
     @Autowired
+    private OpeSysRoleMenuService roleMenuService;
+
+    @Autowired
     private IdAppService idAppService;
 
     @Override
@@ -59,7 +67,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public List<MenuTreeResult> trees(GeneralEnter enter) {
+    public List<MenuTreeResult> trees(IdEnter enter) {
 
         List<OpeSysMenu> list = sysMenuService.list();
 
@@ -92,7 +100,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @param root
      * @return
      */
-    private List<MenuTreeResult> buildTree(List<OpeSysMenu> menus, GeneralEnter enter, long root) {
+    private List<MenuTreeResult> buildTree(List<OpeSysMenu> menus, IdEnter enter, long root) {
         List<MenuTreeResult> trees = new ArrayList<>();
         MenuTreeResult node;
         for (OpeSysMenu menu : menus) {
@@ -110,6 +118,22 @@ public class SysMenuServiceImpl implements SysMenuService {
             node.setSpread(Boolean.FALSE);
             trees.add(node);
         }
+        if (enter.getId() != 0) {
+            QueryWrapper<OpeSysRoleMenu> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq(OpeSysRoleMenu.COL_ROLE_ID, enter.getId());
+            List<OpeSysRoleMenu> list = roleMenuService.list(queryWrapper);
+
+            if (CollUtil.isNotEmpty(list)) {
+                list.forEach(li -> {
+                    trees.forEach(t -> {
+                        if (li.getMenuId() == t.getId()) {
+                            t.setChecked(Boolean.TRUE);
+                        }
+                    });
+                });
+            }
+        }
+
         return TreeUtil.build(trees, root);
     }
 }

@@ -1,19 +1,26 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
-import java.util.Date;
-
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
+import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
+import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
+import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName SysRoleServiceImpl
@@ -25,6 +32,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class SysRoleServiceImpl implements SysRoleService {
+
+    @Autowired
+    private SysSalesAreaService sysSalesAreaService;
+
+    @Autowired
+    private SysMenuService menuService;
 
     @Autowired
     private OpeSysRoleService roleService;
@@ -55,6 +68,22 @@ public class SysRoleServiceImpl implements SysRoleService {
         this.updateRoleAouth(enter);
 
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public DeptAuthorityDetailsResult authorityDetails(IdEnter enter) {
+
+        //根据岗位ID获取部门菜单权限树
+        List<MenuTreeResult> muns = menuService.trees(enter);
+
+        //根据岗位ID获取销售区域树
+        List<SalesAreaTressResult> areas = sysSalesAreaService.list(enter);
+
+        DeptAuthorityDetailsResult result = new DeptAuthorityDetailsResult();
+        result.setMenuTreeResult(muns);
+        result.setSalesAreaTressResult(areas);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
 

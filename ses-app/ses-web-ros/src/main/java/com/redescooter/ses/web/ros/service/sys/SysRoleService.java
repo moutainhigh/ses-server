@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 
 /**
@@ -26,4 +28,12 @@ public interface SysRoleService {
      * @return
      */
     GeneralResult edit(RoleEnter enter);
+
+    /**
+     * 部门权限详情
+     *
+     * @param enter
+     * @return
+     */
+    DeptAuthorityDetailsResult authorityDetails(IdEnter enter);
 }
