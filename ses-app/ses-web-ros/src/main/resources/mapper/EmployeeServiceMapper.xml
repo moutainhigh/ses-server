@@ -45,7 +45,7 @@
             or profile.last_name like concat("%",#{keyword},"%")
             or profile.full_name like concat("%",#{keyword},"%")
             or profile.tel_number like concat("%",#{keyword},"%")
-            or profile.email like concat("%",#{keyword},"%")
+            or profile.email like concat("%",#{keyword},"%"))
         </if>
     </sql>
 

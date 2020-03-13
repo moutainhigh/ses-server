@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.sys.position;
+package com.redescooter.ses.web.ros.vo.sys.role;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.AllArgsConstructor;

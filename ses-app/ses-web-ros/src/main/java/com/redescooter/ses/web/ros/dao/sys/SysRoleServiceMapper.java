@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
-import com.redescooter.ses.web.ros.vo.sys.position.RoleListEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
 

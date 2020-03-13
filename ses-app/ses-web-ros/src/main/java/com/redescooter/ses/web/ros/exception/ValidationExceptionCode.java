@@ -114,7 +114,7 @@ public interface ValidationExceptionCode {
     int EMAIL_CHAR_IS_NOT_ILLEGAL = 10071;
     // 公司为空
     int COMPANY_IS_EMPTY = 10072;
-    // 父级Id 为空
+    // 父级Id为空
     int PID_IS_EMPTY = 10073;
     //部门名字为空
     int DEPT_NAME_IS_EMPTY = 10074;
@@ -124,4 +124,6 @@ public interface ValidationExceptionCode {
     int MENU_PATH_IS_EMPTY = 10076;
     //菜单类型为空
     int MENU_TYPE_IS_EMPTY = 10077;
+    //部门
+    int DEPT_LEVEL_IS_EMPTY = 10078;
 }
