@@ -25,7 +25,7 @@ public class OpeSysRole implements Serializable {
     /**
      * 主键Id
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键Id")
     private Long id;
 

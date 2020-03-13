@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import io.swagger.annotations.Api;
@@ -54,6 +55,13 @@ public class SysMenuController {
     public Response<List<MenuTreeResult>> userMenuTrees(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(sysMenuService.userMenuTrees(enter));
     }
+
+    @PostMapping(value = "/modulePermissions")
+    @ApiOperation(value = "模块权限", response = GeneralResult.class)
+    public Response<List<ModulePermissionsResult>> modulePermissions(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(sysMenuService.modulePermissions(enter));
+    }
+
 
     @PostMapping(value = "/details")
     @ApiOperation(value = "菜单详情", response = GeneralResult.class)

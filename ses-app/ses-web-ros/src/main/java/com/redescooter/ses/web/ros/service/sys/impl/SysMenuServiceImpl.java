@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.menu.MenuTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -17,6 +18,8 @@ import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
+import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import lombok.extern.slf4j.Slf4j;
@@ -49,20 +52,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public GeneralResult save(SaveMenuEnter enter) {
-
-        OpeSysMenu menu = new OpeSysMenu();
-        BeanUtils.copyProperties(enter, menu);
-        if (menu.getPId() == null || menu.getPId() == 0) {
-            menu.setPId(Constant.MENU_TREE_ROOT_ID);
-        }
-        menu.setId(idAppService.getId(SequenceName.OPE_SYS_MENU));
-        menu.setDr(Constant.DR_FALSE);
-        menu.setCreatedBy(enter.getUserId());
-        menu.setCreatedTime(new Date());
-        menu.setUpdatedBy(enter.getUserId());
-        menu.setUpdatedTime(new Date());
-
-        sysMenuService.save(menu);
+        sysMenuService.save(this.buildMenu(null, enter));
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -97,6 +87,41 @@ public class SysMenuServiceImpl implements SysMenuService {
     public List<MenuTreeResult> userMenuTrees(GeneralEnter enter) {
         return null;
     }
+
+    @Override
+    public List<ModulePermissionsResult> modulePermissions(IdEnter enter) {
+        return null;
+    }
+
+
+    private OpeSysMenu buildMenu(Long id, SaveMenuEnter enter) {
+        OpeSysMenu menu = new OpeSysMenu();
+
+        if (id == null) {
+            menu.setId(idAppService.getId(SequenceName.OPE_SYS_MENU));
+        } else {
+            menu.setId(id);
+        }
+        if (menu.getPId() == null || menu.getPId() == 0) {
+            menu.setPId(Constant.MENU_TREE_ROOT_ID);
+        }
+        menu.setDr(Constant.DR_FALSE);
+        menu.setName(enter.getName());
+        menu.setCode(enter.getCode());
+        menu.setPermission(enter.getPermission());
+        menu.setPath(enter.getPath());
+        menu.setComponent(enter.getComponent());
+        menu.setType(MenuTypeEnums.checkCode(enter.getType()));
+        menu.setIcon(enter.getIcon());
+        menu.setSort(enter.getSort());
+        menu.setCreatedBy(enter.getUserId());
+        menu.setCreatedTime(new Date());
+        menu.setUpdatedBy(enter.getUserId());
+        menu.setUpdatedTime(new Date());
+
+        return menu;
+    }
+
 
     /**
      * 通过sysMenu创建树形节点

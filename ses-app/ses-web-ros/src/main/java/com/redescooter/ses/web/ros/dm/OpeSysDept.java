@@ -22,7 +22,7 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "ope_sys_dept")
 public class OpeSysDept implements Serializable {
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "")
     private Long id;
 
