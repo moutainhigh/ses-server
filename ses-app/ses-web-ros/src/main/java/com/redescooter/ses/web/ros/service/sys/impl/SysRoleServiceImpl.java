@@ -1,19 +1,30 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
-import java.util.Date;
-
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
+import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
+import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.position.RoleDeptListResult;
+import com.redescooter.ses.web.ros.vo.sys.position.RoleListEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.RoleResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
+import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName SysRoleServiceImpl
