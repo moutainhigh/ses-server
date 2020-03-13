@@ -38,6 +38,12 @@ public class SysMenuController {
         return new Response<>(sysMenuService.save(enter));
     }
 
+    @PostMapping(value = "/list")
+    @ApiOperation(value = "菜单列表", response = GeneralResult.class)
+    public Response<List<MenuTreeResult>> list(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(sysMenuService.list(enter));
+    }
+
     @PostMapping(value = "/tree")
     @ApiOperation(value = "树形菜单", response = GeneralResult.class)
     public Response<List<MenuTreeResult>> trees(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -61,7 +67,6 @@ public class SysMenuController {
     public Response<List<ModulePermissionsResult>> modulePermissions(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(sysMenuService.modulePermissions(enter));
     }
-
 
     @PostMapping(value = "/details")
     @ApiOperation(value = "菜单详情", response = GeneralResult.class)

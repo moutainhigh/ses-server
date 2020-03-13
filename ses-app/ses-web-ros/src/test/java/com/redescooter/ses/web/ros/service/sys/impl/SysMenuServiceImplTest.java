@@ -33,7 +33,7 @@ public class SysMenuServiceImplTest {
     public void save() {
 
         int i = 1;
-        long pId = 1000009;
+        long pId = 100000;
         this.otherMenu(i, pId);
     }
 
@@ -69,14 +69,14 @@ public class SysMenuServiceImplTest {
 //        save.setUserId(new Long("0"));
 //        sysMenuService.save(save);
 //        ++i;
-        save.setName("查询");
-        save.setCode("QUERY");
-        save.setPermission("");
-        save.setPath("/QUERY");
+        save.setName("Inquiry");
+        save.setCode("Inquiry");
+        save.setPermission("SYS::SYS");
+        save.setPath("/");
         save.setPId(pId);
         save.setIcon("");
         save.setSort(i);
-        save.setType(MenuTypeEnums.BUTTONS.getValue());
+        save.setType(MenuTypeEnums.checkCode(MenuTypeEnums.MENUS.getValue()));
         save.setUserId(new Long("0"));
         sysMenuService.save(save);
 //        ++i;

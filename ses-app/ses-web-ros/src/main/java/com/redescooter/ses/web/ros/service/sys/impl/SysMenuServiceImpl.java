@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.vo.router.RouterMeta;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
@@ -48,6 +49,9 @@ public class SysMenuServiceImpl implements SysMenuService {
     private OpeSysRoleMenuService roleMenuService;
 
     @Autowired
+    private MenuServiceMapper menuServiceMapper;
+
+    @Autowired
     private IdAppService idAppService;
 
     @Override
@@ -62,6 +66,14 @@ public class SysMenuServiceImpl implements SysMenuService {
         List<OpeSysMenu> list = sysMenuService.list();
 
         return this.buildTree(list, enter, Constant.MENU_TREE_ROOT_ID);
+    }
+
+    @Override
+    public List<MenuTreeResult> list(IdEnter enter) {
+
+        List<OpeSysMenu> list = sysMenuService.list();
+
+        return this.buildList(list, enter);
     }
 
     @Override
@@ -90,7 +102,9 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public List<ModulePermissionsResult> modulePermissions(IdEnter enter) {
-        return null;
+
+        List<ModulePermissionsResult> results = menuServiceMapper.modulePermissions(enter);
+        return results;
     }
 
 
@@ -102,8 +116,10 @@ public class SysMenuServiceImpl implements SysMenuService {
         } else {
             menu.setId(id);
         }
-        if (menu.getPId() == null || menu.getPId() == 0) {
+        if (enter.getPId() == null || enter.getPId() == 0) {
             menu.setPId(Constant.MENU_TREE_ROOT_ID);
+        }else {
+            menu.setPId(enter.getPId());
         }
         menu.setDr(Constant.DR_FALSE);
         menu.setName(enter.getName());
@@ -140,7 +156,8 @@ public class SysMenuServiceImpl implements SysMenuService {
             node.setPId(menu.getPId());
             node.setName(menu.getName());
             node.setPath(menu.getPath());
-            node.setCode(menu.getPermission());
+            node.setCode(menu.getCode());
+            node.setPermission(menu.getPermission());
             node.setIcon(menu.getIcon());
             node.setSort(menu.getSort());
             node.setChecked(Boolean.FALSE);
@@ -165,5 +182,43 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
 
         return TreeUtil.build(trees, root);
+    }
+
+    private List<MenuTreeResult> buildList(List<OpeSysMenu> menus, IdEnter enter) {
+        List<MenuTreeResult> trees = new ArrayList<>();
+        MenuTreeResult node;
+        for (OpeSysMenu menu : menus) {
+            node = new MenuTreeResult();
+            BeanUtils.copyProperties(enter, node);
+            node.setId(menu.getId());
+            node.setPId(menu.getPId());
+            node.setName(menu.getName());
+            node.setPath(menu.getPath());
+            node.setCode(menu.getCode());
+            node.setPermission(menu.getPermission());
+            node.setIcon(menu.getIcon());
+            node.setSort(menu.getSort());
+            node.setChecked(Boolean.FALSE);
+            node.setDisabled(Boolean.FALSE);
+            node.setSpread(Boolean.FALSE);
+            trees.add(node);
+        }
+        if (enter.getId() != 0) {
+            QueryWrapper<OpeSysRoleMenu> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq(OpeSysRoleMenu.COL_ROLE_ID, enter.getId());
+            List<OpeSysRoleMenu> list = roleMenuService.list(queryWrapper);
+
+            if (CollUtil.isNotEmpty(list)) {
+                list.forEach(li -> {
+                    trees.forEach(t -> {
+                        if (li.getMenuId() == t.getId()) {
+                            t.setChecked(Boolean.TRUE);
+                        }
+                    });
+                });
+            }
+        }
+
+        return trees;
     }
 }

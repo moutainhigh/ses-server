@@ -25,10 +25,10 @@ public enum MenuTypeEnums {
 
     private String value;
 
-    public static String checkCode(String code) {
+    public static String checkCode(String value) {
         for (MenuTypeEnums item : MenuTypeEnums.values()) {
-            if (item.getCode().equals(code)) {
-                return item.getCode();
+            if (item.getValue().equals(value)) {
+                return item.getValue();
             }
         }
         return OTHER.value;
