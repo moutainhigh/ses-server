@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.sys.dept;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
 import io.swagger.annotations.ApiModel;
@@ -20,7 +21,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class DeptListReslut extends TreeNode {
+public class DeptListReslut extends GeneralResult {
+
+    @ApiModelProperty(value = "部门主键")
+    private Long id;
 
     @ApiModelProperty(value = "负责人")
     private Integer principal;
