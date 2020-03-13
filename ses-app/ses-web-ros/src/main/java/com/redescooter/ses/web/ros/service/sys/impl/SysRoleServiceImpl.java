@@ -5,7 +5,9 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.sys.SysRoleServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysRole;
+import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
@@ -52,6 +54,12 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Autowired
     private RolePermissionService rolePermissionService;
 
+    @Autowired
+    private OpeSysDeptService opeSysDeptService;
+
+    @Autowired
+    private SysRoleServiceMapper sysRoleServiceMapper;
+
     @Override
     public GeneralResult save(RoleEnter enter) {
         //保存岗位角色
@@ -82,6 +90,17 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     public DeptRoleListResult list(RoleListEnter enter) {
+        //查询所有部门
+//        QueryWrapper<OpeSysDept> opeSysDeptQueryWrapper = new QueryWrapper<>();
+//        if (enter.getDeptId() != null || enter.getDeptId() != 0) {
+//            opeSysDeptQueryWrapper.eq(OpeSysDept.COL_ID,enter.getDeptId());
+//        }
+//        List<OpeSysDept> opeSysDeptList = opeSysDeptService.list(opeSysDeptQueryWrapper);
+//        //若查出来存在公司 剔除掉
+//        opeSysDeptList.removeIf(item -> item.getPId().equals(-1));
+//
+//        List<RoleResult> roleList=sysRoleServiceMapper.list(enter);
+
         DeptRoleListResult result = DeptRoleListResult.builder()
                 .deptId(1000013L)
                 .deptName("产品部")

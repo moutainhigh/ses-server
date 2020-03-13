@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.sys.SysRoleServiceMapper">
+
+    <select id="list" resultType="com.redescooter.ses.web.ros.vo.sys.role.RoleResult">
+        select role.id as id,
+        role.role_name as roleName,
+        role.role_code as roleCode,
+        role.role_desc as description
+        from ope_sys_role role
+
+        where 1=1
+        <if test="deptId != null">
+
+        </if>
+    </select>
+</mapper>
