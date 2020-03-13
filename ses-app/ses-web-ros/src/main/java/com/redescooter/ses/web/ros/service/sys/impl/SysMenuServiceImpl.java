@@ -137,13 +137,20 @@ public class SysMenuServiceImpl implements SysMenuService {
         List<OpeSysMenu> list = sysMenuService.list(wrapper);
 
         if (CollUtil.isNotEmpty(list)) {
+            //删除儿子
             sysMenuService.remove(wrapper);
+            //删除角色菜单关系
+            QueryWrapper<OpeSysRoleMenu> delete = new QueryWrapper<>();
+            delete.eq(OpeSysRoleMenu.COL_MENU_ID, enter.getId());
+            roleMenuService.remove(delete);
+
         }
 
         QueryWrapper<OpeSysMenu> myself = new QueryWrapper<>();
         myself.eq(OpeSysMenu.COL_ID, enter.getId());
         myself.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
-        sysMenuService.remove(wrapper);
+        //删除自己
+        sysMenuService.remove(myself);
 
         return new GeneralResult(enter.getRequestId());
     }
