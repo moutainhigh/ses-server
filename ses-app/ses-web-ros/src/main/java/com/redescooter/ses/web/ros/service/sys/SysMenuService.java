@@ -4,8 +4,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
-import com.redescooter.ses.web.ros.dm.OpeSysRole;
-import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
@@ -35,6 +33,14 @@ public interface SysMenuService {
      * @return
      */
     List<MenuTreeResult> trees(IdEnter enter);
+
+    /**
+     * 菜单列表
+     *
+     * @param enter
+     * @return
+     */
+    List<MenuTreeResult> list(IdEnter enter);
 
     /**
      * 创建vue动态路由
