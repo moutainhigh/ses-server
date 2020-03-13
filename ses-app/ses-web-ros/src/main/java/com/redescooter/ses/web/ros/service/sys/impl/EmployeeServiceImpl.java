@@ -30,7 +30,7 @@ import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.DeptEmployeeListResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 import lombok.extern.slf4j.Slf4j;
@@ -92,9 +92,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return
      */
     @Override
-    public List<EmployeeListResult> employeeList(EmployeeListEnter enter) {
+    public List<DeptEmployeeListResult> employeeList(EmployeeListEnter enter) {
         // 拿到所有部门
-        List<EmployeeListResult> deptList = employeeServiceMapper.deptList(enter);
+        List<DeptEmployeeListResult> deptList = employeeServiceMapper.deptList(enter);
         if (CollectionUtils.isEmpty(deptList)) {
             return new ArrayList<>();
         }
@@ -104,13 +104,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         });
         // 查出所有员工 进行 部门分组 员工 证件信息没有封装
         List<EmployeeResult> employeeList = employeeServiceMapper.employeeList(enter);
-        if (CollectionUtils.isEmpty(employeeList)) {
-            return deptList;
-        }
         //剔除 admin
         employeeList = employeeList.stream().filter(item -> StringUtils.equals(Constant.ADMIN_USER_NAME, item.getEmail()) == false).collect(Collectors.toList());
-        for (EmployeeListResult dept : deptList) {
+        for (DeptEmployeeListResult dept : deptList) {
             List<EmployeeResult> employeeResultList = new ArrayList<>();
+            if (CollectionUtils.isEmpty(employeeList)) {
+                dept.setEmployeeResult(new ArrayList<>());
+                continue;
+            }
             employeeList.forEach(item -> {
                 if (dept.getDeptId().equals(item.getDeptId())) {
                     employeeResultList.add(item);
@@ -369,7 +370,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         opeSysUser.setId(idAppService.getId(SequenceName.OPE_SYS_USER));
         opeSysUser.setDr(0);
         opeSysUser.setStatus(SysUserStatusEnum.NORMAL.getCode());
-        opeSysUser.setTenantId(0L);
         opeSysUser.setAppId(AppIDEnums.SES_ROS.getValue());
         opeSysUser.setSystemId(AppIDEnums.SES_ROS.getSystemId());
         opeSysUser.setDeptId(enter.getDeptId());

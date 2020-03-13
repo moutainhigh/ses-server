@@ -2,7 +2,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.enums.menu.MenuTypeEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.RouterMeta;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
@@ -39,7 +39,9 @@ public class SysMenuServiceImplTest {
 
     @Test
     public void trees() {
-        List<MenuTreeResult> trees = sysMenuService.trees(new GeneralEnter());
+        IdEnter idEnter = new IdEnter();
+        idEnter.setId(0L);
+        List<MenuTreeResult> trees = sysMenuService.trees(idEnter);
         System.out.println(JSON.toJSONString(trees));
     }
 

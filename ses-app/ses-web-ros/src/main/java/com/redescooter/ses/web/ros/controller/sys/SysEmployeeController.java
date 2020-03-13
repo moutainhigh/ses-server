@@ -7,7 +7,7 @@ import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.DeptEmployeeListResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 import io.swagger.annotations.Api;
@@ -39,8 +39,8 @@ public class SysEmployeeController {
 
 
     @PostMapping(value = "/list")
-    @ApiOperation(value = "员工列表", response = EmployeeListResult.class)
-    public Response<List<EmployeeListResult>> employeeList(@ModelAttribute @ApiParam("请求参数") EmployeeListEnter enter) {
+    @ApiOperation(value = "员工列表", response = DeptEmployeeListResult.class)
+    public Response<List<DeptEmployeeListResult>> employeeList(@ModelAttribute @ApiParam("请求参数") EmployeeListEnter enter) {
         return new Response<>(employeeService.employeeList(enter));
     }
 

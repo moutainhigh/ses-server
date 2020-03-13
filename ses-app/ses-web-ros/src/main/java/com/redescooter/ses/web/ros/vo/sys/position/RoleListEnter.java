@@ -22,7 +22,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class PositionListEnter extends GeneralEnter {
+public class RoleListEnter extends GeneralEnter {
     @ApiModelProperty(value = "部门Id")
     private Long deptId;
 

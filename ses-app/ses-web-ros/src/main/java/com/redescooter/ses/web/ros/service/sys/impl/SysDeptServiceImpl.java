@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
@@ -14,6 +13,10 @@ import com.redescooter.ses.web.ros.dao.base.OpeSysDeptRelationMapper;
 import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
+import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSysDeptRelationService;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
@@ -22,6 +25,7 @@ import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +52,12 @@ public class SysDeptServiceImpl implements SysDeptService {
     private OpeSysDeptService sysDeptService;
     @Autowired
     private SysDeptRelationService sysDeptRelationService;
+
+    @Autowired
+    private OpeSysDeptRelationService opeSysDeptRelationService;
+    @Autowired
+    private OpeSysDeptService opeSysDeptService;
+
     @Autowired
     private OpeSysDeptRelationMapper sysDeptRelationMapper;
     @Autowired
@@ -96,25 +106,50 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult delete(IdEnter enter) {
 
-        sysDeptService.removeById(enter.getId());
+        OpeSysDept opeSysDept = opeSysDeptService.getById(enter.getId());
+        if (opeSysDept == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
+        }
+        // 查询所有部门关系
+        List<OpeSysDeptRelation> opeSysDeptRelationList = opeSysDeptRelationService.list();
+        // 拿到需要删除的部门Id
+        List<Long> childDept = findChildDept(opeSysDeptRelationList, enter.getId(), null);
 
-        QueryWrapper<OpeSysDeptRelation> delele = new QueryWrapper<>();
-
-        delele.or((Function<QueryWrapper<OpeSysDeptRelation>, QueryWrapper<OpeSysDeptRelation>>) delele.eq(OpeSysDeptRelation.COL_ANCESTOR, enter.getId()))
-                .or((Function<QueryWrapper<OpeSysDeptRelation>, QueryWrapper<OpeSysDeptRelation>>) delele.eq(OpeSysDeptRelation.COL_DESCENDANT, enter.getId()));
-
-        sysDeptRelationMapper.delete(delele);
-
+        childDept.stream().forEach(System.out::println);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    private List<Long> findChildDept(List<OpeSysDeptRelation> opeSysDeptRelationList, Long id, List<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            ids = new ArrayList<>();
+        }
+        if (CollectionUtils.isEmpty(opeSysDeptRelationList)) {
+            return new ArrayList<>();
+        }
+
+        for (OpeSysDeptRelation item : opeSysDeptRelationList) {
+            if (item.getAncestor().equals(id)) {
+                ids.add(item.getDescendant());
+                id = item.getDescendant();
+                opeSysDeptRelationList.remove(item);
+                findChildDept(opeSysDeptRelationList, id, ids);
+            }
+        }
+
+        return new ArrayList<>();
     }
 
     @Override
     public DeptTreeReslt details(IdEnter enter) {
+
         OpeSysDept dept = sysDeptService.getById(enter.getId());
+
         DeptTreeReslt reslt = new DeptTreeReslt();
+
         if (reslt != null) {
             BeanUtils.copyProperties(dept, reslt);
         }
+
         return reslt;
     }
 

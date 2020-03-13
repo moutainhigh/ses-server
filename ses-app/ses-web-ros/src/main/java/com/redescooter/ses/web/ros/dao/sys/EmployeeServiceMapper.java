@@ -3,7 +3,7 @@ package com.redescooter.ses.web.ros.dao.sys;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.DeptEmployeeListResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,7 +23,7 @@ public interface EmployeeServiceMapper {
      * @param enter
      * @return
      */
-    List<EmployeeListResult> deptList(EmployeeListEnter enter);
+    List<DeptEmployeeListResult> deptList(EmployeeListEnter enter);
 
     /**
      * 员工列表

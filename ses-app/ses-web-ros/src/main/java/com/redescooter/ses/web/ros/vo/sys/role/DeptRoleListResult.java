@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.sys.position;
+package com.redescooter.ses.web.ros.vo.sys.role;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
@@ -24,19 +24,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class PositionDeptListResult extends GeneralResult {
-    @ApiModelProperty(value = "id")
-    private Long id;
+public class DeptRoleListResult extends GeneralResult {
+    @ApiModelProperty(value = "部门Id")
+    private Long deptId;
 
-    @ApiModelProperty(value = "名字")
-    private String name;
+    @ApiModelProperty(value = "部门名称")
+    private String deptName;
 
-    @ApiModelProperty(value = "描述")
-    private String desc;
-
-    @ApiModelProperty(value = "数量")
-    private String count;
+    @ApiModelProperty(value = "统计")
+    private Integer totalCount;
 
     @ApiModelProperty(value = "职位列表")
-    private List<PositionListResult> positionListResult;
+    private List<RoleResult> roleList;
 }

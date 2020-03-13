@@ -20,7 +20,7 @@ import lombok.*;
 public class RoleResult extends GeneralResult {
 
     @ApiModelProperty(value = "岗位ID")
-    private Long Id;
+    private Long id;
 
     @ApiModelProperty(value = "角色名称")
     private String roleName;

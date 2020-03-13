@@ -2,7 +2,7 @@ package com.redescooter.ses.web.ros.vo.sys.dept;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Data;
 
 /**
  * @ClassName SaveDeptEnter

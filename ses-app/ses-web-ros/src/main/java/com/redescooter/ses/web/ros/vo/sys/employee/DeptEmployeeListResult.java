@@ -25,7 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class EmployeeListResult extends GeneralResult {
+public class DeptEmployeeListResult extends GeneralResult {
     @ApiModelProperty(value = "部门Id")
     private Long deptId;
 
