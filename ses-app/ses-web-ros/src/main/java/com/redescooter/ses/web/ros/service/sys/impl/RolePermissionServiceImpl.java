@@ -10,6 +10,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleSalesCidyService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,8 +54,10 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         UpdateWrapper<OpeSysRoleSalesCidy> delete = new UpdateWrapper<>();
         delete.eq(OpeSysRoleSalesCidy.COL_ROLE_ID, roleId);
         delete.in(OpeSysRoleSalesCidy.COL_CITY_ID, new ArrayList<>(cidyId));
-
-        roleSalesCidyService.remove(delete);
+        if (CollectionUtils.isNotEmpty(cidyId)) {
+            delete.in(OpeSysRoleSalesCidy.COL_CITY_ID, new ArrayList<>(cidyId));
+            roleSalesCidyService.remove(delete);
+        }
     }
 
     @Override
@@ -88,7 +91,9 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     public void deleteRoleMenuPermissions(long roleId, Set<Long> menuId) {
         UpdateWrapper<OpeSysRoleMenu> delete = new UpdateWrapper<>();
         delete.eq(OpeSysRoleMenu.COL_ROLE_ID, roleId);
-        delete.in(OpeSysRoleMenu.COL_MENU_ID, new ArrayList<>(menuId));
-        roleMenuService.remove(delete);
+        if (CollectionUtils.isNotEmpty(menuId)) {
+            delete.in(OpeSysRoleMenu.COL_MENU_ID, new ArrayList<>(menuId));
+            roleMenuService.remove(delete);
+        }
     }
 }
