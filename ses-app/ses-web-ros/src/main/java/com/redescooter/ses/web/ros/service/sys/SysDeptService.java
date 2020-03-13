@@ -63,4 +63,14 @@ public interface SysDeptService {
      * @return
      */
     DeptTreeReslt getDescendants(IdEnter enter);
+
+    /**
+     * 获取顶级部门
+     *
+     * @param enter
+     * @return
+     */
+    DeptTreeReslt topDepartment(IdEnter enter);
+
+
 }

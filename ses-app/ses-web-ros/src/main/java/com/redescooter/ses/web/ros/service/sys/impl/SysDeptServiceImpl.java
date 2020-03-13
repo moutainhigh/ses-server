@@ -9,7 +9,10 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeSysDeptRelationMapper;
+import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
+import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
 import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -18,7 +21,6 @@ import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
-import com.redescooter.ses.web.ros.vo.sys.dept.DeptListReslut;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
@@ -32,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @ClassName SysDeptServiceImpl
@@ -44,6 +47,8 @@ import java.util.List;
 public class SysDeptServiceImpl implements SysDeptService {
 
     @Autowired
+    private DeptRelationServiceMapper deptRelationServiceMapper;
+    @Autowired
     private OpeSysDeptService sysDeptService;
     @Autowired
     private SysDeptRelationService sysDeptRelationService;
@@ -53,6 +58,8 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Autowired
     private OpeSysDeptService opeSysDeptService;
 
+    @Autowired
+    private OpeSysDeptRelationMapper sysDeptRelationMapper;
     @Autowired
     private IdAppService idAppService;
 
@@ -87,20 +94,18 @@ public class SysDeptServiceImpl implements SysDeptService {
         OpeSysDept dept = new OpeSysDept();
         BeanUtils.copyProperties(enter, dept);
         sysDeptService.updateById(dept);
-        //删除部门关系
-        QueryWrapper<OpeSysDeptRelation> opeSysDeptRelationQueryWrapper = new QueryWrapper<>();
-        opeSysDeptRelationQueryWrapper.eq(OpeSysDeptRelation.COL_DESCENDANT, enter.getId());
-        opeSysDeptRelationService.remove(opeSysDeptRelationQueryWrapper);
-        //重建部门关系
-        List<OpeSysDeptRelation> opeSysDeptRelationList = new ArrayList<>();
-        opeSysDeptRelationList.add(OpeSysDeptRelation.builder().ancestor(enter.getPId()).descendant(enter.getId()).build());
-        opeSysDeptRelationList.add(OpeSysDeptRelation.builder().ancestor(enter.getId()).descendant(enter.getId()).build());
-        opeSysDeptRelationService.batchInsert(opeSysDeptRelationList);
+        //更新部门关系
+        OpeSysDeptRelation relation = new OpeSysDeptRelation();
+        relation.setAncestor(dept.getPId());
+        relation.setDescendant(dept.getId());
+        deptRelationServiceMapper.updateDeptRelations(relation);
+
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public GeneralResult delete(IdEnter enter) {
+
         OpeSysDept opeSysDept = opeSysDeptService.getById(enter.getId());
         if (opeSysDept == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
@@ -168,6 +173,11 @@ public class SysDeptServiceImpl implements SysDeptService {
         return TreeUtil.findChildren(children, trees);
     }
 
+    @Override
+    public DeptTreeReslt topDepartment(IdEnter enter) {
+
+        return null;
+    }
 
 
     private OpeSysDept buildDept(SaveDeptEnter enter) {

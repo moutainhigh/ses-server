@@ -58,5 +58,6 @@ public class SysDeptRelationServiceImpl implements SysDeptRelationService {
     @Override
     public void updateDeptRealtion(OpeSysDeptRelation relation) {
 
+
     }
 }
