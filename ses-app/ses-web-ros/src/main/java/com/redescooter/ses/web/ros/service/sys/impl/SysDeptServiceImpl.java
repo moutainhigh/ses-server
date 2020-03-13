@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -8,12 +10,14 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeSysDeptRelationMapper;
+import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
+import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
-import com.redescooter.ses.web.ros.vo.sys.dept.DeptListReslut;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
@@ -26,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @ClassName SysDeptServiceImpl
@@ -38,9 +43,13 @@ import java.util.List;
 public class SysDeptServiceImpl implements SysDeptService {
 
     @Autowired
+    private DeptRelationServiceMapper deptRelationServiceMapper;
+    @Autowired
     private OpeSysDeptService sysDeptService;
     @Autowired
     private SysDeptRelationService sysDeptRelationService;
+    @Autowired
+    private OpeSysDeptRelationMapper sysDeptRelationMapper;
     @Autowired
     private IdAppService idAppService;
 
@@ -70,39 +79,42 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public List<DeptListReslut> list(GeneralEnter enter) {
-        return null;
-    }
-
-    @Override
     public GeneralResult edit(EditDeptEnter enter) {
         //更新部门
         OpeSysDept dept = new OpeSysDept();
         BeanUtils.copyProperties(enter, dept);
         sysDeptService.updateById(dept);
-        //删除部门关系
-
-        //重建部门关系
+        //更新部门关系
+        OpeSysDeptRelation relation = new OpeSysDeptRelation();
+        relation.setAncestor(dept.getPId());
+        relation.setDescendant(dept.getId());
+        deptRelationServiceMapper.updateDeptRelations(relation);
 
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public GeneralResult delete(IdEnter enter) {
+
+        sysDeptService.removeById(enter.getId());
+
+        QueryWrapper<OpeSysDeptRelation> delele = new QueryWrapper<>();
+
+        delele.or((Function<QueryWrapper<OpeSysDeptRelation>, QueryWrapper<OpeSysDeptRelation>>) delele.eq(OpeSysDeptRelation.COL_ANCESTOR, enter.getId()))
+                .or((Function<QueryWrapper<OpeSysDeptRelation>, QueryWrapper<OpeSysDeptRelation>>) delele.eq(OpeSysDeptRelation.COL_DESCENDANT, enter.getId()));
+
+        sysDeptRelationMapper.delete(delele);
+
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public DeptTreeReslt details(IdEnter enter) {
-
         OpeSysDept dept = sysDeptService.getById(enter.getId());
-
         DeptTreeReslt reslt = new DeptTreeReslt();
-
         if (reslt != null) {
             BeanUtils.copyProperties(dept, reslt);
         }
-
         return reslt;
     }
 
@@ -126,6 +138,11 @@ public class SysDeptServiceImpl implements SysDeptService {
         return TreeUtil.findChildren(children, trees);
     }
 
+    @Override
+    public DeptTreeReslt topDepartment(IdEnter enter) {
+
+        return null;
+    }
 
 
     private OpeSysDept buildDept(SaveDeptEnter enter) {

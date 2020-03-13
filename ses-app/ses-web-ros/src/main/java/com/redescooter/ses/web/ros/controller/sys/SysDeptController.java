@@ -1,9 +1,10 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
-import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
-import com.redescooter.ses.web.ros.vo.sys.dept.DeptListReslut;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
@@ -48,12 +49,6 @@ public class SysDeptController {
         return new Response<>(deptService.details(enter));
     }
 
-    @PostMapping(value = "/list")
-    @ApiOperation(value = "部门列表", response = GeneralResult.class)
-    public Response<List<DeptListReslut>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(deptService.list(enter));
-    }
-
     @PostMapping(value = "/tree")
     @ApiOperation(value = "部门树列表", response = GeneralResult.class)
     public Response<List<DeptTreeReslt>> tree(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
@@ -72,9 +67,9 @@ public class SysDeptController {
         return new Response<>(deptService.getDescendants(enter));
     }
 
-    @PostMapping(value = "/topDepartment")
-    @ApiOperation(value = "子级列表", response = GeneralResult.class)
-    public Response<DeptTreeReslt> TopDepartment(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(deptService.getDescendants(enter));
-    }
+//    @PostMapping(value = "/topDepartment")
+//    @ApiOperation(value = "顶级部门", response = GeneralResult.class)
+//    public Response<DeptTreeReslt> TopDepartment(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>();
+//    }
 }
