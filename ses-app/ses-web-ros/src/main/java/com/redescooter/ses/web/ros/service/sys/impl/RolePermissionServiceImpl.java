@@ -52,7 +52,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     public void deleteRoleSalesPermissions(long roleId, Set<Long> cidyId) {
         UpdateWrapper<OpeSysRoleSalesCidy> delete = new UpdateWrapper<>();
         delete.eq(OpeSysRoleSalesCidy.COL_ROLE_ID, roleId);
-        delete.in(OpeSysRoleSalesCidy.COL_CITY_ID, cidyId);
+        delete.in(OpeSysRoleSalesCidy.COL_CITY_ID, new ArrayList<>(cidyId));
 
         roleSalesCidyService.remove(delete);
     }
@@ -88,7 +88,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     public void deleteRoleMenuPermissions(long roleId, Set<Long> menuId) {
         UpdateWrapper<OpeSysRoleMenu> delete = new UpdateWrapper<>();
         delete.eq(OpeSysRoleMenu.COL_ROLE_ID, roleId);
-        delete.in(OpeSysRoleMenu.COL_MENU_ID, menuId);
+        delete.in(OpeSysRoleMenu.COL_MENU_ID, new ArrayList<>(menuId));
         roleMenuService.remove(delete);
     }
 }
