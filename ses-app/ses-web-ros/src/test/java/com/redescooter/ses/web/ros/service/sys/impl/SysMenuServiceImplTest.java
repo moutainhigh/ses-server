@@ -127,6 +127,9 @@ public class SysMenuServiceImplTest {
 
     @Test
     public void details() {
+        MenuTreeResult details = sysMenuService.details(new IdEnter(new Long("1000009")));
+
+        System.out.println(details);
     }
 
     @Test

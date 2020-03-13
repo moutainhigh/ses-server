@@ -13,7 +13,6 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
-import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
@@ -150,7 +149,6 @@ public class SysMenuServiceImpl implements SysMenuService {
         return new GeneralResult(enter.getRequestId());
     }
 
-
     private OpeSysMenu buildMenu(Long id, SaveMenuEnter enter) {
         OpeSysMenu menu = new OpeSysMenu();
 
@@ -180,7 +178,6 @@ public class SysMenuServiceImpl implements SysMenuService {
 
         return menu;
     }
-
 
     /**
      * 通过sysMenu创建树形节点
@@ -247,6 +244,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             node.setSpread(Boolean.FALSE);
             trees.add(node);
         }
+        //绑定角色与菜单关系
         if (enter.getId() != 0) {
             QueryWrapper<OpeSysRoleMenu> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq(OpeSysRoleMenu.COL_ROLE_ID, enter.getId());
