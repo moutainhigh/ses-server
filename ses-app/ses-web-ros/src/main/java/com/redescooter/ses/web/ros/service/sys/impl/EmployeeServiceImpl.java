@@ -219,7 +219,12 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (!checkMail.getLoginName().equals(enter.getEmail()) && checkMail != null) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
             }
+            QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
+            opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, opeSysUser.getId());
+            opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+            OpeSysUserProfile sysUserProfile = opeSysUserProfileService.getOne(opeSysUserProfileQueryWrapper);
             // 个人信息更新
+            opeSysUserProfile.setId(sysUserProfile.getId());
             opeSysUserProfile.setSysUserId(opeSysUser.getId());
             // 用户角色关系没改变不更新
             QueryWrapper<OpeSysUserRole> opeSysUserRoleQueryWrapper = new QueryWrapper<>();

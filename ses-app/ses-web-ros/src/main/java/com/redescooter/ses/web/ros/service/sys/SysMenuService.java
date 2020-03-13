@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
+import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
@@ -83,5 +84,11 @@ public interface SysMenuService {
      */
     GeneralResult delete(IdEnter enter);
 
-    GeneralResult edit();
+    /**
+     * 菜单编辑
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult edit(EditMenuEnter enter);
 }

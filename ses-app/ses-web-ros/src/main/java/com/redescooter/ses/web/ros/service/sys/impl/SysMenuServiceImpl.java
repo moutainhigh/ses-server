@@ -14,10 +14,13 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
+import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
@@ -49,6 +52,9 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Autowired
     private IdAppService idAppService;
+
+    @Autowired
+    private OpeSysMenuService opeSysMenuService;
 
     @Override
     public GeneralResult save(SaveMenuEnter enter) {
@@ -142,6 +148,26 @@ public class SysMenuServiceImpl implements SysMenuService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 菜单编辑
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult edit(EditMenuEnter enter) {
+        OpeSysMenu opeSysMenu = opeSysMenuService.getById(enter.getMenuId());
+        if (opeSysMenu == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.MENU_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MENU_IS_NOT_EXIST.getMessage());
+        }
+        // 根节点不可编辑
+        if (opeSysMenu.getPId().equals(Constant.MENU_TREE_ROOT_ID)) {
+            throw new SesWebRosException(ExceptionCodeEnums.THE_ROOT_NODE_MENU_CANNOT_BE_EDIT.getCode(), ExceptionCodeEnums.THE_ROOT_NODE_MENU_CANNOT_BE_EDIT.getMessage());
+        }
+//        if (){}
+
+        return null;
+    }
 
     private OpeSysMenu buildMenu(Long id, SaveMenuEnter enter) {
         OpeSysMenu menu = new OpeSysMenu();
