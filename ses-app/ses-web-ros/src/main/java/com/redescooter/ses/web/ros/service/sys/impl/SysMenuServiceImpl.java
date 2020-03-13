@@ -93,6 +93,11 @@ public class SysMenuServiceImpl implements SysMenuService {
         return TreeUtil.buildVueRouter(routes);
     }
 
+    @Override
+    public List<MenuTreeResult> userMenuTrees(GeneralEnter enter) {
+        return null;
+    }
+
     /**
      * 通过sysMenu创建树形节点
      *

@@ -43,4 +43,11 @@ public interface SysMenuService {
      */
     List<VueRouter<MenuTreeResult>> userRouters(GeneralEnter enter);
 
+    /**
+     * 用户菜单树
+     *
+     * @param enter
+     * @return
+     */
+    List<MenuTreeResult> userMenuTrees(GeneralEnter enter);
 }

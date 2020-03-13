@@ -52,16 +52,16 @@ public class SysRoleController {
         return new Response<>(roleService.authorityDetails(enter));
     }
 
-    @PostMapping(value = "/delete")
-    @ApiOperation(value = "岗位删除", response = GeneralResult.class)
-    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>();
-    }
-
     @PostMapping(value = "/list")
     @ApiOperation(value = "岗位列表", response = DeptRoleListResult.class)
     public Response<DeptRoleListResult> list(@ModelAttribute @ApiParam("请求参数") RoleListEnter enter) {
         return new Response<>(roleService.list(enter));
+    }
+
+    @PostMapping(value = "/delete")
+    @ApiOperation(value = "岗位删除", response = GeneralResult.class)
+    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>();
     }
 
     @PostMapping(value = "/details")
@@ -70,10 +70,5 @@ public class SysRoleController {
         return new Response<>();
     }
 
-    @PostMapping(value = "/tree")
-    @ApiOperation(value = "更新岗位菜单", response = GeneralResult.class)
-    public Response<GeneralResult> saveRoleMenus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
-    }
 
 }
