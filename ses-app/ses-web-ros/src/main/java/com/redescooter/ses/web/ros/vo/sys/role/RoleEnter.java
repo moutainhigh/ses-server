@@ -21,13 +21,13 @@ public class RoleEnter extends PermissionEnter {
     @ApiModelProperty(value = "部门ID")
     private Long deptId;
 
-    @ApiModelProperty(value = "角色名称")
+    @ApiModelProperty(value = "岗位名称")
     private String roleName;
 
-    @ApiModelProperty(value = "角色编码")
+    @ApiModelProperty(value = "岗位编码")
     private String roleCode;
 
-    @ApiModelProperty(value = "角色描述")
+    @ApiModelProperty(value = "岗位描述")
     private String description;
 
 }

@@ -49,21 +49,15 @@ public class SysMenuController {
         return new Response<>(sysMenuService.userRouters(enter));
     }
 
-    @PostMapping(value = "/userTrees")
+    @PostMapping(value = "/userMenuTrees")
     @ApiOperation(value = "用户菜单", response = GeneralResult.class)
-    public Response<GeneralResult> userTrees(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>();
-    }
-
-    @PostMapping(value = "/roleTree")
-    @ApiOperation(value = "角色菜单", response = GeneralResult.class)
-    public Response<GeneralResult> roleTree(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>();
+    public Response<List<MenuTreeResult>> userMenuTrees(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(sysMenuService.userMenuTrees(enter));
     }
 
     @PostMapping(value = "/details")
     @ApiOperation(value = "菜单详情", response = GeneralResult.class)
-    public Response<GeneralResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<MenuTreeResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>();
     }
 
