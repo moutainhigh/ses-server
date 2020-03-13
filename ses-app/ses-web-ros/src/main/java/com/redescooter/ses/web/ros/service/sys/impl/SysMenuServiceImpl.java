@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.menu.MenuTypeEnums;
@@ -19,7 +18,6 @@ import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
-import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
@@ -28,9 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassName SysMenuServiceImpl
@@ -101,10 +97,18 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public List<ModulePermissionsResult> modulePermissions(IdEnter enter) {
+    public Map<String, ModulePermissionsResult> modulePermissions(IdEnter enter) {
 
         List<ModulePermissionsResult> results = menuServiceMapper.modulePermissions(enter);
-        return results;
+
+        Map<String, ModulePermissionsResult> resultMap = new HashMap<>();
+
+        if (CollUtil.isNotEmpty(results)) {
+            results.forEach(rs -> {
+                resultMap.put(String.valueOf(rs.getId()), rs);
+            });
+        }
+        return resultMap;
     }
 
 
@@ -118,7 +122,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
         if (enter.getPId() == null || enter.getPId() == 0) {
             menu.setPId(Constant.MENU_TREE_ROOT_ID);
-        }else {
+        } else {
             menu.setPId(enter.getPId());
         }
         menu.setDr(Constant.DR_FALSE);

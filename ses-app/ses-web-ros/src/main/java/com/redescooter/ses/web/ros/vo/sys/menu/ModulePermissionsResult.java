@@ -22,5 +22,5 @@ public class ModulePermissionsResult extends GeneralResult {
     private String code;
     private Integer sort;
 
-    private List<MenuTreeResult> permissions;
+    private List<MenuTreeResult> childs;
 }
