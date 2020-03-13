@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName SysMenuController
@@ -64,7 +65,7 @@ public class SysMenuController {
 
     @PostMapping(value = "/modulePermissions")
     @ApiOperation(value = "模块权限", response = GeneralResult.class)
-    public Response<List<ModulePermissionsResult>> modulePermissions(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<Map<String, ModulePermissionsResult>> modulePermissions(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(sysMenuService.modulePermissions(enter));
     }
 

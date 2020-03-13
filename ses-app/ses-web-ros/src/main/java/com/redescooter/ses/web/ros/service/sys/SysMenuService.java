@@ -9,6 +9,7 @@ import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName SysMenuService
@@ -64,5 +65,5 @@ public interface SysMenuService {
      * @param enter
      * @return
      */
-    List<ModulePermissionsResult> modulePermissions(IdEnter enter);
+    Map<String, ModulePermissionsResult> modulePermissions(IdEnter enter);
 }

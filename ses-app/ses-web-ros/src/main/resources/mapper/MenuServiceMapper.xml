@@ -12,7 +12,7 @@
         <result column="code" jdbcType="VARCHAR" property="code"/>
         <result column="sort" jdbcType="INTEGER" property="sort"/>
         <result column="id" jdbcType="INTEGER" property="id"/>
-        <collection property="permissions"
+        <collection property="childs"
                     javaType="java.util.ArrayList"
                     ofType="com.redescooter.ses.web.ros.vo.tree.MenuTreeResult"
                     column="id"
