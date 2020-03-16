@@ -198,10 +198,18 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     private void insertRoleAouth(RoleEnter enter) {
         // 将 销售区域 json 格式 转 set集合
-        Set<Long> salesPermissionIds = new HashSet<>(JSON.parseArray(enter.getSalesPermissionIds(), Long.class));
+        Set<Long> salesPermissionIds = null;
+        List<Long> saleIds = JSON.parseArray(enter.getSalesPermissionIds(), Long.class);
+        if (CollectionUtils.isNotEmpty(saleIds)) {
+            salesPermissionIds = new HashSet<>(saleIds);
+        }
 
         // 将 菜单列表 json 格式 转set 集合
-        Set<Long> meunPermissionIds = new HashSet<>(JSON.parseArray(enter.getMeunPermissionIds(), Long.class));
+        List<Long> menuIds = JSON.parseArray(enter.getMeunPermissionIds(), Long.class);
+        Set<Long> meunPermissionIds = null;
+        if (CollectionUtils.isNotEmpty(menuIds)) {
+            meunPermissionIds = new HashSet<>(menuIds);
+        }
         checkRoleAuothParameter(enter, salesPermissionIds, meunPermissionIds);
 
         //创建岗位销售区域关系
