@@ -124,6 +124,8 @@ public interface ValidationExceptionCode {
     int MENU_PATH_IS_EMPTY = 10076;
     //菜单类型为空
     int MENU_TYPE_IS_EMPTY = 10077;
-    //部门
+    //部门层级为空
     int DEPT_LEVEL_IS_EMPTY = 10078;
+    // 职位名称为空
+    int ROLE_NAME_IS_EMPTY = 10079;
 }

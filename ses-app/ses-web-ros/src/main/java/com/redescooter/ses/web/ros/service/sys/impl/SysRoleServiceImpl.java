@@ -169,29 +169,33 @@ public class SysRoleServiceImpl implements SysRoleService {
         if (opeSysDeptService.getById(enter.getDeptId()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
-        //销售区域
-        List<CityResult> cityList = ctiyBaseService.list(enter);
-        List<Long> cityIds = new ArrayList<>();
-        cityList.forEach(item -> {
-            cityIds.add(item.getId());
-        });
-        enter.getSalesPermissionIds().forEach(item -> {
-            if (!cityIds.contains(item)) {
-                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-            }
-        });
-        // 菜单过滤
-        List<OpeSysMenu> sysMenuList = opeSysMenuService.list();
-        List<Long> sysMenuIds = new ArrayList<>();
+        //销售区域 校验
+        if (CollectionUtils.isNotEmpty(enter.getSalesPermissionIds())) {
+            List<CityResult> cityList = ctiyBaseService.list(enter);
+            List<Long> cityIds = new ArrayList<>();
+            cityList.forEach(item -> {
+                cityIds.add(item.getId());
+            });
+            enter.getSalesPermissionIds().forEach(item -> {
+                if (!cityIds.contains(item)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+            });
+        }
+        // 菜单过滤 校验
+        if (CollectionUtils.isNotEmpty(enter.getMeunPermissionIds())) {
+            List<OpeSysMenu> sysMenuList = opeSysMenuService.list();
+            List<Long> sysMenuIds = new ArrayList<>();
 
-        sysMenuList.forEach(item -> {
-            sysMenuIds.add(item.getId());
-        });
-        enter.getMeunPermissionIds().forEach(item -> {
-            if (!sysMenuIds.contains(item)) {
-                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-            }
-        });
+            sysMenuList.forEach(item -> {
+                sysMenuIds.add(item.getId());
+            });
+            enter.getMeunPermissionIds().forEach(item -> {
+                if (!sysMenuIds.contains(item)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+            });
+        }
 
         //创建岗位销售区域关系
         rolePermissionService.insertRoleSalesPermissions(enter.getRoleId(), enter.getSalesPermissionIds());
