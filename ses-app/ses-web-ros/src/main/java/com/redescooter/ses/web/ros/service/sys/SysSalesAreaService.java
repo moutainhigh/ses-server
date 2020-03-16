@@ -28,4 +28,11 @@ public interface SysSalesAreaService {
      * @return
      */
     List<SalesAreaTressResult> trees(IdEnter enter);
+
+    /**
+     * 删除角色下对应的销售区域
+     *
+     * @param enter
+     */
+    void deleteRoleSalesAreaByRoleId(IdEnter enter);
 }

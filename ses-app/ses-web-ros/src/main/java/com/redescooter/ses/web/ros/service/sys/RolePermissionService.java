@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.service.sys;
 
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+
 import java.util.Set;
 
 /**
@@ -40,5 +42,17 @@ public interface RolePermissionService {
      */
     void deleteRoleMenuPermissions(long role, Set<Long> menuId);
 
+    /**
+     * 删除该角色下的所有菜单权限
+     *
+     * @param enter
+     */
+    void deleteRoleMeunByRoleId(IdEnter enter);
 
+    /**
+     * 删除角色与部门的对应关系
+     *
+     * @param enter
+     */
+    void deleteRoleDeptByRoleId(IdEnter enter);
 }

@@ -70,7 +70,14 @@ public interface SysDeptService {
      * @param enter
      * @return
      */
-    DeptTreeReslt topDepartment(IdEnter enter);
+    DeptTreeReslt topDeptartment(IdEnter enter);
 
+
+    /**
+     * 根据角色ID 删除角色与部门的对应关系
+     *
+     * @param enter
+     */
+    void deleteRoleDeptByRoleId(IdEnter enter);
 
 }

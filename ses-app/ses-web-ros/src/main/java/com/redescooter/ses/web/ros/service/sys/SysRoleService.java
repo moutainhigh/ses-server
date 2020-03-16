@@ -33,6 +33,15 @@ public interface SysRoleService {
      */
     GeneralResult edit(RoleEnter enter);
 
+
+    /**
+     * 岗位创建
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult delete(IdEnter enter);
+
     /**
      * 角色列表
      *
