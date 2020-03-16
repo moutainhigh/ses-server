@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName SysRoleServiceImpl
@@ -187,6 +188,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         sysMenuList.forEach(item -> {
             sysMenuIds.add(item.getId());
         });
+
         enter.getMeunPermissionIds().forEach(item -> {
             if (!sysMenuIds.contains(item)) {
                 throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());

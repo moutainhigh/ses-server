@@ -4,10 +4,21 @@
 
 <div align=center>
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/mrjerryli/ses-server/blob/master/LICENSE) 
+[![ses-server](https://img.shields.io/badge/ses_server-1.2-red.svg)](https://github.com/mrjerryli/ses-server)
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg?label=Maven%20Central)](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.apache.maven%22%20AND%20a%3A%22apache-maven%22)
 
 </div>
+
+<p align="center">
+
+<a href="https://travis-ci.org/onevcat/Kingfisher">![](https://img.shields.io/travis/onevcat/Kingfisher/master.svg)</a>
+<a href="https://github.com/Carthage/Carthage/">![](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)</a>
+<a href="https://swift.org/package-manager/">![](https://img.shields.io/badge/SPM-ready-orange.svg)</a>
+<a href="http://onevcat.github.io/Kingfisher/">![](https://img.shields.io/cocoapods/v/Kingfisher.svg?style=flat)</a>
+<a href="https://raw.githubusercontent.com/onevcat/Kingfisher/master/LICENSE">![](https://img.shields.io/cocoapods/l/Kingfisher.svg?style=flat)</a>
+<a href="http://onevcat.github.io/Kingfisher/">![](https://img.shields.io/cocoapods/p/Kingfisher.svg?style=flat)</a>
+<a href="https://codebeat.co/projects/github-com-onevcat-kingfisher">![codebeat badge](https://codebeat.co/assets/svg/badges/A-398b39-669406e9e1b136187b91af587d4092b0160370f271f66a651f444b990c2730e9.svg)</a>
+</p>
 
 ## <div align=center>[多租户分布式架构(dubbo版)](https://github.com/mrjerryli/ses-server) `Sv 1.2.0` 
  
