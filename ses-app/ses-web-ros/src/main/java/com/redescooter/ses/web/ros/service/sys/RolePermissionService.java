@@ -57,7 +57,7 @@ public interface RolePermissionService {
     void deleteRoleDeptByRoleId(IdEnter enter);
 
     /**
-     * 删除角色下的所有销售区域
+     * 删除所有的销售区域
      *
      * @param enter
      */
