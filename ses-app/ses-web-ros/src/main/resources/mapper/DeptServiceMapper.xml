@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper">
+
+    <select id="topDeptartment" resultType="com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt">
+    select osd.*
+    from (select dept.p_id
+          from ope_sys_dept dept
+                   left join
+               ope_sys_dept_relation osdr
+               on osdr.descendant = dept.id
+          where (osdr.descendant = #{enter.id} OR osdr.ancestor = #{enter.id})
+          group by dept.p_id) pdept
+             inner join ope_sys_dept osd on pdept.p_id = osd.id
+    where osd.level = #{level}
+    </select>
+</mapper>
