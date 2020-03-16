@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -42,6 +43,13 @@ public class SysSalesAreaServiceImpl implements SysSalesAreaService {
     @Override
     public List<SalesAreaTressResult> trees(IdEnter enter) {
         return TreeUtil.build(this.getsaleaAreaList(enter), Constant.AREA_TREE_ROOT_ID);
+    }
+
+    @Override
+    public void deleteRoleSalesAreaByRoleId(IdEnter enter) {
+        LambdaQueryWrapper<OpeSysRoleSalesCidy> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSysRoleSalesCidy::getRoleId, enter.getId());
+        sysRoleSalesCidyService.remove(wrapper);
     }
 
     private List<SalesAreaTressResult> getsaleaAreaList(IdEnter enter) {

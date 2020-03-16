@@ -170,6 +170,8 @@ public enum ExceptionCodeEnums {
     MENU_IS_NOT_EXIST(10077, "菜单不存在"),
 
     THE_ROOT_NODE_MENU_CANNOT_BE_EDIT(10078, "根节点菜单不可编辑"),
+
+    UNBUNDLING_OF_EMPLOYEES(10079, "请解绑该职位下的员工"),
     ;
 
     private int code;

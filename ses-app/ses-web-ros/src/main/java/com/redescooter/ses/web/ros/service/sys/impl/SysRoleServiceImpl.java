@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -12,11 +13,14 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.SysRoleServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRole;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
+import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
@@ -75,6 +79,9 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Autowired
     private OpeSysMenuService opeSysMenuService;
 
+    @Autowired
+    private OpeSysUserRoleService sysUserRoleService;
+
     @Reference
     private CityBaseService ctiyBaseService;
 
@@ -97,6 +104,27 @@ public class SysRoleServiceImpl implements SysRoleService {
 
         this.updateRoleAouth(enter);
 
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public GeneralResult delete(IdEnter enter) {
+
+        //验证该角色下是否有人员，如果有人员，那么选进行解绑人员
+        LambdaQueryWrapper<OpeSysUserRole> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSysUserRole::getRoleId, enter.getId());
+        int count = sysUserRoleService.count(wrapper);
+        if (count > 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getCode(), ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getMessage());
+        }
+        //删除角色
+        roleService.removeById(enter.getId());
+        //删除角色对应的权限关系
+        rolePermissionService.deleteRoleMeunByRoleId(enter);
+        //删除角色对应的销售区域关系
+        sysSalesAreaService.deleteRoleSalesAreaByRoleId(enter);
+        //删除角色对应的部门关系
+        rolePermissionService.deleteRoleDeptByRoleId(enter);
         return new GeneralResult(enter.getRequestId());
     }
 

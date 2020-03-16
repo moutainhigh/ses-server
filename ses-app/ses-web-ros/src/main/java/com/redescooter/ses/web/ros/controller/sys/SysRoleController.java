@@ -62,7 +62,7 @@ public class SysRoleController {
     @PostMapping(value = "/delete")
     @ApiOperation(value = "岗位删除", response = GeneralResult.class)
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>();
+        return new Response<>(roleService.delete(enter));
     }
 
 //    @PostMapping(value = "/details")

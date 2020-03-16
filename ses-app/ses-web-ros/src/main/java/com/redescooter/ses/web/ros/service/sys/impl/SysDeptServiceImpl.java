@@ -180,8 +180,14 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public DeptTreeReslt topDepartment(IdEnter enter) {
+    public DeptTreeReslt topDeptartment(IdEnter enter) {
         return null;
+    }
+
+    @Override
+    public void deleteRoleDeptByRoleId(IdEnter enter) {
+
+        RolePermissionServiceImpl
     }
 
 

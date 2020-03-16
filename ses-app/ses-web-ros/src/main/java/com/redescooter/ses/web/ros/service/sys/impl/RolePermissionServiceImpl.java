@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleDept;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy;
@@ -95,5 +97,19 @@ public class RolePermissionServiceImpl implements RolePermissionService {
             delete.in(OpeSysRoleMenu.COL_MENU_ID, new ArrayList<>(menuId));
             roleMenuService.remove(delete);
         }
+    }
+
+    @Override
+    public void deleteRoleMeunByRoleId(IdEnter enter) {
+        LambdaQueryWrapper<OpeSysRoleMenu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSysRoleMenu::getRoleId, enter.getId());
+        roleMenuService.remove(wrapper);
+    }
+
+    @Override
+    public void deleteRoleDeptByRoleId(IdEnter enter) {
+        LambdaQueryWrapper<OpeSysRoleDept> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSysRoleDept::getRoleId, enter.getId());
+        roleDeptService.remove(wrapper);
     }
 }
