@@ -27,6 +27,7 @@ import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
 import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
