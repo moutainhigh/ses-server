@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Set;
-
 /**
  * @ClassName PermissionEnter
  * @Author Jerry
@@ -21,10 +19,10 @@ public class PermissionEnter extends GeneralEnter {
     private Long roleId;
 
     @ApiModelProperty(value = "已选择销售区域ID")
-    private Set<Long> salesPermissionIds;
+    private String salesPermissionIds;
 
     @ApiModelProperty(value = "已选择菜单ID")
-    private Set<Long> meunPermissionIds;
+    private String meunPermissionIds;
 
 
 }
