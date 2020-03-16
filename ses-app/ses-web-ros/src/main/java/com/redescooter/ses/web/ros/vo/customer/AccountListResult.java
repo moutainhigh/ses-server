@@ -52,6 +52,9 @@ public class AccountListResult extends GeneralResult {
     @ApiModelProperty(value = "联系人全名")
     private String contactFullName;
 
+    @ApiModelProperty(value = "公司名称")
+    private String companyName;
+
     @ApiModelProperty(value = "邮箱")
     private String email;
 
