@@ -20,7 +20,7 @@
     <result column="place_birth" jdbcType="VARCHAR" property="placeBirth" />
     <result column="address_country_code" jdbcType="VARCHAR" property="addressCountryCode" />
     <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="address_bureau" jdbcType="BIGINT" property="addressBureau"/>
+    <result column="address_bureau" jdbcType="VARCHAR" property="addressBureau"/>
     <result column="certificate_type" jdbcType="VARCHAR" property="certificateType" />
     <result column="certificate_negative_annex" jdbcType="VARCHAR" property="certificateNegativeAnnex" />
     <result column="certificate_positive_annex" jdbcType="VARCHAR" property="certificatePositiveAnnex" />
@@ -124,7 +124,7 @@
       </trim>
       <trim prefix="address_bureau = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.addressBureau,jdbcType=BIGINT}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.addressBureau,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="certificate_type = case" suffix="end,">
@@ -198,32 +198,32 @@
       #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
-  <insert id="batchInsert" parameterType="map">
-    <!--@mbg.generated-->
-      insert into ope_sys_user_profile
-      (id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name,
-      email, country_code, tel_number, gender, birthday, place_birth, address_country_code,
-      address, address_bureau, certificate_type, certificate_negative_annex, certificate_positive_annex,
-      join_date, created_by, created_time, updated_by, updated_time, def1, def2, def3,
-      def5, def6)
-      values
-      <foreach collection="list" item="item" separator=",">
-          (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.repairShopId,jdbcType=BIGINT},
-          #{item.sysUserId,jdbcType=BIGINT}, #{item.picture,jdbcType=VARCHAR}, #{item.firstName,jdbcType=VARCHAR},
-          #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR},
-          #{item.countryCode,jdbcType=VARCHAR}, #{item.telNumber,jdbcType=VARCHAR}, #{item.gender,jdbcType=VARCHAR},
-          #{item.birthday,jdbcType=DATE}, #{item.placeBirth,jdbcType=VARCHAR},
-          #{item.addressCountryCode,jdbcType=VARCHAR},
-          #{item.address,jdbcType=VARCHAR}, #{item.addressBureau,jdbcType=BIGINT},
-          #{item.certificateType,jdbcType=VARCHAR},
-          #{item.certificateNegativeAnnex,jdbcType=VARCHAR}, #{item.certificatePositiveAnnex,jdbcType=VARCHAR},
-          #{item.joinDate,jdbcType=TIMESTAMP}, #{item.createdBy,jdbcType=BIGINT},
-          #{item.createdTime,jdbcType=TIMESTAMP},
-          #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
-          #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
-          #{item.def6,jdbcType=DOUBLE})
-      </foreach>
-  </insert>
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into ope_sys_user_profile
+        (id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name,
+        email, country_code, tel_number, gender, birthday, place_birth, address_country_code,
+        address, address_bureau, certificate_type, certificate_negative_annex, certificate_positive_annex,
+        join_date, created_by, created_time, updated_by, updated_time, def1, def2, def3,
+        def5, def6)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.repairShopId,jdbcType=BIGINT},
+            #{item.sysUserId,jdbcType=BIGINT}, #{item.picture,jdbcType=VARCHAR}, #{item.firstName,jdbcType=VARCHAR},
+            #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR},
+            #{item.countryCode,jdbcType=VARCHAR}, #{item.telNumber,jdbcType=VARCHAR}, #{item.gender,jdbcType=VARCHAR},
+            #{item.birthday,jdbcType=DATE}, #{item.placeBirth,jdbcType=VARCHAR},
+            #{item.addressCountryCode,jdbcType=VARCHAR},
+            #{item.address,jdbcType=VARCHAR}, #{item.addressBureau,jdbcType=VARCHAR},
+            #{item.certificateType,jdbcType=VARCHAR},
+            #{item.certificateNegativeAnnex,jdbcType=VARCHAR}, #{item.certificatePositiveAnnex,jdbcType=VARCHAR},
+            #{item.joinDate,jdbcType=TIMESTAMP}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
+            #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
+            #{item.def6,jdbcType=DOUBLE})
+        </foreach>
+    </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserProfile">
     <!--@mbg.generated-->
       insert into ope_sys_user_profile
@@ -238,7 +238,7 @@
       #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
       #{countryCode,jdbcType=VARCHAR}, #{telNumber,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR},
       #{birthday,jdbcType=DATE}, #{placeBirth,jdbcType=VARCHAR}, #{addressCountryCode,jdbcType=VARCHAR},
-      #{address,jdbcType=VARCHAR}, #{addressBureau,jdbcType=BIGINT}, #{certificateType,jdbcType=VARCHAR},
+      #{address,jdbcType=VARCHAR}, #{addressBureau,jdbcType=VARCHAR}, #{certificateType,jdbcType=VARCHAR},
       #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{certificatePositiveAnnex,jdbcType=VARCHAR},
       #{joinDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
       #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
@@ -261,7 +261,7 @@
       place_birth = #{placeBirth,jdbcType=VARCHAR},
       address_country_code = #{addressCountryCode,jdbcType=VARCHAR},
       address = #{address,jdbcType=VARCHAR},
-      address_bureau = #{addressBureau,jdbcType=BIGINT},
+      address_bureau = #{addressBureau,jdbcType=VARCHAR},
       certificate_type = #{certificateType,jdbcType=VARCHAR},
       certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR},
       certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR},
@@ -422,7 +422,7 @@
         #{address,jdbcType=VARCHAR},
       </if>
       <if test="addressBureau != null">
-          #{addressBureau,jdbcType=BIGINT},
+          #{addressBureau,jdbcType=VARCHAR},
       </if>
       <if test="certificateType != null">
         #{certificateType,jdbcType=VARCHAR},
@@ -454,28 +454,28 @@
       <if test="def2 != null">
         #{def2,jdbcType=VARCHAR},
       </if>
-      <if test="def3 != null">
-        #{def3,jdbcType=VARCHAR},
-      </if>
-      <if test="def5 != null">
-        #{def5,jdbcType=VARCHAR},
-      </if>
-      <if test="def6 != null">
-        #{def6,jdbcType=DOUBLE},
-      </if>
+        <if test="def3 != null">
+            #{def3,jdbcType=VARCHAR},
+        </if>
+        <if test="def5 != null">
+            #{def5,jdbcType=VARCHAR},
+        </if>
+        <if test="def6 != null">
+            #{def6,jdbcType=DOUBLE},
+        </if>
     </trim>
       on duplicate key update
       <trim suffixOverrides=",">
-      <if test="id != null">
-        id = #{id,jdbcType=BIGINT},
-      </if>
-      <if test="dr != null">
-        dr = #{dr,jdbcType=INTEGER},
-      </if>
-      <if test="repairShopId != null">
-        repair_shop_Id = #{repairShopId,jdbcType=BIGINT},
-      </if>
-      <if test="sysUserId != null">
+          <if test="id != null">
+              id = #{id,jdbcType=BIGINT},
+          </if>
+          <if test="dr != null">
+              dr = #{dr,jdbcType=INTEGER},
+          </if>
+          <if test="repairShopId != null">
+              repair_shop_Id = #{repairShopId,jdbcType=BIGINT},
+          </if>
+          <if test="sysUserId != null">
         sys_user_id = #{sysUserId,jdbcType=BIGINT},
       </if>
       <if test="picture != null">
@@ -515,7 +515,7 @@
         address = #{address,jdbcType=VARCHAR},
       </if>
       <if test="addressBureau != null">
-          address_bureau = #{addressBureau,jdbcType=BIGINT},
+          address_bureau = #{addressBureau,jdbcType=VARCHAR},
       </if>
       <if test="certificateType != null">
         certificate_type = #{certificateType,jdbcType=VARCHAR},
