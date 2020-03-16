@@ -60,9 +60,6 @@ public class SysRoleServiceImpl implements SysRoleService {
     private OpeSysRoleService roleService;
 
     @Autowired
-    private IdAppService idAppService;
-
-    @Autowired
     private RolePermissionService rolePermissionService;
 
     @Autowired
@@ -76,6 +73,9 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Autowired
     private OpeSysMenuService opeSysMenuService;
+
+    @Reference
+    private IdAppService idAppService;
 
     @Reference
     private CityBaseService ctiyBaseService;
