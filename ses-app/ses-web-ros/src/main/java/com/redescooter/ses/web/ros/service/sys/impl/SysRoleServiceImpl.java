@@ -173,7 +173,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         return result;
     }
 
-
     private OpeSysRole builderRole(Long id, RoleEnter enter) {
         OpeSysRole role = new OpeSysRole();
         if (id == null || id == 0) {
@@ -221,9 +220,8 @@ public class SysRoleServiceImpl implements SysRoleService {
         checkRoleAuothParameter(enter, salesPermissionIds, meunPermissionIds);
 
         //删除历史权限
-        rolePermissionService.deleteRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
-        rolePermissionService.deleteRoleMenuPermissions(enter.getRoleId(), meunPermissionIds);
-        rolePermissionService.deleteRoleSalesPermissions(enter.getRoleId(), salesPermissionIds);
+        rolePermissionService.deleteRoleMeunByRoleId(new IdEnter(enter.getRoleId()));
+        rolePermissionService.deleteRoleDeptByRoleId(new IdEnter(enter.getRoleId()));
         //重建权限
         this.insertRoleAouth(enter);
     }
