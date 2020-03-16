@@ -58,7 +58,7 @@ public interface SysMenuService {
      * @param enter
      * @return
      */
-    List<MenuTreeResult> userMenuTrees(GeneralEnter enter);
+    Map<String, ModulePermissionsResult> userMenuTrees(GeneralEnter enter);
 
     /**
      * 模块权限列表

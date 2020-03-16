@@ -64,7 +64,7 @@ public class SysMenuController {
 
     @PostMapping(value = "/userMenuTrees")
     @ApiOperation(value = "用户菜单", response = GeneralResult.class)
-    public Response<List<MenuTreeResult>> userMenuTrees(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<Map<String, ModulePermissionsResult>> userMenuTrees(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(sysMenuService.userMenuTrees(enter));
     }
 

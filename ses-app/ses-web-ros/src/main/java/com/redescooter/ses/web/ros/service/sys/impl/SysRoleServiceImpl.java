@@ -64,7 +64,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Autowired
     private OpeSysRoleService roleService;
 
-    @Reference
+    @Autowired
     private IdAppService idAppService;
 
     @Autowired
@@ -198,18 +198,15 @@ public class SysRoleServiceImpl implements SysRoleService {
     private void insertRoleAouth(RoleEnter enter) {
         Set<Long> salesPermissionIds = null;
         Set<Long> meunPermissionIds = null;
-        List<Long> saleIds = JSON.parseArray(enter.getSalesPermissionIds(), Long.class);
-        List<Long> menuIds = JSON.parseArray(enter.getMeunPermissionIds(), Long.class);
-
-        // 将 销售区域 json 格式 转 set集合
-        if (CollectionUtils.isNotEmpty(saleIds)) {
-            salesPermissionIds = new HashSet<>(saleIds);
+        if (StringUtils.isNotBlank(enter.getSalesPermissionIds())) {
+            // 将 销售区域 json 格式 转 set集合
+            salesPermissionIds = new HashSet<>(JSON.parseArray(enter.getSalesPermissionIds(), Long.class));
+        }
+        if (StringUtils.isNotBlank(enter.getMeunPermissionIds())) {
+            // 将 菜单列表 json 格式 转set 集合
+            meunPermissionIds = new HashSet<>(JSON.parseArray(enter.getMeunPermissionIds(), Long.class));
         }
 
-        // 将 菜单列表 json 格式 转set 集合
-        if (CollectionUtils.isNotEmpty(menuIds)) {
-            meunPermissionIds = new HashSet<>(menuIds);
-        }
         checkRoleAuothParameter(enter, salesPermissionIds, meunPermissionIds);
 
         //创建岗位销售区域关系
@@ -223,23 +220,21 @@ public class SysRoleServiceImpl implements SysRoleService {
     private void updateRoleAouth(RoleEnter enter) {
         Set<Long> salesPermissionIds = null;
         Set<Long> meunPermissionIds = null;
-        List<Long> saleIds = JSON.parseArray(enter.getSalesPermissionIds(), Long.class);
-        List<Long> menuIds = JSON.parseArray(enter.getMeunPermissionIds(), Long.class);
-
-        // 将 销售区域 json 格式 转 set集合
-        if (CollectionUtils.isNotEmpty(saleIds)) {
-            salesPermissionIds = new HashSet<>(saleIds);
+        if (StringUtils.isNotBlank(enter.getSalesPermissionIds())) {
+            // 将 销售区域 json 格式 转 set集合
+            salesPermissionIds = new HashSet<>(JSON.parseArray(enter.getSalesPermissionIds(), Long.class));
         }
-        // 将 菜单列表 json 格式 转set 集合
-        if (CollectionUtils.isNotEmpty(menuIds)) {
-            meunPermissionIds = new HashSet<>(menuIds);
+        if (StringUtils.isNotBlank(enter.getMeunPermissionIds())) {
+            // 将 菜单列表 json 格式 转set 集合
+            meunPermissionIds = new HashSet<>(JSON.parseArray(enter.getMeunPermissionIds(), Long.class));
         }
         checkRoleAuothParameter(enter, salesPermissionIds, meunPermissionIds);
 
         //删除历史权限
-        rolePermissionService.deleteRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
         rolePermissionService.deleteRoleMeunByRoleId(new IdEnter(enter.getRoleId()));
+        rolePermissionService.deleteRoleDeptByRoleId(new IdEnter(enter.getRoleId()));
         rolePermissionService.deleteRoleSalesPermissionsByRoleId(new IdEnter(enter.getRoleId()));
+
         //重建权限
         this.insertRoleAouth(enter);
     }

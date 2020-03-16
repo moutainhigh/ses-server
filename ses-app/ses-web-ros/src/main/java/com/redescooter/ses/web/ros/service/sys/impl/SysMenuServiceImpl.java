@@ -102,14 +102,20 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public List<MenuTreeResult> userMenuTrees(GeneralEnter enter) {
+    public Map<String, ModulePermissionsResult> userMenuTrees(GeneralEnter enter) {
+        //获取所有父子权限列表
+        List<ModulePermissionsResult> fatSon = menuServiceMapper.modulePermissions(enter);
+
+        //查询该用户角色下的数据权限
+
         return null;
     }
 
     @Override
     public Map<String, ModulePermissionsResult> modulePermissions(IdEnter enter) {
+        //获取所有父子权限列表
+        List<ModulePermissionsResult> fatSon = menuServiceMapper.modulePermissions(enter);
 
-        List<ModulePermissionsResult> results = menuServiceMapper.modulePermissions(enter);
         Map<String, ModulePermissionsResult> resultMap = new HashMap<>();
 
         if (enter.getId() != 0) {
@@ -118,7 +124,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             List<OpeSysRoleMenu> list = roleMenuService.list(queryWrapper);
 
             if (CollUtil.isNotEmpty(list)) {
-                list.forEach(li -> results.forEach(t -> {
+                list.forEach(li -> fatSon.forEach(t -> {
                     if (CollUtil.isNotEmpty(list)) {
                         t.getChilds().stream().filter(ch -> li.getMenuId() == ch.getId()).forEach(ch -> ch.setChecked(Boolean.TRUE));
                     }
@@ -126,8 +132,8 @@ public class SysMenuServiceImpl implements SysMenuService {
             }
         }
 
-        if (CollUtil.isNotEmpty(results)) {
-            results.forEach(rs -> {
+        if (CollUtil.isNotEmpty(fatSon)) {
+            fatSon.forEach(rs -> {
                 resultMap.put(String.valueOf(rs.getId()), rs);
             });
         }
