@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -20,9 +21,9 @@ import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
 import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
-import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
@@ -32,10 +33,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @ClassName SysRoleServiceImpl
@@ -166,49 +164,84 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     private void insertRoleAouth(RoleEnter enter) {
-        // 部门过滤
-        if (opeSysDeptService.getById(enter.getDeptId()) == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
-        }
-        //销售区域
-        List<CityResult> cityList = ctiyBaseService.list(enter);
-        List<Long> cityIds = new ArrayList<>();
-        cityList.forEach(item -> {
-            cityIds.add(item.getId());
-        });
-        enter.getSalesPermissionIds().forEach(item -> {
-            if (!cityIds.contains(item)) {
-                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-            }
-        });
-        // 菜单过滤
-        List<OpeSysMenu> sysMenuList = opeSysMenuService.list();
-        List<Long> sysMenuIds = new ArrayList<>();
+        // 将 销售区域 json 格式 转 set集合
+        Set<Long> salesPermissionIds = new HashSet<>(JSON.parseArray(enter.getSalesPermissionIds(), Long.class));
 
-        sysMenuList.forEach(item -> {
-            sysMenuIds.add(item.getId());
-        });
-
-        enter.getMeunPermissionIds().forEach(item -> {
-            if (!sysMenuIds.contains(item)) {
-                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-            }
-        });
+        // 将 菜单列表 json 格式 转set 集合
+        Set<Long> meunPermissionIds = new HashSet<>(JSON.parseArray(enter.getMeunPermissionIds(), Long.class));
+        checkRoleAuothParameter(enter, salesPermissionIds, meunPermissionIds);
 
         //创建岗位销售区域关系
-        rolePermissionService.insertRoleSalesPermissions(enter.getRoleId(), enter.getSalesPermissionIds());
+        rolePermissionService.insertRoleSalesPermissions(enter.getRoleId(), salesPermissionIds);
         //创建岗位菜单权限关系
-        rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(), enter.getMeunPermissionIds());
+        rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(), meunPermissionIds);
         //创建岗位部门权限关系
         rolePermissionService.insertRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
     }
 
     private void updateRoleAouth(RoleEnter enter) {
+        // 将 销售区域 json 格式 转 set集合
+        Set<Long> salesPermissionIds = new HashSet<>(JSON.parseArray(enter.getSalesPermissionIds(), Long.class));
+
+        // 将 菜单列表 json 格式 转set 集合
+        Set<Long> meunPermissionIds = new HashSet<>(JSON.parseArray(enter.getMeunPermissionIds(), Long.class));
+        checkRoleAuothParameter(enter, salesPermissionIds, meunPermissionIds);
+
         //删除历史权限
         rolePermissionService.deleteRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
-        rolePermissionService.deleteRoleMenuPermissions(enter.getRoleId(), enter.getMeunPermissionIds());
-        rolePermissionService.deleteRoleSalesPermissions(enter.getRoleId(), enter.getSalesPermissionIds());
+        rolePermissionService.deleteRoleMenuPermissions(enter.getRoleId(), meunPermissionIds);
+        rolePermissionService.deleteRoleSalesPermissions(enter.getRoleId(), salesPermissionIds);
         //重建权限
         this.insertRoleAouth(enter);
     }
-}
+
+    private void checkRoleAuothParameter(RoleEnter enter, Set<Long> salesPermissionIds, Set<Long> meunPermissionIds) {
+        // 部门过滤
+        if (opeSysDeptService.getById(enter.getDeptId()) == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
+        }
+
+        //销售区域 校验
+        if (CollectionUtils.isNotEmpty(salesPermissionIds)) {
+            List<CityResult> cityList = ctiyBaseService.list(enter);
+            List<Long> cityIds = new ArrayList<>();
+            cityList.forEach(item -> {
+                cityIds.add(item.getId());
+            });
+            salesPermissionIds.forEach(item -> {
+                if (!cityIds.contains(item)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+            });
+        }
+        // 菜单过滤 校验
+        if (CollectionUtils.isNotEmpty(meunPermissionIds)) {
+            List<OpeSysMenu> sysMenuList = opeSysMenuService.list();
+            List<Long> sysMenuIds = new ArrayList<>();
+
+            sysMenuList.forEach(item -> {
+                sysMenuIds.add(item.getId());
+            });
+            meunPermissionIds.forEach(item -> {
+                if (!sysMenuIds.contains(item)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+            });
+
+            //创建岗位销售区域关系
+            rolePermissionService.insertRoleSalesPermissions(enter.getRoleId(), salesPermissionIds);
+            //创建岗位菜单权限关系
+            rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(), meunPermissionIds);
+            //创建岗位部门权限关系
+            rolePermissionService.insertRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
+        }
+
+        private void updateRoleAouth (RoleEnter enter){
+            //删除历史权限
+            rolePermissionService.deleteRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
+            rolePermissionService.deleteRoleMenuPermissions(enter.getRoleId(), meunPermissionIds);
+            rolePermissionService.deleteRoleSalesPermissions(enter.getRoleId(), salesPermissionIds);
+            //重建权限
+            this.insertRoleAouth(enter);
+        }
+    }

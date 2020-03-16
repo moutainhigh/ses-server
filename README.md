@@ -9,17 +9,6 @@
 
 </div>
 
-<p align="center">
-
-<a href="https://travis-ci.org/onevcat/Kingfisher">![](https://img.shields.io/travis/onevcat/Kingfisher/master.svg)</a>
-<a href="https://github.com/Carthage/Carthage/">![](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)</a>
-<a href="https://swift.org/package-manager/">![](https://img.shields.io/badge/SPM-ready-orange.svg)</a>
-<a href="http://onevcat.github.io/Kingfisher/">![](https://img.shields.io/cocoapods/v/Kingfisher.svg?style=flat)</a>
-<a href="https://raw.githubusercontent.com/onevcat/Kingfisher/master/LICENSE">![](https://img.shields.io/cocoapods/l/Kingfisher.svg?style=flat)</a>
-<a href="http://onevcat.github.io/Kingfisher/">![](https://img.shields.io/cocoapods/p/Kingfisher.svg?style=flat)</a>
-<a href="https://codebeat.co/projects/github-com-onevcat-kingfisher">![codebeat badge](https://codebeat.co/assets/svg/badges/A-398b39-669406e9e1b136187b91af587d4092b0160370f271f66a651f444b990c2730e9.svg)</a>
-</p>
-
 ## <div align=center>[多租户分布式架构(dubbo版)](https://github.com/mrjerryli/ses-server) `Sv 1.2.0` 
  
 #### 一、技术选型

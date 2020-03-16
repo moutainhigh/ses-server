@@ -66,8 +66,13 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-               customer_full_name like concat("%",#{keyword},"%")
+            customer_first_name like concat("%",#{keyword},"%")
+            or customer_last_name like concat("%",#{keyword},"%")
+            or customer_full_name like concat("%",#{keyword},"%")
+            or contact_first_name like concat("%",#{keyword},"%")
+            or contact_last_name like concat("%",#{keyword},"%")
             or contact_full_name like concat("%",#{keyword},"%")
+            or company_name like concat("%",#{keyword},"%")
             or email like concat("%",#{keyword},"%")
             )
         </if>
@@ -82,11 +87,13 @@
         contact_first_name as contactFirstName,
         contact_last_name as contactLastName,
         contact_full_name as contactFullName,
+        company_name as companyName,
         email as email,
         customer_type as customerType,
         industry_type as industryType
         from ope_customer
-        where dr = 0 and tenant_id !=0
+        where dr = 0
+        and tenant_id != 0
         <if test="customerType != null and customerType != ''">
             and customer_type =#{customerType}
         </if>
@@ -95,8 +102,13 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-               customer_full_name like concat("%",#{keyword},"%")
+            customer_first_name like concat("%",#{keyword},"%")
+            or customer_last_name like concat("%",#{keyword},"%")
+            or customer_full_name like concat("%",#{keyword},"%")
+            or contact_first_name like concat("%",#{keyword},"%")
+            or contact_last_name like concat("%",#{keyword},"%")
             or contact_full_name like concat("%",#{keyword},"%")
+            or company_name like concat("%",#{keyword},"%")
             or email like concat("%",#{keyword},"%")
             )
             order by created_time desc
