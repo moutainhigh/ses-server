@@ -112,4 +112,11 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         wrapper.eq(OpeSysRoleDept::getRoleId, enter.getId());
         roleDeptService.remove(wrapper);
     }
+
+    @Override
+    public void deleteRoleSalesPermissionsByRoleId(IdEnter enter) {
+        LambdaQueryWrapper<OpeSysRoleSalesCidy> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSysRoleSalesCidy::getRoleId, enter.getId());
+        roleSalesCidyService.remove(wrapper);
+    }
 }

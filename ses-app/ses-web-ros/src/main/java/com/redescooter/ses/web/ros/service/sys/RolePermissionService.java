@@ -55,4 +55,11 @@ public interface RolePermissionService {
      * @param enter
      */
     void deleteRoleDeptByRoleId(IdEnter enter);
+
+    /**
+     * 删除角色下的所有销售区域
+     *
+     * @param enter
+     */
+    void deleteRoleSalesPermissionsByRoleId(IdEnter enter);
 }
