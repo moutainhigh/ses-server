@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.aspect;
 
+import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.exception.BaseException;
@@ -10,17 +11,20 @@ import com.redescooter.ses.tool.utils.ValidationUtil;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
+import com.redescooter.ses.web.ros.utils.SpringContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Locale;
@@ -52,6 +56,8 @@ public class ControllerAspect {
                     GeneralEnter enter = (GeneralEnter) obj;
                     checkEnterParameter(enter);
                     checkToken(point, enter);
+                    //接口权限验证
+                    checkPermission(point);
                 }
                 ValidationUtil.validation(obj);
             }
@@ -114,6 +120,19 @@ public class ControllerAspect {
         }
     }
 
+    /**
+     * 接口权限控制
+     *
+     * @param point
+     */
+    private void checkPermission(ProceedingJoinPoint point) {
+        HttpServletRequest request = SpringContextUtils.getHttpServletRequest();
+        String requestMethod = request.getMethod();
+        String requestPath = request.getRequestURI().substring(request.getContextPath().length());
+        requestPath = filterUrl(requestPath);
+        log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + requestMethod);
+    }
+
     private void checkEnterParameter(GeneralEnter enter) {
         if (StringUtils.isEmpty(enter.getRequestId())) {
             enter.setRequestId(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -142,4 +161,18 @@ public class ControllerAspect {
         }
     }
 
+    private String filterUrl(String requestPath) {
+        String url = "";
+        if (StringUtils.isNotBlank(requestPath)) {
+            url = requestPath.replace("\\", "/");
+            url = requestPath.replace("//", "/");
+            if (url.indexOf("//") >= 0) {
+                url = filterUrl(url);
+            }
+			/*if(url.startsWith("/")){
+				url=url.substring(1);
+			}*/
+        }
+        return url;
+    }
 }

@@ -173,7 +173,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         return result;
     }
 
-
     private OpeSysRole builderRole(Long id, RoleEnter enter) {
         OpeSysRole role = new OpeSysRole();
         if (id == null || id == 0) {

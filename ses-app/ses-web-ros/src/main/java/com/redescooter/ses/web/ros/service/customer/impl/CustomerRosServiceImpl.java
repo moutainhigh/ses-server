@@ -602,35 +602,38 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public AccountDeatilResult accountDeatil(IdEnter enter) {
-        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer == null) {
+        OpeCustomer customerInfo = opeCustomerMapper.selectById(enter.getId());
+        if (customerInfo == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
-        enter.setId(opeCustomer.getTenantId());
+        enter.setId(customerInfo.getTenantId());
 
         IdEnter idEnter = new IdEnter();
         BeanUtils.copyProperties(enter, idEnter);
-        idEnter.setId(opeCustomer.getTenantId());
-        QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(idEnter);
-        AccountDeatilResult reslut = AccountDeatilResult.builder()
-                .id(opeCustomer.getId())
-                .customerType(opeCustomer.getCustomerType())
-                .customerFirstName(opeCustomer.getCustomerFirstName())
-                .customerLastName(opeCustomer.getCustomerLastName())
-                .customerFullName(opeCustomer.getCustomerFullName())
-                .companyName(opeCustomer.getCompanyName())
-                .industryType(opeCustomer.getIndustryType())
-                .status(queryTenantResult.getStatus())
-                .email(opeCustomer.getEmail())
-                .activationTime(queryTenantResult.getEffectiveTime())
-                .expireTime(queryTenantResult.getExpireTime())
+        idEnter.setId(customerInfo.getTenantId());
+
+        AccountDeatilResult accountReslut = AccountDeatilResult.builder()
+                .id(customerInfo.getId())
+                .customerType(customerInfo.getCustomerType())
+                .customerFirstName(customerInfo.getCustomerFirstName())
+                .customerLastName(customerInfo.getCustomerLastName())
+                .customerFullName(customerInfo.getCustomerFullName())
+                .companyName(customerInfo.getCompanyName())
+                .industryType(customerInfo.getIndustryType())
+                .email(customerInfo.getEmail())
                 .build();
-        if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), opeCustomer.getCustomerType())) {
-            reslut.setContactFirstName(opeCustomer.getContactFirstName());
-            reslut.setContactLastName(opeCustomer.getContactLastName());
-            reslut.setContactFullName(opeCustomer.getContactFullName());
+        if (!customerInfo.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
+            QueryTenantResult tenantResult = tenantBaseService.queryTenantById(idEnter);
+            accountReslut.setStatus(tenantResult.getStatus());
+            accountReslut.setActivationTime(tenantResult.getEffectiveTime());
+            accountReslut.setExpireTime(tenantResult.getExpireTime());
         }
-        return reslut;
+        if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), customerInfo.getCustomerType())) {
+            accountReslut.setContactFirstName(customerInfo.getContactFirstName());
+            accountReslut.setContactLastName(customerInfo.getContactLastName());
+            accountReslut.setContactFullName(customerInfo.getContactFullName());
+        }
+        return accountReslut;
     }
 
     /**
