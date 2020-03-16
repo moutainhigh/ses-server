@@ -8,12 +8,12 @@ import java.util.List;
 
 /**
  * @ClassName:SysRoleServiceMapper
- * @description: SysRoleServiceMapper
+ * @description: RoleServiceMapper
  * @author: Alex
  * @Version：1.3
  * @create: 2020/03/13 12:20
  */
-public interface SysRoleServiceMapper {
+public interface RoleServiceMapper {
 
     /**
      * 角色列表

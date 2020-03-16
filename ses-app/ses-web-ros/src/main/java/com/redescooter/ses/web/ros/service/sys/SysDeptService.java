@@ -68,8 +68,9 @@ public interface SysDeptService {
      * 获取顶级部门
      *
      * @param enter
+     * @param level
      * @return
      */
-    DeptTreeReslt topDeptartment(IdEnter enter);
+    DeptTreeReslt topDeptartment(IdEnter enter, String level);
 
 }

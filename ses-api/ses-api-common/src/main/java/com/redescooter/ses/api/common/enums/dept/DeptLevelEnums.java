@@ -15,9 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum DeptLevelEnums {
 
-    COMPANY("COMPANY", "公司", "0"),
-    SUBSIDIARY("SUBSIDIARY", "子公司", "1"),
-    DEPARTMENT("DEPARTMENT", "部门", "2"),
+    COMPANY("COMPANY", "顶级公司顶级公司", "0"),
+    DEPARTMENT("DEPARTMENT", "一级部门", "1"),
     ;
 
     private String code;

@@ -1,4 +1,5 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
+
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -9,12 +10,13 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
+import com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper;
+import com.redescooter.ses.web.ros.dao.sys.RoleServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleDept;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSysDeptRelationService;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
@@ -25,6 +27,7 @@ import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,11 +55,10 @@ public class SysDeptServiceImpl implements SysDeptService {
     private SysDeptRelationService sysDeptRelationService;
     @Autowired
     private OpeSysRoleDeptService opeSysRoleDeptService;
-
-    @Autowired
-    private OpeSysDeptRelationService opeSysDeptRelationService;
     @Autowired
     private OpeSysDeptService opeSysDeptService;
+    @Autowired
+    private DeptServiceMapper deptServiceMapper;
     @Autowired
     private IdAppService idAppService;
 
@@ -180,9 +182,15 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public DeptTreeReslt topDeptartment(IdEnter enter) {
-        return null;
+    public DeptTreeReslt topDeptartment(IdEnter enter, String level) {
+
+        if (StringUtils.isBlank(level)) {
+            level = DeptLevelEnums.COMPANY.getValue();
+        }
+        DeptTreeReslt deptTreeReslt = deptServiceMapper.topDeptartment(enter, level);
+        return deptTreeReslt;
     }
+
 
     private OpeSysDept buildDept(SaveDeptEnter enter) {
 

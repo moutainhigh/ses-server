@@ -10,10 +10,9 @@ import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.sys.SysRoleServiceMapper;
+import com.redescooter.ses.web.ros.dao.sys.RoleServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRole;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -78,7 +77,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     private OpeSysRoleService opeSysRoleService;
 
     @Autowired
-    private SysRoleServiceMapper sysRoleServiceMapper;
+    private RoleServiceMapper roleServiceMapper;
 
     @Autowired
     private OpeSysMenuService opeSysMenuService;
@@ -141,11 +140,11 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public List<DeptRoleListResult> list(RoleListEnter enter) {
         //查询所有部门
-        List<DeptRoleListResult> opeSysDeptList = sysRoleServiceMapper.roleDeptlist(enter);
+        List<DeptRoleListResult> opeSysDeptList = roleServiceMapper.roleDeptlist(enter);
         if (CollectionUtils.isEmpty(opeSysDeptList)) {
             return new ArrayList<>();
         }
-        List<RoleResult> roleList = sysRoleServiceMapper.list(enter);
+        List<RoleResult> roleList = roleServiceMapper.list(enter);
         if (CollectionUtils.isEmpty(roleList)) {
             return opeSysDeptList;
         }

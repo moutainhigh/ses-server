@@ -35,9 +35,15 @@ public class SysMenuServiceImplTest {
     @Test
     public void save() {
 
-        int i = 1;
-        long pId = 100000;
-        this.otherMenu(i, pId);
+        SaveMenuEnter save = new SaveMenuEnter();
+        save.setName("ROOT");
+        save.setPermission("SYS::ROOT");
+        save.setPath("/");
+        save.setIcon("");
+        save.setSort(0);
+        save.setType(MenuTypeEnums.MENUS.getValue());
+        save.setUserId(new Long("0"));
+        sysMenuService.save(save);
     }
 
     @Test

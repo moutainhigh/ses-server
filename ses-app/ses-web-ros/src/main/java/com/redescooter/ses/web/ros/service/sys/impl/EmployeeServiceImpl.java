@@ -1,4 +1,5 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
@@ -296,7 +297,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 result = employeeServiceMapper.getEmployeePositionList(enter.getTenantId(), ids);
                 break;
             case OFFICEAREA:
-//                result = employeeServiceMapper.getEmployeeOfficeareaList(enter.getTenantId());
                 result.add(EmployeeDeptResult.builder()
                         .id(1000000L)
                         .name("Paris")
