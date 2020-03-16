@@ -20,7 +20,7 @@ public enum AddressBureauEnums {
     SHANGHAI("1000001", "SHANGHAI", "2");
 
     public static String checkCode(String code) {
-        for (EmployeeDeptTypeEnums item : EmployeeDeptTypeEnums.values()) {
+        for (AddressBureauEnums item : AddressBureauEnums.values()) {
             if (item.getCode().equals(code)) {
                 return item.getCode();
             }
@@ -29,7 +29,7 @@ public enum AddressBureauEnums {
     }
 
     public static String checkValue(String value) {
-        for (EmployeeDeptTypeEnums item : EmployeeDeptTypeEnums.values()) {
+        for (AddressBureauEnums item : AddressBureauEnums.values()) {
             if (item.getValue().equals(value)) {
                 return item.getValue();
             }
@@ -37,8 +37,8 @@ public enum AddressBureauEnums {
         return null;
     }
 
-    public static EmployeeDeptTypeEnums getEnumByValue(String value) {
-        for (EmployeeDeptTypeEnums item : EmployeeDeptTypeEnums.values()) {
+    public static AddressBureauEnums getEnumByValue(String value) {
+        for (AddressBureauEnums item : AddressBureauEnums.values()) {
             if (item.getValue().equals(value)) {
                 return item;
             }
@@ -46,8 +46,8 @@ public enum AddressBureauEnums {
         return null;
     }
 
-    public static EmployeeDeptTypeEnums getEnumByCode(String code) {
-        for (EmployeeDeptTypeEnums item : EmployeeDeptTypeEnums.values()) {
+    public static AddressBureauEnums getEnumByCode(String code) {
+        for (AddressBureauEnums item : AddressBureauEnums.values()) {
             if (item.getCode().equals(code)) {
                 return item;
             }

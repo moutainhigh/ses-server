@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.enums.employee.AddressBureauEnums;
 import com.redescooter.ses.api.common.enums.employee.EmployeeDeptTypeEnums;
 import com.redescooter.ses.api.common.enums.employee.EmployeeStatusEnums;
@@ -14,12 +15,28 @@ import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.EmployeeServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeSysDept;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
+import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
-import com.redescooter.ses.web.ros.vo.sys.employee.*;
+import com.redescooter.ses.web.ros.service.sys.SysDeptService;
+import com.redescooter.ses.web.ros.vo.sys.employee.DeptEmployeeListResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
+import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -69,6 +86,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private JedisService jedisService;
 
+    @Autowired
+    private SysDeptService sysDeptService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -101,7 +121,11 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
             employeeList.forEach(item -> {
                 //解析出每个办公区域信息
-                item.setAddressBureau(AddressBureauEnums.getEnumByCode(String.valueOf(item.getAddressBureauId())).getMessage());
+                String addressBureau = null;
+                if (item.getAddressBureauId() != null || item.getAddressBureauId() != 0) {
+                    addressBureau = AddressBureauEnums.getEnumByCode(String.valueOf(item.getAddressBureauId())).getMessage();
+                }
+                item.setAddressBureau(addressBureau);
                 if (dept.getDeptId().equals(item.getDeptId())) {
                     employeeResultList.add(item);
                 }
@@ -134,24 +158,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             }
         }
-        OpeSysDept company = findCompany(deptList, dept);
-        employeeResult.setCompanyId(company.getId());
-        employeeResult.setCompanyName(company.getName());
-        return employeeResult;
-    }
-
-
-    private OpeSysDept findCompany(List<OpeSysDept> deptList, OpeSysDept child) {
-        for (OpeSysDept item : deptList) {
-            if (child.getPId() == Constant.DEPT_TREE_ROOT_ID) {
-                return child;
-            }
-            if (item.getId().equals(child.getPId())) {
-                child = item;
-                findCompany(deptList, child);
-            }
+        //解析出每个办公区域信息
+        String addressBureau = null;
+        if (employeeResult.getAddressBureauId() != null || employeeResult.getAddressBureauId() != 0) {
+            addressBureau = AddressBureauEnums.getEnumByCode(String.valueOf(employeeResult.getAddressBureauId())).getMessage();
         }
-        return null;
+        DeptTreeReslt deptTreeReslt = sysDeptService.topDeptartment(new IdEnter(employeeResult.getDeptId()), DeptLevelEnums.COMPANY.getValue());
+        employeeResult.setCompanyId(deptTreeReslt.getId());
+        employeeResult.setCompanyName(deptTreeReslt.getName());
+        return employeeResult;
     }
 
     /**

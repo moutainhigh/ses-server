@@ -146,7 +146,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
         List<RoleResult> roleList = roleServiceMapper.list(enter);
         if (CollectionUtils.isEmpty(roleList)) {
-            return new ArrayList<>();
+            return opeSysDeptList;
         }
         opeSysDeptList.forEach(item -> {
             List<RoleResult> roleResultList = new ArrayList<>();

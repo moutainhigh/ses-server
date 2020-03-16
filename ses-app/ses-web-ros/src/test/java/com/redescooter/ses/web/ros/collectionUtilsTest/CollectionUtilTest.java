@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.collectionUtilsTest;
 
+import com.redescooter.ses.api.common.enums.employee.AddressBureauEnums;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import org.junit.Test;
 
@@ -24,6 +25,13 @@ public class CollectionUtilTest {
     @Test
     public void stream() {
         IntStream.range(1, 10).forEach(System.out::println);
+    }
+
+    @Test
+    public void testStream() {
+        Long a = 1000000L;
+        System.out.println();
+        System.out.println(AddressBureauEnums.PAIRS.getCode());
     }
 
 }

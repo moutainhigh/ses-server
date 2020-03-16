@@ -6,24 +6,25 @@
     </sql>
 
     <sql id="select_EmployeeResult">
-                   staff.id                           as id,
-                   profile.first_name                 as employeeFirstName,
-                   profile.last_name                  as employeeLastName,
-                   profile.country_code               as telCountryCode,
-                   profile.tel_number                 as telephone,
-                   profile.email                      as email,
-                   dept.id                            as deptId,
-                   dept.name                          as deptName,
-                   role.id                            as positionId,
-                   role.role_name                     as positionName,
-                   profile.birthday                   as birthday,
-                   profile.join_date                  as entryDate,
-                   profile.address_country_code       as addressCountryCode,
-                   profile.address                    as address,
-                   profile.certificate_type           as certificateType,
-                   profile.certificate_positive_annex as positivePicture,
-                   profile.certificate_negative_annex as negativePicture,
-                   profile.picture                    as avatar
+                 staff.id                           as id,
+               profile.first_name                 as employeeFirstName,
+               profile.last_name                  as employeeLastName,
+               profile.country_code               as telCountryCode,
+               profile.tel_number                 as telephone,
+               profile.email                      as email,
+               dept.id                            as deptId,
+               dept.name                          as deptName,
+               role.id                            as positionId,
+               role.role_name                     as positionName,
+               profile.birthday                   as birthday,
+               profile.join_date                  as entryDate,
+               profile.address_country_code       as addressCountryCode,
+               profile.address                    as address,
+               profile.certificate_type           as certificateType,
+               profile.certificate_positive_annex as positivePicture,
+               profile.certificate_negative_annex as negativePicture,
+               profile.picture                    as avatar,
+               profile.address_bureau             as addressBureauId
         from ope_sys_user user
                  inner join ope_sys_staff staff on user.id = staff.sys_user_id
                  left join ope_sys_user_profile profile on user.id = profile.sys_user_id and profile.dr = 0
@@ -136,7 +137,7 @@
                dept.name as name
         from ope_sys_dept dept
         where dept.level = 0
-          and dept.p_id = -1
+          and dept.p_id != -1
           and dept.dr = 0
           and dept.tenant_id = 0
     </select>
