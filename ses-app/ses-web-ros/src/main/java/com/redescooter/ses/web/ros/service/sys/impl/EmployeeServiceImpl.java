@@ -163,6 +163,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeResult.getAddressBureauId() != null || employeeResult.getAddressBureauId() != 0) {
             addressBureau = AddressBureauEnums.getEnumByCode(String.valueOf(employeeResult.getAddressBureauId())).getMessage();
         }
+        employeeResult.setAddressBureau(addressBureau);
         DeptTreeReslt deptTreeReslt = sysDeptService.topDeptartment(new IdEnter(employeeResult.getDeptId()), DeptLevelEnums.COMPANY.getValue());
         employeeResult.setCompanyId(deptTreeReslt.getId());
         employeeResult.setCompanyName(deptTreeReslt.getName());
