@@ -142,7 +142,7 @@ public class OpeSysUserProfile implements Serializable {
      */
     @TableField(value = "address_bureau")
     @ApiModelProperty(value = "办公地点Id(具体数据可查看 AddressBureauEnums )")
-    private Long addressBureau;
+    private String addressBureau;
 
     /**
      * 证件类型，1身份证，2驾驶证，3护照

@@ -101,7 +101,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
             employeeList.forEach(item -> {
                 //解析出每个办公区域信息
-                item.setAddressBureau(AddressBureauEnums.getEnumByCode(item.getAddressBureauId()).getMessage());
+                item.setAddressBureau(AddressBureauEnums.getEnumByCode(String.valueOf(item.getAddressBureauId())).getMessage());
                 if (dept.getDeptId().equals(item.getDeptId())) {
                     employeeResultList.add(item);
                 }
@@ -288,7 +288,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 break;
             case OFFICEAREA:
                 for (AddressBureauEnums item : AddressBureauEnums.values()) {
-                    result.add(EmployeeDeptResult.builder().id(item.getCode()).name(item.getMessage()).build());
+                    result.add(EmployeeDeptResult.builder().id(Long.valueOf(item.getCode())).name(item.getMessage()).build());
                 }
                 break;
             case COMPANY:
@@ -391,7 +391,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         opeSysUserProfile.setGender(null);
         opeSysUserProfile.setBirthday(enter.getBirthday());
         opeSysUserProfile.setPlaceBirth(null);
-        opeSysUserProfile.setAddressBureau(enter.getAddressBureauId());
+        opeSysUserProfile.setAddressBureau(String.valueOf(enter.getAddressBureauId()));
         opeSysUserProfile.setAddressCountryCode(enter.getAddressCountryCode());
         opeSysUserProfile.setAddress(enter.getAddress());
         opeSysUserProfile.setCertificateType(enter.getCertificateType());
@@ -411,7 +411,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
         // 办公区域校验
-        if (StringUtils.isBlank(AddressBureauEnums.checkCode(enter.getAddressBureauId()))) {
+        if (StringUtils.isBlank(AddressBureauEnums.checkCode(String.valueOf(enter.getAddressBureauId())))) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         //邮箱过滤

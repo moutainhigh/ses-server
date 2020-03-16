@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum AddressBureauEnums {
 
-    PAIRS(1000000L, "PAIRS", "1"),
-    SHANGHAI(1000001L, "SHANGHAI", "2");
+    PAIRS("1000000", "PAIRS", "1"),
+    SHANGHAI("1000001", "SHANGHAI", "2");
 
-    public static String checkCode(Long code) {
+    public static String checkCode(String code) {
         for (EmployeeDeptTypeEnums item : EmployeeDeptTypeEnums.values()) {
             if (item.getCode().equals(code)) {
                 return item.getCode();
@@ -46,7 +46,7 @@ public enum AddressBureauEnums {
         return null;
     }
 
-    public static EmployeeDeptTypeEnums getEnumByCode(Long code) {
+    public static EmployeeDeptTypeEnums getEnumByCode(String code) {
         for (EmployeeDeptTypeEnums item : EmployeeDeptTypeEnums.values()) {
             if (item.getCode().equals(code)) {
                 return item;
@@ -56,7 +56,7 @@ public enum AddressBureauEnums {
     }
 
 
-    private Long code;
+    private String code;
 
     private String message;
 
