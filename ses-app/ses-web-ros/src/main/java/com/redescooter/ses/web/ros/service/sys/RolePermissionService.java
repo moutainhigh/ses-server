@@ -61,5 +61,5 @@ public interface RolePermissionService {
      *
      * @param enter
      */
-    void deleteSalesCityByRoleId(IdEnter enter);
+    void deleteRoleSalesPermissionsByRoleId(IdEnter enter);
 }

@@ -239,7 +239,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         //删除历史权限
         rolePermissionService.deleteRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
         rolePermissionService.deleteRoleMeunByRoleId(new IdEnter(enter.getRoleId()));
-        rolePermissionService.deleteSalesCityByRoleId(new IdEnter(enter.getRoleId()));
+        rolePermissionService.deleteRoleSalesPermissionsByRoleId(new IdEnter(enter.getRoleId()));
         //重建权限
         this.insertRoleAouth(enter);
     }

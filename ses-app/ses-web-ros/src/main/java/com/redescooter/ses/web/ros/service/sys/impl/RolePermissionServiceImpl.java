@@ -118,7 +118,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
      * @param enter
      */
     @Override
-    public void deleteSalesCityByRoleId(IdEnter enter) {
+    public void deleteRoleSalesPermissionsByRoleId(IdEnter enter) {
         LambdaQueryWrapper<OpeSysRoleSalesCidy> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSysRoleSalesCidy::getRoleId, enter.getId());
         roleSalesCidyService.remove(wrapper);
