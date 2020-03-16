@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName DeptAuthorityDetailsResult
@@ -19,10 +20,9 @@ import java.util.List;
 @Data
 public class DeptAuthorityDetailsResult extends GeneralResult {
 
-    @ApiModelProperty(value = "菜单权限")
-    private List<MenuTreeResult> menuTreeResult;
-
     @ApiModelProperty(value = "销售区域权限")
     private List<SalesAreaTressResult> salesAreaTressResult;
 
+    @ApiModelProperty(value = "菜单权限")
+    private Map<String, MenuTreeResult> menuTreeResult;
 }

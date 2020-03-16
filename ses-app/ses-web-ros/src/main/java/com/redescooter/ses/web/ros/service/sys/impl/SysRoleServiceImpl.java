@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -21,6 +22,7 @@ import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
 import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
@@ -130,11 +132,19 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public DeptAuthorityDetailsResult authorityDetails(IdEnter enter) {
         //根据岗位ID获取部门菜单权限树
-        List<MenuTreeResult> muns = menuService.trees(enter);
+        List<MenuTreeResult> muns = menuService.list(enter);
+
+        Map<String, MenuTreeResult> munsMap = new HashMap<>();
+
+        if (CollUtil.isNotEmpty(muns)) {
+            muns.forEach(rs -> {
+                munsMap.put(String.valueOf(rs.getId()), rs);
+            });
+        }
         //根据岗位ID获取销售区域树
         List<SalesAreaTressResult> areas = sysSalesAreaService.list(enter);
         DeptAuthorityDetailsResult result = new DeptAuthorityDetailsResult();
-        result.setMenuTreeResult(muns);
+        result.setMenuTreeResult(munsMap);
         result.setSalesAreaTressResult(areas);
         result.setRequestId(enter.getRequestId());
         return result;
@@ -227,21 +237,6 @@ public class SysRoleServiceImpl implements SysRoleService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
             });
-
-            //创建岗位销售区域关系
-            rolePermissionService.insertRoleSalesPermissions(enter.getRoleId(), salesPermissionIds);
-            //创建岗位菜单权限关系
-            rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(), meunPermissionIds);
-            //创建岗位部门权限关系
-            rolePermissionService.insertRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
-        }
-
-        private void updateRoleAouth (RoleEnter enter){
-            //删除历史权限
-            rolePermissionService.deleteRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
-            rolePermissionService.deleteRoleMenuPermissions(enter.getRoleId(), meunPermissionIds);
-            rolePermissionService.deleteRoleSalesPermissions(enter.getRoleId(), salesPermissionIds);
-            //重建权限
-            this.insertRoleAouth(enter);
         }
     }
+}
