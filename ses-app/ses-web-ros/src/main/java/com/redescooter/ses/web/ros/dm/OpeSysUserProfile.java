@@ -3,17 +3,17 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.io.Serializable;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysUserProfile")
 @Data
@@ -35,6 +35,7 @@ public class OpeSysUserProfile implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -137,11 +138,11 @@ public class OpeSysUserProfile implements Serializable {
     private String address;
 
     /**
-     * 办公地点
+     * 办公地点Id(具体数据可查看 AddressBureauEnums )
      */
     @TableField(value = "address_bureau")
-    @ApiModelProperty(value = "办公地点")
-    private String addressBureau;
+    @ApiModelProperty(value = "办公地点Id(具体数据可查看 AddressBureauEnums )")
+    private Long addressBureau;
 
     /**
      * 证件类型，1身份证，2驾驶证，3护照
