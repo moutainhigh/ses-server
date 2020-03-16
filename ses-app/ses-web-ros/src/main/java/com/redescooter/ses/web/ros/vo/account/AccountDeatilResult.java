@@ -28,49 +28,49 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class AccountDeatilResult extends GeneralResult {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
-    @ApiModelProperty(value = "customerType")
+    @ApiModelProperty(value = "客户类型")
     private String customerType;
 
-    @ApiModelProperty(value = "industryType")
+    @ApiModelProperty(value = "行业类型")
     private String industryType;
 
-    @ApiModelProperty(value = "status")
+    @ApiModelProperty(value = "状态")
     private String status;
 
-    @ApiModelProperty(value = "customerLastName")
+    @ApiModelProperty(value = "客户名字")
     private String customerLastName;
 
-    @ApiModelProperty(value = "customerFirstName")
+    @ApiModelProperty(value = "客户姓氏")
     private String customerFirstName;
 
-    @ApiModelProperty(value = "customerFullName")
+    @ApiModelProperty(value = "客户全称")
     private String customerFullName;
 
-    @ApiModelProperty(value = "contactFirstName")
+    @ApiModelProperty(value = "联系人姓氏")
     private String contactFirstName;
 
-    @ApiModelProperty(value = "contactLastName")
+    @ApiModelProperty(value = "联系人名字")
     private String contactLastName;
 
-    @ApiModelProperty(value = "contactFullName")
+    @ApiModelProperty(value = "联系人全名")
     private String contactFullName;
 
-    @ApiModelProperty(value = "companyName")
+    @ApiModelProperty(value = "公司名称")
     private String companyName;
 
-    @ApiModelProperty(value = "email")
+    @ApiModelProperty(value = "邮箱")
     private String email;
 
     @ApiModelProperty(value = "激活时间 为了和 开通账户入参保持一致")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date activationTime;
 
     @ApiModelProperty(value = "到期时间 为了和 开通账户入参保持一致")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date expireTime;
 }
