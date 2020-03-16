@@ -14,26 +14,12 @@ import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.EmployeeServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeSysDept;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
-import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
-import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
-import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
-import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
-import com.redescooter.ses.web.ros.vo.sys.employee.DeptEmployeeListResult;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult;
-import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -270,12 +256,12 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public List<EmployeeDeptResult> employeeDeptList(EmployeeDeptEnter enter) {
-        List<EmployeeDeptResult> employeeDeptResultlist = Lists.newArrayList();
+        List<EmployeeDeptResult> employeeDeptResultlist = new ArrayList<>();
         // 类型过滤
         if (EmployeeDeptTypeEnums.checkValue(enter.getType()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        List<Long> ids = Lists.newArrayList();
+        List<Long> ids = new ArrayList<>();
         if (enter.getBizId() != null && enter.getBizId() != 0) {
             ids.add(enter.getBizId());
         }

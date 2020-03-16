@@ -71,9 +71,9 @@ public class SysDeptController {
         return new Response<>(deptService.getDescendants(enter));
     }
 
-//    @PostMapping(value = "/topDepartment")
-//    @ApiOperation(value = "顶级部门", response = GeneralResult.class)
-//    public Response<DeptTreeReslt> TopDepartment(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>();
-//    }
+    @PostMapping(value = "/topDepartment")
+    @ApiOperation(value = "顶级部门", response = GeneralResult.class)
+    public Response<DeptTreeReslt> TopDepartment(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(deptService.topDeptartment(enter, null));
+    }
 }
