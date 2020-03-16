@@ -184,11 +184,6 @@ public class SysDeptServiceImpl implements SysDeptService {
         return null;
     }
 
-    @Override
-    public void deleteRoleDeptByRoleId(IdEnter enter) {
-    }
-
-
     private OpeSysDept buildDept(SaveDeptEnter enter) {
 
         OpeSysDept dept = new OpeSysDept();
