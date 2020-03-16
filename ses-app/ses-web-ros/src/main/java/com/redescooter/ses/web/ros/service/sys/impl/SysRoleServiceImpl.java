@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.SysRoleServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
@@ -22,7 +23,6 @@ import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
 import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
-import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
@@ -35,7 +35,13 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @ClassName SysRoleServiceImpl
@@ -166,8 +172,8 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
         role.setTenantId(enter.getTenantId());
         role.setRoleName(enter.getRoleName());
-        role.setRoleCode(enter.getRoleCode());
-        role.setRoleDesc(enter.getDescription());
+        role.setRoleCode(StringUtils.isNotBlank(enter.getRoleCode()) == true ? enter.getRoleCode() : null);
+        role.setRoleDesc(StringUtils.isNotBlank(enter.getDescription()) == true ? enter.getDescription() : null);
         role.setUpdatedBy(enter.getUserId());
         role.setUpdateTime(new Date());
         return role;
