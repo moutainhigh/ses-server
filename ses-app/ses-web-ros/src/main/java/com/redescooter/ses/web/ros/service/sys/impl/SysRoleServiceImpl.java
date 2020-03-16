@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -32,7 +31,6 @@ import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
-import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,7 +40,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;

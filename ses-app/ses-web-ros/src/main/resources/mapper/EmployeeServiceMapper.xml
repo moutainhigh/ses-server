@@ -83,6 +83,7 @@
         from ope_sys_dept_relation rela
         where 1 = 1
         and rela.ancestor =#{id}
+        and rela.descendant != #{id}
     </select>
 
     <select id="getEmployeeDeptFatherList" resultType="java.lang.Long">
@@ -132,6 +133,7 @@
                dept.name as name
         from ope_sys_dept dept
         where dept.level = 0
+          and dept.p_id = -1
           and dept.dr = 0
           and dept.tenant_id = 0
     </select>

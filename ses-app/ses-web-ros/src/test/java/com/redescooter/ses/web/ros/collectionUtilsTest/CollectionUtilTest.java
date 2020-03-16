@@ -3,8 +3,8 @@ package com.redescooter.ses.web.ros.collectionUtilsTest;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import org.junit.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 /**
  * @author Mr.lijiating
@@ -23,19 +23,11 @@ public class CollectionUtilTest {
     }
 
     @Test
-    public void set() {
-        Set<String> productN = new HashSet<>();
-        productN.add("a");
-        productN.add("b");
-        productN.add("a");
-//        Iterator<String> iterator = productN.iterator();
-//        while (iterator.hasNext()) {
-//            System.out.println(iterator.next());
-//        }
-        productN.forEach(item -> {
-            System.out.println(item);
-        });
+    public void stream() {
+        int[] arr = new int[]{1, 1, 3, 4, 5};
+        IntStream intStream = Arrays.stream(arr);
+//        intStream.forEach(System.out::println);
+//        intStream.map(item-> item+2).allMatch((x) -> System.out.println(x>4));
     }
-
 
 }

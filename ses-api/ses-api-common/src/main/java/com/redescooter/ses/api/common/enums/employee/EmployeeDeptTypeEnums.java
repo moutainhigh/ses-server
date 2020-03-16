@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.organization;
+package com.redescooter.ses.api.common.enums.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
