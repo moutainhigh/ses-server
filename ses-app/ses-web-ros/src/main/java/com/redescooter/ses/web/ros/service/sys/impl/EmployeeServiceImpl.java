@@ -254,7 +254,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
 
         }
-        if (opeSysUser != null) {
+        if (opeSysUserRole != null) {
             opeSysUserRoleService.saveOrUpdate(opeSysUserRole);
         }
         if (opeSysUser != null) {
