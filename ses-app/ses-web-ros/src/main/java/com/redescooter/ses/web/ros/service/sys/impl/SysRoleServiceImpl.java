@@ -132,19 +132,11 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public DeptAuthorityDetailsResult authorityDetails(IdEnter enter) {
         //根据岗位ID获取部门菜单权限树
-        List<MenuTreeResult> muns = menuService.list(enter);
-
-        Map<String, MenuTreeResult> munsMap = new HashMap<>();
-
-        if (CollUtil.isNotEmpty(muns)) {
-            muns.forEach(rs -> {
-                munsMap.put(String.valueOf(rs.getId()), rs);
-            });
-        }
+        Map<String, ModulePermissionsResult> muns = menuService.modulePermissions(enter);
         //根据岗位ID获取销售区域树
         List<SalesAreaTressResult> areas = sysSalesAreaService.list(enter);
         DeptAuthorityDetailsResult result = new DeptAuthorityDetailsResult();
-        result.setMenuTreeResult(munsMap);
+        result.setMenuTreeResult(muns);
         result.setSalesAreaTressResult(areas);
         result.setRequestId(enter.getRequestId());
         return result;

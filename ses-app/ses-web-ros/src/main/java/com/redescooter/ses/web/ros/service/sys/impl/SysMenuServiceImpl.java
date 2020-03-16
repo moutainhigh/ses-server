@@ -110,8 +110,21 @@ public class SysMenuServiceImpl implements SysMenuService {
     public Map<String, ModulePermissionsResult> modulePermissions(IdEnter enter) {
 
         List<ModulePermissionsResult> results = menuServiceMapper.modulePermissions(enter);
-
         Map<String, ModulePermissionsResult> resultMap = new HashMap<>();
+
+        if (enter.getId() != 0) {
+            QueryWrapper<OpeSysRoleMenu> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq(OpeSysRoleMenu.COL_ROLE_ID, enter.getId());
+            List<OpeSysRoleMenu> list = roleMenuService.list(queryWrapper);
+
+            if (CollUtil.isNotEmpty(list)) {
+                list.forEach(li -> results.forEach(t -> {
+                    if (CollUtil.isNotEmpty(list)) {
+                        t.getChilds().stream().filter(ch -> li.getMenuId() == ch.getId()).forEach(ch -> ch.setChecked(Boolean.TRUE));
+                    }
+                }));
+            }
+        }
 
         if (CollUtil.isNotEmpty(results)) {
             results.forEach(rs -> {
