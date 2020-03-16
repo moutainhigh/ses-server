@@ -197,16 +197,17 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     private void insertRoleAouth(RoleEnter enter) {
-        // 将 销售区域 json 格式 转 set集合
         Set<Long> salesPermissionIds = null;
+        Set<Long> meunPermissionIds = null;
         List<Long> saleIds = JSON.parseArray(enter.getSalesPermissionIds(), Long.class);
+        List<Long> menuIds = JSON.parseArray(enter.getMeunPermissionIds(), Long.class);
+
+        // 将 销售区域 json 格式 转 set集合
         if (CollectionUtils.isNotEmpty(saleIds)) {
             salesPermissionIds = new HashSet<>(saleIds);
         }
 
         // 将 菜单列表 json 格式 转set 集合
-        List<Long> menuIds = JSON.parseArray(enter.getMeunPermissionIds(), Long.class);
-        Set<Long> meunPermissionIds = null;
         if (CollectionUtils.isNotEmpty(menuIds)) {
             meunPermissionIds = new HashSet<>(menuIds);
         }
@@ -221,17 +222,25 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     private void updateRoleAouth(RoleEnter enter) {
-        // 将 销售区域 json 格式 转 set集合
-        Set<Long> salesPermissionIds = new HashSet<>(JSON.parseArray(enter.getSalesPermissionIds(), Long.class));
+        Set<Long> salesPermissionIds = null;
+        Set<Long> meunPermissionIds = null;
+        List<Long> saleIds = JSON.parseArray(enter.getSalesPermissionIds(), Long.class);
+        List<Long> menuIds = JSON.parseArray(enter.getMeunPermissionIds(), Long.class);
 
+        // 将 销售区域 json 格式 转 set集合
+        if (CollectionUtils.isNotEmpty(saleIds)) {
+            salesPermissionIds = new HashSet<>(saleIds);
+        }
         // 将 菜单列表 json 格式 转set 集合
-        Set<Long> meunPermissionIds = new HashSet<>(JSON.parseArray(enter.getMeunPermissionIds(), Long.class));
+        if (CollectionUtils.isNotEmpty(menuIds)) {
+            meunPermissionIds = new HashSet<>(menuIds);
+        }
         checkRoleAuothParameter(enter, salesPermissionIds, meunPermissionIds);
 
         //删除历史权限
         rolePermissionService.deleteRoleDeptPermissions(enter.getRoleId(), enter.getDeptId());
-        rolePermissionService.deleteRoleMenuPermissions(enter.getRoleId(), meunPermissionIds);
-        rolePermissionService.deleteRoleSalesPermissions(enter.getRoleId(), salesPermissionIds);
+        rolePermissionService.deleteRoleMeunByRoleId(new IdEnter(enter.getRoleId()));
+        rolePermissionService.deleteSalesCityByRoleId(new IdEnter(enter.getRoleId()));
         //重建权限
         this.insertRoleAouth(enter);
     }

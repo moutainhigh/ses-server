@@ -55,11 +55,10 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     public void deleteRoleSalesPermissions(long roleId, Set<Long> cidyId) {
         UpdateWrapper<OpeSysRoleSalesCidy> delete = new UpdateWrapper<>();
         delete.eq(OpeSysRoleSalesCidy.COL_ROLE_ID, roleId);
-        delete.in(OpeSysRoleSalesCidy.COL_CITY_ID, new ArrayList<>(cidyId));
         if (CollectionUtils.isNotEmpty(cidyId)) {
             delete.in(OpeSysRoleSalesCidy.COL_CITY_ID, new ArrayList<>(cidyId));
-            roleSalesCidyService.remove(delete);
         }
+        roleSalesCidyService.remove(delete);
     }
 
     @Override
@@ -95,8 +94,8 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         delete.eq(OpeSysRoleMenu.COL_ROLE_ID, roleId);
         if (CollectionUtils.isNotEmpty(menuId)) {
             delete.in(OpeSysRoleMenu.COL_MENU_ID, new ArrayList<>(menuId));
-            roleMenuService.remove(delete);
         }
+        roleMenuService.remove(delete);
     }
 
     @Override
@@ -111,5 +110,17 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         LambdaQueryWrapper<OpeSysRoleDept> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSysRoleDept::getRoleId, enter.getId());
         roleDeptService.remove(wrapper);
+    }
+
+    /**
+     * 删除所有的销售区域
+     *
+     * @param enter
+     */
+    @Override
+    public void deleteSalesCityByRoleId(IdEnter enter) {
+        LambdaQueryWrapper<OpeSysRoleSalesCidy> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSysRoleSalesCidy::getRoleId, enter.getId());
+        roleSalesCidyService.remove(wrapper);
     }
 }
