@@ -64,7 +64,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Autowired
     private OpeSysRoleService roleService;
 
-    @Autowired
+    @Reference
     private IdAppService idAppService;
 
     @Autowired
