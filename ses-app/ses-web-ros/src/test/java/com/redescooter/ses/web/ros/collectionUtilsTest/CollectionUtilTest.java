@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.collectionUtilsTest;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.stream.IntStream;
 
 /**
@@ -24,10 +23,7 @@ public class CollectionUtilTest {
 
     @Test
     public void stream() {
-        int[] arr = new int[]{1, 1, 3, 4, 5};
-        IntStream intStream = Arrays.stream(arr);
-//        intStream.forEach(System.out::println);
-//        intStream.map(item-> item+2).allMatch((x) -> System.out.println(x>4));
+        IntStream.range(1, 10).forEach(System.out::println);
     }
 
 }

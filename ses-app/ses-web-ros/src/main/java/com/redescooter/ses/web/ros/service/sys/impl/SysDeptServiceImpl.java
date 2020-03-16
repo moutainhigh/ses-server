@@ -186,8 +186,6 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public void deleteRoleDeptByRoleId(IdEnter enter) {
-
-        RolePermissionServiceImpl
     }
 
 
