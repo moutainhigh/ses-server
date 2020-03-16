@@ -65,11 +65,9 @@ public class SysRoleController {
         return new Response<>();
     }
 
-    @PostMapping(value = "/details")
-    @ApiOperation(value = "岗位详情", response = GeneralResult.class)
-    public Response<GeneralResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>();
-    }
-
-
+//    @PostMapping(value = "/details")
+//    @ApiOperation(value = "岗位详情", response = GeneralResult.class)
+//    public Response<GeneralResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>();
+//    }
 }
