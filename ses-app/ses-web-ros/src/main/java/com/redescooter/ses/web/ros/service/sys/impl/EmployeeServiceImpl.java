@@ -1,8 +1,12 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
+
+import com.google.common.collect.Lists;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.employee.AddressBureauEnums;
 import com.redescooter.ses.api.common.enums.employee.EmployeeDeptTypeEnums;
 import com.redescooter.ses.api.common.enums.employee.EmployeeStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -112,6 +116,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 continue;
             }
             employeeList.forEach(item -> {
+                //解析出每个办公区域信息
+                item.setAddressBureau(AddressBureauEnums.getEnumByCode(item.getAddressBureauId()).getMessage());
                 if (dept.getDeptId().equals(item.getDeptId())) {
                     employeeResultList.add(item);
                 }
@@ -266,11 +272,12 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public List<EmployeeDeptResult> employeeDeptList(EmployeeDeptEnter enter) {
+        List<EmployeeDeptResult> employeeDeptResultlist = Lists.newArrayList();
         // 类型过滤
         if (EmployeeDeptTypeEnums.checkValue(enter.getType()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        List<Long> ids = new ArrayList<>();
+        List<Long> ids = Lists.newArrayList();
         if (enter.getBizId() != null && enter.getBizId() != 0) {
             ids.add(enter.getBizId());
         }
@@ -296,15 +303,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                 result = employeeServiceMapper.getEmployeePositionList(enter.getTenantId(), ids);
                 break;
             case OFFICEAREA:
-//                result = employeeServiceMapper.getEmployeeOfficeareaList(enter.getTenantId());
-                result.add(EmployeeDeptResult.builder()
-                        .id(1000000L)
-                        .name("Paris")
-                        .build());
-                result.add(EmployeeDeptResult.builder()
-                        .id(1000001L)
-                        .name("ShangHai")
-                        .build());
+                for (AddressBureauEnums item : AddressBureauEnums.values()) {
+                    result.add(EmployeeDeptResult.builder().id(item.getCode()).name(item.getMessage()).build());
+                }
                 break;
             case COMPANY:
                 result = employeeServiceMapper.getEmployeeCompanyList(enter.getTenantId(), null);
@@ -406,6 +407,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         opeSysUserProfile.setGender(null);
         opeSysUserProfile.setBirthday(enter.getBirthday());
         opeSysUserProfile.setPlaceBirth(null);
+        opeSysUserProfile.setAddressBureau(enter.getAddressBureauId());
         opeSysUserProfile.setAddressCountryCode(enter.getAddressCountryCode());
         opeSysUserProfile.setAddress(enter.getAddress());
         opeSysUserProfile.setCertificateType(enter.getCertificateType());
@@ -425,8 +427,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
         // 办公区域校验
-        if (true) {
-
+        if (StringUtils.isBlank(AddressBureauEnums.checkCode(enter.getAddressBureauId()))) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         //邮箱过滤
         if (!enter.getEmail().contains("@")) {
