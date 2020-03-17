@@ -144,8 +144,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public EmployeeResult employeeDetail(IdEnter enter) {
-        //todo 缺少公司名字
         EmployeeResult employeeResult = employeeServiceMapper.employeeDetail(enter);
+        if (employeeResult == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+
 
         // 返回公司
         // 查询所有部门
@@ -253,7 +256,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
 
         }
-        if (opeSysUser != null) {
+        if (opeSysUserRole != null) {
             opeSysUserRoleService.saveOrUpdate(opeSysUserRole);
         }
         if (opeSysUser != null) {

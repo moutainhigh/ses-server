@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum AddressBureauEnums {
 
-    PAIRS("1000000", "PAIRS", "1"),
+    PAIRS("1000000", "PARIS", "1"),
     SHANGHAI("1000001", "SHANGHAI", "2");
 
     public static String checkCode(String code) {
