@@ -126,4 +126,19 @@ public interface AccountBaseService {
      */
     Map<String, Integer> customerAccountCountByStatus(GeneralEnter enter);
 
+    /**
+     * 客户账户列表统计
+     *
+     * @param enter
+     * @return
+     */
+    Integer customerAccountCount(QueryAccountListEnter enter);
+
+    /**
+     * 客户账户列表
+     *
+     * @param enter
+     * @return
+     */
+    List<QueryAccountListResult> customerAccountList(QueryAccountListEnter enter);
 }

@@ -31,4 +31,20 @@ public interface AccountBaseServiceMapper {
      * @return
      */
     List<CountByStatusResult> customerAccountCountByStatus(@Param("personalType") Integer personalType, @Param("webRestaurant") Integer webRestaurant, @Param("webExpress") Integer webExpress);
+
+    /**
+     * 查询客户账户列表统计
+     *
+     * @param enter
+     * @return
+     */
+    Integer customerAccountCount(QueryAccountListEnter enter);
+
+    /**
+     * 查询客户账户列表
+     *
+     * @param enter
+     * @return
+     */
+    List<QueryAccountListResult> customerAccountList(QueryAccountListEnter enter);
 }

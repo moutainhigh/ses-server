@@ -717,12 +717,34 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         }
         for (UserStatusEnum item : UserStatusEnum.values()) {
             if (!map.containsKey(item.getValue())) {
-                map.put(item.getStatus(), 0);
+                map.put(item.getValue(), 0);
             }
         }
-        map.put(UserStatusEnum.INACTIVATED.getValue());
-        map.put(UserStatusEnum.CANCEL.getValue());
+        map.remove(UserStatusEnum.INACTIVATED.getValue());
+        map.remove(UserStatusEnum.CANCEL.getValue());
         return map;
+    }
+
+    /**
+     * 客户账户列表统计
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Integer customerAccountCount(QueryAccountListEnter enter) {
+        return accountBaseServiceMapper.customerAccountCount(enter);
+    }
+
+    /**
+     * 客户账户列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<QueryAccountListResult> customerAccountList(QueryAccountListEnter enter) {
+        return accountBaseServiceMapper.customerAccountList(enter);
     }
 
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {

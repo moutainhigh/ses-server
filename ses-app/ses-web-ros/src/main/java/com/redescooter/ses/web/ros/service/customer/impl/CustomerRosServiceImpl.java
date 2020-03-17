@@ -512,39 +512,44 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         // 查询内容
         List<AccountListResult> accountList = customerServiceMapper.queryAccountRecord(enter);
-        List<Long> tenantIdList = new ArrayList<>();
+        List<String> emailList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(accountList)) {
             accountList.forEach(item -> {
-                tenantIdList.add(item.getTenantId());
+                emailList.add(item.getEmail());
             });
         }
+//
+//        // 查询时间
+//        QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
+//        queryAccountListEnter.setInputTenantId(tenantIdList);
+//        BeanUtils.copyProperties(enter, queryAccountListEnter);
+//        int countTenantAccount = accountBaseService.countTenantAccount(queryAccountListEnter);
 
-        // 查询时间
         QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
-        queryAccountListEnter.setInputTenantId(tenantIdList);
         BeanUtils.copyProperties(enter, queryAccountListEnter);
-        int countTenantAccount = accountBaseService.countTenantAccount(queryAccountListEnter);
-        if (countTenantAccount == 0) {
+        queryAccountListEnter.setEmailList(emailList);
+        Integer customerAccountCount = accountBaseService.customerAccountCount(queryAccountListEnter);
+        if (customerAccountCount == 0) {
             return PageResult.createZeroRowResult(enter);
         }
 
-        List<QueryAccountListResult> tenantAccountRecords = accountBaseService.tenantAccountRecords(queryAccountListEnter);
+//        List<QueryAccountListResult> tenantAccountRecords = accountBaseService.tenantAccountRecords(queryAccountListEnter);
+        List<QueryAccountListResult> queryAccountListResultList = accountBaseService.customerAccountList(queryAccountListEnter);
 
         List<AccountListResult> resultList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(accountList) && !CollectionUtils.isEmpty(tenantAccountRecords)) {
-            tenantAccountRecords.forEach(tenantAccount -> {
+        if (!CollectionUtils.isEmpty(queryAccountListResultList)) {
+            queryAccountListResultList.forEach(account -> {
                 accountList.forEach(item -> {
-                    if (tenantAccount.getInputTenantId().equals(item.getTenantId())) {
-                        item.setTenantId(tenantAccount.getId());
-                        item.setStatus(tenantAccount.getStatus());
-                        item.setActivationTime(tenantAccount.getActivationTime());
-                        item.setExpirationTime(tenantAccount.getExpirationTime());
+                    if (StringUtils.equals(account.getEmail(), item.getEmail())) {
+                        item.setStatus(account.getStatus());
+                        item.setActivationTime(account.getActivationTime());
+                        item.setExpirationTime(account.getExpirationTime());
                         resultList.add(item);
                     }
                 });
             });
         }
-        return PageResult.create(enter, countTenantAccount, resultList);
+        return PageResult.create(enter, customerAccountCount, resultList);
     }
 
     /**
