@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.menu.MenuTypeEnums;
@@ -14,10 +15,12 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
+import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
@@ -28,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,10 +59,16 @@ public class SysMenuServiceImpl implements SysMenuService {
     private MenuServiceMapper menuServiceMapper;
 
     @Autowired
+    private OpeSysUserRoleService sysUserRoleService;
+
+    @Autowired
     private IdAppService idAppService;
 
     @Autowired
     private OpeSysMenuService opeSysMenuService;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
     @Override
     public GeneralResult save(SaveMenuEnter enter) {
@@ -103,18 +113,46 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public Map<String, ModulePermissionsResult> userMenuTrees(GeneralEnter enter) {
+        //结果集封装
+        Map<String, ModulePermissionsResult> resultMap = new HashMap<>();
         //获取所有父子权限列表
-        List<ModulePermissionsResult> fatSon = menuServiceMapper.modulePermissions(enter);
+        List<ModulePermissionsResult> fatSon = menuServiceMapper.fatherModulePermissionsBySon(new IdEnter(enter.getUserId()));
 
-        //查询该用户角色下的数据权限
+        if (CollUtil.isEmpty(fatSon)) {
+            return resultMap;
+        }
+        //获取当前职位
+        LambdaQueryWrapper<OpeSysUserRole> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSysUserRole::getUserId, enter.getUserId());
+        List<OpeSysUserRole> userRoles = sysUserRoleService.list(wrapper);
 
-        return null;
+        //查询该用户角色下的权限
+        if (CollUtil.isNotEmpty(userRoles)) {
+            QueryWrapper<OpeSysRoleMenu> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq(OpeSysRoleMenu.COL_ROLE_ID, userRoles.get(0).getRoleId());
+            List<OpeSysRoleMenu> list = roleMenuService.list(queryWrapper);
+
+            if (CollUtil.isNotEmpty(list)) {
+                list.forEach(li -> fatSon.forEach(t -> {
+                    if (CollUtil.isNotEmpty(list)) {
+                        t.getChilds().stream().filter(ch -> li.getMenuId() == ch.getId()).forEach(ch -> ch.setChecked(Boolean.TRUE));
+                    }
+                }));
+            }
+        }
+
+        if (CollUtil.isNotEmpty(fatSon)) {
+            fatSon.forEach(rs -> {
+                resultMap.put(String.valueOf(rs.getId()), rs);
+            });
+        }
+        return resultMap;
     }
 
     @Override
     public Map<String, ModulePermissionsResult> modulePermissions(IdEnter enter) {
         //获取所有父子权限列表
-        List<ModulePermissionsResult> fatSon = menuServiceMapper.modulePermissions(enter);
+        List<ModulePermissionsResult> fatSon = menuServiceMapper.fatherModulePermissions(enter);
 
         Map<String, ModulePermissionsResult> resultMap = new HashMap<>();
 
@@ -137,6 +175,8 @@ public class SysMenuServiceImpl implements SysMenuService {
                 resultMap.put(String.valueOf(rs.getId()), rs);
             });
         }
+
+
         return resultMap;
     }
 

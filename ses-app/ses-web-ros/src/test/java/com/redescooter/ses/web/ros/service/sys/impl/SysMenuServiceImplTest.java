@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.enums.menu.MenuTypeEnums;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.RouterMeta;
@@ -143,4 +144,16 @@ public class SysMenuServiceImplTest {
         GeneralResult delete = sysMenuService.delete(new IdEnter(new Long("1000007")));
         System.out.println(delete);
     }
+
+    @Test
+    public void testModulePermissions() {
+
+        GeneralEnter enter = new GeneralEnter();
+        enter.setUserId(new Long("1006285"));
+
+        Map<String, ModulePermissionsResult> map = sysMenuService.userMenuTrees(enter);
+
+        System.out.println(JSON.toJSONString(map));
+
+   }
 }

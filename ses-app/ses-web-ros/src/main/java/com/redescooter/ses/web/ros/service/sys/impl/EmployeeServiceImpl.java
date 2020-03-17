@@ -155,7 +155,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (item.getId().equals(employeeResult.getDeptId())) {
                 dept = item;
                 break;
-
             }
         }
         //解析出每个办公区域信息
