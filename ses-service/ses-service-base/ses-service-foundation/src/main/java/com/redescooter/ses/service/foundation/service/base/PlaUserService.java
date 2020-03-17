@@ -1,9 +1,11 @@
 package com.redescooter.ses.service.foundation.service.base;
 
 import java.util.List;
+
 import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface PlaUserService extends IService<PlaUser>{
+
+public interface PlaUserService extends IService<PlaUser> {
 
 
     int updateBatch(List<PlaUser> list);
@@ -15,3 +17,8 @@ public interface PlaUserService extends IService<PlaUser>{
     int insertOrUpdateSelective(PlaUser record);
 
 }
+
+
+
+
+

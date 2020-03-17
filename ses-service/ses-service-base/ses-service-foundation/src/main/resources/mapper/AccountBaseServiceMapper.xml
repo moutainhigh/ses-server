@@ -60,4 +60,14 @@
         and tenant_type ='1'
         group by status
     </select>
+
+    <select id="customerAccountCountByStatus"
+            resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select user.STATUS as status,
+        count(*) as totalCount
+        from pla_user user
+        where user.dr = 0
+        and user.USER_TYPE in(#{personalType},#{webExpress},#{webRestaurant})
+        group by status
+    </select>
 </mapper>

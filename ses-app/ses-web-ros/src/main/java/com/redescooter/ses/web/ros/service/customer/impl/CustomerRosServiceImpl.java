@@ -555,7 +555,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public Map<String, Integer> accountCountStatus(GeneralEnter enter) {
-        return tenantBaseService.accountCountStatus();
+        return accountBaseService.customerAccountCountByStatus(enter);
     }
 
     /**
@@ -898,9 +898,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (customer.getCity() != null) {
             count++;
         }
-        if (customer.getDistrust() != null) {
-            count++;
-        }
         if (customer.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
             if (!StringUtils.isBlank(customer.getCustomerFirstName())) {
                 count++;
@@ -912,9 +909,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             // 企业 为16个字段 所以这里现加 2
             result += 2;
             if (!StringUtils.isBlank(customer.getCompanyName())) {
-                count++;
-            }
-            if (!StringUtils.isBlank(customer.getBusinessLicenseNum())) {
                 count++;
             }
             if (!StringUtils.isBlank(customer.getBusinessLicenseNum())) {

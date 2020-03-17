@@ -1,15 +1,25 @@
 package com.redescooter.ses.service.foundation.dm.base;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @ApiModel(value = "com-redescooter-ses-service-foundation-dm-base-PlaUser")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "pla_user")
 public class PlaUser implements Serializable {
     /**
@@ -23,7 +33,6 @@ public class PlaUser implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -45,8 +54,7 @@ public class PlaUser implements Serializable {
      * 应用ip，SAAS_WEB:SaaS配送，SAAS_APP:SaaS移动，SAAS_REPAIR_WEB:SaaS维修，SES_ROS:RedE办公系统，SES_DEVL:RedE开发系统
      */
     @TableField(value = "APP_ID")
-    @ApiModelProperty(
-        value = "应用ip，SAAS_WEB:SaaS配送，SAAS_APP:SaaS移动，SAAS_REPAIR_WEB:SaaS维修，SES_ROS:RedE办公系统，SES_DEVL:RedE开发系统")
+    @ApiModelProperty(value = "应用ip，SAAS_WEB:SaaS配送，SAAS_APP:SaaS移动，SAAS_REPAIR_WEB:SaaS维修，SES_ROS:RedE办公系统，SES_DEVL:RedE开发系统")
     private String appId;
 
     /**
@@ -90,6 +98,27 @@ public class PlaUser implements Serializable {
     @TableField(value = "LAST_LOGIN_TOKEN")
     @ApiModelProperty(value = "最后登录TOKEN")
     private String lastLoginToken;
+
+    /**
+     * 生效时间
+     */
+    @TableField(value = "EFFECTIVE_TIME")
+    @ApiModelProperty(value = "生效时间")
+    private Date effectiveTime;
+
+    /**
+     * 激活时间
+     */
+    @TableField(value = "ACTIVATION_TIME")
+    @ApiModelProperty(value = "激活时间")
+    private Date activationTime;
+
+    /**
+     * 到期时间
+     */
+    @TableField(value = "EXPIRE_TIME")
+    @ApiModelProperty(value = "到期时间")
+    private Date expireTime;
 
     /**
      * 创建人
@@ -163,6 +192,8 @@ public class PlaUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String COL_ID = "ID";
+
     public static final String COL_DR = "dr";
 
     public static final String COL_TENANT_ID = "TENANT_ID";
@@ -183,6 +214,12 @@ public class PlaUser implements Serializable {
 
     public static final String COL_LAST_LOGIN_TOKEN = "LAST_LOGIN_TOKEN";
 
+    public static final String COL_EFFECTIVE_TIME = "EFFECTIVE_TIME";
+
+    public static final String COL_ACTIVATION_TIME = "ACTIVATION_TIME";
+
+    public static final String COL_EXPIRE_TIME = "EXPIRE_TIME";
+
     public static final String COL_CREATED_BY = "CREATED_BY";
 
     public static final String COL_CREATED_TIME = "CREATED_TIME";
@@ -202,4 +239,8 @@ public class PlaUser implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static PlaUserBuilder builder() {
+        return new PlaUserBuilder();
+    }
 }

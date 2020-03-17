@@ -6,6 +6,7 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mr.lijiating
@@ -116,5 +117,13 @@ public interface AccountBaseService {
      * @return
      */
     GeneralResult sendEmailActiv(IdEnter enter);
+
+    /**
+     * 客户账户状态
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> customerAccountCountByStatus(GeneralEnter enter);
 
 }

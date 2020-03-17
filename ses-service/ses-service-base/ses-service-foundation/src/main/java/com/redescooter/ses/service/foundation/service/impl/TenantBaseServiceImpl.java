@@ -195,6 +195,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      *
      * @return
      */
+    //todo要删除
     @Override
     public Map<String, Integer> accountCountStatus() {
         List<CountByStatusResult> countByStatusResult = accountBaseServiceMapper.accountCountStatus();

@@ -1,20 +1,5 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.MaggessConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
@@ -25,11 +10,13 @@ import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
@@ -59,9 +46,24 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Mr.lijiating
@@ -697,6 +699,32 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 客户账户状态
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, Integer> customerAccountCountByStatus(GeneralEnter enter) {
+        // 只统计 个人端、企业端账户
+        List<CountByStatusResult> countByStatusList = accountBaseServiceMapper.customerAccountCountByStatus(AccountTypeEnums.APP_PERSONAL.getAccountType(),
+                AccountTypeEnums.WEB_RESTAURANT.getAccountType(), AccountTypeEnums.WEB_EXPRESS.getAccountType());
+
+        Map<String, Integer> map = new HashMap<>();
+        for (CountByStatusResult item : countByStatusList) {
+            map.put(item.getStatus(), item.getTotalCount());
+        }
+        for (UserStatusEnum item : UserStatusEnum.values()) {
+            if (!map.containsKey(item.getValue())) {
+                map.put(item.getStatus(), 0);
+            }
+        }
+        map.put(UserStatusEnum.INACTIVATED.getValue());
+        map.put(UserStatusEnum.CANCEL.getValue());
+        return map;
+    }
+
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {
         Integer accountType =
                 AccountTypeUtils.getAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
@@ -719,6 +747,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             user.setLoginName(enter.getT().getEmail());
             user.setUserType(accountType);
             user.setStatus(UserStatusEnum.NORMAL.getValue());
+            user.setEffectiveTime(enter.getStartDateTime());
+            user.setExpireTime(enter.getEndDateTime());
             user.setCreatedBy(enter.getUserId());
             user.setCreatedTime(new Date());
             user.setUpdatedBy(enter.getUserId());
