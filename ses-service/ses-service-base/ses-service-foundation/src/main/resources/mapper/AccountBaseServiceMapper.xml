@@ -26,17 +26,17 @@
     </select>
 
     <select id="queryAccountList"
-            resultType="com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult">
-        select tenant.id              as id,
-        tenant.id              as inputTenantId,
-        tenant.effective_time  as activationTime,
-        tenant.expire_time     as expirationTime,
-        tenant.status          as status
+            resultType="com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult">
+        select tenant.id as id,
+        tenant.id as inputTenantId,
+        tenant.effective_time as activationTime,
+        tenant.expire_time as expirationTime,
+        tenant.status as status
         from pla_tenant tenant
         where tenant.dr = 0
-          and tenant.tenant_type ='1'
+        and tenant.tenant_type ='1'
         <if test="status != null and status != ''">
-            and  tenant.status = #{status}
+            and tenant.status = #{status}
         </if>
         <if test="inputTenantId != null and inputTenantId.size() != 0">
             and  tenant.id in
@@ -67,7 +67,83 @@
         count(*) as totalCount
         from pla_user user
         where user.dr = 0
-        and user.USER_TYPE in(#{personalType},#{webExpress},#{webRestaurant})
+        and user.USER_TYPE in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
         group by status
+    </select>
+    <select id="customerAccountCount" resultType="java.lang.Integer">
+        select count(*)
+        from pla_user user
+        where user.dr = 0
+        and user.USER_TYPE in
+        <foreach collection="accountType" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="enter.status != null and enter.status != ''">
+            and user.status = #{enter.status}
+        </if>
+        <if test="enter.emailList != null and enter.emailList.size() != 0">
+            and user.LOGIN_NAME in
+            <foreach collection="enter.emailList" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="enter.startActivationTime != null and enter.startActivationTime != '' and enter.endActivationTime != null and enter.endActivationTime != ''">
+            and user.activation_time between #{enter.startActivationTime} and #{enter.endActivationTime}
+        </if>
+        <if
+                test="enter.startExpirationTime != null and enter.startExpirationTime != '' and enter.endExpirationTime != null and enter.endExpirationTime != ''">
+            and user.expire_time between #{enter.startExpirationTime} and #{enter.endExpirationTime}
+        </if>
+    </select>
+    <select id="customerAccountList"
+            resultType="com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult">
+        select user.id as id,
+        user.LOGIN_NAME as email,
+        user.effective_time as activationTime,
+        user.expire_time as expirationTime,
+        user.status as status
+        from pla_user user
+        where user.dr = 0
+        and user.USER_TYPE in
+        <foreach collection="accountType" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="enter.status != null and enter.status != ''">
+            and user.status = #{enter.status}
+        </if>
+        <if test="enter.emailList != null and enter.emailList.size() != 0">
+            and user.LOGIN_NAME in
+            <foreach collection="enter.emailList" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="enter.startActivationTime != null and enter.startActivationTime != '' and enter.endActivationTime != null and enter.endActivationTime != ''">
+            and user.activation_time between #{enter.startActivationTime} and #{enter.endActivationTime}
+        </if>
+        <if
+                test="enter.startExpirationTime != null and enter.startExpirationTime != '' and enter.endExpirationTime != null and enter.endExpirationTime != ''">
+            and user.expire_time between #{enter.startExpirationTime} and #{enter.endExpirationTime}
+        </if>
+        order by user.created_time desc
+    </select>
+
+    <select id="customerAccountDeatil"
+            resultType="com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult">
+        select user.id as id,
+        user.LOGIN_NAME as email,
+        user.effective_time as activationTime,
+        user.expire_time as expirationTime,
+        user.status as status
+        from pla_user user
+        where user.dr = 0
+        and user.LOGIN_NAME=#{email}
+        and user.USER_TYPE in
+        <foreach collection="accountType" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
     </select>
 </mapper>

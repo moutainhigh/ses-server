@@ -1,9 +1,13 @@
 package com.redescooter.ses.service.foundation.service.base;
 
-import java.util.List;
-import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface PlaAppVersionService extends IService<PlaAppVersion>{
+import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Transactional
+public interface PlaAppVersionService extends IService<PlaAppVersion> {
 
 
     int updateBatch(List<PlaAppVersion> list);

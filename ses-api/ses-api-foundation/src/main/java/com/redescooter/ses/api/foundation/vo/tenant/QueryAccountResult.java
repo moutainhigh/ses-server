@@ -18,7 +18,7 @@ import java.util.Date;
  */
 @ApiModel(value = "账户列表出参", description = "账户列表出参")
 @Data
-public class QueryAccountListResult extends GeneralResult {
+public class QueryAccountResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;

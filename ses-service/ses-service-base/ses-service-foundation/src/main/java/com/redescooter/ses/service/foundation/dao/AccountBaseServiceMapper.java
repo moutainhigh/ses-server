@@ -2,7 +2,7 @@ package com.redescooter.ses.service.foundation.dao;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
-import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -18,19 +18,17 @@ public interface AccountBaseServiceMapper {
 
     int queryAccountListCount(QueryAccountListEnter enter);
 
-    List<QueryAccountListResult> queryAccountList(QueryAccountListEnter enter);
+    List<QueryAccountResult> queryAccountList(QueryAccountListEnter enter);
 
     List<CountByStatusResult> accountCountStatus();
 
     /**
      * ros客户账户列表 状态分组
      *
-     * @param personalType
-     * @param webRestaurant
-     * @param webExpress
+     * @param accountType
      * @return
      */
-    List<CountByStatusResult> customerAccountCountByStatus(@Param("personalType") Integer personalType, @Param("webRestaurant") Integer webRestaurant, @Param("webExpress") Integer webExpress);
+    List<CountByStatusResult> customerAccountCountByStatus(List<Integer> accountType);
 
     /**
      * 查询客户账户列表统计
@@ -38,7 +36,7 @@ public interface AccountBaseServiceMapper {
      * @param enter
      * @return
      */
-    Integer customerAccountCount(QueryAccountListEnter enter);
+    int customerAccountCount(@Param("enter") QueryAccountListEnter enter, @Param("accountType") List<Integer> accountType);
 
     /**
      * 查询客户账户列表
@@ -46,5 +44,14 @@ public interface AccountBaseServiceMapper {
      * @param enter
      * @return
      */
-    List<QueryAccountListResult> customerAccountList(QueryAccountListEnter enter);
+    List<QueryAccountResult> customerAccountList(@Param("enter") QueryAccountListEnter enter, @Param("accountType") List<Integer> accountType);
+
+    /**
+     * 客户账户详情
+     *
+     * @param email
+     * @param accountType
+     * @return
+     */
+    QueryAccountResult customerAccountDeatil(@Param("email") String email, @Param("accountType") List<Integer> accountType);
 }

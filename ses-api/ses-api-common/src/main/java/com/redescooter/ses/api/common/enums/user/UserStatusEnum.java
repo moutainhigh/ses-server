@@ -2,6 +2,7 @@ package com.redescooter.ses.api.common.enums.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * @description: UserStatusEnum
@@ -9,6 +10,7 @@ import lombok.Getter;
  * @create: 2019/01/22 15:10
  */
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public enum UserStatusEnum {
 

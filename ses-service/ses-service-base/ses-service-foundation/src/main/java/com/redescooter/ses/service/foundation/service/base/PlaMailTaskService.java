@@ -1,9 +1,13 @@
 package com.redescooter.ses.service.foundation.service.base;
 
-import java.util.List;
-import com.redescooter.ses.service.foundation.dm.base.PlaMailTask;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface PlaMailTaskService extends IService<PlaMailTask>{
+import com.redescooter.ses.service.foundation.dm.base.PlaMailTask;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Transactional
+public interface PlaMailTaskService extends IService<PlaMailTask> {
 
 
     int updateBatch(List<PlaMailTask> list);
