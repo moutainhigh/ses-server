@@ -15,9 +15,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum MenuTypeEnums {
 
+    NONE("NONE", "暂无", "-1"),
     MENUS("MENUS", "菜单", "0"),
     BUTTONS("BUTTONS", "按钮", "1"),
-    OTHER("OTHER", "其他", "2"),
+    API("API", "开放API", "2"),
     ;
     private String code;
 
@@ -25,13 +26,19 @@ public enum MenuTypeEnums {
 
     private String value;
 
+    /**
+     * 验证菜单类型，不合法时使用默认没有表示
+     *
+     * @param value
+     * @return
+     */
     public static String checkCode(String value) {
         for (MenuTypeEnums item : MenuTypeEnums.values()) {
             if (item.getValue().equals(value)) {
                 return item.getValue();
             }
         }
-        return OTHER.value;
+        return NONE.value;
 
     }
 

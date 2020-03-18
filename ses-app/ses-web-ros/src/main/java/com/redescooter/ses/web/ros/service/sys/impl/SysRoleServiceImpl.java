@@ -25,7 +25,7 @@ import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysRoleService;
 import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
-import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
@@ -163,7 +163,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public DeptAuthorityDetailsResult authorityDetails(IdEnter enter) {
         //根据岗位ID获取部门菜单权限树
-        Map<String, ModulePermissionsResult> muns = menuService.modulePermissions(enter);
+        Map<String, ModuleAuthResult> muns = menuService.moduleAuth(enter);
         //根据岗位ID获取销售区域树
         List<SalesAreaTressResult> areas = sysSalesAreaService.list(enter);
         DeptAuthorityDetailsResult result = new DeptAuthorityDetailsResult();

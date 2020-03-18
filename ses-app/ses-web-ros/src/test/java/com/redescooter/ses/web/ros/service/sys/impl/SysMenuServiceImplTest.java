@@ -11,7 +11,7 @@ import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
-import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import org.junit.Test;
@@ -35,7 +35,6 @@ public class SysMenuServiceImplTest {
 
     @Test
     public void save() {
-
         SaveMenuEnter save = new SaveMenuEnter();
         save.setName("ROOT");
         save.setPermission("SYS::ROOT");
@@ -55,105 +54,9 @@ public class SysMenuServiceImplTest {
         System.out.println(JSON.toJSONString(trees));
     }
 
-    private void otherMenu(int i, long pId) {
-        SaveMenuEnter save = new SaveMenuEnter();
-//        save.setName("新增");
-//        save.setCode("ADD");
-//        save.setPermission("");
-//        save.setPath("/Add");
-//        save.setPId(pId);
-//        save.setIcon("");
-//        save.setSort(i);
-//        save.setType(MenuTypeEnums.BUTTONS.getValue());
-//        save.setUserId(new Long("0"));
-//        sysMenuService.save(save);
-//        ++i;
-//        save.setName("更新");
-//        save.setCode("UPDATE");
-//        save.setPermission("");
-//        save.setPath("/UPDATE");
-//        save.setPId(pId);
-//        save.setIcon("");
-//        save.setSort(i);
-//        save.setType(MenuTypeEnums.BUTTONS.getValue());
-//        save.setUserId(new Long("0"));
-//        sysMenuService.save(save);
-//        ++i;
-        save.setName("Inquiry");
-        save.setPermission("SYS::SYS");
-        save.setPath("/");
-        save.setPId(pId);
-        save.setIcon("");
-        save.setSort(i);
-        save.setType(MenuTypeEnums.checkCode(MenuTypeEnums.MENUS.getValue()));
-        save.setUserId(new Long("0"));
-        sysMenuService.save(save);
-//        ++i;
-//        save.setName("删除");
-//        save.setCode("delete");
-//        save.setPermission("");
-//        save.setPath("/delete");
-//        save.setPId(pId);
-//        save.setIcon("");
-//        save.setSort(i);
-//        save.setType(MenuTypeEnums.BUTTONS.getValue());
-//        save.setUserId(new Long("0"));
-//        sysMenuService.save(save);
-    }
-
     @Test
-    public void getUserRouters() {
-        List<VueRouter<MenuTreeResult>> routes = new ArrayList<>();
-        //   List<MenuTreeResult> menus = sysMenuService.trees(new GeneralEnter());
-
-        List<OpeSysMenu> list = menuService.list();
-
-        list.forEach(menu -> {
-            VueRouter<MenuTreeResult> route = new VueRouter<>();
-            route.setId(String.valueOf(menu.getId()));
-            route.setParentId(String.valueOf(menu.getPId()));
-            route.setPath(menu.getPath());
-            route.setComponent(menu.getComponent());
-            route.setName(menu.getName());
-            route.setMeta(new RouterMeta(menu.getName(), menu.getIcon(), true));
-            routes.add(route);
-        });
-
-        List<VueRouter<MenuTreeResult>> vueRouters = TreeUtil.buildVueRouter(routes);
+    public void vueRouters() {
+        List<VueRouter<MenuTreeResult>> vueRouters = sysMenuService.vueRouters(new GeneralEnter());
         System.out.println(JSON.toJSONString(vueRouters));
-
     }
-
-    @Test
-    public void modulePermissions() {
-
-        Map<String, ModulePermissionsResult> stringModulePermissionsResultMap = sysMenuService.modulePermissions(new IdEnter());
-
-        System.out.println(JSON.toJSONString(stringModulePermissionsResultMap));
-    }
-
-    @Test
-    public void details() {
-        MenuTreeResult details = sysMenuService.details(new IdEnter(new Long("1000009")));
-
-        System.out.println(details);
-    }
-
-    @Test
-    public void delete() {
-        GeneralResult delete = sysMenuService.delete(new IdEnter(new Long("1000007")));
-        System.out.println(delete);
-    }
-
-    @Test
-    public void testModulePermissions() {
-
-        GeneralEnter enter = new GeneralEnter();
-        enter.setUserId(new Long("1006285"));
-
-        Map<String, ModulePermissionsResult> map = sysMenuService.userMenuTrees(enter);
-
-        System.out.println(JSON.toJSONString(map));
-
-   }
 }

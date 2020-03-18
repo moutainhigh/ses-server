@@ -1,8 +1,7 @@
 package com.redescooter.ses.web.ros.vo.sys.dept;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
-import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -25,5 +24,5 @@ public class DeptAuthorityDetailsResult extends GeneralResult {
     private List<SalesAreaTressResult> salesAreaTressResult;
 
     @ApiModelProperty(value = "菜单权限")
-    private Map<String, ModulePermissionsResult> menuTreeResult;
+    private Map<String, ModuleAuthResult> menuTreeResult;
 }

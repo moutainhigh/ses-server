@@ -32,7 +32,7 @@ public class MenuTreeResult extends TreeNode {
     @ApiModelProperty(value = "路由")
     private String path;
 
-    @ApiModelProperty(value = "对应路由组件component")
+    @ApiModelProperty(value = "对应路由组件")
     private String component;
 
     @ApiModelProperty(value = "菜单类型")
@@ -41,16 +41,20 @@ public class MenuTreeResult extends TreeNode {
     @ApiModelProperty(value = "图表")
     private String icon;
 
+    @ApiModelProperty(value = "等级")
+    private Integer level;
+
     @ApiModelProperty(value = "菜单权重")
     private int sort;
 
     @ApiModelProperty(value = "是否选中")
-    private boolean checked;
-
-    @ApiModelProperty(value = "是否禁用")
-    private boolean disabled;
+    private boolean checked = Boolean.FALSE;
 
     @ApiModelProperty(value = "是否展开")
-    private boolean spread = false;
+    private boolean spread = Boolean.FALSE;
+
+    @ApiModelProperty(value = "是否隐藏")
+    private boolean hidden = Boolean.FALSE;
+
 
 }

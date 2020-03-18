@@ -25,6 +25,9 @@ public class SaveMenuEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.MENU_NAME_IS_EMPTY, message = "菜单名字为空")
     private String name;
 
+    @ApiModelProperty(value = "菜单编码")
+    private String code;
+
     @ApiModelProperty(value = "权限码")
     private String permission;
 
@@ -48,5 +51,8 @@ public class SaveMenuEnter extends GeneralEnter {
     @ApiModelProperty(value = "菜单类型 0:菜单 1:按钮")
     @NotNull(code = ValidationExceptionCode.MENU_TYPE_IS_EMPTY, message = "菜单类型为空")
     private String type;
+
+    @ApiModelProperty(value = "等级")
+    private Integer level;
 
 }

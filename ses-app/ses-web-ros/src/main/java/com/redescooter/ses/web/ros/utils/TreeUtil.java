@@ -90,14 +90,14 @@ public class TreeUtil {
         List<VueRouter<T>> topRoutes = new ArrayList<>();
         VueRouter<T> router = new VueRouter<>();
         routes.forEach(route -> {
-            String parentId = route.getParentId();
-            if (parentId == null || TOP_NODE_ID.equals(parentId)) {
+            String pId = route.getPId();
+            if (pId == null || TOP_NODE_ID.equals(pId)) {
                 topRoutes.add(route);
                 return;
             }
             for (VueRouter<T> parent : routes) {
                 String id = parent.getId();
-                if (id != null && id.equals(parentId)) {
+                if (id != null && id.equals(pId)) {
                     if (parent.getChildren() == null) {
                         parent.initChildren();
                     }

@@ -1,8 +1,7 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 
 import java.util.List;
@@ -30,15 +29,8 @@ public interface MenuServiceMapper {
      * @param enter
      * @return
      */
-    List<ModulePermissionsResult> fatherModulePermissions(GeneralEnter enter);
+    List<ModuleAuthResult> fatherModulePermissions(GeneralEnter enter);
 
-    /**
-     * 根据儿子找父级权限
-     *
-     * @param enter
-     * @return
-     */
-    List<ModulePermissionsResult> fatherModulePermissionsBySon(IdEnter enter);
 
 
 }

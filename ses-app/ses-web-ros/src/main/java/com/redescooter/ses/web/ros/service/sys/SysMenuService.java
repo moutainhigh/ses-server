@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
-import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 
@@ -45,30 +45,6 @@ public interface SysMenuService {
     List<MenuTreeResult> list(IdEnter enter);
 
     /**
-     * 创建vue动态路由
-     *
-     * @param enter
-     * @return
-     */
-    List<VueRouter<MenuTreeResult>> userRouters(GeneralEnter enter);
-
-    /**
-     * 用户菜单树
-     *
-     * @param enter
-     * @return
-     */
-    Map<String, ModulePermissionsResult> userMenuTrees(GeneralEnter enter);
-
-    /**
-     * 模块权限列表
-     *
-     * @param enter
-     * @return
-     */
-    Map<String, ModulePermissionsResult> modulePermissions(IdEnter enter);
-
-    /**
      * 菜单详情
      *
      * @param enter
@@ -91,4 +67,30 @@ public interface SysMenuService {
      * @return
      */
     GeneralResult edit(EditMenuEnter enter);
+
+    /**
+     * 角色岗位菜单权限查看与授权
+     *
+     * @param enter
+     * @return
+     */
+    List<MenuTreeResult> roleMenuAuth(GeneralEnter enter);
+
+    /**
+     * 操作权限查看与授权
+     *
+     * @param enter
+     * @return
+     */
+    List<MenuTreeResult> roleOperationAuth(GeneralEnter enter);
+
+
+    /**
+     * 创建vue动态路由
+     *
+     * @param enter
+     * @return
+     */
+    List<VueRouter<MenuTreeResult>> vueRouters(GeneralEnter enter);
+
 }

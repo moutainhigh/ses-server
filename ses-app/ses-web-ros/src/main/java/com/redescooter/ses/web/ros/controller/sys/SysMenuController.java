@@ -7,7 +7,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
-import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
+import com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import io.swagger.annotations.Api;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName SysMenuController
@@ -44,38 +43,8 @@ public class SysMenuController {
         return new Response<>(sysMenuService.save(enter));
     }
 
-    @PostMapping(value = "/list")
-    @ApiOperation(value = "菜单列表", response = GeneralResult.class)
-    public Response<List<MenuTreeResult>> list(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(sysMenuService.list(enter));
-    }
-
-    @PostMapping(value = "/tree")
-    @ApiOperation(value = "树形菜单", response = GeneralResult.class)
-    public Response<List<MenuTreeResult>> trees(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(sysMenuService.trees(enter));
-    }
-
-    @PostMapping(value = "/userRouters")
-    @ApiOperation(value = "vue路由", response = GeneralResult.class)
-    public Response<List<VueRouter<MenuTreeResult>>> userRouters(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(sysMenuService.userRouters(enter));
-    }
-
-    @PostMapping(value = "/userMenuPermiss")
-    @ApiOperation(value = "用户菜单", response = GeneralResult.class)
-    public Response<Map<String, ModulePermissionsResult>> userMenuPermiss(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(sysMenuService.userMenuTrees(enter));
-    }
-
-    @PostMapping(value = "/modulePermissions")
-    @ApiOperation(value = "模块权限", response = GeneralResult.class)
-    public Response<Map<String, ModulePermissionsResult>> modulePermissions(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(sysMenuService.modulePermissions(enter));
-    }
-
     @PostMapping(value = "/details")
-    @ApiOperation(value = "菜单详情", response = GeneralResult.class)
+    @ApiOperation(value = "菜单详情", response = MenuTreeResult.class)
     public Response<MenuTreeResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(sysMenuService.details(enter));
     }
@@ -91,4 +60,35 @@ public class SysMenuController {
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(sysMenuService.delete(enter));
     }
+
+    @PostMapping(value = "/tree")
+    @ApiOperation(value = "菜单树", response = MenuTreeResult.class)
+    public Response<List<MenuTreeResult>> trees(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(sysMenuService.trees(enter));
+    }
+
+    @PostMapping(value = "/list")
+    @ApiOperation(value = "平行菜单", response = MenuTreeResult.class)
+    public Response<List<MenuTreeResult>> list(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(sysMenuService.list(enter));
+    }
+
+    @PostMapping(value = "/vueRouters")
+    @ApiOperation(value = "VUE路由创建", response = VueRouter.class)
+    public Response<List<VueRouter<MenuTreeResult>>> vueRouters(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(sysMenuService.vueRouters(enter));
+    }
+
+    @PostMapping(value = "/roleMenuAuth")
+    @ApiOperation(value = "岗位菜单查询", response = MenuTreeResult.class)
+    public Response<List<MenuTreeResult>> roleMenuAuth(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(sysMenuService.roleMenuAuth(enter));
+    }
+
+    @PostMapping(value = "/roleOperationAuth")
+    @ApiOperation(value = "岗位操作权限", response = ModuleAuthResult.class)
+    public Response<List<MenuTreeResult>> roleOperationAuth(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(sysMenuService.roleOperationAuth(enter));
+    }
+
 }
