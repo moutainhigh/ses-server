@@ -22,12 +22,15 @@ public class VueRouter<T> implements Serializable {
     @JsonIgnore
     private String id;
     @JsonIgnore
-    private String parentId;
+    private String pId;
 
     private String path;
     private String name;
+    private String code;
+    private String type;
     private String component;
     private String redirect;
+    private Integer level;
     private RouterMeta meta;
     private Boolean hidden = false;
     private Boolean alwaysShow = false;
@@ -39,7 +42,7 @@ public class VueRouter<T> implements Serializable {
     @JsonIgnore
     private Boolean hasChildren = false;
 
-    public void initChildren(){
+    public void initChildren() {
         this.children = new ArrayList<>();
     }
 

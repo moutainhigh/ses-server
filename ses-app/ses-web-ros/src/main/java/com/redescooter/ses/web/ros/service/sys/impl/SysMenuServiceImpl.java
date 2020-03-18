@@ -11,6 +11,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.RouterMeta;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
@@ -24,7 +25,6 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.sys.SysMenuService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
-import com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +35,7 @@ import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName SysMenuServiceImpl
@@ -72,39 +70,38 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public GeneralResult save(SaveMenuEnter enter) {
-        sysMenuService.save(this.buildMenu(null, enter));
+        sysMenuService.save(this.buildMenuVo(null, enter));
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public List<MenuTreeResult> trees(IdEnter enter) {
-
-        List<OpeSysMenu> list = sysMenuService.list();
-
-        return this.buildTree(list, enter, Constant.MENU_TREE_ROOT_ID);
+        List<Long> roles = new ArrayList<>();
+        roles.add(enter.getId());
+        return this.buildMenuTree(sysMenuService.list(), roles, Constant.MENU_TREE_ROOT_ID);
     }
 
     @Override
     public List<MenuTreeResult> list(IdEnter enter) {
-
-        List<OpeSysMenu> list = sysMenuService.list();
-
-        return this.buildList(list, enter);
+        List<Long> roles = new ArrayList<>();
+        roles.add(enter.getId());
+        return this.buildMenuList(sysMenuService.list(), roles);
     }
 
     @Override
-    public List<VueRouter<MenuTreeResult>> userRouters(GeneralEnter enter) {
-
+    public List<VueRouter<MenuTreeResult>> vueRouters(GeneralEnter enter) {
         List<VueRouter<MenuTreeResult>> routes = new ArrayList<>();
         List<OpeSysMenu> list = sysMenuService.list();
-
         list.forEach(menu -> {
             VueRouter<MenuTreeResult> route = new VueRouter<>();
             route.setId(String.valueOf(menu.getId()));
-            route.setParentId(String.valueOf(menu.getPId()));
+            route.setPId(String.valueOf(menu.getPId()));
             route.setPath(menu.getPath());
             route.setComponent(menu.getComponent());
             route.setName(menu.getName());
+            route.setCode(menu.getCode());
+            route.setType(menu.getType());
+            route.setLevel(menu.getLevel());
             route.setMeta(new RouterMeta(menu.getName(), menu.getIcon(), true));
             routes.add(route);
         });
@@ -112,79 +109,28 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public Map<String, ModulePermissionsResult> userMenuTrees(GeneralEnter enter) {
-        //结果集封装
-        Map<String, ModulePermissionsResult> resultMap = new HashMap<>();
-        //获取所有父子权限列表
-        List<ModulePermissionsResult> fatSon = menuServiceMapper.fatherModulePermissionsBySon(new IdEnter(enter.getUserId()));
-
-        if (CollUtil.isEmpty(fatSon)) {
-            return resultMap;
-        }
-        //获取当前职位
+    public List<MenuTreeResult> roleMenuAuth(GeneralEnter enter) {
+        //获取用户角色岗位
         LambdaQueryWrapper<OpeSysUserRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSysUserRole::getUserId, enter.getUserId());
         List<OpeSysUserRole> userRoles = sysUserRoleService.list(wrapper);
 
-        //查询该用户角色下的权限
         if (CollUtil.isNotEmpty(userRoles)) {
-            QueryWrapper<OpeSysRoleMenu> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq(OpeSysRoleMenu.COL_ROLE_ID, userRoles.get(0).getRoleId());
-            List<OpeSysRoleMenu> list = roleMenuService.list(queryWrapper);
 
-            if (CollUtil.isNotEmpty(list)) {
-                list.forEach(li -> fatSon.forEach(t -> {
-                    if (CollUtil.isNotEmpty(list)) {
-                        t.getChilds().stream().filter(ch -> li.getMenuId() == ch.getId()).forEach(ch -> ch.setChecked(Boolean.TRUE));
-                    }
-                }));
-            }
         }
 
-        if (CollUtil.isNotEmpty(fatSon)) {
-            fatSon.forEach(rs -> {
-                resultMap.put(String.valueOf(rs.getId()), rs);
-            });
-        }
-        return resultMap;
+        return new ArrayList<>();
     }
 
     @Override
-    public Map<String, ModulePermissionsResult> modulePermissions(IdEnter enter) {
-        //获取所有父子权限列表
-        List<ModulePermissionsResult> fatSon = menuServiceMapper.fatherModulePermissions(enter);
-
-        Map<String, ModulePermissionsResult> resultMap = new HashMap<>();
-
-        if (enter.getId() != 0) {
-            QueryWrapper<OpeSysRoleMenu> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq(OpeSysRoleMenu.COL_ROLE_ID, enter.getId());
-            List<OpeSysRoleMenu> list = roleMenuService.list(queryWrapper);
-
-            if (CollUtil.isNotEmpty(list)) {
-                list.forEach(li -> fatSon.forEach(t -> {
-                    if (CollUtil.isNotEmpty(list)) {
-                        t.getChilds().stream().filter(ch -> li.getMenuId() == ch.getId()).forEach(ch -> ch.setChecked(Boolean.TRUE));
-                    }
-                }));
-            }
-        }
-
-        if (CollUtil.isNotEmpty(fatSon)) {
-            fatSon.forEach(rs -> {
-                resultMap.put(String.valueOf(rs.getId()), rs);
-            });
-        }
-
-
-        return resultMap;
+    public List<MenuTreeResult> roleOperationAuth(GeneralEnter enter) {
+        return null;
     }
 
     @Override
     public MenuTreeResult details(IdEnter enter) {
 
         OpeSysMenu byId = sysMenuService.getById(enter.getId());
-
         MenuTreeResult result = new MenuTreeResult();
         BeanUtils.copyProperties(byId, result);
 
@@ -193,7 +139,6 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public GeneralResult delete(IdEnter enter) {
-
         QueryWrapper<OpeSysMenu> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeSysMenu.COL_P_ID, enter.getId());
         wrapper.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
@@ -208,7 +153,6 @@ public class SysMenuServiceImpl implements SysMenuService {
             roleMenuService.remove(delete);
 
         }
-
         QueryWrapper<OpeSysMenu> myself = new QueryWrapper<>();
         myself.eq(OpeSysMenu.COL_ID, enter.getId());
         myself.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
@@ -248,7 +192,14 @@ public class SysMenuServiceImpl implements SysMenuService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    private OpeSysMenu buildMenu(Long id, SaveMenuEnter enter) {
+    /**
+     * 创建菜单Vo实体
+     *
+     * @param id
+     * @param enter
+     * @return
+     */
+    private OpeSysMenu buildMenuVo(Long id, SaveMenuEnter enter) {
         OpeSysMenu menu = new OpeSysMenu();
 
         if (id == null) {
@@ -263,12 +214,17 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
         menu.setDr(Constant.DR_FALSE);
         menu.setName(enter.getName());
-        menu.setCode(menu.getId() + ":::" + enter.getName());
+        if (StringUtils.isBlank(enter.getCode())) {
+            menu.setCode(menu.getId() + ":::" + enter.getName());
+        } else {
+            menu.setCode(enter.getCode());
+        }
         menu.setPermission(enter.getPermission());
         menu.setPath(enter.getPath());
         menu.setComponent(enter.getComponent());
         menu.setType(MenuTypeEnums.checkCode(enter.getType()));
         menu.setIcon(enter.getIcon());
+        menu.setLevel(enter.getLevel());
         menu.setSort(enter.getSort());
         menu.setCreatedBy(enter.getUserId());
         menu.setCreatedTime(new Date());
@@ -278,7 +234,6 @@ public class SysMenuServiceImpl implements SysMenuService {
         return menu;
     }
 
-
     /**
      * 通过sysMenu创建树形节点
      *
@@ -286,37 +241,31 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @param root
      * @return
      */
-    private List<MenuTreeResult> buildTree(List<OpeSysMenu> menus, IdEnter enter, long root) {
+    private List<MenuTreeResult> buildMenuTree(List<OpeSysMenu> menus, List<Long> roleIds, long root) {
         List<MenuTreeResult> trees = new ArrayList<>();
         MenuTreeResult node;
         for (OpeSysMenu menu : menus) {
             node = new MenuTreeResult();
-            BeanUtils.copyProperties(enter, node);
             node.setId(menu.getId());
             node.setPId(menu.getPId());
-            node.setName(menu.getName());
-            node.setPath(menu.getPath());
-            node.setCode(menu.getCode());
             node.setPermission(menu.getPermission());
+            node.setName(menu.getName());
+            node.setCode(menu.getCode());
+            node.setPath(menu.getPath());
+            node.setLevel(menu.getLevel());
+            node.setType(menu.getType());
             node.setIcon(menu.getIcon());
             node.setSort(menu.getSort());
-            node.setChecked(Boolean.FALSE);
-            node.setDisabled(Boolean.FALSE);
-            node.setSpread(Boolean.FALSE);
             trees.add(node);
         }
-        if (enter.getId() != 0) {
+        if (CollUtil.isNotEmpty(roleIds)) {
             QueryWrapper<OpeSysRoleMenu> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq(OpeSysRoleMenu.COL_ROLE_ID, enter.getId());
+            queryWrapper.in(OpeSysRoleMenu.COL_ROLE_ID, roleIds);
             List<OpeSysRoleMenu> list = roleMenuService.list(queryWrapper);
-
+            //判断该角色所属权限
             if (CollUtil.isNotEmpty(list)) {
                 list.forEach(li -> {
-                    trees.forEach(t -> {
-                        if (li.getMenuId() == t.getId()) {
-                            t.setChecked(Boolean.TRUE);
-                        }
-                    });
+                    trees.stream().filter(t -> li.getMenuId() == t.getId()).forEach(t -> t.setChecked(Boolean.TRUE));
                 });
             }
         }
@@ -324,31 +273,35 @@ public class SysMenuServiceImpl implements SysMenuService {
         return TreeUtil.build(trees, root);
     }
 
-    private List<MenuTreeResult> buildList(List<OpeSysMenu> menus, IdEnter enter) {
+    /**
+     * 渲染平行结构菜单集合
+     *
+     * @param menus
+     * @param roleIds
+     * @return
+     */
+    private List<MenuTreeResult> buildMenuList(List<OpeSysMenu> menus, List<Long> roleIds) {
         List<MenuTreeResult> trees = new ArrayList<>();
         MenuTreeResult node;
         for (OpeSysMenu menu : menus) {
             node = new MenuTreeResult();
-            BeanUtils.copyProperties(enter, node);
             node.setId(menu.getId());
             node.setPId(menu.getPId());
-            node.setName(menu.getName());
-            node.setPath(menu.getPath());
-            node.setCode(menu.getCode());
-            node.setType(menu.getType());
             node.setPermission(menu.getPermission());
+            node.setName(menu.getName());
+            node.setCode(menu.getCode());
+            node.setPath(menu.getPath());
+            node.setLevel(menu.getLevel());
+            node.setType(menu.getType());
             node.setIcon(menu.getIcon());
             node.setSort(menu.getSort());
-            node.setChecked(Boolean.FALSE);
-            node.setDisabled(Boolean.FALSE);
-            node.setSpread(Boolean.FALSE);
             trees.add(node);
         }
-        if (enter.getId() != 0) {
+        if (CollUtil.isNotEmpty(roleIds)) {
             QueryWrapper<OpeSysRoleMenu> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq(OpeSysRoleMenu.COL_ROLE_ID, enter.getId());
+            queryWrapper.in(OpeSysRoleMenu.COL_ROLE_ID, roleIds);
             List<OpeSysRoleMenu> list = roleMenuService.list(queryWrapper);
-
+            //判断该角色所属权限
             if (CollUtil.isNotEmpty(list)) {
                 list.forEach(li -> {
                     trees.forEach(t -> {
@@ -359,7 +312,6 @@ public class SysMenuServiceImpl implements SysMenuService {
                 });
             }
         }
-
         return trees;
     }
 }

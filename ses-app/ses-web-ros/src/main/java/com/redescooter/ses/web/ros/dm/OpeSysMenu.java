@@ -25,106 +25,113 @@ public class OpeSysMenu implements Serializable {
     /**
      * 菜单ID
      */
-    @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="菜单ID")
+    @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(value = "菜单ID")
     private Long id;
 
     /**
      * 逻辑删除标识
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除标识")
+    @ApiModelProperty(value = "逻辑删除标识")
     private Integer dr;
 
     /**
      * 父菜单ID
      */
     @TableField(value = "p_id")
-    @ApiModelProperty(value="父菜单ID")
+    @ApiModelProperty(value = "父菜单ID")
     private Long pId;
 
     /**
      * 菜单名称
      */
     @TableField(value = "name")
-    @ApiModelProperty(value="菜单名称")
+    @ApiModelProperty(value = "菜单名称")
     private String name;
 
     /**
      * 菜单编码
      */
     @TableField(value = "code")
-    @ApiModelProperty(value="菜单编码")
+    @ApiModelProperty(value = "菜单编码")
     private String code;
 
     /**
      * 权限码
      */
     @TableField(value = "permission")
-    @ApiModelProperty(value="权限码")
+    @ApiModelProperty(value = "权限码")
     private String permission;
 
     /**
      * 路由
      */
     @TableField(value = "path")
-    @ApiModelProperty(value="路由")
+    @ApiModelProperty(value = "路由")
     private String path;
 
     /**
      * 对应路由组件component
      */
     @TableField(value = "component")
-    @ApiModelProperty(value="对应路由组件component")
+    @ApiModelProperty(value = "对应路由组件component")
     private String component;
 
     /**
-     * 菜单类型
+     * 菜单类型：0菜单，1按钮，3开放API
      */
     @TableField(value = "type")
-    @ApiModelProperty(value="菜单类型")
+    @ApiModelProperty(value = "菜单类型：0菜单，1按钮，3开放API")
     private String type;
 
     /**
      * 图表
      */
     @TableField(value = "icon")
-    @ApiModelProperty(value="图表")
+    @ApiModelProperty(value = "图表")
     private String icon;
+
+    /**
+     * 等级
+     */
+    @TableField(value = "level")
+    @ApiModelProperty(value = "等级")
+    private Integer level;
 
     /**
      * 菜单权重
      */
     @TableField(value = "sort")
-    @ApiModelProperty(value="菜单权重")
+    @ApiModelProperty(value = "菜单权重")
     private Integer sort;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     private static final long serialVersionUID = 1L;
@@ -149,6 +156,8 @@ public class OpeSysMenu implements Serializable {
 
     public static final String COL_ICON = "icon";
 
+    public static final String COL_LEVEL = "level";
+
     public static final String COL_SORT = "sort";
 
     public static final String COL_CREATED_BY = "created_by";
@@ -158,4 +167,8 @@ public class OpeSysMenu implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
+
+    public static OpeSysMenuBuilder builder() {
+        return new OpeSysMenuBuilder();
+    }
 }

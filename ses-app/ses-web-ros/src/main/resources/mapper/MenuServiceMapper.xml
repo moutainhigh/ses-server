@@ -7,7 +7,7 @@
       from ope_sys_menu
       where type =1
     </select>
-    <resultMap id="modulePermissionsMap" type="com.redescooter.ses.web.ros.vo.sys.menu.ModulePermissionsResult">
+    <resultMap id="modulePermissionsMap" type="com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult">
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="code" jdbcType="VARCHAR" property="code"/>
         <result column="sort" jdbcType="INTEGER" property="sort"/>
@@ -32,19 +32,6 @@
     where type = 1
       and p_id = #{id}
     </select>
-    <select id="fatherModulePermissionsBySon" resultMap="modulePermissionsMap">
-    select far.id, far.name, far.code, far.sort
-    from ope_sys_menu sub
-             inner join ope_sys_menu far on far.id = sub.p_id
-    where far.id in (select osm.p_id
-                     from ope_sys_user_role osur
-                              left join ope_sys_role_menu osrm on osur.role_id = osrm.role_id
-                              left join ope_sys_menu osm on osm.id = osrm.menu_id
-                     where osur.user_id = #{id}
-                     group by osm.p_id)
-    group by far.id, far.name, far.code, far.sort
-    </select>
-
 
 </mapper>
 
