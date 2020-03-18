@@ -55,4 +55,7 @@ public class SaveMenuEnter extends GeneralEnter {
     @ApiModelProperty(value = "等级")
     private Integer level;
 
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
 }

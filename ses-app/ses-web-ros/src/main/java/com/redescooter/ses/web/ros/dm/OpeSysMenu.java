@@ -107,6 +107,13 @@ public class OpeSysMenu implements Serializable {
     private Integer sort;
 
     /**
+     * 备注
+     */
+    @TableField(value = "remark")
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
+    /**
      * 创建人
      */
     @TableField(value = "created_by")
@@ -159,6 +166,8 @@ public class OpeSysMenu implements Serializable {
     public static final String COL_LEVEL = "level";
 
     public static final String COL_SORT = "sort";
+
+    public static final String COL_REMARK = "remark";
 
     public static final String COL_CREATED_BY = "created_by";
 

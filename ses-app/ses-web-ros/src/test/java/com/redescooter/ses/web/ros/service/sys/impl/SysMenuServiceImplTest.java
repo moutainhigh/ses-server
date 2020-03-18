@@ -49,7 +49,7 @@ public class SysMenuServiceImplTest {
     @Test
     public void trees() {
         IdEnter idEnter = new IdEnter();
-        idEnter.setId(0L);
+        //idEnter.setId(0L);
         List<MenuTreeResult> trees = sysMenuService.trees(idEnter);
         System.out.println(JSON.toJSONString(trees));
     }
