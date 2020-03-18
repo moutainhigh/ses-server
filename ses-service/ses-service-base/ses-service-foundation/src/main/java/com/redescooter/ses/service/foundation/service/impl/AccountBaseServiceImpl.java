@@ -669,6 +669,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             // 删除个人--2C信息 TODO
             userProfileService.deleteUserProfile2C(ids);
         }
+        //删除账户信息
+        plaUserMapper.deleteBatchIds(ids);
 
         //删除账户节点信息
         QueryWrapper<PlaUserNode> plaUserNodeQueryWrapper = new QueryWrapper<>();

@@ -112,6 +112,7 @@
         inner join pla_user puser on puser.ID = userNode.user_id
         where puser.dr = 0
         and puser.dr = 0
+        and userNode.dr=0
         and puser.USER_TYPE in
         <foreach collection="accountType" item="item" open="(" separator="," close=")">
             #{item}
