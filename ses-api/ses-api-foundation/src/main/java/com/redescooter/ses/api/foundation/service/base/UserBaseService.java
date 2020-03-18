@@ -2,8 +2,12 @@ package com.redescooter.ses.api.foundation.service.base;
 
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult;
+import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
+import com.redescooter.ses.api.foundation.vo.user.SaveAccountNodeEnter;
 
 import java.util.List;
 
@@ -31,5 +35,29 @@ public interface UserBaseService {
      * @return
      */
     List<BaseUserResult> queryEmailInfo(StringEnter enter);
+
+    /**
+     * 保存账户节点
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult saveAccountNode(SaveAccountNodeEnter enter);
+
+    /**
+     * 批量保存账户节点
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult saveAccountNodeList(List<SaveAccountNodeEnter> enter);
+
+    /**
+     * 账户节点详情
+     *
+     * @param enter
+     * @return
+     */
+    List<QueryAccountNodeDetailResult> accountNodeDetail(QueryAccountNodeEnter enter);
 
 }

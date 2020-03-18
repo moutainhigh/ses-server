@@ -32,4 +32,6 @@ public interface SequenceName {
     String PLA_JPUSHUSER = "PLA_JPUSHUSER";
 
     String PLA_I18NCONFIG = "PLA_I18NCONFIG";
+
+    String PLA_USER_NODE = "PLA_USER_NODE";
 }

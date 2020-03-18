@@ -1,9 +1,10 @@
 package com.redescooter.ses.service.foundation.service.base;
 
-import java.util.List;
-
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.service.foundation.dm.base.PlaCountryCode;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Mr.lijiating
@@ -12,6 +13,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaCountryCode;
  * @Function: TODO
  * @version V1.0
  */
+@Transactional
 public interface PlaCountryCodeService extends IService<PlaCountryCode> {
 
     int updateBatch(List<PlaCountryCode> list);
