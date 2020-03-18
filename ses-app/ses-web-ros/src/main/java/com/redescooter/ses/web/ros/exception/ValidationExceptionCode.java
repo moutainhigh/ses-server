@@ -128,4 +128,12 @@ public interface ValidationExceptionCode {
     int DEPT_LEVEL_IS_EMPTY = 10078;
     // 职位名称为空
     int ROLE_NAME_IS_EMPTY = 10079;
+    // 收货人为空
+    int CONSIGNEE_ID__IS_EMPTY = 10080;
+    // 工厂Id 为空
+    int FACTORY_ID_EMPTY = 10081;
+    // 部品为空
+    int PARTS_IS_EMPTY = 10082;
+    // 工厂为空
+    int PAYMENT_TYPE_IS_EMPTY = 10083;
 }
