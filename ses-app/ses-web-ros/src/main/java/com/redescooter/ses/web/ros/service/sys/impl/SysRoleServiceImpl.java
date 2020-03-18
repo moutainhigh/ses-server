@@ -37,12 +37,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @ClassName SysRoleServiceImpl
@@ -163,7 +158,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public DeptAuthorityDetailsResult authorityDetails(IdEnter enter) {
         //根据岗位ID获取部门菜单权限树
-        Map<String, ModuleAuthResult> muns = menuService.moduleAuth(enter);
+        Map<String, ModuleAuthResult> muns = new HashMap<>();
         //根据岗位ID获取销售区域树
         List<SalesAreaTressResult> areas = sysSalesAreaService.list(enter);
         DeptAuthorityDetailsResult result = new DeptAuthorityDetailsResult();
