@@ -10,6 +10,7 @@ import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
+import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
 
 import java.util.List;
 import java.util.Map;
@@ -98,7 +99,7 @@ public interface AccountBaseService {
      * @param enter
      * @return
      */
-    GeneralResult deleteUserbyTenantId(IdEnter enter);
+    GeneralResult deleteUser(DeleteUserEnter enter);
 
 
     /**

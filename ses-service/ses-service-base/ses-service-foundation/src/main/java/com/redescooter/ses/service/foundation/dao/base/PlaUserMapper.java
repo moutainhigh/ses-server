@@ -14,4 +14,5 @@ public interface PlaUserMapper extends BaseMapper<PlaUser> {
     int insertOrUpdate(PlaUser record);
 
     int insertOrUpdateSelective(PlaUser record);
+
 }

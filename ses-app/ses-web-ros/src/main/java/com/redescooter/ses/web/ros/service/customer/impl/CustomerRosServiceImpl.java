@@ -27,6 +27,7 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
+import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
 import com.redescooter.ses.api.hub.common.UserProfileService;
@@ -412,7 +413,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
         if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.INACTIVATED.getValue())) {
-            accountBaseService.deleteUserbyTenantId(IdEnter.builder().id(customer.getTenantId()).build());
+            accountBaseService.deleteUser(DeleteUserEnter.builder().email(customer.getEmail()).build());
         }
         OpeCustomer update = new OpeCustomer();
         update.setId(enter.getId());
@@ -579,27 +580,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
-//        List<QueryTenantNodeResult> tenantNodeResultList = tenantBaseService.queryTenantNdoe(enter);
         List<QueryAccountNodeDetailResult> queryAccountNodeDetailResultList = userBaseService.accountNodeDetail(QueryAccountNodeEnter.builder().email(opeCustomer.getEmail()).build());
-
-
-        // todo 需优化 调用数据库过于频繁
-//        if (!CollectionUtils.isEmpty(queryAccountNodeDetailResultList)) {
-//            queryAccountNodeDetailResultList.forEach(item -> {
-//                QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
-//                opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, item.getCreateBy());
-//                OpeSysUserProfile opeSysUserProfile = sysUserProfileMapper.selectOne(opeSysUserProfileQueryWrapper);
-//                AccountNodeResult result = AccountNodeResult.builder()
-//                        .id(item.getId())
-//                        .event(item.getEvent())
-//                        .eventTime(DateUtil.format(item.getEventTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
-//                        .createdBy(item.getCreateBy())
-//                        .createdFirstName(opeSysUserProfile.getFirstName())
-//                        .createdLastName(opeSysUserProfile.getLastName())
-//                        .build();
-//                resultList.add(result);
-//            });
-//        }
         if (!CollectionUtils.isEmpty(queryAccountNodeDetailResultList)) {
             Set<Long> sysUseIds = new HashSet<>();
             queryAccountNodeDetailResultList.forEach(item -> {
