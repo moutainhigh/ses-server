@@ -25,10 +25,11 @@ import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
-import com.redescooter.ses.api.foundation.vo.account.QueryTenantNodeResult;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
-import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
-import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
+import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
+import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult;
+import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -70,8 +71,10 @@ import redis.clients.jedis.JedisCluster;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @ClassName:CustomerImpl
@@ -410,7 +413,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
         if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.INACTIVATED.getValue())) {
-            accountBaseService.deleteUserbyTenantId(IdEnter.builder().id(customer.getTenantId()).build());
+            accountBaseService.deleteUser(DeleteUserEnter.builder().email(customer.getEmail()).build());
         }
         OpeCustomer update = new OpeCustomer();
         update.setId(enter.getId());
@@ -505,46 +508,51 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public PageResult<AccountListResult> accountList(AccountListEnter enter) {
         //TODO ROS1.0.0 账户列表去除个人端账户查询
-        enter.setCustomerType(CustomerTypeEnum.ENTERPRISE.getValue());
+//        enter.setCustomerType(CustomerTypeEnum.ENTERPRISE.getValue());
         int countCustomer = customerServiceMapper.customerAccountCount(enter);
         if (countCustomer == 0) {
             return PageResult.createZeroRowResult(enter);
         }
         // 查询内容
         List<AccountListResult> accountList = customerServiceMapper.queryAccountRecord(enter);
-        List<Long> tenantIdList = new ArrayList<>();
+        List<String> emailList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(accountList)) {
             accountList.forEach(item -> {
-                tenantIdList.add(item.getTenantId());
+                emailList.add(item.getEmail());
             });
         }
 
-        // 查询时间
+//        // 查询时间
+//        QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
+//        queryAccountListEnter.setInputTenantId(tenantIdList);
+//        BeanUtils.copyProperties(enter, queryAccountListEnter);
+//        int countTenantAccount = accountBaseService.countTenantAccount(queryAccountListEnter);
+
         QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
-        queryAccountListEnter.setInputTenantId(tenantIdList);
         BeanUtils.copyProperties(enter, queryAccountListEnter);
-        int countTenantAccount = accountBaseService.countTenantAccount(queryAccountListEnter);
-        if (countTenantAccount == 0) {
+        queryAccountListEnter.setEmailList(emailList);
+        Integer customerAccountCount = accountBaseService.customerAccountCount(queryAccountListEnter);
+        if (customerAccountCount == 0) {
             return PageResult.createZeroRowResult(enter);
         }
 
-        List<QueryAccountListResult> tenantAccountRecords = accountBaseService.tenantAccountRecords(queryAccountListEnter);
+//        List<QueryAccountListResult> tenantAccountRecords = accountBaseService.tenantAccountRecords(queryAccountListEnter);
+        List<QueryAccountResult> queryAccountListResult = accountBaseService.customerAccountList(queryAccountListEnter);
 
         List<AccountListResult> resultList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(accountList) && !CollectionUtils.isEmpty(tenantAccountRecords)) {
-            tenantAccountRecords.forEach(tenantAccount -> {
+        if (!CollectionUtils.isEmpty(queryAccountListResult)) {
+            queryAccountListResult.forEach(account -> {
                 accountList.forEach(item -> {
-                    if (tenantAccount.getInputTenantId().equals(item.getTenantId())) {
-                        item.setTenantId(tenantAccount.getId());
-                        item.setStatus(tenantAccount.getStatus());
-                        item.setActivationTime(tenantAccount.getActivationTime());
-                        item.setExpirationTime(tenantAccount.getExpirationTime());
+                    if (StringUtils.equals(account.getEmail(), item.getEmail())) {
+                        item.setStatus(account.getStatus());
+                        item.setActivationTime(account.getActivationTime());
+                        item.setExpirationTime(account.getExpirationTime());
                         resultList.add(item);
                     }
                 });
             });
         }
-        return PageResult.create(enter, countTenantAccount, resultList);
+        return PageResult.create(enter, customerAccountCount, resultList);
     }
 
     /**
@@ -555,7 +563,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public Map<String, Integer> accountCountStatus(GeneralEnter enter) {
-        return tenantBaseService.accountCountStatus();
+        return accountBaseService.customerAccountCountByStatus(enter);
     }
 
     /**
@@ -571,24 +579,31 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
-        enter.setId(opeCustomer.getTenantId());
-        List<QueryTenantNodeResult> tenantNodeResultList = tenantBaseService.queryTenantNdoe(enter);
 
-        // todo 需优化 调用数据库过于频繁
-        if (!CollectionUtils.isEmpty(tenantNodeResultList)) {
-            tenantNodeResultList.forEach(item -> {
-                QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
-                opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, item.getCreateBy());
-                OpeSysUserProfile opeSysUserProfile = sysUserProfileMapper.selectOne(opeSysUserProfileQueryWrapper);
-                AccountNodeResult result = AccountNodeResult.builder()
-                        .id(item.getId())
-                        .event(item.getEvent())
-                        .eventTime(DateUtil.format(item.getEventTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
-                        .createdBy(item.getCreateBy())
-                        .createdFirstName(opeSysUserProfile.getFirstName())
-                        .createdLastName(opeSysUserProfile.getLastName())
-                        .build();
-                resultList.add(result);
+        List<QueryAccountNodeDetailResult> queryAccountNodeDetailResultList = userBaseService.accountNodeDetail(QueryAccountNodeEnter.builder().email(opeCustomer.getEmail()).build());
+        if (!CollectionUtils.isEmpty(queryAccountNodeDetailResultList)) {
+            Set<Long> sysUseIds = new HashSet<>();
+            queryAccountNodeDetailResultList.forEach(item -> {
+                sysUseIds.add(item.getCreateBy());
+            });
+            QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
+            opeSysUserProfileQueryWrapper.in(OpeSysUserProfile.COL_SYS_USER_ID, new ArrayList<>(sysUseIds));
+            opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+            List<OpeSysUserProfile> sysUserProfileList = sysUserProfileMapper.selectList(opeSysUserProfileQueryWrapper);
+            queryAccountNodeDetailResultList.forEach(node -> {
+                sysUserProfileList.forEach(sysUser -> {
+                    if (node.getCreateBy().equals(sysUser.getSysUserId())) {
+                        AccountNodeResult result = AccountNodeResult.builder()
+                                .id(node.getId())
+                                .event(node.getEvent())
+                                .eventTime(DateUtil.format(node.getEventTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
+                                .createdBy(node.getCreateBy())
+                                .createdFirstName(sysUser.getFirstName())
+                                .createdLastName(sysUser.getLastName())
+                                .build();
+                        resultList.add(result);
+                    }
+                });
             });
         }
         return resultList;
@@ -606,33 +621,30 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (customerInfo == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
-        enter.setId(customerInfo.getTenantId());
-
-        IdEnter idEnter = new IdEnter();
-        BeanUtils.copyProperties(enter, idEnter);
-        idEnter.setId(customerInfo.getTenantId());
 
         AccountDeatilResult accountReslut = AccountDeatilResult.builder()
                 .id(customerInfo.getId())
                 .customerType(customerInfo.getCustomerType())
-                .customerFirstName(customerInfo.getCustomerFirstName())
-                .customerLastName(customerInfo.getCustomerLastName())
-                .customerFullName(customerInfo.getCustomerFullName())
-                .companyName(customerInfo.getCompanyName())
+                .customerFirstName(StringUtils.isNotEmpty(customerInfo.getCustomerFirstName()) == true ? customerInfo.getCustomerFirstName() : null)
+                .customerLastName(StringUtils.isNotEmpty(customerInfo.getCustomerLastName()) == true ? customerInfo.getCustomerLastName() : null)
+                .customerFullName(StringUtils.isNotEmpty(customerInfo.getCustomerFullName()) == true ? customerInfo.getCustomerFullName() : null)
+                .companyName(StringUtils.isNotEmpty(customerInfo.getCompanyName()) == true ? customerInfo.getCompanyName() : null)
+                .contactFirstName(StringUtils.isNotEmpty(customerInfo.getContactFirstName()) == true ? customerInfo.getContactFirstName() : null)
+                .contactLastName(StringUtils.isNotEmpty(customerInfo.getContactLastName()) == true ? customerInfo.getContactLastName() : null)
+                .contactFullName(StringUtils.isNotEmpty(customerInfo.getContactFullName()) == true ? customerInfo.getContactFullName() : null)
                 .industryType(customerInfo.getIndustryType())
                 .email(customerInfo.getEmail())
                 .build();
-        if (!customerInfo.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
-            QueryTenantResult tenantResult = tenantBaseService.queryTenantById(idEnter);
-            accountReslut.setStatus(tenantResult.getStatus());
-            accountReslut.setActivationTime(tenantResult.getEffectiveTime());
-            accountReslut.setExpireTime(tenantResult.getExpireTime());
+
+        // 获取账户信息
+        QueryAccountResult queryAccountResult = accountBaseService.customerAccountDeatil(customerInfo.getEmail());
+        if (queryAccountResult != null && StringUtils.equals(queryAccountResult.getEmail(), customerInfo.getEmail())) {
+            accountReslut.setStatus(queryAccountResult.getStatus());
+            accountReslut.setActivationTime(queryAccountResult.getActivationTime());
+            accountReslut.setExpireTime(queryAccountResult.getExpirationTime());
         }
-        if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), customerInfo.getCustomerType())) {
-            accountReslut.setContactFirstName(customerInfo.getContactFirstName());
-            accountReslut.setContactLastName(customerInfo.getContactLastName());
-            accountReslut.setContactFullName(customerInfo.getContactFullName());
-        }
+
+//            QueryTenantResult tenantResult = tenantBaseService.queryTenantById(idEnter);
         return accountReslut;
     }
 
@@ -898,9 +910,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (customer.getCity() != null) {
             count++;
         }
-        if (customer.getDistrust() != null) {
-            count++;
-        }
         if (customer.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
             if (!StringUtils.isBlank(customer.getCustomerFirstName())) {
                 count++;
@@ -912,9 +921,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             // 企业 为16个字段 所以这里现加 2
             result += 2;
             if (!StringUtils.isBlank(customer.getCompanyName())) {
-                count++;
-            }
-            if (!StringUtils.isBlank(customer.getBusinessLicenseNum())) {
                 count++;
             }
             if (!StringUtils.isBlank(customer.getBusinessLicenseNum())) {

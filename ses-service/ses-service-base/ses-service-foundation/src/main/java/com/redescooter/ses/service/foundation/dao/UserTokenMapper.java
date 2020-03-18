@@ -1,12 +1,15 @@
 package com.redescooter.ses.service.foundation.dao;
 
-import java.util.List;
-
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
+import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult;
+import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
 import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author Mr.lijiating
@@ -19,7 +22,7 @@ public interface UserTokenMapper {
 
     /**
      * 检查PC用户
-     * 
+     *
      * @param enter
      * @return
      */
@@ -27,7 +30,7 @@ public interface UserTokenMapper {
 
     /**
      * 验证APP用户
-     * 
+     *
      * @param enter
      * @return
      */
@@ -35,31 +38,38 @@ public interface UserTokenMapper {
 
     /**
      * 权限校验
-     * 
+     *
      * @param dto
      */
     List<PlaUserPermission> chectPermission(AccountsDto dto);
 
     /**
      * 根据租户id锁定所有账户
-     * 
+     *
      * @param list
      */
     void lockBySaaSAccount(List<Long> list);
 
     /**
      * 解锁SaaS账户
-     * 
+     *
      * @param list
      */
     void unlockBySaaSAccount(List<Long> list);
 
     /**
      * 获取APP用户，只取其中一条
-     * 
+     *
      * @param enter
      * @return
      */
     PlaUser getUserLimitOne(GetUserEnter enter);
 
+    /**
+     * 获取账户节点
+     *
+     * @param enter
+     * @return
+     */
+    List<QueryAccountNodeDetailResult> queryAccountNodeDetail(@Param("enter") QueryAccountNodeEnter enter, @Param("accountType") List<Integer> accountType);
 }

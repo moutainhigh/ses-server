@@ -596,6 +596,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         //将用户状态修改为正常
         PlaUser user = new PlaUser();
         user.setStatus(UserStatusEnum.NORMAL.getValue());
+        user.setActivationTime(new Date());
         user.setUpdatedBy(emailUser.getId());
         user.setUpdatedTime(new Date());
 

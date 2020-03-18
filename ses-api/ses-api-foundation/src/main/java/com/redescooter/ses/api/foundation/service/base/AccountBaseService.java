@@ -1,11 +1,19 @@
 package com.redescooter.ses.api.foundation.service.base;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
-import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListResult;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
+import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mr.lijiating
@@ -59,7 +67,7 @@ public interface AccountBaseService {
      * @param enter
      * @return
      */
-    List<QueryAccountListResult> tenantAccountRecords(QueryAccountListEnter enter);
+    List<QueryAccountResult> tenantAccountRecords(QueryAccountListEnter enter);
 
     /**
      * 账户冻结
@@ -91,7 +99,7 @@ public interface AccountBaseService {
      * @param enter
      * @return
      */
-    GeneralResult deleteUserbyTenantId(IdEnter enter);
+    GeneralResult deleteUser(DeleteUserEnter enter);
 
 
     /**
@@ -117,4 +125,35 @@ public interface AccountBaseService {
      */
     GeneralResult sendEmailActiv(IdEnter enter);
 
+    /**
+     * 客户账户状态
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> customerAccountCountByStatus(GeneralEnter enter);
+
+    /**
+     * 客户账户列表
+     *
+     * @param enter
+     * @return
+     */
+    Integer customerAccountCount(QueryAccountListEnter enter);
+
+    /**
+     * 客户账户列表
+     *
+     * @param enter
+     * @return
+     */
+    List<QueryAccountResult> customerAccountList(QueryAccountListEnter enter);
+
+    /**
+     * 账户详情
+     *
+     * @param email
+     * @return
+     */
+    QueryAccountResult customerAccountDeatil(String email);
 }

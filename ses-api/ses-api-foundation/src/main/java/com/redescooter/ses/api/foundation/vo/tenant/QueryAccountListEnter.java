@@ -27,8 +27,8 @@ public class QueryAccountListEnter extends PageEnter {
     @ApiModelProperty(value = "状态")
     private String status;
 
-    @ApiModelProperty(value = "inputTenantId")
-    private List<Long> inputTenantId;
+    @ApiModelProperty(value = "emailList")
+    private List<String> emailList;
 
     @ApiModelProperty(value = "激活开始时间")
     private String startActivationTime;

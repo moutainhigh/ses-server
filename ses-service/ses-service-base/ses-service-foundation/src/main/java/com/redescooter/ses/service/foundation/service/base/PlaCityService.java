@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.base;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.service.foundation.dm.base.PlaCity;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 * @Function:   TODO
 * @version     V1.0
 */
+@Transactional
 public interface PlaCityService extends IService<PlaCity> {
 
 

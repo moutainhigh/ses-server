@@ -90,4 +90,39 @@
         limit 1
     </select>
 
+    <select id="queryAccountNodeDetail"
+            resultType="com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult">
+        select userNode.id,
+        userNode.dr,
+        userNode.user_id,
+        userNode.tenant_id,
+        userNode.event,
+        userNode.event_time,
+        userNode.memo,
+        userNode.create_time,
+        userNode.create_by,
+        userNode.update_time,
+        userNode.update_by,
+        userNode.def1,
+        userNode.def2,
+        userNode.def3,
+        userNode.def5,
+        userNode.def6
+        from pla_user_node userNode
+        inner join pla_user puser on puser.ID = userNode.user_id
+        where puser.dr = 0
+        and puser.dr = 0
+        and userNode.dr=0
+        and puser.USER_TYPE in
+        <foreach collection="accountType" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="enter.id != null">
+            and puser.ID = #{enter.id}
+        </if>
+        <if test="enter.email != null and enter.email != ''">
+            and puser.LOGIN_NAME = #{enter.email}
+        </if>
+    </select>
+
 </mapper>
