@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.production.purchasing;
+package com.redescooter.ses.web.ros.service.production.allocate;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -59,7 +59,7 @@ public interface AllocateService {
      * @param enter
      * @return
      */
-    List<AllocateOrderPartResult> allocateOrderPartsList(IdEnter enter);
+    List<AllocateOrderPartResult> allocateOrderDetailPartsList(IdEnter enter);
 
     /**
      * 开始调拨单
@@ -83,7 +83,7 @@ public interface AllocateService {
      * @param enter
      * @return
      */
-    ProductPartsResult partsList(ProductPartsListEnter enter);
+    List<ProductPartsResult> allocatePartsList(ProductPartsListEnter enter);
 
     /**
      * 入库调拨单

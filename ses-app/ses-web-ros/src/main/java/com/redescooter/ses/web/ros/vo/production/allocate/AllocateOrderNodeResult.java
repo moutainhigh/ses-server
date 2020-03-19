@@ -39,10 +39,10 @@ public class AllocateOrderNodeResult extends GeneralResult {
     private Long createdBy;
 
     @ApiModelProperty(value = "创建人")
-    private Long createdByFirstName;
+    private String createdByFirstName;
 
     @ApiModelProperty(value = "创建人")
-    private Long createdByLastName;
+    private String createdByLastName;
 
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
