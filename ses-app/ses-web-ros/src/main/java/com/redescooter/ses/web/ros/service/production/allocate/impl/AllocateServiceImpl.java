@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.PurchasingTypeEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderEventEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -37,7 +38,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @return
      */
     @Override
-    public Map<String, Integer> countByType() {
+    public Map<String, Integer> countByType(GeneralEnter enter) {
         Map<String, Integer> stringMap = Maps.newHashMap();
         for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
             stringMap.put(item.getValue(), 0);
