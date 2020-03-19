@@ -1,14 +1,18 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -24,6 +28,7 @@ import java.util.Date;
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
+@Builder
 public class SavePurchasingEnter extends GeneralEnter {
     @ApiModelProperty(value = "收货人id", required = true)
     @NotNull(code = ValidationExceptionCode.CONSIGNEE_ID__IS_EMPTY, message = "收货人为空")
@@ -42,6 +47,8 @@ public class SavePurchasingEnter extends GeneralEnter {
     private String paymentType;
 
     @ApiModelProperty(value = "付款时间")
+    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
     private Date statementdate;
 
     @ApiModelProperty(value = "累加多少天")

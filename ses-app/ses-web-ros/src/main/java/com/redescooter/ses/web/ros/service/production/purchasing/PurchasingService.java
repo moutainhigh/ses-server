@@ -1,15 +1,21 @@
 package com.redescooter.ses.web.ros.service.production.purchasing;
 
-import com.redescooter.ses.api.common.vo.BaseBuinessListResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
-import com.redescooter.ses.web.ros.vo.production.FactoryResult;
+import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PayEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
 
 import java.util.List;
@@ -31,6 +37,14 @@ public interface PurchasingService {
     Map<String, Integer> countByType(GeneralEnter enter);
 
     /**
+     * 状态集合
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, String> statusList(GeneralEnter enter);
+
+    /**
      * 采购单列表
      *
      * @param enter
@@ -43,7 +57,7 @@ public interface PurchasingService {
      *
      * @return
      */
-    List<BaseBuinessListResult> paymentType(GeneralEnter enter);
+    Map<String, String> paymentType(GeneralEnter enter);
 
     /**
      * 保存采购单
@@ -67,7 +81,7 @@ public interface PurchasingService {
      * @param enter
      * @return
      */
-    List<FactoryResult> factoryList(GeneralEnter enter);
+    List<FactoryCommonResult> factoryList(GeneralEnter enter);
 
     /**
      * 采购单详情
@@ -83,13 +97,128 @@ public interface PurchasingService {
      * @param enter
      * @return
      */
-    PurchasingNodeResult purchasingNode(IdEnter enter);
+    List<PurchasingNodeResult> purchasingNode(IdEnter enter);
 
     /**
+     * 采购单信息导出
+     *
      * @param enter
      * @return
      */
     GeneralResult export(IdEnter enter);
 
-//     paymentDetail(IdEnter enter);
+    /**
+     * 付款详情
+     *
+     * @param enter
+     * @return
+     */
+    PaymentDetailResullt paymentDetail(IdEnter enter);
+
+    /**
+     * 支付入参
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult pay(PayEnter enter);
+
+    /**
+     * 供应商列表
+     *
+     * @param enter
+     * @return
+     */
+    List<FactoryCommonResult> supplierList(GeneralEnter enter);
+
+    /**
+     * 采购商品列表
+     *
+     * @param enter
+     * @return
+     */
+    PageResult<PruchasingItemResult> pruchasingProductList(PruchasingItemListEnter enter);
+
+    /**
+     * 保存 工厂附件
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult saveFactoryAnnex(SaveFactoryAnnexEnter enter);
+
+    /**
+     * 开始采购
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult startPurchasing(IdEnter enter);
+
+    /**
+     * 开始qc 质检
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult startQc(IdEnter enter);
+
+    /**
+     * 再次qc 质检
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult againQc(IdEnter enter);
+
+    /**
+     * qc完成
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult completeQc(IdEnter enter);
+
+    /**
+     * 入库
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult purchasingInWh(IdEnter enter);
+
+
+    /**
+     * qc状态
+     *
+     * @return
+     */
+    Map<String, Integer> qcCountByStatus(IdEnter enter);
+
+    /**
+     * 产品类型
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, String> productType(GeneralEnter enter);
+
+    /**
+     * QC 条目list
+     *
+     * @param enter
+     * @return
+     */
+    List<QcInfoResult> qcList(QcItemListEnter enter);
+
+    /**
+     * QC 未通过数据导出
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult qcFailExport(IdEnter enter);
+
+
 }
+

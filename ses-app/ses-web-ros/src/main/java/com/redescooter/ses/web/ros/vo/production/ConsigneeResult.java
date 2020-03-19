@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.vo.production;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import io.swagger.annotations.*;
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
+@Builder
 public class ConsigneeResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")

@@ -1,0 +1,486 @@
+package com.redescooter.ses.web.ros.service.production.purchasing.impl;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.PaymentTypeEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
+import com.redescooter.ses.api.common.enums.production.PurchasingTypeEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
+import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
+import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PayEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentItemDetailResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemDetailResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
+import lombok.extern.log4j.Log4j;
+import org.apache.dubbo.config.annotation.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @ClassName:PurchasingServiceImpl
+ * @description: PurchasingServiceImpl
+ * @author: Alex
+ * @Version：1.3
+ * @create: 2020/03/19 11:29
+ */
+@Service
+@Log4j
+public class PurchasingServiceImpl implements PurchasingService {
+
+    /**
+     * 采购单状态统计
+     *
+     * @param enter
+     * @retrn
+     */
+    @Override
+    public Map<String, Integer> countByType(GeneralEnter enter) {
+        Map<String, Integer> map = Maps.newHashMap();
+        for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
+            map.put(item.getValue(), 0);
+        }
+        return map;
+    }
+
+    /**
+     * 状态集合
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, String> statusList(GeneralEnter enter) {
+        Map<String, String> map = Maps.newHashMap();
+        for (PurchasingStatusEnums item : PurchasingStatusEnums.values()) {
+            map.put(item.getCode(), item.getValue());
+        }
+        return map;
+    }
+
+    /**
+     * 采购单列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<PurchasingResult> list(PurchasingListEnter enter) {
+        List<PurchasingResult> list = new ArrayList<>();
+        list.add(PurchasingResult.builder()
+                .id(1000000L)
+                .contractN("4234324234323")
+                .status(PurchasingStatusEnums.IN_PURCHASING_WH.getValue())
+                .consigneeFirstName("LUKE")
+                .consigneeLastName("luke")
+                .consigneeEmail("nicai@132.com")
+                .factoryId(100000L)
+                .factoryContactFirstName("Alan")
+                .factoryContactLastName("Alan")
+                .factoryName("Flex")
+                .contactPhone("242432432423")
+                .totalPrice("123456.12")
+                .paymentType(PaymentTypeEnums.STAGING.getValue())
+                .partsQty(200)
+                .createdTime(new Date())
+                .build());
+        return PageResult.create(enter, 1, list);
+    }
+
+    /**
+     * 付款方式
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, String> paymentType(GeneralEnter enter) {
+        Map<String, String> map = Maps.newHashMap();
+        for (PaymentTypeEnums item : PaymentTypeEnums.values()) {
+            map.put(item.getCode(), item.getValue());
+        }
+        return map;
+    }
+
+    /**
+     * 保存采购单
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult save(SavePurchasingEnter enter) {
+        return null;
+    }
+
+    /**
+     * 收件人列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ConsigneeResult> consigneeList(GeneralEnter enter) {
+        List<ConsigneeResult> consigneeResultlist = Lists.newArrayList();
+        consigneeResultlist.add(ConsigneeResult.builder()
+                .id(1000000L)
+                .firstName("Alan")
+                .lastName("alan")
+                .phone("3423432432")
+                .build());
+        return consigneeResultlist;
+    }
+
+    /**
+     * 工厂列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<FactoryCommonResult> factoryList(GeneralEnter enter) {
+        List<FactoryCommonResult> list = Lists.newArrayList();
+        list.add(FactoryCommonResult.builder()
+                .id(10000L)
+                .factoryName("Flex")
+                .contactFirstName("luke")
+                .contactLastName("luke")
+                .contactEmail("3421@12.com")
+                .contactPhone("342343243")
+                .annexPicture("ddasdasdasdas")
+                .build());
+        return list;
+    }
+
+    /**
+     * 采购单详情
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PurchasingResult detail(IdEnter enter) {
+
+        return PurchasingResult.builder()
+                .id(100000000L)
+                .contractN("1dasdasdasdsad")
+                .status(PurchasingStatusEnums.INPROGRESS.getValue())
+                .consigneeLastName("3432")
+                .consigneeFirstName("43243")
+                .consigneePhone("423423432")
+                .contactEmail("13@.com")
+                .factoryId(10000000L)
+                .factoryName("Flex")
+                .factoryContactLastName("43243")
+                .factoryContactFirstName("432432")
+                .contactEmail("32423432")
+                .totalPrice("132.023")
+                .paymentType(PaymentTypeEnums.STAGING.getValue())
+                .partsQty(123)
+                .createdTime(new Date())
+                .build();
+    }
+
+    /**
+     * 采购单节点
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<PurchasingNodeResult> purchasingNode(IdEnter enter) {
+        List<PurchasingNodeResult> results = new ArrayList<>();
+        results.add(PurchasingNodeResult.builder()
+                .id(100000L)
+                .status(PurchasingStatusEnums.INPROGRESS.getValue())
+                .event(PurchasingEventEnums.INPROGRESS.getValue())
+                .eventTime(new Date())
+                .createdBy(1000000L)
+                .createdByFirstName("Alex")
+                .createdByLastName("alex")
+                .build());
+        results.add(PurchasingNodeResult.builder()
+                .id(100001L)
+                .status(PurchasingStatusEnums.IN_PURCHASING_WH.getValue())
+                .event(PurchasingEventEnums.IN_PURCHASING_WH.getValue())
+                .eventTime(new Date())
+                .createdBy(1000000L)
+                .createdByFirstName("Alex")
+                .createdByLastName("alex")
+                .build());
+        return results;
+    }
+
+    /**
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult export(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * 付款详情
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PaymentDetailResullt paymentDetail(IdEnter enter) {
+
+        List<PaymentItemDetailResult> list = new ArrayList<>();
+        list.add(PaymentItemDetailResult.builder()
+                .id(1000000000L)
+                .status(PayStatusEnums.UNPAID.getValue())
+                .amount("100000000")
+                .paymentRatio("19.56")
+                .invoiceNum("23423432432")
+                .invoicePicture("eqweq23423432432")
+                .dayNum(20)
+                .statementDate(new Date())
+                .actualPaymentDate(new Date())
+                .remark("4234324324234")
+                .build());
+
+        return PaymentDetailResullt.builder()
+                .id(10000000L)
+                .status(PayStatusEnums.UNPAID.getValue())
+                .totalPrice("1000000.156")
+                .paymentItemList(list)
+                .build();
+    }
+
+    /**
+     * 支付入参
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult pay(PayEnter enter) {
+        return null;
+    }
+
+    /**
+     * 供应商列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<FactoryCommonResult> supplierList(GeneralEnter enter) {
+        List<FactoryCommonResult> list = Lists.newArrayList();
+        list.add(FactoryCommonResult.builder()
+                .id(10000L)
+                .factoryName("Flex")
+                .contactFirstName("luke")
+                .contactLastName("luke")
+                .contactEmail("3421@12.com")
+                .contactPhone("342343243")
+                .annexPicture("ddasdasdasdas")
+                .build());
+        return list;
+    }
+
+    /**
+     * 采购商品列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<PruchasingItemResult> pruchasingProductList(PruchasingItemListEnter enter) {
+        List<PruchasingItemResult> list = Lists.newArrayList();
+        list.add(PruchasingItemResult.builder()
+                .id(10000L)
+                .partsN("34234234")
+                .enName("dadasd")
+                .enName("qwrewrwe")
+                .type(BomCommonTypeEnums.BATTERY.getValue())
+                .supplierId(100000L)
+                .leadTime(30)
+                .price("2000")
+                .qty(200)
+                .subtotal("10000")
+                .build());
+        return PageResult.create(enter, 1, list);
+    }
+
+    /**
+     * 保存 工厂附件
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult saveFactoryAnnex(SaveFactoryAnnexEnter enter) {
+        return null;
+    }
+
+    /**
+     * 开始采购
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult startPurchasing(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * 开始qc 质检
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult startQc(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * 再次qc 质检
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult againQc(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * qc 完成
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult completeQc(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * 入库
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult purchasingInWh(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * qc 状态
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, Integer> qcCountByStatus(IdEnter enter) {
+
+        Map<String, Integer> map = Maps.newHashMap();
+        for (QcStatusEnums item : QcStatusEnums.values()) {
+            map.put(item.getValue(), 0);
+        }
+        return map;
+    }
+
+    /**
+     * 产品类型
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, String> productType(GeneralEnter enter) {
+        Map<String, String> map = Maps.newHashMap();
+        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
+            map.put(item.getCode(), item.getValue());
+        }
+        map.remove(BomCommonTypeEnums.SCOOTER.getCode());
+        map.remove(BomCommonTypeEnums.COMBINATION.getCode());
+        return map;
+    }
+
+    /**
+     * QC 条目list
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<QcInfoResult> qcList(QcItemListEnter enter) {
+        List<QcInfoResult> list = Lists.newArrayList();
+        List<QcItemDetailResult> qcItemDetailResultList = Lists.newArrayList();
+        qcItemDetailResultList.add(QcItemDetailResult.builder()
+                .batchN("34324234234")
+                .passQty(20)
+                .qcDate(new Date())
+                .totalQty(1000)
+                .build());
+
+        list.add(QcInfoResult.builder()
+                .id(100000L)
+                .partsN("44243432432")
+                .enName("eqw")
+                .cnName("不知道")
+                .type(BomCommonTypeEnums.ACCESSORY.getValue())
+                .passQty(100)
+                .totalQty(200)
+                .batchN("4324342")
+                .qcDate(new Date())
+                .qcItemDetailResultList(qcItemDetailResultList)
+                .build());
+
+        list.add(QcInfoResult.builder()
+                .id(100000L)
+                .partsN("44243432432")
+                .enName("eqw")
+                .cnName("不知道")
+                .type(BomCommonTypeEnums.ACCESSORY.getValue())
+                .passQty(100)
+                .totalQty(200)
+                .batchN("4324342")
+                .qcDate(new Date())
+                .qcItemDetailResultList(qcItemDetailResultList)
+                .build());
+
+
+        return list;
+    }
+
+    /**
+     * QC 未通过数据导出
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult qcFailExport(IdEnter enter) {
+        return null;
+    }
+}

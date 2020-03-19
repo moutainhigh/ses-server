@@ -1,30 +1,30 @@
-package com.redescooter.ses.web.ros.vo.production.purchasing;
+package com.redescooter.ses.web.ros.vo.production.allocate;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import io.swagger.annotations.*;
-
 import java.util.Date;
 
 /**
- * @ClassName:PurchasingNodeResult
- * @description: PurchasingNodeResult
+ * @ClassName:AllocateOrderNodeResult
+ * @description: AllocateOrderNodeResult
  * @author: Alex
  * @Version：1.3
- * @create: 2020/03/18 18:01
+ * @create: 2020/03/19 15:27
  */
-@ApiModel(value = "节点列表", description = "节点列表")
+@ApiModel(value = "", description = "")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class PurchasingNodeResult extends GeneralResult {
+public class AllocateOrderNodeResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;
@@ -35,15 +35,16 @@ public class PurchasingNodeResult extends GeneralResult {
     @ApiModelProperty(value = "事件")
     private String event;
 
-    @ApiModelProperty(value = "事件时间")
-    private Date eventTime;
-
     @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     @ApiModelProperty(value = "创建人")
-    private String createdByFirstName;
+    private Long createdByFirstName;
 
     @ApiModelProperty(value = "创建人")
-    private String createdByLastName;
+    private Long createdByLastName;
+
+    @ApiModelProperty(value = "创建时间")
+    private Date createdTime;
+
 }
