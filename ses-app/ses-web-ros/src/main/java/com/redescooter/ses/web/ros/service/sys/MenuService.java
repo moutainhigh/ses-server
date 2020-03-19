@@ -5,20 +5,18 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
-import com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * @ClassName SysMenuService
+ * @ClassName MenuService
  * @Author Jerry
  * @date 2020/03/11 17:51
  * @Description:
  */
-public interface SysMenuService {
+public interface MenuService {
 
     /**
      * 菜单保存
@@ -34,7 +32,7 @@ public interface SysMenuService {
      * @param enter
      * @return
      */
-    List<MenuTreeResult> trees(IdEnter enter);
+    List<MenuTreeResult> trees(GeneralEnter enter);
 
     /**
      * 菜单列表
@@ -42,7 +40,7 @@ public interface SysMenuService {
      * @param enter
      * @return
      */
-    List<MenuTreeResult> list(IdEnter enter);
+    List<MenuTreeResult> parallel(GeneralEnter enter);
 
     /**
      * 菜单详情
@@ -69,21 +67,48 @@ public interface SysMenuService {
     GeneralResult edit(EditMenuEnter enter);
 
     /**
-     * 角色岗位菜单权限查看与授权
+     * 获取岗位角色下的菜单权限
      *
      * @param enter
      * @return
      */
-    List<MenuTreeResult> roleMenuAuth(GeneralEnter enter);
+    List<MenuTreeResult> findMenuByRoleId(GeneralEnter enter);
 
     /**
-     * 操作权限查看与授权
+     * 角色岗位菜单权限查看与授权
+     * 树结构
      *
      * @param enter
      * @return
      */
-    List<MenuTreeResult> roleOperationAuth(GeneralEnter enter);
+    List<MenuTreeResult> roleMenuAuthTree(GeneralEnter enter);
 
+    /**
+     * 根据岗位角色ID获取菜单权限
+     * 树结构
+     *
+     * @param enter
+     * @return
+     */
+    List<MenuTreeResult> roleMenuAuthTreeByRoleId(IdEnter enter);
+
+    /**
+     * 角色岗位菜单权限查看与授权
+     * 平行结构
+     *
+     * @param ids
+     * @return
+     */
+    List<MenuTreeResult> roleMenuAuthParallel(long... ids);
+
+    /**
+     * 根据岗位角色ID获取菜单权限
+     * 平行结构
+     *
+     * @param enter
+     * @return
+     */
+    List<MenuTreeResult> roleMenuAuthParallelByRoleId(IdEnter enter);
 
     /**
      * 创建vue动态路由
@@ -92,5 +117,6 @@ public interface SysMenuService {
      * @return
      */
     List<VueRouter<MenuTreeResult>> vueRouters(GeneralEnter enter);
+
 
 }

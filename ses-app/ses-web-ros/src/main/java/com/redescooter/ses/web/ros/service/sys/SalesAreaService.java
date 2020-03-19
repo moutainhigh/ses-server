@@ -7,22 +7,22 @@ import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import java.util.List;
 
 /**
- * @ClassName SysSalesAreaService
+ * @ClassName SalesAreaService
  * @Author Jerry
  * @date 2020/03/11 14:03
  * @Description:
  */
-public interface SysSalesAreaService {
+public interface SalesAreaService {
 
     /**
-     * 获取销售区域列表
+     * 根据岗位角色ID获取销售区域列表
      *
      * @return
      */
     List<SalesAreaTressResult> list(IdEnter enter);
 
     /**
-     * 获取销售区域树列表
+     * 根据岗位角色ID获取销售区域树列表
      *
      * @param enter
      * @return

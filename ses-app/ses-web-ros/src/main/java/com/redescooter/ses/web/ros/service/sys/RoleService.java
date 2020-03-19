@@ -6,16 +6,18 @@ import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
+import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 
 import java.util.List;
 
 /**
- * @ClassName SysRoleService
+ * @ClassName RoleService
  * @Author Jerry
  * @date 2020/03/12 14:10
  * @Description:
  */
-public interface SysRoleService {
+public interface RoleService {
 
     /**
      * 岗位创建
@@ -57,5 +59,23 @@ public interface SysRoleService {
      * @param enter
      * @return
      */
-    DeptAuthorityDetailsResult authorityDetails(IdEnter enter);
+    DeptAuthorityDetailsResult roleAuthDetails(String type, IdEnter enter);
+
+    /**
+     * 获取岗位角色下的所有销售区域，并标注已选择的销售区域
+     *
+     * @param type
+     * @param enter
+     * @return
+     */
+    List<SalesAreaTressResult> roleSalesAreaById(String type, IdEnter enter);
+
+    /**
+     * 获取岗位角色下的所有菜单权限，并标注已选择的菜单权限
+     *
+     * @param type
+     * @param enter
+     * @return
+     */
+    List<MenuTreeResult> roleMenuById(String type, IdEnter enter);
 }

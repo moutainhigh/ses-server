@@ -8,7 +8,7 @@ import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleSalesCidyService;
-import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
+import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName SysSalesAreaServiceImpl
+ * @ClassName SalesAreaServiceImpl
  * @Author Jerry
  * @date 2020/03/11 14:06
  * @Description:
  */
 @Slf4j
 @Service
-public class SysSalesAreaServiceImpl implements SysSalesAreaService {
+public class SalesAreaServiceImpl implements SalesAreaService {
 
     @Autowired
     private OpeSysRoleSalesCidyService sysRoleSalesCidyService;

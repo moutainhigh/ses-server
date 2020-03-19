@@ -2,7 +2,7 @@ package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
+import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,17 +26,17 @@ import java.util.List;
 public class SysSalesAreaController {
 
     @Autowired
-    private SysSalesAreaService sysSalesAreaService;
+    private SalesAreaService salesAreaService;
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "销售区域列表", response = SalesAreaTressResult.class)
     public Response<List<SalesAreaTressResult>> list(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(sysSalesAreaService.list(enter));
+        return new Response<>(salesAreaService.list(enter));
     }
 
     @PostMapping(value = "/trees")
     @ApiOperation(value = "销售区域树列表", response = SalesAreaTressResult.class)
     public Response<List<SalesAreaTressResult>> trees(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(sysSalesAreaService.trees(enter));
+        return new Response<>(salesAreaService.trees(enter));
     }
 }
