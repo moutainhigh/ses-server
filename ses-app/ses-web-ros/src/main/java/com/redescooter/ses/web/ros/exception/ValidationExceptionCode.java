@@ -136,4 +136,14 @@ public interface ValidationExceptionCode {
     int PARTS_IS_EMPTY = 10082;
     // 工厂为空
     int PAYMENT_TYPE_IS_EMPTY = 10083;
+    // 金额为空
+    int AMOUNT_IS_EMPTY = 10084;
+    // 实际付款时间为空
+    int ACTUAL_PAYMENT_DATE_IS_EMPTY = 10085;
+    // 发票为空
+    int INVOICE_IS_EMPTY = 10086;
+    // 发票号码为空
+    int INVOICE_NUM_IS_EMPTY = 10087;
+    // 附件为空
+    int ANNEX_IS_EMPTY = 10088;
 }

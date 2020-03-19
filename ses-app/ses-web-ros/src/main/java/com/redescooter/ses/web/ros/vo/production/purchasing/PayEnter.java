@@ -1,8 +1,10 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -30,19 +32,24 @@ import java.util.Date;
 public class PayEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id", required = true)
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id为空")
     private Long id;
 
     @ApiModelProperty(value = "金额", required = true)
+    @NotNull(code = ValidationExceptionCode.AMOUNT_IS_EMPTY, message = "金额为空")
     private String amount;
 
     @ApiModelProperty(value = "实际支付时间", required = true)
+    @NotNull(code = ValidationExceptionCode.ACTUAL_PAYMENT_DATE_IS_EMPTY, message = "实际支付时间为空")
     @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
     private Date actualPaymentDate;
 
     @ApiModelProperty(value = "发票", required = true)
+    @NotNull(code = ValidationExceptionCode.INVOICE_IS_EMPTY, message = "发票为空")
     private String invoicePicture;
 
     @ApiModelProperty(value = "发票号", required = true)
+    @NotNull(code = ValidationExceptionCode.INVOICE_NUM_IS_EMPTY, message = "发票号为空")
     private String invoiceNum;
 }
