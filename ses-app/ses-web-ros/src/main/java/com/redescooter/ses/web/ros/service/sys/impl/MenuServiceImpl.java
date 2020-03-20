@@ -97,7 +97,7 @@ public class MenuServiceImpl implements MenuService {
         if (StringUtils.isNotBlank(enter.getType())) {
             query.like(OpeSysMenu::getType, enter.getType());
         }
-        if (StringUtils.isNotBlank(String.valueOf(enter.getLevel()))) {
+        if (enter.getLevel() != null) {
             query.like(OpeSysMenu::getLevel, String.valueOf(enter.getLevel()));
         }
         return this.buildMenuParallel(sysMenuService.list(query), this.getRoleIds(new IdEnter(enter.getUserId())));
