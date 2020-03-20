@@ -18,6 +18,6 @@ public class TimeTest {
         Date startRenewAccountTime = DateUtil.parse("2020-03-20 16:00:00", DateUtil.DEFAULT_DATETIME_FORMAT);
         Date endRenewAccountTime = DateUtil.parse("2020-03-18 15:59:59", DateUtil.DEFAULT_DATETIME_FORMAT);
 
-        System.out.println(DateUtil.DateTimeComplete(endRenewAccountTime, startRenewAccountTime));
+        System.out.println(DateUtil.timeComolete(endRenewAccountTime, startRenewAccountTime));
     }
 }
