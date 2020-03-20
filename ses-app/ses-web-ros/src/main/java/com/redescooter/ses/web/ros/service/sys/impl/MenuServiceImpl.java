@@ -15,12 +15,14 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.MenuService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
@@ -49,6 +51,8 @@ import java.util.List;
 public class MenuServiceImpl implements MenuService {
 
     @Autowired
+    private OpeSysUserService sysUserService;
+    @Autowired
     private OpeSysMenuService sysMenuService;
     @Autowired
     private OpeSysRoleMenuService roleMenuService;
@@ -73,7 +77,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<MenuTreeResult> trees(GeneralEnter enter) {
-        return this.buildMenuTree(sysMenuService.list(), this.getRoleIds(new IdEnter(enter.getUserId())), Constant.MENU_TREE_ROOT_ID);
+        return this.buildMenuTree(sysMenuService.list(), this.getRoleIds(new IdEnter(enter.getUserId())), Constant.MENU_TREE_ROOT_ID,Boolean.FALSE);
     }
 
     /**
@@ -100,7 +104,7 @@ public class MenuServiceImpl implements MenuService {
         if (enter.getLevel() != null) {
             query.like(OpeSysMenu::getLevel, String.valueOf(enter.getLevel()));
         }
-        return this.buildMenuParallel(sysMenuService.list(query), this.getRoleIds(new IdEnter(enter.getUserId())));
+        return this.buildMenuParallel(sysMenuService.list(query), this.getRoleIds(new IdEnter(enter.getUserId())),Boolean.FALSE);
     }
 
     /**
@@ -137,12 +141,18 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<MenuTreeResult> roleMenuAuthTree(GeneralEnter enter) {
-        //获取用户角色岗位
-        List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
-        if (CollUtil.isNotEmpty(roleIds)) {
-            List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
-            if (CollUtil.isNotEmpty(menuIds)) {
-                return this.buildMenuTree(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds).eq(OpeSysMenu::getType, MenuTypeEnums.MENUS.getValue())), roleIds, Constant.MENU_TREE_ROOT_ID);
+
+        OpeSysUser admin = sysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getId, enter.getUserId()));
+        if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+            return this.buildMenuTree(sysMenuService.list(), null,Constant.MENU_TREE_ROOT_ID,Boolean.TRUE);
+        }else{
+            //获取用户角色岗位
+            List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
+            if (CollUtil.isNotEmpty(roleIds)) {
+                List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
+                if (CollUtil.isNotEmpty(menuIds)) {
+                    return this.buildMenuTree(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds).eq(OpeSysMenu::getType, MenuTypeEnums.MENUS.getValue())), roleIds, Constant.MENU_TREE_ROOT_ID,Boolean.FALSE);
+                }
             }
         }
         return new ArrayList<>();
@@ -155,19 +165,26 @@ public class MenuServiceImpl implements MenuService {
             add(enter.getId());
         }};
         if (CollUtil.isNotEmpty(roleIds)) {
-            return this.buildMenuTree(sysMenuService.list(), roleIds, Constant.MENU_TREE_ROOT_ID);
+            return this.buildMenuTree(sysMenuService.list(), roleIds, Constant.MENU_TREE_ROOT_ID,Boolean.FALSE);
         }
         return new ArrayList<>();
     }
 
     @Override
     public List<MenuTreeResult> roleMenuAuthParallel(GeneralEnter enter) {
-        List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
-        if (CollUtil.isNotEmpty(roleIds)) {
-            List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
-            if (CollUtil.isNotEmpty(menuIds)) {
-                List<MenuTreeResult> results = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds)), roleIds);
-                return results;
+
+        OpeSysUser admin = sysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getId, enter.getUserId()));
+
+        if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+            return this.buildMenuParallel(sysMenuService.list(), null,Boolean.TRUE);
+        } else {
+            List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
+            if (CollUtil.isNotEmpty(roleIds)) {
+                List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
+                if (CollUtil.isNotEmpty(menuIds)) {
+                    List<MenuTreeResult> results = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds)), roleIds,Boolean.FALSE);
+                    return results;
+                }
             }
         }
         return new ArrayList<>();
@@ -180,7 +197,7 @@ public class MenuServiceImpl implements MenuService {
             add(enter.getId());
         }};
         if (CollUtil.isNotEmpty(roleIds)) {
-            return this.buildMenuParallel(sysMenuService.list(), roleIds);
+            return this.buildMenuParallel(sysMenuService.list(), roleIds,Boolean.FALSE);
         }
         return new ArrayList<>();
     }
@@ -293,17 +310,21 @@ public class MenuServiceImpl implements MenuService {
      * @param root
      * @return
      */
-    private List<MenuTreeResult> buildMenuTree(List<OpeSysMenu> menus, List<Long> roleIds, long root) {
+    private List<MenuTreeResult> buildMenuTree(List<OpeSysMenu> menus, List<Long> roleIds, long root, Boolean adminBoolean) {
         List<MenuTreeResult> trees = new ArrayList<>();
         if (CollUtil.isNotEmpty(menus)) {
             for (OpeSysMenu menu : menus) {
                 trees.add(buildMenuTreeResult(menu));
             }
-            if (CollUtil.isNotEmpty(roleIds)) {
-                List<Long> list = this.getMenuIdsByRoleIds(roleIds);
-                //判断该角色所属权限
-                if (CollUtil.isNotEmpty(list)) {
-                    list.forEach(li -> trees.stream().filter(t -> li.longValue() == t.getId()).forEach(t -> t.setChecked(Boolean.TRUE)));
+            if (adminBoolean) {
+                trees.forEach(t -> t.setChecked(Boolean.TRUE));
+            } else {
+                if (CollUtil.isNotEmpty(roleIds)) {
+                    List<Long> list = this.getMenuIdsByRoleIds(roleIds);
+                    //判断该角色所属权限
+                    if (CollUtil.isNotEmpty(list)) {
+                        list.forEach(li -> trees.stream().filter(t -> li.longValue() == t.getId()).forEach(t -> t.setChecked(Boolean.TRUE)));
+                    }
                 }
             }
         }
@@ -317,17 +338,21 @@ public class MenuServiceImpl implements MenuService {
      * @param roleIds
      * @return
      */
-    private List<MenuTreeResult> buildMenuParallel(List<OpeSysMenu> menus, List<Long> roleIds) {
+    private List<MenuTreeResult> buildMenuParallel(List<OpeSysMenu> menus, List<Long> roleIds, Boolean adminBoolean) {
         List<MenuTreeResult> trees = new ArrayList<>();
         if (CollUtil.isNotEmpty(menus)) {
             for (OpeSysMenu menu : menus) {
                 trees.add(buildMenuTreeResult(menu));
             }
-            if (CollUtil.isNotEmpty(roleIds)) {
-                List<Long> list = this.getMenuIdsByRoleIds(roleIds);
-                //判断该角色所属权限
-                if (CollUtil.isNotEmpty(list)) {
-                    list.forEach(li -> trees.stream().filter(t -> li.longValue() == t.getId()).forEach(t -> t.setChecked(Boolean.TRUE)));
+            if (adminBoolean) {
+                trees.forEach(t -> t.setChecked(Boolean.TRUE));
+            } else {
+                if (CollUtil.isNotEmpty(roleIds)) {
+                    List<Long> list = this.getMenuIdsByRoleIds(roleIds);
+                    //判断该角色所属权限
+                    if (CollUtil.isNotEmpty(list)) {
+                        list.forEach(li -> trees.stream().filter(t -> li.longValue() == t.getId()).forEach(t -> t.setChecked(Boolean.TRUE)));
+                    }
                 }
             }
         }

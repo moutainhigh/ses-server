@@ -7,34 +7,18 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.web.ros.SesWebRosApplicationTests;
 import com.redescooter.ses.web.ros.service.sys.MenuService;
 import com.redescooter.ses.web.ros.vo.sys.menu.QueryMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class MenuServiceImplTest {
-
-    @Before
-    public void setUp() throws Exception {
-        System.out.println("单元测试开始--------------------->");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
+public class MenuServiceImplTest extends SesWebRosApplicationTests {
 
     @Autowired
     private MenuService menuService;
@@ -95,7 +79,7 @@ public class MenuServiceImplTest {
 
 
     @Test
-    public void roleMenuAuthParallel() {
+    public void roleMenuAuthParallel1() {
         String key = new StringBuilder().append(1006358L).append(":::").append(CacheConstants.MENU_DETAILS).toString();
         if (!jedisCluster.exists(key)) {
             GeneralEnter enter = new GeneralEnter();
@@ -115,9 +99,9 @@ public class MenuServiceImplTest {
     }
 
     @Test
-    public void testRoleMenuAuthParallel() {
+    public void roleMenuAuthParallel() {
         GeneralEnter enter = new GeneralEnter();
-        enter.setUserId(1008371L);
+        enter.setUserId(1000000L);
         List<MenuTreeResult> menuByRoleId = menuService.findMenuByRoleId(enter);
 
         System.out.println(JSON.toJSONString(menuByRoleId));

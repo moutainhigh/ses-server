@@ -1,17 +1,14 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
-import java.util.Date;
 
+import com.redescooter.ses.web.ros.SesWebRosApplicationTests;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class EmployeeServiceImplTest {
+import java.util.Date;
+
+public class EmployeeServiceImplTest extends SesWebRosApplicationTests {
 
     @Autowired
     private EmployeeService employeeService;
@@ -19,32 +16,6 @@ public class EmployeeServiceImplTest {
     @Test
     public void saveEmployee() {
 
-        /**
-         * requestId:
-         * id: 1004260
-         * companyId: 1004220
-         * companyName: RedEGroup
-         * employeeFirstName: RedE
-         * employeeLastName: Aron
-         * telCountryCode: 33
-         * telephone: 12345678912
-         * email: aron@redescooter.com
-         * deptId: 1004221
-         * deptName: 研发部
-         * positionId: 1008362
-         * positionName: textt
-         * entryDate: 2020-03-18 10:31:39
-         * birthday: 1995-03-03 00:00:00
-         * addressCountryCode: French
-         * address: 地址
-         * certificateType: 1
-         * positivePicture: https://rede.oss-cn-shanghai.aliyuncs.com/1584411984837.jpg
-         * negativePicture: https://rede.oss-cn-shanghai.aliyuncs.com/1584411987404.jpg
-         * addressBureauId: 1000001
-         * addressBureau: SHANGHAI
-         * avatar: https://rede.oss-cn-shanghai.aliyuncs.com/1584347057644.png
-         * countryCode: 86
-         */
         SaveEmployeeEnter save = new SaveEmployeeEnter();
         save.setId(1004260L);
         save.setCompanyId(1004220L);
@@ -65,8 +36,6 @@ public class EmployeeServiceImplTest {
         save.setAvatar("https://rede.oss-cn-shanghai.aliyuncs.com/1584411984837.jpg");
         save.setUserId(0L);
         save.setTenantId(0L);
-
-
 
         employeeService.saveEmployee(save);
     }

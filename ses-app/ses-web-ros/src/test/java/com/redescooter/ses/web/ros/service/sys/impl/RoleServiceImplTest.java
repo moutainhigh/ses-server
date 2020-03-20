@@ -17,23 +17,11 @@ public class RoleServiceImplTest {
     @Autowired
     private RoleService roleService;
 
-
     @Test
     public void delete() {
 
         GeneralResult delete = roleService.delete(new IdEnter(new Long("1000019")));
 
         System.out.println(delete);
-    }
-
-    @Test
-    public void authorityDetails() {
-
-//        DeptAuthorityDetailsResult result = roleService.roleAuthDetails(new IdEnter(new Long("1000015")));
-//        System.out.println(result);
-    }
-
-    @Test
-    public void edit() {
     }
 }

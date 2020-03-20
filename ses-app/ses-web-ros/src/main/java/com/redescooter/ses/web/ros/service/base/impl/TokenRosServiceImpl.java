@@ -83,9 +83,11 @@ public class TokenRosServiceImpl implements TokenRosService {
         if (sysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        List<OpeSysUserRole> roles = sysUserRoleService.list(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getUserId, sysUser.getId()));
-        if (!CollUtil.isNotEmpty(roles)) {
-            throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
+        if (!enter.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+            List<OpeSysUserRole> roles = sysUserRoleService.list(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getUserId, sysUser.getId()));
+            if (!CollUtil.isNotEmpty(roles)) {
+                throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
+            }
         }
         //状态验证
         if (StringUtils.equals(sysUser.getStatus(), SysUserStatusEnum.LOCK.getCode())) {
@@ -110,7 +112,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         //将token及用户相关信息 放到Redis中
         UserToken userToken = setToken(enter, sysUser);
         //获取用户角色,更新至缓存
-      //  setAuth(userRole.getRoleId());
+        //  setAuth(userRole.getRoleId());
 
         sysUser.setLastLoginToken(userToken.getToken());
         sysUser.setLastLoginTime(new Date(enter.getTimestamp()));
