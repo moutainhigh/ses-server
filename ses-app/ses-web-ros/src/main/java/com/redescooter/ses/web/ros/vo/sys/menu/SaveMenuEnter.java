@@ -58,7 +58,13 @@ public class SaveMenuEnter extends GeneralEnter {
     @ApiModelProperty(value = "备注")
     private String remark;
 
-    @ApiModelProperty(value = "扩展字段")
+    @ApiModelProperty(value = "扩展字段,父级name")
     private String def1;
+
+    @ApiModelProperty(value = "扩展字段，父级code")
+    private String def2;
+
+    @ApiModelProperty(value = "扩展字段，父级type")
+    private String def3;
 
 }

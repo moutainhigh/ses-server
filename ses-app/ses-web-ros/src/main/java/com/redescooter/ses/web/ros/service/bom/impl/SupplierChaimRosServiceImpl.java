@@ -10,7 +10,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.StringUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.SupplierChaimRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpePriceSheet;
@@ -138,7 +138,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         OpePriceSheet queryOpePriceSheet = opePriceSheetService.getOne(opePriceSheetQueryWrapper);
         if (queryOpePriceSheet == null) {
             // 第一次修改直接保存
-            if (StringUtils.isBlank(enter.getProductFrUnit())) {
+            if (SesStringUtils.isBlank(enter.getProductFrUnit())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CURRENCY_UNIT_IS_EMPTY.getCode(), ExceptionCodeEnums.CURRENCY_UNIT_IS_EMPTY.getMessage());
             }
             opePriceSheet.setId(idAppService.getId(SequenceName.OPE_PRICE_SHEET));
@@ -251,7 +251,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         saveOpePriceSheet.setUserId(enter.getUserId());
         saveOpePriceSheet.setStatus(BomStatusEnums.NORMAL.getValue());
         saveOpePriceSheet.setPrice(new BigDecimal(enter.getProductFrPrice()));
-        saveOpePriceSheet.setCurrencyType(StringUtils.isBlank(CurrencyUnitEnums.checkValue(enter.getProductFrUnit())) == true ? CurrencyUnitEnums.FR.getCode() :
+        saveOpePriceSheet.setCurrencyType(SesStringUtils.isBlank(CurrencyUnitEnums.checkValue(enter.getProductFrUnit())) == true ? CurrencyUnitEnums.FR.getCode() :
                 CurrencyUnitEnums.getEnumByValue(enter.getProductFrUnit()).getCode());
         saveOpePriceSheet.setCurrencyUnit(enter.getProductFrUnit());
         saveOpePriceSheet.setStandardCurrency(CurrencyUnitEnums.CN.getValue());
@@ -271,7 +271,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         opePriceSheetHistory.setUserId(enter.getUserId());
         opePriceSheetHistory.setPrice(new BigDecimal(enter.getProductFrPrice()));
         opePriceSheetHistory.setPriceSheetId(id);
-        opePriceSheetHistory.setCurrencyType(StringUtils.isBlank(CurrencyUnitEnums.checkCode(unit)) == true ? CurrencyUnitEnums.FR.getCode() :
+        opePriceSheetHistory.setCurrencyType(SesStringUtils.isBlank(CurrencyUnitEnums.checkCode(unit)) == true ? CurrencyUnitEnums.FR.getCode() :
                 CurrencyUnitEnums.checkCode(unit));
         opePriceSheetHistory.setCurrencyUnit(unit);
         opePriceSheetHistory.setStandardCurrency(CurrencyUnitEnums.CN.getValue());

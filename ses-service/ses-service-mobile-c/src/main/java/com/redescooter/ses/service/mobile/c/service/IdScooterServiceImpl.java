@@ -21,7 +21,7 @@ import com.redescooter.ses.api.mobile.c.vo.SaveRideDateEnter;
 import com.redescooter.ses.api.mobile.c.vo.ScooterNavigationEnter;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
-import com.redescooter.ses.tool.utils.StringUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 
 /**
  * @ClassName:IdScooterServiceImpl
@@ -58,7 +58,7 @@ public class IdScooterServiceImpl implements IdScooterService {
         QueryDriverScooterResult queryDriverScooterResult = cusotmerScooterService.queryDriverScooter(enter);
 
         if (enter.getEvent().equals(CommonEvent.END.getValue())) {
-            if (StringUtils.isBlank(enter.getMileage())){
+            if (SesStringUtils.isBlank(enter.getMileage())){
                 throw new MobileCException(ExceptionCodeEnums.MILEAGE_IS_EMPTY.getCode(),ExceptionCodeEnums.MILEAGE_IS_EMPTY.getMessage());
             }
             if (enter.getDuration()==null || enter.getDuration()==0){

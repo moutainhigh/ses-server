@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
+import com.redescooter.ses.web.ros.vo.sys.menu.QueryMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 
@@ -40,7 +41,7 @@ public interface MenuService {
      * @param enter
      * @return
      */
-    List<MenuTreeResult> parallel(GeneralEnter enter);
+    List<MenuTreeResult> parallel(QueryMenuEnter enter);
 
     /**
      * 菜单详情

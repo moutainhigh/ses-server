@@ -11,7 +11,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.StringUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeParts;
@@ -171,7 +171,7 @@ public class BomRosServiceImpl implements BomRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
             //产品编号一致 跳过校验 ，不一致重新校验
-            if (!StringUtils.equals(partsProduct.getProductNumber(), enter.getProductN())) {
+            if (!SesStringUtils.equals(partsProduct.getProductNumber(), enter.getProductN())) {
                 List<String> productNList = bomRosServiceMapper.UsingProductNumList(enter);
                 if (productNList.contains(enter.getProductN())) {
                     throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
@@ -238,7 +238,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .id(scooter.getId())
                 .productN(scooter.getProductNumber())
                 .productCnName(scooter.getCnName())
-                .procurementCycle(StringUtils.isBlank(scooter.getProductionCycle()) == true ? "0" : scooter.getProductionCycle())
+                .procurementCycle(SesStringUtils.isBlank(scooter.getProductionCycle()) == true ? "0" : scooter.getProductionCycle())
                 .build();
         if (CollectionUtils.isNotEmpty(partList)) {
             double sum = partList.stream().mapToDouble(QueryPartListResult::getQty).sum();
@@ -271,7 +271,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(scooter.getProductType().toString(), BomCommonTypeEnums.SCOOTER.getValue())) {
+        if (!SesStringUtils.equals(scooter.getProductType().toString(), BomCommonTypeEnums.SCOOTER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 进行 产品条目数据过滤
@@ -300,7 +300,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(scooter.getProductType().toString(), BomCommonTypeEnums.SCOOTER.getValue())) {
+        if (!SesStringUtils.equals(scooter.getProductType().toString(), BomCommonTypeEnums.SCOOTER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
@@ -352,7 +352,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(scooter.getProductType().toString(), BomCommonTypeEnums.COMBINATION.getValue())) {
+        if (!SesStringUtils.equals(scooter.getProductType().toString(), BomCommonTypeEnums.COMBINATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         return bomRosServiceMapper.productDeatilPartList(enter);
@@ -408,7 +408,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(combinationPart.getProductType().toString(), BomCommonTypeEnums.COMBINATION.getValue())) {
+        if (!SesStringUtils.equals(combinationPart.getProductType().toString(), BomCommonTypeEnums.COMBINATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 进行 产品条目数据过滤
@@ -436,7 +436,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 产品类型过滤
-        if (!StringUtils.equals(combination.getProductType().toString(), BomCommonTypeEnums.COMBINATION.getValue())) {
+        if (!SesStringUtils.equals(combination.getProductType().toString(), BomCommonTypeEnums.COMBINATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
@@ -544,7 +544,7 @@ public class BomRosServiceImpl implements BomRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
             //产品编号一致 跳过校验 ，不一致重新校验
-            if (!StringUtils.equals(partsProduct.getProductNumber(), enter.getProductN())) {
+            if (!SesStringUtils.equals(partsProduct.getProductNumber(), enter.getProductN())) {
                 List<String> productNList = bomRosServiceMapper.UsingProductNumList(enter);
                 if (productNList.contains(enter.getProductN())) {
                     throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
@@ -604,7 +604,7 @@ public class BomRosServiceImpl implements BomRosService {
     private void checkProductEntry(Long productId, Long userId, String event, List<ProdoctPartListEnter> partList, List<Long> ids) {
 
         // 删除数据时验证
-        if (StringUtils.equals(event, PartsEventEnums.DELETE.getValue())) {
+        if (SesStringUtils.equals(event, PartsEventEnums.DELETE.getValue())) {
             // 查询整车配件
             IdEnter idEnter = new IdEnter();
             idEnter.setId(productId);
@@ -625,7 +625,7 @@ public class BomRosServiceImpl implements BomRosService {
             });
         }
         // 修改数据时验证
-        if (StringUtils.equals(event, PartsEventEnums.UPDATE.getValue())) {
+        if (SesStringUtils.equals(event, PartsEventEnums.UPDATE.getValue())) {
             //查询所有配件
             QueryWrapper<OpeParts> opePartsQueryWrapper = new QueryWrapper<>();
             opePartsQueryWrapper.eq(OpeParts.COL_DR, 0);
