@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.web.ros.service.sys.MenuService;
+import com.redescooter.ses.web.ros.vo.sys.menu.QueryMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import org.junit.After;
@@ -111,8 +112,6 @@ public class MenuServiceImplTest {
             System.out.println("============缓存==========");
 
         }
-
-
     }
 
     @Test
@@ -122,5 +121,14 @@ public class MenuServiceImplTest {
         List<MenuTreeResult> menuByRoleId = menuService.findMenuByRoleId(enter);
 
         System.out.println(JSON.toJSONString(menuByRoleId));
+    }
+
+    @Test
+    public void parallel() {
+        QueryMenuEnter enter = new QueryMenuEnter();
+        //enter.setType(MenuTypeEnums.BUTTONS.getValue());
+        List<MenuTreeResult> parallel = menuService.parallel(enter);
+
+        System.out.println(JSON.toJSONString(parallel));
     }
 }
