@@ -35,8 +35,14 @@ public class FactoryCommonResult extends GeneralResult {
     @ApiModelProperty(value = "联系人名字")
     private String contactLastName;
 
+    @ApiModelProperty(value = "联系人名字")
+    private String contactFullName;
+
     @ApiModelProperty(value = "联系人邮箱")
     private String contactEmail;
+
+    @ApiModelProperty(value = "联系人电话国家代码")
+    private String contactPhoneCode;
 
     @ApiModelProperty(value = "联系人电话")
     private String contactPhone;

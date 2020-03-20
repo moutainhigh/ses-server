@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.production.purchasing.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
@@ -13,6 +14,13 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeFactory;
+import com.redescooter.ses.web.ros.dm.OpeSupplier;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
+import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
@@ -29,6 +37,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,6 +55,18 @@ import java.util.Map;
 @Service
 public class PurchasingServiceImpl implements PurchasingService {
 
+    @Autowired
+    private PurchasingServiceMapper purchasingServiceMapper;
+
+    @Autowired
+    private OpeSysUserProfileService opeSysUserProfileService;
+
+    @Autowired
+    private OpeFactoryService opeFactoryService;
+
+    @Autowired
+    private OpeSupplierService opeSupplierService;
+
     /**
      * 采购单状态统计
      *
@@ -54,6 +75,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public Map<String, Integer> countByType(GeneralEnter enter) {
+        //todo状态统计没有
         Map<String, Integer> map = Maps.newHashMap();
         for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
             map.put(item.getValue(), 0);
@@ -71,7 +93,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     public Map<String, String> statusList(GeneralEnter enter) {
         Map<String, String> map = Maps.newHashMap();
         for (PurchasingStatusEnums item : PurchasingStatusEnums.values()) {
-            map.put(item.getCode(), item.getValue());
+            map.put(item.getValue(), item.getCode());
         }
         return map;
     }
@@ -115,7 +137,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     public Map<String, String> paymentType(GeneralEnter enter) {
         Map<String, String> map = Maps.newHashMap();
         for (PaymentTypeEnums item : PaymentTypeEnums.values()) {
-            map.put(item.getCode(), item.getValue());
+            map.put(item.getValue(), item.getCode());
         }
         return map;
     }
@@ -140,12 +162,18 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public List<ConsigneeResult> consigneeList(GeneralEnter enter) {
         List<ConsigneeResult> consigneeResultlist = Lists.newArrayList();
-        consigneeResultlist.add(ConsigneeResult.builder()
-                .id(1000000L)
-                .firstName("Alan")
-                .lastName("alan")
-                .phone("3423432432")
-                .build());
+
+        QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
+        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+        List<OpeSysUserProfile> opeSysUserProfileList = opeSysUserProfileService.list(opeSysUserProfileQueryWrapper);
+        opeSysUserProfileList.forEach(item -> {
+            consigneeResultlist.add(ConsigneeResult.builder()
+                    .id(item.getSysUserId())
+                    .firstName(item.getFirstName())
+                    .lastName(item.getLastName())
+                    .phone(item.getTelNumber())
+                    .build());
+        });
         return consigneeResultlist;
     }
 
@@ -158,15 +186,20 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public List<FactoryCommonResult> factoryList(GeneralEnter enter) {
         List<FactoryCommonResult> list = Lists.newArrayList();
-        list.add(FactoryCommonResult.builder()
-                .id(10000L)
-                .factoryName("Flex")
-                .contactFirstName("luke")
-                .contactLastName("luke")
-                .contactEmail("3421@12.com")
-                .contactPhone("342343243")
-                .annexPicture("ddasdasdasdas")
-                .build());
+        QueryWrapper<OpeFactory> opeFactoryQueryWrapper = new QueryWrapper();
+        opeFactoryQueryWrapper.eq(OpeFactory.COL_DR, 0);
+        List<OpeFactory> opeFactoryList = opeFactoryService.list(opeFactoryQueryWrapper);
+        opeFactoryList.forEach(item -> {
+            list.add(FactoryCommonResult.builder()
+                    .id(item.getId())
+                    .factoryName(item.getFactoryName())
+                    .contactFullName(item.getContactFullName())
+                    .contactEmail(item.getContactEmail())
+                    .contactPhone(item.getContactPhone())
+                    .contactPhoneCode(item.getContactPhoneCountryCode())
+                    .build());
+        });
+
         return list;
     }
 
@@ -289,15 +322,23 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public List<FactoryCommonResult> supplierList(GeneralEnter enter) {
         List<FactoryCommonResult> list = Lists.newArrayList();
-        list.add(FactoryCommonResult.builder()
-                .id(10000L)
-                .factoryName("Flex")
-                .contactFirstName("luke")
-                .contactLastName("luke")
-                .contactEmail("3421@12.com")
-                .contactPhone("342343243")
-                .annexPicture("ddasdasdasdas")
-                .build());
+
+        QueryWrapper<OpeSupplier> opeSupplierQueryWrapper = new QueryWrapper<>();
+        opeSupplierQueryWrapper.eq(OpeSupplier.COL_DR, 0);
+        List<OpeSupplier> opeSupplierList = opeSupplierService.list(opeSupplierQueryWrapper);
+        opeSupplierList.forEach(item -> {
+            list.add(FactoryCommonResult.builder()
+                    .id(item.getId())
+                    .factoryName(item.getSupplierName())
+                    .contactFirstName(item.getContactFirstName())
+                    .contactLastName(item.getContactLastName())
+                    .contactFullName(item.getContactFullName())
+                    .contactEmail(item.getContactEmail())
+                    .contactPhoneCode(item.getContactPhoneCountryCode())
+                    .contactPhone(item.getContactPhone())
+                    .annexPicture(null)
+                    .build());
+        });
         return list;
     }
 
@@ -417,10 +458,10 @@ public class PurchasingServiceImpl implements PurchasingService {
     public Map<String, String> productType(GeneralEnter enter) {
         Map<String, String> map = Maps.newHashMap();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            map.put(item.getCode(), item.getValue());
+            map.put(item.getValue(), item.getCode());
         }
-        map.remove(BomCommonTypeEnums.SCOOTER.getCode());
-        map.remove(BomCommonTypeEnums.COMBINATION.getCode());
+        map.remove(BomCommonTypeEnums.SCOOTER.getValue());
+        map.remove(BomCommonTypeEnums.COMBINATION.getValue());
         return map;
     }
 

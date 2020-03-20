@@ -50,4 +50,7 @@ public class PurchasingListEnter extends PageEnter {
     @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
     private Date createdEndTime;
+
+    @ApiModelProperty(value = "关键字")
+    private String keyword;
 }

@@ -57,7 +57,7 @@ public class PurchasingController {
     }
 
     @PostMapping(value = "/statusList")
-    @ApiOperation(value = "状态集合", response = Map.class)
+    @ApiOperation(value = "采购单状态集合", response = Map.class)
     public Response<Map<String, String>> statusList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(purchasingService.statusList(enter));
     }
@@ -69,7 +69,7 @@ public class PurchasingController {
     }
 
     @PostMapping(value = "/paymentType")
-    @ApiOperation(value = "付款方式", response = Map.class)
+    @ApiOperation(value = "采购单付款方式", response = Map.class)
     public Response<Map<String, String>> paymentType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(purchasingService.paymentType(enter));
     }
@@ -81,13 +81,13 @@ public class PurchasingController {
     }
 
     @PostMapping(value = "/consigneeList")
-    @ApiOperation(value = "收件人列表", response = ConsigneeResult.class)
+    @ApiOperation(value = "采购单收件人列表", response = ConsigneeResult.class)
     public Response<List<ConsigneeResult>> consigneeList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(purchasingService.consigneeList(enter));
     }
 
     @PostMapping(value = "/factoryList")
-    @ApiOperation(value = "工厂列表", response = FactoryCommonResult.class)
+    @ApiOperation(value = "采购单工厂列表", response = FactoryCommonResult.class)
     public Response<List<FactoryCommonResult>> factoryList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(purchasingService.factoryList(enter));
     }
