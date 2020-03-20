@@ -534,7 +534,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                         ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
             }
 
-            if (DateUtil.timeComolete(plaTenant.getEffectiveTime(), enter.getStartDateTime()) < 0) {
+            if (DateUtil.timeComolete(plaTenant.getEffectiveTime(), enter.getStartDateTime()) > 1) {
                 throw new FoundationException(ExceptionCodeEnums.RENEW_START_DATETIME_IS_NOT_AVAILABLE.getCode(),
                         ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
             }
@@ -566,7 +566,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                     ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
         }
 
-        if (DateUtil.timeComolete(plaUser.getEffectiveTime(), enter.getStartDateTime()) < 0) {
+        if (DateUtil.timeComolete(plaUser.getEffectiveTime(), enter.getStartDateTime()) > 1) {
             throw new FoundationException(ExceptionCodeEnums.RENEW_START_DATETIME_IS_NOT_AVAILABLE.getCode(),
                     ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
         }

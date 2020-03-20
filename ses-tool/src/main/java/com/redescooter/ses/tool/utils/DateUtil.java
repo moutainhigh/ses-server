@@ -865,4 +865,19 @@ public class DateUtil {
         String etime = time2.format(new Date(etime1));
         return etime;
     }
+
+    /**
+     * 比较日期时间的差值，返回秒
+     */
+    public static Long DateTimeComplete(Date dateA, Date dateB) {
+        Integer year = dateCompare(dateA, dateB, 1);
+
+        Integer month = dateCompare(dateA, dateB, 2);
+
+        Integer day = dateCompare(dateA, dateB, 3);
+
+        Long time = timeComolete(dateA, dateB);
+
+        return year * 365 * 24 * 60 * 60 + month * 30 * 24 * 60 * 60 + day * 24 * 60 * 60 + time;
+    }
 }
