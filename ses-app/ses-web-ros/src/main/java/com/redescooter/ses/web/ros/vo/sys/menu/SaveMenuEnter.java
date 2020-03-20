@@ -40,7 +40,7 @@ public class SaveMenuEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "父菜单ID")
     @NotNull(code = ValidationExceptionCode.PID_IS_EMPTY, message = "父级Id为空")
-    private Long pId;
+    private Long pid;
 
     @ApiModelProperty(value = "图表")
     private String icon;
@@ -57,5 +57,8 @@ public class SaveMenuEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "备注")
     private String remark;
+
+    @ApiModelProperty(value = "扩展字段")
+    private String def1;
 
 }

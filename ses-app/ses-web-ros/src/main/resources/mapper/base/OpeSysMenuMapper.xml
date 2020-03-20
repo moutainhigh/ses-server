@@ -21,11 +21,17 @@
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="DECIMAL" property="def5" />
+    <result column="def6" jdbcType="VARCHAR" property="def6" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, p_id, `name`, code, permission, `path`, component, `type`, icon, `level`,
-    sort, remark, created_by, created_time, updated_by, updated_time
+    sort, remark, created_by, created_time, updated_by, updated_time, def1, def2, def3,
+    def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -111,6 +117,31 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
@@ -121,7 +152,8 @@
     <!--@mbg.generated-->
     insert into ope_sys_menu
     (dr, p_id, `name`, code, permission, `path`, component, `type`, icon, `level`, sort,
-    remark, created_by, created_time, updated_by, updated_time)
+    remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5,
+    def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT}, #{item.name,jdbcType=VARCHAR},
@@ -129,7 +161,9 @@
       #{item.component,jdbcType=VARCHAR}, #{item.type,jdbcType=CHAR}, #{item.icon,jdbcType=VARCHAR},
       #{item.level,jdbcType=INTEGER}, #{item.sort,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR},
       #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-      #{item.updatedTime,jdbcType=TIMESTAMP})
+      #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
+      #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}, #{item.def6,jdbcType=VARCHAR}
+      )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysMenu" useGeneratedKeys="true">
@@ -155,6 +189,11 @@
       created_time,
       updated_by,
       updated_time,
+      def1,
+      def2,
+      def3,
+      def5,
+      def6,
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -177,6 +216,11 @@
       #{createdTime,jdbcType=TIMESTAMP},
       #{updatedBy,jdbcType=BIGINT},
       #{updatedTime,jdbcType=TIMESTAMP},
+      #{def1,jdbcType=VARCHAR},
+      #{def2,jdbcType=VARCHAR},
+      #{def3,jdbcType=VARCHAR},
+      #{def5,jdbcType=DECIMAL},
+      #{def6,jdbcType=VARCHAR},
     </trim>
     on duplicate key update
     <trim suffixOverrides=",">
@@ -199,6 +243,11 @@
       created_time = #{createdTime,jdbcType=TIMESTAMP},
       updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      def1 = #{def1,jdbcType=VARCHAR},
+      def2 = #{def2,jdbcType=VARCHAR},
+      def3 = #{def3,jdbcType=VARCHAR},
+      def5 = #{def5,jdbcType=DECIMAL},
+      def6 = #{def6,jdbcType=VARCHAR},
     </trim>
   </insert>
   <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysMenu" useGeneratedKeys="true">
@@ -256,6 +305,21 @@
       <if test="updatedTime != null">
         updated_time,
       </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -310,6 +374,21 @@
       <if test="updatedTime != null">
         #{updatedTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=DECIMAL},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=VARCHAR},
+      </if>
     </trim>
     on duplicate key update
     <trim suffixOverrides=",">
@@ -363,6 +442,21 @@
       </if>
       <if test="updatedTime != null">
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=DECIMAL},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

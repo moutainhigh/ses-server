@@ -96,10 +96,10 @@ public interface MenuService {
      * 角色岗位菜单权限查看与授权
      * 平行结构
      *
-     * @param ids
+     * @param enter
      * @return
      */
-    List<MenuTreeResult> roleMenuAuthParallel(long... ids);
+    List<MenuTreeResult> roleMenuAuthParallel(GeneralEnter enter);
 
     /**
      * 根据岗位角色ID获取菜单权限

@@ -3,13 +3,11 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.constant.CacheConstants;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.menu.MenuTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.router.RouterMeta;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -31,7 +29,6 @@ import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
@@ -146,16 +143,13 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    @Cacheable(value = CacheConstants.MENU_DETAILS, key = "#ids  + '_menu'", unless = "#result == null")
-    public List<MenuTreeResult> roleMenuAuthParallel(long... ids) {
-        List<Long> roleIds = new ArrayList<>();
-        for (int i = 0; i < ids.length; i++) {
-            roleIds.add(ids[i]);
-        }
+    public List<MenuTreeResult> roleMenuAuthParallel(GeneralEnter enter) {
+        List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
         if (CollUtil.isNotEmpty(roleIds)) {
             List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
             if (CollUtil.isNotEmpty(menuIds)) {
-                return this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds)), roleIds);
+                List<MenuTreeResult> results = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds)), roleIds);
+                return results;
             }
         }
         return new ArrayList<>();
@@ -217,7 +211,7 @@ public class MenuServiceImpl implements MenuService {
             throw new SesWebRosException(ExceptionCodeEnums.MENU_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MENU_IS_NOT_EXIST.getMessage());
         }
         // 根节点不可编辑
-        if (menuUpdate.getPId().equals(Constant.MENU_TREE_ROOT_ID) || enter.getPId().equals(Constant.MENU_TREE_ROOT_ID)) {
+        if (menuUpdate.getPId().equals(Constant.MENU_TREE_ROOT_ID) || enter.getPid().equals(Constant.MENU_TREE_ROOT_ID)) {
             throw new SesWebRosException(ExceptionCodeEnums.THE_ROOT_NODE_MENU_CANNOT_BE_EDIT.getCode(), ExceptionCodeEnums.THE_ROOT_NODE_MENU_CANNOT_BE_EDIT.getMessage());
         }
         sysMenuService.updateById(this.buildMenuVo(menuUpdate.getId(), enter));
@@ -227,11 +221,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuTreeResult> findMenuByRoleId(GeneralEnter enter) {
-        List<OpeSysUserRole> userRoles = userRoleService.list(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getUserId, enter.getUserId()));
-        long[] ids = userRoles.stream().mapToLong(r -> {
-            return r.getRoleId().longValue();
-        }).toArray();
-        return this.roleMenuAuthParallel(ids);
+        return this.roleMenuAuthParallel(enter);
     }
 
     /**
@@ -251,10 +241,10 @@ public class MenuServiceImpl implements MenuService {
         } else {
             menu.setId(id);
         }
-        if (enter.getPId() == null || enter.getPId() == 0) {
+        if (enter.getPid() == null || enter.getPid() == 0) {
             menu.setPId(Constant.MENU_TREE_ROOT_ID);
         } else {
-            menu.setPId(enter.getPId());
+            menu.setPId(enter.getPid());
         }
         menu.setName(enter.getName());
         if (StringUtils.isBlank(enter.getCode())) {
@@ -270,6 +260,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setLevel(enter.getLevel());
         menu.setSort(enter.getSort());
         menu.setRemark(enter.getRemark());
+        menu.setDef1(enter.getDef1());
         menu.setUpdatedBy(enter.getUserId());
         menu.setUpdatedTime(new Date());
         return menu;
@@ -342,6 +333,7 @@ public class MenuServiceImpl implements MenuService {
         node.setIcon(menu.getIcon());
         node.setSort(menu.getSort());
         node.setRemark(menu.getRemark());
+        node.setDef1(menu.getDef1());
         return node;
     }
 
