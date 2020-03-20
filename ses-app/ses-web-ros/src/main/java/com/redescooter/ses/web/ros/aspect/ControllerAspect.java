@@ -57,7 +57,7 @@ public class ControllerAspect {
                     checkEnterParameter(enter);
                     checkToken(point, enter);
                     //接口权限验证
-                    checkPermission(point);
+                    checkPermission(point,enter);
                 }
                 ValidationUtil.validation(obj);
             }
@@ -125,12 +125,18 @@ public class ControllerAspect {
      *
      * @param point
      */
-    private void checkPermission(ProceedingJoinPoint point) {
+    private void checkPermission(ProceedingJoinPoint point,GeneralEnter enter) {
         HttpServletRequest request = SpringContextUtils.getHttpServletRequest();
         String requestMethod = request.getMethod();
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         requestPath = filterUrl(requestPath);
         log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + requestMethod);
+
+
+
+
+
+
     }
 
     private void checkEnterParameter(GeneralEnter enter) {

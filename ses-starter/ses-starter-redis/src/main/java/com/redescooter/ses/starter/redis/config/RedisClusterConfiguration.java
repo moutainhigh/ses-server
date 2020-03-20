@@ -2,6 +2,7 @@ package com.redescooter.ses.starter.redis.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
  * @Function: TODO
  */
 @Data
+@EnableCaching
 @Configuration
 @ConfigurationProperties(prefix = "spring.redis.cluster")
 public class RedisClusterConfiguration {
