@@ -3,11 +3,11 @@ package com.redescooter.ses.web.ros.service.production.purchasing.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.production.PurchasingTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PaymentTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
-import com.redescooter.ses.api.common.enums.production.PurchasingTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -29,8 +29,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
-import lombok.extern.log4j.Log4j;
-import org.apache.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +44,6 @@ import java.util.Map;
  * @create: 2020/03/19 11:29
  */
 @Service
-@Log4j
 public class PurchasingServiceImpl implements PurchasingService {
 
     /**

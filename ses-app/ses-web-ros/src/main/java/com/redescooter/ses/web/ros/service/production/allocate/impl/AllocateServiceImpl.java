@@ -17,11 +17,14 @@ import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderNodeResul
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderPartResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAllocateEnter;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.compress.utils.Lists;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * @ClassName:AllocateServiceImpl
@@ -30,6 +33,7 @@ import java.util.Map;
  * @Version：1.3
  * @create: 2020/03/19 15:10
  */
+@Service
 public class AllocateServiceImpl implements AllocateService {
 
     /**
