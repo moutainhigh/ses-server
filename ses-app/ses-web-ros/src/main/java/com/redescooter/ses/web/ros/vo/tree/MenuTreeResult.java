@@ -47,6 +47,12 @@ public class MenuTreeResult extends TreeNode {
     @ApiModelProperty(value = "菜单权重")
     private int sort;
 
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
+    @ApiModelProperty(value = "扩展字段")
+    private String def1;
+
     @ApiModelProperty(value = "是否选中")
     private boolean checked = Boolean.FALSE;
 

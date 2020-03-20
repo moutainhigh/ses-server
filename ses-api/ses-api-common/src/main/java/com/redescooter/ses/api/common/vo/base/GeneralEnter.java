@@ -35,6 +35,9 @@ public class GeneralEnter implements Serializable {
     @ApiModelProperty(value = "用户id", hidden = true)
     private Long userId;
 
+//    @ApiModelProperty(value = "角色ID", hidden = true)
+//    private Long roleIds;
+
     @ApiModelProperty(value = "租户id", hidden = true)
     private Long tenantId;
 

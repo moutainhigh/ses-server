@@ -20,16 +20,16 @@ import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
+import com.redescooter.ses.web.ros.service.sys.MenuService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
-import com.redescooter.ses.web.ros.service.sys.SysMenuService;
-import com.redescooter.ses.web.ros.service.sys.SysRoleService;
-import com.redescooter.ses.web.ros.service.sys.SysSalesAreaService;
+import com.redescooter.ses.web.ros.service.sys.RoleService;
+import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
-import com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
+import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -40,7 +40,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * @ClassName SysRoleServiceImpl
+ * @ClassName RoleServiceImpl
  * @Author Jerry
  * @date 2020/03/12 14:12
  * @Description:
@@ -48,38 +48,27 @@ import java.util.*;
 
 @Slf4j
 @Service
-public class SysRoleServiceImpl implements SysRoleService {
-
-    @Autowired
-    private SysSalesAreaService sysSalesAreaService;
-
-    @Autowired
-    private SysMenuService menuService;
-
-    @Autowired
-    private OpeSysRoleService roleService;
-
-    @Autowired
-    private IdAppService idAppService;
-
-    @Autowired
-    private RolePermissionService rolePermissionService;
-
-    @Autowired
-    private OpeSysDeptService opeSysDeptService;
-
-    @Autowired
-    private OpeSysRoleService opeSysRoleService;
+public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleServiceMapper roleServiceMapper;
-
     @Autowired
-    private OpeSysMenuService opeSysMenuService;
-
+    private RolePermissionService rolePermissionService;
+    @Autowired
+    private MenuService menuService;
+    @Autowired
+    private SalesAreaService salesAreaService;
+    @Autowired
+    private OpeSysRoleService sysRoleService;
+    @Autowired
+    private OpeSysDeptService sysDeptService;
+    @Autowired
+    private OpeSysMenuService sysMenuService;
     @Autowired
     private OpeSysUserRoleService sysUserRoleService;
 
+    @Autowired
+    private IdAppService idAppService;
     @Reference
     private CityBaseService ctiyBaseService;
 
@@ -87,7 +76,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     public GeneralResult save(RoleEnter enter) {
         //保存岗位角色
         OpeSysRole role = this.builderRole(null, enter);
-        roleService.save(role);
+        sysRoleService.save(role);
 
         enter.setRoleId(role.getId());
         this.insertRoleAouth(enter);
@@ -98,10 +87,8 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public GeneralResult edit(RoleEnter enter) {
         OpeSysRole role = this.builderRole(enter.getRoleId(), enter);
-        roleService.updateById(role);
-
+        sysRoleService.updateById(role);
         this.updateRoleAouth(enter);
-
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -116,11 +103,11 @@ public class SysRoleServiceImpl implements SysRoleService {
             throw new SesWebRosException(ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getCode(), ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getMessage());
         }
         //删除角色
-        roleService.removeById(enter.getId());
+        sysRoleService.removeById(enter.getId());
         //删除角色对应的权限关系
         rolePermissionService.deleteRoleMeunByRoleId(enter);
         //删除角色对应的销售区域关系
-        sysSalesAreaService.deleteRoleSalesAreaByRoleId(enter);
+        salesAreaService.deleteRoleSalesAreaByRoleId(enter);
         //删除角色对应的部门关系
         rolePermissionService.deleteRoleDeptByRoleId(enter);
         return new GeneralResult(enter.getRequestId());
@@ -156,15 +143,35 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public DeptAuthorityDetailsResult authorityDetails(IdEnter enter) {
-        //根据岗位ID获取部门菜单权限树
-        Map<String, ModuleAuthResult> muns = new HashMap<>();
-        //根据岗位ID获取销售区域树
-        List<SalesAreaTressResult> areas = sysSalesAreaService.list(enter);
+    public DeptAuthorityDetailsResult roleAuthDetails(String type, IdEnter enter) {
         DeptAuthorityDetailsResult result = new DeptAuthorityDetailsResult();
-        result.setMenuTreeResult(muns);
-        result.setSalesAreaTressResult(areas);
+        result.setMenuResult(this.roleMenuById(type, enter));
+        result.setSalesAreaResult(this.roleSalesAreaById(type, enter));
         result.setRequestId(enter.getRequestId());
+        return result;
+    }
+
+    @Override
+    public List<SalesAreaTressResult> roleSalesAreaById(String type, IdEnter enter) {
+        List<SalesAreaTressResult> result = null;
+        if ("tree".equals(type)) {
+            result = salesAreaService.trees(enter);
+        }
+        if ("parallel".equals(type)) {
+            result = salesAreaService.list(enter);
+        }
+        return result;
+    }
+
+    @Override
+    public List<MenuTreeResult> roleMenuById(String type, IdEnter enter) {
+        List<MenuTreeResult> result = null;
+        if ("tree".equals(type)) {
+            result = menuService.roleMenuAuthTreeByRoleId(enter);
+        }
+        if ("parallel".equals(type)) {
+            result = menuService.roleMenuAuthParallelByRoleId(enter);
+        }
         return result;
     }
 
@@ -176,7 +183,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             role.setCreatedBy(enter.getUserId());
             role.setCreateTime(new Date());
         } else {
-            if (opeSysRoleService.getById(enter.getRoleId()) == null) {
+            if (sysRoleService.getById(enter.getRoleId()) == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
             }
             role.setId(id);
@@ -236,7 +243,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     private void checkRoleAuothParameter(RoleEnter enter, Set<Long> salesPermissionIds, Set<Long> meunPermissionIds) {
         // 部门过滤
-        if (opeSysDeptService.getById(enter.getDeptId()) == null) {
+        if (sysDeptService.getById(enter.getDeptId()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
 
@@ -255,7 +262,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
         // 菜单过滤 校验
         if (CollectionUtils.isNotEmpty(meunPermissionIds)) {
-            List<OpeSysMenu> sysMenuList = opeSysMenuService.list();
+            List<OpeSysMenu> sysMenuList = sysMenuService.list();
             List<Long> sysMenuIds = new ArrayList<>();
 
             sysMenuList.forEach(item -> {
