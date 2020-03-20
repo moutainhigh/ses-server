@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -599,9 +600,9 @@ public class EdOrderServiceImpl implements EdOrderService {
         pushParameter.put("title", title);
         pushParameter.put("content", content);
         pushParameter.put("bussinessStatus", pushMsg.getStatus());
-        pushParameter.put("messagePriority", com.redescooter.ses.tool.utils.StringUtils.isEmpty(pushMsg.getMessagePriority()) == true ? MessagePriorityEnums.NONE_REMIND.getValue() :
+        pushParameter.put("messagePriority", SesStringUtils.isEmpty(pushMsg.getMessagePriority()) == true ? MessagePriorityEnums.NONE_REMIND.getValue() :
                 pushMsg.getMessagePriority());
-        pushParameter.put("mesageType", com.redescooter.ses.tool.utils.StringUtils.isEmpty(pushMsg.getMesageType()) == true ? MesageTypeEnum.NONE.getValue() : pushMsg.getMesageType());
+        pushParameter.put("mesageType", SesStringUtils.isEmpty(pushMsg.getMesageType()) == true ? MesageTypeEnum.NONE.getValue() : pushMsg.getMesageType());
 
 
         pushParameter.put("generalEnter", generalEnter);

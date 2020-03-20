@@ -8,7 +8,7 @@ import com.redescooter.ses.api.common.enums.bom.SalseTabEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
-import com.redescooter.ses.tool.utils.StringUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.SalseRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheet;
@@ -268,7 +268,7 @@ public class SalseRosServiceImpl implements SalseRosService {
     public List<String> productTypeList(GeneralEnter enter) {
         List<String> result = new ArrayList<>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            if (!StringUtils.equals(item.getCode(), BomCommonTypeEnums.PARTS.getCode())) {
+            if (!SesStringUtils.equals(item.getCode(), BomCommonTypeEnums.PARTS.getCode())) {
                 result.add(item.getCode());
             }
         }
@@ -312,7 +312,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         } else {
             // 修改报价
             regionalPriceSheetList.forEach(item -> {
-                if (StringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.FR.getValue())) {
+                if (SesStringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.FR.getValue())) {
                     // 对价格不相等的进行更新 价格相等时不进行 任何操作
                     if (!item.getSalesPrice().setScale(2, BigDecimal.ROUND_HALF_UP).equals(new BigDecimal(enter.getProductFrPrice()).setScale(2, BigDecimal.ROUND_HALF_UP))) {
                         opeRegionalPriceList.add(buildOpeRegionalPriceSheetSingle(item, enter, CurrencyUnitEnums.FR.getValue()));
@@ -320,7 +320,7 @@ public class SalseRosServiceImpl implements SalseRosService {
                         opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistory(enter, item.getId(), CurrencyUnitEnums.FR.getValue()));
                     }
                 }
-                if (StringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.EN.getValue())) {
+                if (SesStringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.EN.getValue())) {
                     // 对价格不相等的进行更新 价格相等时不进行 任何操作
                     if (!item.getSalesPrice().setScale(2, BigDecimal.ROUND_HALF_UP).equals(new BigDecimal(enter.getProductEnPrice()).setScale(2, BigDecimal.ROUND_HALF_UP))) {
                         opeRegionalPriceList.add(buildOpeRegionalPriceSheetSingle(item, enter, CurrencyUnitEnums.EN.getValue()));
@@ -378,7 +378,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         } else {
             // 修改报价
             regionalPriceSheetList.forEach(item -> {
-                if (StringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.FR.getValue())) {
+                if (SesStringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.FR.getValue())) {
                     // 对价格不相等的进行更新 价格相等时不进行 任何操作
                     if (!item.getSalesPrice().setScale(2, BigDecimal.ROUND_HALF_UP).equals(new BigDecimal(enter.getProductFrPrice()).setScale(2, BigDecimal.ROUND_HALF_UP))) {
                         opeRegionalPriceList.add(buildOpeRegionalPriceSheetSingle(item, enter, CurrencyUnitEnums.FR.getValue()));
@@ -386,7 +386,7 @@ public class SalseRosServiceImpl implements SalseRosService {
                         opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistory(enter, item.getId(), CurrencyUnitEnums.FR.getValue()));
                     }
                 }
-                if (StringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.EN.getValue())) {
+                if (SesStringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.EN.getValue())) {
                     // 对价格不相等的进行更新 价格相等时不进行 任何操作
                     if (!item.getSalesPrice().setScale(2, BigDecimal.ROUND_HALF_UP).equals(new BigDecimal(enter.getProductEnPrice()).setScale(2, BigDecimal.ROUND_HALF_UP))) {
                         opeRegionalPriceList.add(buildOpeRegionalPriceSheetSingle(item, enter, CurrencyUnitEnums.EN.getValue()));
@@ -444,7 +444,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         } else {
             // 修改报价
             regionalPriceSheetList.forEach(item -> {
-                if (StringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.FR.getValue())) {
+                if (SesStringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.FR.getValue())) {
                     // 对价格不相等的进行更新 价格相等时不进行 任何操作
                     if (item.getSalesPrice().subtract(new BigDecimal(enter.getProductFrPrice())).intValue() != BigDecimal.ZERO.intValue()) {
                         opeRegionalPriceList.add(buildOpeRegionalPriceSheetSingle(item, enter, CurrencyUnitEnums.FR.getValue()));
@@ -452,7 +452,7 @@ public class SalseRosServiceImpl implements SalseRosService {
                         opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistory(enter, item.getId(), CurrencyUnitEnums.FR.getValue()));
                     }
                 } else {
-                    if (StringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.EN.getValue())) {
+                    if (SesStringUtils.equals(item.getCurrencyUnit(), CurrencyUnitEnums.EN.getValue())) {
                         // 对价格不相等的进行更新 价格相等时不进行 任何操作
                         if (item.getSalesPrice().subtract(new BigDecimal(enter.getProductEnPrice())).intValue() != BigDecimal.ZERO.intValue()) {
                             opeRegionalPriceList.add(buildOpeRegionalPriceSheetSingle(item, enter, CurrencyUnitEnums.EN.getValue()));
@@ -544,7 +544,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         opeRegionalPriceSheetHistory.setPriceType("0");
 
         opeRegionalPriceSheetHistory.setRegionalPriceSheetId(regionalPriceSheetId);
-        if (StringUtils.equals(CurrencyUnitEnums.FR.getValue(), unit)) {
+        if (SesStringUtils.equals(CurrencyUnitEnums.FR.getValue(), unit)) {
             opeRegionalPriceSheetHistory.setSalesPrice(new BigDecimal(enter.getProductFrPrice()));
             opeRegionalPriceSheetHistory.setCurrencyType(CurrencyUnitEnums.FR.getCode());
             opeRegionalPriceSheetHistory.setCurrencyUnit(unit);
@@ -580,7 +580,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         opeRegionalPrice.setValidFlag("1");
         opeRegionalPrice.setPriceType("1");
 
-        if (StringUtils.equals(CurrencyUnitEnums.FR.getValue(), unit)) {
+        if (SesStringUtils.equals(CurrencyUnitEnums.FR.getValue(), unit)) {
             opeRegionalPrice.setSalesPrice(new BigDecimal(enter.getProductFrPrice()));
             opeRegionalPrice.setCurrencyType(CurrencyUnitEnums.FR.getCode());
             opeRegionalPrice.setCurrencyUnit(unit);

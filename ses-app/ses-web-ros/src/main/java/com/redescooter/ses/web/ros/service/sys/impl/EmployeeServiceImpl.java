@@ -12,7 +12,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
-import com.redescooter.ses.tool.utils.StringUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.EmployeeServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
@@ -112,7 +112,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         // 查出所有员工 进行 部门分组 员工 证件信息没有封装
         List<EmployeeResult> employeeList = employeeServiceMapper.employeeList(enter);
         //剔除 admin
-        employeeList = employeeList.stream().filter(item -> StringUtils.equals(Constant.ADMIN_USER_NAME, item.getEmail()) == false).collect(Collectors.toList());
+        employeeList = employeeList.stream().filter(item -> SesStringUtils.equals(Constant.ADMIN_USER_NAME, item.getEmail()) == false).collect(Collectors.toList());
         for (DeptEmployeeListResult dept : deptList) {
             List<EmployeeResult> employeeResultList = new ArrayList<>();
             if (CollectionUtils.isEmpty(employeeList)) {
@@ -331,7 +331,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (opeSysStaff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(opeSysStaff.getStatus(), EmployeeStatusEnums.IN_SERVICE.getValue())) {
+        if (!SesStringUtils.equals(opeSysStaff.getStatus(), EmployeeStatusEnums.IN_SERVICE.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
         // 清空token
@@ -340,7 +340,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (opeSysUser.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
             return null;
         }
-        if (StringUtils.isNotBlank(opeSysUser.getLastLoginToken())) {
+        if (SesStringUtils.isNotBlank(opeSysUser.getLastLoginToken())) {
             jedisService.delKey(opeSysUser.getLastLoginToken());
         }
         // 删除员工
@@ -399,7 +399,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         OpeSysUserProfile opeSysUserProfile = new OpeSysUserProfile();
         opeSysUserProfile.setDr(0);
         opeSysUserProfile.setRepairShopId(0L);
-        opeSysUserProfile.setPicture(StringUtils.isEmpty(enter.getAvatar()) == true ? null : enter.getAvatar());
+        opeSysUserProfile.setPicture(SesStringUtils.isEmpty(enter.getAvatar()) == true ? null : enter.getAvatar());
         opeSysUserProfile.setFirstName(enter.getEmployeeFirstName());
         opeSysUserProfile.setLastName(enter.getEmployeeLastName());
         opeSysUserProfile.setFullName(new StringBuilder(enter.getEmployeeFirstName()).append(" ").append(enter.getEmployeeLastName()).toString());
@@ -413,7 +413,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         opeSysUserProfile.setAddressCountryCode(enter.getAddressCountryCode());
         opeSysUserProfile.setAddress(enter.getAddress());
         opeSysUserProfile.setCertificateType(enter.getCertificateType());
-        opeSysUserProfile.setCertificateNegativeAnnex(StringUtils.isEmpty(enter.getNegativePicture()) == true ? null : enter.getNegativePicture());
+        opeSysUserProfile.setCertificateNegativeAnnex(SesStringUtils.isEmpty(enter.getNegativePicture()) == true ? null : enter.getNegativePicture());
         opeSysUserProfile.setCertificatePositiveAnnex(enter.getPositivePicture());
         opeSysUserProfile.setJoinDate(new Date());
         opeSysUserProfile.setUpdatedBy(enter.getUserId());
@@ -429,7 +429,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
         // 办公区域校验
-        if (StringUtils.isBlank(AddressBureauEnums.checkCode(String.valueOf(enter.getAddressBureauId())))) {
+        if (SesStringUtils.isBlank(AddressBureauEnums.checkCode(String.valueOf(enter.getAddressBureauId())))) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         //邮箱过滤

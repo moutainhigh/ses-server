@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.service.sys.MenuService;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
+import com.redescooter.ses.web.ros.vo.sys.menu.QueryMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import io.swagger.annotations.Api;
@@ -64,7 +65,7 @@ public class SysMenuController {
 
     @PostMapping(value = "/parallel")
     @ApiOperation(value = "平行菜单", response = MenuTreeResult.class)
-    public Response<List<MenuTreeResult>> parallel(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<MenuTreeResult>> parallel(@ModelAttribute @ApiParam("请求参数") QueryMenuEnter enter) {
         return new Response<>(menuService.parallel(enter));
     }
 

@@ -96,38 +96,38 @@ public class SesWebDeliveryApplicationTests {
 //                trace.setId(idAppService.getId(SequenceName.COR_DELIVERY_TRACE));
 //                trace.setDeliveryId(item.getId());
 //
-//                if (StringUtils.equals(trace.getEvent(), DeliveryEventEnums.CREATE.getValue())) {
+//                if (SesStringUtils.equals(trace.getEvent(), DeliveryEventEnums.CREATE.getValue())) {
 //                    trace.setEventTime(item.getEtd());
 //                    trace.setCreatedTime(item.getEtd());
 //                }
 //
-//                if (StringUtils.equals(trace.getEvent(), DeliveryEventEnums.START.getValue())) {
+//                if (SesStringUtils.equals(trace.getEvent(), DeliveryEventEnums.START.getValue())) {
 //                    trace.setEventTime(item.getEtd());
 //                    trace.setCreatedTime(item.getEtd());
 //                }
 //
-//                if (StringUtils.equals(trace.getEvent(), DeliveryEventEnums.CHANAGE.getValue())) {
+//                if (SesStringUtils.equals(trace.getEvent(), DeliveryEventEnums.CHANAGE.getValue())) {
 //                    trace.setEventTime(DateUtil.parse(timePastTenSecond(time, 3000), "yyyy-MM-dd HH:mm:ss"));
 //                    trace.setCreatedTime(DateUtil.parse(timePastTenSecond(time, 3000), "yyyy-MM-dd HH:mm:ss"));
 //                }
 //
-//                if (StringUtils.equals(trace.getEvent(), DeliveryEventEnums.TIMEOUT.getValue())) {
+//                if (SesStringUtils.equals(trace.getEvent(), DeliveryEventEnums.TIMEOUT.getValue())) {
 //                    trace.setEventTime(item.getEta());
 //                    trace.setCreatedTime(item.getEta());
 //                }
-//                if (StringUtils.equals(trace.getEvent(), DeliveryEventEnums.REJECT.getValue())) {
+//                if (SesStringUtils.equals(trace.getEvent(), DeliveryEventEnums.REJECT.getValue())) {
 //                    trace.setEventTime(item.getEtd());
 //                    trace.setCreatedTime(item.getEtd());
 //                }
-//                if (StringUtils.equals(trace.getEvent(), DeliveryEventEnums.CHANAGE.getValue())) {
+//                if (SesStringUtils.equals(trace.getEvent(), DeliveryEventEnums.CHANAGE.getValue())) {
 //                    trace.setEventTime(item.getEtd());
 //                    trace.setCreatedTime(item.getEtd());
 //                }
-//                if (StringUtils.equals(trace.getEvent(), DeliveryEventEnums.COMPLETED.getValue())) {
+//                if (SesStringUtils.equals(trace.getEvent(), DeliveryEventEnums.COMPLETED.getValue())) {
 //                    trace.setEventTime(item.getAta());
 //                    trace.setCreatedTime(item.getAta());
 //                }
-//                if (StringUtils.equals(trace.getEvent(), DeliveryEventEnums.TIMEOUT_COMPLETE.getValue())) {
+//                if (SesStringUtils.equals(trace.getEvent(), DeliveryEventEnums.TIMEOUT_COMPLETE.getValue())) {
 //                    trace.setEventTime(item.getAta());
 //                    trace.setCreatedTime(item.getAta());
 //                }

@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -38,7 +39,6 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
-import com.redescooter.ses.tool.utils.StringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.ExpressOrderServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
@@ -235,12 +235,12 @@ public class EdOrderServiceImpl implements EdOrderService {
 
             d.setSendMileage(MapUtil.getDistance(tenantResult.getLatitude() == null ? "0" : tenantResult.getLatitude().toString(),
                     tenantResult.getLongitude() == null ? "0" : tenantResult.getLongitude().toString(),
-                    d.getSenderLatitude() == null ? "0" : d.getSenderLatitude().toString(),
-                    d.getSenderLongitude() == null ? "0" : d.getSenderLongitude().toString()));
+                    d.getSenderLatitude() == null ? "0" : d.getSenderLatitude(),
+                    d.getSenderLongitude() == null ? "0" : d.getSenderLongitude()));
             d.setRecipientMileage(MapUtil.getDistance(tenantResult.getLatitude() == null ? "0" : tenantResult.getLatitude().toString(),
                     tenantResult.getLongitude() == null ? "0" : tenantResult.getLongitude().toString(),
-                    d.getRecipientLatitude() == null ? "0" : d.getRecipientLatitude().toString(),
-                    d.getRecipientLongitude() == null ? "0" : d.getRecipientLongitude().toString()));
+                    d.getRecipientLatitude() == null ? "0" : d.getRecipientLatitude(),
+                    d.getRecipientLongitude() == null ? "0" : d.getRecipientLongitude()));
 
             d.setExpressOrderTraceResultList(orderNode);
         });
@@ -354,7 +354,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         if (corExpressOrder == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(corExpressOrder.getStatus(), ExpressOrderStatusEnums.REJECTED.getValue())) {
+        if (!SesStringUtils.equals(corExpressOrder.getStatus(), ExpressOrderStatusEnums.REJECTED.getValue())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
         //获取
@@ -378,7 +378,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         if (corExpressOrder == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(corExpressOrder.getStatus(), ExpressOrderStatusEnums.REJECTED.getValue())) {
+        if (!SesStringUtils.equals(corExpressOrder.getStatus(), ExpressOrderStatusEnums.REJECTED.getValue())) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getCode(), ExceptionCodeEnums.STATUS_IS_UNAVAILABLE.getMessage());
         }
 
@@ -541,7 +541,7 @@ public class EdOrderServiceImpl implements EdOrderService {
                                                              String reason, Map<String, String> otherMap,
                                                              Boolean saveDB) {
 
-        if (StringUtils.isBlank(String.valueOf(saveDB))) {
+        if (SesStringUtils.isBlank(String.valueOf(saveDB))) {
             saveDB = Boolean.FALSE;
         }
 

@@ -8,7 +8,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.StringUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.SupplierServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
@@ -65,7 +65,7 @@ public class SupplierRosServiceImpl implements SupplierRosService {
         supplierSave.setId(idAppService.getId(SequenceName.OPE_SUPPLIER));
         supplierSave.setDr(0);
         supplierSave.setStatus(SupplierStatusEnum.NORMAL.getValue());
-        if(StringUtils.isNoneBlank(enter.getSupplierLatitude(),enter.getSupplierLongitude())){
+        if(SesStringUtils.isNoneBlank(enter.getSupplierLatitude(),enter.getSupplierLongitude())){
             supplierSave.setSupplierLatitude(new BigDecimal(enter.getSupplierLatitude()));
             supplierSave.setSupplierLongitude(new BigDecimal(enter.getSupplierLongitude()));
         }

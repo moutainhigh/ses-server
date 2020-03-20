@@ -150,7 +150,7 @@ public class ControllerAspect {
         if (StringUtils.isBlank(enter.getCountry())) {
             throw new SesWebRosException(ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getMessage());
         }
-//        if (StringUtils.isBlank(enter.getLanguage())) {
+//        if (SesStringUtils.isBlank(enter.getLanguage())) {
 //            throw new CrmWebException(ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getMessage());
 //        }
         if (StringUtils.isBlank(enter.getClientType())) {

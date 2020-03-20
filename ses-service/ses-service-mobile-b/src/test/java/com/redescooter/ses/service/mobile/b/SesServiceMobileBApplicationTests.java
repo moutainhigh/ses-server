@@ -22,7 +22,7 @@ public class SesServiceMobileBApplicationTests {
 //    @Test
 //    public void list() {
 //
-//      System.out.println(StringUtils.isAllBlank(String.valueOf(null), String.valueOf(null)));
+//      System.out.println(SesStringUtils.isAllBlank(String.valueOf(null), String.valueOf(null)));
 //    }
 //
 //    @Test

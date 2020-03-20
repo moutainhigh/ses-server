@@ -14,7 +14,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.StringUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.InquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -181,7 +181,7 @@ public class InquiryServiceImpl implements InquiryService {
         if (opeCustomerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPROCESSED.getValue())) {
+        if (!SesStringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPROCESSED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
         opeCustomerInquiry.setStatus(InquiryStatusEnums.PROCESSED.getValue());
@@ -211,7 +211,7 @@ public class InquiryServiceImpl implements InquiryService {
         if (opeCustomerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPROCESSED.getValue())) {
+        if (!SesStringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPROCESSED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
         opeCustomerInquiry.setStatus(InquiryStatusEnums.DECLINE.getValue());
@@ -241,18 +241,18 @@ public class InquiryServiceImpl implements InquiryService {
         }
         opeCustomerInquiry.setCustomerType(enter.getCustomerType());
 
-        if (StringUtils.equals(enter.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
-            if (StringUtils.isBlank(enter.getCompanyName())) {
+        if (SesStringUtils.equals(enter.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
+            if (SesStringUtils.isBlank(enter.getCompanyName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COMPANY_NAME_CANNOT_EMPTY.getMessage());
             }
             opeCustomerInquiry.setCompanyName(enter.getCompanyName());
             opeCustomerInquiry.setScooterQuantity(enter.getScooterQuantity());
         }
-        if (StringUtils.equals(enter.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
-            if (StringUtils.isBlank(enter.getCustomerFirstName())) {
+        if (SesStringUtils.equals(enter.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
+            if (SesStringUtils.isBlank(enter.getCustomerFirstName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getMessage());
             }
-            if (StringUtils.isBlank(enter.getCustomerLastName())) {
+            if (SesStringUtils.isBlank(enter.getCustomerLastName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getMessage());
             }
             opeCustomerInquiry.setFirstName(enter.getCustomerFirstName());
@@ -295,10 +295,10 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomer.setCustomerCode("0");
         opeCustomer.setIndustryType(opeCustomerInquiry.getIndustry());
         opeCustomer.setCustomerType(opeCustomerInquiry.getCustomerType());
-        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
+        if (SesStringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
             opeCustomer.setCompanyName(opeCustomerInquiry.getCompanyName());
         }
-        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
+        if (SesStringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
             opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
             opeCustomer.setContactLastName(opeCustomerInquiry.getLastName());
             opeCustomer.setContactFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());

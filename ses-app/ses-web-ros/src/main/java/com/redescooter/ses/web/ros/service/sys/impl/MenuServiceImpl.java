@@ -11,7 +11,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.router.RouterMeta;
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.StringUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
@@ -24,9 +24,11 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.sys.MenuService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
+import com.redescooter.ses.web.ros.vo.sys.menu.QueryMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,8 +83,24 @@ public class MenuServiceImpl implements MenuService {
      * @return
      */
     @Override
-    public List<MenuTreeResult> parallel(GeneralEnter enter) {
-        return this.buildMenuParallel(sysMenuService.list(), this.getRoleIds(new IdEnter(enter.getUserId())));
+    public List<MenuTreeResult> parallel(QueryMenuEnter enter) {
+        LambdaQueryWrapper<OpeSysMenu> query = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotBlank(enter.getFatherName())) {
+            query.like(OpeSysMenu::getDef1, enter.getFatherName());
+        }
+        if (StringUtils.isNotBlank(enter.getName())) {
+            query.like(OpeSysMenu::getName, enter.getName());
+        }
+        if (StringUtils.isNotBlank(enter.getCode())) {
+            query.like(OpeSysMenu::getCode, enter.getCode());
+        }
+        if (StringUtils.isNotBlank(enter.getType())) {
+            query.like(OpeSysMenu::getType, enter.getType());
+        }
+        if (StringUtils.isNotBlank(String.valueOf(enter.getLevel()))) {
+            query.like(OpeSysMenu::getLevel, String.valueOf(enter.getLevel()));
+        }
+        return this.buildMenuParallel(sysMenuService.list(query), this.getRoleIds(new IdEnter(enter.getUserId())));
     }
 
     /**
@@ -247,7 +265,7 @@ public class MenuServiceImpl implements MenuService {
             menu.setPId(enter.getPid());
         }
         menu.setName(enter.getName());
-        if (StringUtils.isBlank(enter.getCode())) {
+        if (SesStringUtils.isBlank(enter.getCode())) {
             menu.setCode(menu.getId() + ":::" + enter.getName());
         } else {
             menu.setCode(enter.getCode());
@@ -261,6 +279,8 @@ public class MenuServiceImpl implements MenuService {
         menu.setSort(enter.getSort());
         menu.setRemark(enter.getRemark());
         menu.setDef1(enter.getDef1());
+        menu.setDef2(enter.getDef2());
+        menu.setDef3(enter.getDef3());
         menu.setUpdatedBy(enter.getUserId());
         menu.setUpdatedTime(new Date());
         return menu;
@@ -334,6 +354,8 @@ public class MenuServiceImpl implements MenuService {
         node.setSort(menu.getSort());
         node.setRemark(menu.getRemark());
         node.setDef1(menu.getDef1());
+        node.setDef2(menu.getDef2());
+        node.setDef3(menu.getDef3());
         return node;
     }
 

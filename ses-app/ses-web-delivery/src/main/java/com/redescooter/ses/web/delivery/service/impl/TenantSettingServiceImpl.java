@@ -157,7 +157,7 @@ public class TenantSettingServiceImpl implements TenantSettingService {
         if (corUserProfile == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-//        if (StringUtils.isNotBlank(enter.getCustomerFirstName()) && StringUtils.isNotBlank(enter.getCustomerLastName())) {
+//        if (SesStringUtils.isNotBlank(enter.getCustomerFirstName()) && SesStringUtils.isNotBlank(enter.getCustomerLastName())) {
 //            corUserProfile.setFirstName(enter.getCustomerFirstName());
 //            corUserProfile.setLastName(enter.getCustomerLastName());
 //            corUserProfile.setFullName(new StringBuffer().append(enter.getCustomerLastName()).append(" ").append(enter.getCustomerLastName()).toString());

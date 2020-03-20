@@ -8,7 +8,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.StringUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.FactoryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
@@ -70,7 +70,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         factorySave.setId(idAppService.getId(SequenceName.OPE_FACTORY));
         factorySave.setDr(0);
         factorySave.setStatus(FactoryStatusEnum.NORMAL.getValue());
-        if(StringUtils.isNoneBlank(enter.getFactoryLatitude(),enter.getFactoryLongitude())){
+        if(SesStringUtils.isNoneBlank(enter.getFactoryLatitude(),enter.getFactoryLongitude())){
             factorySave.setFactoryLatitude(new BigDecimal(enter.getFactoryLatitude()));
             factorySave.setFactoryLongitude(new BigDecimal(enter.getFactoryLongitude()));
         }

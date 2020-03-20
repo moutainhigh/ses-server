@@ -8,7 +8,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.StringUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.RoleServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
@@ -190,8 +190,8 @@ public class RoleServiceImpl implements RoleService {
         }
         role.setTenantId(enter.getTenantId());
         role.setRoleName(enter.getRoleName());
-        role.setRoleCode(StringUtils.isNotBlank(enter.getRoleCode()) == true ? enter.getRoleCode() : null);
-        role.setRoleDesc(StringUtils.isNotBlank(enter.getDescription()) == true ? enter.getDescription() : null);
+        role.setRoleCode(SesStringUtils.isNotBlank(enter.getRoleCode()) == true ? enter.getRoleCode() : null);
+        role.setRoleDesc(SesStringUtils.isNotBlank(enter.getDescription()) == true ? enter.getDescription() : null);
         role.setUpdatedBy(enter.getUserId());
         role.setUpdateTime(new Date());
         return role;
@@ -200,11 +200,11 @@ public class RoleServiceImpl implements RoleService {
     private void insertRoleAouth(RoleEnter enter) {
         Set<Long> salesPermissionIds = null;
         Set<Long> meunPermissionIds = null;
-        if (StringUtils.isNotBlank(enter.getSalesPermissionIds())) {
+        if (SesStringUtils.isNotBlank(enter.getSalesPermissionIds())) {
             // 将 销售区域 json 格式 转 set集合
             salesPermissionIds = new HashSet<>(JSON.parseArray(enter.getSalesPermissionIds(), Long.class));
         }
-        if (StringUtils.isNotBlank(enter.getMeunPermissionIds())) {
+        if (SesStringUtils.isNotBlank(enter.getMeunPermissionIds())) {
             // 将 菜单列表 json 格式 转set 集合
             meunPermissionIds = new HashSet<>(JSON.parseArray(enter.getMeunPermissionIds(), Long.class));
         }
@@ -222,11 +222,11 @@ public class RoleServiceImpl implements RoleService {
     private void updateRoleAouth(RoleEnter enter) {
         Set<Long> salesPermissionIds = null;
         Set<Long> meunPermissionIds = null;
-        if (StringUtils.isNotBlank(enter.getSalesPermissionIds())) {
+        if (SesStringUtils.isNotBlank(enter.getSalesPermissionIds())) {
             // 将 销售区域 json 格式 转 set集合
             salesPermissionIds = new HashSet<>(JSON.parseArray(enter.getSalesPermissionIds(), Long.class));
         }
-        if (StringUtils.isNotBlank(enter.getMeunPermissionIds())) {
+        if (SesStringUtils.isNotBlank(enter.getMeunPermissionIds())) {
             // 将 菜单列表 json 格式 转set 集合
             meunPermissionIds = new HashSet<>(JSON.parseArray(enter.getMeunPermissionIds(), Long.class));
         }
