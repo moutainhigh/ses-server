@@ -185,12 +185,12 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<FactoryCommonResult> factoryList(GeneralEnter enter) {
-        List<FactoryCommonResult> list = Lists.newArrayList();
+        List<FactoryCommonResult> result = Lists.newArrayList();
         QueryWrapper<OpeFactory> opeFactoryQueryWrapper = new QueryWrapper();
         opeFactoryQueryWrapper.eq(OpeFactory.COL_DR, 0);
         List<OpeFactory> opeFactoryList = opeFactoryService.list(opeFactoryQueryWrapper);
         opeFactoryList.forEach(item -> {
-            list.add(FactoryCommonResult.builder()
+            result.add(FactoryCommonResult.builder()
                     .id(item.getId())
                     .factoryName(item.getFactoryName())
                     .contactFullName(item.getContactFullName())
@@ -200,7 +200,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                     .build());
         });
 
-        return list;
+        return result;
     }
 
     /**
@@ -330,8 +330,8 @@ public class PurchasingServiceImpl implements PurchasingService {
             list.add(FactoryCommonResult.builder()
                     .id(item.getId())
                     .factoryName(item.getSupplierName())
-                    .contactFirstName(item.getContactFirstName())
-                    .contactLastName(item.getContactLastName())
+//                    .contactFirstName(item.getContactFirstName())
+//                    .contactLastName(item.getContactLastName())
                     .contactFullName(item.getContactFullName())
                     .contactEmail(item.getContactEmail())
                     .contactPhoneCode(item.getContactPhoneCountryCode())
@@ -351,6 +351,8 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public PageResult<PruchasingItemResult> pruchasingProductList(PruchasingItemListEnter enter) {
         List<PruchasingItemResult> list = Lists.newArrayList();
+
+        //
         list.add(PruchasingItemResult.builder()
                 .id(10000L)
                 .partsN("34234234")
@@ -460,7 +462,6 @@ public class PurchasingServiceImpl implements PurchasingService {
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
             map.put(item.getValue(), item.getCode());
         }
-        map.remove(BomCommonTypeEnums.SCOOTER.getValue());
         map.remove(BomCommonTypeEnums.COMBINATION.getValue());
         return map;
     }

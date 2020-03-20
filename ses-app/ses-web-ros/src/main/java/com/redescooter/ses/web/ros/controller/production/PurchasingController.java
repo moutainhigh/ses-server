@@ -19,6 +19,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
+import com.sun.org.apache.xpath.internal.operations.String;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -179,7 +180,7 @@ public class PurchasingController {
     }
 
     @PostMapping(value = "/productType")
-    @ApiOperation(value = "保存工厂附件", response = Map.class)
+    @ApiOperation(value = "采购产品类型", response = Map.class)
     public Response<Map<String, String>> productType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(purchasingService.productType(enter));
     }
