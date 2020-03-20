@@ -1,8 +1,6 @@
 package com.redescooter.ses.web.ros.service.production.purchasing.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.PurchasingTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
@@ -42,6 +40,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +52,8 @@ import java.util.Map;
  * @create: 2020/03/19 11:29
  */
 @Service
-public class PurchasingServiceImpl implements PurchasingService {
+public 
+class PurchasingServiceImpl implements PurchasingService {
 
     @Autowired
     private PurchasingServiceMapper purchasingServiceMapper;
@@ -76,7 +76,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public Map<String, Integer> countByType(GeneralEnter enter) {
         //todo状态统计没有
-        Map<String, Integer> map = Maps.newHashMap();
+        Map<String, Integer> map = new HashMap<>();
         for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
             map.put(item.getValue(), 0);
         }
@@ -91,7 +91,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public Map<String, String> statusList(GeneralEnter enter) {
-        Map<String, String> map = Maps.newHashMap();
+        Map<String, String> map = new HashMap<>();
         for (PurchasingStatusEnums item : PurchasingStatusEnums.values()) {
             map.put(item.getValue(), item.getCode());
         }
@@ -135,7 +135,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public Map<String, String> paymentType(GeneralEnter enter) {
-        Map<String, String> map = Maps.newHashMap();
+        Map<String, String> map = new HashMap<>();
         for (PaymentTypeEnums item : PaymentTypeEnums.values()) {
             map.put(item.getValue(), item.getCode());
         }
@@ -161,7 +161,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<ConsigneeResult> consigneeList(GeneralEnter enter) {
-        List<ConsigneeResult> consigneeResultlist = Lists.newArrayList();
+        List<ConsigneeResult> consigneeResultlist = new ArrayList<>();
 
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
@@ -185,7 +185,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<FactoryCommonResult> factoryList(GeneralEnter enter) {
-        List<FactoryCommonResult> result = Lists.newArrayList();
+        List<FactoryCommonResult> result = new ArrayList<>();
         QueryWrapper<OpeFactory> opeFactoryQueryWrapper = new QueryWrapper();
         opeFactoryQueryWrapper.eq(OpeFactory.COL_DR, 0);
         List<OpeFactory> opeFactoryList = opeFactoryService.list(opeFactoryQueryWrapper);
@@ -321,7 +321,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<FactoryCommonResult> supplierList(GeneralEnter enter) {
-        List<FactoryCommonResult> list = Lists.newArrayList();
+        List<FactoryCommonResult> list = new ArrayList<>();
 
         QueryWrapper<OpeSupplier> opeSupplierQueryWrapper = new QueryWrapper<>();
         opeSupplierQueryWrapper.eq(OpeSupplier.COL_DR, 0);
@@ -350,7 +350,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public PageResult<PruchasingItemResult> pruchasingProductList(PruchasingItemListEnter enter) {
-        List<PruchasingItemResult> list = Lists.newArrayList();
+        List<PruchasingItemResult> list = new ArrayList<>();
 
         //
         list.add(PruchasingItemResult.builder()
@@ -443,7 +443,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public Map<String, Integer> qcCountByStatus(IdEnter enter) {
 
-        Map<String, Integer> map = Maps.newHashMap();
+        Map<String, Integer> map = new HashMap<>();
         for (QcStatusEnums item : QcStatusEnums.values()) {
             map.put(item.getValue(), 0);
         }
@@ -458,7 +458,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public Map<String, String> productType(GeneralEnter enter) {
-        Map<String, String> map = Maps.newHashMap();
+        Map<String, String> map = new HashMap<>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
             map.put(item.getValue(), item.getCode());
         }
@@ -474,8 +474,8 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<QcInfoResult> qcList(QcItemListEnter enter) {
-        List<QcInfoResult> list = Lists.newArrayList();
-        List<QcItemDetailResult> qcItemDetailResultList = Lists.newArrayList();
+        List<QcInfoResult> list = new ArrayList<>();
+        List<QcItemDetailResult> qcItemDetailResultList = new ArrayList<>();
         qcItemDetailResultList.add(QcItemDetailResult.builder()
                 .batchN("34324234234")
                 .passQty(20)
