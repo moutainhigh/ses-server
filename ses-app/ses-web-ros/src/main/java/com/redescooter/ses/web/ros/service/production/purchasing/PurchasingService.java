@@ -140,12 +140,20 @@ public interface PurchasingService {
     Map<String, String> productType(GeneralEnter enter);
 
     /**
-     * 采购商品列表
+     * 查询可采购的商品列表
      *
      * @param enter
      * @return
      */
-    List<PruchasingItemResult> pruchasingProductList(PruchasingItemListEnter enter);
+    List<PruchasingItemResult> queryProductList(PruchasingItemListEnter enter);
+
+    /**
+     * 采购单商品列表
+     *
+     * @param enter
+     * @return
+     */
+    List<PruchasingItemResult> pruchasingDetailProductList(IdEnter enter);
 
     /**
      * 保存 工厂附件

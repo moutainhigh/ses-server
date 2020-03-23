@@ -92,6 +92,25 @@ public class PurchasingController {
         return new Response<>(purchasingService.factoryList(enter));
     }
 
+    @PostMapping(value = "/queryProductList")
+    @ApiOperation(value = "可采购的商品列表", response = PruchasingItemResult.class)
+    public Response<List<PruchasingItemResult>> queryProductList(@ModelAttribute @ApiParam("请求参数") PruchasingItemListEnter enter) {
+        return new Response<>(purchasingService.queryProductList(enter));
+    }
+
+
+    @PostMapping(value = "/productType")
+    @ApiOperation(value = "采购产品类型", response = Map.class)
+    public Response<Map<String, String>> productType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(purchasingService.productType(enter));
+    }
+
+    @PostMapping(value = "/pruchasingDetailProductList")
+    @ApiOperation(value = "采购单详情商品列表", response = PruchasingItemResult.class)
+    public Response<List<PruchasingItemResult>> pruchasingDetailProductList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(purchasingService.pruchasingDetailProductList(enter));
+    }
+
     @PostMapping(value = "/detail")
     @ApiOperation(value = "详情", response = PurchasingResult.class)
     public Response<PurchasingResult> detail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -128,25 +147,17 @@ public class PurchasingController {
         return new Response<>(purchasingService.supplierList(enter));
     }
 
-    @PostMapping(value = "/pruchasingProductList")
-    @ApiOperation(value = "采购商品列表", response = PruchasingItemResult.class)
-    public Response<List<PruchasingItemResult>> pruchasingProductList(@ModelAttribute @ApiParam("请求参数") PruchasingItemListEnter enter) {
-        return new Response<>(purchasingService.pruchasingProductList(enter));
-    }
-
     @PostMapping(value = "/saveFactoryAnnex")
     @ApiOperation(value = "保存工厂附件", response = GeneralResult.class)
     public Response<GeneralResult> saveFactoryAnnex(@ModelAttribute @ApiParam("请求参数") SaveFactoryAnnexEnter enter) {
         return new Response<>(purchasingService.saveFactoryAnnex(enter));
     }
 
-
     @PostMapping(value = "/startPurchasing")
     @ApiOperation(value = "开始采购", response = GeneralResult.class)
     public Response<GeneralResult> startPurchasing(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(purchasingService.startPurchasing(enter));
     }
-
 
     @PostMapping(value = "/startQc")
     @ApiOperation(value = "开始qc 质检", response = GeneralResult.class)
@@ -176,12 +187,6 @@ public class PurchasingController {
     @ApiOperation(value = "qc状态", response = Map.class)
     public Response<Map<String, Integer>> qcCountByStatus(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(purchasingService.qcCountByStatus(enter));
-    }
-
-    @PostMapping(value = "/productType")
-    @ApiOperation(value = "采购产品类型", response = Map.class)
-    public Response<Map<String, String>> productType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(purchasingService.productType(enter));
     }
 
     @PostMapping(value = "/qcList")

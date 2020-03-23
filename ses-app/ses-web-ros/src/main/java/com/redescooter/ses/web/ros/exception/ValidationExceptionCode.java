@@ -146,4 +146,6 @@ public interface ValidationExceptionCode {
     int INVOICE_NUM_IS_EMPTY = 10087;
     // 附件为空
     int ANNEX_IS_EMPTY = 10088;
+    // 价格为空
+    int PRICE_IS_EMPTY=10089;
 }

@@ -361,13 +361,29 @@ public class PurchasingServiceImpl implements PurchasingService {
     }
 
     /**
-     * 采购商品列表
+     * 产品类型
      *
      * @param enter
      * @return
      */
     @Override
-    public List<PruchasingItemResult> pruchasingProductList(PruchasingItemListEnter enter) {
+    public Map<String, String> productType(GeneralEnter enter) {
+        Map<String, String> map = new HashMap<>();
+        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
+            map.put(item.getValue(), item.getCode());
+        }
+        map.remove(BomCommonTypeEnums.COMBINATION.getValue());
+        return map;
+    }
+
+    /**
+     * 查询可采购的商品列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<PruchasingItemResult> queryProductList(PruchasingItemListEnter enter) {
         List<String> productTypeList = new ArrayList<String>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
             if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue())) {
@@ -378,7 +394,27 @@ public class PurchasingServiceImpl implements PurchasingService {
         if (CollectionUtils.isEmpty(result)) {
             return new ArrayList<>();
         }
-        return result;
+    }
+
+    /**
+     * 采购单详情商品列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<PruchasingItemResult> pruchasingDetailProductList(IdEnter enter) {
+//        List<String> productTypeList = new ArrayList<String>();
+//        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
+//            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue())) {
+//                productTypeList.add(item.getValue());
+//            }
+//        }
+//        List<PruchasingItemResult> result = purchasingServiceMapper.pruchasingProductList(enter, productTypeList);
+//        if (CollectionUtils.isEmpty(result)) {
+//            return new ArrayList<>();
+//        }
+        return null;
     }
 
     /**
@@ -460,22 +496,6 @@ public class PurchasingServiceImpl implements PurchasingService {
         for (QcStatusEnums item : QcStatusEnums.values()) {
             map.put(item.getValue(), 0);
         }
-        return map;
-    }
-
-    /**
-     * 产品类型
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public Map<String, String> productType(GeneralEnter enter) {
-        Map<String, String> map = new HashMap<>();
-        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            map.put(item.getValue(), item.getCode());
-        }
-        map.remove(BomCommonTypeEnums.COMBINATION.getValue());
         return map;
     }
 

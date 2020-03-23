@@ -42,6 +42,14 @@ public class SavePurchasingEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.PARTS_IS_EMPTY, message = "部件为空")
     private String partList;
 
+    @ApiModelProperty(value = "总数量", required = true)
+    @NotNull(code = ValidationExceptionCode.QTY_IS_EMPTY, message = "数量为空")
+    private Integer totalQty;
+
+    @ApiModelProperty(value = "价格为空", required = true)
+    @NotNull(code = ValidationExceptionCode.PRICE_IS_EMPTY, message = "价格为空")
+    private String totalPrice;
+
     @ApiModelProperty(value = "付款方式", required = true)
     @NotNull(code = ValidationExceptionCode.PAYMENT_TYPE_IS_EMPTY, message = "付款方式为空")
     private String paymentType;
