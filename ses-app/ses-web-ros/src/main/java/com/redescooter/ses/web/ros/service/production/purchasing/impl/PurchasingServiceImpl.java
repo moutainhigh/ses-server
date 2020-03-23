@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.production.purchasing.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.PurchasingTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
@@ -35,6 +36,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,8 +54,7 @@ import java.util.Map;
  * @create: 2020/03/19 11:29
  */
 @Service
-public 
-class PurchasingServiceImpl implements PurchasingService {
+public class PurchasingServiceImpl implements PurchasingService {
 
     @Autowired
     private PurchasingServiceMapper purchasingServiceMapper;
@@ -107,6 +108,19 @@ class PurchasingServiceImpl implements PurchasingService {
     @Override
     public PageResult<PurchasingResult> list(PurchasingListEnter enter) {
         List<PurchasingResult> list = new ArrayList<>();
+        List<PaymentItemDetailResult> newArrayList = Lists.newArrayList();
+        newArrayList.add(PaymentItemDetailResult.builder()
+                .id(10000000L)
+                .remark("3432423")
+                .actualPaymentDate(new Date())
+                .statementDate(new Date())
+                .dayNum(20)
+                .paymentRatio("10")
+                .invoicePicture("dasdada")
+                .invoiceNum("ewrewrwerwe")
+                .amount("120")
+                .estimatedPaymentDate(new Date())
+                .build());
         list.add(PurchasingResult.builder()
                 .id(1000000L)
                 .contractN("4234324234323")
@@ -123,6 +137,10 @@ class PurchasingServiceImpl implements PurchasingService {
                 .paymentType(PaymentTypeEnums.STAGING.getValue())
                 .partsQty(200)
                 .createdTime(new Date())
+                .stagTotal(3)
+                .paidstagNum(1)
+                .statementDate(new Date())
+                .paymentItemDetailResultList(newArrayList)
                 .build());
         return PageResult.create(enter, 1, list);
     }
@@ -349,23 +367,18 @@ class PurchasingServiceImpl implements PurchasingService {
      * @return
      */
     @Override
-    public PageResult<PruchasingItemResult> pruchasingProductList(PruchasingItemListEnter enter) {
-        List<PruchasingItemResult> list = new ArrayList<>();
-
-        //
-        list.add(PruchasingItemResult.builder()
-                .id(10000L)
-                .partsN("34234234")
-                .enName("dadasd")
-                .enName("qwrewrwe")
-                .type(BomCommonTypeEnums.BATTERY.getValue())
-                .supplierId(100000L)
-                .leadTime(30)
-                .price("2000")
-                .qty(200)
-                .subtotal("10000")
-                .build());
-        return PageResult.create(enter, 1, list);
+    public List<PruchasingItemResult> pruchasingProductList(PruchasingItemListEnter enter) {
+        List<String> productTypeList = new ArrayList<String>();
+        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
+            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue())) {
+                productTypeList.add(item.getValue());
+            }
+        }
+        List<PruchasingItemResult> result = purchasingServiceMapper.pruchasingProductList(enter, productTypeList);
+        if (CollectionUtils.isEmpty(result)) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     /**
@@ -457,10 +470,10 @@ class PurchasingServiceImpl implements PurchasingService {
      * @return
      */
     @Override
-    public Map<String, String> productType(GeneralEnter enter) {
-        Map<String, String> map = new HashMap<>();
+    public Map<String, Integer> productType(GeneralEnter enter) {
+        Map<String, Integer> map = new HashMap<>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            map.put(item.getValue(), item.getCode());
+            map.put(item.getValue(), 0);
         }
         map.remove(BomCommonTypeEnums.COMBINATION.getValue());
         return map;
@@ -508,8 +521,6 @@ class PurchasingServiceImpl implements PurchasingService {
                 .qcDate(new Date())
                 .qcItemDetailResultList(qcItemDetailResultList)
                 .build());
-
-
         return list;
     }
 
@@ -523,4 +534,5 @@ class PurchasingServiceImpl implements PurchasingService {
     public GeneralResult qcFailExport(IdEnter enter) {
         return null;
     }
+
 }

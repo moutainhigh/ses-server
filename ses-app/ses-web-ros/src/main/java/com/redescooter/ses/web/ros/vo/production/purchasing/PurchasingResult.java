@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName:PurchasingResult
@@ -71,8 +72,25 @@ public class PurchasingResult extends GeneralResult {
     @ApiModelProperty(value = "总价格")
     private String totalPrice;
 
+    @ApiModelProperty(value = "单位")
+    private String unit;
+
     @ApiModelProperty(value = "付款类型")
     private String paymentType;
+
+    @ApiModelProperty(value = "对帐日")
+    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    private Date statementDate;
+
+    @ApiModelProperty(value = "天数")
+    private Integer days;
+
+    @ApiModelProperty(value = "分期总数")
+    private Integer stagTotal;
+
+    @ApiModelProperty(value = "支付分期数")
+    private Integer paidstagNum;
 
     @ApiModelProperty(value = "部件数量")
     private Integer partsQty;
@@ -81,4 +99,7 @@ public class PurchasingResult extends GeneralResult {
     @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
     private Date createdTime;
+
+    @ApiModelProperty(value = "支付记录详情")
+    private List<PaymentItemDetailResult> paymentItemDetailResultList;
 }

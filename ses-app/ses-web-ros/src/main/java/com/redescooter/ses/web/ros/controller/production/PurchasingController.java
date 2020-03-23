@@ -130,7 +130,7 @@ public class PurchasingController {
 
     @PostMapping(value = "/pruchasingProductList")
     @ApiOperation(value = "采购商品列表", response = PruchasingItemResult.class)
-    public Response<PageResult<PruchasingItemResult>> pruchasingProductList(@ModelAttribute @ApiParam("请求参数") PruchasingItemListEnter enter) {
+    public Response<List<PruchasingItemResult>> pruchasingProductList(@ModelAttribute @ApiParam("请求参数") PruchasingItemListEnter enter) {
         return new Response<>(purchasingService.pruchasingProductList(enter));
     }
 
@@ -180,7 +180,7 @@ public class PurchasingController {
 
     @PostMapping(value = "/productType")
     @ApiOperation(value = "采购产品类型", response = Map.class)
-    public Response<Map<String, String>> productType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<Map<String, Integer>> productType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(purchasingService.productType(enter));
     }
 

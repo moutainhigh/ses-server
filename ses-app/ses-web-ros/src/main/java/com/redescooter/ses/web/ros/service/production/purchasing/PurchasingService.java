@@ -132,12 +132,20 @@ public interface PurchasingService {
     List<FactoryCommonResult> supplierList(GeneralEnter enter);
 
     /**
+     * 产品类型
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> productType(GeneralEnter enter);
+
+    /**
      * 采购商品列表
      *
      * @param enter
      * @return
      */
-    PageResult<PruchasingItemResult> pruchasingProductList(PruchasingItemListEnter enter);
+    List<PruchasingItemResult> pruchasingProductList(PruchasingItemListEnter enter);
 
     /**
      * 保存 工厂附件
@@ -194,14 +202,6 @@ public interface PurchasingService {
      * @return
      */
     Map<String, Integer> qcCountByStatus(IdEnter enter);
-
-    /**
-     * 产品类型
-     *
-     * @param enter
-     * @return
-     */
-    Map<String, String> productType(GeneralEnter enter);
 
     /**
      * QC 条目list

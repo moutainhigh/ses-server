@@ -50,6 +50,9 @@ public class PruchasingItemResult extends GeneralResult {
     @ApiModelProperty(value = "价格")
     private String price;
 
+    @ApiModelProperty(value = "单位")
+    private String unit;
+
     @ApiModelProperty(value = "数量")
     private Integer qty;
 

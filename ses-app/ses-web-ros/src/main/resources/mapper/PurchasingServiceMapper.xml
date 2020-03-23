@@ -1,4 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper">
+    <select id="pruchasingProductList"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
+        select part.id as id,
+        product.product_number as partN,
+        product.en_name as enName,
+        product.cn_name as cnName,
+        part.parts_type as type,
+        supplier.id as supplierId,
+        supplier.supplier_name as supplierName,
+        part.production_cycle as leadTime,
+        sheet.sales_price as price,
+        sheet.currency_unit as unit
+        from ope_parts_product product
+        left join ope_parts_product_b productb
+        on product.id = productb.parts_product_id and productb.dr = 0
+        and product.product_type in
+        <foreach collection="productTypeList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+        inner join ope_parts part on part.id = productb.parts_id and part.dr = 0
+        inner join ope_supplier supplier on supplier.id = part.supplier_id and supplier.dr = 0
+        inner join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1
+        <where>
+            <if test="enter.supplierId != null">
+                and supplier.id=#{enter.supplierId}
+            </if>
+            <if test="enter.type != null">
+                and product.product_type =#{enter.type}
+            </if>
+            <if test="enter.keyword != null and enter.keyword != ''">
+                and (
+                product.product_number like concat("%",#{enter.keyword},"%")
+                or product.en_name like concat("%",#{enter.keyword},"%")
+                or product.cn_name like concat("%",#{enter.keyword},"%")
+                )
+            </if>
+        </where>
+    </select>
 </mapper>
