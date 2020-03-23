@@ -76,7 +76,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public Map<String, Integer> countByType(GeneralEnter enter) {
-        //todo状态统计没有
+        //todo 状态统计没有
         Map<String, Integer> map = new HashMap<>();
         for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
             map.put(item.getValue(), 0);
@@ -470,10 +470,10 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @return
      */
     @Override
-    public Map<String, Integer> productType(GeneralEnter enter) {
-        Map<String, Integer> map = new HashMap<>();
+    public Map<String, String> productType(GeneralEnter enter) {
+        Map<String, String> map = new HashMap<>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            map.put(item.getValue(), 0);
+            map.put(item.getValue(), item.getCode());
         }
         map.remove(BomCommonTypeEnums.COMBINATION.getValue());
         return map;

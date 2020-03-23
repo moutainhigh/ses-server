@@ -28,6 +28,7 @@ import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -295,12 +296,14 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomer.setCustomerCode("0");
         opeCustomer.setIndustryType(opeCustomerInquiry.getIndustry());
         opeCustomer.setCustomerType(opeCustomerInquiry.getCustomerType());
-        if (SesStringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
+        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
             opeCustomer.setCompanyName(opeCustomerInquiry.getCompanyName());
+            opeCustomer.setContactFirstName(opeCustomerInquiry.getContactFirst());
+            opeCustomer.setContactLastName(opeCustomerInquiry.getContactLast());
         }
-        if (SesStringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
+        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
             opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
-            opeCustomer.setContactLastName(opeCustomerInquiry.getLastName());
+            opeCustomer.setCustomerLastName(opeCustomerInquiry.getLastName());
             opeCustomer.setContactFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
         }
         opeCustomer.setCertificateType("0");

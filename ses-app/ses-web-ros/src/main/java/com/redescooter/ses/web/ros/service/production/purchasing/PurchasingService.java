@@ -137,7 +137,7 @@ public interface PurchasingService {
      * @param enter
      * @return
      */
-    Map<String, Integer> productType(GeneralEnter enter);
+    Map<String, String> productType(GeneralEnter enter);
 
     /**
      * 采购商品列表
