@@ -25,4 +25,21 @@ public enum PurchasingTypeEnums {
 
     private String value;
 
+    public static String checkCode(String value) {
+        for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
+            if (item.getValue().equals(value)) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
+
+    public static PurchasingTypeEnums getEnumByValue(String value) {
+        for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
+            if (item.getValue().equals(value)) {
+                return item;
+            }
+        }
+        return null;
+    }
 }

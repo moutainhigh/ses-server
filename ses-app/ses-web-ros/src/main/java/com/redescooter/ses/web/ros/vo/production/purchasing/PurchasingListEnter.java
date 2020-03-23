@@ -33,7 +33,7 @@ public class PurchasingListEnter extends PageEnter {
     private String status;
 
     @ApiModelProperty(value = "类型")
-    private String classType;
+    private String type;
 
     @ApiModelProperty(value = "工厂Id")
     private Long factoryId;

@@ -6,18 +6,22 @@ import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.PurchasingTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PaymentTypeEnums;
-import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
+import com.redescooter.ses.web.ros.dm.OpePurchas;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
+import com.redescooter.ses.web.ros.service.base.OpePurchasService;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
@@ -37,6 +41,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +73,9 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Autowired
     private OpeSupplierService opeSupplierService;
 
+    @Autowired
+    private OpePurchasService opePurchasService;
+
     /**
      * 采购单状态统计
      *
@@ -76,8 +84,14 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public Map<String, Integer> countByType(GeneralEnter enter) {
-        //todo 状态统计没有
         Map<String, Integer> map = new HashMap<>();
+
+        List<CountByStatusResult> typeResultList = purchasingServiceMapper.countByType(enter);
+        if (CollectionUtils.isNotEmpty(typeResultList)) {
+            typeResultList.forEach(item -> {
+                map.put(item.getStatus(), item.getTotalCount());
+            });
+        }
         for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
             map.put(item.getValue(), 0);
         }
@@ -107,42 +121,49 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public PageResult<PurchasingResult> list(PurchasingListEnter enter) {
-        List<PurchasingResult> list = new ArrayList<>();
-        List<PaymentItemDetailResult> newArrayList = Lists.newArrayList();
-        newArrayList.add(PaymentItemDetailResult.builder()
-                .id(10000000L)
-                .remark("3432423")
-                .actualPaymentDate(new Date())
-                .statementDate(new Date())
-                .dayNum(20)
-                .paymentRatio("10")
-                .invoicePicture("dasdada")
-                .invoiceNum("ewrewrwerwe")
-                .amount("120")
-                .estimatedPaymentDate(new Date())
-                .build());
-        list.add(PurchasingResult.builder()
-                .id(1000000L)
-                .contractN("4234324234323")
-                .status(PurchasingStatusEnums.IN_PURCHASING_WH.getValue())
-                .consigneeFirstName("LUKE")
-                .consigneeLastName("luke")
-                .consigneeEmail("nicai@132.com")
-                .factoryId(100000L)
-                .factoryContactFirstName("Alan")
-                .factoryContactLastName("Alan")
-                .factoryName("Flex")
-                .contactPhone("242432432423")
-                .totalPrice("123456.12")
-                .paymentType(PaymentTypeEnums.STAGING.getValue())
-                .partsQty(200)
-                .createdTime(new Date())
-                .stagTotal(3)
-                .paidstagNum(1)
-                .statementDate(new Date())
-                .paymentItemDetailResultList(newArrayList)
-                .build());
-        return PageResult.create(enter, 1, list);
+        List<String> statusList = Lists.newArrayList();
+        if (StringUtils.equals(PurchasingTypeEnums.checkCode(enter.getType()), PurchasingTypeEnums.TODO.getValue())) {
+            for (PurchasingStatusEnums item : PurchasingStatusEnums.values()) {
+                statusList.add(item.getValue());
+            }
+            statusList.remove(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
+            statusList.remove(PurchasingStatusEnums.CANCELLED.getValue());
+        } else {
+            statusList.add(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
+            statusList.add(PurchasingStatusEnums.CANCELLED.getValue());
+        }
+
+        int count = purchasingServiceMapper.purchasingListCount(enter, statusList);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<PurchasingResult> purchasingResultList = purchasingServiceMapper.purchasingList(enter, statusList);
+
+        List<Long> ids = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(purchasingResultList)) {
+            purchasingResultList.forEach(item -> {
+                ids.add(item.getId());
+            });
+        }
+        // 查询所有采购单的支付记录
+        List<PaymentItemDetailResult> paymentItemDetailResultList = purchasingServiceMapper.paymentItemList(ids);
+        if (CollectionUtils.isNotEmpty(paymentItemDetailResultList)) {
+            purchasingResultList.forEach(item -> {
+                List<PaymentItemDetailResult> paymentItemDetailList = Lists.newArrayList();
+                paymentItemDetailResultList.forEach(detail -> {
+                    if (item.getId().equals(detail.getPurchasingId())) {
+                        //对付款类型进行处理返回
+                        if (StringUtils.equals(detail.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
+                            detail.setStatementDate(detail.getEstimatedPaymentDate());
+                            detail.setEstimatedPaymentDate(null);
+                        }
+                        paymentItemDetailList.add(detail);
+                    }
+                });
+                item.setPaymentItemDetailResultList(paymentItemDetailList);
+            });
+        }
+        return PageResult.create(enter, count, purchasingResultList);
     }
 
     /**
@@ -180,7 +201,6 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public List<ConsigneeResult> consigneeList(GeneralEnter enter) {
         List<ConsigneeResult> consigneeResultlist = new ArrayList<>();
-
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
         List<OpeSysUserProfile> opeSysUserProfileList = opeSysUserProfileService.list(opeSysUserProfileQueryWrapper);
@@ -229,25 +249,11 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public PurchasingResult detail(IdEnter enter) {
-
-        return PurchasingResult.builder()
-                .id(100000000L)
-                .contractN("1dasdasdasdsad")
-                .status(PurchasingStatusEnums.INPROGRESS.getValue())
-                .consigneeLastName("3432")
-                .consigneeFirstName("43243")
-                .consigneePhone("423423432")
-                .contactEmail("13@.com")
-                .factoryId(10000000L)
-                .factoryName("Flex")
-                .factoryContactLastName("43243")
-                .factoryContactFirstName("432432")
-                .contactEmail("32423432")
-                .totalPrice("132.023")
-                .paymentType(PaymentTypeEnums.STAGING.getValue())
-                .partsQty(123)
-                .createdTime(new Date())
-                .build();
+        PurchasingResult result = purchasingServiceMapper.detail(enter);
+        if (result == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        return result;
     }
 
     /**
@@ -258,26 +264,15 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<PurchasingNodeResult> purchasingNode(IdEnter enter) {
-        List<PurchasingNodeResult> results = new ArrayList<>();
-        results.add(PurchasingNodeResult.builder()
-                .id(100000L)
-                .status(PurchasingStatusEnums.INPROGRESS.getValue())
-                .event(PurchasingEventEnums.INPROGRESS.getValue())
-                .eventTime(new Date())
-                .createdBy(1000000L)
-                .createdByFirstName("Alex")
-                .createdByLastName("alex")
-                .build());
-        results.add(PurchasingNodeResult.builder()
-                .id(100001L)
-                .status(PurchasingStatusEnums.IN_PURCHASING_WH.getValue())
-                .event(PurchasingEventEnums.IN_PURCHASING_WH.getValue())
-                .eventTime(new Date())
-                .createdBy(1000000L)
-                .createdByFirstName("Alex")
-                .createdByLastName("alex")
-                .build());
-        return results;
+        OpePurchas opePurchas = opePurchasService.getById(enter.getId());
+        if (opePurchas == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        List<PurchasingNodeResult> resultList = purchasingServiceMapper.purchasingNode(enter);
+        if (CollectionUtils.isEmpty(resultList)) {
+            return new ArrayList<>();
+        }
+        return resultList;
     }
 
     /**
@@ -394,6 +389,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         if (CollectionUtils.isEmpty(result)) {
             return new ArrayList<>();
         }
+        return result;
     }
 
     /**

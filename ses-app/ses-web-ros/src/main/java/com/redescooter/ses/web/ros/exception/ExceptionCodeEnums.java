@@ -171,6 +171,8 @@ public enum ExceptionCodeEnums {
     THE_ROOT_NODE_MENU_CANNOT_BE_EDIT(10078, "根节点菜单不可编辑"),
 
     UNBUNDLING_OF_EMPLOYEES(10079, "请解绑该职位下的员工"),
+
+    PURCHAS_IS_NOT_EXIST(10080, "采购单不存在"),
     ;
 
     private int code;

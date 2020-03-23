@@ -35,6 +35,12 @@ public class PaymentItemDetailResult extends GeneralResult {
     @ApiModelProperty(value = "状态")
     private String status;
 
+    @ApiModelProperty(value = "付款类型")
+    private String paymentType;
+
+    @ApiModelProperty(value = "采购单Id")
+    private Long purchasingId;
+
     @ApiModelProperty(value = "价格")
     private String amount;
 

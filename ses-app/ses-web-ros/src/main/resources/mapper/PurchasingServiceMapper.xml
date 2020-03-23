@@ -1,6 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper">
+
+    <sql id="purchasing_item">
+        purchas.id                     as id,
+               purchas.contract_no            as contractN,
+               purchas.status                 as status,
+               purchas.consignee_id           as consigneeId,
+               profile.first_name                 as consigneeFirstName,
+               profile.last_name                  as consigneeLastName,
+               profile.tel_number                 as consigneePhone,
+               profile.country_code               as consigneeCounteyCode,
+               profile.email                      as consigneeEmail,
+               purchas.factory_id             as factoryId,
+               factory.factory_name               as factoryName,
+               factory.contact_first_name         as factoryContactFirstName,
+               factory.contact_last_name          as factoryContactLastName,
+               factory.contact_phone_country_code as contactPhoneCountryCode,
+               factory.contact_phone              as contactPhone,
+               factory.contact_email              as contactEmail,
+               purchas.total_price            as totalPrice,
+               purchas.total_qty              as partsQty
+    </sql>
+
+    <sql id="paymentItemList">
+        payment.id                   as id,
+               payment.payment_status       as status,
+               payment.purchas_id           as purchasingId,
+               payment.amount               as amount,
+               payment.amount_proportion    as paymentRatio,
+               payment.invoice_num          as invoiceNum,
+               payment.invoice_picture      as invoicePicture,
+               payment.payment_day          as dayNum,
+               payment.payment_time         as actualPaymentDate,
+               payment.description          as remark,
+               payment.payment_type         as paymentType,
+               payment.planned_payment_time as estimatedPaymentDate
+    </sql>
+
+    <sql id="where_purchasingList">
+        where purchas.dr=0
+        and purchas.status in
+        <foreach collection="statusList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="enter.status != null and enter.status != ''">
+            and purchas.status =#{enter.status}
+        </if>
+        <if test="enter.factoryId != null">
+            and purchas.factory_id =#{enter.factoryId}
+        </if>
+        <if test="enter.paymentType != null and enter.paymentType != ''">
+            and purchas.payment_type=#{param1.paymentType}
+        </if>
+        <if test="enter.createdStartTime != null and enter.createdEndTime != null">
+            and (purchas.created_time betwween #{enter.createdStartTime} and #{enter.createdEndTime})
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (
+            purchas.contract_no like concat ("%",#{enter.keyword},"%")
+            )
+        </if>
+        order by purchas.created_time desc
+    </sql>
+
+    <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select count(*)       as totalCount,
+               case status
+                   when purchasing.status = 1 then 1
+                   when purchasing.status = 2 then 1
+                   when purchasing.status = 3 then 1
+                   when purchasing.status = 4 then 1
+                   when purchasing.status = 5 then 1
+                   else 2 end as status
+        from ope_purchasing purchasing
+        group by status
+    </select>
+
+
     <select id="pruchasingProductList"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
         select part.id as id,
@@ -38,5 +115,47 @@
                 )
             </if>
         </where>
+    </select>
+    <select id="purchasingListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_purchasing purchas
+        left join ope_sys_user_profile profile on purchas.consignee_id = profile.id and profile.dr=0
+        left join ope_factory factory on factory.id = purchas.factory_id and factory.dr=0
+        <include refid="where_purchasingList"/>
+    </select>
+
+    <select id="purchasingList"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult">
+        select
+        <include refid="purchasing_item"/>
+        from ope_purchas purchas
+        left join ope_sys_user_profile profile on purchas.consignee_id = profile.id and profile.dr=0
+        left join ope_factory factory on factory.id = purchas.factory_id and factory.dr=0
+        <include refid="where_purchasingList"/>
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+    <select id="paymentItemList"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PaymentItemDetailResult">
+        select
+        <include refid="paymentItemList"/>
+        from ope_purchas_payment payment
+        where payment.dr = 0
+        <if test="collection != null and collection.size() != 0">
+            and payment.purchas_id in
+            <foreach collection="list" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult">
+        select
+        <include refid="paymentItemList"/>
+        from ope_purchas_payment payment
+        where payment.dr = 0
+        and payment.user_id=#{userId}
+    </select>
+    <select id="purchasingNode"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult">
+
     </select>
 </mapper>

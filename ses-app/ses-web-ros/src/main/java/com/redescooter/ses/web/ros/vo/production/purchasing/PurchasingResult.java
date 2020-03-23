@@ -39,14 +39,20 @@ public class PurchasingResult extends GeneralResult {
     @ApiModelProperty(value = "状态")
     private String status;
 
+    @ApiModelProperty(value = "收货人Id")
+    private Long consigneeId;
+
     @ApiModelProperty(value = "收货人名字")
     private String consigneeFirstName;
 
     @ApiModelProperty(value = "收货人名字")
     private String consigneeLastName;
 
+    @ApiModelProperty(value = "收货人电话国家代码")
+    private String consigneeCounteyCode;
+
     @ApiModelProperty(value = "收货人电话")
-    private String consigneePhone;
+    private String contactPhoneCountryCode;
 
     @ApiModelProperty(value = "收货人邮箱")
     private String consigneeEmail;
@@ -63,6 +69,9 @@ public class PurchasingResult extends GeneralResult {
     @ApiModelProperty(value = "工厂联系人名字")
     private String factoryContactLastName;
 
+    @ApiModelProperty(value = "联系人电话国家代码")
+    private String contactCountryCode;
+
     @ApiModelProperty(value = "联系人电话")
     private String contactPhone;
 
@@ -71,9 +80,6 @@ public class PurchasingResult extends GeneralResult {
 
     @ApiModelProperty(value = "总价格")
     private String totalPrice;
-
-    @ApiModelProperty(value = "单位")
-    private String unit;
 
     @ApiModelProperty(value = "付款类型")
     private String paymentType;
