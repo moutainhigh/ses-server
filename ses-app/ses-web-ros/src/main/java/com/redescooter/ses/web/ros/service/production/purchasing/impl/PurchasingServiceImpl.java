@@ -561,6 +561,20 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public GeneralResult saveFactoryAnnex(SaveFactoryAnnexEnter enter) {
+        OpePurchas opePurchas = opePurchasService.getById(enter.getId());
+        if (opePurchas == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        OpeFactory opeFactory = opeFactoryService.getById(enter.getFactoryId());
+        if (opeFactory == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getMessage());
+        }
+        opePurchas.setFactoryAnnex(enter.getFactoryAnnexPicture());
+        opePurchas.setUpdatedBy(enter.getUserId());
+        opePurchas.setUpdatedTime(new Date());
+        opePurchasService.updateById(opePurchas);
+
+        //供应商 附件上传
         return null;
     }
 

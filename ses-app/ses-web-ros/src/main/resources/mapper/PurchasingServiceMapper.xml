@@ -210,14 +210,14 @@
         sheet.currency_unit as unit,
         purchasb.total_count as qty,
         purchasb.total_count * sheet.price as subtotal
-        from ope_purchas purchas
-        left join ope_purchas_b purchasb
-        on purchas.id = purchasb.purchas_id and purchasb.dr = 0
-        inner join ope_parts parts on purchasb.part_id = parts.id and parts.dr = 0
+        from ope_purchas_b purchasb
+        inner join ope_parts parts
+        on purchasb.part_id = parts.id and parts.dr = 0
         inner join ope_supplier supplier on purchasb.supplier_id = supplier.id and supplier.dr = 0
         left join ope_price_sheet sheet on sheet.parts_id = parts.id and sheet.dr = 0
-        where purchas.dr = 0
-        and purchas.user_id = #{userId}
+        where purchasb.dr = 0
+        and purchasb.user_id = #{userId}
+        and purchasb.purchas_id =#{id}
     </select>
 
     <select id="partDetailById" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">
