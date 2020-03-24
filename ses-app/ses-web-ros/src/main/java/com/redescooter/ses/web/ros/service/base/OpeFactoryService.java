@@ -19,3 +19,9 @@ public interface OpeFactoryService extends IService<OpeFactory> {
     int insertOrUpdateSelective(OpeFactory record);
 
 }
+
+
+
+
+
+

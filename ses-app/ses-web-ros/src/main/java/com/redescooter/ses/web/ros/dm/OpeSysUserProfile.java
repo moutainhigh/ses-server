@@ -297,7 +297,7 @@ public class OpeSysUserProfile implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpeSysUserProfileBuilder builder() {
-        return new OpeSysUserProfileBuilder();
+    public static com.redescooter.ses.web.ros.dm.OpeSysUserProfile.OpeSysUserProfileBuilder builder() {
+        return new com.redescooter.ses.web.ros.dm.OpeSysUserProfile.OpeSysUserProfileBuilder();
     }
 }

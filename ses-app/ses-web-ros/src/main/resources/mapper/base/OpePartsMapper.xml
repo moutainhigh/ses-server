@@ -4,36 +4,36 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeParts">
         <!--@mbg.generated-->
         <!--@Table ope_parts-->
-        <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="dr" jdbcType="INTEGER" property="dr" />
-        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
-        <result column="user_id" jdbcType="BIGINT" property="userId" />
-        <result column="import_lot" jdbcType="VARCHAR" property="importLot" />
-        <result column="status" jdbcType="VARCHAR" property="status" />
-        <result column="parts_type" jdbcType="VARCHAR" property="partsType" />
-        <result column="sec" jdbcType="VARCHAR" property="sec" />
-        <result column="parts_number" jdbcType="VARCHAR" property="partsNumber" />
-        <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
-        <result column="fr_name" jdbcType="VARCHAR" property="frName" />
-        <result column="en_name" jdbcType="VARCHAR" property="enName" />
-        <result column="sn_class" jdbcType="VARCHAR" property="snClass" />
-        <result column="parts_qty" jdbcType="INTEGER" property="partsQty" />
-        <result column="production_cycle" jdbcType="VARCHAR" property="productionCycle" />
-        <result column="cost" jdbcType="VARCHAR" property="cost" />
-        <result column="supplier_id" jdbcType="BIGINT" property="supplierId" />
-        <result column="dwg" jdbcType="VARCHAR" property="dwg" />
-        <result column="note" jdbcType="VARCHAR" property="note" />
-        <result column="revision" jdbcType="INTEGER" property="revision" />
-        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-        <result column="synchronize_flag" jdbcType="BOOLEAN" property="synchronizeFlag" />
-        <result column="def1" jdbcType="VARCHAR" property="def1" />
-        <result column="def2" jdbcType="VARCHAR" property="def2" />
-        <result column="def3" jdbcType="VARCHAR" property="def3" />
-        <result column="def5" jdbcType="VARCHAR" property="def5" />
-        <result column="def6" jdbcType="DECIMAL" property="def6" />
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="import_lot" jdbcType="VARCHAR" property="importLot"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="parts_type" jdbcType="VARCHAR" property="partsType"/>
+        <result column="sec" jdbcType="VARCHAR" property="sec"/>
+        <result column="parts_number" jdbcType="VARCHAR" property="partsNumber"/>
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName"/>
+        <result column="fr_name" jdbcType="VARCHAR" property="frName"/>
+        <result column="en_name" jdbcType="VARCHAR" property="enName"/>
+        <result column="sn_class" jdbcType="VARCHAR" property="snClass"/>
+        <result column="parts_qty" jdbcType="INTEGER" property="partsQty"/>
+        <result column="production_cycle" jdbcType="VARCHAR" property="productionCycle"/>
+        <result column="cost" jdbcType="VARCHAR" property="cost"/>
+        <result column="supplier_id" jdbcType="BIGINT" property="supplierId"/>
+        <result column="dwg" jdbcType="VARCHAR" property="dwg"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+        <result column="revision" jdbcType="INTEGER" property="revision"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="synchronize_flag" jdbcType="BOOLEAN" property="synchronizeFlag"/>
+        <result column="def1" jdbcType="VARCHAR" property="def1"/>
+        <result column="def2" jdbcType="VARCHAR" property="def2"/>
+        <result column="def3" jdbcType="VARCHAR" property="def3"/>
+        <result column="def5" jdbcType="VARCHAR" property="def5"/>
+        <result column="def6" jdbcType="DECIMAL" property="def6"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
@@ -210,10 +210,12 @@
             #{item.userId,jdbcType=BIGINT}, #{item.importLot,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR},
             #{item.partsType,jdbcType=VARCHAR}, #{item.sec,jdbcType=VARCHAR}, #{item.partsNumber,jdbcType=VARCHAR},
             #{item.cnName,jdbcType=VARCHAR}, #{item.frName,jdbcType=VARCHAR}, #{item.enName,jdbcType=VARCHAR},
-            #{item.snClass,jdbcType=VARCHAR}, #{item.partsQty,jdbcType=INTEGER}, #{item.productionCycle,jdbcType=VARCHAR},
+            #{item.snClass,jdbcType=VARCHAR}, #{item.partsQty,jdbcType=INTEGER},
+            #{item.productionCycle,jdbcType=VARCHAR},
             #{item.cost,jdbcType=VARCHAR}, #{item.supplierId,jdbcType=BIGINT}, #{item.dwg,jdbcType=VARCHAR},
             #{item.note,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+            #{item.updatedTime,jdbcType=TIMESTAMP},
             #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
             #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL}
             )

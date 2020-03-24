@@ -17,3 +17,5 @@ public interface OpePurchasBQcService extends IService<OpePurchasBQc> {
     int insertOrUpdateSelective(OpePurchasBQc record);
 
 }
+
+

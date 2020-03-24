@@ -1,17 +1,12 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.redescooter.ses.web.ros.dao.base.OpePurchasBQcTraceMapper;
+import com.redescooter.ses.web.ros.dm.OpePurchasBQcTrace;
+import com.redescooter.ses.web.ros.service.base.OpePurchasBQcTraceService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.web.ros.dm.OpePurchasBQcTrace;
-
-import java.util.List;
-
-import com.redescooter.ses.web.ros.dao.base.OpePurchasBQcTraceMapper;
-import com.redescooter.ses.web.ros.service.base.OpePurchasBQcTraceService;
 
 @Service
 public class OpePurchasBQcTraceServiceImpl extends ServiceImpl<OpePurchasBQcTraceMapper, OpePurchasBQcTrace> implements OpePurchasBQcTraceService {
@@ -36,3 +31,4 @@ public class OpePurchasBQcTraceServiceImpl extends ServiceImpl<OpePurchasBQcTrac
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

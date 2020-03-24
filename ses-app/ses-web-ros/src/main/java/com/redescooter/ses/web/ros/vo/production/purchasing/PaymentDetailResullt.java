@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class PaymentDetailResullt extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "总价格")
-    private String totalPrice;
+    private BigDecimal totalPrice;
 
     @ApiModelProperty(value = "状态")
     private String status;

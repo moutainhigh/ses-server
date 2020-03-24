@@ -169,7 +169,7 @@ public class OpeProductType implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpeProductTypeBuilder builder() {
-        return new OpeProductTypeBuilder();
+    public static com.redescooter.ses.web.ros.dm.OpeProductType.OpeProductTypeBuilder builder() {
+        return new com.redescooter.ses.web.ros.dm.OpeProductType.OpeProductTypeBuilder();
     }
 }

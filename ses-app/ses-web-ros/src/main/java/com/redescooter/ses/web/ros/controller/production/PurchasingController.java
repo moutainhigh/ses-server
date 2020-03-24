@@ -92,12 +92,11 @@ public class PurchasingController {
         return new Response<>(purchasingService.factoryList(enter));
     }
 
-    @PostMapping(value = "/queryProductList")
+    @PostMapping(value = "/queryPurchasProductList")
     @ApiOperation(value = "可采购的商品列表", response = PruchasingItemResult.class)
-    public Response<List<PruchasingItemResult>> queryProductList(@ModelAttribute @ApiParam("请求参数") PruchasingItemListEnter enter) {
-        return new Response<>(purchasingService.queryProductList(enter));
+    public Response<List<PruchasingItemResult>> queryPurchasProductList(@ModelAttribute @ApiParam("请求参数") PruchasingItemListEnter enter) {
+        return new Response<>(purchasingService.queryPurchasProductList(enter));
     }
-
 
     @PostMapping(value = "/productType")
     @ApiOperation(value = "采购产品类型", response = Map.class)

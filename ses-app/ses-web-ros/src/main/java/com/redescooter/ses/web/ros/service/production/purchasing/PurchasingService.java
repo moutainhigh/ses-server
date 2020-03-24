@@ -145,7 +145,7 @@ public interface PurchasingService {
      * @param enter
      * @return
      */
-    List<PruchasingItemResult> queryProductList(PruchasingItemListEnter enter);
+    List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter);
 
     /**
      * 采购单商品列表

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSysRole")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysRole")
 @Data
 @Builder
 @AllArgsConstructor
@@ -25,7 +25,7 @@ public class OpeSysRole implements Serializable {
     /**
      * 主键Id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "主键Id")
     private Long id;
 
@@ -33,6 +33,7 @@ public class OpeSysRole implements Serializable {
      * 逻辑删除标识
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识")
     private Integer dr;
 
@@ -108,7 +109,7 @@ public class OpeSysRole implements Serializable {
 
     public static final String COL_UPDATE_TIME = "update_time";
 
-    public static OpeSysRoleBuilder builder() {
-        return new OpeSysRoleBuilder();
+    public static com.redescooter.ses.web.ros.dm.OpeSysRole.OpeSysRoleBuilder builder() {
+        return new com.redescooter.ses.web.ros.dm.OpeSysRole.OpeSysRoleBuilder();
     }
 }

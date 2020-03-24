@@ -17,3 +17,5 @@ public interface OpePurchasProductService extends IService<OpePurchasProduct> {
     int insertOrUpdateSelective(OpePurchasProduct record);
 
 }
+
+

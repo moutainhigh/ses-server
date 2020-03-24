@@ -305,7 +305,7 @@ public class OpePartsHistoryRecord implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpePartsHistoryRecordBuilder builder() {
-        return new OpePartsHistoryRecordBuilder();
+    public static com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord.OpePartsHistoryRecordBuilder builder() {
+        return new com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord.OpePartsHistoryRecordBuilder();
     }
 }

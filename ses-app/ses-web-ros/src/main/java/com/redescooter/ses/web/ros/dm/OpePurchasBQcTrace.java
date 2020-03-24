@@ -3,16 +3,23 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
-
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePurchasBQcTrace")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "ope_purchas_b_qc_trace")
 public class OpePurchasBQcTrace implements Serializable {
     /**
@@ -26,6 +33,7 @@ public class OpePurchasBQcTrace implements Serializable {
      * 逻辑删除表示
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除表示")
     private Integer dr;
 
@@ -34,14 +42,14 @@ public class OpePurchasBQcTrace implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户Id")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 用户Id
      */
     @TableField(value = "user_id")
     @ApiModelProperty(value = "用户Id")
-    private Integer userId;
+    private Long userId;
 
     /**
      * 采购单条目Id

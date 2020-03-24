@@ -17,3 +17,5 @@ public interface OpeSysDeptRelationService extends IService<OpeSysDeptRelation> 
     int insertOrUpdateSelective(OpeSysDeptRelation record);
 
 }
+
+

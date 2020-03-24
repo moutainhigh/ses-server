@@ -130,11 +130,11 @@ public interface ValidationExceptionCode {
     int ROLE_NAME_IS_EMPTY = 10079;
     // 收货人为空
     int CONSIGNEE_ID__IS_EMPTY = 10080;
-    // 工厂Id 为空
+    // 工厂Id为空
     int FACTORY_ID_EMPTY = 10081;
     // 部品为空
     int PARTS_IS_EMPTY = 10082;
-    // 工厂为空
+    // 支付类型为空
     int PAYMENT_TYPE_IS_EMPTY = 10083;
     // 金额为空
     int AMOUNT_IS_EMPTY = 10084;
@@ -147,5 +147,7 @@ public interface ValidationExceptionCode {
     // 附件为空
     int ANNEX_IS_EMPTY = 10088;
     // 价格为空
-    int PRICE_IS_EMPTY=10089;
+    int PRICE_IS_EMPTY = 10089;
+    // 付款信息为空
+    int PAYMENTINFO_IS_EMPTY = 10090;
 }

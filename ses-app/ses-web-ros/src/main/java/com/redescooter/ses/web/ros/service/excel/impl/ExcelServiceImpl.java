@@ -16,7 +16,7 @@ import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.apache.dubbo.config.annotation.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;

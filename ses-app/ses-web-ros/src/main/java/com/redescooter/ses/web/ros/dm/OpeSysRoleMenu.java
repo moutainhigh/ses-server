@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSysRoleMenu")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysRoleMenu")
 @Data
 @Builder
 @AllArgsConstructor
@@ -22,14 +22,14 @@ public class OpeSysRoleMenu implements Serializable {
      * 角色ID
      */
     @TableField(value = "role_id")
-    @ApiModelProperty(value="角色ID")
+    @ApiModelProperty(value = "角色ID")
     private Long roleId;
 
     /**
      * 菜单ID
      */
     @TableField(value = "menu_id")
-    @ApiModelProperty(value="菜单ID")
+    @ApiModelProperty(value = "菜单ID")
     private Long menuId;
 
     private static final long serialVersionUID = 1L;
@@ -37,4 +37,8 @@ public class OpeSysRoleMenu implements Serializable {
     public static final String COL_ROLE_ID = "role_id";
 
     public static final String COL_MENU_ID = "menu_id";
+
+    public static com.redescooter.ses.web.ros.dm.OpeSysRoleMenu.OpeSysRoleMenuBuilder builder() {
+        return new com.redescooter.ses.web.ros.dm.OpeSysRoleMenu.OpeSysRoleMenuBuilder();
+    }
 }

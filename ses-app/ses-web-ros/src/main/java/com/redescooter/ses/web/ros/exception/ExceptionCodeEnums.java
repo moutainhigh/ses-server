@@ -173,7 +173,14 @@ public enum ExceptionCodeEnums {
     UNBUNDLING_OF_EMPLOYEES(10079, "请解绑该职位下的员工"),
 
     PURCHAS_IS_NOT_EXIST(10080, "采购单不存在"),
-    ;
+
+    FACTORY_IS_NOT_EXIST(10081, "代工厂不存在"),
+
+    PART_TOTAL_QTY_IS_NOT_MATCH(10082, "配件数量不匹配"),
+
+    PAYMENT_INFO_IS_WRONG(10083, "付款信息是错误的"),
+
+    PART_PRODUCT_IS_NOT_EXIST(10084, "采购商品不存在");
 
     private int code;
 

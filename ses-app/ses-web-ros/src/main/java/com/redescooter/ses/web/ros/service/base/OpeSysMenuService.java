@@ -19,3 +19,5 @@ public interface OpeSysMenuService extends IService<OpeSysMenu> {
     int insertOrUpdateSelective(OpeSysMenu record);
 
 }
+
+

@@ -58,4 +58,6 @@ public interface Constant {
     String Import_Excel_Template = "https://rede.oss-cn-shanghai.aliyuncs.com/1567490261085.xlsx";
 
     public static final Long ADMINUSERID = 1000000L;
+
+    int AMOUNTP_ROPORTION = 100;
 }

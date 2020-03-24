@@ -42,8 +42,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.dubbo.config.annotation.Service;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;

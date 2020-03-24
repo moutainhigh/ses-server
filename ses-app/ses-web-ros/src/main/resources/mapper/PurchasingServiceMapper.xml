@@ -73,21 +73,21 @@
                    when purchasing.status = 4 then 1
                    when purchasing.status = 5 then 1
                    else 2 end as status
-        from ope_purchasing purchasing
+        from ope_purchas purchasing
         group by status
     </select>
 
 
-    <select id="pruchasingProductList"
+    <select id="queryPurchasProductList"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
-        select part.id as id,
-        product.product_number as partN,
+        select product.id as id,
+        product.product_number as partsN,
         product.en_name as enName,
         product.cn_name as cnName,
-        part.parts_type as type,
+        product.product_type as productType,
         supplier.id as supplierId,
         supplier.supplier_name as supplierName,
-        part.production_cycle as leadTime,
+        product.production_cycle as leadTime,
         sheet.sales_price as price,
         sheet.currency_unit as unit
         from ope_parts_product product
@@ -104,8 +104,33 @@
             <if test="enter.supplierId != null">
                 and supplier.id=#{enter.supplierId}
             </if>
-            <if test="enter.type != null">
-                and product.product_type =#{enter.type}
+            <if test="enter.productType !=null and enter.productType !=''">
+                and product.product_type =#{enter.productType}
+            </if>
+            <if test="enter.keyword != null and enter.keyword != ''">
+                and (
+                product.product_number like concat("%",#{enter.keyword},"%")
+                or product.en_name like concat("%",#{enter.keyword},"%")
+                or product.cn_name like concat("%",#{enter.keyword},"%")
+                )
+            </if>
+        </where>
+    </select>
+    <select id="queryPurchasScooter"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
+        select product.id as id,
+        product.product_number as partsN,
+        product.en_name as enName,
+        product.cn_name as cnName,
+        product.product_type as productType,
+        product.production_cycle as leadTime,
+        sheet.sales_price as price,
+        sheet.currency_unit as unit
+        from ope_parts_product product
+        inner join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1
+        <where>
+            <if test="enter.productType !=null and enter.productType !=''">
+                and product.product_type =#{enter.productType}
             </if>
             <if test="enter.keyword != null and enter.keyword != ''">
                 and (
@@ -118,7 +143,7 @@
     </select>
     <select id="purchasingListCount" resultType="java.lang.Integer">
         select count(*)
-        from ope_purchasing purchas
+        from ope_purchas purchas
         left join ope_sys_user_profile profile on purchas.consignee_id = profile.id and profile.dr=0
         left join ope_factory factory on factory.id = purchas.factory_id and factory.dr=0
         <include refid="where_purchasingList"/>
@@ -149,13 +174,66 @@
     </select>
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult">
         select
-        <include refid="paymentItemList"/>
-        from ope_purchas_payment payment
-        where payment.dr = 0
-        and payment.user_id=#{userId}
+        <include refid="purchasing_item"/>
+        from ope_purchas purchas
+        left join ope_sys_user_profile profile on purchas.consignee_id = profile.id and profile.dr=0
+        left join ope_factory factory on factory.id = purchas.factory_id and factory.dr=0
+        and purchas.id=#{id}
     </select>
     <select id="purchasingNode"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult">
+        select trace.id as id,
+        trace.status as status,
+        trace.event as event,
+        trace.event_time as eventTime,
+        trace.create_by as createdBy,
+        profile.first_name as createdByFirstName,
+        profile.last_name as createdByLastName
+        from ope_purchas_trace trace
+        inner join ope_sys_user_profile profile on trace.create_by = profile.sys_user_id and profile.dr = 0
+        where trace.dr = 0
+        and trace.user_id = #{userId}
+        and trace.purchas_id =#{id}
+    </select>
 
+    <select id="pruchasingDetailProductList"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
+        select parts.id as id,
+        parts.parts_number as partsN,
+        parts.cn_name as cnName,
+        parts.en_name as enName,
+        parts.parts_type as type,
+        purchasb.supplier_id as supplierId,
+        supplier.supplier_name as supplierName,
+        parts.production_cycle as leadTime,
+        sheet.price as price,
+        sheet.currency_unit as unit,
+        purchasb.total_count as qty,
+        purchasb.total_count * sheet.price as subtotal
+        from ope_purchas purchas
+        left join ope_purchas_b purchasb
+        on purchas.id = purchasb.purchas_id and purchasb.dr = 0
+        inner join ope_parts parts on purchasb.part_id = parts.id and parts.dr = 0
+        inner join ope_supplier supplier on purchasb.supplier_id = supplier.id and supplier.dr = 0
+        left join ope_price_sheet sheet on sheet.parts_id = parts.id and sheet.dr = 0
+        where purchas.dr = 0
+        and purchas.user_id = #{userId}
+    </select>
+
+    <select id="partDetailById" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">
+        select parts.id as partId,
+        sheet.price as price,
+        sheet.currency_unit as unit,
+        supplier_id as supplierId
+        from ope_parts parts
+        inner join ope_supplier supplier on parts.supplier_id = supplier.id and supplier.dr = 0
+        left join ope_price_sheet sheet on parts.id = sheet.parts_id and sheet.currency_unit = 1 and sheet.dr = 0
+        where parts.dr=0
+        <if test="collection != null and collection.size() != 0">
+            and parts.id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
 </mapper>

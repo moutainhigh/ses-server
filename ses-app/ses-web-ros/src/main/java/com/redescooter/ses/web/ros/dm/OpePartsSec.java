@@ -197,7 +197,7 @@ public class OpePartsSec implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpePartsSecBuilder builder() {
-        return new OpePartsSecBuilder();
+    public static com.redescooter.ses.web.ros.dm.OpePartsSec.OpePartsSecBuilder builder() {
+        return new com.redescooter.ses.web.ros.dm.OpePartsSec.OpePartsSecBuilder();
     }
 }

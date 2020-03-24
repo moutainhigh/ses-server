@@ -17,9 +17,9 @@ public interface SequenceName {
 
     String OPE_FACTORY_TRACE = "OPE_FACTORY_TRACE";
 
-    String OPE_SUPPLIER="OPE_SUPPLIER";
+    String OPE_SUPPLIER = "OPE_SUPPLIER";
 
-    String OPE_SUPPLIER_TRACE="OPE_SUPPLIER_TRACE";
+    String OPE_SUPPLIER_TRACE = "OPE_SUPPLIER_TRACE";
 
     String OPE_PARTS_PRODUCT = "OPE_PARTS_PRODUCT";
 
@@ -50,6 +50,16 @@ public interface SequenceName {
     String OPE_SYS_DEPT = "OPE_SYS_DEPT";
 
     String OPE_SYS_ROLE = "OPE_SYS_ROLE";
+
+    String OPE_PURCHAS_B = "OPE_PURCHAS_B";
+
+    String OPE_PURCHAS = "OPE_PURCHAS";
+
+    String OPE_PURCHAS_PRODUCT = "OPE_PURCHAS_PRODUCT";
+
+    String OPE_PURCHAS_TRACE = "OPE_PURCHAS_TRACE";
+
+    String OPE_PURCHAS_PAYMENT = "OPE_PURCHAS_PAYMENT";
 
 
 }

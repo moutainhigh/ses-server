@@ -3,16 +3,23 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
-
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePurchasBQc")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "ope_purchas_b_qc")
 public class OpePurchasBQc implements Serializable {
     /**
@@ -20,12 +27,13 @@ public class OpePurchasBQc implements Serializable {
      */
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键")
-    private Long id;
+    private Integer id;
 
     /**
      * 删除标志
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "删除标志")
     private Integer dr;
 

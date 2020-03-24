@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dao.production;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.dm.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
@@ -27,7 +28,7 @@ public interface PurchasingServiceMapper {
      * @param enter
      * @return
      */
-    List<PruchasingItemResult> pruchasingProductList(@Param("enter") PruchasingItemListEnter enter, @Param("productTypeList") List<String> productTypeList);
+    List<PruchasingItemResult> queryPurchasProductList(@Param("enter") PruchasingItemListEnter enter, @Param("productTypeList") List<String> productTypeList);
 
     /**
      * 根据类型统计
@@ -78,4 +79,27 @@ public interface PurchasingServiceMapper {
      * @return
      */
     List<PurchasingNodeResult> purchasingNode(IdEnter enter);
+
+    /**
+     * 采购单商品列表
+     *
+     * @param enter
+     * @return
+     */
+    List<PruchasingItemResult> pruchasingDetailProductList(IdEnter enter);
+
+    /**
+     * @param enter
+     * @param scooterValue
+     * @return
+     */
+    List<PruchasingItemResult> queryPurchasScooter(@Param("enter") PruchasingItemListEnter enter, @Param("scooterValue") String scooterValue);
+
+    /**
+     * 查询部件详情
+     *
+     * @param partsIds
+     * @return
+     */
+    List<PartDetailDto> partDetailById(List<Long> partsIds);
 }

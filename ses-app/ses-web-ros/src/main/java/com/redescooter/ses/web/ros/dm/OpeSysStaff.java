@@ -141,4 +141,8 @@ public class OpeSysStaff implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static com.redescooter.ses.web.ros.dm.OpeSysStaff.OpeSysStaffBuilder builder() {
+        return new com.redescooter.ses.web.ros.dm.OpeSysStaff.OpeSysStaffBuilder();
+    }
 }

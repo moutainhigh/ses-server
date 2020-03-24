@@ -1,14 +1,10 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.List;
-
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import java.util.List;
-
 import com.redescooter.ses.web.ros.dao.base.OpePurchasBMapper;
 import com.redescooter.ses.web.ros.dm.OpePurchasB;
 import com.redescooter.ses.web.ros.service.base.OpePurchasBService;
@@ -31,3 +27,4 @@ public class OpePurchasBServiceImpl extends ServiceImpl<OpePurchasBMapper, OpePu
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

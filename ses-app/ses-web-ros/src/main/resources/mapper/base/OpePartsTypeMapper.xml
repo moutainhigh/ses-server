@@ -4,26 +4,26 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpePartsType">
         <!--@mbg.generated-->
         <!--@Table ope_parts_type-->
-        <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="dr" jdbcType="INTEGER" property="dr" />
-        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
-        <result column="user_id" jdbcType="BIGINT" property="userId" />
-        <result column="status" jdbcType="VARCHAR" property="status" />
-        <result column="name" jdbcType="VARCHAR" property="name" />
-        <result column="code" jdbcType="VARCHAR" property="code" />
-        <result column="value" jdbcType="INTEGER" property="value" />
-        <result column="note" jdbcType="VARCHAR" property="note" />
-        <result column="sn_class_flag" jdbcType="VARCHAR" property="snClassFlag" />
-        <result column="revision" jdbcType="INTEGER" property="revision" />
-        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-        <result column="def1" jdbcType="VARCHAR" property="def1" />
-        <result column="def2" jdbcType="VARCHAR" property="def2" />
-        <result column="def3" jdbcType="VARCHAR" property="def3" />
-        <result column="def5" jdbcType="VARCHAR" property="def5" />
-        <result column="def6" jdbcType="DECIMAL" property="def6" />
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="value" jdbcType="INTEGER" property="value"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+        <result column="sn_class_flag" jdbcType="VARCHAR" property="snClassFlag"/>
+        <result column="revision" jdbcType="INTEGER" property="revision"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="def1" jdbcType="VARCHAR" property="def1"/>
+        <result column="def2" jdbcType="VARCHAR" property="def2"/>
+        <result column="def3" jdbcType="VARCHAR" property="def3"/>
+        <result column="def5" jdbcType="VARCHAR" property="def5"/>
+        <result column="def6" jdbcType="DECIMAL" property="def6"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
@@ -148,7 +148,8 @@
             #{item.userId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, #{item.name,jdbcType=VARCHAR},
             #{item.code,jdbcType=VARCHAR}, #{item.value,jdbcType=INTEGER}, #{item.note,jdbcType=VARCHAR},
             #{item.snClassFlag,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+            #{item.updatedTime,jdbcType=TIMESTAMP},
             #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
             #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL})
         </foreach>

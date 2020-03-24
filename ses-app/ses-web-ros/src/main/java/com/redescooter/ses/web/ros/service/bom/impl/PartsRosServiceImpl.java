@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.bom.impl;
 
+
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
@@ -25,13 +26,13 @@ import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.OpeExcleImportService;
 import com.redescooter.ses.web.ros.service.base.OpePartsHistoryRecordService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.service.base.OpePartsTypeService;
+import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.AddPartsEnter;
@@ -48,10 +49,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
+import org.apache.dubbo.config.annotation.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,9 +72,6 @@ import java.util.Optional;
 public class PartsRosServiceImpl implements PartsRosService {
 
     @Autowired
-    private OpePartsService partsService;
-
-    @Autowired
     private BomRosServiceMapper bomRosServiceMapper;
 
     @Autowired
@@ -81,6 +79,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Autowired
     private OpePartsProductService partsProductService;
+
     @Autowired
     private OpePartsHistoryRecordService partsHistoryRecordService;
 
@@ -92,6 +91,9 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Autowired
     private PartsServiceMapper partsServiceMapper;
+
+    @Autowired
+    private OpePartsService partsService;
 
     @Reference
     private IdAppService idAppService;

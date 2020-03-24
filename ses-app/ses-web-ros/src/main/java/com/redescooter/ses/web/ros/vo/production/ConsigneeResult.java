@@ -33,6 +33,9 @@ public class ConsigneeResult extends GeneralResult {
     @ApiModelProperty(value = "名字")
     private String lastName;
 
+    @ApiModelProperty(value = "电话国家代码")
+    private String phoneCountryCode;
+
     @ApiModelProperty(value = "电话")
     private String phone;
 

@@ -6,8 +6,8 @@
         <!--@Table ope_purchas_b_qc_trace-->
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="tenant_id" jdbcType="INTEGER" property="tenantId"/>
-        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
         <result column="purchas_b_id" jdbcType="BIGINT" property="purchasBId"/>
         <result column="qc_b_id" jdbcType="BIGINT" property="qcBId"/>
         <result column="parts_id" jdbcType="BIGINT" property="partsId"/>
@@ -43,12 +43,12 @@
             </trim>
             <trim prefix="tenant_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="user_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="purchas_b_id = case" suffix="end,">
@@ -150,8 +150,8 @@
         updated_time, def1, def2, def3, def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=INTEGER},
-            #{item.userId,jdbcType=INTEGER}, #{item.purchasBId,jdbcType=BIGINT}, #{item.qcBId,jdbcType=BIGINT},
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
+            #{item.userId,jdbcType=BIGINT}, #{item.purchasBId,jdbcType=BIGINT}, #{item.qcBId,jdbcType=BIGINT},
             #{item.partsId,jdbcType=BIGINT}, #{item.batchNo,jdbcType=VARCHAR},
             #{item.qualityInspectorId,jdbcType=BIGINT},
             #{item.status,jdbcType=VARCHAR}, #{item.qualityInspectedTime,jdbcType=TIMESTAMP},
@@ -169,7 +169,7 @@
         `status`, quality_inspected_time, revision, created_by, created_time, updated_by,
         updated_time, def1, def2, def3, def5, def6)
         values
-        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
         #{purchasBId,jdbcType=BIGINT}, #{qcBId,jdbcType=BIGINT}, #{partsId,jdbcType=BIGINT},
         #{batchNo,jdbcType=VARCHAR}, #{qualityInspectorId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR},
         #{qualityInspectedTime,jdbcType=TIMESTAMP}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT},
@@ -179,8 +179,8 @@
         on duplicate key update
         id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
-        tenant_id = #{tenantId,jdbcType=INTEGER},
-        user_id = #{userId,jdbcType=INTEGER},
+        tenant_id = #{tenantId,jdbcType=BIGINT},
+        user_id = #{userId,jdbcType=BIGINT},
         purchas_b_id = #{purchasBId,jdbcType=BIGINT},
         qc_b_id = #{qcBId,jdbcType=BIGINT},
         parts_id = #{partsId,jdbcType=BIGINT},
@@ -276,10 +276,10 @@
                 #{dr,jdbcType=INTEGER},
             </if>
             <if test="tenantId != null">
-                #{tenantId,jdbcType=INTEGER},
+                #{tenantId,jdbcType=BIGINT},
             </if>
             <if test="userId != null">
-                #{userId,jdbcType=INTEGER},
+                #{userId,jdbcType=BIGINT},
             </if>
             <if test="purchasBId != null">
                 #{purchasBId,jdbcType=BIGINT},
@@ -342,10 +342,10 @@
                 dr = #{dr,jdbcType=INTEGER},
             </if>
             <if test="tenantId != null">
-                tenant_id = #{tenantId,jdbcType=INTEGER},
+                tenant_id = #{tenantId,jdbcType=BIGINT},
             </if>
             <if test="userId != null">
-                user_id = #{userId,jdbcType=INTEGER},
+                user_id = #{userId,jdbcType=BIGINT},
             </if>
             <if test="purchasBId != null">
                 purchas_b_id = #{purchasBId,jdbcType=BIGINT},

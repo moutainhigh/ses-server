@@ -17,7 +17,6 @@ import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderNodeResul
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderPartResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAllocateEnter;
-import lombok.extern.log4j.Log4j;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Service;
 

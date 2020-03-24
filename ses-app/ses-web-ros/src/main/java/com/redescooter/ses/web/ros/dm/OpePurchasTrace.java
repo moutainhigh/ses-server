@@ -3,16 +3,23 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
-
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePurchasTrace")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "ope_purchas_trace")
 public class OpePurchasTrace implements Serializable {
     /**
@@ -20,12 +27,13 @@ public class OpePurchasTrace implements Serializable {
      */
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键")
-    private Integer id;
+    private Long id;
 
     /**
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -104,7 +112,7 @@ public class OpePurchasTrace implements Serializable {
      */
     @TableField(value = "update_by")
     @ApiModelProperty(value = "更新人")
-    private Integer updateBy;
+    private Long updateBy;
 
     /**
      * 冗余字段

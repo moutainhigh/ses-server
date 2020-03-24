@@ -7,7 +7,7 @@
         <result column="id" jdbcType="BIGINT" property="id"/>
         <result column="dr" jdbcType="INTEGER" property="dr"/>
         <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
-        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
         <result column="purchas_id" jdbcType="BIGINT" property="purchasId"/>
         <result column="part_id" jdbcType="BIGINT" property="partId"/>
         <result column="supplier_id" jdbcType="BIGINT" property="supplierId"/>
@@ -35,7 +35,7 @@
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
-            #{item.userId,jdbcType=INTEGER}, #{item.purchasId,jdbcType=BIGINT}, #{item.partId,jdbcType=BIGINT},
+            #{item.userId,jdbcType=BIGINT}, #{item.purchasId,jdbcType=BIGINT}, #{item.partId,jdbcType=BIGINT},
             #{item.supplierId,jdbcType=BIGINT}, #{item.supplierAnnex,jdbcType=VARCHAR},
             #{item.qcStatus,jdbcType=VARCHAR},
             #{item.price,jdbcType=DECIMAL}, #{item.totalCount,jdbcType=INTEGER}, #{item.totalPrice,jdbcType=DECIMAL},
@@ -53,7 +53,7 @@
         price, total_count, total_price, created_by, created_time, updated_by, updated_time,
         def1, def2, def3, def5, def6)
         values
-        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER},
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
         #{purchasId,jdbcType=BIGINT}, #{partId,jdbcType=BIGINT}, #{supplierId,jdbcType=BIGINT},
         #{supplierAnnex,jdbcType=VARCHAR}, #{qcStatus,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
         #{totalCount,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}, #{createdBy,jdbcType=BIGINT},
@@ -64,7 +64,7 @@
         id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
         tenant_id = #{tenantId,jdbcType=BIGINT},
-        user_id = #{userId,jdbcType=INTEGER},
+        user_id = #{userId,jdbcType=BIGINT},
         purchas_id = #{purchasId,jdbcType=BIGINT},
         part_id = #{partId,jdbcType=BIGINT},
         supplier_id = #{supplierId,jdbcType=BIGINT},
@@ -163,7 +163,7 @@
                 #{tenantId,jdbcType=BIGINT},
             </if>
             <if test="userId != null">
-                #{userId,jdbcType=INTEGER},
+                #{userId,jdbcType=BIGINT},
             </if>
             <if test="purchasId != null">
                 #{purchasId,jdbcType=BIGINT},
@@ -229,7 +229,7 @@
                 tenant_id = #{tenantId,jdbcType=BIGINT},
             </if>
             <if test="userId != null">
-                user_id = #{userId,jdbcType=INTEGER},
+                user_id = #{userId,jdbcType=BIGINT},
             </if>
             <if test="purchasId != null">
                 purchas_id = #{purchasId,jdbcType=BIGINT},
