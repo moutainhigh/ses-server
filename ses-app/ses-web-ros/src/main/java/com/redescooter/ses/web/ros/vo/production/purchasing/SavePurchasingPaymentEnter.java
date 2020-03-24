@@ -33,16 +33,13 @@ public class SavePurchasingPaymentEnter extends GeneralEnter {
     @ApiModelProperty(value = "付款时间")
     @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
-    private Date paymentTime;
+    private Date estimatedPaymentDate;
 
     @ApiModelProperty(value = "价格")
     private BigDecimal price;
 
     @ApiModelProperty(value = "百分比")
     private Integer ratio;
-
-    @ApiModelProperty(value = "累加多少天")
-    private Integer days;
 
     @ApiModelProperty(value = "备注")
     private String remark;

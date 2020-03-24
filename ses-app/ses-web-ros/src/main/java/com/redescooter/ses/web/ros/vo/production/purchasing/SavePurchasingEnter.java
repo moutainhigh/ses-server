@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,6 +12,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @ClassName:SavePurchasingEnter
@@ -43,11 +49,22 @@ public class SavePurchasingEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "价格为空", required = true)
     @NotNull(code = ValidationExceptionCode.PRICE_IS_EMPTY, message = "价格为空")
-    private String totalPrice;
+    private BigDecimal totalPrice;
 
     @ApiModelProperty(value = "付款方式", required = true)
     @NotNull(code = ValidationExceptionCode.PAYMENT_TYPE_IS_EMPTY, message = "付款方式为空")
     private String paymentType;
+
+    @ApiModelProperty(value = "付款时间")
+    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    private Date statementdate;
+
+    @ApiModelProperty(value = "天数")
+    private Integer days;
+
+    @ApiModelProperty(value = "备注")
+    private String remark;
 
     @ApiModelProperty(value = "付款周期，格式：estimatedPaymentDate：2020-3-2 00：00：00，paymentRatio:20.2，price:20.1,remark:123")
     @NotNull(code = ValidationExceptionCode.PAYMENTINFO_IS_EMPTY, message = "付款信息")

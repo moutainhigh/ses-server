@@ -180,7 +180,12 @@ public enum ExceptionCodeEnums {
 
     PAYMENT_INFO_IS_WRONG(10083, "付款信息是错误的"),
 
-    PART_PRODUCT_IS_NOT_EXIST(10084, "采购商品不存在");
+    PART_PRODUCT_IS_NOT_EXIST(10084, "采购商品不存在"),
+
+    FACTORY_ANNEX_IS_PERFECT(10085, "工厂附件不完善"),
+
+    ;
+
 
     private int code;
 

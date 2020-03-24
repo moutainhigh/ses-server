@@ -102,4 +102,12 @@ public interface PurchasingServiceMapper {
      * @return
      */
     List<PartDetailDto> partDetailById(List<Long> partsIds);
+
+    /**
+     * 查询所有商品的部品
+     *
+     * @param partIds
+     * @return
+     */
+    List<PruchasingItemResult> queryProductPartItemByProductIds(List<Long> partIds);
 }

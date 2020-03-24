@@ -222,7 +222,7 @@
 
     <select id="partDetailById" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">
         select parts.id as partId,
-        sheet.price as price,
+        ifnull(sheet.price,0) as price,
         sheet.currency_unit as unit,
         supplier_id as supplierId
         from ope_parts parts
@@ -232,6 +232,33 @@
         <if test="collection != null and collection.size() != 0">
             and parts.id in
             <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="queryProductPartItemByProductIds"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
+        select productb.parts_product_id as id,
+        productb.parts_id as partId,
+        parts.parts_number as partsN,
+        parts.en_name as enName,
+        parts.cn_name as cnName,
+        parts.parts_type as productType,
+        parts.supplier_id as supplierId,
+        parts.supplier_id as supplierId,
+        supplier.supplier_name as supplierName,
+        parts.production_cycle as leadTime,
+        ifnull(sheet.price, 0) * productb.parts_qty as price,
+        sheet.currency_unit as unit,
+        productb.parts_qty as qty
+        from ope_parts_product_b productb
+        inner join ope_parts parts on parts.id = productb.parts_id and parts.dr = 0
+        inner join ope_supplier supplier on parts.supplier_id = supplier.id and supplier.dr = 0
+        left join ope_price_sheet sheet on sheet.parts_id = productb.parts_id and sheet.dr = 0
+        where productb.dr = 0
+        <if test="list != null and list.size() != 0">
+            and productb.parts_product_id in
+            <foreach collection="list" separator="," open="(" close=")" item="item">
                 #{item}
             </foreach>
         </if>

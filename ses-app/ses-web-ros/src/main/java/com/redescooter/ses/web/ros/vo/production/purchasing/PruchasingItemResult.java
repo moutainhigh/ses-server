@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import io.swagger.annotations.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @ClassName:PruchasingProductResult
@@ -25,8 +26,11 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class PruchasingItemResult extends GeneralResult {
-    @ApiModelProperty(value = "id 部品Id ")
+    @ApiModelProperty(value = "id 产品Id ")
     private Long id;
+
+    @ApiModelProperty(value = "部品Id ")
+    private Long partId;
 
     @ApiModelProperty(value = "产品编号")
     private String partsN;
@@ -50,7 +54,7 @@ public class PruchasingItemResult extends GeneralResult {
     private Integer leadTime;
 
     @ApiModelProperty(value = "价格")
-    private String price;
+    private BigDecimal price;
 
     @ApiModelProperty(value = "单位")
     private String unit;
@@ -60,4 +64,7 @@ public class PruchasingItemResult extends GeneralResult {
 
     @ApiModelProperty(value = "小计")
     private BigDecimal subtotal;
+
+    @ApiModelProperty(value = "部品列表")
+    private List<PruchasingItemResult> pruchasingItemResultList;
 }
