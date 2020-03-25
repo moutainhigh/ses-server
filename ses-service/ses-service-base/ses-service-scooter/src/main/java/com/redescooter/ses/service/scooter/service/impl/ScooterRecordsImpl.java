@@ -1,29 +1,24 @@
 package com.redescooter.ses.service.scooter.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.redescooter.ses.api.scooter.vo.MobileRepairRecordEnter;
-import com.redescooter.ses.api.scooter.vo.MobileRepairRecordResult;
+import com.redescooter.ses.api.common.enums.scooter.ScooterActionResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
+import com.redescooter.ses.api.scooter.service.ScooterRecordService;
+import com.redescooter.ses.api.scooter.vo.*;
+import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterRecordServiceMapper;
+import com.redescooter.ses.service.scooter.dao.base.ScoScooterActionTraceMapper;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.MapUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.redescooter.ses.api.common.enums.scooter.ScooterActionResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
-import com.redescooter.ses.api.scooter.service.ScooterRecordService;
-import com.redescooter.ses.api.scooter.vo.SaveScooterRecordEnter;
-import com.redescooter.ses.api.scooter.vo.ScooterRecordListEnter;
-import com.redescooter.ses.api.scooter.vo.ScooterRecordListResult;
-import com.redescooter.ses.service.scooter.constant.SequenceName;
-import com.redescooter.ses.service.scooter.dao.base.ScoScooterActionTraceMapper;
-import com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace;
-import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.MapUtil;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName:ScooterRecordsImpl

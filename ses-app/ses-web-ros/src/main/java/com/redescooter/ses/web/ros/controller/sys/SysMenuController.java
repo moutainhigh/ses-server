@@ -78,6 +78,6 @@ public class SysMenuController {
     @PostMapping(value = "/findMenuByRoleId")
     @ApiOperation(value = "获取权限", response = MenuTreeResult.class)
     public Response<List<MenuTreeResult>> findMenuByRoleId(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-  return new Response<>(menuService.findMenuByRoleId(enter));
+        return new Response<>(menuService.findMenuByRoleId(enter));
     }
 }
