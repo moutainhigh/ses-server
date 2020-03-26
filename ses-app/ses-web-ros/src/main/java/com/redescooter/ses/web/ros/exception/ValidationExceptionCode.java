@@ -150,4 +150,8 @@ public interface ValidationExceptionCode {
     int PRICE_IS_EMPTY = 10089;
     // 付款信息为空
     int PAYMENTINFO_IS_EMPTY = 10090;
+    //状态为空
+    int STATUS_IS_EMPTY = 10091;
+    //类型为空
+    int TYPE_IS_EMPTY = 10092;
 }

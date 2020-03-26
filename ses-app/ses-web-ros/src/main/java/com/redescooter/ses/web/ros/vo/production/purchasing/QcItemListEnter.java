@@ -35,7 +35,8 @@ public class QcItemListEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 不为空")
     private Long id;
 
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "状态", required = true)
+    @NotNull(code = ValidationExceptionCode.STATUS_IS_EMPTY, message = "状态为空")
     private String status;
 
     @ApiModelProperty(value = "类型")

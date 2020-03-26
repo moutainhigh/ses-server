@@ -191,6 +191,8 @@ public enum ExceptionCodeEnums {
     PAY_AMOUNT_IS_FALSE(10088, "支付金额是错误的"),
 
     PARTS_ARE_NOT_QC_PASS(10089, "部件存在Qc未质检通过"),
+
+    PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES(10090, "部品没有供应商没有价格不可进行组装"),
     ;
 
 

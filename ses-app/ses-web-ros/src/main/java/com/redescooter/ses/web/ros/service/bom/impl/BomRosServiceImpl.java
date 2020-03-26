@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.bom.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
@@ -199,6 +200,8 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsProduct.setSumPartsQty(partList.size());
         opePartsProduct.setUpdatedBy(enter.getUserId());
         opePartsProduct.setUpdatedTime(new Date());
+
+        //部品没有价格 没有供应商 不可组合车辆
 
         opePartsProductBService.saveOrUpdateBatch(opePartsProductList);
 
@@ -656,11 +659,18 @@ public class BomRosServiceImpl implements BomRosService {
                 });
             }
             // 过滤 传入的部品id 是否合法
+            List<Long> partsIdList = Lists.newArrayList();
             partList.forEach(item -> {
                 if (!opePartsIdList.contains(item.getId())) {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
+                partsIdList.add(item.getId());
             });
+            // 校验部品既有价格又有供应商的 部品
+            if (bomRosServiceMapper.countSupplierWithPriceByPartIds(partsIdList) != partsIdList.size()) {
+                throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
+                        ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
+            }
         }
     }
 }

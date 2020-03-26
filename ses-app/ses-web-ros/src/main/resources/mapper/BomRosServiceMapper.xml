@@ -119,4 +119,18 @@
         and oppb.user_id=#{userId}
     </select>
 
+    <select id="countSupplierWithPriceByPartIds" resultType="java.lang.Integer">
+        select count(*)
+        from ope_parts parts
+        inner join ope_price_sheet sheet on parts.id = sheet.parts_id and sheet.dr = 0
+        where parts.dr = 0
+        and (parts.supplier_id != 0 or parts.supplier_id != null)
+        <if test="list != null and list.size() != 0">
+            and parts.id in
+            <foreach collection="list" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
 </mapper>

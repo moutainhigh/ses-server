@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.dao.bom;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
@@ -88,4 +87,12 @@ public interface BomRosServiceMapper {
      * @Version: Ros 1.2
      */
     List<CombinationListResult> combinationList(CombinationListEnter enter);
+
+    /**
+     * 确认部品既有供应商又有价格的部品
+     *
+     * @param partsIdList
+     * @return
+     */
+    int countSupplierWithPriceByPartIds(List<Long> partsIdList);
 }

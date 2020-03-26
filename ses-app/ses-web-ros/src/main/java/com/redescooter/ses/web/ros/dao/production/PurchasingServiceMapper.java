@@ -155,4 +155,12 @@ public interface PurchasingServiceMapper {
      * @return
      */
     List<OpePurchasBQc> opePurchasBQcListByPurductId(IdEnter enter);
+
+    /**
+     * QC 质检条目
+     *
+     * @param purshasBIds
+     * @return
+     */
+    List<QcItemDetailResult> qcItemListByPurchasBIds(List<Long> purshasBIds);
 }

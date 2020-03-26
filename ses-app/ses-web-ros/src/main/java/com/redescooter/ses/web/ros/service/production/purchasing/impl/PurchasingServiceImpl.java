@@ -62,6 +62,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
@@ -339,7 +340,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         List<ConsigneeResult> consigneeResultlist = new ArrayList<>();
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
-        opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_FIRST_NAME, Constant.ADMINUSERID);
+        opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_SYS_USER_ID, Constant.ADMINUSERID);
         List<OpeSysUserProfile> opeSysUserProfileList = opeSysUserProfileService.list(opeSysUserProfileQueryWrapper);
         opeSysUserProfileList.forEach(item -> {
             consigneeResultlist.add(ConsigneeResult.builder()
@@ -887,6 +888,36 @@ public class PurchasingServiceImpl implements PurchasingService {
         qcPartList.forEach(item -> {
             purshasBIds.add(item.getId());
         });
+        //查询质检记录
+        List<QcItemDetailResult> qcItemList = purchasingServiceMapper.qcItemListByPurchasBIds(purshasBIds);
+        if (CollectionUtils.isEmpty(qcItemList)) {
+            return null;
+        }
+
+        qcPartList.forEach(item -> {
+            List<QcItemDetailResult> qcItemResultList = Lists.newArrayList();
+            qcItemList.forEach(qc -> {
+                if (item.getId().equals(qc.getPruchasBId())) {
+                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.PASS.getValue()) && qc.getPassQty() != 0) {
+                        qcItemResultList.add(qc);
+                    }
+                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.FAIL.getValue()) && qc.getFailQty() != 0) {
+                        qcItemResultList.add(qc);
+                    }
+                }
+            });
+            if (qcItemResultList.size() == 1) {
+                item.setPassQty(qcItemResultList.get(0).getPassQty());
+                item.setFailQty(qcItemResultList.get(0).getFailQty());
+                item.setBatchN(qcItemResultList.get(0).getBatchN());
+                item.setQcDate(qcItemResultList.get(0).getQcDate());
+                item.setQcItemDetailResultList(new ArrayList<>());
+            } else {
+                item.setQcItemDetailResultList(qcItemResultList);
+            }
+        });
+
+        qcPartList.removeIf(item -> CollectionUtils.isEmpty(item.getQcItemDetailResultList()));
 //        List<QcItemDetailResult> qcItemDetailResultList=purchasingServiceMapper.qcItemDetailList(enter,purshasBIds);
 //        if (CollectionUtils.isEmpty(qcItemDetailResultList)) {
 //            return null;
@@ -906,7 +937,7 @@ public class PurchasingServiceImpl implements PurchasingService {
 //        if (StringUtils.isNotEmpty(enter.getStatus()) &&StringUtils.equals(enter.getStatus(),QcStatusEnums.PASS.getValue())){
 //
 //        }
-        return null;
+        return qcPartList;
     }
 
     /**
