@@ -1029,16 +1029,16 @@ public class PurchasingServiceImpl implements PurchasingService {
                         .updatedBy(enter.getUserId())
                         .updatedTime(new Date())
                         .build());
-                totalPrice.add(paymentList.get(i).getPrice());
+                totalPrice = totalPrice.add(paymentList.get(i).getPrice());
                 amountProportion = amountProportion + paymentList.get(i).getRatio();
             }
             if (amountProportion != Constant.AMOUNTP_ROPORTION) {
                 throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
             }
         }
-//        if (!totalPrice.equals(enter.getTotalPrice())){
-//            throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
-//        }
+        if (totalPrice.doubleValue() != enter.getTotalPrice().doubleValue()) {
+            throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
+        }
     }
 
     /**
@@ -1146,7 +1146,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                             .updatedBy(enter.getUserId())
                             .build();
                     opePurchasBList.add(purchasB);
-                    totalPrice.add(purchasB.getPrice());
+                    totalPrice = totalPrice.add(purchasB.getPrice());
                     totalCount += purchasB.getTotalCount();
                 }
             }

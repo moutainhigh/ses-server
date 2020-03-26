@@ -180,20 +180,23 @@ public class BomRosServiceImpl implements BomRosService {
             // 进行 产品条目数据过滤
             checkProductEntry(enter.getId(), enter.getUserId(), PartsEventEnums.UPDATE.getValue(), partList, null);
 
-            // 子表修改
+            //删除产品子表数据
+            QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
+            opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, enter.getId());
+            opePartsProductBService.remove(opePartsProductBQueryWrapper);
+            // 重新添加数据
             if (CollectionUtils.isNotEmpty(partList)) {
                 for (ProdoctPartListEnter item : partList) {
                     OpePartsProductB opePartsProductB = buildOpePartsProductBSingle(enter.getUserId(), enter.getId(), item);
                     opePartsProductB.setCreatedBy(enter.getUserId());
                     opePartsProductB.setCreatedTime(new Date());
-                    opePartsProductB.setId(item.getId());
+                    opePartsProductB.setId(idAppService.getId(SequenceName.OPE_PARTS_PRODUCT_B));
                     opePartsProductList.add(opePartsProductB);
-                    partAllQty += item.getQty();
                 }
             }
             opePartsProduct.setId(enter.getId());
         }
-        opePartsProduct.setSumPartsQty(partAllQty);
+        opePartsProduct.setSumPartsQty(partList.size());
         opePartsProduct.setUpdatedBy(enter.getUserId());
         opePartsProduct.setUpdatedTime(new Date());
 
@@ -279,6 +282,10 @@ public class BomRosServiceImpl implements BomRosService {
 
         //数据删除
         opePartsProductBService.removeByIds(enter.getIds());
+        scooter.setSumPartsQty(scooter.getSumPartsQty() - enter.getIds().size());
+        scooter.setUpdatedBy(enter.getUserId());
+        scooter.setUpdatedTime(new Date());
+        opePartsProductService.updateById(scooter);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -416,6 +423,10 @@ public class BomRosServiceImpl implements BomRosService {
 
         //数据删除
         opePartsProductBService.removeByIds(enter.getIds());
+        combinationPart.setSumPartsQty(combinationPart.getSumPartsQty() - enter.getIds().size());
+        combinationPart.setUpdatedBy(enter.getUserId());
+        combinationPart.setUpdatedTime(new Date());
+        opePartsProductService.updateById(combinationPart);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -553,13 +564,19 @@ public class BomRosServiceImpl implements BomRosService {
 
             // 进行 产品条目数据过滤
             checkProductEntry(enter.getId(), enter.getUserId(), PartsEventEnums.UPDATE.getValue(), partList, null);
+
+            //删除产品子表数据
+            QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
+            opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, enter.getId());
+            opePartsProductBService.remove(opePartsProductBQueryWrapper);
+
             // 子表修改
             if (CollectionUtils.isNotEmpty(partList)) {
                 for (ProdoctPartListEnter item : partList) {
                     OpePartsProductB opePartsProductB = buildOpePartsProductBSingle(enter.getUserId(), enter.getId(), item);
                     opePartsProductB.setCreatedBy(enter.getUserId());
                     opePartsProductB.setCreatedTime(new Date());
-                    opePartsProductB.setId(item.getId());
+                    opePartsProductB.setId(idAppService.getId(SequenceName.OPE_PARTS_PRODUCT_B));
                     opePartsProductList.add(opePartsProductB);
                     partAllQty += item.getQty();
                 }
