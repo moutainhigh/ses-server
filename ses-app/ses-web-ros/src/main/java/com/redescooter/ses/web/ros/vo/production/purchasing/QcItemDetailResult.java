@@ -32,8 +32,8 @@ public class QcItemDetailResult extends GeneralResult {
     @ApiModelProperty(value = "通过个数")
     private Integer passQty;
 
-    @ApiModelProperty(value = "总数")
-    private Integer totalQty;
+    @ApiModelProperty(value = "失败总数")
+    private Integer failQty;
 
     @ApiModelProperty(value = "批次号")
     private String batchN;
@@ -43,5 +43,18 @@ public class QcItemDetailResult extends GeneralResult {
     @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
     private Date qcDate;
 
+    @ApiModelProperty(value = "质检人Id")
+    private Long inspectorId;
 
+    @ApiModelProperty(value = "质检人名字")
+    private String inspectorFirstName;
+
+    @ApiModelProperty(value = "质检人名字")
+    private String inspectorLastName;
+
+    @ApiModelProperty(value = "质检人名字")
+    private String inspectorFullName;
+
+    @ApiModelProperty(value = "采购条目Id")
+    private Long pruchasBId;
 }

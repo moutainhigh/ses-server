@@ -7,9 +7,14 @@ import com.redescooter.ses.web.ros.dm.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasSupplierResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemDetailResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -110,4 +115,35 @@ public interface PurchasingServiceMapper {
      * @return
      */
     List<PruchasingItemResult> queryProductPartItemByProductIds(List<Long> partIds);
+
+    /**
+     * @param enter
+     * @return
+     */
+    List<QcInfoResult> qcPartListByPurchasId(QcItemListEnter enter);
+
+    /**
+     * QC 质检条目详情
+     *
+     * @param enter
+     * @param purshasBIds
+     * @return
+     */
+    List<QcItemDetailResult> qcItemDetailList(@Param("enter") QcItemListEnter enter, @Param("purshasBIds") List<Long> purshasBIds);
+
+    /**
+     * 查询采购单代工厂
+     *
+     * @param enter
+     * @return
+     */
+    QueryFactorySupplierResult queryFactoryByPurchasId(IdEnter enter);
+
+    /**
+     * 查询采购单供应商
+     *
+     * @param enter
+     * @return
+     */
+    List<PurchasSupplierResult> purchasSupplierListByPurchasId(IdEnter enter);
 }

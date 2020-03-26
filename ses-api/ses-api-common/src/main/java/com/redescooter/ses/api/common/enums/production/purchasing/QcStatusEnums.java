@@ -16,7 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum QcStatusEnums {
     PASS("PASS", "通过", "1"),
-    FAIL("FAIL", "失败", "2");
+    FAIL("FAIL", "失败", "2"),
+    QUALITY_INSPECTION("QUALITY_INSPECTION", "质检中", "3");
 
     private String code;
 

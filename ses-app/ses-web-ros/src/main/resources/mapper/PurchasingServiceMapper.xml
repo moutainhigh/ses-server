@@ -10,15 +10,16 @@
                profile.first_name                 as consigneeFirstName,
                profile.last_name                  as consigneeLastName,
                profile.tel_number                 as consigneePhone,
-               profile.country_code               as consigneeCounteyCode,
+               profile.country_code               as consigneeCountryCode,
                profile.email                      as consigneeEmail,
                purchas.factory_id             as factoryId,
                factory.factory_name               as factoryName,
                factory.contact_first_name         as factoryContactFirstName,
                factory.contact_last_name          as factoryContactLastName,
-               factory.contact_phone_country_code as contactPhoneCountryCode,
-               factory.contact_phone              as contactPhone,
-               factory.contact_email              as contactEmail,
+               factory.contact_phone_country_code as factoryContactPhoneCountryCode,
+               factory.contact_phone              as factoryContactPhone,
+               factory.contact_email              as factoryContactEmail,
+               factory.contact_full_name          as factoryContactFullName,
                purchas.total_price            as totalPrice,
                purchas.total_qty              as partsQty
     </sql>
@@ -129,9 +130,17 @@
         from ope_parts_product product
         inner join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1
         <where>
+
             <if test="enter.productType !=null and enter.productType !=''">
-                and product.product_type =#{enter.productType}
             </if>
+            <choose>
+                <when test="enter.productType !=null and enter.productType !=''">
+                    and product.product_type =#{enter.productType}
+                </when>
+                <otherwise>
+                    and product.product_type =#{scooterValue}
+                </otherwise>
+            </choose>
             <if test="enter.keyword != null and enter.keyword != ''">
                 and (
                 product.product_number like concat("%",#{enter.keyword},"%")
@@ -178,7 +187,7 @@
         from ope_purchas purchas
         left join ope_sys_user_profile profile on purchas.consignee_id = profile.id and profile.dr=0
         left join ope_factory factory on factory.id = purchas.factory_id and factory.dr=0
-        and purchas.id=#{id}
+        where purchas.id = #{id}
     </select>
     <select id="purchasingNode"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult">
@@ -262,5 +271,76 @@
                 #{item}
             </foreach>
         </if>
+    </select>
+
+    <select id="qcPartListByPurchasId"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult">
+        select purchasb.id as id,
+        parts.parts_number as partsN,
+        parts.en_name as enName,
+        parts.cn_name as cnName,
+        parts.parts_type as type,
+        purchasb.total_count as totalQty
+        from ope_purchas_b purchasb
+        inner join ope_parts parts on purchasb.part_id = parts.id and purchasb.dr = 0
+        where purchasb.dr = 0
+        and purchasb.purchas_id = #{id}
+        <if test="type != null and type != ''">
+            and parts.parts_type =#{type}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and(
+            parts.parts_number like concat ("%",#{keyword},"%") or
+            parts.en_name like concat ("%",#{keyword},"%")
+            parts.cn_name like concat ("%",#{keyword},"%")
+            )
+        </if>
+    </select>
+
+    <select id="qcItemDetailList"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.QcItemDetailResult">
+        select qc.pass_count as passQty,
+        qc.fail_count as failQty,
+        qc.batch_no as batchN,
+        qc.quality_inspection_time as qcDate,
+        profile.sys_user_id as inspectorId,
+        profile.first_name as inspectorFirstName,
+        profile.last_name as inspectorLastName,
+        profile.full_name as inspectorFullName,
+        qc.purchas_b_id as pruchasBId
+        from ope_purchas_b_qc qc
+        left join ope_sys_user_profile profile on qc.quality_inspector_id = profile.sys_user_id and profile.dr=0
+        where 1=1
+        <if test="purshasBIds != null">
+            and qc.purchas_b_id in
+            <foreach collection="purshasBIds" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="enter.qcStartTime != null and enter.qcStartTime != null">
+            and (qc.quality_inspection_time between #{enter.qcStartTime} and #{enter.qcEndTime})
+        </if>
+    </select>
+
+    <select id="queryFactoryByPurchasId"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult">
+        select purchas.id as id,
+        purchas.factory_id as factoryId,
+        factory.factory_name as factoryName
+        from ope_purchas purchas
+        left join ope_factory factory on purchas.factory_id = factory.id and factory.dr = 0
+        where purchas.dr = 0
+        and purchas.id =#{id}
+    </select>
+
+    <select id="purchasSupplierListByPurchasId"
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PurchasSupplierResult">
+        select purchasb.supplier_id as id,
+        purchasb.part_id as partsId,
+        supplier.supplier_name as supplierName
+        from ope_purchas_b purchasb
+        left join ope_supplier supplier on purchasb.supplier_id = supplier.id and supplier.dr = 0
+        where purchasb.dr = 0
+        and purchasb.purchas_id =#{id}
     </select>
 </mapper>

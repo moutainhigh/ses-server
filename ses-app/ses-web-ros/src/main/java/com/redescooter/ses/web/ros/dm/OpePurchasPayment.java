@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,7 +33,6 @@ public class OpePurchasPayment implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -93,6 +91,13 @@ public class OpePurchasPayment implements Serializable {
     @TableField(value = "payment_status")
     @ApiModelProperty(value = "支付状态:Paid Unpaid")
     private String paymentStatus;
+
+    /**
+     * 支付优先级
+     */
+    @TableField(value = "payment_priority")
+    @ApiModelProperty(value = "支付优先级")
+    private Integer paymentPriority;
 
     /**
      * 描述
@@ -221,6 +226,8 @@ public class OpePurchasPayment implements Serializable {
 
     public static final String COL_PAYMENT_STATUS = "payment_status";
 
+    public static final String COL_PAYMENT_PRIORITY = "payment_priority";
+
     public static final String COL_DESCRIPTION = "description";
 
     public static final String COL_AMOUNT = "amount";
@@ -250,4 +257,8 @@ public class OpePurchasPayment implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpePurchasPaymentBuilder builder() {
+        return new OpePurchasPaymentBuilder();
+    }
 }

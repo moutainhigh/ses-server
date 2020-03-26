@@ -49,7 +49,7 @@ public class PurchasingResult extends GeneralResult {
     private String consigneeLastName;
 
     @ApiModelProperty(value = "收货人电话国家代码")
-    private String consigneeCounteyCode;
+    private String consigneeCountryCode;
 
     @ApiModelProperty(value = "收货人电话")
     private String contactPhoneCountryCode;
@@ -69,14 +69,17 @@ public class PurchasingResult extends GeneralResult {
     @ApiModelProperty(value = "工厂联系人名字")
     private String factoryContactLastName;
 
+    @ApiModelProperty(value = "工厂联系人名字")
+    private String factoryContactFullName;
+
     @ApiModelProperty(value = "联系人电话国家代码")
-    private String contactCountryCode;
+    private String factoryContactPhoneCountryCode;
 
     @ApiModelProperty(value = "联系人电话")
-    private String contactPhone;
+    private String factoryContactPhone;
 
     @ApiModelProperty(value = "联系人邮箱")
-    private String contactEmail;
+    private String factoryContactEmail;
 
     @ApiModelProperty(value = "总价格")
     private String totalPrice;

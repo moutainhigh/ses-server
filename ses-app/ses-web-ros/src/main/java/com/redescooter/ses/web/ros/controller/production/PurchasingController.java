@@ -17,6 +17,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
 import io.swagger.annotations.Api;
@@ -135,7 +136,7 @@ public class PurchasingController {
     }
 
     @PostMapping(value = "/pay")
-    @ApiOperation(value = "支付入参", response = GeneralResult.class)
+    @ApiOperation(value = "支付", response = GeneralResult.class)
     public Response<GeneralResult> pay(@ModelAttribute @ApiParam("请求参数") PayEnter enter) {
         return new Response<>(purchasingService.pay(enter));
     }
@@ -144,6 +145,12 @@ public class PurchasingController {
     @ApiOperation(value = "供应商列表", response = Map.class)
     public Response<List<FactoryCommonResult>> supplierList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(purchasingService.supplierList(enter));
+    }
+
+    @PostMapping(value = "/queryFactorySupplier")
+    @ApiOperation(value = "查询采购单代工厂及供应商", response = QueryFactorySupplierResult.class)
+    public Response<QueryFactorySupplierResult> queryFactorySupplier(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(purchasingService.queryFactorySupplier(enter));
     }
 
     @PostMapping(value = "/saveFactoryAnnex")

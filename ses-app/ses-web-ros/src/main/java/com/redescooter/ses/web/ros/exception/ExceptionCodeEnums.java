@@ -184,6 +184,13 @@ public enum ExceptionCodeEnums {
 
     FACTORY_ANNEX_IS_PERFECT(10085, "工厂附件不完善"),
 
+    OPEPURCHAS_PAYMENT_IS_NOT_EXIST(10086, "支付周期不存在"),
+
+    PAY_IN_INSTALLMENTS(10087, "请按照分期顺序支付"),
+
+    PAY_AMOUNT_IS_FALSE(10088, "支付金额是错误的"),
+
+    PARTS_ARE_NOT_QC_PASS(10089, "部件存在Qc未质检通过"),
     ;
 
 

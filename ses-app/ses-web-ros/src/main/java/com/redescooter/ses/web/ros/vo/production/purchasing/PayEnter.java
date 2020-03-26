@@ -14,6 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -37,7 +38,7 @@ public class PayEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "金额", required = true)
     @NotNull(code = ValidationExceptionCode.AMOUNT_IS_EMPTY, message = "金额为空")
-    private String amount;
+    private BigDecimal amount;
 
     @ApiModelProperty(value = "实际支付时间", required = true)
     @NotNull(code = ValidationExceptionCode.ACTUAL_PAYMENT_DATE_IS_EMPTY, message = "实际支付时间为空")

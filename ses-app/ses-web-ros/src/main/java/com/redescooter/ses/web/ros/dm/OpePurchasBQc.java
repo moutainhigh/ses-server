@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,13 +26,12 @@ public class OpePurchasBQc implements Serializable {
      */
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键")
-    private Integer id;
+    private Long id;
 
     /**
      * 删除标志
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "删除标志")
     private Integer dr;
 
@@ -57,6 +55,13 @@ public class OpePurchasBQc implements Serializable {
     @TableField(value = "purchas_b_id")
     @ApiModelProperty(value = "采购单条目Id")
     private Long purchasBId;
+
+    /**
+     * 部品Id
+     */
+    @TableField(value = "parts_id")
+    @ApiModelProperty(value = "部品Id")
+    private Long partsId;
 
     /**
      * 质检人Id
@@ -189,6 +194,8 @@ public class OpePurchasBQc implements Serializable {
 
     public static final String COL_PURCHAS_B_ID = "purchas_b_id";
 
+    public static final String COL_PARTS_ID = "parts_id";
+
     public static final String COL_QUALITY_INSPECTOR_ID = "quality_inspector_id";
 
     public static final String COL_BATCH_NO = "batch_no";
@@ -222,4 +229,8 @@ public class OpePurchasBQc implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpePurchasBQcBuilder builder() {
+        return new OpePurchasBQcBuilder();
+    }
 }

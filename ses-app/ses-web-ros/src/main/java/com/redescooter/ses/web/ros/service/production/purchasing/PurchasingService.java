@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PayEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
@@ -17,6 +18,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingNodeEnter;
 
 import java.util.List;
 import java.util.Map;
@@ -156,6 +158,13 @@ public interface PurchasingService {
     List<PruchasingItemResult> pruchasingDetailProductList(IdEnter enter);
 
     /**
+     * 查询采购单代工厂供应商
+     *
+     * @return
+     */
+    QueryFactorySupplierResult queryFactorySupplier(IdEnter enter);
+
+    /**
      * 保存 工厂附件
      *
      * @param enter
@@ -227,6 +236,20 @@ public interface PurchasingService {
      */
     GeneralResult qcFailExport(IdEnter enter);
 
+    /**
+     * 保存采购单节点
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult savePurchasingNode(SavePurchasingNodeEnter enter);
 
+    /**
+     * 退货 （退掉质检未通过的）
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult returnedPurchase(IdEnter enter);
 }
 

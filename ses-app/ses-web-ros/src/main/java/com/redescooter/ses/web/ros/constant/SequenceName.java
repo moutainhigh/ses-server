@@ -61,5 +61,7 @@ public interface SequenceName {
 
     String OPE_PURCHAS_PAYMENT = "OPE_PURCHAS_PAYMENT";
 
+    String OPE_PURCHAS_B_QC = "OPE_PURCHAS_B_QC";
 
+    String OPE_PURCHAS_B_QC_TRACE = "OPE_PURCHAS_B_QC_TRACE";
 }
