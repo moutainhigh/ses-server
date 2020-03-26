@@ -68,6 +68,8 @@ public class RpsServiceImpl implements RpsServvice {
         }
         //查询采购条目
         QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
+        opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, enter.getPurchasingId());
+        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
         List<OpePurchasB> purchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
 
         List<OpePurchasBQc> opePurchasBServiceList = Lists.newArrayList();
@@ -87,8 +89,8 @@ public class RpsServiceImpl implements RpsServvice {
                             .batchNo("REDE" + RandomUtil.randomLong(10000, 99999))
                             .status(CollectionUtils.isNotEmpty(enter.getFailParts()) == true ? QcStatusEnums.PASS.getValue() : QcStatusEnums.QUALITY_INSPECTION.getValue())
                             .totalQualityInspected(item.getTotalCount())
-                            .passCount(enter.getSuccessParts().size())
-                            .failCount(enter.getFailParts().size())
+                            .passCount(item.getTotalCount() / 2)
+                            .failCount(item.getTotalCount() / 2)
                             .qualityInspectionTime(new Date())
                             .revision(0)
                             .createdBy(enter.getUserId())

@@ -26,6 +26,7 @@ import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.dm.OpePurchas;
 import com.redescooter.ses.web.ros.dm.OpePurchasB;
+import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
 import com.redescooter.ses.web.ros.dm.OpePurchasPayment;
 import com.redescooter.ses.web.ros.dm.OpePurchasProduct;
 import com.redescooter.ses.web.ros.dm.OpePurchasTrace;
@@ -38,6 +39,7 @@ import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
+import com.redescooter.ses.web.ros.service.base.OpePurchasBQcService;
 import com.redescooter.ses.web.ros.service.base.OpePurchasBService;
 import com.redescooter.ses.web.ros.service.base.OpePurchasPaymentService;
 import com.redescooter.ses.web.ros.service.base.OpePurchasProductService;
@@ -132,6 +134,9 @@ public class PurchasingServiceImpl implements PurchasingService {
 
     @Reference
     private IdAppService idAppService;
+
+    @Autowired
+    private OpePurchasBQcService opePurchasBQcService;
 
     /**
      * 采购单状态统计
@@ -759,6 +764,7 @@ public class PurchasingServiceImpl implements PurchasingService {
 
     /**
      * 再次qc 质检
+     * //todo 为了走流程临时这样做
      *
      * @param enter
      * @return
@@ -766,7 +772,20 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Transactional
     @Override
     public GeneralResult againQc(IdEnter enter) {
-        return null;
+        OpePurchas opePurchas = checkPurchas(enter.getId(), PurchasingStatusEnums.MATERIALS_QC);
+
+        //qc 质检表数据获取
+        List<OpePurchasBQc> opePurchasBQcList = purchasingServiceMapper.opePurchasBQcListByPurductId(enter);
+        if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
+            opePurchasBQcList.forEach(item -> {
+                item.setPassCount(item.getPassCount() + item.getFailCount());
+                item.setFailCount(0);
+                item.setUpdatedBy(enter.getUserId());
+                item.setUpdatedTime(new Date());
+            });
+        }
+        opePurchasBQcService.updateBatchById(opePurchasBQcList);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**

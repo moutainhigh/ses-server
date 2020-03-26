@@ -5,9 +5,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.web.ros.service.production.RpsServvice;
 import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
+import com.redescooter.ses.web.ros.vo.production.ScanBarCodeEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PayEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
@@ -50,6 +52,9 @@ public class PurchasingController {
 
     @Autowired
     private PurchasingService purchasingService;
+
+    @Autowired
+    private RpsServvice rpsServvice;
 
     @PostMapping(value = "/countByType")
     @ApiOperation(value = "采购单状态统计", response = Map.class)
@@ -206,4 +211,11 @@ public class PurchasingController {
     public Response<GeneralResult> qcFailExport(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(purchasingService.qcFailExport(enter));
     }
+
+    @PostMapping(value = "/scanBarCode")
+    @ApiOperation(value = "模拟扫码枪质检", response = GeneralResult.class)
+    public Response<GeneralResult> scanBarCode(@ModelAttribute @ApiParam("请求参数") ScanBarCodeEnter enter) {
+        return new Response<>(rpsServvice.scanBarCode(enter));
+    }
+
 }

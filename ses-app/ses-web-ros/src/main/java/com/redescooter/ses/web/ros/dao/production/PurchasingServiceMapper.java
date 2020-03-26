@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dao.production;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
 import com.redescooter.ses.web.ros.dm.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
@@ -146,4 +147,12 @@ public interface PurchasingServiceMapper {
      * @return
      */
     List<PurchasSupplierResult> purchasSupplierListByPurchasId(IdEnter enter);
+
+    /**
+     * 再次质检QC 记录获取
+     *
+     * @param enter
+     * @return
+     */
+    List<OpePurchasBQc> opePurchasBQcListByPurductId(IdEnter enter);
 }
