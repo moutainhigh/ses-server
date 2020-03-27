@@ -57,7 +57,7 @@ public class PurchasingController {
     private RpsServvice rpsServvice;
 
     @PostMapping(value = "/countByType")
-    @ApiOperation(value = "采购单状态统计", response = Map.class)
+    @ApiOperation(value = "采购单类型统计", response = Map.class)
     public Response<Map<String, Integer>> countByType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(purchasingService.countByType(enter));
     }
@@ -162,12 +162,6 @@ public class PurchasingController {
     @ApiOperation(value = "保存工厂附件", response = GeneralResult.class)
     public Response<GeneralResult> saveFactoryAnnex(@ModelAttribute @ApiParam("请求参数") SaveFactoryAnnexEnter enter) {
         return new Response<>(purchasingService.saveFactoryAnnex(enter));
-    }
-
-    @PostMapping(value = "/startPurchasing")
-    @ApiOperation(value = "开始采购", response = GeneralResult.class)
-    public Response<GeneralResult> startPurchasing(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(purchasingService.startPurchasing(enter));
     }
 
     @PostMapping(value = "/startQc")

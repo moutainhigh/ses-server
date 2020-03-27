@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper">
 
     <sql id="purchasing_item">
-        purchas.id                     as id,
+                purchas.id                     as id,
                purchas.contract_no            as contractN,
                purchas.status                 as status,
                purchas.consignee_id           as consigneeId,
@@ -21,7 +21,8 @@
                factory.contact_email              as factoryContactEmail,
                factory.contact_full_name          as factoryContactFullName,
                purchas.total_price            as totalPrice,
-               purchas.total_qty              as partsQty
+               purchas.total_qty                  as partsQty,
+                purchas.created_time               as createdTime
     </sql>
 
     <sql id="paymentItemList">
@@ -55,7 +56,7 @@
             and purchas.payment_type=#{param1.paymentType}
         </if>
         <if test="enter.createdStartTime != null and enter.createdEndTime != null">
-            and (purchas.created_time betwween #{enter.createdStartTime} and #{enter.createdEndTime})
+            and (purchas.created_time between #{enter.createdStartTime} and #{enter.createdEndTime})
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and (
@@ -66,15 +67,13 @@
     </sql>
 
     <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
-        select count(*)       as totalCount,
-               case status
-                   when purchasing.status = 1 then 1
-                   when purchasing.status = 2 then 1
-                   when purchasing.status = 3 then 1
-                   when purchasing.status = 4 then 1
-                   when purchasing.status = 5 then 1
-                   else 2 end as status
-        from ope_purchas purchasing
+       select count(st.sta) as totalCount,
+               st.sta as status
+        from (select case
+                         when status = '6' then '2'
+                         when status = '7' then '2'
+                         else '1' end as sta
+              from ope_purchas) st
         group by status
     </select>
 
@@ -327,7 +326,8 @@
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult">
         select purchas.id as id,
         purchas.factory_id as factoryId,
-        factory.factory_name as factoryName
+        factory.factory_name as factoryName,
+        purchas.factory_annex as annex
         from ope_purchas purchas
         left join ope_factory factory on purchas.factory_id = factory.id and factory.dr = 0
         where purchas.dr = 0
@@ -338,7 +338,8 @@
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PurchasSupplierResult">
         select purchasb.supplier_id as id,
         purchasb.part_id as partsId,
-        supplier.supplier_name as supplierName
+        supplier.supplier_name as supplierName,
+        purchasb.supplier_annex as annex
         from ope_purchas_b purchasb
         left join ope_supplier supplier on purchasb.supplier_id = supplier.id and supplier.dr = 0
         where purchasb.dr = 0
@@ -375,5 +376,16 @@
             </foreach>
         </if>
         order by batchN
+    </select>
+
+    <update id="updatePurchasBQcStatus">
+        update ope_purchas_b set qc_status=#{status} where ope_purchas_b.dr=0 and ope_purchas_b.purchas_id=#{id}
+    </update>
+    <select id="qcCountByStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select qc_status as status, count(*) as totalCount
+        from ope_purchas_b
+        where purchas_id=#{id}
+        and dr=0
+        group by qc_status
     </select>
 </mapper>

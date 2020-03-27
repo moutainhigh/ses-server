@@ -3,6 +3,9 @@ package com.redescooter.ses.web.ros.collectionUtilsTest;
 import com.redescooter.ses.api.common.enums.employee.AddressBureauEnums;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.stream.IntStream;
 
@@ -13,7 +16,8 @@ import java.util.stream.IntStream;
  * @ClassName: RedisOne
  * @Function: TODO
  */
-
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class CollectionUtilTest {
 
     @Test

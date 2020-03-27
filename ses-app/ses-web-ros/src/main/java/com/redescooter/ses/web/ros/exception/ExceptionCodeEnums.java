@@ -193,6 +193,9 @@ public enum ExceptionCodeEnums {
     PARTS_ARE_NOT_QC_PASS(10089, "部件存在Qc未质检通过"),
 
     PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES(10090, "部品没有供应商没有价格不可进行组装"),
+
+    SUPPLIER_IS_NOT_PART_OF_THE_CURRENT_DOCUMENT(10091, "供应商不属于当前单据"),
+
     ;
 
 

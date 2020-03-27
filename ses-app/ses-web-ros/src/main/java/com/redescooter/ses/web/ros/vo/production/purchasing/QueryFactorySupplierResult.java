@@ -34,6 +34,9 @@ public class QueryFactorySupplierResult extends GeneralResult {
     @ApiModelProperty(value = "代工厂名字")
     private String factoryName;
 
+    @ApiModelProperty(value = "附件")
+    private String annex;
+
     @ApiModelProperty(value = "供应商列表")
     private List<PurchasSupplierResult> purchasSupplierResultList;
 }

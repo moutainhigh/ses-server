@@ -163,4 +163,20 @@ public interface PurchasingServiceMapper {
      * @return
      */
     List<QcItemDetailResult> qcItemListByPurchasBIds(List<Long> purshasBIds);
+
+    /**
+     * 更新子表质检记录
+     *
+     * @param id
+     * @param status
+     */
+    void updatePurchasBQcStatus(@Param("id") Long id, @Param("status") String status);
+
+    /**
+     * qc 状态分组统计
+     *
+     * @param enter
+     * @return
+     */
+    List<CountByStatusResult> qcCountByStatus(IdEnter enter);
 }

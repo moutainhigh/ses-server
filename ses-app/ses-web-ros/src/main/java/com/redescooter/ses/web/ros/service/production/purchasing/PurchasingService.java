@@ -173,14 +173,6 @@ public interface PurchasingService {
     GeneralResult saveFactoryAnnex(SaveFactoryAnnexEnter enter);
 
     /**
-     * 开始采购
-     *
-     * @param enter
-     * @return
-     */
-    GeneralResult startPurchasing(IdEnter enter);
-
-    /**
      * 开始qc 质检
      *
      * @param enter

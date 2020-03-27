@@ -156,7 +156,9 @@ public class PurchasingServiceImpl implements PurchasingService {
             });
         }
         for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
-            map.put(item.getValue(), 0);
+            if (!map.containsKey(item.getValue())) {
+                map.put(item.getValue(), 0);
+            }
         }
         return map;
     }
@@ -483,6 +485,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         if (opePurchasPayment.getAmount().subtract(enter.getAmount()).intValue() != 0) {
             throw new SesWebRosException(ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getCode(), (ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getMessage()));
         }
+
         opePurchasPayment.setPaymentStatus(PayStatusEnums.PAID.getValue());
         opePurchasPayment.setInvoiceNum(enter.getInvoiceNum());
         opePurchasPayment.setInvoicePicture(enter.getInvoicePicture());
@@ -658,6 +661,18 @@ public class PurchasingServiceImpl implements PurchasingService {
         List<OpePurchasB> purchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
 
         if (CollectionUtils.isNotEmpty(purchasBList)) {
+
+            List<Long> supplierIds = Lists.newArrayList();
+            purchasBList.forEach(item -> {
+                supplierIds.add(item.getSupplierId());
+            });
+            saveSupplierAnnexList.forEach(item -> {
+                if (!supplierIds.contains(item.getId())) {
+                    throw new SesWebRosException(ExceptionCodeEnums.SUPPLIER_IS_NOT_PART_OF_THE_CURRENT_DOCUMENT.getCode(),
+                            ExceptionCodeEnums.SUPPLIER_IS_NOT_PART_OF_THE_CURRENT_DOCUMENT.getMessage());
+                }
+            });
+
             for (OpePurchasB item : purchasBList) {
                 for (SaveSupplierAnnexEnter supplier : saveSupplierAnnexList) {
                     if (item.getPartId().equals(supplier.getPartsId()) && item.getSupplierId().equals(supplier.getId())) {
@@ -672,47 +687,6 @@ public class PurchasingServiceImpl implements PurchasingService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    /**
-     * 开始采购
-     *
-     * @param enter
-     * @return
-     */
-    @Transactional
-    @Override
-    public GeneralResult startPurchasing(IdEnter enter) {
-        OpePurchas opePurchas = checkPurchas(enter.getId(), PurchasingStatusEnums.PENDING);
-//        if (StringUtils.isEmpty(opePurchas.getFactoryAnnex())) {
-//            throw new SesWebRosException(ExceptionCodeEnums.FACTORY_ANNEX_IS_PERFECT.getCode(), ExceptionCodeEnums.FACTORY_ANNEX_IS_PERFECT.getMessage());
-//        }
-//        //供应商 附件上传
-//        QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
-//        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
-//        opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, opePurchas.getId());
-//        List<OpePurchasB> purchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
-//        if (CollectionUtils.isNotEmpty(purchasBList)) {
-//            purchasBList.forEach(item -> {
-//                if (StringUtils.isEmpty(item.getSupplierAnnex())) {
-//                    throw new SesWebRosException(ExceptionCodeEnums.FACTORY_ANNEX_IS_PERFECT.getCode(), ExceptionCodeEnums.FACTORY_ANNEX_IS_PERFECT.getMessage());
-//                }
-//            });
-//        }
-        opePurchas.setStatus(PurchasingStatusEnums.INPROGRESS.getValue());
-        opePurchas.setUpdatedBy(enter.getUserId());
-        opePurchas.setUpdatedTime(new Date());
-        opePurchasService.updateById(opePurchas);
-
-        //订单节点
-        SavePurchasingNodeEnter savePurchasingNodeEnter = new SavePurchasingNodeEnter();
-        BeanUtils.copyProperties(enter, savePurchasingNodeEnter);
-        savePurchasingNodeEnter.setPurchasId(enter.getId());
-        savePurchasingNodeEnter.setStatus(PurchasingStatusEnums.INPROGRESS.getValue());
-        savePurchasingNodeEnter.setEvent(PurchasingEventEnums.INPROGRESS.getValue());
-        savePurchasingNodeEnter.setMemo(null);
-        this.savePurchasingNode(savePurchasingNodeEnter);
-
-        return new GeneralResult(enter.getRequestId());
-    }
 
     /**
      * 开始qc 质检
@@ -782,10 +756,18 @@ public class PurchasingServiceImpl implements PurchasingService {
                 item.setPassCount(item.getPassCount() + item.getFailCount());
                 item.setFailCount(0);
                 item.setUpdatedBy(enter.getUserId());
+                item.setStatus(QcStatusEnums.PASS.getValue());
                 item.setUpdatedTime(new Date());
             });
         }
         opePurchasBQcService.updateBatchById(opePurchasBQcList);
+
+        //todo 判断是否全部QC 通过 通过的话修改子表状态
+
+        opePurchasBQcList.removeIf(item -> StringUtils.equals(item.getStatus(), QcStatusEnums.PASS.getValue()));
+        if (opePurchasBQcList.size() == 0) {
+            purchasingServiceMapper.updatePurchasBQcStatus(enter.getId(), QcStatusEnums.PASS.getValue());
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -860,10 +842,15 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public Map<String, Integer> qcCountByStatus(IdEnter enter) {
-
+        List<CountByStatusResult> countByStatus = purchasingServiceMapper.qcCountByStatus(enter);
         Map<String, Integer> map = new HashMap<>();
+        countByStatus.forEach(item -> {
+            map.put(item.getStatus(), item.getTotalCount());
+        });
         for (QcStatusEnums item : QcStatusEnums.values()) {
-            map.put(item.getValue(), 0);
+            if (!map.containsKey(item.getValue())) {
+                map.put(item.getValue(), 0);
+            }
         }
         map.remove(QcStatusEnums.QUALITY_INSPECTION.getValue());
         return map;
@@ -917,26 +904,6 @@ public class PurchasingServiceImpl implements PurchasingService {
             }
         });
 
-        qcPartList.removeIf(item -> CollectionUtils.isEmpty(item.getQcItemDetailResultList()));
-//        List<QcItemDetailResult> qcItemDetailResultList=purchasingServiceMapper.qcItemDetailList(enter,purshasBIds);
-//        if (CollectionUtils.isEmpty(qcItemDetailResultList)) {
-//            return null;
-//        }
-//
-//        if (StringUtils.isNotEmpty(enter.getStatus()) &&StringUtils.equals(enter.getStatus(),QcStatusEnums.PASS.getValue())){
-//            qcPartList.forEach(item->{
-//                Map<String, Integer> hashMap = Maps.newHashMap();
-//                int totalCount=0;
-//                qcItemDetailResultList.forEach(detail->{
-//                    if (item.getId().equals(detail.getPruchasBId()) && !hashMap.containsKey(detail.getBatchN())){
-//                        hashMap.put(detail.getBatchN(),detail.getPassQty());
-//                    }
-//                });
-//            });
-//        }
-//        if (StringUtils.isNotEmpty(enter.getStatus()) &&StringUtils.equals(enter.getStatus(),QcStatusEnums.PASS.getValue())){
-//
-//        }
         return qcPartList;
     }
 

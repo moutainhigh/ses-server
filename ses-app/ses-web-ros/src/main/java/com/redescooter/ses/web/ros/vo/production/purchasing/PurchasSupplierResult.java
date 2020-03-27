@@ -33,4 +33,7 @@ public class PurchasSupplierResult extends GeneralResult {
     @ApiModelProperty(value = "供应商名字")
     private String supplierName;
 
+    @ApiModelProperty(value = "附件")
+    private String annex;
+
 }

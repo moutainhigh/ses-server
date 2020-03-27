@@ -18,7 +18,7 @@ public enum PurchasingStatusEnums {
 
 
     PENDING("PENDING", "待确认", "1"),
-    INPROGRESS("INPROGRESS", "进行中", "2"),
+//    INPROGRESS("INPROGRESS", "进行中", "2"),
     MATERIALS_QC("MATERIALS_QC", "QC来料质检", "3"),
     QC_COMPLETED("QC_COMPLETED", "质检完成", "4"),
     RETURN("RETURN", "退货并完成", "5"),

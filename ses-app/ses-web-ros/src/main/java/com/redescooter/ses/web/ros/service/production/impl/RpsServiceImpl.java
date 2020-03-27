@@ -99,8 +99,10 @@ public class RpsServiceImpl implements RpsServvice {
                             .updatedTime(new Date())
                             .build()
             );
+            item.setQcStatus(QcStatusEnums.FAIL.getValue());
         });
         opePurchasBQcService.saveBatch(opePurchasBServiceList);
+        opePurchasBService.updateBatchById(purchasBList);
         return new GeneralResult(enter.getRequestId());
     }
 }
