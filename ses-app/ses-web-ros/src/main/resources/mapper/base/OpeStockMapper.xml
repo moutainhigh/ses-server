@@ -4,15 +4,19 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeStock">
         <!--@mbg.generated-->
         <!--@Table ope_stock-->
-        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="warehouse_id" jdbcType="BIGINT" property="warehouseId"/>
-        <result column="product_id" jdbcType="BIGINT" property="productId"/>
-        <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
-        <result column="total_quantity" jdbcType="INTEGER" property="totalQuantity"/>
-        <result column="available_quantity" jdbcType="INTEGER" property="availableQuantity"/>
-        <result column="reserved_out_stock_quantity" jdbcType="INTEGER" property="reservedOutStockQuantity"/>
-        <result column="out_stock_quantity" jdbcType="INTEGER" property="outStockQuantity"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="whse_id" jdbcType="BIGINT" property="whseId"/>
+        <result column="int_total" jdbcType="INTEGER" property="intTotal"/>
+        <result column="out_total" jdbcType="INTEGER" property="outTotal"/>
+        <result column="available_total" jdbcType="INTEGER" property="availableTotal"/>
+        <result column="worn_total" jdbcType="INTEGER" property="wornTotal"/>
+        <result column="materiel_product_id" jdbcType="BIGINT" property="materielProductId"/>
+        <result column="materiel_product_type" jdbcType="VARCHAR" property="materielProductType"/>
+        <result column="materiel_product_name" jdbcType="VARCHAR" property="materielProductName"/>
+        <result column="revision" jdbcType="INTEGER" property="revision"/>
         <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
         <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
@@ -25,9 +29,9 @@
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        id, dr, warehouse_id, product_id, product_code, total_quantity, available_quantity,
-        reserved_out_stock_quantity, out_stock_quantity, created_by, created_time, updated_by,
-        updated_time, def1, def2, def3, def5, def6
+        id, dr, user_id, tenant_id, whse_id, int_total, out_total, available_total, worn_total,
+        materiel_product_id, materiel_product_type, materiel_product_name, revision, created_by,
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
@@ -35,138 +39,165 @@
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="dr = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.dr,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
                 </foreach>
             </trim>
-            <trim prefix="warehouse_id = case" suffix="end,">
+            <trim prefix="user_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.warehouseId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
                 </foreach>
             </trim>
-            <trim prefix="product_id = case" suffix="end,">
+            <trim prefix="tenant_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.productId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
                 </foreach>
             </trim>
-            <trim prefix="product_code = case" suffix="end,">
+            <trim prefix="whse_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.productCode,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.whseId,jdbcType=BIGINT}
                 </foreach>
             </trim>
-            <trim prefix="total_quantity = case" suffix="end,">
+            <trim prefix="int_total = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.totalQuantity,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.intTotal,jdbcType=INTEGER}
                 </foreach>
             </trim>
-            <trim prefix="available_quantity = case" suffix="end,">
+            <trim prefix="out_total = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.availableQuantity,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.outTotal,jdbcType=INTEGER}
                 </foreach>
             </trim>
-            <trim prefix="reserved_out_stock_quantity = case" suffix="end,">
+            <trim prefix="available_total = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.reservedOutStockQuantity,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.availableTotal,jdbcType=INTEGER}
                 </foreach>
             </trim>
-            <trim prefix="out_stock_quantity = case" suffix="end,">
+            <trim prefix="worn_total = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.outStockQuantity,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.wornTotal,jdbcType=INTEGER}
+                </foreach>
+            </trim>
+            <trim prefix="materiel_product_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.materielProductId,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="materiel_product_type = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.materielProductType,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="materiel_product_name = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.materielProductName,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="revision = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="created_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.createdBy,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="created_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.createdTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="updated_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.updatedBy,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="updated_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.updatedTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="def1 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.def1,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def2 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.def2,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def3 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.def3,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def5 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.def5,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def6 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.def6,jdbcType=DOUBLE}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
                 </foreach>
             </trim>
         </trim>
         where id in
         <foreach close=")" collection="list" item="item" open="(" separator=", ">
-            #{item.id,jdbcType=INTEGER}
+            #{item.id,jdbcType=BIGINT}
         </foreach>
     </update>
     <insert id="batchInsert" parameterType="map">
         <!--@mbg.generated-->
         insert into ope_stock
-        (id, dr, warehouse_id, product_id, product_code, total_quantity, available_quantity,
-        reserved_out_stock_quantity, out_stock_quantity, created_by, created_time, updated_by,
-        updated_time, def1, def2, def3, def5, def6)
+        (id, dr, user_id, tenant_id, whse_id, int_total, out_total, available_total, worn_total,
+        materiel_product_id, materiel_product_type, materiel_product_name, revision, created_by,
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.warehouseId,jdbcType=BIGINT},
-            #{item.productId,jdbcType=BIGINT}, #{item.productCode,jdbcType=VARCHAR},
-            #{item.totalQuantity,jdbcType=INTEGER},
-            #{item.availableQuantity,jdbcType=INTEGER}, #{item.reservedOutStockQuantity,jdbcType=INTEGER},
-            #{item.outStockQuantity,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP},
-            #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
-            #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
-            #{item.def6,jdbcType=DOUBLE})
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.userId,jdbcType=BIGINT},
+            #{item.tenantId,jdbcType=BIGINT}, #{item.whseId,jdbcType=BIGINT}, #{item.intTotal,jdbcType=INTEGER},
+            #{item.outTotal,jdbcType=INTEGER}, #{item.availableTotal,jdbcType=INTEGER},
+            #{item.wornTotal,jdbcType=INTEGER},
+            #{item.materielProductId,jdbcType=BIGINT}, #{item.materielProductType,jdbcType=VARCHAR},
+            #{item.materielProductName,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER},
+            #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.updatedBy,jdbcType=BIGINT},
+            #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
+            #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+            )
         </foreach>
     </insert>
     <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeStock">
         <!--@mbg.generated-->
         insert into ope_stock
-        (id, dr, warehouse_id, product_id, product_code, total_quantity, available_quantity,
-        reserved_out_stock_quantity, out_stock_quantity, created_by, created_time, updated_by,
-        updated_time, def1, def2, def3, def5, def6)
+        (id, dr, user_id, tenant_id, whse_id, int_total, out_total, available_total, worn_total,
+        materiel_product_id, materiel_product_type, materiel_product_name, revision, created_by,
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
         values
-        (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{warehouseId,jdbcType=BIGINT},
-        #{productId,jdbcType=BIGINT}, #{productCode,jdbcType=VARCHAR}, #{totalQuantity,jdbcType=INTEGER},
-        #{availableQuantity,jdbcType=INTEGER}, #{reservedOutStockQuantity,jdbcType=INTEGER},
-        #{outStockQuantity,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT},
+        #{whseId,jdbcType=BIGINT}, #{intTotal,jdbcType=INTEGER}, #{outTotal,jdbcType=INTEGER},
+        #{availableTotal,jdbcType=INTEGER}, #{wornTotal,jdbcType=INTEGER}, #{materielProductId,jdbcType=BIGINT},
+        #{materielProductType,jdbcType=VARCHAR}, #{materielProductName,jdbcType=VARCHAR},
+        #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
         #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
         #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
         )
         on duplicate key update
-        id = #{id,jdbcType=INTEGER},
+        id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
-        warehouse_id = #{warehouseId,jdbcType=BIGINT},
-        product_id = #{productId,jdbcType=BIGINT},
-        product_code = #{productCode,jdbcType=VARCHAR},
-        total_quantity = #{totalQuantity,jdbcType=INTEGER},
-        available_quantity = #{availableQuantity,jdbcType=INTEGER},
-        reserved_out_stock_quantity = #{reservedOutStockQuantity,jdbcType=INTEGER},
-        out_stock_quantity = #{outStockQuantity,jdbcType=INTEGER},
+        user_id = #{userId,jdbcType=BIGINT},
+        tenant_id = #{tenantId,jdbcType=BIGINT},
+        whse_id = #{whseId,jdbcType=BIGINT},
+        int_total = #{intTotal,jdbcType=INTEGER},
+        out_total = #{outTotal,jdbcType=INTEGER},
+        available_total = #{availableTotal,jdbcType=INTEGER},
+        worn_total = #{wornTotal,jdbcType=INTEGER},
+        materiel_product_id = #{materielProductId,jdbcType=BIGINT},
+        materiel_product_type = #{materielProductType,jdbcType=VARCHAR},
+        materiel_product_name = #{materielProductName,jdbcType=VARCHAR},
+        revision = #{revision,jdbcType=INTEGER},
         created_by = #{createdBy,jdbcType=BIGINT},
         created_time = #{createdTime,jdbcType=TIMESTAMP},
         updated_by = #{updatedBy,jdbcType=BIGINT},
@@ -187,26 +218,38 @@
             <if test="dr != null">
                 dr,
             </if>
-            <if test="warehouseId != null">
-                warehouse_id,
+            <if test="userId != null">
+                user_id,
             </if>
-            <if test="productId != null">
-                product_id,
+            <if test="tenantId != null">
+                tenant_id,
             </if>
-            <if test="productCode != null">
-                product_code,
+            <if test="whseId != null">
+                whse_id,
             </if>
-            <if test="totalQuantity != null">
-                total_quantity,
+            <if test="intTotal != null">
+                int_total,
             </if>
-            <if test="availableQuantity != null">
-                available_quantity,
+            <if test="outTotal != null">
+                out_total,
             </if>
-            <if test="reservedOutStockQuantity != null">
-                reserved_out_stock_quantity,
+            <if test="availableTotal != null">
+                available_total,
             </if>
-            <if test="outStockQuantity != null">
-                out_stock_quantity,
+            <if test="wornTotal != null">
+                worn_total,
+            </if>
+            <if test="materielProductId != null">
+                materiel_product_id,
+            </if>
+            <if test="materielProductType != null">
+                materiel_product_type,
+            </if>
+            <if test="materielProductName != null">
+                materiel_product_name,
+            </if>
+            <if test="revision != null">
+                revision,
             </if>
             <if test="createdBy != null">
                 created_by,
@@ -239,31 +282,43 @@
         values
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=INTEGER},
+                #{id,jdbcType=BIGINT},
             </if>
             <if test="dr != null">
                 #{dr,jdbcType=INTEGER},
             </if>
-            <if test="warehouseId != null">
-                #{warehouseId,jdbcType=BIGINT},
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
             </if>
-            <if test="productId != null">
-                #{productId,jdbcType=BIGINT},
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
             </if>
-            <if test="productCode != null">
-                #{productCode,jdbcType=VARCHAR},
+            <if test="whseId != null">
+                #{whseId,jdbcType=BIGINT},
             </if>
-            <if test="totalQuantity != null">
-                #{totalQuantity,jdbcType=INTEGER},
+            <if test="intTotal != null">
+                #{intTotal,jdbcType=INTEGER},
             </if>
-            <if test="availableQuantity != null">
-                #{availableQuantity,jdbcType=INTEGER},
+            <if test="outTotal != null">
+                #{outTotal,jdbcType=INTEGER},
             </if>
-            <if test="reservedOutStockQuantity != null">
-                #{reservedOutStockQuantity,jdbcType=INTEGER},
+            <if test="availableTotal != null">
+                #{availableTotal,jdbcType=INTEGER},
             </if>
-            <if test="outStockQuantity != null">
-                #{outStockQuantity,jdbcType=INTEGER},
+            <if test="wornTotal != null">
+                #{wornTotal,jdbcType=INTEGER},
+            </if>
+            <if test="materielProductId != null">
+                #{materielProductId,jdbcType=BIGINT},
+            </if>
+            <if test="materielProductType != null">
+                #{materielProductType,jdbcType=VARCHAR},
+            </if>
+            <if test="materielProductName != null">
+                #{materielProductName,jdbcType=VARCHAR},
+            </if>
+            <if test="revision != null">
+                #{revision,jdbcType=INTEGER},
             </if>
             <if test="createdBy != null">
                 #{createdBy,jdbcType=BIGINT},
@@ -296,31 +351,43 @@
         on duplicate key update
         <trim suffixOverrides=",">
             <if test="id != null">
-                id = #{id,jdbcType=INTEGER},
+                id = #{id,jdbcType=BIGINT},
             </if>
             <if test="dr != null">
                 dr = #{dr,jdbcType=INTEGER},
             </if>
-            <if test="warehouseId != null">
-                warehouse_id = #{warehouseId,jdbcType=BIGINT},
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
             </if>
-            <if test="productId != null">
-                product_id = #{productId,jdbcType=BIGINT},
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=BIGINT},
             </if>
-            <if test="productCode != null">
-                product_code = #{productCode,jdbcType=VARCHAR},
+            <if test="whseId != null">
+                whse_id = #{whseId,jdbcType=BIGINT},
             </if>
-            <if test="totalQuantity != null">
-                total_quantity = #{totalQuantity,jdbcType=INTEGER},
+            <if test="intTotal != null">
+                int_total = #{intTotal,jdbcType=INTEGER},
             </if>
-            <if test="availableQuantity != null">
-                available_quantity = #{availableQuantity,jdbcType=INTEGER},
+            <if test="outTotal != null">
+                out_total = #{outTotal,jdbcType=INTEGER},
             </if>
-            <if test="reservedOutStockQuantity != null">
-                reserved_out_stock_quantity = #{reservedOutStockQuantity,jdbcType=INTEGER},
+            <if test="availableTotal != null">
+                available_total = #{availableTotal,jdbcType=INTEGER},
             </if>
-            <if test="outStockQuantity != null">
-                out_stock_quantity = #{outStockQuantity,jdbcType=INTEGER},
+            <if test="wornTotal != null">
+                worn_total = #{wornTotal,jdbcType=INTEGER},
+            </if>
+            <if test="materielProductId != null">
+                materiel_product_id = #{materielProductId,jdbcType=BIGINT},
+            </if>
+            <if test="materielProductType != null">
+                materiel_product_type = #{materielProductType,jdbcType=VARCHAR},
+            </if>
+            <if test="materielProductName != null">
+                materiel_product_name = #{materielProductName,jdbcType=VARCHAR},
+            </if>
+            <if test="revision != null">
+                revision = #{revision,jdbcType=INTEGER},
             </if>
             <if test="createdBy != null">
                 created_by = #{createdBy,jdbcType=BIGINT},

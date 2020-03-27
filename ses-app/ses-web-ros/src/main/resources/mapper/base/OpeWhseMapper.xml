@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeWhseMapper">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeWhse">
+        <!--@mbg.generated-->
+        <!--@Table ope_whse-->
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="product_range" jdbcType="VARCHAR" property="productRange"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="country_id" jdbcType="VARCHAR" property="countryId"/>
+        <result column="city_id" jdbcType="VARCHAR" property="cityId"/>
+        <result column="area_id" jdbcType="INTEGER" property="areaId"/>
+        <result column="revision" jdbcType="INTEGER" property="revision"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="def1" jdbcType="VARCHAR" property="def1"/>
+        <result column="def2" jdbcType="VARCHAR" property="def2"/>
+        <result column="def3" jdbcType="VARCHAR" property="def3"/>
+        <result column="def5" jdbcType="VARCHAR" property="def5"/>
+        <result column="def6" jdbcType="DOUBLE" property="def6"/>
+    </resultMap>
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into ope_whse
+        (id, dr, `name`, code, product_range, `type`, remark, country_id, city_id, area_id,
+        revision, created_by, created_time, updated_by, updated_time, def1, def2, def3,
+        def5, def6)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR},
+            #{item.code,jdbcType=VARCHAR}, #{item.productRange,jdbcType=VARCHAR}, #{item.type,jdbcType=VARCHAR},
+            #{item.remark,jdbcType=VARCHAR}, #{item.countryId,jdbcType=VARCHAR}, #{item.cityId,jdbcType=VARCHAR},
+            #{item.areaId,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+            #{item.updatedTime,jdbcType=TIMESTAMP},
+            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
+            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+        </foreach>
+    </insert>
+    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeWhse">
+        <!--@mbg.generated-->
+        insert into ope_whse
+        (id, dr, `name`, code, product_range, `type`, remark, country_id, city_id, area_id,
+        revision, created_by, created_time, updated_by, updated_time, def1, def2, def3,
+        def5, def6)
+        values
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR},
+        #{productRange,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+        #{countryId,jdbcType=VARCHAR}, #{cityId,jdbcType=VARCHAR}, #{areaId,jdbcType=INTEGER},
+        #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+        #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
+        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+        )
+        on duplicate key update
+        id = #{id,jdbcType=BIGINT},
+        dr = #{dr,jdbcType=INTEGER},
+        `name` = #{name,jdbcType=VARCHAR},
+        code = #{code,jdbcType=VARCHAR},
+        product_range = #{productRange,jdbcType=VARCHAR},
+        `type` = #{type,jdbcType=VARCHAR},
+        remark = #{remark,jdbcType=VARCHAR},
+        country_id = #{countryId,jdbcType=VARCHAR},
+        city_id = #{cityId,jdbcType=VARCHAR},
+        area_id = #{areaId,jdbcType=INTEGER},
+        revision = #{revision,jdbcType=INTEGER},
+        created_by = #{createdBy,jdbcType=BIGINT},
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+        def1 = #{def1,jdbcType=VARCHAR},
+        def2 = #{def2,jdbcType=VARCHAR},
+        def3 = #{def3,jdbcType=VARCHAR},
+        def5 = #{def5,jdbcType=VARCHAR},
+        def6 = #{def6,jdbcType=DOUBLE}
+    </insert>
+    <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeWhse">
+        <!--@mbg.generated-->
+        insert into ope_whse
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="productRange != null">
+                product_range,
+            </if>
+            <if test="type != null">
+                `type`,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="countryId != null">
+                country_id,
+            </if>
+            <if test="cityId != null">
+                city_id,
+            </if>
+            <if test="areaId != null">
+                area_id,
+            </if>
+            <if test="revision != null">
+                revision,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+            <if test="def1 != null">
+                def1,
+            </if>
+            <if test="def2 != null">
+                def2,
+            </if>
+            <if test="def3 != null">
+                def3,
+            </if>
+            <if test="def5 != null">
+                def5,
+            </if>
+            <if test="def6 != null">
+                def6,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="productRange != null">
+                #{productRange,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="countryId != null">
+                #{countryId,jdbcType=VARCHAR},
+            </if>
+            <if test="cityId != null">
+                #{cityId,jdbcType=VARCHAR},
+            </if>
+            <if test="areaId != null">
+                #{areaId,jdbcType=INTEGER},
+            </if>
+            <if test="revision != null">
+                #{revision,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="def1 != null">
+                #{def1,jdbcType=VARCHAR},
+            </if>
+            <if test="def2 != null">
+                #{def2,jdbcType=VARCHAR},
+            </if>
+            <if test="def3 != null">
+                #{def3,jdbcType=VARCHAR},
+            </if>
+            <if test="def5 != null">
+                #{def5,jdbcType=VARCHAR},
+            </if>
+            <if test="def6 != null">
+                #{def6,jdbcType=DOUBLE},
+            </if>
+        </trim>
+        on duplicate key update
+        <trim suffixOverrides=",">
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="productRange != null">
+                product_range = #{productRange,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                `type` = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="countryId != null">
+                country_id = #{countryId,jdbcType=VARCHAR},
+            </if>
+            <if test="cityId != null">
+                city_id = #{cityId,jdbcType=VARCHAR},
+            </if>
+            <if test="areaId != null">
+                area_id = #{areaId,jdbcType=INTEGER},
+            </if>
+            <if test="revision != null">
+                revision = #{revision,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="def1 != null">
+                def1 = #{def1,jdbcType=VARCHAR},
+            </if>
+            <if test="def2 != null">
+                def2 = #{def2,jdbcType=VARCHAR},
+            </if>
+            <if test="def3 != null">
+                def3 = #{def3,jdbcType=VARCHAR},
+            </if>
+            <if test="def5 != null">
+                def5 = #{def5,jdbcType=VARCHAR},
+            </if>
+            <if test="def6 != null">
+                def6 = #{def6,jdbcType=DOUBLE},
+            </if>
+        </trim>
+    </insert>
+</mapper>

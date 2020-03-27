@@ -23,68 +23,87 @@ import java.util.Date;
 @TableName(value = "ope_stock")
 public class OpeStock implements Serializable {
     /**
-     * ID
+     * 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "ID")
-    private Integer id;
+    @ApiModelProperty(value = "主键")
+    private Long id;
 
-    /**
-     * 逻辑删除标识 0正常 1删除
-     */
     @TableField(value = "dr")
+    @ApiModelProperty(value = "")
     @TableLogic
-    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
-    /**
-     * 仓库ID
-     */
-    @TableField(value = "warehouse_id")
-    @ApiModelProperty(value = "仓库ID")
-    private Long warehouseId;
+    @TableField(value = "user_id")
+    @ApiModelProperty(value = "")
+    private Long userId;
+
+    @TableField(value = "tenant_id")
+    @ApiModelProperty(value = "")
+    private Long tenantId;
 
     /**
-     * 产品ID
+     * 所属仓库Id
      */
-    @TableField(value = "product_id")
-    @ApiModelProperty(value = "产品ID")
-    private Long productId;
+    @TableField(value = "whse_id")
+    @ApiModelProperty(value = "所属仓库Id")
+    private Long whseId;
 
     /**
-     * 产品编号
+     * 入库总数
      */
-    @TableField(value = "product_code")
-    @ApiModelProperty(value = "产品编号")
-    private String productCode;
+    @TableField(value = "int_total")
+    @ApiModelProperty(value = "入库总数")
+    private Integer intTotal;
 
     /**
-     * 总数量
+     * 出库总数
      */
-    @TableField(value = "total_quantity")
-    @ApiModelProperty(value = "总数量")
-    private Integer totalQuantity;
+    @TableField(value = "out_total")
+    @ApiModelProperty(value = "出库总数")
+    private Integer outTotal;
 
     /**
-     * 可用数量
+     * 剩余库存
      */
-    @TableField(value = "available_quantity")
-    @ApiModelProperty(value = "可用数量")
-    private Integer availableQuantity;
+    @TableField(value = "available_total")
+    @ApiModelProperty(value = "剩余库存")
+    private Integer availableTotal;
 
     /**
-     * 已预约出库数量
+     * 破损总数
      */
-    @TableField(value = "reserved_out_stock_quantity")
-    @ApiModelProperty(value = "已预约出库数量")
-    private Integer reservedOutStockQuantity;
+    @TableField(value = "worn_total")
+    @ApiModelProperty(value = "破损总数")
+    private Integer wornTotal;
 
     /**
-     * 已出库数量
+     * 所属物料产品Id
      */
-    @TableField(value = "out_stock_quantity")
-    @ApiModelProperty(value = "已出库数量")
-    private Integer outStockQuantity;
+    @TableField(value = "materiel_product_id")
+    @ApiModelProperty(value = "所属物料产品Id")
+    private Long materielProductId;
+
+    /**
+     * 所属物料产品类型
+     */
+    @TableField(value = "materiel_product_type")
+    @ApiModelProperty(value = "所属物料产品类型")
+    private String materielProductType;
+
+    /**
+     * 所属物料名称
+     */
+    @TableField(value = "materiel_product_name")
+    @ApiModelProperty(value = "所属物料名称")
+    private String materielProductName;
+
+    /**
+     * 乐观锁
+     */
+    @TableField(value = "revision")
+    @ApiModelProperty(value = "乐观锁")
+    private Integer revision;
 
     /**
      * 创建人
@@ -155,19 +174,27 @@ public class OpeStock implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_WAREHOUSE_ID = "warehouse_id";
+    public static final String COL_USER_ID = "user_id";
 
-    public static final String COL_PRODUCT_ID = "product_id";
+    public static final String COL_TENANT_ID = "tenant_id";
 
-    public static final String COL_PRODUCT_CODE = "product_code";
+    public static final String COL_WHSE_ID = "whse_id";
 
-    public static final String COL_TOTAL_QUANTITY = "total_quantity";
+    public static final String COL_INT_TOTAL = "int_total";
 
-    public static final String COL_AVAILABLE_QUANTITY = "available_quantity";
+    public static final String COL_OUT_TOTAL = "out_total";
 
-    public static final String COL_RESERVED_OUT_STOCK_QUANTITY = "reserved_out_stock_quantity";
+    public static final String COL_AVAILABLE_TOTAL = "available_total";
 
-    public static final String COL_OUT_STOCK_QUANTITY = "out_stock_quantity";
+    public static final String COL_WORN_TOTAL = "worn_total";
+
+    public static final String COL_MATERIEL_PRODUCT_ID = "materiel_product_id";
+
+    public static final String COL_MATERIEL_PRODUCT_TYPE = "materiel_product_type";
+
+    public static final String COL_MATERIEL_PRODUCT_NAME = "materiel_product_name";
+
+    public static final String COL_REVISION = "revision";
 
     public static final String COL_CREATED_BY = "created_by";
 

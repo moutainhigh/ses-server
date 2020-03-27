@@ -15,125 +15,88 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeStockBills")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeStockProdProduct")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_stock_bills")
-public class OpeStockBills implements Serializable {
-    /**
-     * ID
-     */
+@TableName(value = "ope_stock_prod_product")
+public class OpeStockProdProduct implements Serializable {
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "ID")
+    @ApiModelProperty(value = "")
     private Long id;
 
-    /**
-     * 逻辑删除标识 0正常 1删除
-     */
     @TableField(value = "dr")
+    @ApiModelProperty(value = "")
     @TableLogic
-    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**
-     * 订单号
-     */
-    @TableField(value = "order_no")
-    @ApiModelProperty(value = "订单号")
-    private String orderNo;
-
-    /**
-     * 库存表主键
-     */
-    @TableField(value = "stock_id")
-    @ApiModelProperty(value = "库存表主键")
-    private Long stockId;
-
-    /**
-     * 仓库ID
-     */
-    @TableField(value = "warehouse_id")
-    @ApiModelProperty(value = "仓库ID")
-    private Integer warehouseId;
-
-    /**
-     * 仓库管理员Id 等价于StaffId
-     */
-    @TableField(value = "warehouse_manager_id")
-    @ApiModelProperty(value = "仓库管理员Id 等价于StaffId")
-    private Long warehouseManagerId;
-
-    /**
-     * 产品ID
-     */
-    @TableField(value = "product_id")
-    @ApiModelProperty(value = "产品ID")
-    private Long productId;
-
-    /**
-     * 数量
-     */
-    @TableField(value = "quantity")
-    @ApiModelProperty(value = "数量")
-    private Integer quantity;
-
-    /**
-     * 出入库预约时间
-     */
-    @TableField(value = "bills_time")
-    @ApiModelProperty(value = "出入库预约时间 ")
-    private Date billsTime;
-
-    /**
-     * 状态 RESERVED;SUCCESS;CANCEL
+     * 可用、破损
      */
     @TableField(value = "status")
-    @ApiModelProperty(value = "状态 RESERVED;SUCCESS;CANCEL")
+    @ApiModelProperty(value = "可用、破损")
     private String status;
 
     /**
-     * 单据来源，1Sales, 2after-sales, 3production, 4procurement
+     * 库存id
      */
-    @TableField(value = "source")
-    @ApiModelProperty(value = "单据来源，1Sales, 2after-sales, 3production, 4procurement")
-    private Integer source;
+    @TableField(value = "stock_id")
+    @ApiModelProperty(value = "库存id")
+    private Long stockId;
+
+    @TableField(value = "product_id")
+    @ApiModelProperty(value = "")
+    private Long productId;
 
     /**
-     * 单据来源主键，即销售单主键，生产单主键，等
+     * 批次号
      */
-    @TableField(value = "source_id")
-    @ApiModelProperty(value = "单据来源主键，即销售单主键，生产单主键，等")
-    private Long sourceId;
+    @TableField(value = "lot")
+    @ApiModelProperty(value = "批次号")
+    private String lot;
 
     /**
-     * 出入库方向 IN;OUT
+     * 序列号
      */
-    @TableField(value = "direction")
-    @ApiModelProperty(value = "出入库方向 IN;OUT")
-    private String direction;
+    @TableField(value = "serial_number")
+    @ApiModelProperty(value = "序列号")
+    private String serialNumber;
 
     /**
-     * 出入库人员
+     * 部件号
      */
-    @TableField(value = "staff_id")
-    @ApiModelProperty(value = "出入库人员")
-    private Long staffId;
+    @TableField(value = "product_number")
+    @ApiModelProperty(value = "部件号")
+    private String productNumber;
 
     /**
-     * 出入库完成时间
+     * 入库负责人Id
      */
-    @TableField(value = "complete_time")
-    @ApiModelProperty(value = "出入库完成时间")
-    private Date completeTime;
+    @TableField(value = "principal_id")
+    @ApiModelProperty(value = "入库负责人Id")
+    private Long principalId;
+
+    /**
+     * 入库时间
+     */
+    @TableField(value = "in_stock_time")
+    @ApiModelProperty(value = "入库时间")
+    private Date inStockTime;
+
+    /**
+     * 乐观锁
+     */
+    @TableField(value = "revision")
+    @ApiModelProperty(value = "乐观锁")
+    private Integer revision;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
     @ApiModelProperty(value = "创建人")
-    private Integer createdBy;
+    private Long createdBy;
 
     /**
      * 创建时间
@@ -197,31 +160,23 @@ public class OpeStockBills implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_ORDER_NO = "order_no";
+    public static final String COL_STATUS = "status";
 
     public static final String COL_STOCK_ID = "stock_id";
 
-    public static final String COL_WAREHOUSE_ID = "warehouse_id";
-
-    public static final String COL_WAREHOUSE_MANAGER_ID = "warehouse_manager_id";
-
     public static final String COL_PRODUCT_ID = "product_id";
 
-    public static final String COL_QUANTITY = "quantity";
+    public static final String COL_LOT = "lot";
 
-    public static final String COL_BILLS_TIME = "bills_time";
+    public static final String COL_SERIAL_NUMBER = "serial_number";
 
-    public static final String COL_STATUS = "status";
+    public static final String COL_PRODUCT_NUMBER = "product_number";
 
-    public static final String COL_SOURCE = "source";
+    public static final String COL_PRINCIPAL_ID = "principal_id";
 
-    public static final String COL_SOURCE_ID = "source_id";
+    public static final String COL_IN_STOCK_TIME = "in_stock_time";
 
-    public static final String COL_DIRECTION = "direction";
-
-    public static final String COL_STAFF_ID = "staff_id";
-
-    public static final String COL_COMPLETE_TIME = "complete_time";
+    public static final String COL_REVISION = "revision";
 
     public static final String COL_CREATED_BY = "created_by";
 

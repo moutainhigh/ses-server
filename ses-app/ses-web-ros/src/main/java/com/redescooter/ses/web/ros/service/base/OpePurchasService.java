@@ -1,9 +1,12 @@
 package com.redescooter.ses.web.ros.service.base;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.redescooter.ses.web.ros.dm.OpePurchas;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
-import com.redescooter.ses.web.ros.dm.OpePurchas;
-import com.baomidou.mybatisplus.extension.service.IService;
+@Transactional
 
 public interface OpePurchasService extends IService<OpePurchas> {
 
