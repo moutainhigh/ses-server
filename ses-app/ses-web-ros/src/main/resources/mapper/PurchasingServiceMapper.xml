@@ -200,7 +200,6 @@
         from ope_purchas_trace trace
         inner join ope_sys_user_profile profile on trace.create_by = profile.sys_user_id and profile.dr = 0
         where trace.dr = 0
-        and trace.user_id = #{userId}
         and trace.purchas_id =#{id}
     </select>
 

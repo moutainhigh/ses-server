@@ -196,6 +196,7 @@ public enum ExceptionCodeEnums {
 
     SUPPLIER_IS_NOT_PART_OF_THE_CURRENT_DOCUMENT(10091, "供应商不属于当前单据"),
 
+    WAREHOUSE_IS_NOT_EXIST(10092, "仓库不存在"),
     ;
 
 

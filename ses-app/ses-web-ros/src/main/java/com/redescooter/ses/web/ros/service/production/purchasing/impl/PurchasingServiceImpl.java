@@ -13,6 +13,7 @@ import com.redescooter.ses.api.common.enums.production.purchasing.PaymentTypeEnu
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -22,6 +23,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
+import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.dm.OpePurchas;
@@ -30,8 +32,10 @@ import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
 import com.redescooter.ses.web.ros.dm.OpePurchasPayment;
 import com.redescooter.ses.web.ros.dm.OpePurchasProduct;
 import com.redescooter.ses.web.ros.dm.OpePurchasTrace;
+import com.redescooter.ses.web.ros.dm.OpeStock;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.dm.OpeWhse;
 import com.redescooter.ses.web.ros.dm.PartDetailDto;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -45,8 +49,11 @@ import com.redescooter.ses.web.ros.service.base.OpePurchasPaymentService;
 import com.redescooter.ses.web.ros.service.base.OpePurchasProductService;
 import com.redescooter.ses.web.ros.service.base.OpePurchasService;
 import com.redescooter.ses.web.ros.service.base.OpePurchasTraceService;
+import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
+import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
+import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
@@ -80,6 +87,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -138,6 +146,15 @@ public class PurchasingServiceImpl implements PurchasingService {
 
     @Autowired
     private OpePurchasBQcService opePurchasBQcService;
+
+    @Autowired
+    private OpeWhseService opeWhseService;
+
+    @Autowired
+    private OpeStockService opeStockService;
+
+    @Autowired
+    private OpeStockBillService opeStockBillService;
 
     /**
      * 采购单状态统计
@@ -817,11 +834,97 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Transactional
     @Override
     public GeneralResult purchasingInWh(IdEnter enter) {
+        //采购单状态更新
         OpePurchas opePurchas = checkPurchas(enter.getId(), PurchasingStatusEnums.QC_COMPLETED);
         opePurchas.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
         opePurchas.setUpdatedBy(enter.getUserId());
         opePurchas.setUpdatedTime(new Date());
-//        opePurchasService.updateById(opePurchas);
+        opePurchasService.updateById(opePurchas);
+
+
+        //采购条目
+        QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
+        opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, opePurchas.getId());
+        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
+        List<OpePurchasB> purchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
+
+        List<Long> partIds = Lists.newArrayList();
+        purchasBList.forEach(item -> {
+            partIds.add(item.getPartId());
+        });
+
+        Collection<OpeParts> partsList = opePartsService.listByIds(partIds);
+
+        //查询采购仓库
+        QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+        OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
+        if (opeWhse == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        }
+
+        QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
+        opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, partIds);
+        List<OpeStock> opeStockList = opeStockService.list(opeStockQueryWrapper);
+
+        List<OpeStock> saveStockList = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(opeStockList)) {
+            for (OpePurchasB item : purchasBList) {
+                Boolean stockExist = Boolean.FALSE;
+                for (OpeStock stock : opeStockList) {
+                    if (item.getPartId().equals(stock.getMaterielProductId())) {
+                        stockExist = Boolean.TRUE;
+                        //有库存
+                        stock.setAvailableTotal(stock.getAvailableTotal() + item.getTotalCount());
+                        stock.setIntTotal(stock.getIntTotal() + item.getTotalCount());
+                        stock.setUpdatedBy(enter.getUserId());
+                        stock.setUpdatedTime(new Date());
+                        saveStockList.add(stock);
+                    }
+                }
+                if (!stockExist) {
+                    //无库存
+                    saveStockList.add(OpeStock.builder()
+                            .id(idAppService.getId(SequenceName.OPE_STOCK))
+                            .dr(0)
+                            .userId(0L)
+                            .tenantId(0L)
+                            .whseId(opeWhse.getId())
+                            .intTotal(item.getTotalCount())
+                            .availableTotal(item.getTotalCount())
+                            .outTotal(0)
+                            .wornTotal(0)
+                            .materielProductId(item.getPartId())
+                            .materielProductName(null)
+                            .materielProductType(null)
+                            .revision(0)
+                            .updatedBy(enter.getUserId())
+                            .updatedTime(new Date())
+                            .createdBy(enter.getUserId())
+                            .createdTime(new Date())
+                            .build());
+                }
+            }
+        }
+
+        if (CollectionUtils.isNotEmpty(saveStockList)) {
+            saveStockList.forEach(item -> {
+                partsList.forEach(part -> {
+                    if (item.getMaterielProductId().equals(part.getId())) {
+                        item.setMaterielProductName(part.getCnName());
+                        item.setMaterielProductType(part.getPartsType());
+                    }
+                });
+            });
+        }
+
+        //todo 入库单生成
+
+
+        //todo 入库条目数据保存 暂无
 
         //节点
         SavePurchasingNodeEnter savePurchasingNodeEnter = new SavePurchasingNodeEnter();
@@ -830,7 +933,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         savePurchasingNodeEnter.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
         savePurchasingNodeEnter.setEvent(PurchasingEventEnums.IN_PURCHASING_WH.getValue());
         savePurchasingNodeEnter.setMemo(null);
-//        this.savePurchasingNode(savePurchasingNodeEnter);
+        this.savePurchasingNode(savePurchasingNodeEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
