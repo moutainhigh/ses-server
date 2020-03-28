@@ -224,7 +224,6 @@
         inner join ope_supplier supplier on purchasb.supplier_id = supplier.id and supplier.dr = 0
         left join ope_price_sheet sheet on sheet.parts_id = parts.id and sheet.dr = 0
         where purchasb.dr = 0
-        and purchasb.user_id = #{userId}
         and purchasb.purchas_id =#{id}
     </select>
 

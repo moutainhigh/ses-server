@@ -7,7 +7,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.PurchasingTypeEnums;
+import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
+import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PaymentTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
@@ -33,6 +36,7 @@ import com.redescooter.ses.web.ros.dm.OpePurchasPayment;
 import com.redescooter.ses.web.ros.dm.OpePurchasProduct;
 import com.redescooter.ses.web.ros.dm.OpePurchasTrace;
 import com.redescooter.ses.web.ros.dm.OpeStock;
+import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
@@ -834,6 +838,11 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Transactional
     @Override
     public GeneralResult purchasingInWh(IdEnter enter) {
+        //库存数据更新
+        List<OpeStock> saveStockList = Lists.newArrayList();
+        //入库单数据保存
+        List<OpeStockBill> saveOpeStockBillList = Lists.newArrayList();
+
         //采购单状态更新
         OpePurchas opePurchas = checkPurchas(enter.getId(), PurchasingStatusEnums.QC_COMPLETED);
         opePurchas.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
@@ -870,14 +879,13 @@ public class PurchasingServiceImpl implements PurchasingService {
         opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, partIds);
         List<OpeStock> opeStockList = opeStockService.list(opeStockQueryWrapper);
 
-        List<OpeStock> saveStockList = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(opeStockList)) {
             for (OpePurchasB item : purchasBList) {
                 Boolean stockExist = Boolean.FALSE;
                 for (OpeStock stock : opeStockList) {
                     if (item.getPartId().equals(stock.getMaterielProductId())) {
                         stockExist = Boolean.TRUE;
-                        //有库存
+                        //有库存 库存累计
                         stock.setAvailableTotal(stock.getAvailableTotal() + item.getTotalCount());
                         stock.setIntTotal(stock.getIntTotal() + item.getTotalCount());
                         stock.setUpdatedBy(enter.getUserId());
@@ -908,6 +916,10 @@ public class PurchasingServiceImpl implements PurchasingService {
                             .build());
                 }
             }
+
+            //入库单 形成
+
+
         }
 
         if (CollectionUtils.isNotEmpty(saveStockList)) {
@@ -921,8 +933,10 @@ public class PurchasingServiceImpl implements PurchasingService {
             });
         }
 
-        //todo 入库单生成
+        // todo 入库单生成
+        saveStockList.forEach(item -> {
 
+        });
 
         //todo 入库条目数据保存 暂无
 
