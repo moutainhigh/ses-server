@@ -197,6 +197,14 @@ public enum ExceptionCodeEnums {
     SUPPLIER_IS_NOT_PART_OF_THE_CURRENT_DOCUMENT(10091, "供应商不属于当前单据"),
 
     WAREHOUSE_IS_NOT_EXIST(10092, "仓库不存在"),
+
+    NODE_IS_NOT_EXIST(10093, "节点不存在"),
+
+    ALLOCATE_ORDER_IS_NOT_EXIST(10094, "调拨单不存在"),
+
+    STOCK_IS_NOT_EXIST(10095, "库存不存在"),
+
+    STOCK_IS_SHORTAGE(10096, "库存不足"),
     ;
 
 

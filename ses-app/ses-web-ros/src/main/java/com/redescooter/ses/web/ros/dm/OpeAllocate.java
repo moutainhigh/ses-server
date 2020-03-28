@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,13 +15,13 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeStockBill")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAllocate")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_stock_bill")
-public class OpeStockBill implements Serializable {
+@TableName(value = "ope_allocate")
+public class OpeAllocate implements Serializable {
     /**
      * 主键
      */
@@ -33,14 +34,8 @@ public class OpeStockBill implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
+    @TableLogic
     private Integer dr;
-
-    /**
-     * 用户id
-     */
-    @TableField(value = "user_id")
-    @ApiModelProperty(value = "用户id")
-    private Long userId;
 
     /**
      * 租户id
@@ -50,60 +45,39 @@ public class OpeStockBill implements Serializable {
     private Long tenantId;
 
     /**
-     * 库存id
+     * userid
      */
-    @TableField(value = "stock_id")
-    @ApiModelProperty(value = "库存id")
-    private Long stockId;
+    @TableField(value = "user_id")
+    @ApiModelProperty(value = "userid")
+    private Long userId;
 
     /**
-     * 入库 0:In 出库 1:Out
+     * 调拨编号
      */
-    @TableField(value = "direction")
-    @ApiModelProperty(value = "入库 0:In 出库 1:Out")
-    private String direction;
+    @TableField(value = "allocate_num")
+    @ApiModelProperty(value = "调拨编号")
+    private String allocateNum;
 
     /**
-     * 单据来源ID
-     */
-    @TableField(value = "source_id")
-    @ApiModelProperty(value = "单据来源ID")
-    private Long sourceId;
-
-    /**
-     * 状态:0正常，1异常
+     * 状态
      */
     @TableField(value = "status")
-    @ApiModelProperty(value = "状态:0正常，1异常")
+    @ApiModelProperty(value = "状态")
     private String status;
 
     /**
-     * 入库单数量总计
+     * 数量
      */
-    @TableField(value = "total")
-    @ApiModelProperty(value = "入库单数量总计")
-    private Integer total;
+    @TableField(value = "count")
+    @ApiModelProperty(value = "数量")
+    private Integer count;
 
     /**
-     * 单据来源:1采购入库单，2采购入库单，3调拨入库单，4调拨出库单
+     * 收获人Id
      */
-    @TableField(value = "source_type")
-    @ApiModelProperty(value = "单据来源:1采购入库单，2采购入库单，3调拨入库单，4调拨出库单")
-    private String sourceType;
-
-    /**
-     * 负责人
-     */
-    @TableField(value = "principal_id")
-    @ApiModelProperty(value = "负责人")
-    private Long principalId;
-
-    /**
-     * 操作时间
-     */
-    @TableField(value = "operatine_time")
-    @ApiModelProperty(value = "操作时间")
-    private Date operatineTime;
+    @TableField(value = "consignee_id")
+    @ApiModelProperty(value = "收获人Id")
+    private Long consigneeId;
 
     /**
      * 乐观锁
@@ -181,25 +155,17 @@ public class OpeStockBill implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_USER_ID = "user_id";
-
     public static final String COL_TENANT_ID = "tenant_id";
 
-    public static final String COL_STOCK_ID = "stock_id";
+    public static final String COL_USER_ID = "user_id";
 
-    public static final String COL_DIRECTION = "direction";
-
-    public static final String COL_SOURCE_ID = "source_id";
+    public static final String COL_ALLOCATE_NUM = "allocate_num";
 
     public static final String COL_STATUS = "status";
 
-    public static final String COL_TOTAL = "total";
+    public static final String COL_COUNT = "count";
 
-    public static final String COL_SOURCE_TYPE = "source_type";
-
-    public static final String COL_PRINCIPAL_ID = "principal_id";
-
-    public static final String COL_OPERATINE_TIME = "operatine_time";
+    public static final String COL_CONSIGNEE_ID = "consignee_id";
 
     public static final String COL_REVISION = "revision";
 
@@ -220,8 +186,4 @@ public class OpeStockBill implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpeStockBillBuilder builder() {
-        return new OpeStockBillBuilder();
-    }
 }

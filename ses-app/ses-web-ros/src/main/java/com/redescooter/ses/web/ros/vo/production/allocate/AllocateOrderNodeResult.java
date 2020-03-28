@@ -47,6 +47,9 @@ public class AllocateOrderNodeResult extends GeneralResult {
     @ApiModelProperty(value = "创建人")
     private String createdByLastName;
 
+    @ApiModelProperty(value = "创建人")
+    private String createdByFullName;
+
     @ApiModelProperty(value = "创建时间")
     @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)

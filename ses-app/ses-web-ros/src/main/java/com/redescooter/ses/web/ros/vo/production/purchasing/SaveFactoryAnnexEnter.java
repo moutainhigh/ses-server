@@ -38,6 +38,6 @@ public class SaveFactoryAnnexEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ANNEX_IS_EMPTY, message = "附件为空")
     private String factoryAnnexPicture;
 
-    @ApiModelProperty(value = "供应商附件列表 格式：id：1000，picture：www.baidu.com", required = true)
-    private String supplierAnnexPictureList;
+    @ApiModelProperty(value = "供应商附件列表 格式：id：1000，annex：www.baidu.com", required = true)
+    private String purchasSupplierResultList;
 }

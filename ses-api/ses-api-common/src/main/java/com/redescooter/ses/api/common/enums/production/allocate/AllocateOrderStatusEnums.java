@@ -16,10 +16,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum AllocateOrderStatusEnums {
 
-    PENDING("PENDING", "待处理", "1"),
-    INPROGRESS("INPROGRESS", "进行中", "2"),
-    INPRODUCTIONWH("INPRODUCTIONWH", "入库", "3"),
-    CANCELLED("CANCELLED", "取消", "4");
+    PENDING("PENDING", "创建", "1"),
+    INPROGRESS("INPROGRESS", "备料", "2"),
+    ALLOCATE("ALLOCATE", "调拨", "3"),
+    INPRODUCTIONWH("INPRODUCTIONWH", "入库", "4"),
+    CANCELLED("CANCELLED", "取消", "5");
 
     private String code;
 

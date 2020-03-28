@@ -1,15 +1,19 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.tool.utils.DateUtil;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,8 +54,13 @@ public class PruchasingItemResult extends GeneralResult {
     @ApiModelProperty(value = "供应商")
     private String supplierName;
 
-    @ApiModelProperty(value = "交货时间")
+    @ApiModelProperty(value = "生产周期")
     private Integer leadTime;
+
+    @ApiModelProperty(value = "应交货时间")
+    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    private Date dueTime;
 
     @ApiModelProperty(value = "价格")
     private BigDecimal price;

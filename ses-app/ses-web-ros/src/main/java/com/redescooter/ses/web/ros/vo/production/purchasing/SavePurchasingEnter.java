@@ -67,6 +67,6 @@ public class SavePurchasingEnter extends GeneralEnter {
     private String remark;
 
     @ApiModelProperty(value = "付款周期，格式：estimatedPaymentDate：2020-3-2 00：00：00，paymentRatio:20.2，price:20.1,remark:123")
-    @NotNull(code = ValidationExceptionCode.PAYMENTINFO_IS_EMPTY, message = "付款信息")
+//    @NotNull(code = ValidationExceptionCode.PAYMENTINFO_IS_EMPTY, message = "付款信息")
     private String paymentInfoList;
 }

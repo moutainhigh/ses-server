@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.service.production.allocate;
 
+import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.ProductPartsListEnter;
 import com.redescooter.ses.web.ros.vo.production.ProductPartsResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderEnter;
@@ -29,6 +31,14 @@ public interface AllocateService {
      * @return
      */
     Map<String, Integer> countByType(GeneralEnter enter);
+
+    /**
+     * 状态列表
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, String> statusList(GeneralEnter enter);
 
     /**
      * 调拨单列表
@@ -102,4 +112,18 @@ public interface AllocateService {
      */
     GeneralResult saveAllocate(SaveAllocateEnter enter);
 
+    /**
+     * 收件人列表
+     *
+     * @param enter
+     * @return
+     */
+    List<ConsigneeResult> consigneeList(GeneralEnter enter);
+
+    /**
+     * 保存节点
+     *
+     * @return
+     */
+    GeneralResult saveAllocateNode(SaveNodeEnter enter);
 }

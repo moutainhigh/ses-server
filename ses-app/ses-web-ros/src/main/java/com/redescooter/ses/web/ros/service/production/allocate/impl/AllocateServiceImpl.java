@@ -1,25 +1,62 @@
 package com.redescooter.ses.web.ros.service.production.allocate.impl;
 
+import cn.hutool.core.util.RandomUtil;
+import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Maps;
-import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
-import com.redescooter.ses.api.common.enums.production.PurchasingTypeEnums;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
+import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
+import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
+import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderEventEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.WhseTypeEnums;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.production.AllocateServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeAllocate;
+import com.redescooter.ses.web.ros.dm.OpeAllocateB;
+import com.redescooter.ses.web.ros.dm.OpeAllocateTrace;
+import com.redescooter.ses.web.ros.dm.OpeStock;
+import com.redescooter.ses.web.ros.dm.OpeStockBill;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.dm.OpeWhse;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeAllocateBService;
+import com.redescooter.ses.web.ros.service.base.OpeAllocateService;
+import com.redescooter.ses.web.ros.service.base.OpeAllocateTraceService;
+import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
+import com.redescooter.ses.web.ros.service.base.OpeStockService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
+import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.allocate.AllocateService;
+import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.ProductPartsListEnter;
 import com.redescooter.ses.web.ros.vo.production.ProductPartsResult;
+import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderNodeResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderPartResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAllocateEnter;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +72,33 @@ import java.util.Map;
 @Service
 public class AllocateServiceImpl implements AllocateService {
 
+    @Autowired
+    private AllocateServiceMapper allocateServiceMapper;
+
+    @Autowired
+    private OpeAllocateService opeAllocateService;
+
+    @Autowired
+    private OpeSysUserProfileService opeSysUserProfileService;
+
+    @Autowired
+    private OpeWhseService opeWhseService;
+
+    @Autowired
+    private OpeStockService opeStockService;
+
+    @Reference
+    private IdAppService idAppService;
+
+    @Autowired
+    private OpeAllocateTraceService opeAllocateTraceService;
+
+    @Autowired
+    private OpeStockBillService opeStockBillService;
+
+    @Autowired
+    private OpeAllocateBService opeAllocateBService;
+
     /**
      * 类型统计
      *
@@ -42,11 +106,37 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public Map<String, Integer> countByType(GeneralEnter enter) {
-        Map<String, Integer> stringMap = Maps.newHashMap();
-        for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
-            stringMap.put(item.getValue(), 0);
+
+        List<CountByStatusResult> countByStatusResultList = allocateServiceMapper.countByType(enter);
+
+        Map<String, Integer> map = Maps.newHashMap();
+        if (CollectionUtils.isNotEmpty(countByStatusResultList)) {
+            countByStatusResultList.forEach(item -> {
+                map.put(item.getStatus(), item.getTotalCount());
+            });
         }
-        return stringMap;
+
+        for (ProductionTypeEnums item : ProductionTypeEnums.values()) {
+            if (!map.containsKey(item.getValue())) {
+                map.put(item.getValue(), 0);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 状态列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, String> statusList(GeneralEnter enter) {
+        Map<String, String> map = Maps.newHashMap();
+        for (AllocateOrderStatusEnums item : AllocateOrderStatusEnums.values()) {
+            map.put(item.getValue(), item.getCode());
+        }
+        return map;
     }
 
     /**
@@ -57,20 +147,25 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public PageResult<AllocateOrderResult> list(AllocateOrderEnter enter) {
-        List<AllocateOrderResult> list = Lists.newArrayList();
-        list.add(AllocateOrderResult.builder()
-                .id(10000L)
-                .allocateN("423423432423")
-                .status(AllocateOrderStatusEnums.INPROGRESS.getValue())
-                .qty(100)
-                .consigneeId(100000L)
-                .consigneeFirstName("alex")
-                .consigneeLastName("alex")
-                .consigneePhone("324234234")
-                .consigneeEmail("alex@13.com")
-                .createdTime(new Date())
-                .build());
-        return PageResult.create(enter, 1, list);
+
+        List<String> statusList = Lists.newArrayList();
+        if (StringUtils.equals(ProductionTypeEnums.TODO.getValue(), enter.getType())) {
+            for (AllocateOrderStatusEnums item : AllocateOrderStatusEnums.values()) {
+                statusList.add(item.getValue());
+            }
+            statusList.remove(AllocateOrderStatusEnums.CANCELLED.getValue());
+            statusList.remove(AllocateOrderStatusEnums.INPRODUCTIONWH.getValue());
+        } else {
+            statusList.remove(AllocateOrderStatusEnums.CANCELLED.getValue());
+            statusList.remove(AllocateOrderStatusEnums.INPRODUCTIONWH.getValue());
+        }
+
+        int count = allocateServiceMapper.allocateListCount(enter, statusList);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<AllocateOrderResult> allocateOrderResultList = allocateServiceMapper.allocateList(enter, statusList);
+        return PageResult.create(enter, count, allocateOrderResultList);
     }
 
     /**
@@ -81,18 +176,11 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public AllocateOrderResult detail(IdEnter enter) {
-        return AllocateOrderResult.builder()
-                .id(10000L)
-                .allocateN("423423432423")
-                .status(AllocateOrderStatusEnums.INPROGRESS.getValue())
-                .qty(100)
-                .consigneeId(100000L)
-                .consigneeFirstName("alex")
-                .consigneeLastName("alex")
-                .consigneePhone("324234234")
-                .consigneeEmail("alex@13.com")
-                .createdTime(new Date())
-                .build();
+        AllocateOrderResult detail = allocateServiceMapper.detail(enter);
+        if (detail == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+        }
+        return detail;
     }
 
     /**
@@ -103,17 +191,15 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public List<AllocateOrderNodeResult> allocateOrderNode(IdEnter enter) {
-        List<AllocateOrderNodeResult> list = Lists.newArrayList();
-        list.add(AllocateOrderNodeResult.builder()
-                .id(1000000L)
-                .status(AllocateOrderStatusEnums.INPROGRESS.getValue())
-                .event(AllocateOrderEventEnums.INPROGRESS.getValue())
-                .createdBy(100000L)
-                .createdByFirstName("liuke")
-                .createdByLastName("eqweqw")
-                .createdTime(new Date())
-                .build());
-        return list;
+        OpeAllocate opeAllocate = opeAllocateService.getById(enter.getId());
+        if (opeAllocate == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+        }
+        List<AllocateOrderNodeResult> allocateOrderNodeList = allocateServiceMapper.allocateOrderNodeList(enter);
+        if (CollectionUtils.isEmpty(allocateOrderNodeList)) {
+            return Lists.newArrayList();
+        }
+        return allocateOrderNodeList;
     }
 
     /**
@@ -124,16 +210,16 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public List<AllocateOrderPartResult> allocateOrderDetailPartsList(IdEnter enter) {
-        List<AllocateOrderPartResult> list = Lists.newArrayList();
-        list.add(AllocateOrderPartResult.builder()
-                .id(100000L)
-                .partsN("4234234234")
-                .type(BomCommonTypeEnums.BATTERY.getValue())
-                .enName("dadasdasda")
-                .cnName("eerrrwerqwe")
-                .qty(10000)
-                .build());
-        return list;
+        OpeAllocate opeAllocate = opeAllocateService.getById(enter.getId());
+        if (opeAllocate == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+        }
+
+        List<AllocateOrderPartResult> allocateOrderPartResultList = allocateServiceMapper.allocateOrderDetailPartsList(enter);
+        if (CollectionUtils.isEmpty(allocateOrderPartResultList)) {
+            return new ArrayList<>();
+        }
+        return allocateOrderPartResultList;
     }
 
     /**
@@ -166,19 +252,11 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public List<ProductPartsResult> allocatePartsList(ProductPartsListEnter enter) {
-        List<ProductPartsResult> list = Lists.newArrayList();
-        list.add(ProductPartsResult.builder()
-                .id(100000L)
-                .partsN("4234234234")
-                .type(BomCommonTypeEnums.BATTERY.getValue())
-                .enName("dadasdasda")
-                .cnName("eerrrwerqwe")
-                .supplierId(10000L)
-                .supplierName("Flex")
-                .leadTime(20)
-                .stocks(2000)
-                .build());
-        return list;
+        List<ProductPartsResult> result = allocateServiceMapper.allocatePartsList(enter);
+        if (CollectionUtils.isEmpty(result)) {
+            return Lists.newArrayList();
+        }
+        return result;
     }
 
     /**
@@ -198,8 +276,215 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult saveAllocate(SaveAllocateEnter enter) {
-        return null;
+        //配件、付款信息转换
+        List<ProductionPartsEnter> productionPartsEnterList = null;
+        // 出库单集合
+        List<OpeStockBill> saveStockBill = Lists.newArrayList();
+        // 调拨单条目
+        List<OpeAllocateB> opeAllocateBList = Lists.newArrayList();
+        //调拨单节点
+        OpeAllocateTrace opeAllocateTrace = null;
+        //库存更新集合
+        List<OpeStock> opeStockList = null;
+
+        try {
+            productionPartsEnterList = JSONArray.parseArray(enter.getPartList(), ProductionPartsEnter.class);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        Long allocateId = idAppService.getId(SequenceName.OPE_ALLOCATE);
+
+        List<Long> partIds = Lists.newArrayList();
+        productionPartsEnterList.forEach(item -> {
+            partIds.add(item.getId());
+        });
+
+        //查询采购仓库
+        QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+        OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
+        if (opeWhse == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        }
+        //查询库存
+        QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
+        opeStockQueryWrapper.in(OpeStock.COL_ID, partIds);
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
+        opeStockList = opeStockService.list(opeStockQueryWrapper);
+
+        //库存数据 过滤 及封装
+        Integer totalCount = 0;
+        totalCount = buildStockDateSingle(enter, productionPartsEnterList, saveStockBill, opeStockList, allocateId, totalCount, opeAllocateBList);
+
+        //订单节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(allocateId);
+        saveNodeEnter.setStatus(AllocateOrderStatusEnums.PENDING.getValue());
+        saveNodeEnter.setEvent(AllocateOrderEventEnums.PENDING.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveAllocateNode(saveNodeEnter);
+
+        //调拨单构建
+        OpeAllocate opeAllocate = buildOpeAllocateSingle(enter, allocateId, totalCount);
+        //出库单 保存
+        opeStockBillService.saveBatch(saveStockBill);
+        //库存更新
+        opeStockService.updateBatchById(opeStockList);
+        //调拨单保存
+        opeAllocateService.save(opeAllocate);
+        //调拨单子表保存
+        opeAllocateBService.saveBatch(opeAllocateBList);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    private Integer buildStockDateSingle(SaveAllocateEnter enter, List<ProductionPartsEnter> productionPartsEnterList, List<OpeStockBill> saveStockBill, List<OpeStock> opeStockList, Long allocateId
+            , Integer totalCount, List<OpeAllocateB> opeAllocateBList) {
+        if (CollectionUtils.isNotEmpty(opeStockList)) {
+            for (ProductionPartsEnter part : productionPartsEnterList) {
+                Boolean stockExist = Boolean.FALSE;
+                for (OpeStock item : opeStockList) {
+                    if (part.getId().equals(item.getId())) {
+                        stockExist = Boolean.TRUE;
+                        //校验库存 是否充足
+                        if (part.getQty() > item.getAvailableTotal()) {
+                            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                        }
+                        //出库单生成
+                        saveStockBill.add(buildStockBillSingle(enter, allocateId, part, item));
+                        totalCount += part.getQty();
+                        item.setAvailableTotal(item.getAvailableTotal() - part.getQty());
+                        item.setOutTotal(item.getOutTotal() + part.getQty());
+                        item.setUpdatedBy(enter.getUserId());
+                        item.setUpdatedTime(new Date());
+
+                        opeAllocateBList.add(buildOpeAllocateBSingle(enter, allocateId, part, item));
+                    }
+                    if (stockExist) {
+                        break;
+                    }
+                }
+                //校验库存是否存在
+                if (!stockExist) {
+                    throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+                }
+            }
+        } else {
+            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+        }
+        return totalCount;
+    }
+
+    private OpeAllocateB buildOpeAllocateBSingle(SaveAllocateEnter enter, Long allocateId, ProductionPartsEnter part, OpeStock item) {
+        return OpeAllocateB.builder()
+                .id(idAppService.getId(SequenceName.OPE_ALLOCATE_B))
+                .dr(0)
+                .userId(enter.getUserId())
+                .tenantId(0L)
+                .allocateId(allocateId)
+                .partId(item.getMaterielProductId())
+                .materielProductId(0L)
+                .materielProductType(null)
+                .total(part.getQty())
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .build();
+    }
+
+    private OpeAllocate buildOpeAllocateSingle(SaveAllocateEnter enter, Long allocateId, int totalCount) {
+        return OpeAllocate.builder()
+                .id(allocateId)
+                .dr(0)
+                .tenantId(0L)
+                .userId(enter.getUserId())
+                .allocateNum("REDE" + String.valueOf(RandomUtil.randomDouble(999999, 10000000)))
+                .status(AllocateOrderStatusEnums.PENDING.getValue())
+                .count(totalCount)
+                .consigneeId(enter.getConsigneeId())
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+    }
+
+    private OpeStockBill buildStockBillSingle(SaveAllocateEnter enter, Long allocateId, ProductionPartsEnter part, OpeStock item) {
+        return OpeStockBill.builder()
+                .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
+                .dr(0)
+                .tenantId(0L)
+                .userId(enter.getUserId())
+                .stockId(item.getId())
+                .direction(InOutWhEnums.OUT.getValue())
+                .status(StockBillStatusEnums.NORMAL.getValue())
+                .sourceId(allocateId)
+                .total(part.getQty())
+                .sourceType(SourceTypeEnums.ALLOCATE.getValue())
+                .principalId(enter.getUserId())
+                .operatineTime(new Date())
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+    }
+
+    /**
+     * 收件人列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ConsigneeResult> consigneeList(GeneralEnter enter) {
+        List<ConsigneeResult> consigneeResultlist = new ArrayList<>();
+        QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
+        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+        opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_SYS_USER_ID, Constant.ADMINUSERID);
+        List<OpeSysUserProfile> opeSysUserProfileList = opeSysUserProfileService.list(opeSysUserProfileQueryWrapper);
+        opeSysUserProfileList.forEach(item -> {
+            consigneeResultlist.add(ConsigneeResult.builder()
+                    .id(item.getSysUserId())
+                    .firstName(item.getFirstName())
+                    .lastName(item.getLastName())
+                    .phoneCountryCode(item.getCountryCode())
+                    .phone(item.getTelNumber())
+                    .build());
+        });
+        return consigneeResultlist;
+    }
+
+    /**
+     * 保存节点
+     *
+     * @return
+     */
+    @Override
+    public GeneralResult saveAllocateNode(SaveNodeEnter enter) {
+        opeAllocateTraceService.save(OpeAllocateTrace.builder()
+                .id(idAppService.getId(SequenceName.OPE_PURCHAS_TRACE))
+                .dr(0)
+                .tenantId(0L)
+                .userId(enter.getUserId())
+                .allocateId(enter.getId())
+                .status(enter.getStatus())
+                .event(enter.getEvent())
+                .eventTime(new Date())
+                .memo(StringUtils.isBlank(enter.getMemo()) == true ? null : enter.getMemo())
+                .createBy(enter.getUserId())
+                .createTime(new Date())
+                .updateBy(enter.getUserId())
+                .updateTime(new Date())
+                .build());
+        return new GeneralResult(enter.getRequestId());
     }
 }

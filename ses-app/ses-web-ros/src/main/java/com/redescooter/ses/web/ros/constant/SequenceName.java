@@ -68,4 +68,10 @@ public interface SequenceName {
     String OPE_STOCK_BILL = "OPE_STOCK_BILL";
 
     String OPE_STOCK = "OPE_STOCK";
+
+    String OPE_ALLOCATE = "OPE_ALLOCATE";
+
+    String OPE_ALLOCATE_TRACE = "OPE_ALLOCATE_TRACE";
+
+    String OPE_ALLOCATE_B = "OPE_ALLOCATE_B";
 }
