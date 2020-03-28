@@ -25,6 +25,9 @@ import io.swagger.annotations.*;
 public class ProductPartsListEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "供应商Id 根据调用场景，决定是否需要传")
+    private String type;
+
+    @ApiModelProperty(value = "供应商Id 根据调用场景，决定是否需要传")
     private String supplierId;
 
     @ApiModelProperty(value = "关键字")

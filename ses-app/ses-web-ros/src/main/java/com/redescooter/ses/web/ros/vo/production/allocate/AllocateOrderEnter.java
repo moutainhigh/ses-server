@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.production.allocate;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -27,6 +29,7 @@ import java.util.Date;
 public class AllocateOrderEnter extends PageEnter {
 
     @ApiModelProperty(value = "类型", required = true)
+    @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "类型为空")
     private String type;
 
     @ApiModelProperty(value = "状态")

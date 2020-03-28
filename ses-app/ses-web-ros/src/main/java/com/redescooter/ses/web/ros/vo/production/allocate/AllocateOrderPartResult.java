@@ -27,6 +27,9 @@ public class AllocateOrderPartResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "部品id")
+    private Long partId;
+
     @ApiModelProperty(value = "部品号")
     private String partsN;
 

@@ -30,5 +30,5 @@ public class SaveSupplierAnnexEnter extends GeneralEnter {
     private Long partsId;
 
     @ApiModelProperty(value = "附件图片")
-    private String picture;
+    private String annex;
 }

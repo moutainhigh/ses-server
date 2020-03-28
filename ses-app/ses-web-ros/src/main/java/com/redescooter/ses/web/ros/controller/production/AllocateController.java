@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.production.allocate.AllocateService;
+import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.ProductPartsListEnter;
 import com.redescooter.ses.web.ros.vo.production.ProductPartsResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderEnter;
@@ -99,8 +100,14 @@ public class AllocateController {
     }
 
     @PostMapping(value = "/save")
-    @ApiOperation(value = "调拨单入库", response = GeneralResult.class)
+    @ApiOperation(value = "保存调拨单", response = GeneralResult.class)
     public Response<GeneralResult> saveAllocate(@ModelAttribute @ApiParam("请求参数") SaveAllocateEnter enter) {
         return new Response<>(allocateService.saveAllocate(enter));
+    }
+
+    @PostMapping(value = "/consigneeList")
+    @ApiOperation(value = "调拨单收获人列表", response = ConsigneeResult.class)
+    public Response<List<ConsigneeResult>> consigneeList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(allocateService.consigneeList(enter));
     }
 }

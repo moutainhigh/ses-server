@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum PurchasingTypeEnums {
+public enum ProductionTypeEnums {
 
     TODO("TODO", "待办事项", "1"),
     HISTORY("HISTORY", "历史", "2");
@@ -26,7 +26,7 @@ public enum PurchasingTypeEnums {
     private String value;
 
     public static String checkCode(String value) {
-        for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
+        for (ProductionTypeEnums item : ProductionTypeEnums.values()) {
             if (item.getValue().equals(value)) {
                 return item.getValue();
             }
@@ -34,8 +34,8 @@ public enum PurchasingTypeEnums {
         return null;
     }
 
-    public static PurchasingTypeEnums getEnumByValue(String value) {
-        for (PurchasingTypeEnums item : PurchasingTypeEnums.values()) {
+    public static ProductionTypeEnums getEnumByValue(String value) {
+        for (ProductionTypeEnums item : ProductionTypeEnums.values()) {
             if (item.getValue().equals(value)) {
                 return item;
             }

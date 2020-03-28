@@ -1,13 +1,13 @@
-package com.redescooter.ses.web.ros.vo.production.purchasing;
+package com.redescooter.ses.api.common.vo;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import io.swagger.annotations.*;
 
 /**
  * @ClassName:SavePurchasingNodeEnter
@@ -22,10 +22,10 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SavePurchasingNodeEnter extends GeneralEnter {
+public class SaveNodeEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "采购单Id")
-    private Long purchasId;
+    private Long id;
 
     @ApiModelProperty(value = "采购单状态")
     private String status;

@@ -129,7 +129,7 @@
         from ope_parts_product product
         inner join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1
         <where>
-
+            and product.dr=0
             <if test="enter.productType !=null and enter.productType !=''">
             </if>
             <choose>
@@ -201,6 +201,7 @@
         inner join ope_sys_user_profile profile on trace.create_by = profile.sys_user_id and profile.dr = 0
         where trace.dr = 0
         and trace.purchas_id =#{id}
+        order by trace.create_time asc
     </select>
 
     <select id="pruchasingDetailProductList"
@@ -210,7 +211,7 @@
         parts.parts_number as partsN,
         parts.cn_name as cnName,
         parts.en_name as enName,
-        parts.parts_type as type,
+        parts.parts_type as productType,
         purchasb.supplier_id as supplierId,
         supplier.supplier_name as supplierName,
         parts.production_cycle as leadTime,

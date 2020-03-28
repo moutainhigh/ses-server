@@ -164,12 +164,6 @@ public class PurchasingController {
         return new Response<>(purchasingService.saveFactoryAnnex(enter));
     }
 
-    @PostMapping(value = "/startQc")
-    @ApiOperation(value = "开始qc 质检", response = GeneralResult.class)
-    public Response<GeneralResult> startQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(purchasingService.startQc(enter));
-    }
-
     @PostMapping(value = "/againQc")
     @ApiOperation(value = "再次qc质检", response = GeneralResult.class)
     public Response<GeneralResult> againQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -205,6 +199,13 @@ public class PurchasingController {
     public Response<GeneralResult> qcFailExport(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(purchasingService.qcFailExport(enter));
     }
+
+    @PostMapping(value = "/cancel")
+    @ApiOperation(value = "取消采购单", response = GeneralResult.class)
+    public Response<GeneralResult> cancel(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(purchasingService.cancel(enter));
+    }
+
 
     @PostMapping(value = "/scanBarCode")
     @ApiOperation(value = "模拟扫码枪质检", response = GeneralResult.class)
