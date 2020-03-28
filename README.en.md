@@ -25,24 +25,25 @@
 
 ## product description
  SES products mainly serve the intelligent electric vehicle Internet of Things industry, and provide customers with convenient and fast service, the principle of customer first.
- -SoftwareasaService software as a service, referred to as SaaS system. It is an Internet of Things information service platform independently developed by RedEGroup through the combination of Internet information technology and smart energy vehicles.
- -RedE's internal intelligent office management system, referred to as ROS, is a management tool based on the "customer relationship management system" business model, which is independently developed by the company and is only used for internal office use.
- -App based on RedESaaS system and smart vehicle SCS. It is an Internet of Things product focusing on the distribution industry, combining Internet technology with smart cars.
+ - SoftwareasaService software as a service, referred to as SaaS system. It is an Internet of Things information service platform independently developed by RedEGroup through the combination of Internet information technology and smart energy vehicles.
+ - RedE's internal intelligent office management system, referred to as ROS, is a management tool based on the "customer relationship management system" business model, which is independently developed by the company and is only used for internal office use.
+ - App based on RedESaaS system and smart vehicle SCS. It is an Internet of Things product focusing on the distribution industry, combining Internet technology with smart cars.
   
 ## Purpose
-  -SasS system, which provides enterprise-level customers with integrated management, analysis, online ordering, distribution, one-click distribution, navigation, cycling, and supervision as a whole. Customers do not need to purchase hardware, build a computer room, download applications, and recruit IT staff to use it through the Internet.
-  -RedE's internal intelligent office management system helps all internal staff to complete all daily tasks intelligently, efficiently, and conveniently, solves the user's pain points of traditional manual or repetitive labor of office staff, and realizes the efficient use of information resources, thereby maximizing Limit the improvement of work efficiency and quality. Collects and analyzes all offline business, platform, information, visualization, standardization, using modern Internet technology to provide accurate, credible and evidence-based data
-  -Based on the RedESaaS system and the APP used in the smart vehicle SCS, enterprise customers can create several riders through the SaaS platform to use the APP. Riders can use the APP to achieve remote control and supervision of vehicles, and the order delivery, statistics and seamless docking.
+ - SasS system, which provides enterprise-level customers with integrated management, analysis, online ordering, distribution, one-click distribution, navigation, cycling, and supervision as a whole. Customers do not need to purchase hardware, build a computer room, download applications, and recruit IT staff to use it through the Internet.
+ - RedE's internal intelligent office management system helps all internal staff to complete all daily tasks intelligently, efficiently, and conveniently, solves the user's pain points of traditional manual or repetitive labor of office staff, and realizes the efficient use of information resources, thereby maximizing Limit the improvement of work efficiency and quality. Collects and analyzes all offline business, platform, information, visualization, standardization, using modern Internet technology to provide accurate, credible and evidence-based data
+ - Based on the RedESaaS system and the APP used in the smart vehicle SCS, enterprise customers can create several riders through the SaaS platform to use the APP. Riders can use the APP to achieve remote control and supervision of vehicles, and the order delivery, statistics and seamless docking.
 
 ## range
-  This document is based on the requirements of the RedE market, reorganizing and confirming the establishment. Mainly used as the basis for product requirements, system prototypes, version iterations, business processes, and logic descriptions.
+  This document is based on the requirements of the RedE market, reorganizing and confirming the establishment. 
+  Mainly used as the basis for product requirements, system prototypes, version iterations, business processes, and logic descriptions.
   
 ## Document usage
  Mainly product team, design team, technical team, test team, operation and marketing team.
  
 ### 1. Technical Selection
 
--Language framework
+- Language framework
 	- JDK 1.8
 	- Spring Boot 2.1.9.RELEASE
     - Spring Security
@@ -57,10 +58,10 @@
 	- Swagger 2.8.0
 	- Xxl job 
 	- TX-LCN分布式事务框架
--Build tools
+- Build tools
 	- Intellij IDEA Ultimate 2019.2
 	- Maven
--System
+- System
 	- Windows 10
 	- Mac Os
 
