@@ -1,17 +1,46 @@
-
-![RedEScooter](https://rede.oss-cn-shanghai.aliyuncs.com/project/redescooter.png)      
-###### <div align=right>RedE Scooter 2019
+![RedEScooter](https://rede.oss-cn-shanghai.aliyuncs.com/project/redescooter.png)         
+<h1 align="center"><a href="https://github.com/mrjerryli/ses-server" target="_blank">RedE Scooter</a></h1>
+     
+###### <div align=right>2019~2020
 
 <div align=center>
 
-[![ses-server](https://img.shields.io/badge/ses_server-1.2-red.svg)](https://github.com/mrjerryli/ses-server)
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg?label=Maven%20Central)](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.apache.maven%22%20AND%20a%3A%22apache-maven%22)
+[![Author](https://img.shields.io/badge/Author-RedE开发团队-orange.svg?logo=data:image/png;base64,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)](https://redescooter.com/)
+[![Vresion](https://img.shields.io/badge/Vresion-1.2.0-red.svg?logo=Vimeo)](https://github.com/mrjerryli/ses)
+[![Status](https://img.shields.io/badge/Status-Develop-critical.svg?logo=Statuspage)](https://redescooter.com/)
+[![JDK](https://img.shields.io/badge/JDK-1.8.0_162-orange.svg?logo=java)](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
+[![Maven Central](https://img.shields.io/badge/Maven_Central-3.6.1-Central.svg?logo=Apache-Maven)](https://maven.apache.org/ref/3.6.1/)
+[![Dubbo](https://img.shields.io/badge/Dubbo-2.7.3-blue.svg?logo=data:image/png;base64,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)](http://dubbo.apache.org/zh-cn/index.html)
+[![Spring_Boot](https://img.shields.io/badge/Spring_Boot-2.2.5.RELEASE-brightgreen.svg?logo=Spring)](https://docs.spring.io/spring-boot/docs/2.2.5.RELEASE/reference/html)
+[![Redis](https://img.shields.io/badge/Redis-5.0-DC382D.svg?logo=Redis)](https://redis.io/download/)
+[![Mysql](https://img.shields.io/badge/Mysql-5.x-4479A1.svg?logo=MySQL)](https://www.mysql.com/downloads/)
+[![Swagger](https://img.shields.io/badge/Swagger-2.8.0-85EA2D.svg?logo=Swagger)](https://swagger.io/)
+[![Vue](https://img.shields.io/badge/Vue-2.x-4FC08D.svg?logo=Vue.js)](https://swagger.io/)
 
 </div>
 
-## <div align=center>[多租户分布式架构(dubbo版)](https://github.com/mrjerryli/ses-server) `Sv 1.2.0` 
+<p align="center">
+  <span><a href="./README.md">中文</a> | <a href="./README.en.md">English</a></span>
+</p>
+
+## 产品概述
+ `SES`产品，主要服务于智能电动车物联网行业，为客户提供方便，快捷的服务，宗旨客户至上的原则。
+ - `Softwareasa Service`软件即服务，简称SaaS系统。是RedEGroup通过互联网信息技术，结合智能能源车所自主开发的物联网信息服务平台。
+ - `RedE`内部智能办公管理系统，简称`ROS`，是基于“客户关系管理系统”的业务模式，加入本公司实际业务需求，所自主开发的，仅供内部办公使用的管理工具。
+ - 基于RedESaaS系统以及智能车载`SCS`配套使用的APP。是一款专注于配送行业，以互联网技术结合智能车载的物联网产品。
+  
+## 目的 
+  - SasS系统，为企业级客户提供，集管理，分析，在线下单，分配，一键配送，导航，骑行，监管为一体的智能配送服务。客户无需购买硬件、建设机房、下载应用，招聘IT人员，即可通过互联网进行使用。
+  - RedE内部智能办公管理系统，帮助内部所有工作人员，智能，高效，便捷的完成日常所有工作，解决办公人员传统的部分手动或重复性劳动的用户痛点，实现对信息资源的高效利用，进而最大限度的提高工作效率和质量。将所有线下业务，平台化，信息化，可视化，标准化，利用现代互联网技术，收集并分析各项数据，为企业提供精准，可信，有依据的数据
+  - 基于RedESaaS系统以及智能车载SCS配套使用的APP，企业级客户可通过SaaS平台创建若干骑手来使用该APP。骑手可通过使用APP，实现对车辆的远程操控及监管，对订单的派送，统计无缝对接。
+
+## 范围
+  本文档基于RedE市场需求，重新梳理并确认所建立。主要作为产品需求，系统原型，版本迭代，业务流程，逻辑说明的依据。
+  
+## 文档使用
+ 主要为产品团队，设计团队，技术团队，测试团队，运营及市场团队。
  
-#### 一、技术选型
+### 一、技术选型
 
 - 语言框架
 	- JDK 1.8
@@ -34,10 +63,9 @@
 - 系统
 	- Windows 10
 	- Mac Os
-
 ---
 
-#### 二、框架搭建
+### 二、框架搭建
 
 - [x] 基础框架
     - [x] 父模块、通用模块创建
@@ -57,7 +85,6 @@
     - [ ] Spring Security
     - [ ] Spring security Oauth2
     - [ ] Spring Security OAuth2 SSO
-    
 - [ ] 业务完善
     - [X] BUOOB整合各服务
     - [X] 整合第三方服务
@@ -66,7 +93,7 @@
 
 ---
 
-#### 三、项目结构说明
+### 三、项目结构说明
 ```text
 ses-server
   ├── ses-api                                                         接口API暴露层
@@ -114,11 +141,11 @@ ses-server
 ```
 ---
 
-#### 四、RedE架构体系图
+### 四、RedE架构体系图
 
-![rede体系图](https://rede.oss-cn-shanghai.aliyuncs.com/project/rede.png)
+![rede体系图]()
 
-#### 四、相关文档
+### 五、相关文档
 
 | Name | Documentation|
 | ---------- | ---------------------------------------- |
@@ -131,14 +158,13 @@ ses-server
 | [Spring Security Oauth](https://projects.spring.io/spring-security-oauth/docs/oauth2.html)|https://projects.spring.io/spring-security-oauth/docs/oauth2.html|
 
 
-#### 五、相关命令
+### 六、打包
 
 1. maven 多环境打包命令
 ```shell script
 mvn clean package -Dmaven.test.skip=true -Pprod
-
 ```
-#### 六、Git分支规范
+### 七、Git分支规范
 分支命名
 * master 分支
 ```text
@@ -146,13 +172,11 @@ master 为主分支，也是用于部署生产环境的分支，确保master分�
 master 分支一般由develop以及hotfix分支合并，任何时间都不能直接修改代码
 ```
 
-
 * develop 分支
 ```text
 develop 为开发分支，始终保持最新完成以及bug修复后的代码
 一般开发的新功能时，feature分支都是基于develop分支下创建的
 ```
-
 
 * feature 分支
 ```text
