@@ -18,6 +18,7 @@ import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStat
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.NodeResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -67,12 +68,11 @@ import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
 import com.redescooter.ses.web.ros.vo.production.SaveSupplierAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PayEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentItemDetailResult;
+import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasSupplierResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemDetailResult;
@@ -80,7 +80,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingPaymentEnter;
+import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -283,11 +283,11 @@ public class PurchasingServiceImpl implements PurchasingService {
     public GeneralResult save(SavePurchasingEnter enter) {
         //配件、付款信息转换
         List<ProductionPartsEnter> productsList = null;
-        List<SavePurchasingPaymentEnter> paymentList = null;
+        List<StagingPaymentEnter> paymentList = null;
         try {
             productsList = JSONArray.parseArray(enter.getPartList(), ProductionPartsEnter.class);
             if (StringUtils.equals(PaymentTypeEnums.STAGING.getValue(), enter.getPaymentType())) {
-                paymentList = JSONArray.parseArray(enter.getPaymentInfoList(), SavePurchasingPaymentEnter.class);
+                paymentList = JSONArray.parseArray(enter.getPaymentInfoList(), StagingPaymentEnter.class);
             }
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
@@ -424,12 +424,12 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @return
      */
     @Override
-    public List<PurchasingNodeResult> purchasingNode(IdEnter enter) {
+    public List<NodeResult> purchasingNode(IdEnter enter) {
         OpePurchas opePurchas = opePurchasService.getById(enter.getId());
         if (opePurchas == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
-        List<PurchasingNodeResult> resultList = purchasingServiceMapper.purchasingNode(enter);
+        List<NodeResult> resultList = purchasingServiceMapper.purchasingNode(enter);
         if (CollectionUtils.isEmpty(resultList)) {
             return new ArrayList<>();
         }
@@ -1082,7 +1082,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param purchasId
      * @param opePurchasPaymentList
      */
-    private void buildSavePurchasPaymentInfo(SavePurchasingEnter enter, List<SavePurchasingPaymentEnter> paymentList, Long purchasId, List<OpePurchasPayment> opePurchasPaymentList) {
+    private void buildSavePurchasPaymentInfo(SavePurchasingEnter enter, List<StagingPaymentEnter> paymentList, Long purchasId, List<OpePurchasPayment> opePurchasPaymentList) {
         //付款数据封装
         BigDecimal totalPrice = BigDecimal.ZERO;
         if (StringUtils.equals(enter.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {

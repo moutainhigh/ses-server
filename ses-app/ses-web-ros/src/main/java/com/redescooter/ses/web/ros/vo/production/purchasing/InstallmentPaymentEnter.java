@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.tool.utils.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -30,8 +30,8 @@ import java.util.Date;
 public class InstallmentPaymentEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "付款时间")
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date estimatedPaymentDate;
 
     @ApiModelProperty(value = "付款比例")

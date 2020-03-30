@@ -24,10 +24,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SaveNodeEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "采购单Id")
+    @ApiModelProperty(value = "Id")
     private Long id;
 
-    @ApiModelProperty(value = "采购单状态")
+    @ApiModelProperty(value = "状态")
     private String status;
 
     @ApiModelProperty(value = "事件")

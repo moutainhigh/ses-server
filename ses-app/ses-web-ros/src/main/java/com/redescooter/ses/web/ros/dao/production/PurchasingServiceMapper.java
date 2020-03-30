@@ -1,16 +1,16 @@
 package com.redescooter.ses.web.ros.dao.production;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.NodeResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
 import com.redescooter.ses.web.ros.dm.PartDetailDto;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentItemDetailResult;
+import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasSupplierResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemDetailResult;
@@ -84,7 +84,7 @@ public interface PurchasingServiceMapper {
      * @param enter
      * @return
      */
-    List<PurchasingNodeResult> purchasingNode(IdEnter enter);
+    List<NodeResult> purchasingNode(IdEnter enter);
 
     /**
      * 采购单商品列表

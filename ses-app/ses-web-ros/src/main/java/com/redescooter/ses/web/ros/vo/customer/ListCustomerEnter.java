@@ -1,11 +1,15 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.tool.utils.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -46,13 +50,13 @@ public class ListCustomerEnter extends PageEnter {
     @ApiModelProperty(value = "客户状态")
     private String status;
 
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     @ApiModelProperty(value = "创建开始时间")
     private Date createStartDateTime;
 
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     @ApiModelProperty(value = "创建结束时间")
     private Date createEndDateTime;
 

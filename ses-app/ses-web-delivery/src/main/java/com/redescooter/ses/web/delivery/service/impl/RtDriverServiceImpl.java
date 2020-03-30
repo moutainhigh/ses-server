@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.driver.DriverLicenseLevelEnum;
 import com.redescooter.ses.api.common.enums.driver.DriverLoginTypeEnum;
@@ -76,7 +77,14 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Mr.lijiating
@@ -282,7 +290,7 @@ public class RtDriverServiceImpl implements RtDriverService {
             profile.setPicture(enter.getAvatar());
             profile.setGender(enter.getGender());
             profile.setTelNumber1(enter.getDriverPhone());
-            profile.setBirthday(DateUtil.parse(enter.getBirthday(), DateUtil.DEFAULT_DATETIME_FORMAT));
+            profile.setBirthday(DateUtil.parse(enter.getBirthday(), DateConstant.DEFAULT_DATETIME_FORMAT));
             profile.setPlaceBirth(enter.getAddress());
             profile.setFirstName(enter.getDriverFirstName());
             profile.setLastName(enter.getDriverLastName());

@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.tool.utils.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -58,8 +58,8 @@ public class PruchasingItemResult extends GeneralResult {
     private Integer leadTime;
 
     @ApiModelProperty(value = "应交货时间")
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date dueTime;
 
     @ApiModelProperty(value = "价格")

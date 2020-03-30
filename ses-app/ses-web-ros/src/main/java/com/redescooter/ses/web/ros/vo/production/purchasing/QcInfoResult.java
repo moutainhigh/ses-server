@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.tool.utils.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -58,8 +58,8 @@ public class QcInfoResult extends GeneralResult {
     private String batchN;
 
     @ApiModelProperty(value = "质检时间")
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date qcDate;
 
     @ApiModelProperty(value = "分批质检详情")

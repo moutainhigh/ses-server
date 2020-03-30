@@ -1,8 +1,8 @@
-package com.redescooter.ses.web.ros.vo.production.purchasing;
+package com.redescooter.ses.web.ros.vo.production;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.tool.utils.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -54,21 +54,21 @@ public class PaymentItemDetailResult extends GeneralResult {
     private String invoicePicture;
 
     @ApiModelProperty(value = "预计付款日期")
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date estimatedPaymentDate;
 
     @ApiModelProperty(value = "天数")
     private Integer dayNum;
 
     @ApiModelProperty(value = "结单日期")
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date statementDate;
 
     @ApiModelProperty(value = "时间付款日期")
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date actualPaymentDate;
 
     @ApiModelProperty(value = "备注")

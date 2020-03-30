@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.production.purchasing;
+package com.redescooter.ses.web.ros.vo.production.assembly;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.NotNull;
@@ -18,37 +18,27 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * @ClassName:SavePurchasingEnter
- * @description: SavePurchasingEnter
+ * @ClassName:SetPaymentAssemblyEnter
+ * @description: SetPaymentAssemblyEnter
  * @author: Alex
  * @Version：1.3
- * @create: 2020/03/18 17:27
+ * @create: 2020/03/30 14:33
  */
-@ApiModel(value = "保存采购单", description = "保存采购单")
+@ApiModel(value = "组装单支付信息保存", description = "组装单支付信息保存")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SavePurchasingEnter extends GeneralEnter {
-    @ApiModelProperty(value = "收货人id", required = true)
-    @NotNull(code = ValidationExceptionCode.CONSIGNEE_ID__IS_EMPTY, message = "收货人为空")
-    private Long consigneeId;
+public class SetPaymentAssemblyEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "工厂Id", required = true)
-    @NotNull(code = ValidationExceptionCode.FACTORY_ID_EMPTY, message = "工厂Id为空")
-    private Long factoryId;
+    @ApiModelProperty(value = "id", required = true)
+    private Long id;
 
-    @ApiModelProperty(value = "部件列表 格式：id：10000，qty：100", required = true)
-    @NotNull(code = ValidationExceptionCode.PARTS_IS_EMPTY, message = "部件为空")
-    private String partList;
+    @ApiModelProperty(value = "加工费", required = true)
+    private int processCost;
 
-    @ApiModelProperty(value = "总数量", required = true)
-    @NotNull(code = ValidationExceptionCode.QTY_IS_EMPTY, message = "数量为空")
-    private Integer totalQty;
-
-    @ApiModelProperty(value = "价格为空", required = true)
-    @NotNull(code = ValidationExceptionCode.PRICE_IS_EMPTY, message = "价格为空")
+    @ApiModelProperty(value = "付款方式", required = true)
     private BigDecimal totalPrice;
 
     @ApiModelProperty(value = "付款方式", required = true)

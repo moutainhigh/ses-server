@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

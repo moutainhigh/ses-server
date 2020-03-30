@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.production;
 
+import com.redescooter.ses.api.common.vo.NodeResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -15,7 +16,6 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
@@ -123,8 +123,8 @@ public class PurchasingController {
     }
 
     @PostMapping(value = "/purchasingNode")
-    @ApiOperation(value = "采购单节点", response = PurchasingNodeResult.class)
-    public Response<List<PurchasingNodeResult>> purchasingNode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    @ApiOperation(value = "采购单节点", response = NodeResult.class)
+    public Response<List<NodeResult>> purchasingNode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(purchasingService.purchasingNode(enter));
     }
 

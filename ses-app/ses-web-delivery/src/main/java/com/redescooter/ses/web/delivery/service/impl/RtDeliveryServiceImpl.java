@@ -1,23 +1,8 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
@@ -74,9 +59,23 @@ import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateEnter;
 import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateResult;
 import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
 import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mr.lijiating
@@ -542,7 +541,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
 
         TenantConfigInfoResult tenantConfigInfoResult = tenantBaseService.tenantConfigInfo(enter);
 
-        corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateUtil.DEFAULT_DATETIME_FORMAT));
+        corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateConstant.DEFAULT_DATETIME_FORMAT));
         corDelivery.setStatus(DeliveryStatusEnums.PENDING.getValue());
         corDelivery.setDelivererId(corDriver.getUserId());
         corDelivery.setEta(DateUtils.addMinutes(new Date(), tenantConfigInfoResult.getEstimatedDuration().intValue()/60));

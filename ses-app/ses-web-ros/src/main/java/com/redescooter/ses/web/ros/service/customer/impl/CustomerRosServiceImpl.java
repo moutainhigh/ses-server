@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerCertificateTypeEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -61,9 +62,9 @@ import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
@@ -596,7 +597,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                         AccountNodeResult result = AccountNodeResult.builder()
                                 .id(node.getId())
                                 .event(node.getEvent())
-                                .eventTime(DateUtil.format(node.getEventTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
+                                .eventTime(DateUtil.format(node.getEventTime(), DateConstant.DEFAULT_DATETIME_FORMAT))
                                 .createdBy(node.getCreateBy())
                                 .createdFirstName(sysUser.getFirstName())
                                 .createdLastName(sysUser.getLastName())

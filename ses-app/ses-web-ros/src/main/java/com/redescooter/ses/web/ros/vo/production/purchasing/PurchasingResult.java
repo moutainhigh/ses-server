@@ -1,8 +1,9 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -88,8 +89,8 @@ public class PurchasingResult extends GeneralResult {
     private String paymentType;
 
     @ApiModelProperty(value = "对帐日")
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date statementDate;
 
     @ApiModelProperty(value = "天数")
@@ -105,8 +106,8 @@ public class PurchasingResult extends GeneralResult {
     private Integer partsQty;
 
     @ApiModelProperty(value = "创建时间")
-    @DateTimeFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATETIME_FORMAT, timezone = DateUtil.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date createdTime;
 
     @ApiModelProperty(value = "支付记录详情")

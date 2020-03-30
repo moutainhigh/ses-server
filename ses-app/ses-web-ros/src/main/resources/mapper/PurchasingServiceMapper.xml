@@ -168,7 +168,7 @@
         limit #{enter.startRow},#{enter.pageSize}
     </select>
     <select id="paymentItemList"
-            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PaymentItemDetailResult">
+            resultType="com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult">
         select
         <include refid="paymentItemList"/>
         from ope_purchas_payment payment
@@ -189,7 +189,7 @@
         where purchas.id = #{id}
     </select>
     <select id="purchasingNode"
-            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingNodeResult">
+            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.NodeResult">
         select trace.id as id,
         trace.status as status,
         trace.event as event,
