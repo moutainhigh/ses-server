@@ -202,9 +202,11 @@ public enum ExceptionCodeEnums {
 
     ALLOCATE_ORDER_IS_NOT_EXIST(10094, "调拨单不存在"),
 
-    STOCK_IS_NOT_EXIST(10095, "库存不存在"),
+    STOCK_IS_NOT_EXIST(10095, "暂无库存"),
 
     STOCK_IS_SHORTAGE(10096, "库存不足"),
+
+    STOCK_BILL_NOT_IS_EXIST(10097, "库存单据不存在"),
     ;
 
 

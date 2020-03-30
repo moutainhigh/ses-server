@@ -51,6 +51,12 @@ public class AllocateController {
         return new Response<>(allocateService.countByType(enter));
     }
 
+    @PostMapping(value = "/statusList")
+    @ApiOperation(value = "调拨单状态列表", response = Map.class)
+    public Response<Map<String, String>> statusList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(allocateService.statusList(enter));
+    }
+
     @PostMapping(value = "/list")
     @ApiOperation(value = "调拨单列表", response = AllocateOrderResult.class)
     public Response<PageResult<AllocateOrderResult>> list(@ModelAttribute @ApiParam("请求参数") AllocateOrderEnter enter) {
@@ -75,7 +81,13 @@ public class AllocateController {
         return new Response<>(allocateService.allocateOrderDetailPartsList(enter));
     }
 
-    @PostMapping(value = "/start")
+    @PostMapping(value = "/startPrepare")
+    @ApiOperation(value = "开始备料", response = GeneralResult.class)
+    public Response<GeneralResult> startPrepare(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(allocateService.startPrepare(enter));
+    }
+
+    @PostMapping(value = "/startAllocate")
     @ApiOperation(value = "开始调拨单", response = GeneralResult.class)
     public Response<GeneralResult> startAllocate(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(allocateService.startAllocate(enter));

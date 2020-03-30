@@ -16,7 +16,7 @@ import com.redescooter.ses.api.common.enums.production.purchasing.PaymentTypeEnu
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
-import com.redescooter.ses.api.common.enums.production.purchasing.WhseTypeEnums;
+import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;

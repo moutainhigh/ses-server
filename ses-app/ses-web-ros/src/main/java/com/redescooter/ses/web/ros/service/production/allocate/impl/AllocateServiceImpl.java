@@ -11,7 +11,7 @@ import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderEventEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.production.purchasing.WhseTypeEnums;
+import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -24,6 +24,7 @@ import com.redescooter.ses.web.ros.dao.production.AllocateServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeAllocate;
 import com.redescooter.ses.web.ros.dm.OpeAllocateB;
 import com.redescooter.ses.web.ros.dm.OpeAllocateTrace;
+import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.dm.OpeStock;
 import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
@@ -33,6 +34,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeAllocateBService;
 import com.redescooter.ses.web.ros.service.base.OpeAllocateService;
 import com.redescooter.ses.web.ros.service.base.OpeAllocateTraceService;
+import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
@@ -57,6 +59,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +101,9 @@ public class AllocateServiceImpl implements AllocateService {
 
     @Autowired
     private OpeAllocateBService opeAllocateBService;
+
+    @Autowired
+    private OpePartsService opePartsService;
 
     /**
      * 类型统计
@@ -191,10 +197,7 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public List<AllocateOrderNodeResult> allocateOrderNode(IdEnter enter) {
-        OpeAllocate opeAllocate = opeAllocateService.getById(enter.getId());
-        if (opeAllocate == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
-        }
+        checkAllocate(enter.getId(), null);
         List<AllocateOrderNodeResult> allocateOrderNodeList = allocateServiceMapper.allocateOrderNodeList(enter);
         if (CollectionUtils.isEmpty(allocateOrderNodeList)) {
             return Lists.newArrayList();
@@ -210,10 +213,7 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public List<AllocateOrderPartResult> allocateOrderDetailPartsList(IdEnter enter) {
-        OpeAllocate opeAllocate = opeAllocateService.getById(enter.getId());
-        if (opeAllocate == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
-        }
+        checkAllocate(enter.getId(), null);
 
         List<AllocateOrderPartResult> allocateOrderPartResultList = allocateServiceMapper.allocateOrderDetailPartsList(enter);
         if (CollectionUtils.isEmpty(allocateOrderPartResultList)) {
@@ -223,14 +223,57 @@ public class AllocateServiceImpl implements AllocateService {
     }
 
     /**
+     * 备料
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult startPrepare(IdEnter enter) {
+        OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.PENDING.getValue());
+
+        opeAllocate.setStatus(AllocateOrderStatusEnums.INPROGRESS.getValue());
+        opeAllocate.setUpdatedBy(enter.getUserId());
+        opeAllocate.setUpdatedTime(new Date());
+        opeAllocateService.updateById(opeAllocate);
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opeAllocate.getId());
+        saveNodeEnter.setStatus(AllocateOrderStatusEnums.INPROGRESS.getValue());
+        saveNodeEnter.setEvent(AllocateOrderEventEnums.INPROGRESS.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveAllocateNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
      * 开始调拨单
      *
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult startAllocate(IdEnter enter) {
-        return null;
+        OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.INPROGRESS.getValue());
+
+        opeAllocate.setStatus(AllocateOrderStatusEnums.ALLOCATE.getValue());
+        opeAllocate.setUpdatedBy(enter.getUserId());
+        opeAllocate.setUpdatedTime(new Date());
+        opeAllocateService.updateById(opeAllocate);
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opeAllocate.getId());
+        saveNodeEnter.setStatus(AllocateOrderStatusEnums.ALLOCATE.getValue());
+        saveNodeEnter.setEvent(AllocateOrderEventEnums.ALLOCATE.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveAllocateNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -239,9 +282,72 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult cancelAllocate(IdEnter enter) {
-        return null;
+        List<OpeStock> updateOpeStock = Lists.newArrayList();
+
+        List<OpeStockBill> updateOpeStockBillList = Lists.newArrayList();
+
+        OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.PENDING.getValue());
+
+        opeAllocate.setStatus(AllocateOrderStatusEnums.CANCELLED.getValue());
+        opeAllocate.setUpdatedBy(enter.getUserId());
+        opeAllocate.setUpdatedTime(new Date());
+        opeAllocateService.updateById(opeAllocate);
+
+        //查询 出库单
+        QueryWrapper<OpeStockBill> opeStockBillQueryWrapper = new QueryWrapper<>();
+        opeStockBillQueryWrapper.eq(OpeStockBill.COL_DR, 0);
+        opeStockBillQueryWrapper.eq(OpeStockBill.COL_SOURCE_ID, opeAllocate.getId());
+
+        List<OpeStockBill> stockBillList = opeStockBillService.list(opeStockBillQueryWrapper);
+
+        if (stockBillList == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
+        }
+        List<Long> stockIds = Lists.newArrayList();
+        //更新出库单状态
+        stockBillList.forEach(item -> {
+            stockIds.add(item.getStockId());
+            item.setStatus(StockBillStatusEnums.ABNORMAL.getValue());
+            item.setUpdatedBy(enter.getUserId());
+            item.setUpdatedTime(new Date());
+            updateOpeStockBillList.add(item);
+        });
+
+        //查询库存
+        List<OpeStock> opeStockList = new ArrayList<OpeStock>(opeStockService.listByIds(stockIds));
+
+        if (CollectionUtils.isEmpty(opeStockList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+        }
+        opeStockList.forEach(item -> {
+            stockBillList.forEach(bill -> {
+                if (item.getId().equals(bill.getStockId())) {
+                    item.setAvailableTotal(item.getAvailableTotal() + bill.getTotal());
+                    item.setOutTotal(item.getOutTotal() - bill.getTotal());
+                    item.setUpdatedBy(enter.getUserId());
+                    item.setUpdatedTime(new Date());
+                    updateOpeStock.add(item);
+                }
+            });
+        });
+
+        //更新库存、
+        opeStockService.updateBatchById(opeStockList);
+        //更新 出库单状态
+        opeStockBillService.updateBatchById(stockBillList);
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opeAllocate.getId());
+        saveNodeEnter.setStatus(AllocateOrderStatusEnums.CANCELLED.getValue());
+        saveNodeEnter.setEvent(AllocateOrderEventEnums.CANCELLED.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveAllocateNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -265,9 +371,124 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult inWhAllocate(IdEnter enter) {
-        return null;
+        //入库单
+        List<OpeStockBill> opeStockBillList = Lists.newArrayList();
+        //库存
+        List<OpeStock> saveStockList = Lists.newArrayList();
+
+        OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.ALLOCATE.getValue());
+
+        opeAllocate.setStatus(AllocateOrderStatusEnums.INPRODUCTIONWH.getValue());
+        opeAllocate.setUpdatedBy(enter.getUserId());
+        opeAllocate.setUpdatedTime(new Date());
+        opeAllocateService.updateById(opeAllocate);
+        //封装 库存信息
+        buildStockDateSingle(enter, opeStockBillList, saveStockList, opeAllocate);
+
+        //todo 调拨单条目 暂无
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opeAllocate.getId());
+        saveNodeEnter.setStatus(AllocateOrderStatusEnums.INPRODUCTIONWH.getValue());
+        saveNodeEnter.setEvent(AllocateOrderEventEnums.INPRODUCTIONWH.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveAllocateNode(saveNodeEnter);
+
+        //入库单
+        opeStockBillService.saveBatch(opeStockBillList);
+        // 库存
+        opeStockService.saveOrUpdateBatch(saveStockList);
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    private void buildStockDateSingle(IdEnter enter, List<OpeStockBill> opeStockBillList, List<OpeStock> saveStockList, OpeAllocate opeAllocate) {
+        //入库单形成
+        //查询调拨单 条目
+        QueryWrapper<OpeAllocateB> opeAllocateBQueryWrapper = new QueryWrapper<>();
+        opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_DR, 0);
+        opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_ALLOCATE_ID, opeAllocate.getId());
+        List<OpeAllocateB> opeAllocateBList = opeAllocateBService.list(opeAllocateBQueryWrapper);
+
+
+        //查询 调拨仓库库存
+        List<Long> partIds = new ArrayList<>();
+        opeAllocateBList.forEach(item -> {
+            partIds.add(item.getPartId());
+        });
+
+        QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
+        opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
+        if (opeWhse == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        }
+
+        // 查询库存
+        QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, partIds);
+        opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
+        List<OpeStock> opeStockList = opeStockService.list(opeStockQueryWrapper);
+
+        for (OpeAllocateB item : opeAllocateBList) {
+            Boolean stockExist = Boolean.FALSE;
+            for (OpeStock stock : opeStockList) {
+                if (item.getPartId().equals(stock.getMaterielProductId())) {
+                    //入库单
+                    opeStockBillList.add(buildStockBillSingle(enter, opeAllocate.getId(), item.getTotal(), stock.getId(), InOutWhEnums.IN.getValue()));
+                    stockExist = Boolean.TRUE;
+
+                    //库存
+                    stock.setIntTotal(stock.getIntTotal() + item.getTotal());
+                    stock.setAvailableTotal(stock.getAvailableTotal() + item.getTotal());
+                    stock.setUpdatedBy(enter.getUserId());
+                    stock.setUpdatedTime(new Date());
+                    saveStockList.add(stock);
+                }
+            }
+            if (!stockExist) {
+                //新建库存
+                saveStockList.add(OpeStock.builder()
+                        .id(idAppService.getId(SequenceName.OPE_STOCK))
+                        .dr(0)
+                        .userId(enter.getUserId())
+                        .tenantId(0L)
+                        .whseId(opeWhse.getId())
+                        .intTotal(item.getTotal())
+                        .outTotal(0)
+                        .availableTotal(item.getTotal())
+                        .wornTotal(0)
+                        .materielProductId(item.getPartId())
+                        .revision(0)
+                        .createdBy(enter.getUserId())
+                        .createdTime(new Date())
+                        .updatedBy(enter.getUserId())
+                        .updatedTime(new Date())
+                        .build());
+            }
+        }
+
+        //查询所有部件
+        Collection<OpeParts> opePartList = opePartsService.listByIds(partIds);
+        if (opePartList.isEmpty()) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
+        opePartList.forEach(item -> {
+            saveStockList.forEach(stock -> {
+                if (item.getId().equals(stock.getMaterielProductId())) {
+                    stock.setMaterielProductType(item.getPartsType());
+                    stock.setMaterielProductName(item.getCnName());
+                }
+            });
+        });
     }
 
     /**
@@ -357,7 +578,7 @@ public class AllocateServiceImpl implements AllocateService {
                             throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                         }
                         //出库单生成
-                        saveStockBill.add(buildStockBillSingle(enter, allocateId, part, item));
+                        saveStockBill.add(buildStockBillSingle(enter, allocateId, part.getQty(), item.getId(), InOutWhEnums.OUT.getValue()));
                         totalCount += part.getQty();
                         item.setAvailableTotal(item.getAvailableTotal() - part.getQty());
                         item.setOutTotal(item.getOutTotal() + part.getQty());
@@ -416,17 +637,17 @@ public class AllocateServiceImpl implements AllocateService {
                 .build();
     }
 
-    private OpeStockBill buildStockBillSingle(SaveAllocateEnter enter, Long allocateId, ProductionPartsEnter part, OpeStock item) {
+    private OpeStockBill buildStockBillSingle(GeneralEnter enter, Long allocateId, int qty, Long stockId, String description) {
         return OpeStockBill.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
                 .dr(0)
                 .tenantId(0L)
                 .userId(enter.getUserId())
-                .stockId(item.getId())
-                .direction(InOutWhEnums.OUT.getValue())
+                .stockId(stockId)
+                .direction(description)
                 .status(StockBillStatusEnums.NORMAL.getValue())
                 .sourceId(allocateId)
-                .total(part.getQty())
+                .total(qty)
                 .sourceType(SourceTypeEnums.ALLOCATE.getValue())
                 .principalId(enter.getUserId())
                 .operatineTime(new Date())
@@ -486,5 +707,18 @@ public class AllocateServiceImpl implements AllocateService {
                 .updateTime(new Date())
                 .build());
         return new GeneralResult(enter.getRequestId());
+    }
+
+    private OpeAllocate checkAllocate(Long id, String status) {
+        OpeAllocate opeAllocate = opeAllocateService.getById(id);
+        if (opeAllocate == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+        }
+        if (StringUtils.isNotEmpty(status)) {
+            if (!StringUtils.equals(status, opeAllocate.getStatus())) {
+                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+            }
+        }
+        return opeAllocate;
     }
 }

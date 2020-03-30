@@ -73,6 +73,14 @@ public interface AllocateService {
     List<AllocateOrderPartResult> allocateOrderDetailPartsList(IdEnter enter);
 
     /**
+     * 备料
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult startPrepare(IdEnter enter);
+
+    /**
      * 开始调拨单
      *
      * @param enter
