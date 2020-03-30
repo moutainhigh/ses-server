@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.controller.production;
 
-import com.redescooter.ses.api.common.vo.NodeResult;
+import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -13,6 +13,7 @@ import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
 import com.redescooter.ses.web.ros.vo.production.ScanBarCodeEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PayEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingDetailProductEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
@@ -112,7 +113,7 @@ public class PurchasingController {
 
     @PostMapping(value = "/pruchasingDetailProductList")
     @ApiOperation(value = "采购单详情商品列表", response = PruchasingItemResult.class)
-    public Response<List<PruchasingItemResult>> pruchasingDetailProductList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<List<PruchasingItemResult>> pruchasingDetailProductList(@ModelAttribute @ApiParam("请求参数") PruchasingDetailProductEnter enter) {
         return new Response<>(purchasingService.pruchasingDetailProductList(enter));
     }
 
@@ -123,8 +124,8 @@ public class PurchasingController {
     }
 
     @PostMapping(value = "/purchasingNode")
-    @ApiOperation(value = "采购单节点", response = NodeResult.class)
-    public Response<List<NodeResult>> purchasingNode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    @ApiOperation(value = "采购单节点", response = CommonNodeResult.class)
+    public Response<List<CommonNodeResult>> purchasingNode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(purchasingService.purchasingNode(enter));
     }
 

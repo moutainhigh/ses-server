@@ -11,14 +11,14 @@ import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
+import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PaymentTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
-import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
+import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.NodeResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -64,11 +64,13 @@ import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
+import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
 import com.redescooter.ses.web.ros.vo.production.SaveSupplierAnnexEnter;
+import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PayEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt;
-import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingDetailProductEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasSupplierResult;
@@ -80,7 +82,6 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
-import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -424,12 +425,12 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @return
      */
     @Override
-    public List<NodeResult> purchasingNode(IdEnter enter) {
+    public List<CommonNodeResult> purchasingNode(IdEnter enter) {
         OpePurchas opePurchas = opePurchasService.getById(enter.getId());
         if (opePurchas == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
-        List<NodeResult> resultList = purchasingServiceMapper.purchasingNode(enter);
+        List<CommonNodeResult> resultList = purchasingServiceMapper.purchasingNode(enter);
         if (CollectionUtils.isEmpty(resultList)) {
             return new ArrayList<>();
         }
@@ -619,7 +620,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @return
      */
     @Override
-    public List<PruchasingItemResult> pruchasingDetailProductList(IdEnter enter) {
+    public List<PruchasingItemResult> pruchasingDetailProductList(PruchasingDetailProductEnter enter) {
         OpePurchas opePurchas = opePurchasService.getById(enter.getId());
         if (opePurchas == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
@@ -801,7 +802,9 @@ public class PurchasingServiceImpl implements PurchasingService {
                 item.setUpdatedTime(new Date());
             });
         }
-        opePurchasBQcService.updateBatchById(opePurchasBQcList);
+        if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
+            opePurchasBQcService.updateBatchById(opePurchasBQcList);
+        }
 
         //todo 判断是否全部QC 通过 通过的话修改子表状态
 
@@ -809,6 +812,15 @@ public class PurchasingServiceImpl implements PurchasingService {
         if (opePurchasBQcList.size() == 0) {
             purchasingServiceMapper.updatePurchasBQcStatus(enter.getId(), QcStatusEnums.PASS.getValue());
         }
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opePurchas.getId());
+        saveNodeEnter.setStatus(PurchasingStatusEnums.QC_AGAIN.getValue());
+        saveNodeEnter.setEvent(PurchasingEventEnums.QC_AGAIN.getValue());
+        saveNodeEnter.setMemo(null);
+        this.savePurchasingNode(saveNodeEnter);
         return new GeneralResult(enter.getRequestId());
     }
 

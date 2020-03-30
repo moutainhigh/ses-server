@@ -3,18 +3,22 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.production.AllocateServiceMapper">
 
     <sql id="Field_Allocate_List">
-        allocate.id as id,
-        allocate.allocate_num as allocateN,
-        allocate.status as status,
-        allocate.count as qty,
-        allocate.consignee_id as consigneeId,
-        profile.first_name as consigneeFirstName,
-        profile.last_name as consigneeLastName,
-        profile.full_name as consigneeFullName,
-        profile.country_code as consigneePhoneCountryCode,
-        profile.tel_number as consigneePhone,
-        profile.email as consigneeEmail,
-        allocate.created_time as createdTime
+        allocate.id           as id,
+       allocate.allocate_num as allocateN,
+       allocate.status       as status,
+       allocate.count        as qty,
+       allocate.consignee_id as consigneeId,
+       profile.first_name    as consigneeFirstName,
+       profile.last_name     as consigneeLastName,
+       profile.full_name     as consigneeFullName,
+       profile.country_code  as consigneePhoneCountryCode,
+       profile.tel_number    as consigneePhone,
+       profile.email         as consigneeEmail,
+       allocate.created_time as createdTime,
+       cprofile.sys_user_id  as createdId,
+       cprofile.first_name   as createdFirstName,
+       cprofile.last_name    as createdLastName,
+       cprofile.full_name    as createdFullName
     </sql>
     <sql id="where_allocateList">
         where allocate.dr=0
@@ -46,7 +50,8 @@
     <select id="allocateListCount" resultType="int">
         select count(*)
         from ope_allocate allocate
-        inner join ope_sys_user_profile profile on profile.sys_user_id = allocate.consignee_id and profile.dr=0
+        left join ope_sys_user_profile profile on profile.sys_user_id = allocate.consignee_id and profile.dr=0
+        left join ope_sys_user_profile cprofile on cprofile.sys_user_id = allocate.created_by and cprofile.dr = 0
         <include refid="where_allocateList"/>
     </select>
     <select id="allocateList"
@@ -54,7 +59,8 @@
         select
         <include refid="Field_Allocate_List"/>
         from ope_allocate allocate
-        inner join ope_sys_user_profile profile on profile.sys_user_id = allocate.consignee_id and profile.dr=0
+        left join ope_sys_user_profile profile on profile.sys_user_id = allocate.consignee_id and profile.dr=0
+        left join ope_sys_user_profile cprofile on cprofile.sys_user_id = allocate.created_by and cprofile.dr = 0
         <include refid="where_allocateList"/>
         limit #{enter.startRow},#{enter.pageSize}
     </select>
@@ -62,7 +68,8 @@
         select
         <include refid="Field_Allocate_List"/>
         from ope_allocate allocate
-        inner join ope_sys_user_profile profile on profile.sys_user_id = allocate.consignee_id and profile.dr=0
+        left join ope_sys_user_profile profile on profile.sys_user_id = allocate.consignee_id and profile.dr=0
+        left join ope_sys_user_profile cprofile on cprofile.sys_user_id = allocate.created_by and cprofile.dr = 0
         where allocate.dr=0
         and allocate.id =#{id}
     </select>
@@ -115,14 +122,15 @@
         on parts.id = stock.materiel_product_id and parts.dr = 0
         inner join ope_supplier supplier on supplier.id = parts.supplier_id and supplier.dr = 0
         where stock.dr = 0
-        <if test="type != null and type != ''">
-            and parts.parts_type =#{type}
+        and stock.whse_id=#{whseId}
+        <if test="enter.type != null and enter.type != ''">
+            and parts.parts_type =#{enter.type}
         </if>
-        <if test="keyword != null and keyword != ''">
+        <if test="enter.keyword != null and enter.keyword != ''">
             and(
-            parts.en_name like concat ("%",#{keyword},"%") or
-            parts.cn_name like concat ("%",#{keyword},"%") or
-            parts.parts_number like concat ("%",#{keyword},"%")
+            parts.en_name like concat ("%",#{enter.keyword},"%") or
+            parts.cn_name like concat ("%",#{enter.keyword},"%") or
+            parts.parts_number like concat ("%",#{enter.keyword},"%")
             )
         </if>
     </select>

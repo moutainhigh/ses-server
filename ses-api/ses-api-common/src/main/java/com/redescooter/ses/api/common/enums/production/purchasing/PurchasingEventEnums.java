@@ -17,12 +17,13 @@ import lombok.NoArgsConstructor;
 public enum PurchasingEventEnums {
 
     PENDING("PENDING", "待确认", "1"),
-    INPROGRESS("INPROGRESS", "进行中", "2"),
+    //    INPROGRESS("INPROGRESS", "进行中", "2"),
     MATERIALS_QC("MATERIALS_QC", "QC来料质检", "3"),
     QC_COMPLETED("QC_COMPLETED", "质检完成", "4"),
     RETURN("RETURN", "退货并完成", "5"),
     IN_PURCHASING_WH("IN_PURCHASING_WH", "入库", "6"),
-    CANCELLED("CANCELLED", "取消", "7");
+    CANCELLED("CANCELLED", "取消", "7"),
+    QC_AGAIN("QC_AGAIN", "再次质检", "8");
 
     private String code;
 

@@ -189,7 +189,7 @@
         where purchas.id = #{id}
     </select>
     <select id="purchasingNode"
-            resultType="com.redescooter.ses.web.ros.vo.production.purchasing.NodeResult">
+            resultType="com.redescooter.ses.api.common.vo.CommonNodeResult">
         select trace.id as id,
         trace.status as status,
         trace.event as event,
@@ -226,6 +226,19 @@
         left join ope_price_sheet sheet on sheet.parts_id = parts.id and sheet.dr = 0
         where purchasb.dr = 0
         and purchasb.purchas_id =#{id}
+        <if test="type != null and type != ''">
+            and parts.parts_type =#{type}
+        </if>
+        <if test="supplierId != null">
+            and purchasb.supplier_id=#{supplierId}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            parts.cn_name like concat ("%",#{keyword},"%") or
+            parts.en_name like concat ("%",#{keyword},"%") or
+            parts.parts_number like concat ("%",#{keyword},"%")
+            )
+        </if>
     </select>
 
     <select id="partDetailById" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">

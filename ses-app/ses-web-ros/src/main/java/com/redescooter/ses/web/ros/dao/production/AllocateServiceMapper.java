@@ -73,7 +73,8 @@ public interface AllocateServiceMapper {
      * 新增调拨单 部件列表
      *
      * @param enter
+     * @param whseId
      * @return
      */
-    List<ProductPartsResult> allocatePartsList(ProductPartsListEnter enter);
+    List<ProductPartsResult> allocatePartsList(@Param("enter") ProductPartsListEnter enter, @Param("whseId") Long whseId);
 }

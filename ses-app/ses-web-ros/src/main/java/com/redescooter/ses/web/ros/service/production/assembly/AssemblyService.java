@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.service.production.assembly;
 
-import com.redescooter.ses.api.common.vo.NodeResult;
+import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -96,7 +96,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    List<NodeResult> assemblyNode(IdEnter enter);
+    List<CommonNodeResult> assemblyNode(IdEnter enter);
 
     /**
      * 质检记录

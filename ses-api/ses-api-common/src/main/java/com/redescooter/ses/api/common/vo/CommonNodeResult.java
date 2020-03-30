@@ -27,7 +27,7 @@ import java.util.Date;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class NodeResult extends GeneralResult {
+public class CommonNodeResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;

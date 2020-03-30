@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.service.production.assembly.assembly;
 
-import com.redescooter.ses.api.common.vo.NodeResult;
+import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -125,7 +125,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @return
      */
     @Override
-    public List<NodeResult> assemblyNode(IdEnter enter) {
+    public List<CommonNodeResult> assemblyNode(IdEnter enter) {
         return null;
     }
 

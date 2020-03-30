@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.service.production.purchasing;
 
-import com.redescooter.ses.api.common.vo.NodeResult;
+import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -10,6 +10,7 @@ import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PayEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingDetailProductEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
@@ -99,7 +100,7 @@ public interface PurchasingService {
      * @param enter
      * @return
      */
-    List<NodeResult> purchasingNode(IdEnter enter);
+    List<CommonNodeResult> purchasingNode(IdEnter enter);
 
     /**
      * 采购单信息导出
@@ -155,7 +156,7 @@ public interface PurchasingService {
      * @param enter
      * @return
      */
-    List<PruchasingItemResult> pruchasingDetailProductList(IdEnter enter);
+    List<PruchasingItemResult> pruchasingDetailProductList(PruchasingDetailProductEnter enter);
 
     /**
      * 查询采购单代工厂供应商

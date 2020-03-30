@@ -41,6 +41,18 @@ public class AllocateOrderResult extends GeneralResult {
     @ApiModelProperty(value = "数量")
     private Integer qty;
 
+    @ApiModelProperty(value = "创建人Id")
+    private Long createdId;
+
+    @ApiModelProperty(value = "创建人")
+    private String createdFirstName;
+
+    @ApiModelProperty(value = "创建人")
+    private String createdLastName;
+
+    @ApiModelProperty(value = "创建人")
+    private String createdFullName;
+
     @ApiModelProperty(value = "收货人Id")
     private Long consigneeId;
 

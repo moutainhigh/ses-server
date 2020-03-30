@@ -155,15 +155,15 @@ public class AllocateServiceImpl implements AllocateService {
     public PageResult<AllocateOrderResult> list(AllocateOrderEnter enter) {
 
         List<String> statusList = Lists.newArrayList();
-        if (StringUtils.equals(ProductionTypeEnums.TODO.getValue(), enter.getType())) {
+        if (StringUtils.equals(ProductionTypeEnums.TODO.getValue(), enter.getClassType())) {
             for (AllocateOrderStatusEnums item : AllocateOrderStatusEnums.values()) {
                 statusList.add(item.getValue());
             }
             statusList.remove(AllocateOrderStatusEnums.CANCELLED.getValue());
             statusList.remove(AllocateOrderStatusEnums.INPRODUCTIONWH.getValue());
         } else {
-            statusList.remove(AllocateOrderStatusEnums.CANCELLED.getValue());
-            statusList.remove(AllocateOrderStatusEnums.INPRODUCTIONWH.getValue());
+            statusList.add(AllocateOrderStatusEnums.CANCELLED.getValue());
+            statusList.add(AllocateOrderStatusEnums.INPRODUCTIONWH.getValue());
         }
 
         int count = allocateServiceMapper.allocateListCount(enter, statusList);
@@ -358,7 +358,15 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public List<ProductPartsResult> allocatePartsList(ProductPartsListEnter enter) {
-        List<ProductPartsResult> result = allocateServiceMapper.allocatePartsList(enter);
+        //查询采购仓库Id
+        QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+        OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
+        if (opeWhse == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        }
+        List<ProductPartsResult> result = allocateServiceMapper.allocatePartsList(enter, opeWhse.getId());
         if (CollectionUtils.isEmpty(result)) {
             return Lists.newArrayList();
         }
