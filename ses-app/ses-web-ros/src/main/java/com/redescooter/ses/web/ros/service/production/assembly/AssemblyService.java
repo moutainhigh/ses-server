@@ -7,6 +7,8 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
+import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
+import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcResult;
@@ -49,6 +51,13 @@ public interface AssemblyService {
      * @return
      */
     Map<String, String> paymentTypeList(GeneralEnter enter);
+
+    /**
+     * 查询可组装的商品列表
+     *
+     * @return
+     */
+    List<SaveAssemblyProductResult> queryAssemblyProduct(SaveAssemblyProductEnter enter);
 
     /**
      * 保存组装单

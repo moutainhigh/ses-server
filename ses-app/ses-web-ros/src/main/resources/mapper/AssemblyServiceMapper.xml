@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper">
+
+
+    <select id="countByTypes" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select count(st.sta) as totalCount,
+               st.sta        as status
+        from (select case
+                         when status = '6' then '2'
+                         when status = '7' then '2'
+                         else '1' end as sta
+              from ope_assembly_order) st
+        group by status
+    </select>
+</mapper>

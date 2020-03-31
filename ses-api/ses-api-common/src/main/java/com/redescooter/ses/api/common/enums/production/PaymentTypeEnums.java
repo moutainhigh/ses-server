@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.production.purchasing;
+package com.redescooter.ses.api.common.enums.production;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
