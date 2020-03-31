@@ -466,16 +466,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .build();
         // 查询支付的具体条目
         List<PaymentItemDetailResult> paymentItemList = purchasingServiceMapper.paymentItemList(Lists.newArrayList(enter.getId()));
-//        if (CollectionUtils.isNotEmpty(paymentItemList)) {
-//            paymentItemList.forEach(item -> {
-//                //对付款类型进行处理返回
-//                if (StringUtils.equals(item.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
-//                    item.setStatementDate(item.getEstimatedPaymentDate());
-//                    item.setEstimatedPaymentDate(null);
-//                }
-//            });
-//            resullt.setPaymentItemList(paymentItemList);
-//        }
+        resullt.setPaymentItemList(paymentItemList);
         return resullt;
     }
 
@@ -1113,6 +1104,18 @@ public class PurchasingServiceImpl implements PurchasingService {
             item.setUpdatedBy(enter.getUserId());
             item.setUpdatedTime(new Date());
         });
+
+        //查询支付信息
+        QueryWrapper<OpePurchasPayment> opePurchasPaymentQueryWrapper = new QueryWrapper<>();
+        opePurchasPaymentQueryWrapper.eq(OpePurchasPayment.COL_PURCHAS_ID, opePurchas.getId());
+        opePurchasPaymentQueryWrapper.eq(OpePurchasPayment.COL_DR, 0);
+        OpePurchasPayment purchasPayment = opePurchasPaymentService.getOne(opePurchasPaymentQueryWrapper);
+        if (purchasPayment == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
+        }
+        purchasPayment.setAmount(purchasPayment.getAmount().subtract(retureTotalPrice));
+        //更新付款价格
+        opePurchasPaymentService.updateById(purchasPayment);
 
         //总订单 数据进行更新
         opePurchas.setTotalQty(opePurchas.getTotalQty() - returnTotal);

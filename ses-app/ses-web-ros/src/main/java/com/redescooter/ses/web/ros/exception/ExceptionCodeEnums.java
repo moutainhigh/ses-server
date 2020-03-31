@@ -213,6 +213,8 @@ public enum ExceptionCodeEnums {
     QC_PASS_WITHOUT_RETURN(10099, "Qc通过无需退货"),
 
     QC_PASSED_WITHOUT_REPEATING_QUALITY_INSPECTION(10100, "无需重复质检"),
+
+    PAYMENT_INFO_IS_NOT_EXIST(10101, "付款信息不存在"),
     ;
 
 
