@@ -237,18 +237,18 @@ public class PurchasingServiceImpl implements PurchasingService {
         List<PaymentItemDetailResult> paymentItemDetailResultList = purchasingServiceMapper.paymentItemList(ids);
         if (CollectionUtils.isNotEmpty(paymentItemDetailResultList)) {
             purchasingResultList.forEach(item -> {
-                List<PaymentItemDetailResult> paymentItemDetailList = Lists.newArrayList();
-                paymentItemDetailResultList.forEach(detail -> {
-                    if (item.getId().equals(detail.getPurchasingId())) {
-                        //对付款类型进行处理返回
-                        if (StringUtils.equals(detail.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
-                            detail.setStatementDate(detail.getEstimatedPaymentDate());
-                            detail.setEstimatedPaymentDate(null);
-                        }
-                        paymentItemDetailList.add(detail);
-                    }
-                });
-                item.setPaymentItemDetailResultList(paymentItemDetailList);
+//                List<PaymentItemDetailResult> paymentItemDetailList = Lists.newArrayList();
+//                paymentItemDetailResultList.forEach(detail -> {
+//                    if (item.getId().equals(detail.getPurchasingId())) {
+//                        //对付款类型进行处理返回
+//                        if (StringUtils.equals(detail.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
+//                            detail.setStatementDate(detail.getEstimatedPaymentDate());
+//                            detail.setEstimatedPaymentDate(null);
+//                        }
+//                        paymentItemDetailList.add(detail);
+//                    }
+//                });
+                item.setPaymentItemDetailResultList(paymentItemDetailResultList);
             });
         }
         return PageResult.create(enter, count, purchasingResultList);
@@ -465,16 +465,16 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .build();
         // 查询支付的具体条目
         List<PaymentItemDetailResult> paymentItemList = purchasingServiceMapper.paymentItemList(Lists.newArrayList(enter.getId()));
-        if (CollectionUtils.isNotEmpty(paymentItemList)) {
-            paymentItemList.forEach(item -> {
-                //对付款类型进行处理返回
-                if (StringUtils.equals(item.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
-                    item.setStatementDate(item.getEstimatedPaymentDate());
-                    item.setEstimatedPaymentDate(null);
-                }
-            });
-            resullt.setPaymentItemList(paymentItemList);
-        }
+//        if (CollectionUtils.isNotEmpty(paymentItemList)) {
+//            paymentItemList.forEach(item -> {
+//                //对付款类型进行处理返回
+//                if (StringUtils.equals(item.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
+//                    item.setStatementDate(item.getEstimatedPaymentDate());
+//                    item.setEstimatedPaymentDate(null);
+//                }
+//            });
+//            resullt.setPaymentItemList(paymentItemList);
+//        }
         return resullt;
     }
 

@@ -61,11 +61,6 @@ public class PaymentItemDetailResult extends GeneralResult {
     @ApiModelProperty(value = "天数")
     private Integer dayNum;
 
-    @ApiModelProperty(value = "结单日期")
-    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
-    private Date statementDate;
-
     @ApiModelProperty(value = "时间付款日期")
     @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)

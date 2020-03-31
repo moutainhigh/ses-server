@@ -22,7 +22,8 @@
                factory.contact_full_name          as factoryContactFullName,
                purchas.total_price            as totalPrice,
                purchas.total_qty                  as partsQty,
-                purchas.created_time               as createdTime
+                purchas.created_time               as createdTime,
+                purchas.payment_type               as paymentType
     </sql>
 
     <sql id="paymentItemList">
