@@ -27,7 +27,7 @@ import io.swagger.annotations.*;
 public class SaveFactoryAnnexEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id", required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 为空")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "Id 为空")
     private Long id;
 
     @ApiModelProperty(value = "工厂Id", required = true)

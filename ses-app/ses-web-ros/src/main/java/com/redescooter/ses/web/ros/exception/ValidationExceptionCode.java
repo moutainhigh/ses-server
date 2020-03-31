@@ -8,24 +8,16 @@ package com.redescooter.ses.web.ros.exception;
 public interface ValidationExceptionCode {
 
     // ###############################10001~10030公共入参异常#######################################
-    // 经度为空
-    int LAT_IS_EMPTY = 10001;
-    // 纬度为空
-    int LNG_IS_EMPTY = 10002;
-    // 图片为空
-    int PICTURE_IS_EMPTY = 10003;
     //长度过长，长度为2-20字符
-    int CHARACTER_IS_TOO_LONG = 10004;
+    int CHARACTER_IS_TOO_LONG = 10010;
     //长度过短，长度为2-20字符
-    int CHARACTER_IS_TOO_SHORT = 10005;
-    // 邮箱为空
-    int EMAIL_IS_EMPTY = 10006;
-    // id 为空
-    int ID_IS_EMPTY = 10007;
+    int CHARACTER_IS_TOO_SHORT = 10011;
     //国家手机号编码不能为空
-    int COUNTRY_CODE_IS_EMPTY = 10008;
+    int COUNTRY_CODE_IS_EMPTY = 100012;
     //URL不能为空
-    int URL_IS_EMPTY = 10009;
+    int URL_IS_EMPTY = 10013;
+//    // id 为空
+//    int ID_IS_EMPTY = 10014;
 
     //###############################10030~100?? 业务入参异常#######################################
     // 地址信息为空

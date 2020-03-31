@@ -207,6 +207,11 @@ public class PurchasingController {
         return new Response<>(purchasingService.cancel(enter));
     }
 
+    @PostMapping(value = "/returnedPurchase")
+    @ApiOperation(value = "取消质检并完成", response = GeneralResult.class)
+    public Response<GeneralResult> returnedPurchase(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(purchasingService.returnedPurchase(enter));
+    }
 
     @PostMapping(value = "/scanBarCode")
     @ApiOperation(value = "模拟扫码枪质检", response = GeneralResult.class)

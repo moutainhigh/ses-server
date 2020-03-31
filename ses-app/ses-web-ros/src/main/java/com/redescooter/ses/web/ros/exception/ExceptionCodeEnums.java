@@ -207,6 +207,12 @@ public enum ExceptionCodeEnums {
     STOCK_IS_SHORTAGE(10096, "库存不足"),
 
     STOCK_BILL_NOT_IS_EXIST(10097, "库存单据不存在"),
+
+    NO_NEED_TO_CHECK_AGAIN(10098, "无需再次质检"),
+
+    QC_PASS_WITHOUT_RETURN(10099, "Qc通过无需退货"),
+
+    QC_PASSED_WITHOUT_REPEATING_QUALITY_INSPECTION(10100, "无需重复质检"),
     ;
 
 

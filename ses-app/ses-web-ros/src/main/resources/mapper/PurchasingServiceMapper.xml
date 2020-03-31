@@ -382,11 +382,20 @@
         inner join ope_sys_user_profile profile
         on qc.quality_inspector_id = profile.sys_user_id and profile.dr = 0
         where qc.dr = 0
-        <if test="list != null and list.size() != 0">
+        <if test="purshasBIds != null and purshasBIds.size() != 0">
             and qc.purchas_b_id in
-            <foreach collection="list" separator="," open="(" close=")" item="item">
+            <foreach collection="purshasBIds" separator="," open="(" close=")" item="item">
                 #{item}
             </foreach>
+        </if>
+        <if test="enter.status != null and enter.status != '' and enter.status == 1">
+            and qc.fail_count=0
+        </if>
+        <if test="enter.status != null and enter.status != '' and enter.status == 2">
+            and qc.fail_count!=0
+        </if>
+        <if test="enter.qcStartTime != null and param2.qcEndTime != null">
+            and ( qc.quality_inspection_time between #{enter.qcStartTime} and #{enter.qcEndTime})
         </if>
         order by batchN
     </select>

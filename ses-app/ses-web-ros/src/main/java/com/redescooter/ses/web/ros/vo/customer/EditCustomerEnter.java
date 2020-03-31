@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 public class EditCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "主键")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
     private Long id;
 
     @ApiModelProperty(value = "城市")
@@ -39,7 +39,7 @@ public class EditCustomerEnter extends GeneralEnter {
     private Long distrust;
 
     @ApiModelProperty(value = "邮箱")
-    @NotNull(code = ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
     private String email;
 
     @ApiModelProperty(value = "客户名字")

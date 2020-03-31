@@ -161,9 +161,10 @@ public interface PurchasingServiceMapper {
      * QC 质检条目
      *
      * @param purshasBIds
+     * @param enter
      * @return
      */
-    List<QcItemDetailResult> qcItemListByPurchasBIds(List<Long> purshasBIds);
+    List<QcItemDetailResult> qcItemListByPurchasBIds(@Param("purshasBIds") List<Long> purshasBIds, @Param("enter") QcItemListEnter enter);
 
     /**
      * 更新子表质检记录

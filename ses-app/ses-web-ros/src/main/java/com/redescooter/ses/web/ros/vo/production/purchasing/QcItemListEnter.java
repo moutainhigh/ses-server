@@ -32,7 +32,7 @@ import java.util.Date;
 public class QcItemListEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id 采购单id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 不为空")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "Id 不为空")
     private Long id;
 
     @ApiModelProperty(value = "状态", required = true)

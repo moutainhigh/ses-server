@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

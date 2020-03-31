@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class SccPriceEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
     @ApiModelProperty(value = "法国报价")

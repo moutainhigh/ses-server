@@ -21,8 +21,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class EditSavePartsEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "主键",required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
+    @ApiModelProperty(value = "主键", required = true)
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
     @ApiModelProperty(value = "导入批次号")

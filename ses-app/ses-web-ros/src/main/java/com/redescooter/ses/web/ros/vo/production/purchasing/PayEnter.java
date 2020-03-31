@@ -33,7 +33,7 @@ import java.util.Date;
 public class PayEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id", required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id为空")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "Id为空")
     private Long id;
 
     @ApiModelProperty(value = "金额", required = true)

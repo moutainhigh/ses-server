@@ -21,7 +21,7 @@ import lombok.*;
 public class RoleEnter extends PermissionEnter {
 
     @ApiModelProperty(value = "部门ID")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 为空")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "Id 为空")
     private Long deptId;
 
     @ApiModelProperty(value = "岗位名称")

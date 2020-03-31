@@ -45,12 +45,6 @@ public class QcInfoResult extends GeneralResult {
     @ApiModelProperty(value = "类型")
     private String type;
 
-    @ApiModelProperty(value = "通过个数")
-    private Integer passQty;
-
-    @ApiModelProperty(value = "通过个数")
-    private Integer failQty;
-
     @ApiModelProperty(value = "总数")
     private Integer totalQty;
 

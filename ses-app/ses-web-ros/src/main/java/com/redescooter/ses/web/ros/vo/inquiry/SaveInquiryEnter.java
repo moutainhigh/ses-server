@@ -38,7 +38,7 @@ public class SaveInquiryEnter extends GeneralEnter {
     private Long distrustId;
 
     @ApiModelProperty(value = "邮箱")
-    @NotNull(code = ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
     private String email;
 
     @ApiModelProperty(value = "客户名字")

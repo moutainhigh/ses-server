@@ -74,6 +74,35 @@ public class RpsServiceImpl implements RpsServvice {
 
         List<OpePurchasBQc> opePurchasBServiceList = Lists.newArrayList();
 
+        List<Long> purchasBIdsList = Lists.newArrayList();
+        purchasBList.forEach(item -> {
+            purchasBIdsList.add(item.getPurchasId());
+        });
+
+        //查询质检记录
+        QueryWrapper<OpePurchasBQc> opePurchasBQcQueryWrapper = new QueryWrapper<>();
+        opePurchasBQcQueryWrapper.in(OpePurchasBQc.COL_PURCHAS_B_ID, purchasBIdsList);
+        opePurchasBQcQueryWrapper.eq(OpePurchasBQc.COL_DR, 0);
+
+        List<OpePurchasBQc> opePurchasBQcList = opePurchasBQcService.list(opePurchasBQcQueryWrapper);
+        if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
+            for (OpePurchasB purchasB : purchasBList) {
+                Boolean qcNeed = Boolean.FALSE;
+                for (OpePurchasBQc item : opePurchasBQcList) {
+                    if (purchasB.getId().equals(item.getPurchasBId())) {
+                        if (!purchasB.getTotalCount().equals(item.getTotalQualityInspected())) {
+                            qcNeed = Boolean.TRUE;
+                        }
+                    }
+                }
+                if (qcNeed) {
+                    throw new SesWebRosException(ExceptionCodeEnums.QC_PASSED_WITHOUT_REPEATING_QUALITY_INSPECTION.getCode(),
+                            ExceptionCodeEnums.QC_PASSED_WITHOUT_REPEATING_QUALITY_INSPECTION.getMessage());
+                }
+            }
+        }
+
+
         //构建qc质检数据
         purchasBList.forEach(item -> {
             opePurchasBServiceList.add(
@@ -84,7 +113,7 @@ public class RpsServiceImpl implements RpsServvice {
                             .userId(enter.getUserId())
                             .purchasBId(enter.getPurchasingId())
                             .purchasBId(item.getId())
-                            .partsId(enter.getPartId())
+                            .partsId(item.getPartId())
                             .qualityInspectorId(enter.getUserId())
                             .batchNo("REDE" + RandomUtil.randomLong(10000, 99999))
                             .status(CollectionUtils.isNotEmpty(enter.getFailParts()) == true ? QcStatusEnums.PASS.getValue() : QcStatusEnums.QUALITY_INSPECTION.getValue())
