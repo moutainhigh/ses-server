@@ -3,18 +3,18 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAssemblyOrder")
 @Data
@@ -35,7 +35,6 @@ public class OpeAssemblyOrder implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -43,14 +42,14 @@ public class OpeAssemblyOrder implements Serializable {
      */
     @TableField(value = "user_id")
     @ApiModelProperty(value = "用户id")
-    private Integer userId;
+    private Long userId;
 
     /**
      * 租户id
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户id")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 状态
@@ -81,6 +80,13 @@ public class OpeAssemblyOrder implements Serializable {
     private BigDecimal totalPrice;
 
     /**
+     * 加工费
+     */
+    @TableField(value = "processing_fee")
+    @ApiModelProperty(value = "加工费")
+    private BigDecimal processingFee;
+
+    /**
      * 付款类型
      */
     @TableField(value = "payment_type")
@@ -88,10 +94,10 @@ public class OpeAssemblyOrder implements Serializable {
     private Integer paymentType;
 
     /**
-     * 付款比例
+     * 付款比例 过时
      */
     @TableField(value = "payment_ratio")
-    @ApiModelProperty(value = "付款比例")
+    @ApiModelProperty(value = "付款比例 过时")
     private String paymentRatio;
 
     /**
@@ -106,7 +112,7 @@ public class OpeAssemblyOrder implements Serializable {
      */
     @TableField(value = "consignee_id")
     @ApiModelProperty(value = "收货人姓氏")
-    private Long consigneeId;
+    private Integer consigneeId;
 
     /**
      * 乐观锁
@@ -196,6 +202,8 @@ public class OpeAssemblyOrder implements Serializable {
 
     public static final String COL_TOTAL_PRICE = "total_price";
 
+    public static final String COL_PROCESSING_FEE = "processing_fee";
+
     public static final String COL_PAYMENT_TYPE = "payment_type";
 
     public static final String COL_PAYMENT_RATIO = "payment_ratio";
@@ -223,4 +231,8 @@ public class OpeAssemblyOrder implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeAssemblyOrderBuilder builder() {
+        return new OpeAssemblyOrderBuilder();
+    }
 }

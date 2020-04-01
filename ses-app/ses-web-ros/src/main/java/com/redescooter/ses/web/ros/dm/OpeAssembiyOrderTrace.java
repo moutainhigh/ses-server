@@ -3,17 +3,17 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAssembiyOrderTrace")
 @Data
@@ -34,7 +34,6 @@ public class OpeAssembiyOrderTrace implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -66,18 +65,18 @@ public class OpeAssembiyOrderTrace implements Serializable {
     private String event;
 
     /**
+     * 事件时间
+     */
+    @TableField(value = "event_time")
+    @ApiModelProperty(value = "事件时间")
+    private Date eventTime;
+
+    /**
      * 备注说明
      */
     @TableField(value = "memo")
     @ApiModelProperty(value = "备注说明")
     private String memo;
-
-    /**
-     * 乐观锁
-     */
-    @TableField(value = "revision")
-    @ApiModelProperty(value = "乐观锁")
-    private Integer revision;
 
     /**
      * 创建人
@@ -156,9 +155,9 @@ public class OpeAssembiyOrderTrace implements Serializable {
 
     public static final String COL_EVENT = "event";
 
-    public static final String COL_MEMO = "memo";
+    public static final String COL_EVENT_TIME = "event_time";
 
-    public static final String COL_REVISION = "revision";
+    public static final String COL_MEMO = "memo";
 
     public static final String COL_CREATED_BY = "created_by";
 

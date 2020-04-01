@@ -1,7 +1,13 @@
 package com.redescooter.ses.web.ros.dao.production;
 
+import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,4 +26,46 @@ public interface AssemblyServiceMapper {
      * @return
      */
     List<CountByStatusResult> countByTypes(GeneralEnter enter);
+
+    /**
+     * 组装单 统计
+     *
+     * @param enter
+     * @param statusList
+     * @return
+     */
+    int assemblyListCount(@Param("enter") AssemblyListEnter enter, @Param("statusList") List<String> statusList);
+
+    /**
+     * 组装单列表
+     *
+     * @param enter
+     * @param statusList
+     * @return
+     */
+    List<AssemblyResult> assemblyList(@Param("enter") AssemblyListEnter enter, @Param("statusList") List<String> statusList);
+
+    /**
+     * 支付信息
+     *
+     * @param assemblyIds
+     * @return
+     */
+    List<PaymentItemDetailResult> paymentItemDetailListByAssIds(List<Long> assemblyIds);
+
+    /**
+     * 详情
+     *
+     * @param enter
+     * @return
+     */
+    AssemblyResult detail(IdEnter enter);
+
+    /**
+     * 组装单节点
+     *
+     * @param enter
+     * @return
+     */
+    List<CommonNodeResult> assemblyNode(IdEnter enter);
 }

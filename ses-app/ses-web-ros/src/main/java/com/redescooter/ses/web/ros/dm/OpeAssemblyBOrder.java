@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,14 +26,13 @@ public class OpeAssemblyBOrder implements Serializable {
      */
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键")
-    private Long id;
+    private Integer id;
 
     /**
      * 删除标识
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -56,7 +54,14 @@ public class OpeAssemblyBOrder implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户id")
-    private Long tenantId;
+    private Integer tenantId;
+
+    /**
+     * 组装单Id
+     */
+    @TableField(value = "assembly_id")
+    @ApiModelProperty(value = "组装单Id")
+    private Long assemblyId;
 
     /**
      * 组装单子单号
@@ -175,6 +180,8 @@ public class OpeAssemblyBOrder implements Serializable {
 
     public static final String COL_TENANT_ID = "tenant_id";
 
+    public static final String COL_ASSEMBLY_ID = "assembly_id";
+
     public static final String COL_ASSEMBLY_B_NUMBER = "assembly_b_number";
 
     public static final String COL_PRODUCT_NUMBER = "product_number";
@@ -204,4 +211,8 @@ public class OpeAssemblyBOrder implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeAssemblyBOrderBuilder builder() {
+        return new OpeAssemblyBOrderBuilder();
+    }
 }

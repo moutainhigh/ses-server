@@ -1,21 +1,27 @@
 package com.redescooter.ses.web.ros.service.production.assembly.assembly;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.PaymentTypeEnums;
+import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyBOrder;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyOrder;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
@@ -24,6 +30,9 @@ import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeAssemblyBOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeAssemblyOrderPaymentService;
+import com.redescooter.ses.web.ros.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
@@ -33,7 +42,9 @@ import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.assembly.AssemblyService;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
+import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
+import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
@@ -46,6 +57,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +93,15 @@ public class AssemblyServiceImpl implements AssemblyService {
 
     @Autowired
     private OpeStockService opeStockService;
+
+    @Autowired
+    private OpeAssemblyOrderPaymentService opeAssemblyOrderPaymentService;
+
+    @Autowired
+    private OpeAssemblyOrderService opeAssemblyOrderService;
+
+    @Autowired
+    private OpeAssemblyBOrderService opeAssemblyOrderBService;
 
     /**
      * 状态统计
@@ -379,7 +400,71 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public PageResult<AssemblyResult> list(AssemblyListEnter enter) {
-        return null;
+        //对type 进行拆分 组装statusList
+        List<String> statusList = Lists.newArrayList();
+        if (StringUtils.equals(enter.getType(), ProductionTypeEnums.TODO.getValue())) {
+            for (AssemblyStatusEnums item : AssemblyStatusEnums.values()) {
+                statusList.add(item.getValue());
+            }
+            statusList.remove(AssemblyStatusEnums.CANCELLED.getValue());
+            statusList.remove(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
+        }
+        if (StringUtils.equals(enter.getType(), ProductionTypeEnums.TODO.getValue())) {
+            statusList.add(AssemblyStatusEnums.CANCELLED.getValue());
+            statusList.add(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
+        }
+
+        int count = assemblyServiceMapper.assemblyListCount(enter, statusList);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+
+        List<AssemblyResult> assemblyResultList = assemblyServiceMapper.assemblyList(enter, statusList);
+        if (CollectionUtils.isEmpty(assemblyResultList)) {
+            return PageResult.createZeroRowResult(enter);
+        }
+
+        List<Long> assemblyIds = Lists.newArrayList();
+        assemblyResultList.forEach(item -> {
+            assemblyIds.add(item.getId());
+        });
+
+        //获取支付信息
+        List<PaymentItemDetailResult> opeAssemblyOrderPaymentList = assemblyServiceMapper.paymentItemDetailListByAssIds(assemblyIds);
+
+        for (AssemblyResult item : assemblyResultList) {
+            //月结信息 赋值
+            if (StringUtils.equals(item.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
+                for (PaymentItemDetailResult payment : opeAssemblyOrderPaymentList) {
+                    if (item.getId().equals(payment.getBizId())) {
+                        item.setStatementDate(payment.getEstimatedPaymentDate());
+                        item.setDays(payment.getDayNum());
+                    }
+                }
+
+            } else {
+                //分期信息赋值
+                int payTotal = 0;
+                int unpayTotal = 0;
+                List<PaymentItemDetailResult> paymentList = Lists.newArrayList();
+                for (PaymentItemDetailResult payment : opeAssemblyOrderPaymentList) {
+                    if (item.getId().equals(payment.getBizId())) {
+                        if (StringUtils.equals(payment.getStatus(), PayStatusEnums.UNPAID.getValue())) {
+                            unpayTotal++;
+                        }
+                        if (StringUtils.equals(payment.getStatus(), PayStatusEnums.PAID.getValue())) {
+                            payTotal++;
+                        }
+                        paymentList.add(payment);
+                    }
+                }
+                item.setStagTotal(payTotal + unpayTotal);
+                item.setPaidstagNum(payTotal);
+                item.setPaymentItemDetailResultList(paymentList);
+            }
+        }
+
+        return PageResult.create(enter, count, assemblyResultList);
     }
 
     /**
@@ -390,8 +475,11 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public AssemblyResult detail(IdEnter enter) {
-        return null;
+        //组装单校验
+        checkAssembly(enter.getId(), null);
+        return assemblyServiceMapper.detail(enter);
     }
+
 
     /**
      * 组装单节点
@@ -401,7 +489,8 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public List<CommonNodeResult> assemblyNode(IdEnter enter) {
-        return null;
+        checkAssembly(enter.getId(), null);
+        return assemblyServiceMapper.assemblyNode(enter);
     }
 
     /**
@@ -410,6 +499,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult export(IdEnter enter) {
         return null;
@@ -421,8 +511,27 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult setPaymentAssembly(SetPaymentAssemblyEnter enter) {
+        //付款信息转换
+        List<StagingPaymentEnter> paymentList = null;
+        try {
+            if (StringUtils.equals(PaymentTypeEnums.STAGING.getValue(), enter.getPaymentType())) {
+                paymentList = JSONArray.parseArray(enter.getPaymentInfoList(), StagingPaymentEnter.class);
+            }
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        //组装单校验
+        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PENDING.getValue());
+
+        QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
+        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_DR, 0);
+        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ASSEMBLY_ID, opeAssemblyOrder.getId());
+        List<OpeAssemblyBOrder> assemblyBOrderList = opeAssemblyOrderBService.list(opeAssemblyBOrderQueryWrapper);
+
+
         return null;
     }
 
@@ -443,6 +552,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult cancle(IdEnter enter) {
         return null;
@@ -454,6 +564,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult startPrepare(IdEnter enter) {
         return null;
@@ -465,6 +576,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult startAssembly(IdEnter enter) {
         return null;
@@ -476,6 +588,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult startQc(IdEnter enter) {
         return null;
@@ -487,6 +600,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult completeQc(IdEnter enter) {
         return null;
@@ -498,8 +612,41 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult inWh(IdEnter enter) {
         return null;
+    }
+
+    /**
+     * 保存节点
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult saveNode(SaveNodeEnter enter) {
+        return null;
+    }
+
+    /**
+     * 组装单校验
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    private OpeAssemblyOrder checkAssembly(Long id, String status) {
+        OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(id);
+        if (opeAssemblyOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
+        }
+        if (StringUtils.isNotEmpty(status)) {
+            if (StringUtils.equals(status, opeAssemblyOrder.getStatus())) {
+                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+            }
+        }
+        return opeAssemblyOrder;
     }
 }

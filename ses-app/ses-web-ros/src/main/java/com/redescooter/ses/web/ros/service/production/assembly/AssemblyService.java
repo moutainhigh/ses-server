@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.production.assembly;
 
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
+import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -61,6 +62,10 @@ public interface AssemblyService {
 
     /**
      * 保存组装单
+     * 1验证 库存所支持的产品最大数量
+     * 2、对产品部品进行 分类整合
+     * 3、形成出库单、组装单、组装单子表
+     * 4、保存日志
      *
      * @param enter
      * @return
@@ -114,8 +119,6 @@ public interface AssemblyService {
      * @return
      */
     List<AssemblyQcResult> assemblyQcTrces(AssemblyQcEnter enter);
-
-//    List<> assemblyQcItem(IdEnter);
 
     /**
      * 组装单信息导出
@@ -180,4 +183,12 @@ public interface AssemblyService {
      * @return
      */
     GeneralResult inWh(IdEnter enter);
+
+    /**
+     * 保存节点
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult saveNode(SaveNodeEnter enter);
 }

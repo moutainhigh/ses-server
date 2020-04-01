@@ -24,12 +24,12 @@ import io.swagger.annotations.*;
 @Builder
 public class SaveAssemblyEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "收货人Id")
+    @ApiModelProperty(value = "收货人Id", required = true)
     private Long consigneeId;
 
-    @ApiModelProperty(value = "工厂Id")
+    @ApiModelProperty(value = "工厂Id", required = true)
     private Long factoryId;
 
-    @ApiModelProperty(value = "组装产品")
+    @ApiModelProperty(value = "组装产品 格式：id：123，qty：123", required = true)
     private String productList;
 }

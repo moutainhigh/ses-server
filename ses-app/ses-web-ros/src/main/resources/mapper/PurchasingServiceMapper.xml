@@ -29,7 +29,7 @@
     <sql id="paymentItemList">
         payment.id                   as id,
                payment.payment_status       as status,
-               payment.purchas_id           as purchasingId,
+               payment.purchas_id           as bizId,
                payment.amount               as amount,
                payment.amount_proportion    as paymentRatio,
                payment.invoice_num          as invoiceNum,
