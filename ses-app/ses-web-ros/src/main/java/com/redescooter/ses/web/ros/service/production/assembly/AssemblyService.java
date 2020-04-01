@@ -8,6 +8,8 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
+import com.redescooter.ses.web.ros.vo.production.PayEnter;
+import com.redescooter.ses.web.ros.vo.production.PaymentDetailResullt;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
@@ -16,6 +18,7 @@ import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +38,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    Map<String, Integer> countByTypes(GeneralEnter enter);
+    Map<String, Integer> countByType(GeneralEnter enter);
 
     /**
      * 状态列表
@@ -191,4 +194,27 @@ public interface AssemblyService {
      * @return
      */
     GeneralResult saveNode(SaveNodeEnter enter);
+
+    /**
+     * 支付信息详情
+     *
+     * @return
+     */
+    PaymentDetailResullt paymentDetail(IdEnter enter);
+
+    /**
+     * 支付
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult pay(PayEnter enter);
+
+    /**
+     * 组装单详情商品列表
+     *
+     * @param enter
+     * @return
+     */
+    List<productItemResult> productItemList(IdEnter enter);
 }

@@ -74,4 +74,7 @@ public interface SequenceName {
     String OPE_ALLOCATE_TRACE = "OPE_ALLOCATE_TRACE";
 
     String OPE_ALLOCATE_B = "OPE_ALLOCATE_B";
+
+    String OPE_ASSEMBLY_ORDER_PAYMENT = "OPE_ASSEMBLY_ORDER_PAYMENT";
+
 }

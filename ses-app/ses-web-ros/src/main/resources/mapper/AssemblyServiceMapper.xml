@@ -4,28 +4,31 @@
 
 
     <sql id="field_assemblyList">
-        ass.id as id,
-        ass.assembly_number as contractN,
-        ass.status as status,
-        ass.factory_id as factoryId,
-        factory.factory_name as factoryName,
-        factory.contact_first_name as contactFirstName,
-        factory.contact_last_name as contactLastName,
-        factory.contact_full_name as contactFullName,
-        factory.contact_phone as contactPhone,
-        factory.contact_phone_country_code as contactPhoneCountryCode,
-        factory.contact_email as contactEmail,
-        ass.total_qty as qty,
-        ass.created_time as createdTime,
-        ass.consignee_id as consigneeId,
-        profile.first_name as consigneeFirstName,
-        profile.last_name as consigneeLastName,
-        profile.full_name as consigneeFullName,
-        profile.tel_number as consigneePhone,
-        profile.country_code as consigneePhoneCountryCode,
-        profile.email as consigneeEmail,
-        ass.total_price as totalPrice,
-        ass.payment_type as paymentType
+           ass.id                             as id,
+       ass.assembly_number                as contractN,
+       ass.status                         as status,
+       ass.factory_id                     as factoryId,
+       factory.factory_name               as factoryName,
+       factory.contact_first_name         as contactFirstName,
+       factory.contact_last_name          as contactLastName,
+       factory.contact_full_name          as contactFullName,
+       factory.contact_phone              as contactPhone,
+       factory.contact_phone_country_code as contactPhoneCountryCode,
+       factory.contact_email              as contactEmail,
+       ass.total_qty                      as qty,
+       ass.created_time                   as createdTime,
+       ass.consignee_id                   as consigneeId,
+       profile.first_name                 as consigneeFirstName,
+       profile.last_name                  as consigneeLastName,
+       profile.full_name                  as consigneeFullName,
+       profile.tel_number                 as consigneePhone,
+       profile.country_code               as consigneePhoneCountryCode,
+       profile.email                      as consigneeEmail,
+       ass.total_price                    as totalPrice,
+       ass.payment_type                   as paymentType,
+       ass.product_price                  as productPrice,
+       ass.processing_fee                 as processCost,
+       ass.processing_fee_ratio           as processCostRatio
     </sql>
 
     <sql id="where_assemblyList">
@@ -133,5 +136,40 @@
         left join ope_sys_user_profile profile on trace.created_by = profile.sys_user_id and profile.dr = 0
         where trace.dr = 0
         and trace.id =#{id}
+    </select>
+    <select id="partDetailListByPartIds" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">
+        select parts.id as partId,
+        ifnull(sheet.price,0) as price,
+        sheet.currency_unit as unit,
+        supplier_id as supplierId
+        from ope_parts parts
+        inner join ope_supplier supplier on parts.supplier_id = supplier.id and supplier.dr = 0
+        left join ope_price_sheet sheet on parts.id = sheet.parts_id and sheet.currency_unit = 1 and sheet.dr = 0
+        where parts.dr=0
+        <if test="collection != null and collection.size() != 0">
+            and parts.id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="paymentItemList"
+            resultType="com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult">
+        select payment.id as id,
+        payment.payment_status as status,
+        payment.ope_assembly_order_id as bizId,
+        payment.amount as amount,
+        payment.amount_proportion as paymentRatio,
+        payment.invoice_num as invoiceNum,
+        payment.invoice_picture as invoicePicture,
+        payment.payment_day as dayNum,
+        payment.payment_time as actualPaymentDate,
+        payment.description as remark,
+        payment.payment_type as paymentType,
+        payment.planned_payment_time as estimatedPaymentDate
+        from ope_assembly_order_payment payment
+        where payment.dr = 0
+        and payment.ope_assembly_order_id =#{id}
     </select>
 </mapper>

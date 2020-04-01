@@ -6,22 +6,21 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAssemblyOrder")
+import java.io.Serializable;
+import java.util.Date;
+
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAssemblyOrderPart")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_assembly_order")
-public class OpeAssemblyOrder implements Serializable {
-    public static final String COL_PAYMENT_RATIO = "payment_ratio";
+@TableName(value = "ope_assembly_order_part")
+public class OpeAssemblyOrderPart implements Serializable {
     /**
      * 主键
      */
@@ -37,88 +36,32 @@ public class OpeAssemblyOrder implements Serializable {
     private Integer dr;
 
     /**
-     * 用户id
+     * 库存Id
      */
-    @TableField(value = "user_id")
-    @ApiModelProperty(value = "用户id")
-    private Long userId;
+    @TableField(value = "stock_id")
+    @ApiModelProperty(value = "库存Id")
+    private Long stockId;
 
     /**
-     * 租户id
+     * 部件Id
      */
-    @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "租户id")
-    private Long tenantId;
+    @TableField(value = "part_id")
+    @ApiModelProperty(value = "部件Id")
+    private Long partId;
 
     /**
-     * 状态
+     * 组装单Id
      */
-    @TableField(value = "status")
-    @ApiModelProperty(value = "状态")
-    private String status;
+    @TableField(value = "assembly_id")
+    @ApiModelProperty(value = "组装单Id")
+    private Long assemblyId;
 
     /**
-     * 组装单订单号
-     */
-    @TableField(value = "assembly_number")
-    @ApiModelProperty(value = "组装单订单号")
-    private String assemblyNumber;
-
-    /**
-     * 产品数量之和
+     * 消耗部件数量
      */
     @TableField(value = "total_qty")
-    @ApiModelProperty(value = "产品数量之和")
+    @ApiModelProperty(value = "消耗部件数量")
     private Integer totalQty;
-
-    /**
-     * 总金额
-     */
-    @TableField(value = "total_price")
-    @ApiModelProperty(value = "总金额")
-    private BigDecimal totalPrice;
-
-    /**
-     * 加工费比例
-     */
-    @TableField(value = "processing_fee_ratio")
-    @ApiModelProperty(value = "加工费比例")
-    private Integer processingFeeRatio;
-
-    /**
-     * 加工费
-     */
-    @TableField(value = "processing_fee")
-    @ApiModelProperty(value = "加工费")
-    private BigDecimal processingFee;
-
-    /**
-     * 付款类型
-     */
-    @TableField(value = "payment_type")
-    @ApiModelProperty(value = "付款类型")
-    private String paymentType;
-
-    /**
-     * 产品生产价格
-     */
-    @TableField(value = "product_price")
-    @ApiModelProperty(value = "产品生产价格")
-    private BigDecimal productPrice;
-
-    /**
-     * 代工厂id
-     */
-    @TableField(value = "factory_id")
-    @ApiModelProperty(value = "代工厂id")
-    private Long factoryId;
-
-    /**
-     * 收货人姓氏
-     */
-    @TableField(value = "consignee_id")
-    @ApiModelProperty(value = "收货人姓氏")
-    private Long consigneeId;
 
     /**
      * 乐观锁
@@ -196,29 +139,13 @@ public class OpeAssemblyOrder implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_USER_ID = "user_id";
+    public static final String COL_STOCK_ID = "stock_id";
 
-    public static final String COL_TENANT_ID = "tenant_id";
+    public static final String COL_PART_ID = "part_id";
 
-    public static final String COL_STATUS = "status";
-
-    public static final String COL_ASSEMBLY_NUMBER = "assembly_number";
+    public static final String COL_ASSEMBLY_ID = "assembly_id";
 
     public static final String COL_TOTAL_QTY = "total_qty";
-
-    public static final String COL_TOTAL_PRICE = "total_price";
-
-    public static final String COL_PROCESSING_FEE_RATIO = "processing_fee_ratio";
-
-    public static final String COL_PROCESSING_FEE = "processing_fee";
-
-    public static final String COL_PAYMENT_TYPE = "payment_type";
-
-    public static final String COL_PRODUCT_PRICE = "product_price";
-
-    public static final String COL_FACTORY_ID = "factory_id";
-
-    public static final String COL_CONSIGNEE_ID = "consignee_id";
 
     public static final String COL_REVISION = "revision";
 
@@ -240,7 +167,7 @@ public class OpeAssemblyOrder implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpeAssemblyOrderBuilder builder() {
-        return new OpeAssemblyOrderBuilder();
+    public static OpeAssemblyOrderPartBuilder builder() {
+        return new OpeAssemblyOrderPartBuilder();
     }
 }

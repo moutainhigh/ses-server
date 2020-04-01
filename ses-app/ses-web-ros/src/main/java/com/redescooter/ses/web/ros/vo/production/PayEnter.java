@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.production.purchasing;
+package com.redescooter.ses.web.ros.vo.production;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.NotNull;

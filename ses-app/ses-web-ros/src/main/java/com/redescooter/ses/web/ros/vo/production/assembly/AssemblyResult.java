@@ -13,6 +13,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -110,6 +111,15 @@ public class AssemblyResult extends GeneralResult {
 
     @ApiModelProperty(value = "支付分期数")
     private Integer paidstagNum;
+
+    @ApiModelProperty(value = "产品价格")
+    private BigDecimal productPrice;
+
+    @ApiModelProperty(value = "加工费")
+    private BigDecimal processCost;
+
+    @ApiModelProperty(value = "加工费比例")
+    private Integer processCostRatio;
 
     @ApiModelProperty(value = "支付记录详情")
     private List<PaymentItemDetailResult> paymentItemDetailResultList;

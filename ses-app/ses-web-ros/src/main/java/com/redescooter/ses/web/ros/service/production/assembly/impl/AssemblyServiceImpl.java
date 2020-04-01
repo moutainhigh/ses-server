@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.production.assembly.assembly;
+package com.redescooter.ses.web.ros.service.production.assembly.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -19,18 +19,25 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeAssemblyBOrder;
+import com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrder;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPart;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.dm.OpeStock;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
+import com.redescooter.ses.web.ros.dm.PartDetailDto;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeAssembiyOrderTraceService;
 import com.redescooter.ses.web.ros.service.base.OpeAssemblyBOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeAssemblyOrderPartService;
 import com.redescooter.ses.web.ros.service.base.OpeAssemblyOrderPaymentService;
 import com.redescooter.ses.web.ros.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
@@ -42,6 +49,8 @@ import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.assembly.AssemblyService;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
+import com.redescooter.ses.web.ros.vo.production.PayEnter;
+import com.redescooter.ses.web.ros.vo.production.PaymentDetailResullt;
 import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
 import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
@@ -53,13 +62,18 @@ import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -103,6 +117,18 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Autowired
     private OpeAssemblyBOrderService opeAssemblyOrderBService;
 
+    @Autowired
+    private OpeAssemblyOrderPartService opeAssemblyOrderPartService;
+
+    @Autowired
+    private OpeAssembiyOrderTraceService opeAssembiyOrderTraceService;
+
+    @Autowired
+    private OpeWhseService OpeWhseService;
+
+    @Reference
+    private IdAppService idAppService;
+
     /**
      * 状态统计
      *
@@ -110,7 +136,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @return
      */
     @Override
-    public Map<String, Integer> countByTypes(GeneralEnter enter) {
+    public Map<String, Integer> countByType(GeneralEnter enter) {
         List<CountByStatusResult> countByStatusResult = assemblyServiceMapper.countByTypes(enter);
 
         Map<String, Integer> result = Maps.newHashMap();
@@ -207,21 +233,23 @@ public class AssemblyServiceImpl implements AssemblyService {
         }
 
         //筛选出可组装的产品
+        flag1:
         for (Map.Entry<Long, List<OpePartsProductB>> e : productMap.entrySet()) {
             Long k = e.getKey();
             //如果有任何 配件不满足库存要求 终止 该产品的查询
             int total = 0;
-            flag:
+            flag2:
             for (OpePartsProductB item : e.getValue()) {
+                Boolean existPart = Boolean.FALSE;
+
+                flag3:
                 for (OpeStock stock : opeStockList) {
-                    if (!item.getPartsProductId().equals(k)) {
-                        break flag;
-                    }
-                    if (item.getPartsId().equals(stock.getMaterielProductId()) && stock.getAvailableTotal() < item.getPartsQty()) {
-                        break flag;
-                    }
-                    if (item.getPartsId().equals(stock.getMaterielProductId()) && stock.getAvailableTotal() > item.getPartsQty()) {
-                        total++;
+                    if (item.getPartsId().equals(stock.getMaterielProductId())) {
+                        if (stock.getAvailableTotal() / item.getPartsQty() != 0) {
+                            total++;
+                            existPart = Boolean.TRUE;
+                            break flag3;
+                        }
                     }
                 }
             }
@@ -229,23 +257,40 @@ public class AssemblyServiceImpl implements AssemblyService {
                 productIds.add(k);
             }
         }
-
+//
         // 确认可组装的产品的最大值
         Map<Long, Integer> canAssembledMap = Maps.newHashMap();
+
+        flag1:
         for (Map.Entry<Long, List<OpePartsProductB>> entry : productMap.entrySet()) {
             Long key = entry.getKey();
             List<OpePartsProductB> value = entry.getValue();
             Integer maxTotal = 0;
             int total = 0;
-            flag:
             if (productIds.contains(key)) {
+
+                flag2:
                 for (OpePartsProductB item : value) {
+
+                    flag3:
                     for (OpeStock stock : opeStockList) {
-                        if (item.getPartsId().equals(stock.getMaterielProductId()) && item.getPartsQty() * maxTotal++ > stock.getAvailableTotal()) {
-                            break flag;
-                        }
-                        if (item.getPartsId().equals(stock.getMaterielProductId()) && item.getPartsQty() * maxTotal++ < stock.getAvailableTotal()) {
-                            total++;
+                        if (item.getPartsId().equals(stock.getMaterielProductId())) {
+
+                            int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
+                            if (maxTotal == 0) {
+                                total++;
+                                maxTotal = canAss;
+                                continue flag2;
+                            }
+                            if (canAss < maxTotal) {
+                                total++;
+                                maxTotal = canAss;
+                                continue flag2;
+                            }
+                            if (canAss > 0) {
+                                total++;
+                                continue flag2;
+                            }
                         }
                     }
                 }
@@ -254,7 +299,6 @@ public class AssemblyServiceImpl implements AssemblyService {
                 canAssembledMap.put(key, maxTotal);
             }
         }
-
 
         opePartsProduct.forEach(item -> {
             SaveAssemblyProductResult productResult = null;
@@ -272,6 +316,7 @@ public class AssemblyServiceImpl implements AssemblyService {
             }
             result.add(productResult);
         });
+
         return result;
     }
 
@@ -516,6 +561,8 @@ public class AssemblyServiceImpl implements AssemblyService {
     public GeneralResult setPaymentAssembly(SetPaymentAssemblyEnter enter) {
         //付款信息转换
         List<StagingPaymentEnter> paymentList = null;
+        //支付条目
+        List<OpeAssemblyOrderPayment> saveAssemblyOrderPayment = Lists.newArrayList();
         try {
             if (StringUtils.equals(PaymentTypeEnums.STAGING.getValue(), enter.getPaymentType())) {
                 paymentList = JSONArray.parseArray(enter.getPaymentInfoList(), StagingPaymentEnter.class);
@@ -525,14 +572,19 @@ public class AssemblyServiceImpl implements AssemblyService {
         }
         //组装单校验
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PENDING.getValue());
+        //支付条目数据封装
+        buildPaymentIten(enter, paymentList, saveAssemblyOrderPayment, opeAssemblyOrder);
 
-        QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
-        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_DR, 0);
-        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ASSEMBLY_ID, opeAssemblyOrder.getId());
-        List<OpeAssemblyBOrder> assemblyBOrderList = opeAssemblyOrderBService.list(opeAssemblyBOrderQueryWrapper);
+        opeAssemblyOrder.setTotalPrice(enter.getTotalPrice());
+        opeAssemblyOrder.setProcessingFee(enter.getProcessCost());
+        opeAssemblyOrder.setPaymentType(enter.getPaymentType());
+        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+        opeAssemblyOrder.setUpdatedTime(new Date());
+        opeAssemblyOrderService.updateById(opeAssemblyOrder);
 
-
-        return null;
+        //保存条目
+        opeAssemblyOrderPaymentService.saveBatch(saveAssemblyOrderPayment);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -555,7 +607,28 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Transactional
     @Override
     public GeneralResult cancle(IdEnter enter) {
-        return null;
+        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PENDING.getValue());
+
+        //封装库存数据 进行数据回滚
+        List<OpeStock> opeStockList = buildOpeStocks(enter, opeAssemblyOrder);
+        //组装单表 数据更新
+        opeAssemblyOrder.setStatus(AssemblyStatusEnums.CANCELLED.getValue());
+        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+        opeAssemblyOrder.setUpdatedTime(new Date());
+        opeAssemblyOrderService.updateById(opeAssemblyOrder);
+
+        //更新库存
+        opeStockService.updateBatchById(opeStockList);
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opeAssemblyOrder.getId());
+        saveNodeEnter.setStatus(AssemblyStatusEnums.PENDING.getValue());
+        saveNodeEnter.setEvent(AssemblyStatusEnums.PENDING.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -567,7 +640,22 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Transactional
     @Override
     public GeneralResult startPrepare(IdEnter enter) {
-        return null;
+        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PENDING.getValue());
+
+        opeAssemblyOrder.setStatus(AssemblyStatusEnums.PREPARE_MATERIAL.getValue());
+        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+        opeAssemblyOrder.setUpdatedTime(new Date());
+        opeAssemblyOrderService.updateById(opeAssemblyOrder);
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opeAssemblyOrder.getId());
+        saveNodeEnter.setStatus(AssemblyStatusEnums.PREPARE_MATERIAL.getValue());
+        saveNodeEnter.setEvent(AssemblyStatusEnums.PREPARE_MATERIAL.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -579,7 +667,22 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Transactional
     @Override
     public GeneralResult startAssembly(IdEnter enter) {
-        return null;
+        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PREPARE_MATERIAL.getValue());
+
+        opeAssemblyOrder.setStatus(AssemblyStatusEnums.ASSEMBLING.getValue());
+        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+        opeAssemblyOrder.setUpdatedTime(new Date());
+        opeAssemblyOrderService.updateById(opeAssemblyOrder);
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opeAssemblyOrder.getId());
+        saveNodeEnter.setStatus(AssemblyStatusEnums.ASSEMBLING.getValue());
+        saveNodeEnter.setEvent(AssemblyStatusEnums.ASSEMBLING.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -591,7 +694,22 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Transactional
     @Override
     public GeneralResult startQc(IdEnter enter) {
-        return null;
+//        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.ASSEMBLING.getValue());
+//
+//        opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC.getValue());
+//        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+//        opeAssemblyOrder.setUpdatedTime(new Date());
+//        opeAssemblyOrderService.updateById(opeAssemblyOrder);
+//
+//        //节点
+//        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+//        BeanUtils.copyProperties(enter, saveNodeEnter);
+//        saveNodeEnter.setId(opeAssemblyOrder.getId());
+//        saveNodeEnter.setStatus(AssemblyStatusEnums.QC.getValue());
+//        saveNodeEnter.setEvent(AssemblyStatusEnums.QC.getValue());
+//        saveNodeEnter.setMemo(null);
+//        this.saveNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -603,7 +721,22 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Transactional
     @Override
     public GeneralResult completeQc(IdEnter enter) {
-        return null;
+//        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.QC.getValue());
+//
+//        opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC_PASSED.getValue());
+//        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+//        opeAssemblyOrder.setUpdatedTime(new Date());
+//        opeAssemblyOrderService.updateById(opeAssemblyOrder);
+//
+//        //节点
+//        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+//        BeanUtils.copyProperties(enter, saveNodeEnter);
+//        saveNodeEnter.setId(opeAssemblyOrder.getId());
+//        saveNodeEnter.setStatus(AssemblyStatusEnums.QC_PASSED.getValue());
+//        saveNodeEnter.setEvent(AssemblyStatusEnums.QC_PASSED.getValue());
+//        saveNodeEnter.setMemo(null);
+//        this.saveNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -627,6 +760,94 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Transactional
     @Override
     public GeneralResult saveNode(SaveNodeEnter enter) {
+        opeAssembiyOrderTraceService.save(OpeAssembiyOrderTrace.builder()
+                .id(idAppService.getId(SequenceName.OPE_PURCHAS_TRACE))
+                .dr(0)
+                .userId(enter.getUserId())
+                .opeAssembiyOrderId(enter.getId())
+                .status(enter.getStatus())
+                .event(enter.getEvent())
+                .eventTime(new Date())
+                .memo(StringUtils.isBlank(enter.getMemo()) == true ? null : enter.getMemo())
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build());
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 支付信息详情
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public PaymentDetailResullt paymentDetail(IdEnter enter) {
+        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.QC.getValue());
+
+        //查询 支付信息
+        List<PaymentItemDetailResult> paymentItemList = assemblyServiceMapper.paymentItemList(enter.getId());
+        return PaymentDetailResullt.builder()
+                .id(opeAssemblyOrder.getId())
+                .totalPrice(opeAssemblyOrder.getTotalPrice())
+                .status(opeAssemblyOrder.getStatus())
+                .processCost(opeAssemblyOrder.getProcessingFee())
+                .processCostRatio(opeAssemblyOrder.getProcessingFeeRatio())
+                .paymentItemList(paymentItemList)
+                .build();
+    }
+
+    /**
+     * 支付
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult pay(PayEnter enter) {
+        OpeAssemblyOrderPayment opeAssemblyOrderPayment = opeAssemblyOrderPaymentService.getById(enter.getId());
+        if (opeAssemblyOrderPayment == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.OPEPURCHAS_PAYMENT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.OPEPURCHAS_PAYMENT_IS_NOT_EXIST.getMessage());
+        }
+        if (StringUtils.equals(opeAssemblyOrderPayment.getPaymentStatus(), PayStatusEnums.PAID.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        //验证是否该支付的是当前分期
+        QueryWrapper<OpeAssemblyOrderPayment> opeAssemblyOrderPaymentQueryWrapper = new QueryWrapper<>();
+        opeAssemblyOrderPaymentQueryWrapper.eq(OpeAssemblyOrderPayment.COL_OPE_ASSEMBLY_ORDER_ID, opeAssemblyOrderPayment.getOpeAssemblyOrderId());
+        opeAssemblyOrderPaymentQueryWrapper.eq(OpeAssemblyOrderPayment.COL_DR, 0);
+        opeAssemblyOrderPaymentQueryWrapper.eq(OpeAssemblyOrderPayment.COL_PAYMENT_STATUS, PayStatusEnums.UNPAID.getValue());
+        opeAssemblyOrderPaymentQueryWrapper.lt(OpeAssemblyOrderPayment.COL_PAYMENT_PRIORITY, opeAssemblyOrderPayment.getPaymentPriority());
+
+        if (opeAssemblyOrderPaymentService.count(opeAssemblyOrderPaymentQueryWrapper) > 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.PAY_IN_INSTALLMENTS.getCode(), (ExceptionCodeEnums.PAY_IN_INSTALLMENTS.getMessage()));
+        }
+        //支付金额过滤
+        if (opeAssemblyOrderPayment.getAmount().subtract(enter.getAmount()).intValue() != 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getCode(), (ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getMessage()));
+        }
+
+        opeAssemblyOrderPayment.setPaymentStatus(PayStatusEnums.PAID.getValue());
+        opeAssemblyOrderPayment.setInvoiceNum(enter.getInvoiceNum());
+        opeAssemblyOrderPayment.setInvoicePicture(enter.getInvoicePicture());
+        opeAssemblyOrderPayment.setPaymentTime(enter.getActualPaymentDate());
+        opeAssemblyOrderPayment.setUpdatedBy(enter.getUserId());
+        opeAssemblyOrderPayment.setUpdatedTime(new Date());
+        opeAssemblyOrderPaymentService.updateById(opeAssemblyOrderPayment);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 组装单详情商品列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<productItemResult> productItemList(IdEnter enter) {
         return null;
     }
 
@@ -648,5 +869,171 @@ public class AssemblyServiceImpl implements AssemblyService {
             }
         }
         return opeAssemblyOrder;
+    }
+
+    /**
+     * 封装库存数据
+     *
+     * @param enter
+     * @param opeAssemblyOrder
+     * @return
+     */
+    private List<OpeStock> buildOpeStocks(IdEnter enter, OpeAssemblyOrder opeAssemblyOrder) {
+        //查询组装单出库的部件
+        QueryWrapper<OpeAssemblyOrderPart> opeAssemblyOrderPartQueryWrapper = new QueryWrapper<>();
+        opeAssemblyOrderPartQueryWrapper.eq(OpeAssemblyOrderPart.COL_DR, 0);
+        opeAssemblyOrderPartQueryWrapper.eq(OpeAssemblyOrderPart.COL_ASSEMBLY_ID, opeAssemblyOrder.getId());
+        List<OpeAssemblyOrderPart> assemblyOrderPartList = opeAssemblyOrderPartService.list(opeAssemblyOrderPartQueryWrapper);
+
+        List<Long> partIds = Lists.newArrayList();
+        assemblyOrderPartList.forEach(item -> {
+            partIds.add(item.getPartId());
+        });
+
+        //查询仓库
+        QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
+        OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
+        if (opeWhse == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        }
+
+        QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, partIds);
+        List<OpeStock> opeStockList = opeStockService.list(opeStockQueryWrapper);
+
+        if (CollectionUtils.isEmpty(opeStockList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+        }
+
+        //回滚库存
+        opeStockList.forEach(item -> {
+            assemblyOrderPartList.forEach(part -> {
+                if (item.getMaterielProductId().equals(part.getPartId())) {
+                    item.setAvailableTotal(item.getAvailableTotal() + part.getTotalQty());
+                    item.setOutTotal(item.getOutTotal() - part.getTotalQty());
+                    item.setUpdatedBy(enter.getUserId());
+                    item.setUpdatedTime(new Date());
+                }
+            });
+        });
+        return opeStockList;
+    }
+
+    /**
+     * 支付条目信息封装
+     *
+     * @param enter
+     * @param paymentList
+     * @param saveAssemblyOrderPayment
+     * @param opeAssemblyOrder
+     */
+    private void buildPaymentIten(SetPaymentAssemblyEnter enter, List<StagingPaymentEnter> paymentList, List<OpeAssemblyOrderPayment> saveAssemblyOrderPayment, OpeAssemblyOrder opeAssemblyOrder) {
+        QueryWrapper<OpeAssemblyOrderPart> opeAssemblyOrderPartQueryWrapper = new QueryWrapper<>();
+        opeAssemblyOrderPartQueryWrapper.eq(OpeAssemblyOrderPart.COL_ASSEMBLY_ID, opeAssemblyOrder.getId());
+        opeAssemblyOrderPartQueryWrapper.eq(OpeAssemblyOrderPart.COL_DR, 0);
+        List<OpeAssemblyOrderPart> assemblyOrderPartList = opeAssemblyOrderPartService.list(opeAssemblyOrderPartQueryWrapper);
+
+        List<Long> partIds = Lists.newArrayList();
+        assemblyOrderPartList.forEach(item -> {
+            partIds.add(item.getPartId());
+        });
+        //获取部品价格信息
+        List<PartDetailDto> partDetailDtoList = assemblyServiceMapper.partDetailListByPartIds(partIds);
+        if (CollectionUtils.isEmpty(partDetailDtoList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+        //校验部品总价
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (OpeAssemblyOrderPart item : assemblyOrderPartList) {
+            for (PartDetailDto part : partDetailDtoList) {
+                if (item.getPartId().equals(part.getPartId())) {
+                    BigDecimal partPrice = part.getPrice().multiply(new BigDecimal(item.getTotalQty()));
+                    totalPrice = totalPrice.add(partPrice);
+                }
+            }
+        }
+        if (enter.getProductPrice().doubleValue() != totalPrice.doubleValue()) {
+            throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
+        }
+
+        if (StringUtils.equals(enter.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
+            //月结
+            if (enter.getStatementdate() == null || enter.getDays() == 0 || enter.getDays() != null) {
+                throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
+            }
+            //生成支付节点
+            saveAssemblyOrderPayment.add(
+                    OpeAssemblyOrderPayment.builder()
+                            .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_ORDER_PAYMENT))
+                            .dr(0)
+                            .tenantId(0L)
+                            .userId(0L)
+                            .opeAssemblyOrderId(opeAssemblyOrder.getId())
+                            .paymentType(PaymentTypeEnums.MONTHLY_PAY.getValue())
+                            .plannedPaymentTime(enter.getStatementdate())
+                            .paymentDay(enter.getDays())
+                            .paymentTime(null)
+                            .paymentStatus(PayStatusEnums.UNPAID.getValue())
+                            .paymentPriority(1)
+                            .description(enter.getRemark())
+                            .amount(enter.getTotalPrice())
+                            .amountProportion(Constant.AMOUNTP_ROPORTION)
+                            .invoiceNum(null)
+                            .invoicePicture(null)
+                            .revision(0)
+                            .createdBy(enter.getUserId())
+                            .createdTime(new Date())
+                            .updatedBy(enter.getUserId())
+                            .updatedTime(new Date())
+                            .build()
+
+            );
+        }
+        if (StringUtils.equals(enter.getPaymentType(), PaymentTypeEnums.STAGING.getValue())) {
+            //分期
+            //生成支付节点
+            int totalRatio = 0;
+            BigDecimal checkTotalPrice = BigDecimal.ZERO;
+            for (int i = 0; i < paymentList.size(); i++) {
+                saveAssemblyOrderPayment.add(
+                        OpeAssemblyOrderPayment.builder()
+                                .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_ORDER_PAYMENT))
+                                .dr(0)
+                                .tenantId(0L)
+                                .userId(0L)
+                                .opeAssemblyOrderId(opeAssemblyOrder.getId())
+                                .paymentType(PaymentTypeEnums.STAGING.getValue())
+                                .plannedPaymentTime(paymentList.get(i).getEstimatedPaymentDate())
+                                .paymentDay(null)
+                                .paymentTime(null)
+                                .paymentStatus(PayStatusEnums.UNPAID.getValue())
+                                .paymentPriority(i)
+                                .description(paymentList.get(i).getRemark())
+                                .amount(paymentList.get(i).getPrice())
+                                .amountProportion(paymentList.get(i).getRatio())
+                                .invoiceNum(null)
+                                .invoicePicture(null)
+                                .revision(0)
+                                .createdBy(enter.getUserId())
+                                .createdTime(new Date())
+                                .updatedBy(enter.getUserId())
+                                .updatedTime(new Date())
+                                .build());
+                totalRatio += paymentList.get(i).getRatio();
+                checkTotalPrice = checkTotalPrice.add(paymentList.get(i).getPrice());
+            }
+
+            //百分比校验
+            if (totalRatio != Constant.AMOUNTP_ROPORTION) {
+                throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
+            }
+            //金额校验
+            if (enter.getProductPrice().doubleValue() != checkTotalPrice.doubleValue()) {
+                throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
+            }
+        }
     }
 }
