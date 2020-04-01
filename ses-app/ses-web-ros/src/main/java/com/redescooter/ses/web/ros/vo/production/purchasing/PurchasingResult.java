@@ -53,7 +53,7 @@ public class PurchasingResult extends GeneralResult {
     private String consigneeCountryCode;
 
     @ApiModelProperty(value = "收货人电话")
-    private String contactPhoneCountryCode;
+    private String consigneePhone;
 
     @ApiModelProperty(value = "收货人邮箱")
     private String consigneeEmail;
