@@ -352,7 +352,13 @@
         select purchasb.supplier_id as id,
         purchasb.part_id as partsId,
         supplier.supplier_name as supplierName,
-        purchasb.supplier_annex as annex
+        purchasb.supplier_annex as annex,
+        supplier.contact_first_name as supplierContactFirstName,
+        supplier.contact_last_name as supplierContactLastName,
+        supplier.contact_full_name as supplierContactFullName,
+        supplier.contact_phone_country_code as supplierContactCountryCode,
+        supplier.contact_phone as supplierContactPhone,
+        supplier.contact_email as supplierContactEmail
         from ope_purchas_b purchasb
         left join ope_supplier supplier on purchasb.supplier_id = supplier.id and supplier.dr = 0
         where purchasb.dr = 0
@@ -389,10 +395,10 @@
             </foreach>
         </if>
         <if test="enter.status != null and enter.status != '' and enter.status == 1">
-            and qc.fail_count=0
+            and qc.pass_count !=0
         </if>
         <if test="enter.status != null and enter.status != '' and enter.status == 2">
-            and qc.fail_count!=0
+            and qc.fail_count !=0
         </if>
         <if test="enter.qcStartTime != null and param2.qcEndTime != null">
             and ( qc.quality_inspection_time between #{enter.qcStartTime} and #{enter.qcEndTime})

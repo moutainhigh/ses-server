@@ -36,4 +36,22 @@ public class PurchasSupplierResult extends GeneralResult {
     @ApiModelProperty(value = "附件")
     private String annex;
 
+    @ApiModelProperty(value = "联系人名字")
+    private String supplierContactFirstName;
+
+    @ApiModelProperty(value = "联系人名字")
+    private String supplierContactLastName;
+
+    @ApiModelProperty(value = "联系人名字")
+    private String supplierContactFullName;
+
+    @ApiModelProperty(value = "国家代码")
+    private String supplierContactCountryCode;
+
+    @ApiModelProperty(value = "电话")
+    private String supplierContactPhone;
+
+    @ApiModelProperty(value = "邮件")
+    private String supplierContactEmail;
+
 }
