@@ -24,7 +24,7 @@ import io.swagger.annotations.*;
 @Builder
 public class ProductionPartsEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "id product Id 商品Id")
+    @ApiModelProperty(value = "产品Id")
     private Long id;
 
     @ApiModelProperty(value = "数量")

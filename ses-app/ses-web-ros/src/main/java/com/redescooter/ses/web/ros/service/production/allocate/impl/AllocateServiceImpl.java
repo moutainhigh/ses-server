@@ -524,7 +524,7 @@ public class AllocateServiceImpl implements AllocateService {
         List<OpeStock> opeStockList = null;
 
         try {
-            productionPartsEnterList = JSONArray.parseArray(enter.getPartList(), ProductionPartsEnter.class);
+              productionPartsEnterList = JSONArray.parseArray(enter.getPartList(), ProductionPartsEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }

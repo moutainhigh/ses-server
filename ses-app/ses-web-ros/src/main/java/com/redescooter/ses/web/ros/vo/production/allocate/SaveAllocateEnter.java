@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.vo.production.allocate;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
+import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @ClassName:SaveAllocateEnter
@@ -30,6 +34,7 @@ public class SaveAllocateEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.CONSIGNEE_ID__IS_EMPTY, message = "收货人id为空")
     private Long consigneeId;
 
-    @ApiModelProperty(value = "部件列表 格式：id：10000，qty：10000")
+    @ApiModelProperty(value = "部件列表 格式：[{\\\"id\\\":\\\"主键\\\",\\\"qty\\\":\\\"数量\\\"}]")
     private String partList;
+
 }
