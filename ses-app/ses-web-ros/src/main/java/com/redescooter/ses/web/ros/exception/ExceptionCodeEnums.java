@@ -217,6 +217,9 @@ public enum ExceptionCodeEnums {
     PAYMENT_INFO_IS_NOT_EXIST(10101, "付款信息不存在"),
 
     ASSEMBLY_IS_NOT_EXIST(10102, "组装单不存在"),
+
+    NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION(10103, "未进行质检请先进行质检"),
+
     ;
 
 
