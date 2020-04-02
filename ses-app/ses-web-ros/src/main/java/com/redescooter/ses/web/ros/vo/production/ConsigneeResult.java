@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @ClassName:ConsigneeResult
@@ -38,5 +39,9 @@ public class ConsigneeResult extends GeneralResult {
 
     @ApiModelProperty(value = "电话")
     private String phone;
+
+    @ApiModelProperty(value = "邮箱")
+    private String email;
+
 
 }

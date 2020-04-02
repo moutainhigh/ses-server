@@ -642,7 +642,7 @@ public class AllocateServiceImpl implements AllocateService {
                 .dr(0)
                 .tenantId(0L)
                 .userId(enter.getUserId())
-                .allocateNum("REDE" + String.valueOf(RandomUtil.randomDouble(999999, 10000000)))
+                .allocateNum("REDE" + RandomUtil.randomDouble(999999, 10000000))
                 .status(AllocateOrderStatusEnums.PENDING.getValue())
                 .count(totalCount)
                 .consigneeId(enter.getConsigneeId())
@@ -696,6 +696,7 @@ public class AllocateServiceImpl implements AllocateService {
                     .lastName(item.getLastName())
                     .phoneCountryCode(item.getCountryCode())
                     .phone(item.getTelNumber())
+                    .email(item.getEmail())
                     .build());
         });
         return consigneeResultlist;
