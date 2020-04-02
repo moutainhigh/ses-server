@@ -26,6 +26,9 @@
         <foreach collection="statusList" separator="," open="(" close=")" item="item">
             #{item}
         </foreach>
+        <if test="enter.status != null and enter.status != ''">
+            and allocate.status =#{enter.status}
+        </if>
         <if test="enter.createdStartTime != null and enter.createdEndTime != null">
             and ( allocate.created_time between #{enter.createdStartTime} and #{enter.createdEndTime})
         </if>

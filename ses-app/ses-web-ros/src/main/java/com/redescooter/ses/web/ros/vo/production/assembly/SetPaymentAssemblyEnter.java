@@ -36,7 +36,7 @@ public class SetPaymentAssemblyEnter extends GeneralEnter {
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "id为空")
     private Long id;
 
-    @ApiModelProperty(value = "加工费", required = true)
+    @ApiModelProperty(value = "加工费比例", required = true)
     @NotNull(code = ValidationExceptionCode.PROCESSCOST_RATIO_IS_EMPTY, message = "加工费为空")
     private BigDecimal processCost;
 
