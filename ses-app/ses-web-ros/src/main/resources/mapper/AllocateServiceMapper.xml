@@ -31,7 +31,7 @@
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and(
-            allocate.allocate_num liek concat("%",#{enter.keyword},"%")
+            allocate.allocate_num like concat("%",#{enter.keyword},"%")
             )
         </if>
         order by allocate.created_time desc

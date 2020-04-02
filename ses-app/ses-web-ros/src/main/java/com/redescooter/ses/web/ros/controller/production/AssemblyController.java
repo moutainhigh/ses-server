@@ -92,7 +92,7 @@ public class AssemblyController {
     }
 
     @PostMapping(value = "/list")
-    @ApiOperation(value = "收获人列表", response = AssemblyResult.class)
+    @ApiOperation(value = "组装列表", response = AssemblyResult.class)
     public Response<PageResult<AssemblyResult>> list(@ModelAttribute @ApiParam("请求参数") AssemblyListEnter enter) {
         return new Response<>(assemblyService.list(enter));
     }
