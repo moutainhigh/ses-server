@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.production.assembly;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -30,6 +32,7 @@ public class AssemblyListEnter extends PageEnter {
     private String status;
 
     @ApiModelProperty(value = "类型")
+    @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "类型为空")
     private String type;
 
     @ApiModelProperty(value = "工厂Id")

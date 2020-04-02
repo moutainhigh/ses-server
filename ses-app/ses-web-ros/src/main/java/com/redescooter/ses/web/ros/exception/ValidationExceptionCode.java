@@ -146,4 +146,8 @@ public interface ValidationExceptionCode {
     int STATUS_IS_EMPTY = 10091;
     //类型为空
     int TYPE_IS_EMPTY = 10092;
+    //产品为空
+    int PRODUCT_IS_EMPTY = 10093;
+    //加工费比例为空
+    int PROCESSCOST_RATIO_IS_EMPTY = 10094;
 }

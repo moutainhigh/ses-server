@@ -513,7 +513,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         });
 
         //封装 组装单
-        saveOpeAssemblyOrder = buildOpeAssemblyOrder(enter, productList);
+        saveOpeAssemblyOrder = buildOpeAssemblyOrder(enter, productList, assemblyId);
 
         //获取到每个产品单价，封装 产品单价的Map
         Map<Long, BigDecimal> productUnitPrice = Maps.newHashMap();
@@ -1024,7 +1024,7 @@ public class AssemblyServiceImpl implements AssemblyService {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
         }
         if (StringUtils.isNotEmpty(status)) {
-            if (StringUtils.equals(status, opeAssemblyOrder.getStatus())) {
+            if (!StringUtils.equals(status, opeAssemblyOrder.getStatus())) {
                 throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
             }
         }
@@ -1205,10 +1205,10 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param productList
      * @return
      */
-    private OpeAssemblyOrder buildOpeAssemblyOrder(SaveAssemblyEnter enter, List<ProductionPartsEnter> productList) {
+    private OpeAssemblyOrder buildOpeAssemblyOrder(SaveAssemblyEnter enter, List<ProductionPartsEnter> productList, Long assemblyId) {
         OpeAssemblyOrder saveOpeAssemblyOrder;
         saveOpeAssemblyOrder = OpeAssemblyOrder.builder()
-                .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_ORDER))
+                .id(assemblyId)
                 .dr(0)
                 .userId(enter.getUserId())
                 .tenantId(0L)
