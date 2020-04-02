@@ -7,8 +7,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.PaymentTypeEnums;
 import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
+import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
+import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
 import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
@@ -388,9 +391,10 @@ public class AssemblyServiceImpl implements AssemblyService {
     public GeneralResult saveAssembly(SaveAssemblyEnter enter) {
         // 出库单信息保存
         List<OpeStockBill> saveOpeStockBillList = Lists.newArrayList();
+        Long assemblyId = idAppService.getId(SequenceName.OPE_ASSEMBLY_ORDER);
 
         // 库存更新
-        List<OpeStock> opeStockList = null;
+        List<OpeStock> saveStockList = null;
 
         //商品信息转换
         List<ProductionPartsEnter> productList = null;
@@ -457,45 +461,49 @@ public class AssemblyServiceImpl implements AssemblyService {
         opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
         opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, new ArrayList<>(partMap.keySet()));
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
-        opeStockList.addAll(opeStockService.list(opeStockQueryWrapper));
+        List<OpeStock> opeStockList = opeStockService.list(opeStockQueryWrapper);
         if (CollectionUtils.isEmpty(opeStockList)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
         }
-//        // 将所有产品零部件 拆分 和库存进行校验
-//        partMap.forEach((key, value) -> {
-//            opeStockList.forEach(item -> {
-//                if (key.equals(item.getMaterielProductId())) {
-//                    if (value > item.getAvailableTotal()){
-//                        throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
-//                    }
-//
-//                    //形成出库单
-//                    saveOpeStockBillList.add(
-//                            OpeStockBill.builder()
-//                                    .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
-//                                    .dr(0)
-//                                    .tenantId(0L)
-//                                    .userId(enter.getUserId())
-//                                    .stockId(stock.getId())
-//                                    .direction(InOutWhEnums.IN.getValue())
-//                                    .status(StockBillStatusEnums.NORMAL.getValue())
-//                                    .sourceId(enter.getId())
-//                                    .total(item.getTotalCount())
-//                                    .sourceType(SourceTypeEnums.PURCHAS.getValue())
-//                                    .principalId(enter.getUserId())
-//                                    .operatineTime(new Date())
-//                                    .revision(0)
-//                                    .createdBy(enter.getUserId())
-//                                    .createdTime(new Date())
-//                                    .updatedBy(enter.getUserId())
-//                                    .updatedTime(new Date())
-//                                    .build());
-//                    );
-//                }
-//            });
-//        });
+        // 将所有产品零部件 拆分 和库存进行校验
+        partMap.forEach((key, value) -> {
+            opeStockList.forEach(item -> {
+                if (key.equals(item.getMaterielProductId())) {
+                    if (value > item.getAvailableTotal()) {
+                        throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                    }
+                    //形成出库单
+                    saveOpeStockBillList.add(buildStockBillEnter(enter.getUserId(), assemblyId, value, item));
+
+                    // 减库存
+//                    item.setAvailableTotal();
+                }
+            });
+        });
 
         return null;
+    }
+
+    private OpeStockBill buildStockBillEnter(Long userId, Long assemblyId, Integer value, OpeStock item) {
+        return OpeStockBill.builder()
+                .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
+                .dr(0)
+                .tenantId(0L)
+                .userId(userId)
+                .stockId(item.getId())
+                .direction(InOutWhEnums.IN.getValue())
+                .status(StockBillStatusEnums.NORMAL.getValue())
+                .sourceId(assemblyId)
+                .total(value)
+                .sourceType(SourceTypeEnums.ASSEMBLY.getValue())
+                .principalId(userId)
+                .operatineTime(new Date())
+                .revision(0)
+                .createdBy(userId)
+                .createdTime(new Date())
+                .updatedBy(userId)
+                .updatedTime(new Date())
+                .build();
     }
 
     /**
