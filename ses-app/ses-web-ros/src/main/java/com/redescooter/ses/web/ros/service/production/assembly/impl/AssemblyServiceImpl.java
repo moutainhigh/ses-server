@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.production.assembly.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -14,6 +15,7 @@ import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
 import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
+import com.redescooter.ses.api.common.enums.production.assembly.OpeAssemblyBStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -26,6 +28,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyBOrder;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrder;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPart;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment;
@@ -47,6 +50,7 @@ import com.redescooter.ses.web.ros.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
+import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
@@ -130,6 +134,9 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Autowired
     private OpeWhseService OpeWhseService;
 
+    @Autowired
+    private OpeStockBillService opeStockBillService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -149,7 +156,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 result.put(item.getStatus(), item.getTotalCount());
             });
         }
-        for (AssemblyStatusEnums item : AssemblyStatusEnums.values()) {
+        for (ProductionTypeEnums item : ProductionTypeEnums.values()) {
             if (!result.containsKey(item.getValue())) {
                 result.put(item.getValue(), 0);
             }
@@ -391,10 +398,17 @@ public class AssemblyServiceImpl implements AssemblyService {
     public GeneralResult saveAssembly(SaveAssemblyEnter enter) {
         // 出库单信息保存
         List<OpeStockBill> saveOpeStockBillList = Lists.newArrayList();
+        //组装单子表
+        List<OpeAssemblyBOrder> saveOpeAssemblyBOrderList = new ArrayList<OpeAssemblyBOrder>();
+        //组装单
+        OpeAssemblyOrder saveOpeAssemblyOrder = null;
+        //组装单部件统计表
+        List<OpeAssemblyOrderPart> saveOpeAssemblyOrderPartList = Lists.newArrayList();
+
         Long assemblyId = idAppService.getId(SequenceName.OPE_ASSEMBLY_ORDER);
 
         // 库存更新
-        List<OpeStock> saveStockList = null;
+        List<OpeStock> saveStockList = Lists.newArrayList();
 
         //商品信息转换
         List<ProductionPartsEnter> productList = null;
@@ -403,12 +417,26 @@ public class AssemblyServiceImpl implements AssemblyService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+        //收货人、代工厂校验
+        QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
+        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, enter.getConsigneeId());
+        if (opeSysUserProfileService.getOne(opeSysUserProfileQueryWrapper) == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+
+        if (opeFactoryService.getById(enter.getFactoryId()) == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getMessage());
+        }
+
+        // 查询每个产品所需部件数量
+        Map<Long, Integer> partMap = Maps.newHashMap();
 
         QueryWrapper<OpePartsProduct> opePartsProductQueryWrapper = new QueryWrapper<>();
         opePartsProductQueryWrapper.eq(OpePartsProduct.COL_DR, 0);
         opePartsProductQueryWrapper.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.SCOOTER.getValue());
         List<OpePartsProduct> opePartsProductList = opePartsProductService.list(opePartsProductQueryWrapper);
-        if (CollectionUtils.isNotEmpty(opePartsProductList)) {
+        if (CollectionUtils.isEmpty(opePartsProductList)) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
@@ -419,7 +447,7 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //检验产品是否存在
         productList.forEach(item -> {
-            if (!productIds.contains(item)) {
+            if (!productIds.contains(item.getId())) {
                 throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
         });
@@ -434,7 +462,6 @@ public class AssemblyServiceImpl implements AssemblyService {
         }
 
         // 封装 要组装的所有产品 所需part数量之和
-        Map<Long, Integer> partMap = Maps.newHashMap();
         for (OpePartsProductB item : productBList) {
             for (ProductionPartsEnter product : productList) {
                 if (item.getPartsProductId().equals(product.getId())) {
@@ -485,46 +512,39 @@ public class AssemblyServiceImpl implements AssemblyService {
             });
         });
 
-        //查询配件价格信息
-//        assemblyServiceMapper
+        //封装 组装单
+        saveOpeAssemblyOrder = buildOpeAssemblyOrder(enter, productList);
 
-        //形成组装单
-//        OpeAssemblyOrder assemblyOrder = OpeAssemblyOrder.builder()
-//                .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_ORDER))
-//                .dr(0)
-//                .userId(enter.getUserId())
-//                .tenantId(0L)
-//                .status(AssemblyStatusEnums.PENDING.getValue())
-//                .assemblyNumber("REDE"+ RandomUtil.randomNumbers(7))
-//                .totalQty()
-//                .build();
-        //形成组装单子表
-        // 形成组装单 配件统计表
-        //形成节点
+        //获取到每个产品单价，封装 产品单价的Map
+        Map<Long, BigDecimal> productUnitPrice = Maps.newHashMap();
+        buildProductUnitPriceMap(opePartsProductList, productList, productBList, partMap, productUnitPrice);
 
-        return null;
-    }
+        //封装 子表数据
+        buildOpeAssemblyBOrderList(enter, saveOpeAssemblyBOrderList, assemblyId, productList, opePartsProductList, productUnitPrice);
 
-    private OpeStockBill buildStockBillEnter(Long userId, Long assemblyId, Integer value, OpeStock item) {
-        return OpeStockBill.builder()
-                .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
-                .dr(0)
-                .tenantId(0L)
-                .userId(userId)
-                .stockId(item.getId())
-                .direction(InOutWhEnums.IN.getValue())
-                .status(StockBillStatusEnums.NORMAL.getValue())
-                .sourceId(assemblyId)
-                .total(value)
-                .sourceType(SourceTypeEnums.ASSEMBLY.getValue())
-                .principalId(userId)
-                .operatineTime(new Date())
-                .revision(0)
-                .createdBy(userId)
-                .createdTime(new Date())
-                .updatedBy(userId)
-                .updatedTime(new Date())
-                .build();
+        //封装组装单 配件表数据
+        buildSaveOpeAssemblyOrderPartList(enter, saveOpeAssemblyOrderPartList, assemblyId, saveStockList, partMap);
+
+        //保存出库单
+        opeStockBillService.saveBatch(saveOpeStockBillList);
+
+        //保存组装单
+        opeAssemblyOrderService.save(saveOpeAssemblyOrder);
+
+        //保存组装单子表
+        opeAssemblyOrderBService.saveBatch(saveOpeAssemblyBOrderList);
+
+        // 保存组装单 配件统计表
+        opeAssemblyOrderPartService.saveBatch(saveOpeAssemblyOrderPartList);
+        //保存节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(assemblyId);
+        saveNodeEnter.setStatus(AssemblyStatusEnums.PENDING.getValue());
+        saveNodeEnter.setEvent(AssemblyStatusEnums.PENDING.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -1175,5 +1195,201 @@ public class AssemblyServiceImpl implements AssemblyService {
                 throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
             }
         }
+    }
+
+
+    /**
+     * 封装组装单数据
+     *
+     * @param enter
+     * @param productList
+     * @return
+     */
+    private OpeAssemblyOrder buildOpeAssemblyOrder(SaveAssemblyEnter enter, List<ProductionPartsEnter> productList) {
+        OpeAssemblyOrder saveOpeAssemblyOrder;
+        saveOpeAssemblyOrder = OpeAssemblyOrder.builder()
+                .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_ORDER))
+                .dr(0)
+                .userId(enter.getUserId())
+                .tenantId(0L)
+                .status(AssemblyStatusEnums.PENDING.getValue())
+                .assemblyNumber("REDE" + RandomUtil.randomNumbers(7))
+                .totalQty(productList.stream().mapToInt(ProductionPartsEnter::getQty).sum())
+                .totalPrice(null)
+                .processingFee(null)
+                .processingFeeRatio(null)
+                .paymentType(null)
+                .productPrice(null)
+                .factoryId(enter.getFactoryId())
+                .consigneeId(enter.getConsigneeId())
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+        return saveOpeAssemblyOrder;
+    }
+
+    /**
+     * 获取每个产品的产品单价
+     *
+     * @param opePartsProductList
+     * @param productBList
+     * @param productUnitPrice
+     */
+    private void buildProductUnitPriceMap(List<OpePartsProduct> opePartsProductList, List<ProductionPartsEnter> productList, List<OpePartsProductB> productBList,
+                                          Map<Long, Integer> partMap, Map<Long, BigDecimal> productUnitPrice) {
+        //查询配件价格信息
+        List<PartDetailDto> partDetailDtoList = assemblyServiceMapper.partDetailListByPartIds(new ArrayList<>(partMap.keySet()));
+        if (CollectionUtils.isEmpty(partDetailDtoList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
+        List<Long> saveProductIds = new ArrayList<>();
+        for (ProductionPartsEnter product : productList) {
+            saveProductIds.add(product.getId());
+        }
+        opePartsProductList.removeIf(item -> !saveProductIds.contains(item.getId()));
+
+        for (OpePartsProduct item : opePartsProductList) {
+            int partQty = 0;
+            BigDecimal totalPrice = BigDecimal.ZERO;
+
+            flag2:
+            for (OpePartsProductB part : productBList) {
+                if (part.getPartsProductId().equals(item.getId())) {
+                    partQty += part.getPartsQty();
+
+                    flag3:
+                    for (PartDetailDto price : partDetailDtoList) {
+                        if (price.getPartId().equals(part.getPartsId())) {
+
+                            totalPrice = totalPrice.add(price.getPrice().multiply(new BigDecimal(part.getPartsQty())));
+                        }
+                    }
+
+                    if (partQty == item.getSumPartsQty()) {
+                        break flag2;
+                    }
+                }
+
+            }
+            productUnitPrice.put(item.getId(), totalPrice);
+        }
+    }
+
+    /**
+     * 封装 组装单 配件统计表
+     *
+     * @param enter
+     * @param saveOpeAssemblyOrderPartList
+     * @param assemblyId
+     * @param saveStockList
+     * @param partMap
+     */
+    private void buildSaveOpeAssemblyOrderPartList(SaveAssemblyEnter enter, List<OpeAssemblyOrderPart> saveOpeAssemblyOrderPartList, Long assemblyId, List<OpeStock> saveStockList, Map<Long,
+            Integer> partMap) {
+        saveStockList.forEach(item -> {
+            if (partMap.containsKey(item.getMaterielProductId())) {
+                saveOpeAssemblyOrderPartList.add(
+                        OpeAssemblyOrderPart.builder()
+                                .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_ORDER_PART))
+                                .dr(0)
+                                .stockId(item.getId())
+                                .partId(item.getMaterielProductId())
+                                .assemblyId(assemblyId)
+                                .totalQty(partMap.get(item.getMaterielProductId()))
+                                .revision(0)
+                                .createdBy(enter.getUserId())
+                                .createdTime(new Date())
+                                .updatedBy(enter.getUserId())
+                                .updatedTime(new Date())
+                                .build());
+            }
+        });
+    }
+
+    /**
+     * 封装 组装单子表数据
+     *
+     * @param enter
+     * @param saveOpeAssemblyBOrderList
+     * @param assemblyId
+     * @param productList
+     * @param opePartsProductList
+     * @param productUnitPrice
+     */
+    private void buildOpeAssemblyBOrderList(SaveAssemblyEnter enter, List<OpeAssemblyBOrder> saveOpeAssemblyBOrderList, Long assemblyId, List<ProductionPartsEnter> productList,
+                                            List<OpePartsProduct> opePartsProductList, Map<Long, BigDecimal> productUnitPrice) {
+        opePartsProductList.forEach(item -> {
+            saveOpeAssemblyBOrderList.add(
+                    OpeAssemblyBOrder.builder()
+                            .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_ORDER))
+                            .dr(0)
+                            .status(OpeAssemblyBStatusEnums.UNDONE.getValue())
+                            .userId(enter.getUserId())
+                            .tenantId(0L)
+                            .assemblyId(assemblyId)
+                            .productId(item.getId())
+                            .assemblyBNumber("REDE" + RandomUtil.randomNumbers(6))
+                            .productNumber(item.getProductNumber())
+                            .enName(item.getEnName())
+                            .price(null)
+                            .completeQty(0)
+                            .assemblyQty(0)
+                            .revision(0)
+                            .createdBy(enter.getUserId())
+                            .createdTime(new Date())
+                            .updatedBy(enter.getUserId())
+                            .updatedTime(new Date())
+                            .build()
+            );
+        });
+
+        //子表完善总数量 、商品单价
+        for (OpeAssemblyBOrder item : saveOpeAssemblyBOrderList) {
+            for (ProductionPartsEnter product : productList) {
+                if (item.getProductId().equals(product.getId())) {
+                    item.setAssemblyQty(product.getQty());
+                }
+            }
+        }
+        saveOpeAssemblyBOrderList.forEach(item -> {
+            if (productUnitPrice.containsKey(item.getProductId())) {
+                item.setPrice(productUnitPrice.get(item.getProductId()));
+            }
+        });
+    }
+
+    /**
+     * 封装出库单
+     *
+     * @param userId
+     * @param assemblyId
+     * @param value
+     * @param item
+     * @return
+     */
+    private OpeStockBill buildStockBillEnter(Long userId, Long assemblyId, Integer value, OpeStock item) {
+        return OpeStockBill.builder()
+                .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
+                .dr(0)
+                .tenantId(0L)
+                .userId(userId)
+                .stockId(item.getId())
+                .direction(InOutWhEnums.IN.getValue())
+                .status(StockBillStatusEnums.NORMAL.getValue())
+                .sourceId(assemblyId)
+                .total(value)
+                .sourceType(SourceTypeEnums.ASSEMBLY.getValue())
+                .principalId(userId)
+                .operatineTime(new Date())
+                .revision(0)
+                .createdBy(userId)
+                .createdTime(new Date())
+                .updatedBy(userId)
+                .updatedTime(new Date())
+                .build();
     }
 }

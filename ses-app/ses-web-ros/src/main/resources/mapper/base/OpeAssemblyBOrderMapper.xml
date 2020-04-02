@@ -4,15 +4,17 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeAssemblyBOrder">
         <!--@mbg.generated-->
         <!--@Table ope_assembly_b_order-->
-        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="dr" jdbcType="INTEGER" property="dr"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
         <result column="user_id" jdbcType="BIGINT" property="userId"/>
-        <result column="tenant_id" jdbcType="INTEGER" property="tenantId"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
         <result column="assembly_id" jdbcType="BIGINT" property="assemblyId"/>
+        <result column="product_id" jdbcType="BIGINT" property="productId"/>
         <result column="assembly_b_number" jdbcType="VARCHAR" property="assemblyBNumber"/>
         <result column="product_number" jdbcType="VARCHAR" property="productNumber"/>
         <result column="en_name" jdbcType="VARCHAR" property="enName"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
         <result column="complete_qty" jdbcType="INTEGER" property="completeQty"/>
         <result column="assembly_qty" jdbcType="INTEGER" property="assemblyQty"/>
         <result column="revision" jdbcType="INTEGER" property="revision"/>
@@ -28,9 +30,9 @@
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        id, dr, `status`, user_id, tenant_id, assembly_id, assembly_b_number, product_number,
-        en_name, complete_qty, assembly_qty, revision, created_by, created_time, updated_by,
-        updated_time, def1, def2, def3, def5, def6
+        id, dr, `status`, user_id, tenant_id, assembly_id, product_id, assembly_b_number,
+        product_number, en_name, price, complete_qty, assembly_qty, revision, created_by,
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
@@ -38,153 +40,167 @@
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="dr = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.dr,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="`status` = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.status,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="user_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.userId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="tenant_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.tenantId,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="assembly_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.assemblyId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyId,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="product_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="assembly_b_number = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.assemblyBNumber,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyBNumber,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="product_number = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.productNumber,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.productNumber,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="en_name = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.enName,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.enName,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="price = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.price,jdbcType=DECIMAL}
                 </foreach>
             </trim>
             <trim prefix="complete_qty = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.completeQty,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.completeQty,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="assembly_qty = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.assemblyQty,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyQty,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="revision = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.revision,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="created_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.createdBy,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="created_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.createdTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="updated_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.updatedBy,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="updated_time = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.updatedTime,jdbcType=TIMESTAMP}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
             <trim prefix="def1 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.def1,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def2 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.def2,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def3 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.def3,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def5 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.def5,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
                 </foreach>
             </trim>
             <trim prefix="def6 = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=INTEGER} then #{item.def6,jdbcType=DOUBLE}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
                 </foreach>
             </trim>
         </trim>
         where id in
         <foreach close=")" collection="list" item="item" open="(" separator=", ">
-            #{item.id,jdbcType=INTEGER}
+            #{item.id,jdbcType=BIGINT}
         </foreach>
     </update>
     <insert id="batchInsert" parameterType="map">
         <!--@mbg.generated-->
         insert into ope_assembly_b_order
-        (id, dr, `status`, user_id, tenant_id, assembly_id, assembly_b_number, product_number,
-        en_name, complete_qty, assembly_qty, revision, created_by, created_time, updated_by,
-        updated_time, def1, def2, def3, def5, def6)
+        (id, dr, `status`, user_id, tenant_id, assembly_id, product_id, assembly_b_number,
+        product_number, en_name, price, complete_qty, assembly_qty, revision, created_by,
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR},
-            #{item.userId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=INTEGER}, #{item.assemblyId,jdbcType=BIGINT},
-            #{item.assemblyBNumber,jdbcType=VARCHAR}, #{item.productNumber,jdbcType=VARCHAR},
-            #{item.enName,jdbcType=VARCHAR}, #{item.completeQty,jdbcType=INTEGER}, #{item.assemblyQty,jdbcType=INTEGER},
-            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP},
-            #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
-            #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
-            #{item.def6,jdbcType=DOUBLE})
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR},
+            #{item.userId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT}, #{item.assemblyId,jdbcType=BIGINT},
+            #{item.productId,jdbcType=BIGINT}, #{item.assemblyBNumber,jdbcType=VARCHAR},
+            #{item.productNumber,jdbcType=VARCHAR},
+            #{item.enName,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL}, #{item.completeQty,jdbcType=INTEGER},
+            #{item.assemblyQty,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+            #{item.updatedTime,jdbcType=TIMESTAMP},
+            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
+            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
         </foreach>
     </insert>
     <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeAssemblyBOrder">
         <!--@mbg.generated-->
         insert into ope_assembly_b_order
-        (id, dr, `status`, user_id, tenant_id, assembly_id, assembly_b_number, product_number,
-        en_name, complete_qty, assembly_qty, revision, created_by, created_time, updated_by,
-        updated_time, def1, def2, def3, def5, def6)
+        (id, dr, `status`, user_id, tenant_id, assembly_id, product_id, assembly_b_number,
+        product_number, en_name, price, complete_qty, assembly_qty, revision, created_by,
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
         values
-        (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT},
-        #{tenantId,jdbcType=INTEGER}, #{assemblyId,jdbcType=BIGINT}, #{assemblyBNumber,jdbcType=VARCHAR},
-        #{productNumber,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, #{completeQty,jdbcType=INTEGER},
-        #{assemblyQty,jdbcType=INTEGER}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT},
-        #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
-        #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
-        #{def6,jdbcType=DOUBLE})
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT},
+        #{tenantId,jdbcType=BIGINT}, #{assemblyId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT},
+        #{assemblyBNumber,jdbcType=VARCHAR}, #{productNumber,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR},
+        #{price,jdbcType=DECIMAL}, #{completeQty,jdbcType=INTEGER}, #{assemblyQty,jdbcType=INTEGER},
+        #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+        #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
+        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+        )
         on duplicate key update
-        id = #{id,jdbcType=INTEGER},
+        id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
         `status` = #{status,jdbcType=VARCHAR},
         user_id = #{userId,jdbcType=BIGINT},
-        tenant_id = #{tenantId,jdbcType=INTEGER},
+        tenant_id = #{tenantId,jdbcType=BIGINT},
         assembly_id = #{assemblyId,jdbcType=BIGINT},
+        product_id = #{productId,jdbcType=BIGINT},
         assembly_b_number = #{assemblyBNumber,jdbcType=VARCHAR},
         product_number = #{productNumber,jdbcType=VARCHAR},
         en_name = #{enName,jdbcType=VARCHAR},
+        price = #{price,jdbcType=DECIMAL},
         complete_qty = #{completeQty,jdbcType=INTEGER},
         assembly_qty = #{assemblyQty,jdbcType=INTEGER},
         revision = #{revision,jdbcType=INTEGER},
@@ -220,6 +236,9 @@
             <if test="assemblyId != null">
                 assembly_id,
             </if>
+            <if test="productId != null">
+                product_id,
+            </if>
             <if test="assemblyBNumber != null">
                 assembly_b_number,
             </if>
@@ -228,6 +247,9 @@
             </if>
             <if test="enName != null">
                 en_name,
+            </if>
+            <if test="price != null">
+                price,
             </if>
             <if test="completeQty != null">
                 complete_qty,
@@ -269,7 +291,7 @@
         values
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=INTEGER},
+                #{id,jdbcType=BIGINT},
             </if>
             <if test="dr != null">
                 #{dr,jdbcType=INTEGER},
@@ -281,10 +303,13 @@
                 #{userId,jdbcType=BIGINT},
             </if>
             <if test="tenantId != null">
-                #{tenantId,jdbcType=INTEGER},
+                #{tenantId,jdbcType=BIGINT},
             </if>
             <if test="assemblyId != null">
                 #{assemblyId,jdbcType=BIGINT},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
             </if>
             <if test="assemblyBNumber != null">
                 #{assemblyBNumber,jdbcType=VARCHAR},
@@ -294,6 +319,9 @@
             </if>
             <if test="enName != null">
                 #{enName,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
             </if>
             <if test="completeQty != null">
                 #{completeQty,jdbcType=INTEGER},
@@ -335,7 +363,7 @@
         on duplicate key update
         <trim suffixOverrides=",">
             <if test="id != null">
-                id = #{id,jdbcType=INTEGER},
+                id = #{id,jdbcType=BIGINT},
             </if>
             <if test="dr != null">
                 dr = #{dr,jdbcType=INTEGER},
@@ -347,10 +375,13 @@
                 user_id = #{userId,jdbcType=BIGINT},
             </if>
             <if test="tenantId != null">
-                tenant_id = #{tenantId,jdbcType=INTEGER},
+                tenant_id = #{tenantId,jdbcType=BIGINT},
             </if>
             <if test="assemblyId != null">
                 assembly_id = #{assemblyId,jdbcType=BIGINT},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=BIGINT},
             </if>
             <if test="assemblyBNumber != null">
                 assembly_b_number = #{assemblyBNumber,jdbcType=VARCHAR},
@@ -360,6 +391,9 @@
             </if>
             <if test="enName != null">
                 en_name = #{enName,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
             </if>
             <if test="completeQty != null">
                 complete_qty = #{completeQty,jdbcType=INTEGER},

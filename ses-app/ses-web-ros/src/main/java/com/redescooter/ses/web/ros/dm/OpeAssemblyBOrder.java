@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAssemblyBOrder")
@@ -26,7 +27,7 @@ public class OpeAssemblyBOrder implements Serializable {
      */
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键")
-    private Integer id;
+    private Long id;
 
     /**
      * 删除标识
@@ -54,14 +55,21 @@ public class OpeAssemblyBOrder implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户id")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
-     * 组装单Id
+     * 组装单id
      */
     @TableField(value = "assembly_id")
-    @ApiModelProperty(value = "组装单Id")
+    @ApiModelProperty(value = "组装单id")
     private Long assemblyId;
+
+    /**
+     * 产品id
+     */
+    @TableField(value = "product_id")
+    @ApiModelProperty(value = "产品id")
+    private Long productId;
 
     /**
      * 组装单子单号
@@ -83,6 +91,13 @@ public class OpeAssemblyBOrder implements Serializable {
     @TableField(value = "en_name")
     @ApiModelProperty(value = "产品英文名")
     private String enName;
+
+    /**
+     * 产品单价
+     */
+    @TableField(value = "price")
+    @ApiModelProperty(value = "产品单价")
+    private BigDecimal price;
 
     /**
      * 已完成数
@@ -182,11 +197,15 @@ public class OpeAssemblyBOrder implements Serializable {
 
     public static final String COL_ASSEMBLY_ID = "assembly_id";
 
+    public static final String COL_PRODUCT_ID = "product_id";
+
     public static final String COL_ASSEMBLY_B_NUMBER = "assembly_b_number";
 
     public static final String COL_PRODUCT_NUMBER = "product_number";
 
     public static final String COL_EN_NAME = "en_name";
+
+    public static final String COL_PRICE = "price";
 
     public static final String COL_COMPLETE_QTY = "complete_qty";
 
@@ -211,8 +230,4 @@ public class OpeAssemblyBOrder implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpeAssemblyBOrderBuilder builder() {
-        return new OpeAssemblyBOrderBuilder();
-    }
 }
