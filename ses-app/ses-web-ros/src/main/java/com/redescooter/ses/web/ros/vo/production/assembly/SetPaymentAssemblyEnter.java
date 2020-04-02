@@ -36,9 +36,12 @@ public class SetPaymentAssemblyEnter extends GeneralEnter {
     private Long id;
 
     @ApiModelProperty(value = "加工费", required = true)
-    private int processCost;
+    private BigDecimal processCost;
 
-    @ApiModelProperty(value = "付款方式", required = true)
+    @ApiModelProperty(value = "产品总价", required = true)
+    private BigDecimal productPrice;
+
+    @ApiModelProperty(value = "总价格", required = true)
     private BigDecimal totalPrice;
 
     @ApiModelProperty(value = "付款方式", required = true)

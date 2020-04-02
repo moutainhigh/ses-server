@@ -215,6 +215,8 @@ public enum ExceptionCodeEnums {
     QC_PASSED_WITHOUT_REPEATING_QUALITY_INSPECTION(10100, "无需重复质检"),
 
     PAYMENT_INFO_IS_NOT_EXIST(10101, "付款信息不存在"),
+
+    ASSEMBLY_IS_NOT_EXIST(10102, "组装单不存在"),
     ;
 
 

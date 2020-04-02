@@ -1,7 +1,6 @@
-package com.redescooter.ses.web.ros.vo.production.purchasing;
+package com.redescooter.ses.web.ros.vo.production;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -36,6 +35,12 @@ public class PaymentDetailResullt extends GeneralResult {
 
     @ApiModelProperty(value = "状态")
     private String status;
+
+    @ApiModelProperty(value = "加工费")
+    private BigDecimal processCost;
+
+    @ApiModelProperty(value = "加工费比例")
+    private Integer processCostRatio;
 
     @ApiModelProperty(value = "条目集合")
     private List<PaymentItemDetailResult> paymentItemList;

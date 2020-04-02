@@ -29,7 +29,7 @@
     <sql id="paymentItemList">
         payment.id                   as id,
                payment.payment_status       as status,
-               payment.purchas_id           as purchasingId,
+               payment.purchas_id           as bizId,
                payment.amount               as amount,
                payment.amount_proportion    as paymentRatio,
                payment.invoice_num          as invoiceNum,
@@ -163,7 +163,7 @@
         select
         <include refid="purchasing_item"/>
         from ope_purchas purchas
-        left join ope_sys_user_profile profile on purchas.consignee_id = profile.id and profile.dr=0
+        left join ope_sys_user_profile profile on purchas.consignee_id = profile.sys_user_id and profile.dr=0
         left join ope_factory factory on factory.id = purchas.factory_id and factory.dr=0
         <include refid="where_purchasingList"/>
         limit #{enter.startRow},#{enter.pageSize}
@@ -185,7 +185,7 @@
         select
         <include refid="purchasing_item"/>
         from ope_purchas purchas
-        left join ope_sys_user_profile profile on purchas.consignee_id = profile.id and profile.dr=0
+        left join ope_sys_user_profile profile on purchas.consignee_id = profile.sys_user_id and profile.dr=0
         left join ope_factory factory on factory.id = purchas.factory_id and factory.dr=0
         where purchas.id = #{id}
     </select>

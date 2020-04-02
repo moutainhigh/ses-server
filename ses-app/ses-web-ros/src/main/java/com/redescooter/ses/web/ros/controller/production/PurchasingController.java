@@ -11,8 +11,8 @@ import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingServi
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
 import com.redescooter.ses.web.ros.vo.production.ScanBarCodeEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PayEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt;
+import com.redescooter.ses.web.ros.vo.production.PayEnter;
+import com.redescooter.ses.web.ros.vo.production.PaymentDetailResullt;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingDetailProductEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;

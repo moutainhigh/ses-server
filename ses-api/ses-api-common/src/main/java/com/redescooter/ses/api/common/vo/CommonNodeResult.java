@@ -52,6 +52,9 @@ public class CommonNodeResult extends GeneralResult {
     @ApiModelProperty(value = "创建人")
     private String createdByLastName;
 
+    @ApiModelProperty(value = "创建人")
+    private String createdByFullName;
+
     @ApiModelProperty(value = "备注")
     private String memo;
 }

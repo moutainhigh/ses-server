@@ -3,18 +3,18 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAssemblyOrderPayment")
 @Data
@@ -35,7 +35,6 @@ public class OpeAssemblyOrderPayment implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -57,7 +56,7 @@ public class OpeAssemblyOrderPayment implements Serializable {
      */
     @TableField(value = "ope_assembly_order_id")
     @ApiModelProperty(value = "组装单主键")
-    private Integer opeAssemblyOrderId;
+    private Long opeAssemblyOrderId;
 
     /**
      * 分期，月结
@@ -148,7 +147,7 @@ public class OpeAssemblyOrderPayment implements Serializable {
      */
     @TableField(value = "created_by")
     @ApiModelProperty(value = "创建人")
-    private Integer createdBy;
+    private Long createdBy;
 
     /**
      * 创建时间
@@ -259,4 +258,8 @@ public class OpeAssemblyOrderPayment implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeAssemblyOrderPaymentBuilder builder() {
+        return new OpeAssemblyOrderPaymentBuilder();
+    }
 }

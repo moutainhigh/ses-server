@@ -2,9 +2,7 @@ package com.redescooter.ses.web.ros.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrder;
-
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface OpeAssemblyOrderMapper extends BaseMapper<OpeAssemblyOrder> {

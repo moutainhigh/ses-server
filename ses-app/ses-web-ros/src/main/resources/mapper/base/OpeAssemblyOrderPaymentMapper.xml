@@ -8,7 +8,7 @@
         <result column="dr" jdbcType="INTEGER" property="dr"/>
         <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
         <result column="user_id" jdbcType="BIGINT" property="userId"/>
-        <result column="ope_assembly_order_id" jdbcType="INTEGER" property="opeAssemblyOrderId"/>
+        <result column="ope_assembly_order_id" jdbcType="BIGINT" property="opeAssemblyOrderId"/>
         <result column="payment_type" jdbcType="VARCHAR" property="paymentType"/>
         <result column="planned_payment_time" jdbcType="TIMESTAMP" property="plannedPaymentTime"/>
         <result column="payment_day" jdbcType="INTEGER" property="paymentDay"/>
@@ -21,7 +21,7 @@
         <result column="invoice_num" jdbcType="VARCHAR" property="invoiceNum"/>
         <result column="invoice_picture" jdbcType="VARCHAR" property="invoicePicture"/>
         <result column="revision" jdbcType="INTEGER" property="revision"/>
-        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
         <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
@@ -59,7 +59,7 @@
             </trim>
             <trim prefix="ope_assembly_order_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.opeAssemblyOrderId,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.opeAssemblyOrderId,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="payment_type = case" suffix="end,">
@@ -124,7 +124,7 @@
             </trim>
             <trim prefix="created_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="created_time = case" suffix="end,">
@@ -183,7 +183,7 @@
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
-            #{item.userId,jdbcType=BIGINT}, #{item.opeAssemblyOrderId,jdbcType=INTEGER},
+            #{item.userId,jdbcType=BIGINT}, #{item.opeAssemblyOrderId,jdbcType=BIGINT},
             #{item.paymentType,jdbcType=VARCHAR},
             #{item.plannedPaymentTime,jdbcType=TIMESTAMP}, #{item.paymentDay,jdbcType=INTEGER},
             #{item.paymentTime,jdbcType=TIMESTAMP}, #{item.paymentStatus,jdbcType=VARCHAR},
@@ -191,7 +191,7 @@
             #{item.amount,jdbcType=DECIMAL}, #{item.amountProportion,jdbcType=INTEGER},
             #{item.invoiceNum,jdbcType=VARCHAR},
             #{item.invoicePicture,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER},
-            #{item.createdBy,jdbcType=INTEGER},
+            #{item.createdBy,jdbcType=BIGINT},
             #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
             #{item.updatedTime,jdbcType=TIMESTAMP},
             #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
@@ -207,12 +207,12 @@
         updated_by, updated_time, def1, def2, def3, def5, def6)
         values
         (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
-        #{opeAssemblyOrderId,jdbcType=INTEGER}, #{paymentType,jdbcType=VARCHAR},
+        #{opeAssemblyOrderId,jdbcType=BIGINT}, #{paymentType,jdbcType=VARCHAR},
         #{plannedPaymentTime,jdbcType=TIMESTAMP},
         #{paymentDay,jdbcType=INTEGER}, #{paymentTime,jdbcType=TIMESTAMP}, #{paymentStatus,jdbcType=VARCHAR},
         #{paymentPriority,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL},
         #{amountProportion,jdbcType=INTEGER}, #{invoiceNum,jdbcType=VARCHAR}, #{invoicePicture,jdbcType=VARCHAR},
-        #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP},
+        #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
         #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
         #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
         )
@@ -221,7 +221,7 @@
         dr = #{dr,jdbcType=INTEGER},
         tenant_id = #{tenantId,jdbcType=BIGINT},
         user_id = #{userId,jdbcType=BIGINT},
-        ope_assembly_order_id = #{opeAssemblyOrderId,jdbcType=INTEGER},
+        ope_assembly_order_id = #{opeAssemblyOrderId,jdbcType=BIGINT},
         payment_type = #{paymentType,jdbcType=VARCHAR},
         planned_payment_time = #{plannedPaymentTime,jdbcType=TIMESTAMP},
         payment_day = #{paymentDay,jdbcType=INTEGER},
@@ -234,7 +234,7 @@
         invoice_num = #{invoiceNum,jdbcType=VARCHAR},
         invoice_picture = #{invoicePicture,jdbcType=VARCHAR},
         revision = #{revision,jdbcType=INTEGER},
-        created_by = #{createdBy,jdbcType=INTEGER},
+        created_by = #{createdBy,jdbcType=BIGINT},
         created_time = #{createdTime,jdbcType=TIMESTAMP},
         updated_by = #{updatedBy,jdbcType=BIGINT},
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
@@ -342,7 +342,7 @@
                 #{userId,jdbcType=BIGINT},
             </if>
             <if test="opeAssemblyOrderId != null">
-                #{opeAssemblyOrderId,jdbcType=INTEGER},
+                #{opeAssemblyOrderId,jdbcType=BIGINT},
             </if>
             <if test="paymentType != null">
                 #{paymentType,jdbcType=VARCHAR},
@@ -381,7 +381,7 @@
                 #{revision,jdbcType=INTEGER},
             </if>
             <if test="createdBy != null">
-                #{createdBy,jdbcType=INTEGER},
+                #{createdBy,jdbcType=BIGINT},
             </if>
             <if test="createdTime != null">
                 #{createdTime,jdbcType=TIMESTAMP},
@@ -423,7 +423,7 @@
                 user_id = #{userId,jdbcType=BIGINT},
             </if>
             <if test="opeAssemblyOrderId != null">
-                ope_assembly_order_id = #{opeAssemblyOrderId,jdbcType=INTEGER},
+                ope_assembly_order_id = #{opeAssemblyOrderId,jdbcType=BIGINT},
             </if>
             <if test="paymentType != null">
                 payment_type = #{paymentType,jdbcType=VARCHAR},
@@ -462,7 +462,7 @@
                 revision = #{revision,jdbcType=INTEGER},
             </if>
             <if test="createdBy != null">
-                created_by = #{createdBy,jdbcType=INTEGER},
+                created_by = #{createdBy,jdbcType=BIGINT},
             </if>
             <if test="createdTime != null">
                 created_time = #{createdTime,jdbcType=TIMESTAMP},

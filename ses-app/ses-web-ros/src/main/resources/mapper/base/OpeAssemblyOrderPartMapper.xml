@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeAssembiyOrderTraceMapper">
-    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeAssemblyOrderPartMapper">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPart">
         <!--@mbg.generated-->
-        <!--@Table ope_assembiy_order_trace-->
+        <!--@Table ope_assembly_order_part-->
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="ope_assembiy_order_id" jdbcType="BIGINT" property="opeAssembiyOrderId"/>
-        <result column="user_id" jdbcType="BIGINT" property="userId"/>
-        <result column="status" jdbcType="VARCHAR" property="status"/>
-        <result column="event" jdbcType="VARCHAR" property="event"/>
-        <result column="event_time" jdbcType="TIMESTAMP" property="eventTime"/>
-        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="stock_id" jdbcType="BIGINT" property="stockId"/>
+        <result column="part_id" jdbcType="BIGINT" property="partId"/>
+        <result column="assembly_id" jdbcType="BIGINT" property="assemblyId"/>
+        <result column="total_qty" jdbcType="INTEGER" property="totalQty"/>
+        <result column="revision" jdbcType="INTEGER" property="revision"/>
         <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
         <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
@@ -24,46 +23,41 @@
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        id, dr, ope_assembiy_order_id, user_id, `status`, event, event_time, memo, created_by,
-        created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+        id, dr, stock_id, part_id, assembly_id, total_qty, revision, created_by, created_time,
+        updated_by, updated_time, def1, def2, def3, def5, def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
-        update ope_assembiy_order_trace
+        update ope_assembly_order_part
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="dr = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
                 </foreach>
             </trim>
-            <trim prefix="ope_assembiy_order_id = case" suffix="end,">
+            <trim prefix="stock_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.opeAssembiyOrderId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.stockId,jdbcType=BIGINT}
                 </foreach>
             </trim>
-            <trim prefix="user_id = case" suffix="end,">
+            <trim prefix="part_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.partId,jdbcType=BIGINT}
                 </foreach>
             </trim>
-            <trim prefix="`status` = case" suffix="end,">
+            <trim prefix="assembly_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyId,jdbcType=BIGINT}
                 </foreach>
             </trim>
-            <trim prefix="event = case" suffix="end,">
+            <trim prefix="total_qty = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.event,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.totalQty,jdbcType=INTEGER}
                 </foreach>
             </trim>
-            <trim prefix="event_time = case" suffix="end,">
+            <trim prefix="revision = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.eventTime,jdbcType=TIMESTAMP}
-                </foreach>
-            </trim>
-            <trim prefix="memo = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.memo,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="created_by = case" suffix="end,">
@@ -119,41 +113,39 @@
     </update>
     <insert id="batchInsert" parameterType="map">
         <!--@mbg.generated-->
-        insert into ope_assembiy_order_trace
-        (id, dr, ope_assembiy_order_id, user_id, `status`, event, event_time, memo, created_by,
-        created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+        insert into ope_assembly_order_part
+        (id, dr, stock_id, part_id, assembly_id, total_qty, revision, created_by, created_time,
+        updated_by, updated_time, def1, def2, def3, def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.opeAssembiyOrderId,jdbcType=BIGINT},
-            #{item.userId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, #{item.event,jdbcType=VARCHAR},
-            #{item.eventTime,jdbcType=TIMESTAMP}, #{item.memo,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-            #{item.updatedTime,jdbcType=TIMESTAMP},
-            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
-            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.stockId,jdbcType=BIGINT},
+            #{item.partId,jdbcType=BIGINT}, #{item.assemblyId,jdbcType=BIGINT}, #{item.totalQty,jdbcType=INTEGER},
+            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
+            #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
+            #{item.def6,jdbcType=DOUBLE})
         </foreach>
     </insert>
-    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace">
+    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPart">
         <!--@mbg.generated-->
-        insert into ope_assembiy_order_trace
-        (id, dr, ope_assembiy_order_id, user_id, `status`, event, event_time, memo, created_by,
-        created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+        insert into ope_assembly_order_part
+        (id, dr, stock_id, part_id, assembly_id, total_qty, revision, created_by, created_time,
+        updated_by, updated_time, def1, def2, def3, def5, def6)
         values
-        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{opeAssembiyOrderId,jdbcType=BIGINT},
-        #{userId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{event,jdbcType=VARCHAR},
-        #{eventTime,jdbcType=TIMESTAMP}, #{memo,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT},
-        #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
-        #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
-        #{def6,jdbcType=DOUBLE})
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{stockId,jdbcType=BIGINT}, #{partId,jdbcType=BIGINT},
+        #{assemblyId,jdbcType=BIGINT}, #{totalQty,jdbcType=INTEGER}, #{revision,jdbcType=INTEGER},
+        #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+        #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
+        #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
         on duplicate key update
         id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
-        ope_assembiy_order_id = #{opeAssembiyOrderId,jdbcType=BIGINT},
-        user_id = #{userId,jdbcType=BIGINT},
-        `status` = #{status,jdbcType=VARCHAR},
-        event = #{event,jdbcType=VARCHAR},
-        event_time = #{eventTime,jdbcType=TIMESTAMP},
-        memo = #{memo,jdbcType=VARCHAR},
+        stock_id = #{stockId,jdbcType=BIGINT},
+        part_id = #{partId,jdbcType=BIGINT},
+        assembly_id = #{assemblyId,jdbcType=BIGINT},
+        total_qty = #{totalQty,jdbcType=INTEGER},
+        revision = #{revision,jdbcType=INTEGER},
         created_by = #{createdBy,jdbcType=BIGINT},
         created_time = #{createdTime,jdbcType=TIMESTAMP},
         updated_by = #{updatedBy,jdbcType=BIGINT},
@@ -164,9 +156,9 @@
         def5 = #{def5,jdbcType=VARCHAR},
         def6 = #{def6,jdbcType=DOUBLE}
     </insert>
-    <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace">
+    <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPart">
         <!--@mbg.generated-->
-        insert into ope_assembiy_order_trace
+        insert into ope_assembly_order_part
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -174,23 +166,20 @@
             <if test="dr != null">
                 dr,
             </if>
-            <if test="opeAssembiyOrderId != null">
-                ope_assembiy_order_id,
+            <if test="stockId != null">
+                stock_id,
             </if>
-            <if test="userId != null">
-                user_id,
+            <if test="partId != null">
+                part_id,
             </if>
-            <if test="status != null">
-                `status`,
+            <if test="assemblyId != null">
+                assembly_id,
             </if>
-            <if test="event != null">
-                event,
+            <if test="totalQty != null">
+                total_qty,
             </if>
-            <if test="eventTime != null">
-                event_time,
-            </if>
-            <if test="memo != null">
-                memo,
+            <if test="revision != null">
+                revision,
             </if>
             <if test="createdBy != null">
                 created_by,
@@ -228,23 +217,20 @@
             <if test="dr != null">
                 #{dr,jdbcType=INTEGER},
             </if>
-            <if test="opeAssembiyOrderId != null">
-                #{opeAssembiyOrderId,jdbcType=BIGINT},
+            <if test="stockId != null">
+                #{stockId,jdbcType=BIGINT},
             </if>
-            <if test="userId != null">
-                #{userId,jdbcType=BIGINT},
+            <if test="partId != null">
+                #{partId,jdbcType=BIGINT},
             </if>
-            <if test="status != null">
-                #{status,jdbcType=VARCHAR},
+            <if test="assemblyId != null">
+                #{assemblyId,jdbcType=BIGINT},
             </if>
-            <if test="event != null">
-                #{event,jdbcType=VARCHAR},
+            <if test="totalQty != null">
+                #{totalQty,jdbcType=INTEGER},
             </if>
-            <if test="eventTime != null">
-                #{eventTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="memo != null">
-                #{memo,jdbcType=VARCHAR},
+            <if test="revision != null">
+                #{revision,jdbcType=INTEGER},
             </if>
             <if test="createdBy != null">
                 #{createdBy,jdbcType=BIGINT},
@@ -282,23 +268,20 @@
             <if test="dr != null">
                 dr = #{dr,jdbcType=INTEGER},
             </if>
-            <if test="opeAssembiyOrderId != null">
-                ope_assembiy_order_id = #{opeAssembiyOrderId,jdbcType=BIGINT},
+            <if test="stockId != null">
+                stock_id = #{stockId,jdbcType=BIGINT},
             </if>
-            <if test="userId != null">
-                user_id = #{userId,jdbcType=BIGINT},
+            <if test="partId != null">
+                part_id = #{partId,jdbcType=BIGINT},
             </if>
-            <if test="status != null">
-                `status` = #{status,jdbcType=VARCHAR},
+            <if test="assemblyId != null">
+                assembly_id = #{assemblyId,jdbcType=BIGINT},
             </if>
-            <if test="event != null">
-                event = #{event,jdbcType=VARCHAR},
+            <if test="totalQty != null">
+                total_qty = #{totalQty,jdbcType=INTEGER},
             </if>
-            <if test="eventTime != null">
-                event_time = #{eventTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="memo != null">
-                memo = #{memo,jdbcType=VARCHAR},
+            <if test="revision != null">
+                revision = #{revision,jdbcType=INTEGER},
             </if>
             <if test="createdBy != null">
                 created_by = #{createdBy,jdbcType=BIGINT},

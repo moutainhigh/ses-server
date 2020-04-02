@@ -3,6 +3,76 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper">
 
 
+    <sql id="field_assemblyList">
+           ass.id                             as id,
+       ass.assembly_number                as contractN,
+       ass.status                         as status,
+       ass.factory_id                     as factoryId,
+       factory.factory_name               as factoryName,
+       factory.contact_first_name         as contactFirstName,
+       factory.contact_last_name          as contactLastName,
+       factory.contact_full_name          as contactFullName,
+       factory.contact_phone              as contactPhone,
+       factory.contact_phone_country_code as contactPhoneCountryCode,
+       factory.contact_email              as contactEmail,
+       ass.total_qty                      as qty,
+       ass.created_time                   as createdTime,
+       ass.consignee_id                   as consigneeId,
+       profile.first_name                 as consigneeFirstName,
+       profile.last_name                  as consigneeLastName,
+       profile.full_name                  as consigneeFullName,
+       profile.tel_number                 as consigneePhone,
+       profile.country_code               as consigneePhoneCountryCode,
+       profile.email                      as consigneeEmail,
+       ass.total_price                    as totalPrice,
+       ass.payment_type                   as paymentType,
+       ass.product_price                  as productPrice,
+       ass.processing_fee                 as processCost,
+       ass.processing_fee_ratio           as processCostRatio
+    </sql>
+
+    <sql id="where_assemblyList">
+        <where>
+            and ass.dr=0
+            and ass.status in
+            <foreach collection="statusList" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+            <if test="enter.status != null and enter.status != ''">
+                and ass.status=#{enter.status}
+            </if>
+            <if test="enter.factoryId != null">
+                and ass.factory_id=#{enter.factoryId}
+            </if>
+            <if test="param1.paymentType != null and param1.paymentType != ''">
+                and ass.payment_type #{enter.paymentType}
+            </if>
+            <if test="enter.createdStartTime != null and enter.createdEndTime != null">
+                and (ass.created_time between#{enter.createdStartTime} and #{enter.createdEndTime} )
+            </if>
+            <if test="enter.keyword != null and enter.keyword != ''">
+                and (
+                ass.assembly_number like concat ("%",#{enter.keyword},"%")
+                )
+            </if>
+        </where>
+    </sql>
+
+    <sql id="Field_payment_item">
+        payment.id                   as id,
+               payment.payment_status       as status,
+               payment.ope_assembly_order_id           as bizId,
+               payment.amount               as amount,
+               payment.amount_proportion    as paymentRatio,
+               payment.invoice_num          as invoiceNum,
+               payment.invoice_picture      as invoicePicture,
+               payment.payment_day          as dayNum,
+               payment.payment_time         as actualPaymentDate,
+               payment.description          as remark,
+               payment.payment_type         as paymentType,
+               payment.planned_payment_time as estimatedPaymentDate
+    </sql>
+
     <select id="countByTypes" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select count(st.sta) as totalCount,
                st.sta        as status
@@ -12,5 +82,94 @@
                          else '1' end as sta
               from ope_assembly_order) st
         group by status
+    </select>
+    <select id="assemblyListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_assembly_order ass
+        left join ope_factory factory on factory.id = ass.factory_id and factory.dr = 0
+        left join ope_sys_user_profile profile on profile.sys_user_id = ass.consignee_id and profile.dr = 0
+        <include refid="where_assemblyList"/>
+    </select>
+    <select id="assemblyList" resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult">
+        select
+        <include refid="field_assemblyList"/>
+        from ope_assembly_order ass
+        left join ope_factory factory on factory.id = ass.factory_id and factory.dr = 0
+        left join ope_sys_user_profile profile on profile.sys_user_id = ass.consignee_id and profile.dr = 0
+        <include refid="where_assemblyList"/>
+        order by ass.created_time desc
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+    <select id="paymentItemDetailListByAssIds"
+            resultType="com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult">
+        select
+        <include refid="Field_payment_item"/>
+        from ope_purchas_payment payment
+        where payment.dr = 0
+        <if test="collection != null and collection.size() != 0">
+            and payment.ope_assembly_order_id in
+            <foreach collection="list" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult">
+        select
+        <include refid="field_assemblyList"/>
+        from ope_assembly_order ass
+        left join ope_factory factory on factory.id = ass.factory_id and factory.dr = 0
+        left join ope_sys_user_profile profile on profile.sys_user_id = ass.consignee_id and profile.dr = 0
+        where ass.dr=0
+        and ass.id=#{id}
+    </select>
+    <select id="assemblyNode" resultType="com.redescooter.ses.api.common.vo.CommonNodeResult">
+        select trace.id as id,
+        trace.status as status,
+        trace.event as event,
+        trace.event_time as eventTime,
+        trace.created_by as createdBy,
+        profile.first_name as createdByFirstName,
+        profile.last_name as createdByLastName,
+        profile.full_name as createdByFullName,
+        trace.memo as memo
+        from ope_assembiy_order_trace trace
+        left join ope_sys_user_profile profile on trace.created_by = profile.sys_user_id and profile.dr = 0
+        where trace.dr = 0
+        and trace.id =#{id}
+    </select>
+    <select id="partDetailListByPartIds" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">
+        select parts.id as partId,
+        ifnull(sheet.price,0) as price,
+        sheet.currency_unit as unit,
+        supplier_id as supplierId
+        from ope_parts parts
+        inner join ope_supplier supplier on parts.supplier_id = supplier.id and supplier.dr = 0
+        left join ope_price_sheet sheet on parts.id = sheet.parts_id and sheet.currency_unit = 1 and sheet.dr = 0
+        where parts.dr=0
+        <if test="collection != null and collection.size() != 0">
+            and parts.id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="paymentItemList"
+            resultType="com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult">
+        select payment.id as id,
+        payment.payment_status as status,
+        payment.ope_assembly_order_id as bizId,
+        payment.amount as amount,
+        payment.amount_proportion as paymentRatio,
+        payment.invoice_num as invoiceNum,
+        payment.invoice_picture as invoicePicture,
+        payment.payment_day as dayNum,
+        payment.payment_time as actualPaymentDate,
+        payment.description as remark,
+        payment.payment_type as paymentType,
+        payment.planned_payment_time as estimatedPaymentDate
+        from ope_assembly_order_payment payment
+        where payment.dr = 0
+        and payment.ope_assembly_order_id =#{id}
     </select>
 </mapper>

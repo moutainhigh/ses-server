@@ -69,8 +69,8 @@ import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
 import com.redescooter.ses.web.ros.vo.production.SaveSupplierAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PayEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PaymentDetailResullt;
+import com.redescooter.ses.web.ros.vo.production.PayEnter;
+import com.redescooter.ses.web.ros.vo.production.PaymentDetailResullt;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingDetailProductEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
@@ -835,15 +835,19 @@ public class PurchasingServiceImpl implements PurchasingService {
         opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, opePurchas.getId());
         List<OpePurchasB> purchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
 
-        purchasBList.removeIf(item -> StringUtils.equals(item.getQcStatus(), QcStatusEnums.PASS.getValue()));
         if (CollectionUtils.isNotEmpty(purchasBList)) {
-            throw new SesWebRosException(ExceptionCodeEnums.PARTS_ARE_NOT_QC_PASS.getCode(), ExceptionCodeEnums.PARTS_ARE_NOT_QC_PASS.getMessage());
+            purchasBList.forEach(item -> {
+                if (!StringUtils.equals(item.getQcStatus(), QcStatusEnums.PASS.getValue())) {
+                    throw new SesWebRosException(ExceptionCodeEnums.PARTS_ARE_NOT_QC_PASS.getCode(), ExceptionCodeEnums.PARTS_ARE_NOT_QC_PASS.getMessage());
+                }
+            });
         }
 
         opePurchas.setStatus(PurchasingStatusEnums.QC_COMPLETED.getValue());
         opePurchas.setUpdatedBy(enter.getUserId());
         opePurchas.setUpdatedTime(new Date());
         opePurchasService.updateById(opePurchas);
+
 
         //节点数据保存
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
@@ -958,16 +962,18 @@ public class PurchasingServiceImpl implements PurchasingService {
             List<QcItemDetailResult> qcItemResultList = Lists.newArrayList();
             for (QcItemDetailResult qc : qcItemList) {
                 if (item.getId().equals(qc.getPruchasBId())) {
-                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.PASS.getValue()) && qc.getPassQty() != 0) {
+                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.PASS.getValue()) && qc.getPassQty() == 0) {
                         qcItemResultList.add(qc);
                     }
-                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.FAIL.getValue()) && qc.getFailQty() != 0) {
+                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.FAIL.getValue()) && qc.getFailQty() == 0) {
                         qcItemResultList.add(qc);
                     }
                 }
             }
             item.setQcItemDetailResultList(qcItemResultList);
         }
+        //todo 需修改
+//        qcPartList.removeIf(item -> CollectionUtils.isNotEmpty(item.getQcItemDetailResultList()));
 
         return qcPartList;
     }
