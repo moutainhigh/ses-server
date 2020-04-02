@@ -476,13 +476,28 @@ public class AssemblyServiceImpl implements AssemblyService {
                     saveOpeStockBillList.add(buildStockBillEnter(enter.getUserId(), assemblyId, value, item));
 
                     // 减库存
-//                    item.setAvailableTotal();
+                    item.setAvailableTotal(item.getAvailableTotal() - value);
+                    item.setOutTotal(item.getOutTotal() + value);
+                    item.setUpdatedBy(enter.getUserId());
+                    item.setUpdatedTime(new Date());
                     saveStockList.add(item);
                 }
             });
         });
 
+        //查询配件价格信息
+//        assemblyServiceMapper
+
         //形成组装单
+//        OpeAssemblyOrder assemblyOrder = OpeAssemblyOrder.builder()
+//                .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_ORDER))
+//                .dr(0)
+//                .userId(enter.getUserId())
+//                .tenantId(0L)
+//                .status(AssemblyStatusEnums.PENDING.getValue())
+//                .assemblyNumber("REDE"+ RandomUtil.randomNumbers(7))
+//                .totalQty()
+//                .build();
         //形成组装单子表
         // 形成组装单 配件统计表
         //形成节点

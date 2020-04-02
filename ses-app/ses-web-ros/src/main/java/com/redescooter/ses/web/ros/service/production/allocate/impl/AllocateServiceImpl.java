@@ -369,7 +369,7 @@ public class AllocateServiceImpl implements AllocateService {
         }
 
         if (StringUtils.isNotEmpty(enter.getType())) {
-            enter.setType(BomCommonTypeEnums.checkCode(enter.getType()));
+            enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }
 
         List<ProductPartsResult> result = allocateServiceMapper.allocatePartsList(enter, opeWhse.getId());
