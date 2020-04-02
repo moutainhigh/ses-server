@@ -34,4 +34,7 @@ public class RoleResult extends GeneralResult {
     @ApiModelProperty(value = "部门Id")
     private Long deptId;
 
+    @ApiModelProperty(value = "统计")
+    private int count;
+
 }
