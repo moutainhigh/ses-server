@@ -962,10 +962,10 @@ public class PurchasingServiceImpl implements PurchasingService {
             List<QcItemDetailResult> qcItemResultList = Lists.newArrayList();
             for (QcItemDetailResult qc : qcItemList) {
                 if (item.getId().equals(qc.getPruchasBId())) {
-                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.PASS.getValue()) && qc.getPassQty() == 0) {
+                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.PASS.getValue()) && qc.getFailQty() == 0) {
                         qcItemResultList.add(qc);
                     }
-                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.FAIL.getValue()) && qc.getFailQty() == 0) {
+                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.FAIL.getValue()) && qc.getPassQty() == 0) {
                         qcItemResultList.add(qc);
                     }
                 }
@@ -1046,7 +1046,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         List<OpePurchasBQc> purchasBQcList = opePurchasBQcService.list(opePurchasBQcQueryWrapper);
 
         if (CollectionUtils.isEmpty(purchasBQcList)) {
-            return new GeneralResult(enter.getRequestId());
+            throw new SesWebRosException(ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getCode(), ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getMessage());
         }
 
         purchasBQcList.forEach(item -> {

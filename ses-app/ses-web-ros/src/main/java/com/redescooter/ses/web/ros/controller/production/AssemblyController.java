@@ -87,7 +87,7 @@ public class AssemblyController {
 
     @PostMapping(value = "/consigneeList")
     @ApiOperation(value = "收获人列表", response = ConsigneeResult.class)
-    public Response<List<ConsigneeResult>> consigneeList(@ModelAttribute @ApiParam("请求参数") SaveAssemblyProductEnter enter) {
+    public Response<List<ConsigneeResult>> consigneeList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(assemblyService.consigneeList(enter));
     }
 

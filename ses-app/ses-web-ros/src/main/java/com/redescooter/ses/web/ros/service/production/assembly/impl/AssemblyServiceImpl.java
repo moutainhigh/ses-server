@@ -30,6 +30,7 @@ import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.dm.OpeStock;
+import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
 import com.redescooter.ses.web.ros.dm.PartDetailDto;
@@ -257,7 +258,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 productIds.add(k);
             }
         }
-//
+
         // 确认可组装的产品的最大值
         Map<Long, Integer> canAssembledMap = Maps.newHashMap();
 
@@ -382,8 +383,118 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult saveAssembly(SaveAssemblyEnter enter) {
+        // 出库单信息保存
+        List<OpeStockBill> saveOpeStockBillList = Lists.newArrayList();
+
+        // 库存更新
+        List<OpeStock> opeStockList = null;
+
+        //商品信息转换
+        List<ProductionPartsEnter> productList = null;
+        try {
+            productList = JSONArray.parseArray(enter.getProductList(), ProductionPartsEnter.class);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        QueryWrapper<OpePartsProduct> opePartsProductQueryWrapper = new QueryWrapper<>();
+        opePartsProductQueryWrapper.eq(OpePartsProduct.COL_DR, 0);
+        opePartsProductQueryWrapper.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.SCOOTER.getValue());
+        List<OpePartsProduct> opePartsProductList = opePartsProductService.list(opePartsProductQueryWrapper);
+        if (CollectionUtils.isNotEmpty(opePartsProductList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        List<Long> productIds = new ArrayList<>();
+        opePartsProductList.forEach(item -> {
+            productIds.add(item.getId());
+        });
+
+        //检验产品是否存在
+        productList.forEach(item -> {
+            if (!productIds.contains(item)) {
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+        });
+
+        //查询产品对应的bom 规则
+        QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
+        opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_DR, 0);
+        opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_PRODUCT_ID, productIds);
+        List<OpePartsProductB> productBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
+        if (CollectionUtils.isEmpty(productBList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
+        // 封装 要组装的所有产品 所需part数量之和
+        Map<Long, Integer> partMap = Maps.newHashMap();
+        for (OpePartsProductB item : productBList) {
+            for (ProductionPartsEnter product : productList) {
+                if (item.getPartsProductId().equals(product.getId())) {
+                    if (partMap.containsKey(item.getPartsId())) {
+                        partMap.put(item.getPartsId(), partMap.get(item.getPartsId()) + item.getPartsQty() * product.getQty());
+                    } else {
+                        partMap.put(item.getPartsId(), item.getPartsQty() * product.getQty());
+                    }
+                }
+            }
+        }
+
+        //查询仓库
+        QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
+        OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
+        if (opeWhse == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        }
+
+        // 查询部件库存
+        QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, new ArrayList<>(partMap.keySet()));
+        opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
+        opeStockList.addAll(opeStockService.list(opeStockQueryWrapper));
+        if (CollectionUtils.isEmpty(opeStockList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+        }
+//        // 将所有产品零部件 拆分 和库存进行校验
+//        partMap.forEach((key, value) -> {
+//            opeStockList.forEach(item -> {
+//                if (key.equals(item.getMaterielProductId())) {
+//                    if (value > item.getAvailableTotal()){
+//                        throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+//                    }
+//
+//                    //形成出库单
+//                    saveOpeStockBillList.add(
+//                            OpeStockBill.builder()
+//                                    .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
+//                                    .dr(0)
+//                                    .tenantId(0L)
+//                                    .userId(enter.getUserId())
+//                                    .stockId(stock.getId())
+//                                    .direction(InOutWhEnums.IN.getValue())
+//                                    .status(StockBillStatusEnums.NORMAL.getValue())
+//                                    .sourceId(enter.getId())
+//                                    .total(item.getTotalCount())
+//                                    .sourceType(SourceTypeEnums.PURCHAS.getValue())
+//                                    .principalId(enter.getUserId())
+//                                    .operatineTime(new Date())
+//                                    .revision(0)
+//                                    .createdBy(enter.getUserId())
+//                                    .createdTime(new Date())
+//                                    .updatedBy(enter.getUserId())
+//                                    .updatedTime(new Date())
+//                                    .build());
+//                    );
+//                }
+//            });
+//        });
+
         return null;
     }
 
