@@ -304,14 +304,15 @@ public class AssemblyServiceImpl implements AssemblyService {
         opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         opeStockList.addAll(opeStockService.list(opeStockQueryWrapper));
-        if (CollectionUtils.isEmpty(opeStockList)) {
-            return true;
-        }
-        return false;
+        return CollectionUtils.isEmpty(opeStockList);
     }
 
     /**
      * 保存组装单
+     * 1、验证 库存所支持的产品最大数量
+     * 2、对产品部品进行 分类整合
+     * 3、形成出库单、组装单、组装单子表
+     * 4、保存日志
      *
      * @param enter
      * @return

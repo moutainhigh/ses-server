@@ -54,6 +54,7 @@ public interface AssemblyService {
 
     /**
      * 查询可组装的商品列表
+     * TODO 为进行测试
      *
      * @return
      */
@@ -61,6 +62,7 @@ public interface AssemblyService {
 
     /**
      * 保存组装单
+     * TODO 为进行测试
      *
      * @param enter
      * @return
