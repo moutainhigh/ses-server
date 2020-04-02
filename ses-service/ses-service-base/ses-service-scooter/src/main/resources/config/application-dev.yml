@@ -8,7 +8,7 @@ log:
 # DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://172.16.0.205:12181?backup=172.16.0.205:22181,172.16.0.205:32181
+    address: zookeeper://172.16.0.205:12181?backup=172.16.0.205:32181,172.16.0.205:32181
 
 spring:
   #数据库连接

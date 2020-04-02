@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum WhseTypeEnums {
 
-    PURCHAS("PURCHAS", "采购", "1"),
-    ALLOCATE("ALLOCATE", "调拨", "2"),
-    ASSEMBLY("ASSEMBLY", "组装", "3");
+    PURCHAS("PURCHAS", "采购仓库", "1"),
+    ALLOCATE("ALLOCATE", "调拨仓库", "2"),
+    ASSEMBLY("ASSEMBLY", "生产仓库", "3");
 
     private String code;
 

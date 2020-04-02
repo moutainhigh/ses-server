@@ -65,7 +65,7 @@ public interface AssemblyService {
 
     /**
      * 保存组装单
-     * 1验证 库存所支持的产品最大数量
+     * 1、验证 库存所支持的产品最大数量
      * 2、对产品部品进行 分类整合
      * 3、形成出库单、组装单、组装单子表
      * 4、保存日志
@@ -122,6 +122,8 @@ public interface AssemblyService {
      * @return
      */
     List<AssemblyQcResult> assemblyQcTrces(AssemblyQcEnter enter);
+
+//    List<> assemblyQcItem(IdEnter);
 
     /**
      * 组装单信息导出
