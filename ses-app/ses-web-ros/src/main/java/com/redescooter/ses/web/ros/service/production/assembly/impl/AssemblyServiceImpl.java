@@ -477,9 +477,15 @@ public class AssemblyServiceImpl implements AssemblyService {
 
                     // 减库存
 //                    item.setAvailableTotal();
+                    saveStockList.add(item);
                 }
             });
         });
+
+        //形成组装单
+        //形成组装单子表
+        // 形成组装单 配件统计表
+        //形成节点
 
         return null;
     }

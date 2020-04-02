@@ -367,6 +367,11 @@ public class AllocateServiceImpl implements AllocateService {
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
+
+        if (StringUtils.isNotEmpty(enter.getType())) {
+            enter.setType(BomCommonTypeEnums.checkCode(enter.getType()));
+        }
+
         List<ProductPartsResult> result = allocateServiceMapper.allocatePartsList(enter, opeWhse.getId());
         if (CollectionUtils.isEmpty(result)) {
             return Lists.newArrayList();
