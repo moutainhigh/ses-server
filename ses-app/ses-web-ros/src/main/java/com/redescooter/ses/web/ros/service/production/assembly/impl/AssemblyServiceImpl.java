@@ -536,6 +536,9 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         // 保存组装单 配件统计表
         opeAssemblyOrderPartService.saveBatch(saveOpeAssemblyOrderPartList);
+
+        //更新库存
+        opeStockService.updateBatchById(saveStockList);
         //保存节点
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
@@ -784,8 +787,8 @@ public class AssemblyServiceImpl implements AssemblyService {
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
         saveNodeEnter.setId(opeAssemblyOrder.getId());
-        saveNodeEnter.setStatus(AssemblyStatusEnums.PENDING.getValue());
-        saveNodeEnter.setEvent(AssemblyStatusEnums.PENDING.getValue());
+        saveNodeEnter.setStatus(AssemblyStatusEnums.CANCELLED.getValue());
+        saveNodeEnter.setEvent(AssemblyStatusEnums.CANCELLED.getValue());
         saveNodeEnter.setMemo(null);
         this.saveNode(saveNodeEnter);
         return new GeneralResult(enter.getRequestId());
@@ -854,21 +857,21 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Transactional
     @Override
     public GeneralResult startQc(IdEnter enter) {
-//        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.ASSEMBLING.getValue());
-//
-//        opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC.getValue());
-//        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
-//        opeAssemblyOrder.setUpdatedTime(new Date());
-//        opeAssemblyOrderService.updateById(opeAssemblyOrder);
-//
-//        //节点
-//        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
-//        BeanUtils.copyProperties(enter, saveNodeEnter);
-//        saveNodeEnter.setId(opeAssemblyOrder.getId());
-//        saveNodeEnter.setStatus(AssemblyStatusEnums.QC.getValue());
-//        saveNodeEnter.setEvent(AssemblyStatusEnums.QC.getValue());
-//        saveNodeEnter.setMemo(null);
-//        this.saveNode(saveNodeEnter);
+        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.ASSEMBLING.getValue());
+
+        opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC.getValue());
+        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+        opeAssemblyOrder.setUpdatedTime(new Date());
+        opeAssemblyOrderService.updateById(opeAssemblyOrder);
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opeAssemblyOrder.getId());
+        saveNodeEnter.setStatus(AssemblyStatusEnums.QC.getValue());
+        saveNodeEnter.setEvent(AssemblyStatusEnums.QC.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveNode(saveNodeEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
