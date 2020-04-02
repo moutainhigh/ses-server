@@ -26,10 +26,16 @@
             <version>${swagger.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.github.xiaoymin/swagger-bootstrap-ui -->
+<!--        <dependency>-->
+<!--            <groupId>com.github.xiaoymin</groupId>-->
+<!--            <artifactId>swagger-bootstrap-ui</artifactId>-->
+<!--            <version>${swagger.bootstrap.ui.version}</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
-            <artifactId>swagger-bootstrap-ui</artifactId>
-            <version>${swagger.bootstrap.ui.version}</version>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>${knife4j-spring-boot-starter.version}</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.google.guava</groupId>-->
