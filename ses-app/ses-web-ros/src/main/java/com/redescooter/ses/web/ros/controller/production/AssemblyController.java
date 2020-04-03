@@ -17,6 +17,7 @@ import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -135,7 +136,7 @@ public class AssemblyController {
 
     @PostMapping(value = "/startPrepare")
     @ApiOperation(value = "开始组装单备料", response = GeneralResult.class)
-    public Response<GeneralResult> startPrepare(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<GeneralResult> startPrepare(@ModelAttribute @ApiParam("请求参数") StartPrepareEnter enter) {
         return new Response<>(assemblyService.startPrepare(enter));
     }
 
@@ -151,11 +152,11 @@ public class AssemblyController {
         return new Response<>(assemblyService.startQc(enter));
     }
 
-//    @PostMapping(value = "/completeQc")
-//    @ApiOperation(value = "组装单质检完成", response = GeneralResult.class)
-//    public Response<GeneralResult> completeQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>(assemblyService.completeQc(enter));
-//    }
+    @PostMapping(value = "/completeQc")
+    @ApiOperation(value = "组装单质检完成", response = GeneralResult.class)
+    public Response<GeneralResult> completeQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(assemblyService.completeQc(enter));
+    }
 
     @PostMapping(value = "/inWh")
     @ApiOperation(value = "组装单入库", response = GeneralResult.class)
