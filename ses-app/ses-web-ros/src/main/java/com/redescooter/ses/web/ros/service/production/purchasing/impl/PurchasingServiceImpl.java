@@ -741,7 +741,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                 item.setStatus(QcStatusEnums.PASS.getValue());
                 item.setUpdatedTime(new Date());
             }
-            if (conut==0) {
+            if (conut == opePurchasBQcList.size()) {
                 throw new SesWebRosException(ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(), ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
             }
         }
