@@ -172,4 +172,17 @@
         where payment.dr = 0
         and payment.ope_assembly_order_id =#{id}
     </select>
+
+    <select id="productItemList"
+            resultType="com.redescooter.ses.web.ros.vo.production.assembly.productItemResult">
+        select assOrder.id as id,
+        assOrder.product_number as productN,
+        assOrder.en_name as enName,
+        assOrder.assembly_qty as qty,
+        assOrder.price as price,
+        assOrder.assembly_qty * assOrder.price as subtotal
+        from ope_assembly_b_order assOrder
+        where assOrder.dr = 0
+        and assOrder.assembly_id =#{id}
+    </select>
 </mapper>

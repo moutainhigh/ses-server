@@ -114,6 +114,13 @@ public class OpeAssemblyOrder implements Serializable {
     private Long factoryId;
 
     /**
+     * 工厂附件
+     */
+    @TableField(value = "factory_annex")
+    @ApiModelProperty(value = "工厂附件")
+    private String factoryAnnex;
+
+    /**
      * 收货人姓氏
      */
     @TableField(value = "consignee_id")
@@ -217,6 +224,8 @@ public class OpeAssemblyOrder implements Serializable {
     public static final String COL_PRODUCT_PRICE = "product_price";
 
     public static final String COL_FACTORY_ID = "factory_id";
+
+    public static final String COL_FACTORY_ANNEX = "factory_annex";
 
     public static final String COL_CONSIGNEE_ID = "consignee_id";
 

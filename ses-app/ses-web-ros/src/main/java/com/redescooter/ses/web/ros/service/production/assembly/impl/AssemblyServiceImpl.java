@@ -70,6 +70,7 @@ import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -802,10 +803,11 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Transactional
     @Override
-    public GeneralResult startPrepare(IdEnter enter) {
+    public GeneralResult startPrepare(StartPrepareEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PENDING.getValue());
 
         opeAssemblyOrder.setStatus(AssemblyStatusEnums.PREPARE_MATERIAL.getValue());
+        opeAssemblyOrder.setFactoryAnnex(enter.getAnnex());
         opeAssemblyOrder.setUpdatedBy(enter.getUserId());
         opeAssemblyOrder.setUpdatedTime(new Date());
         opeAssemblyOrderService.updateById(opeAssemblyOrder);
@@ -884,21 +886,21 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Transactional
     @Override
     public GeneralResult completeQc(IdEnter enter) {
-//        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.QC.getValue());
-//
-//        opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC_PASSED.getValue());
-//        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
-//        opeAssemblyOrder.setUpdatedTime(new Date());
-//        opeAssemblyOrderService.updateById(opeAssemblyOrder);
-//
-//        //节点
-//        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
-//        BeanUtils.copyProperties(enter, saveNodeEnter);
-//        saveNodeEnter.setId(opeAssemblyOrder.getId());
-//        saveNodeEnter.setStatus(AssemblyStatusEnums.QC_PASSED.getValue());
-//        saveNodeEnter.setEvent(AssemblyStatusEnums.QC_PASSED.getValue());
-//        saveNodeEnter.setMemo(null);
-//        this.saveNode(saveNodeEnter);
+        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.QC.getValue());
+
+        opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC_PASSED.getValue());
+        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+        opeAssemblyOrder.setUpdatedTime(new Date());
+        opeAssemblyOrderService.updateById(opeAssemblyOrder);
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opeAssemblyOrder.getId());
+        saveNodeEnter.setStatus(AssemblyStatusEnums.QC_PASSED.getValue());
+        saveNodeEnter.setEvent(AssemblyStatusEnums.QC_PASSED.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveNode(saveNodeEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -911,6 +913,69 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Transactional
     @Override
     public GeneralResult inWh(IdEnter enter) {
+//        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.QC_PASSED.getValue());
+//
+//        List<OpeStock> saveOpeStockList = Lists.newArrayList();
+//
+//        //查询该组装单的产品
+//        QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
+//        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_DR, 0);
+//        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ASSEMBLY_ID, opeAssemblyOrder.getId());
+//        List<OpeAssemblyBOrder> assemblyBOrderList = opeAssemblyOrderBService.list(opeAssemblyBOrderQueryWrapper);
+//
+//        Map<Long, Integer> productMap = Maps.newHashMap();
+//        assemblyBOrderList.forEach(item -> {
+//            productMap.put(item.getProductId(), item.getAssemblyQty());
+//        });
+//
+//        //查询仓库
+//        QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
+//        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+//        opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ASSEMBLY.getValue());
+//        OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
+//        if (opeWhse == null) {
+//            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+//        }
+//
+//        //查询库存
+//        QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
+//        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+//        opeStockQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_TYPE, BomCommonTypeEnums.SCOOTER.getValue());
+//        opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
+//        opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, new ArrayList<>(productMap.keySet()));
+//        List<OpeStock> opeStockList = opeStockService.list(opeStockQueryWrapper);
+//        if (CollectionUtils.isEmpty(opeStockList)) {
+//            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+//        }
+//
+//        for (Map.Entry<Long, Integer> entry : productMap.entrySet()) {
+//            Long key = entry.getKey();
+//            Integer value = entry.getValue();
+//            Boolean stokcExist = Boolean.FALSE;
+//            for (OpeStock item : opeStockList) {
+//                if (item.getMaterielProductId().equals(key)) {
+//                    item.setAvailableTotal(item.getAvailableTotal() + value);
+//                    item.setIntTotal(item.getIntTotal() + value);
+//                    item.setUpdatedBy(enter.getUserId());
+//                    item.setUpdatedTime(new Date());
+//                    saveOpeStockList.add(item);
+//                    stokcExist = Boolean.FALSE;
+//                }
+//            }
+//            if (!stokcExist) {
+//                saveOpeStockList.add();
+//            }
+//        }
+//
+//
+//        //查询商品信息
+//        QueryWrapper<OpePartsProduct> opePartsProductQueryWrapper = new QueryWrapper<>();
+//        opePartsProductQueryWrapper.eq(OpePartsProduct.COL_DR, 0);
+//        opePartsProductQueryWrapper.in(OpePartsProduct.COL_ID, new ArrayList<>(productMap.keySet()));
+//        List<OpePartsProduct> partsProductList = opePartsProductService.list(opePartsProductQueryWrapper);
+//        if (CollectionUtils.isEmpty(partsProductList)) {
+//            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+//        }
         return null;
     }
 
@@ -1011,7 +1076,8 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public List<productItemResult> productItemList(IdEnter enter) {
-        return null;
+        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), null);
+        return assemblyServiceMapper.productItemList(enter);
     }
 
     /**
@@ -1227,6 +1293,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .paymentType(null)
                 .productPrice(null)
                 .factoryId(enter.getFactoryId())
+                .factoryAnnex(null)
                 .consigneeId(enter.getConsigneeId())
                 .revision(0)
                 .createdBy(enter.getUserId())

@@ -8,6 +8,7 @@ import com.redescooter.ses.web.ros.dm.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -85,4 +86,12 @@ public interface AssemblyServiceMapper {
      * @return
      */
     List<PaymentItemDetailResult> paymentItemList(Long id);
+
+    /**
+     * 组装单详情中 商品列表
+     *
+     * @param enter
+     * @return
+     */
+    List<productItemResult> productItemList(IdEnter enter);
 }

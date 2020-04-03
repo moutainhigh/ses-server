@@ -18,6 +18,7 @@ import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
 
 import java.util.List;
@@ -155,7 +156,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    GeneralResult startPrepare(IdEnter enter);
+    GeneralResult startPrepare(StartPrepareEnter enter);
 
     /**
      * 开始组装
