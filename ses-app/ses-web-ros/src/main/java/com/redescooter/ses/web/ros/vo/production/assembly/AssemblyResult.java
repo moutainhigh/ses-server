@@ -69,6 +69,8 @@ public class AssemblyResult extends GeneralResult {
     private Integer qty;
 
     @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date createdTime;
 
     @ApiModelProperty(value = "收货人")

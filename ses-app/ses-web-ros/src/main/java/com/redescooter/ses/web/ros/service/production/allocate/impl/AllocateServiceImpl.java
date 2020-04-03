@@ -234,7 +234,7 @@ public class AllocateServiceImpl implements AllocateService {
     public GeneralResult startPrepare(IdEnter enter) {
         OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.PENDING.getValue());
 
-        opeAllocate.setStatus(AllocateOrderStatusEnums.INPROGRESS.getValue());
+        opeAllocate.setStatus(AllocateOrderStatusEnums.PREPARE.getValue());
         opeAllocate.setUpdatedBy(enter.getUserId());
         opeAllocate.setUpdatedTime(new Date());
         opeAllocateService.updateById(opeAllocate);
@@ -243,7 +243,7 @@ public class AllocateServiceImpl implements AllocateService {
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
         saveNodeEnter.setId(opeAllocate.getId());
-        saveNodeEnter.setStatus(AllocateOrderStatusEnums.INPROGRESS.getValue());
+        saveNodeEnter.setStatus(AllocateOrderStatusEnums.PREPARE.getValue());
         saveNodeEnter.setEvent(AllocateOrderEventEnums.INPROGRESS.getValue());
         saveNodeEnter.setMemo(null);
         this.saveAllocateNode(saveNodeEnter);
@@ -259,7 +259,7 @@ public class AllocateServiceImpl implements AllocateService {
     @Transactional
     @Override
     public GeneralResult startAllocate(IdEnter enter) {
-        OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.INPROGRESS.getValue());
+        OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.PREPARE.getValue());
 
         opeAllocate.setStatus(AllocateOrderStatusEnums.ALLOCATE.getValue());
         opeAllocate.setUpdatedBy(enter.getUserId());

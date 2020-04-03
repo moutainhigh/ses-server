@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -127,5 +128,13 @@ public class PartsRosServiceImplTest {
         if (DateUtil.timeComparison("2020-03-06 02:02:02", "2020-03-06 02:02:03")) {
             System.out.println("2020-03-06 02:02:03");
         }
+    }
+
+    @Test
+    public void testStream() {
+        BigDecimal actual = new BigDecimal("8.653");
+        System.out.println(actual.setScale(2, BigDecimal.ROUND_HALF_UP));
+
+        BigDecimal bar = new BigDecimal("3000");
     }
 }
