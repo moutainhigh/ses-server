@@ -11,10 +11,16 @@ import com.redescooter.ses.api.common.enums.production.wh.PurchasingWhTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.production.PurchasingWhServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpePartsProduct;
+import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
+import com.redescooter.ses.web.ros.dm.OpeStock;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
+import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
+import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.purchasingWh.PurchasingWhService;
 import com.redescooter.ses.web.ros.vo.production.wh.AssemblyProductResult;
@@ -46,6 +52,15 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 
     @Autowired
     private PurchasingWhServiceMapper purchasingWhServiceMapper;
+
+    @Autowired
+    private OpePartsProductBService opePartsProductBService;
+
+    @Autowired
+    private OpePartsProductService opePartsProductService;
+
+    @Autowired
+    private OpeStockService opeStockService;
 
     @Autowired
     private OpeWhseService opeWhseService;
@@ -222,7 +237,113 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public List<AssemblyProductResult> canAssemblyProductList(GeneralEnter enter) {
-        return null;
+        //查询出所有商品及bom 规则
+        Map<Long, List<OpePartsProductB>> productPartMap = Maps.newHashMap();
+
+        QueryWrapper<OpePartsProduct> opePartsProductQueryWrapper = new QueryWrapper<>();
+        opePartsProductQueryWrapper.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.SCOOTER.getValue());
+        List<OpePartsProduct> partsProductList = opePartsProductService.list(opePartsProductQueryWrapper);
+        if (CollectionUtils.isEmpty(partsProductList)) {
+            return new ArrayList<>();
+        }
+        List<Long> productIds = Lists.newArrayList();
+        partsProductList.forEach(item -> {
+            productIds.add(item.getId());
+        });
+
+        //查询bom 规则
+        QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
+        opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_PRODUCT_ID, productIds);
+        List<OpePartsProductB> partsProductBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
+        if (CollectionUtils.isEmpty(partsProductBList)) {
+            return new ArrayList<>();
+        }
+        //过滤出map 产品结构
+        Set<Long> partIds = Sets.newHashSet();
+        partsProductBList.forEach(item -> {
+            if (!productPartMap.containsKey(item.getPartsProductId())) {
+                productPartMap.put(item.getPartsProductId(), Lists.newArrayList(item));
+            } else {
+                List<OpePartsProductB> opePartsProductBList = productPartMap.get(item.getPartsProductId());
+                opePartsProductBList.add(item);
+                productPartMap.put(item.getPartsProductId(), opePartsProductBList);
+            }
+            partIds.add(item.getPartsId());
+        });
+
+        //查询采购仓库
+        QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
+        opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+        OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
+        if (opeWhse == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        }
+        //查询库存
+        QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
+        opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, new ArrayList<>(partIds));
+        opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
+        List<OpeStock> stockList = opeStockService.list(opeStockQueryWrapper);
+        if (CollectionUtils.isEmpty(stockList)) {
+            return new ArrayList<>();
+        }
+
+        // 确认可组装的产品的最大值
+        Map<Long, Integer> canAssembledMap = Maps.newHashMap();
+
+        flag1:
+        for (Map.Entry<Long, List<OpePartsProductB>> entry : productPartMap.entrySet()) {
+            Long key = entry.getKey();
+            List<OpePartsProductB> value = entry.getValue();
+            Integer maxTotal = 0;
+            int partTotal = 0;
+            if (productIds.contains(key)) {
+
+                flag2:
+                for (OpePartsProductB item : value) {
+
+                    flag3:
+                    for (OpeStock stock : stockList) {
+                        if (item.getPartsId().equals(stock.getMaterielProductId())) {
+
+                            int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
+                            if (maxTotal == 0) {
+                                partTotal++;
+                                maxTotal = canAss;
+                                continue flag2;
+                            }
+                            if (canAss < maxTotal) {
+                                partTotal++;
+                                maxTotal = canAss;
+                                continue flag2;
+                            }
+                            if (canAss > 0) {
+                                partTotal++;
+                                continue flag2;
+                            }
+                        }
+                    }
+                }
+            }
+            if (partTotal == value.size()) {
+                canAssembledMap.put(key, maxTotal);
+            }
+        }
+
+        List<AssemblyProductResult> result = new ArrayList<>();
+        canAssembledMap.forEach((key, value) -> {
+            partsProductList.forEach(item -> {
+                if (key.equals(item.getId())) {
+                    result.add(AssemblyProductResult.builder()
+                            .id(key)
+                            .productName(item.getCnName())
+                            .qty(value)
+                            .build());
+                }
+            });
+        });
+
+        result.removeIf(item -> item.getQty() == 0);
+        return result;
     }
 
     private List<OpeWhse> checkWhse(List<String> types) {
