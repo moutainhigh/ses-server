@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -42,7 +43,7 @@ public class PaymentItemDetailResult extends GeneralResult {
     private Long bizId;
 
     @ApiModelProperty(value = "价格")
-    private String amount;
+    private BigDecimal amount;
 
     @ApiModelProperty(value = "付款比例")
     private String paymentRatio;

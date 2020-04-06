@@ -220,4 +220,5 @@ public interface AssemblyService {
      * @return
      */
     List<productItemResult> productItemList(IdEnter enter);
+
 }

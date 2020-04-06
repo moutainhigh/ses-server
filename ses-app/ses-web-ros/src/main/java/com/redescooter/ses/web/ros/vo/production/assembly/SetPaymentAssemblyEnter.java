@@ -36,14 +36,11 @@ public class SetPaymentAssemblyEnter extends GeneralEnter {
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "id为空")
     private Long id;
 
-    @ApiModelProperty(value = "加工费比例", required = true)
+    @ApiModelProperty(value = "加工费比例 百分数扩大100倍 传值（无需取整后台会自动进行保留两位、四舍五入，详情中也是扩大100倍 回传数据） eg：10.367", required = true)
     @NotNull(code = ValidationExceptionCode.PROCESSCOST_RATIO_IS_EMPTY, message = "加工费为空")
     private BigDecimal processCost;
 
-    @ApiModelProperty(value = "产品总价", required = true)
-    private BigDecimal productPrice;
-
-    @ApiModelProperty(value = "总价格", required = true)
+    @ApiModelProperty(value = "总价格（无需取整后台会自动进行保留两位、四舍五入）", required = true)
     private BigDecimal totalPrice;
 
     @ApiModelProperty(value = "付款方式", required = true)
@@ -61,7 +58,7 @@ public class SetPaymentAssemblyEnter extends GeneralEnter {
     @ApiModelProperty(value = "备注")
     private String remark;
 
-    @ApiModelProperty(value = "付款周期，格式：estimatedPaymentDate：2020-3-2 00：00：00，paymentRatio:20.2，price:20.1,remark:123")
+    @ApiModelProperty(value = "付款周期，格式：estimatedPaymentDate：2020-3-2 00：00：00，paymentRatio:20.2，price:20.1（无需取整后台会自动进行保留两位、四舍五入）,remark:123")
 //    @NotNull(code = ValidationExceptionCode.PAYMENTINFO_IS_EMPTY, message = "付款信息")
     private String paymentInfoList;
 }

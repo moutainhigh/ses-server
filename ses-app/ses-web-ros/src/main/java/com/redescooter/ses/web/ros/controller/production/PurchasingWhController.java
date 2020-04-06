@@ -47,10 +47,10 @@ public class PurchasingWhController {
         return new Response<>(purchasingWhService.countByType(enter));
     }
 
-    @PostMapping(value = "/typeList")
-    @ApiOperation(value = "仓库类型", response = Map.class)
-    public Response<Map<String, String>> typeList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(purchasingWhService.typeList(enter));
+    @PostMapping(value = "/productTypeList")
+    @ApiOperation(value = "仓库产品类型", response = Map.class)
+    public Response<Map<String, String>> productTypeList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(purchasingWhService.productTypeList(enter));
     }
 
     @PostMapping(value = "/availableList")

@@ -9,6 +9,8 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.production.assembly.AssemblyService;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
+import com.redescooter.ses.web.ros.vo.production.PayEnter;
+import com.redescooter.ses.web.ros.vo.production.PaymentDetailResullt;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
@@ -162,17 +164,17 @@ public class AssemblyController {
         return new Response<>(assemblyService.inWh(enter));
     }
 
-//    @PostMapping(value = "/paymentDetail")
-//    @ApiOperation(value = "组装单支付信息", response = PaymentDetailResullt.class)
-//    public Response<PaymentDetailResullt> paymentDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>(assemblyService.paymentDetail(enter));
-//    }
-//
-//    @PostMapping(value = "/pay")
-//    @ApiOperation(value = "组装单支付", response = GeneralResult.class)
-//    public Response<GeneralResult> pay(@ModelAttribute @ApiParam("请求参数") PayEnter enter) {
-//        return new Response<>(assemblyService.pay(enter));
-//    }
+    @PostMapping(value = "/paymentDetail")
+    @ApiOperation(value = "组装单支付信息", response = PaymentDetailResullt.class)
+    public Response<PaymentDetailResullt> paymentDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(assemblyService.paymentDetail(enter));
+    }
+
+    @PostMapping(value = "/pay")
+    @ApiOperation(value = "组装单支付", response = GeneralResult.class)
+    public Response<GeneralResult> pay(@ModelAttribute @ApiParam("请求参数") PayEnter enter) {
+        return new Response<>(assemblyService.pay(enter));
+    }
 
     @PostMapping(value = "/productItemList")
     @ApiOperation(value = "组装单中商品列表", response = productItemResult.class)

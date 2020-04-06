@@ -185,4 +185,5 @@
         where assOrder.dr = 0
         and assOrder.assembly_id =#{id}
     </select>
+
 </mapper>

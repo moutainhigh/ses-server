@@ -474,6 +474,8 @@ public class AssemblyServiceImpl implements AssemblyService {
                 }
             }
         }
+        //查询 所有产品的产品报价
+
 
         //查询仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
@@ -513,8 +515,6 @@ public class AssemblyServiceImpl implements AssemblyService {
             });
         });
 
-        //封装 组装单
-        saveOpeAssemblyOrder = buildOpeAssemblyOrder(enter, productList, assemblyId);
 
         //获取到每个产品单价，封装 产品单价的Map
         Map<Long, BigDecimal> productUnitPrice = Maps.newHashMap();
@@ -522,6 +522,9 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //封装 子表数据
         buildOpeAssemblyBOrderList(enter, saveOpeAssemblyBOrderList, assemblyId, productList, opePartsProductList, productUnitPrice);
+
+        //封装 组装单
+        saveOpeAssemblyOrder = buildOpeAssemblyOrder(enter, productList, assemblyId, productUnitPrice);
 
         //封装组装单 配件表数据
         buildSaveOpeAssemblyOrderPartList(enter, saveOpeAssemblyOrderPartList, assemblyId, saveStockList, partMap);
@@ -596,6 +599,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                     .lastName(item.getLastName())
                     .phoneCountryCode(item.getCountryCode())
                     .phone(item.getTelNumber())
+                    .email(item.getEmail())
                     .build());
         });
         return consigneeResultlist;
@@ -723,6 +727,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Transactional
     @Override
     public GeneralResult setPaymentAssembly(SetPaymentAssemblyEnter enter) {
+
         //付款信息转换
         List<StagingPaymentEnter> paymentList = null;
         //支付条目
@@ -734,18 +739,26 @@ public class AssemblyServiceImpl implements AssemblyService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+
         //组装单校验
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), null);
-        //支付条目数据封装
-        buildPaymentItem(enter, paymentList, saveAssemblyOrderPayment, opeAssemblyOrder);
+        if (opeAssemblyOrder.getTotalPrice() != null) {
+            throw new SesWebRosException(ExceptionCodeEnums.DO_NOT_SET_THE_PRICE_REPEATEDLY.getCode(), ExceptionCodeEnums.DO_NOT_SET_THE_PRICE_REPEATEDLY.getMessage());
+        }
 
         opeAssemblyOrder.setTotalPrice(enter.getTotalPrice());
-        opeAssemblyOrder.setProcessingFee(enter.getProcessCost());
+        opeAssemblyOrder.setProcessingFee(opeAssemblyOrder.getProductPrice().multiply(enter.getProcessCost()).divide(new BigDecimal(100).setScale(4, BigDecimal.ROUND_HALF_UP)));
+        opeAssemblyOrder.setProcessingFeeRatio(enter.getProcessCost());
         opeAssemblyOrder.setPaymentType(enter.getPaymentType());
         opeAssemblyOrder.setUpdatedBy(enter.getUserId());
         opeAssemblyOrder.setUpdatedTime(new Date());
         opeAssemblyOrderService.updateById(opeAssemblyOrder);
 
+        //将 百分比缩小一百倍
+        enter.setProcessCost(enter.getProcessCost().divide(new BigDecimal(100)));
+
+        //支付条目数据封装
+        buildPaymentItem(enter, paymentList, saveAssemblyOrderPayment, opeAssemblyOrder);
         //保存条目
         opeAssemblyOrderPaymentService.saveBatch(saveAssemblyOrderPayment);
         return new GeneralResult(enter.getRequestId());
@@ -1064,7 +1077,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public PaymentDetailResullt paymentDetail(IdEnter enter) {
-        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.QC.getValue());
+        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), null);
 
         //查询 支付信息
         List<PaymentItemDetailResult> paymentItemList = assemblyServiceMapper.paymentItemList(enter.getId());
@@ -1235,12 +1248,10 @@ public class AssemblyServiceImpl implements AssemblyService {
                 }
             }
         }
-        if (enter.getProductPrice().doubleValue() != totalPrice.doubleValue()) {
+        //产品价格校验
+        if (!opeAssemblyOrder.getProductPrice().setScale(2, BigDecimal.ROUND_HALF_UP).equals(totalPrice.setScale(2, BigDecimal.ROUND_HALF_UP))) {
             throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
         }
-//        //校验 加工费和总价格
-//        enter.getProcessCost().
-
 
         if (StringUtils.equals(enter.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
             //月结
@@ -1314,9 +1325,14 @@ public class AssemblyServiceImpl implements AssemblyService {
                 throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
             }
             //金额校验
-            if (enter.getProductPrice().doubleValue() != checkTotalPrice.doubleValue()) {
+            if (!enter.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP).equals(checkTotalPrice.setScale(2, BigDecimal.ROUND_HALF_UP))) {
                 throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
             }
+        }
+        //校验 加工费和总价格
+        BigDecimal processingFee = opeAssemblyOrder.getProductPrice().multiply(enter.getProcessCost());
+        if (!processingFee.add(opeAssemblyOrder.getProductPrice()).setScale(2, BigDecimal.ROUND_HALF_UP).equals(enter.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP))) {
+            throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
         }
     }
 
@@ -1328,9 +1344,16 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param productList
      * @return
      */
-    private OpeAssemblyOrder buildOpeAssemblyOrder(SaveAssemblyEnter enter, List<ProductionPartsEnter> productList, Long assemblyId) {
-        OpeAssemblyOrder saveOpeAssemblyOrder;
-        saveOpeAssemblyOrder = OpeAssemblyOrder.builder()
+    private OpeAssemblyOrder buildOpeAssemblyOrder(SaveAssemblyEnter enter, List<ProductionPartsEnter> productList, Long assemblyId, Map<Long, BigDecimal> productUnitPrice) {
+
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (Map.Entry<Long, BigDecimal> entry : productUnitPrice.entrySet()) {
+            Long key = entry.getKey();
+            BigDecimal value = entry.getValue();
+            totalPrice = totalPrice.add(value);
+        }
+
+        OpeAssemblyOrder saveOpeAssemblyOrder = OpeAssemblyOrder.builder()
                 .id(assemblyId)
                 .dr(0)
                 .userId(enter.getUserId())
@@ -1342,7 +1365,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .processingFee(null)
                 .processingFeeRatio(null)
                 .paymentType(null)
-                .productPrice(null)
+                .productPrice(totalPrice)
                 .factoryId(enter.getFactoryId())
                 .factoryAnnex(null)
                 .consigneeId(enter.getConsigneeId())

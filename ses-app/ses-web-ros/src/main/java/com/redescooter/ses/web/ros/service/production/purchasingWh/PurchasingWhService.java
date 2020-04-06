@@ -36,7 +36,7 @@ public interface PurchasingWhService {
      * @param enter
      * @return
      */
-    Map<String, String> typeList(GeneralEnter enter);
+    Map<String, String> productTypeList(GeneralEnter enter);
 
     /**
      * 可用列表

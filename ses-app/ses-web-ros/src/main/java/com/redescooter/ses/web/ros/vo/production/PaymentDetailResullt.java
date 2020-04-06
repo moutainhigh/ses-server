@@ -40,7 +40,7 @@ public class PaymentDetailResullt extends GeneralResult {
     private BigDecimal processCost;
 
     @ApiModelProperty(value = "加工费比例")
-    private Integer processCostRatio;
+    private BigDecimal processCostRatio;
 
     @ApiModelProperty(value = "条目集合")
     private List<PaymentItemDetailResult> paymentItemList;

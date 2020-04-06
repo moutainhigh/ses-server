@@ -72,9 +72,9 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      * @return
      */
     @Override
-    public Map<String, String> typeList(GeneralEnter enter) {
+    public Map<String, String> productTypeList(GeneralEnter enter) {
         Map<String, String> map = Maps.newHashMap();
-        for (PurchasingWhTypeEnums item : PurchasingWhTypeEnums.values()) {
+        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
             map.put(item.getValue(), item.getCode());
         }
         return map;

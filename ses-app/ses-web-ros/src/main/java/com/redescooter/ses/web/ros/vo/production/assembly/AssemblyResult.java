@@ -95,7 +95,7 @@ public class AssemblyResult extends GeneralResult {
     private String consigneeEmail;
 
     @ApiModelProperty(value = "总价格")
-    private String totalPrice;
+    private BigDecimal totalPrice;
 
     @ApiModelProperty(value = "付款类型")
     private String paymentType;
@@ -121,7 +121,7 @@ public class AssemblyResult extends GeneralResult {
     private BigDecimal processCost;
 
     @ApiModelProperty(value = "加工费比例")
-    private Integer processCostRatio;
+    private BigDecimal processCostRatio;
 
     @ApiModelProperty(value = "支付记录详情")
     private List<PaymentItemDetailResult> paymentItemDetailResultList;
