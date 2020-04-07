@@ -20,10 +20,12 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
+import com.redescooter.ses.web.ros.service.base.OpePurchasService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.purchasingWh.PurchasingWhService;
 import com.redescooter.ses.web.ros.vo.production.wh.AssemblyProductResult;
+import com.redescooter.ses.web.ros.vo.production.wh.AvailableListBatchNResult;
 import com.redescooter.ses.web.ros.vo.production.wh.AvailableListResult;
 import com.redescooter.ses.web.ros.vo.production.wh.OutWhResult;
 import com.redescooter.ses.web.ros.vo.production.wh.QcingListResult;
@@ -65,6 +67,9 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
     @Autowired
     private OpeWhseService opeWhseService;
 
+    @Autowired
+    private OpePurchasService opePurchasService;
+
     /**
      * 类型统计
      *
@@ -74,8 +79,32 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
     @Override
     public Map<String, Integer> countByType(GeneralEnter enter) {
         Map<String, Integer> map = Maps.newHashMap();
+
+        //采购仓库
+        OpeWhse opeWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.PURCHAS.getValue())).get(0);
+        QueryWrapper<OpeStock> availableWrapper = new QueryWrapper<>();
+        availableWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
+        int availableCount = opeStockService.count(availableWrapper);
+        map.put(PurchasingWhTypeEnums.AVAILABLE.getValue(), availableCount);
+
+        int qcCount = purchasingWhServiceMapper.countByTypeQcCount(enter);
+        map.put(PurchasingWhTypeEnums.PURCHASING.getValue(), qcCount);
+
+        int tobeStoredCount = purchasingWhServiceMapper.countByTypetobeStoredCount(enter);
+        map.put(PurchasingWhTypeEnums.TO_BE_STORED.getValue(), tobeStoredCount);
+
+        List<OpeWhse> opeWhseList = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
+        List<Long> whseIds = Lists.newArrayList();
+        opeWhseList.forEach(item -> {
+            whseIds.add(item.getId());
+        });
+        int outWhCount = purchasingWhServiceMapper.countByTypeOutWhCount(enter);
+        map.put(PurchasingWhTypeEnums.OUT_WH.getValue(), outWhCount);
+
         for (PurchasingWhTypeEnums item : PurchasingWhTypeEnums.values()) {
-            map.put(item.getValue(), 0);
+            if (!map.containsKey(item.getValue())) {
+                map.put(item.getValue(), 0);
+            }
         }
         return map;
     }
@@ -124,12 +153,27 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         List<OpePurchasBQc> opePurchasBQcList = purchasingWhServiceMapper.PurchasBQc(partIds, PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
 
 
-        Map<Long, Set<String>> batchNMap = Maps.newHashMap();
+        Map<Long, List<AvailableListBatchNResult>> batchNMap = Maps.newHashMap();
         availableList.forEach(item -> {
-            Set<String> batchNList = Sets.newHashSet();
+            List<AvailableListBatchNResult> batchNList = Lists.newArrayList();
             opePurchasBQcList.forEach(qc -> {
                 if (item.getId().equals(qc.getPartsId())) {
-                    batchNList.add(qc.getBatchNo());
+                    if (CollectionUtils.isNotEmpty(batchNList)) {
+                        batchNList.forEach(batch -> {
+                            if (StringUtils.equals(batch.getBatchN(), qc.getBatchNo())) {
+                                batch.setQty(batch.getQty() + qc.getPassCount());
+                                batchNList.set(batchNList.indexOf(batch), batch);
+                            }
+                        });
+                    }
+                    batchNList.add(
+                            AvailableListBatchNResult
+                                    .builder()
+                                    .id(qc.getPartsId())
+                                    .batchN(qc.getBatchNo())
+                                    .qty(qc.getPassCount())
+                                    .build()
+                    );
                 }
             });
             batchNMap.put(item.getId(), batchNList);
@@ -140,9 +184,11 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
             if (batchNMap.containsKey(item.getId())) {
                 if (StringUtils.isNotEmpty(enter.getKeyword())) {
                     batchNMap.forEach((key, value) -> {
-                        if (value.contains(enter.getKeyword())) {
-                            item.setBatchNList(new ArrayList<>(batchNMap.get(item.getId())));
-                        }
+                        value.forEach(valueList -> {
+                            if (valueList.getBatchN().contains(enter.getKeyword())) {
+                                item.setBatchNList(new ArrayList<>(batchNMap.get(item.getId())));
+                            }
+                        });
                     });
                 } else {
                     item.setBatchNList(new ArrayList<>(batchNMap.get(item.getId())));
@@ -201,17 +247,30 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         if (StringUtils.isBlank(enter.getType())) {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }
-        List<OpeWhse> opeWhseList = checkWhse(Lists.newArrayList(WhseTypeEnums.ASSEMBLY.getValue(), WhseTypeEnums.ALLOCATE.getValue()));
+        List<OpeWhse> assemblyWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ASSEMBLY.getValue()));
 
-        List<Long> whseIds = new ArrayList<>();
-        opeWhseList.forEach(item -> {
-            whseIds.add(item.getId());
-        });
-        int count = purchasingWhServiceMapper.outWhListCount(enter, whseIds);
-        if (count == 0) {
-            return PageResult.createZeroRowResult(enter);
-        }
-        return PageResult.create(enter, count, purchasingWhServiceMapper.outWhList(enter, whseIds));
+        //组装仓库 数据
+        int countAssembly = purchasingWhServiceMapper.outWhListAssemblyCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
+
+        List<OutWhResult> whResultListAssembly = purchasingWhServiceMapper.outWhListAssembly(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
+
+        //调拨仓库数据
+
+//        List<OpeWhse> allocateWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue()));
+//
+////        int countAllocate = purchasingWhServiceMapper.outWhListAllocateCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
+////
+////        List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
+//
+//
+//        int count = countAssembly + countAllocate;
+//        if (count == 0) {
+//            return PageResult.createZeroRowResult(enter);
+//        }
+//        List<OutWhResult> result = Lists.newArrayList();
+//        result.addAll(whResultListAssembly);
+//        result.addAll(whResultListAllocate);
+        return PageResult.create(enter, countAssembly, whResultListAssembly);
     }
 
     /**
@@ -222,11 +281,12 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public PageResult<WasteResult> wasteList(WhEnter enter) {
-        int count = purchasingWhServiceMapper.wasteListCount(enter);
-        if (count == 0) {
-            return PageResult.createZeroRowResult(enter);
-        }
-        return PageResult.create(enter, count, purchasingWhServiceMapper.wasteList(enter));
+//        int count = purchasingWhServiceMapper.wasteListCount(enter);
+//        if (count == 0) {
+//            return PageResult.createZeroRowResult(enter);
+//        }
+//        return PageResult.create(enter, count, purchasingWhServiceMapper.wasteList(enter));
+        return PageResult.createZeroRowResult(enter);
     }
 
     /**

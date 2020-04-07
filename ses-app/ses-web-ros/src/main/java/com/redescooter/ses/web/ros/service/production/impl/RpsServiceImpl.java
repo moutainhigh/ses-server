@@ -75,7 +75,7 @@ public class RpsServiceImpl implements RpsServvice {
         opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
         List<OpePurchasB> purchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
 
-        List<OpePurchasBQc> opePurchasBServiceList = Lists.newArrayList();
+        List<OpePurchasBQc> opePurchasBQcServiceList = Lists.newArrayList();
 
         List<Long> purchasBIdsList = Lists.newArrayList();
         purchasBList.forEach(item -> {
@@ -88,27 +88,14 @@ public class RpsServiceImpl implements RpsServvice {
         opePurchasBQcQueryWrapper.eq(OpePurchasBQc.COL_DR, 0);
 
         List<OpePurchasBQc> opePurchasBQcList = opePurchasBQcService.list(opePurchasBQcQueryWrapper);
-        if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
-            for (OpePurchasB purchasB : purchasBList) {
-                Boolean qcNeed = Boolean.FALSE;
-                for (OpePurchasBQc item : opePurchasBQcList) {
-                    if (purchasB.getId().equals(item.getPurchasBId())) {
-                        if (!purchasB.getTotalCount().equals(item.getTotalQualityInspected())) {
-                            qcNeed = Boolean.TRUE;
-                        }
-                    }
-                }
-                if (qcNeed) {
-                    throw new SesWebRosException(ExceptionCodeEnums.QC_PASSED_WITHOUT_REPEATING_QUALITY_INSPECTION.getCode(),
-                            ExceptionCodeEnums.QC_PASSED_WITHOUT_REPEATING_QUALITY_INSPECTION.getMessage());
-                }
-            }
-        }
 
+        if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.QC_PASSED_WITHOUT_REPEATING_QUALITY_INSPECTION.getCode(), ExceptionCodeEnums.QC_PASSED_WITHOUT_REPEATING_QUALITY_INSPECTION.getMessage());
+        }
 
         //构建qc质检数据
         purchasBList.forEach(item -> {
-            opePurchasBServiceList.add(
+            opePurchasBQcServiceList.add(
                     OpePurchasBQc.builder()
                             .id(idAppService.getId(SequenceName.OPE_PURCHAS_B_QC))
                             .dr(0)
@@ -133,8 +120,10 @@ public class RpsServiceImpl implements RpsServvice {
             );
             item.setQcStatus(QcStatusEnums.FAIL.getValue());
         });
-        opePurchasBQcService.saveBatch(opePurchasBServiceList);
-        opePurchasBService.updateBatchById(purchasBList);
+        if (CollectionUtils.isNotEmpty(opePurchasBQcServiceList)) {
+            opePurchasBQcService.saveBatch(opePurchasBQcServiceList);
+            opePurchasBService.updateBatchById(purchasBList);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 }

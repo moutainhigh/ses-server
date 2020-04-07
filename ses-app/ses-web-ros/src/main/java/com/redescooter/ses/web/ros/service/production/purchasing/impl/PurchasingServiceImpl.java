@@ -730,20 +730,21 @@ public class PurchasingServiceImpl implements PurchasingService {
         List<OpePurchasBQc> opePurchasBQcList = purchasingServiceMapper.opePurchasBQcListByPurductId(enter);
 
         int conut = 0;
-        if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
-            for (OpePurchasBQc item : opePurchasBQcList) {
-                if (item.getFailCount() == 0) {
-                    conut++;
-                }
-                item.setPassCount(item.getPassCount() + item.getFailCount());
-                item.setFailCount(0);
-                item.setUpdatedBy(enter.getUserId());
-                item.setStatus(QcStatusEnums.PASS.getValue());
-                item.setUpdatedTime(new Date());
+        if (CollectionUtils.isEmpty(opePurchasBQcList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PLEASE_SCAN_THE_CODE_FIRST.getCode(), ExceptionCodeEnums.PLEASE_SCAN_THE_CODE_FIRST.getMessage());
+        }
+        for (OpePurchasBQc item : opePurchasBQcList) {
+            if (item.getFailCount() == 0) {
+                conut++;
             }
-            if (conut == opePurchasBQcList.size()) {
-                throw new SesWebRosException(ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(), ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
-            }
+            item.setPassCount(item.getPassCount() + item.getFailCount());
+            item.setFailCount(0);
+            item.setUpdatedBy(enter.getUserId());
+            item.setStatus(QcStatusEnums.PASS.getValue());
+            item.setUpdatedTime(new Date());
+        }
+        if (conut == opePurchasBQcList.size()) {
+            throw new SesWebRosException(ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(), ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
         }
 
         if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
@@ -1032,20 +1033,24 @@ public class PurchasingServiceImpl implements PurchasingService {
         //对采购子订单 价格、数量 处理
         BigDecimal retureTotalPrice = BigDecimal.ZERO;
         for (OpePurchasB item : opePurchasBList) {//数量处理
-            partMap.forEach((key, value) -> {
+            for (Map.Entry<Long, Integer> e : partMap.entrySet()) {
+                Long key = e.getKey();
+                Integer value = e.getValue();
                 if (item.getPartId().equals(key)) {
                     item.setTotalCount(item.getTotalCount() - value);
                 }
-            });
-            //价格处理
-            for (Map.Entry<Long, BigDecimal> entry : priceMap.entrySet()) {
-                Long key = entry.getKey();
-                BigDecimal value = entry.getValue();
-                if (item.getPartId().equals(key)) {
-                    item.setTotalPrice(item.getTotalPrice().subtract(value));
-                    retureTotalPrice = retureTotalPrice.add(value);
+                //价格处理
+                for (Map.Entry<Long, BigDecimal> entry : priceMap.entrySet()) {
+                    Long priceKey = entry.getKey();
+                    BigDecimal priceValue = entry.getValue();
+                    if (key.equals(priceKey)) {
+                        BigDecimal partPrice = priceValue.multiply(new BigDecimal(value));
+                        item.setTotalPrice(item.getTotalPrice().subtract(partPrice));
+                        retureTotalPrice = retureTotalPrice.add(partPrice);
+                    }
                 }
             }
+
             item.setQcStatus(QcStatusEnums.PASS.getValue());
             item.setUpdatedBy(enter.getUserId());
             item.setUpdatedTime(new Date());
@@ -1091,7 +1096,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         saveNodeEnter.setId(opePurchas.getId());
         saveNodeEnter.setStatus(PurchasingStatusEnums.RETURN.getValue());
         saveNodeEnter.setEvent(PurchasingEventEnums.RETURN.getValue());
-        saveNodeEnter.setMemo(null);
+        saveNodeEnter.setMemo(retureTotalPrice.toString());
         this.savePurchasingNode(saveNodeEnter);
         return new GeneralResult(enter.getRequestId());
     }

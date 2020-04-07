@@ -1255,7 +1255,7 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         if (StringUtils.equals(enter.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
             //月结
-            if (enter.getStatementdate() == null || enter.getDays() == 0 || enter.getDays() != null) {
+            if (enter.getStatementdate() == null || enter.getDays() == 0 || enter.getDays() == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
             }
             //生成支付节点

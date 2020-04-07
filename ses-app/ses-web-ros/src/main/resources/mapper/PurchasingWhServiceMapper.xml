@@ -151,7 +151,7 @@
         limit #{startRow},#{pageSize}
     </select>
 
-    <select id="outWhListCount" resultType="int">
+    <select id="outWhListAssemblyCount" resultType="int">
         select count(*)
         from ope_stock stock
         inner join ope_parts_product product
@@ -160,7 +160,7 @@
     </select>
 
 
-    <select id="outWhList" resultType="com.redescooter.ses.web.ros.vo.production.wh.OutWhResult">
+    <select id="outWhListAssembly" resultType="com.redescooter.ses.web.ros.vo.production.wh.OutWhResult">
         select stock.id as id,
         product.product_number as partN,
         product.product_type as type,
@@ -195,5 +195,54 @@
                 #{item}
             </foreach>
         </if>
+    </select>
+
+    <select id="outWhListAllocateCount" resultType="java.lang.Integer">
+
+    </select>
+
+    <select id="outWhListAllocate" resultType="com.redescooter.ses.web.ros.vo.production.wh.OutWhResult">
+
+    </select>
+    <select id="countByTypeQcCount" resultType="int">
+        select count(*) from
+        (
+        select part.id as id,
+        part.parts_number as partN,
+        part.parts_type as type,
+        part.en_name as enName,
+        part.cn_name as cnName,
+        count(*) as qty
+        from ope_purchas_b purchasb
+        left join ope_purchas purchas
+        on purchas.id = purchasb.purchas_id and purchas.dr = 0 and purchas.status=3
+        left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
+        where purchasb.dr=0
+        group by id, partN, type, enName, cnName
+        ) result
+    </select>
+    <select id="countByTypetobeStoredCount" resultType="int">
+        select count(*) from
+        (
+        select part.id as id,
+        part.parts_number as partN,
+        part.parts_type as type,
+        part.en_name as enName,
+        part.cn_name as cnName,
+        count(*) as qty
+        from ope_purchas_b purchasb
+        left join ope_purchas purchas
+        on purchas.id = purchasb.purchas_id and purchas.dr = 0 and purchas.status in (4, 5)
+        left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
+        where purchasb.dr=0
+        group by id, partN, type, enName, cnName
+        ) result
+    </select>
+    <select id="countByTypeOutWhCount" resultType="int">
+        select count(*)
+        from ope_stock stock
+        inner join ope_parts_product product
+        on stock.materiel_product_id = product.id and product.dr=0
+        where stock.dr=0
     </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.dao.production;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
 import com.redescooter.ses.web.ros.vo.production.wh.AvailableListResult;
 import com.redescooter.ses.web.ros.vo.production.wh.OutWhResult;
@@ -76,7 +77,7 @@ public interface PurchasingWhServiceMapper {
      * @param enter
      * @return
      */
-    int outWhListCount(@Param("enter") WhEnter enter, @Param("whseIds") List<Long> whseIds);
+    int outWhListAssemblyCount(@Param("enter") WhEnter enter, @Param("whseIds") List<Long> whseIds);
 
     /**
      * 出库列表
@@ -84,7 +85,7 @@ public interface PurchasingWhServiceMapper {
      * @param enter
      * @return
      */
-    List<OutWhResult> outWhList(@Param("enter") WhEnter enter, @Param("whseIds") List<Long> whseIds);
+    List<OutWhResult> outWhListAssembly(@Param("enter") WhEnter enter, @Param("whseIds") List<Long> whseIds);
 
     /**
      * 废料列表
@@ -110,4 +111,46 @@ public interface PurchasingWhServiceMapper {
      * @return
      */
     List<OpePurchasBQc> PurchasBQc(@Param("partIds") List<Long> partIds, @Param("status") String status);
+
+    /**
+     * qc 类型统计
+     *
+     * @param enter
+     * @return
+     */
+    int countByTypeQcCount(GeneralEnter enter);
+
+    /**
+     * 待入库 类型统计
+     *
+     * @param enter
+     * @return
+     */
+    int countByTypetobeStoredCount(GeneralEnter enter);
+
+    /**
+     * 出库 状态统计
+     *
+     * @param enter
+     * @return
+     */
+    int countByTypeOutWhCount(GeneralEnter enter);
+
+//    /**
+//     * 调波 出库列表
+//     *
+//     * @param enter
+//     * @param whseIds
+//     * @return
+//     */
+//    int outWhListAllocateCount(@Param("enter") WhEnter enter, @Param("whseIds") ArrayList<Long> whseIds);
+//
+//    /**
+//     * 调拨 出库列表
+//     *
+//     * @param enter
+//     * @param whseIds
+//     * @return
+//     */
+//    List<OutWhResult> outWhListAllocate(@Param("enter") WhEnter enter, @Param("whseIds") ArrayList<Long> whseIds);
 }

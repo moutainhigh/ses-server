@@ -46,7 +46,7 @@ public class PaymentItemDetailResult extends GeneralResult {
     private BigDecimal amount;
 
     @ApiModelProperty(value = "付款比例")
-    private String paymentRatio;
+    private BigDecimal paymentRatio;
 
     @ApiModelProperty(value = "发票单号")
     private String invoiceNum;

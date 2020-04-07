@@ -45,7 +45,7 @@
                 and ass.factory_id=#{enter.factoryId}
             </if>
             <if test="param1.paymentType != null and param1.paymentType != ''">
-                and ass.payment_type #{enter.paymentType}
+                and ass.payment_type =#{enter.paymentType}
             </if>
             <if test="enter.createdStartTime != null and enter.createdEndTime != null">
                 and (ass.created_time between#{enter.createdStartTime} and #{enter.createdEndTime} )

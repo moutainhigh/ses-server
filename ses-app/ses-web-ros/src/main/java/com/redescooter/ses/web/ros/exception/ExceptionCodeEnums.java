@@ -221,6 +221,8 @@ public enum ExceptionCodeEnums {
     NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION(10103, "未进行质检请先进行质检"),
 
     DO_NOT_SET_THE_PRICE_REPEATEDLY(10104, "请不要重复设置价格"),
+
+    PLEASE_SCAN_THE_CODE_FIRST(10105, "请先扫码质检"),
     ;
 
 
