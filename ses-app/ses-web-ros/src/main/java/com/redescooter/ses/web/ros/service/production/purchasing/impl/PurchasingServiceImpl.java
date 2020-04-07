@@ -1039,15 +1039,15 @@ public class PurchasingServiceImpl implements PurchasingService {
                 if (item.getPartId().equals(key)) {
                     item.setTotalCount(item.getTotalCount() - value);
                 }
-                //价格处理
-                for (Map.Entry<Long, BigDecimal> entry : priceMap.entrySet()) {
-                    Long priceKey = entry.getKey();
-                    BigDecimal priceValue = entry.getValue();
-                    if (key.equals(priceKey)) {
-                        BigDecimal partPrice = priceValue.multiply(new BigDecimal(value));
-                        item.setTotalPrice(item.getTotalPrice().subtract(partPrice));
-                        retureTotalPrice = retureTotalPrice.add(partPrice);
-                    }
+            }
+
+            //价格处理
+            for (Map.Entry<Long, BigDecimal> entry : priceMap.entrySet()) {
+                Long priceKey = entry.getKey();
+                BigDecimal priceValue = entry.getValue();
+                if (item.getPartId().equals(priceKey)) {
+                    item.setTotalPrice(item.getTotalPrice().subtract(priceValue));
+                    retureTotalPrice = retureTotalPrice.add(priceValue);
                 }
             }
 

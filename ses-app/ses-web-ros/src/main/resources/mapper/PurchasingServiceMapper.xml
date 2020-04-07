@@ -197,7 +197,8 @@
         trace.event_time as eventTime,
         trace.create_by as createdBy,
         profile.first_name as createdByFirstName,
-        profile.last_name as createdByLastName
+        profile.last_name as createdByLastName,
+        trace.memo as memo
         from ope_purchas_trace trace
         inner join ope_sys_user_profile profile on trace.create_by = profile.sys_user_id and profile.dr = 0
         where trace.dr = 0

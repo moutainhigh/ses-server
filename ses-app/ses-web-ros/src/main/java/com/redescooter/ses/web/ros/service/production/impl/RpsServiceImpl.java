@@ -79,7 +79,7 @@ public class RpsServiceImpl implements RpsServvice {
 
         List<Long> purchasBIdsList = Lists.newArrayList();
         purchasBList.forEach(item -> {
-            purchasBIdsList.add(item.getPurchasId());
+            purchasBIdsList.add(item.getId());
         });
 
         //查询质检记录
