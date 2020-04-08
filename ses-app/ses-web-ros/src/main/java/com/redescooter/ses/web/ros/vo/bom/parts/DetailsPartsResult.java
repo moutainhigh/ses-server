@@ -70,7 +70,7 @@ public class DetailsPartsResult extends GeneralResult {
     @ApiModelProperty(value = "信息是否完善")
     private Boolean perfectFlag;
 
-    @ApiModelProperty(value = "是否同步")
+    @ApiModelProperty(value = "是否已同步")
     private Boolean synchronizeFlag;
 
     @ApiModelProperty(value = "更新时间")

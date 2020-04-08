@@ -46,6 +46,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -412,8 +413,9 @@ public class PartsRosServiceImpl implements PartsRosService {
         return historyPartsResult;
     }
 
+    @Transactional
     @Override
-    public GeneralResult partsSynchronize(GeneralEnter enter) {
+    public GeneralResult synchronizeParts(GeneralEnter enter) {
 
         //部件容器
         List<OpeParts> partsSave = new ArrayList<>();
@@ -468,6 +470,9 @@ public class PartsRosServiceImpl implements PartsRosService {
                     productSave.add(product);
                 }
             });
+
+            //更新已同步标识
+            opePartsDraftService.updateBatch(partsDrafts);
         }
 
         if (CollectionUtil.isNotEmpty(partsSave)) {
@@ -512,8 +517,6 @@ public class PartsRosServiceImpl implements PartsRosService {
             partsProductService.saveBatch(productInsert);
             partsProductService.updateBatch(productUpdate);
         }
-
-        opePartsDraftService.updateBatch(partsDrafts);
 
         return new GeneralResult(enter.getRequestId());
     }
