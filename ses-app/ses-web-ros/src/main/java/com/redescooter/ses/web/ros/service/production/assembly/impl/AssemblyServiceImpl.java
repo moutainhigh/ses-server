@@ -1248,10 +1248,6 @@ public class AssemblyServiceImpl implements AssemblyService {
                 }
             }
         }
-        //产品价格校验
-        if (!opeAssemblyOrder.getProductPrice().setScale(2, BigDecimal.ROUND_HALF_UP).equals(totalPrice.setScale(2, BigDecimal.ROUND_HALF_UP))) {
-            throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
-        }
 
         if (StringUtils.equals(enter.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
             //月结
@@ -1365,7 +1361,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .processingFee(null)
                 .processingFeeRatio(null)
                 .paymentType(null)
-                .productPrice(totalPrice)
+                .productPrice(totalPrice.multiply(new BigDecimal(productList.stream().mapToInt(ProductionPartsEnter::getQty).sum())))
                 .factoryId(enter.getFactoryId())
                 .factoryAnnex(null)
                 .consigneeId(enter.getConsigneeId())

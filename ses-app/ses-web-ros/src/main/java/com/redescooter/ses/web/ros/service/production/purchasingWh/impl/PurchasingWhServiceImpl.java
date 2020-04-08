@@ -121,6 +121,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
             map.put(item.getValue(), item.getCode());
         }
+        map.remove(BomCommonTypeEnums.COMBINATION.getValue());
         return map;
     }
 

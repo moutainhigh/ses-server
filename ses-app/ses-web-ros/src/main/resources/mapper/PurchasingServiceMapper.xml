@@ -415,6 +415,7 @@
         from ope_purchas_b
         where purchas_id=#{id}
         and dr=0
+        and total_count != 0
         group by qc_status
     </select>
 </mapper>
