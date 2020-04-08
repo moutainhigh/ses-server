@@ -49,6 +49,12 @@ public class PartsController {
     @Autowired
     private BomRosService bomRosService;
 
+    @PostMapping(value = "/synchronize")
+    @ApiOperation(value = "部件同步", response = MapResult.class)
+    public Response<GeneralResult> synchronize(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>();
+    }
+
     @PostMapping(value = "/commonCountStatus")
     @ApiOperation(value = "数量统计", response = MapResult.class)
     public Response<MapResult> commonCountStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
