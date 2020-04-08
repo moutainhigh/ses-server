@@ -652,10 +652,10 @@ public class BomRosServiceImpl implements BomRosService {
             //查询质检结果项
             QueryWrapper<OpePartQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
             opePartQcTemplateBQueryWrapper.in(OpePartQcTemplateB.COL_PART_QC_TEMPLATE_ID, new ArrayList<>(partQcTemplateIds));
-            List<OpePartQcTemplateB> templateBList = opePartQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
-            if (CollectionUtils.isNotEmpty(templateBList)) {
-                opePartQcTemplateBService.removeByIds();
-            }
+//            List<OpePartQcTemplateB> templateBList = opePartQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
+//            if (CollectionUtils.isNotEmpty(templateBList)) {
+//                opePartQcTemplateBService.removeByIds();
+//            }
         }
 
         return null;
