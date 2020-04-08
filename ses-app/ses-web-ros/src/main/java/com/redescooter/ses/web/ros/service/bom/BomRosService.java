@@ -4,8 +4,9 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
+import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
@@ -148,5 +149,23 @@ public interface BomRosService {
      */
     GeneralResult saveCombination(SaveCombinationEnter enter);
 
+    //数据同步
+    // 质检模板导入
+
+    /**
+     * 质检模板保存
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult saveQcTemplate(SaveQcTemplateEnter enter);
+
+    /**
+     * 质检模板详情
+     *
+     * @param enter
+     * @return
+     */
+    QcTemplateDetailResult qcTemplateResult(IdEnter enter);
 
 }

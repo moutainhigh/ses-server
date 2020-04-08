@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public enum PurchasingWhTypeEnums {
 
     AVAILABLE("AVAILABLE", "可用", "1"),
-    PURCHASING("PURCHASING", "采购中", "2 "),
+    PURCHASING("PURCHASING", "采购中", "2"),
     TO_BE_STORED("TO_BE_STORED", "待入库", "3"),
     OUT_WH("OUT_WH", "已出库", "4"),
     WASTE("WASTE", "废料库", "5");

@@ -1,8 +1,10 @@
 package com.redescooter.ses.web.ros.service.bom.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
@@ -15,17 +17,24 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpePartQcTemplate;
+import com.redescooter.ses.web.ros.dm.OpePartQcTemplateB;
 import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpePartQcTemplateBService;
+import com.redescooter.ses.web.ros.service.base.OpePartQcTemplateService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.service.bom.BomRosService;
 import com.redescooter.ses.web.ros.vo.bom.ProdoctPartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.QcItemTemplateResult;
+import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
+import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
@@ -48,6 +57,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName:BomRosServiceImpl
@@ -74,6 +84,12 @@ public class BomRosServiceImpl implements BomRosService {
 
     @Autowired
     private OpePartsService opePartsService;
+
+    @Autowired
+    private OpePartQcTemplateService opePartQcTemplateService;
+
+    @Autowired
+    private OpePartQcTemplateBService opePartQcTemplateBService;
 
     /**
      * @param enter
@@ -596,6 +612,64 @@ public class BomRosServiceImpl implements BomRosService {
         // 主表数据保存
         opePartsProductService.saveOrUpdate(opePartsProduct);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 质检模板保存
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult saveQcTemplate(SaveQcTemplateEnter enter) {
+        //数据解析
+        List<QcItemTemplateResult> qcItemTemplateEnterList = null;
+        try {
+            qcItemTemplateEnterList = JSON.parseArray(enter.getQcItemTemplateEnter(), QcItemTemplateResult.class);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        if (CollectionUtils.isNotEmpty(qcItemTemplateEnterList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        //部品验证
+        OpeParts opeParts = opePartsService.getById(enter.getId());
+        if (opeParts != null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
+        //查询是否存在质检项
+        QueryWrapper<OpePartQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
+        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplate.COL_PART_ID, enter.getId());
+        List<OpePartQcTemplate> partQcTemplateList = opePartQcTemplateService.list(opePartQcTemplateQueryWrapper);
+        if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
+            Set<Long> partQcTemplateIds = Sets.newHashSet();
+            partQcTemplateList.forEach(item -> {
+                partQcTemplateIds.add(item.getId());
+            });
+
+            //查询质检结果项
+            QueryWrapper<OpePartQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
+            opePartQcTemplateBQueryWrapper.in(OpePartQcTemplateB.COL_PART_QC_TEMPLATE_ID, new ArrayList<>(partQcTemplateIds));
+//            List<OpePartQcTemplateB> templateBList = opePartQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
+//            if (CollectionUtils.isNotEmpty(templateBList)) {
+//                opePartQcTemplateBService.removeByIds();
+//            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 质检模板详情
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public QcTemplateDetailResult qcTemplateResult(IdEnter enter) {
+        return null;
     }
 
     private OpePartsProductB buildOpePartsProductBSingle(Long userId, Long ProductId, ProdoctPartListEnter item) {
