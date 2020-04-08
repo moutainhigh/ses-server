@@ -102,7 +102,7 @@ public interface PartsRosService {
      *
      * @return
      */
-    GeneralResult partsSynchronize(GeneralEnter enter);
+    GeneralResult synchronizeParts(GeneralEnter enter);
 
     /**
      * 获取部件待同部数
