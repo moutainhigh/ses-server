@@ -222,8 +222,8 @@ public class AssemblyServiceImpl implements AssemblyService {
         List<Long> productIds = Lists.newArrayList();
 
         //减库存
+        List<ProductionPartsEnter> productList = new ArrayList<>();
         if (StringUtils.isNotEmpty(enter.getProductList())) {
-            List<ProductionPartsEnter> productList = new ArrayList<>();
             try {
                 productList = JSON.parseArray(enter.getProductList(), ProductionPartsEnter.class);
             } catch (Exception e) {
@@ -328,6 +328,19 @@ public class AssemblyServiceImpl implements AssemblyService {
             }
             result.add(productResult);
         });
+
+        //给结果集添加已选择的数量
+//        for (SaveAssemblyProductResult item : result) {
+//            if (CollectionUtils.isNotEmpty(productList)) {
+//                productList.forEach(product -> {
+//                    if (item.getId().equals(product.getId())){
+//                        item.setSelectedQty(product.getQty());
+//                    }else {
+//                        item.setSelectedQty(0);
+//                    }
+//                });
+//            }
+//        }
 
         return result;
     }

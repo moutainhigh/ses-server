@@ -231,6 +231,8 @@ public enum ExceptionCodeEnums {
     TEMPLATE_QC_ITEMNAME_IS_EMPTY(10108, "质检项名称为空"),
 
     TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY(10109, "质检结果集排序为空"),
+
+    PART_IS_NOT_BIND_PRODUCT(10110, "部件未绑定产品"),
     ;
 
 
