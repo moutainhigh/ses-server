@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.dao.bom;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
@@ -16,6 +18,14 @@ import java.util.List;
  * @Description:
  */
 public interface PartsServiceMapper {
+
+    /**
+     * 获取部件待同部数
+     *
+     * @param enter
+     * @return
+     */
+    IntResult synchronizeNum(GeneralEnter enter);
 
     /**
      * 列表计数

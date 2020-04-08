@@ -55,6 +55,8 @@ public interface SequenceName {
 
     String OPE_PURCHAS = "OPE_PURCHAS";
 
+    String OPE_PARTS_DRAFT = "OPE_PARTS_DRAFT";
+
     String OPE_PURCHAS_PRODUCT = "OPE_PURCHAS_PRODUCT";
 
     String OPE_PURCHAS_TRACE = "OPE_PURCHAS_TRACE";
