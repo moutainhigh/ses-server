@@ -42,7 +42,7 @@ public class OpePartsDraft implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户ID")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 用户ID
@@ -192,10 +192,17 @@ public class OpePartsDraft implements Serializable {
     private Date updatedTime;
 
     /**
-     * 是否同步
+     * 是否信息完善
+     */
+    @TableField(value = "perfect_flag")
+    @ApiModelProperty(value = "是否信息完善")
+    private Boolean perfectFlag;
+
+    /**
+     * 是否同步，只有在信息完善的前提下可以进行同步操作
      */
     @TableField(value = "synchronize_flag")
-    @ApiModelProperty(value = "是否同步")
+    @ApiModelProperty(value = "是否同步，只有在信息完善的前提下可以进行同步操作")
     private Boolean synchronizeFlag;
 
     /**
@@ -283,6 +290,8 @@ public class OpePartsDraft implements Serializable {
 
     public static final String COL_UPDATED_TIME = "updated_time";
 
+    public static final String COL_PERFECT_FLAG = "perfect_flag";
+
     public static final String COL_SYNCHRONIZE_FLAG = "synchronize_flag";
 
     public static final String COL_DEF1 = "def1";
@@ -294,4 +303,8 @@ public class OpePartsDraft implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpePartsDraftBuilder builder() {
+        return new OpePartsDraftBuilder();
+    }
 }
