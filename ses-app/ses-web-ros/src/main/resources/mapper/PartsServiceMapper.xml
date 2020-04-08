@@ -21,7 +21,8 @@
        op.created_time,
        os.supplier_name,
        op.perfect_flag,
-       op.synchronize_flag
+       op.synchronize_flag,
+       op.id_class
     </sql>
 
     <sql id="where_PartList">

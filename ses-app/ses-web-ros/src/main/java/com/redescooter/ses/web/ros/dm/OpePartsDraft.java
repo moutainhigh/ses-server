@@ -66,13 +66,6 @@ public class OpePartsDraft implements Serializable {
     private String status;
 
     /**
-     * 部件草稿主键
-     */
-    @TableField(value = "parts_draft_id")
-    @ApiModelProperty(value="部件草稿主键")
-    private Long partsDraftId;
-
-    /**
      * 类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery
      */
     @TableField(value = "parts_type")
@@ -206,10 +199,17 @@ public class OpePartsDraft implements Serializable {
     private Boolean idClass;
 
     /**
-     * 是否同步
+     * 是否信息完善
+     */
+    @TableField(value = "perfect_flag")
+    @ApiModelProperty(value="是否信息完善")
+    private Boolean perfectFlag;
+
+    /**
+     * 是否同步，只有在信息完善的前提下可以进行同步操作
      */
     @TableField(value = "synchronize_flag")
-    @ApiModelProperty(value="是否同步")
+    @ApiModelProperty(value="是否同步，只有在信息完善的前提下可以进行同步操作")
     private Boolean synchronizeFlag;
 
     /**
@@ -261,8 +261,6 @@ public class OpePartsDraft implements Serializable {
 
     public static final String COL_STATUS = "status";
 
-    public static final String COL_PARTS_DRAFT_ID = "parts_draft_id";
-
     public static final String COL_PARTS_TYPE = "parts_type";
 
     public static final String COL_SEC = "sec";
@@ -300,6 +298,8 @@ public class OpePartsDraft implements Serializable {
     public static final String COL_UPDATED_TIME = "updated_time";
 
     public static final String COL_ID_CLASS = "id_class";
+
+    public static final String COL_PERFECT_FLAG = "perfect_flag";
 
     public static final String COL_SYNCHRONIZE_FLAG = "synchronize_flag";
 
