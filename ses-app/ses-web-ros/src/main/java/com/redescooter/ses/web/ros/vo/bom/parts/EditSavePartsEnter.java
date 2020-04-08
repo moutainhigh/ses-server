@@ -59,6 +59,9 @@ public class EditSavePartsEnter extends GeneralEnter {
     @ApiModelProperty(value = "供应商")
     private Long supplierId;
 
+    @ApiModelProperty(value="是否有唯一编码")
+    private Boolean idClass;
+
     @ApiModelProperty(value = "图纸")
     private String dwg;
 

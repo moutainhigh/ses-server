@@ -746,6 +746,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         partsDraft.setFrName(enter.getFrName());
         partsDraft.setEnName(enter.getEnName());
         partsDraft.setProductionCycle(enter.getProductionCycle());
+
         partsDraft.setSupplierId(enter.getSupplierId());
         partsDraft.setDwg(enter.getDwg());
         partsDraft.setNote(enter.getNote());
@@ -756,6 +757,12 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         } else {
             partsDraft.setPerfectFlag(Boolean.FALSE);
+        }
+
+        if (enter.getIdClass() == null) {
+            partsDraft.setIdClass(Boolean.FALSE);
+        } else {
+            partsDraft.setIdClass(enter.getIdClass());
         }
         partsDraft.setSynchronizeFlag(Boolean.FALSE);
         partsDraft.setRevision(0);

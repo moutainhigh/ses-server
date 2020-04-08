@@ -55,7 +55,7 @@ public class DetailsPartsResult extends GeneralResult {
     @ApiModelProperty(value = "是否可销售,SC仅可采购，SSC可销售可采购")
     private String snClassFlag;
 
-    @ApiModelProperty(value="是否有唯一编码")
+    @ApiModelProperty(value = "是否有唯一编码")
     private Boolean idClass;
 
     @ApiModelProperty(value = "生产周期")
