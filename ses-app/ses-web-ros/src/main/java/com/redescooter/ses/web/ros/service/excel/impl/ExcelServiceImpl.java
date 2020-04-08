@@ -100,7 +100,7 @@ public class ExcelServiceImpl implements ExcelService {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_REPEAT.getCode(), ExceptionCodeEnums.PARTS_NUMBER_REPEAT.getMessage());
         }
 
-        //2.判断与数据库中是否有已存在的产品编号
+        //2.判断与数据库中部件草稿中是否有已存在的产品编号
         List<String> usingProductNumList = bomRosServiceMapper.UsingProductNumList(enter);
         if (CollectionUtils.isNotEmpty(usingProductNumList)) {
             productNSet.forEach(item -> {

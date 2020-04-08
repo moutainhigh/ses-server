@@ -105,6 +105,14 @@ public interface PartsRosService {
     GeneralResult partsSynchronize(GeneralEnter enter);
 
     /**
+     * 获取部件待同部数
+     *
+     * @param enter
+     * @return
+     */
+    IntResult synchronizeNum(GeneralEnter enter);
+
+    /**
      * @desc: 详情部件列表查询
      * @param: SaveScooterPartListEnter
      * @retrn: SaveScooterPartListResult

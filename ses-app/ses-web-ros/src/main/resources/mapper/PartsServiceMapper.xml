@@ -19,7 +19,9 @@
        op.note,
        op.revision,
        op.created_time,
-       os.supplier_name
+       os.supplier_name,
+       op.perfect_flag,
+       op.synchronize_flag
     </sql>
 
     <sql id="where_PartList">
@@ -87,18 +89,18 @@
     </resultMap>
     <select id="listCount" resultType="int">
         select count(*)
-        from ope_parts op
+        from ope_parts_draft op
         left join ope_supplier os on op.supplier_id = os.id and os.dr = 0
         <include refid="where_query_parts_list"/>
     </select>
     <select id="list" resultMap="resultMap_query_parts_list">
         select
         <include refid="field_query_parts_list"/>
-        from ope_parts op
+        from ope_parts_draft op
         left join ope_supplier os on op.supplier_id = os.id and os.dr = 0
         <include refid="where_query_parts_list"/>
-<!--        group by-->
-<!--        <include refid="group_by_parts_list"/>-->
+        <!--        group by-->
+        <!--        <include refid="group_by_parts_list"/>-->
         order by op.created_time desc
         limit #{startRow},#{pageSize}
     </select>
@@ -130,5 +132,14 @@
         <include refid="where_PartList"></include>
         order by parts.created_time desc
         limit #{startRow},#{pageSize}
+    </select>
+    <select id="synchronizeNum" resultType="com.redescooter.ses.api.common.vo.base.IntResult">
+     select sum(case
+                    when (perfect_flag = true and synchronize_flag = false) then 1
+                    else 0
+         end) as sumNum
+     from ope_parts_draft opd
+     where opd.dr =0
+     and opd.user_id=#{userId}
     </select>
 </mapper>

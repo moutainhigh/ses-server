@@ -62,18 +62,10 @@
         limit #{startRow},#{pageSize}
     </select>
     <select id="UsingProductNumList" resultType="java.lang.String">
-        select productN.*
-        from (
-                 select parts.parts_number as productN
-                 from ope_parts parts
-                 where parts.dr=0
-                 and  parts.user_id=#{userId}
-        union all
-                 select opp.product_number as productN
-                 from ope_parts_product opp
-                 where opp.dr=0
-                 and  opp.user_id=#{userId}
-             ) productN
+        select opd.parts_number as productN
+        from ope_parts_draft opd
+        where opd.user_id=#{userId}
+        and opd.dr =0
     </select>
     <select id="secList" resultType="com.redescooter.ses.web.ros.vo.bom.SecResult">
         select sec.id   as id,
