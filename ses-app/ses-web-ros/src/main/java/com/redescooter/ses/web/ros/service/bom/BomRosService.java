@@ -149,11 +149,8 @@ public interface BomRosService {
      */
     GeneralResult saveCombination(SaveCombinationEnter enter);
 
-    //数据同步
-    // 质检模板导入
-
     /**
-     * 质检模板保存
+     * 部件质检模板保存
      *
      * @param enter
      * @return
@@ -161,11 +158,26 @@ public interface BomRosService {
     GeneralResult savePartsQcTemplate(SaveQcTemplateEnter enter);
 
     /**
-     * 质检模板详情
+     * 部件质检模板详情
      *
      * @param enter
      * @return
      */
-    QcTemplateDetailResult qcTemplateResult(IdEnter enter);
+    List<QcTemplateDetailResult> partsQcTemplateDetail(IdEnter enter);
 
+    /**
+     * 产品质检模板保存
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult saveProductQcTemplate(SaveQcTemplateEnter enter);
+
+    /**
+     * 产品质检模板详情
+     *
+     * @param enter
+     * @return
+     */
+    List<QcTemplateDetailResult> productQcTemplateDetail(IdEnter enter);
 }

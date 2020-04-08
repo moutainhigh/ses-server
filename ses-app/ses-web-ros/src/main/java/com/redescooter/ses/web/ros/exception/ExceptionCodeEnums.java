@@ -223,6 +223,14 @@ public enum ExceptionCodeEnums {
     DO_NOT_SET_THE_PRICE_REPEATEDLY(10104, "请不要重复设置价格"),
 
     PLEASE_SCAN_THE_CODE_FIRST(10105, "请先扫码质检"),
+
+    TEMPLATE_QC_RESULT_IS_EMPTY(10106, "模板质检结果为空"),
+
+    TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY(10107, "模板上传图片标识为空"),
+
+    TEMPLATE_QC_ITEMNAME_IS_EMPTY(10108, "质检项名称为空"),
+
+    TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY(10109, "质检结果集排序为空"),
     ;
 
 

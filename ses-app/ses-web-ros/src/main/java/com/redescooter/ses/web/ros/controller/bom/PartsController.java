@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.service.bom.BomRosService;
+import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
@@ -109,8 +110,26 @@ public class PartsController {
     }
 
     @PostMapping(value = "/savePartsQcTemplate")
-    @ApiOperation(value = "部件质检模板", response = GeneralResult.class)
+    @ApiOperation(value = "保存部件质检模板", response = GeneralResult.class)
     public Response<GeneralResult> savePartsQcTemplate(@ModelAttribute @ApiParam("请求参数") SaveQcTemplateEnter enter) {
         return new Response<>(bomRosService.savePartsQcTemplate(enter));
+    }
+
+    @PostMapping(value = "/partsQcTemplateDetail")
+    @ApiOperation(value = "部件质检模板详情", response = QcTemplateDetailResult.class)
+    public Response<List<QcTemplateDetailResult>> partsQcTemplateDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(bomRosService.partsQcTemplateDetail(enter));
+    }
+
+    @PostMapping(value = "/saveProductQcTemplate")
+    @ApiOperation(value = "保存产品质检模板", response = GeneralResult.class)
+    public Response<GeneralResult> saveProductQcTemplate(@ModelAttribute @ApiParam("请求参数") SaveQcTemplateEnter enter) {
+        return new Response<>(bomRosService.saveProductQcTemplate(enter));
+    }
+
+    @PostMapping(value = "/productQcTemplateDetail")
+    @ApiOperation(value = "产品质检模板详情", response = QcTemplateDetailResult.class)
+    public Response<List<QcTemplateDetailResult>> productQcTemplateDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(bomRosService.productQcTemplateDetail(enter));
     }
 }

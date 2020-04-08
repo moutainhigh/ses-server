@@ -16,14 +16,13 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartQcTemplateB")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductQcTemplateB")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_part_qc_template_b")
-public class OpePartQcTemplateB implements Serializable {
-    public static final String COL_QC_RESULT_PICTURE = "qc_result_picture";
+@TableName(value = "ope_product_qc_template_b")
+public class OpeProductQcTemplateB implements Serializable {
     /**
      * 主键
      */
@@ -42,9 +41,9 @@ public class OpePartQcTemplateB implements Serializable {
     /**
      * 质检项Id
      */
-    @TableField(value = "part_qc_template_id")
+    @TableField(value = "product_qc_template_id")
     @ApiModelProperty(value = "质检项Id")
-    private Long partQcTemplateId;
+    private Long productQcTemplateId;
 
     /**
      * 质检结果
@@ -61,10 +60,10 @@ public class OpePartQcTemplateB implements Serializable {
     private Boolean uploadFlag;
 
     /**
-     * 结果集排序优先级
+     * 质检结果集优先级
      */
     @TableField(value = "results_sequence")
-    @ApiModelProperty(value = "结果集排序优先级")
+    @ApiModelProperty(value = "质检结果集优先级")
     private Integer resultsSequence;
 
     /**
@@ -143,7 +142,7 @@ public class OpePartQcTemplateB implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_PART_QC_TEMPLATE_ID = "part_qc_template_id";
+    public static final String COL_PRODUCT_QC_TEMPLATE_ID = "product_qc_template_id";
 
     public static final String COL_QC_RESULT = "qc_result";
 
@@ -171,7 +170,7 @@ public class OpePartQcTemplateB implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpePartQcTemplateBBuilder builder() {
-        return new OpePartQcTemplateBBuilder();
+    public static OpeProductQcTemplateBBuilder builder() {
+        return new OpeProductQcTemplateBBuilder();
     }
 }

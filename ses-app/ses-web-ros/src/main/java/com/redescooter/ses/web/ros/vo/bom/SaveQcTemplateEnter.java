@@ -30,7 +30,8 @@ public class SaveQcTemplateEnter extends GeneralEnter {
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "Id为空")
     private Long id;
 
-    @ApiModelProperty(value = "Qc质检模板")
+    @ApiModelProperty(value = "Qc质检模板 参数格式 [{\"id\": 1000003,\"qcItemName\": \"外壳是否破裂\",\"qcResultEnter\": '[{\"result\": \"PASS\",\"uploadPictureFalg\": true,\"resultSequence\": 1}, {\"result\": " +
+            "\"NG\",\"uploadPictureFalg\": true,\"resultSequence\": 2}]'}]\n")
     @NotNull(code = ValidationExceptionCode.QC_TEMPLATE_IS_EMPTY, message = "质检模板为空")
 //    private List<QcItemTemplateResult> qcItemTemplateEnterList;
     private String qcItemTemplateEnter;
