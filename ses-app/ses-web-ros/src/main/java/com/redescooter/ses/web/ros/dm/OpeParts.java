@@ -199,6 +199,13 @@ public class OpeParts implements Serializable {
     private Date updatedTime;
 
     /**
+     * 是否有唯一编码
+     */
+    @TableField(value = "id_class")
+    @ApiModelProperty(value="是否有唯一编码")
+    private Boolean idClass;
+
+    /**
      * 是否同步
      */
     @TableField(value = "synchronize_flag")
@@ -291,6 +298,8 @@ public class OpeParts implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
+
+    public static final String COL_ID_CLASS = "id_class";
 
     public static final String COL_SYNCHRONIZE_FLAG = "synchronize_flag";
 

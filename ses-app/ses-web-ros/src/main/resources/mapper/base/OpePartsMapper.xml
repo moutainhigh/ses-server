@@ -29,6 +29,7 @@
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
         <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="id_class" jdbcType="BOOLEAN" property="idClass" />
         <result column="synchronize_flag" jdbcType="BOOLEAN" property="synchronizeFlag" />
         <result column="def1" jdbcType="VARCHAR" property="def1" />
         <result column="def2" jdbcType="VARCHAR" property="def2" />
@@ -41,7 +42,7 @@
         id, dr, tenant_id, user_id, import_lot, `status`, parts_draft_id, parts_type, sec,
         parts_number, cn_name, fr_name, en_name, sn_class, parts_qty, production_cycle, cost,
         supplier_id, dwg, note, revision, created_by, created_time, updated_by, updated_time,
-        synchronize_flag, def1, def2, def3, def5, def6
+        id_class, synchronize_flag, def1, def2, def3, def5, def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
@@ -167,6 +168,11 @@
                     when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
                 </foreach>
             </trim>
+            <trim prefix="id_class = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.idClass,jdbcType=BOOLEAN}
+                </foreach>
+            </trim>
             <trim prefix="synchronize_flag = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.synchronizeFlag,jdbcType=BOOLEAN}
@@ -209,7 +215,7 @@
         (id, dr, tenant_id, user_id, import_lot, `status`, parts_draft_id, parts_type, sec,
         parts_number, cn_name, fr_name, en_name, sn_class, parts_qty, production_cycle,
         cost, supplier_id, dwg, note, revision, created_by, created_time, updated_by, updated_time,
-        synchronize_flag, def1, def2, def3, def5, def6)
+        id_class, synchronize_flag, def1, def2, def3, def5, def6)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
@@ -220,7 +226,7 @@
             #{item.productionCycle,jdbcType=VARCHAR}, #{item.cost,jdbcType=VARCHAR}, #{item.supplierId,jdbcType=BIGINT},
             #{item.dwg,jdbcType=VARCHAR}, #{item.note,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER},
             #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-            #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.synchronizeFlag,jdbcType=BOOLEAN},
+            #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.idClass,jdbcType=BOOLEAN}, #{item.synchronizeFlag,jdbcType=BOOLEAN},
             #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
             #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL})
         </foreach>
@@ -231,7 +237,7 @@
         (id, dr, tenant_id, user_id, import_lot, `status`, parts_draft_id, parts_type, sec,
         parts_number, cn_name, fr_name, en_name, sn_class, parts_qty, production_cycle,
         cost, supplier_id, dwg, note, revision, created_by, created_time, updated_by, updated_time,
-        synchronize_flag, def1, def2, def3, def5, def6)
+        id_class, synchronize_flag, def1, def2, def3, def5, def6)
         values
         (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
         #{importLot,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{partsDraftId,jdbcType=BIGINT},
@@ -241,8 +247,9 @@
         #{cost,jdbcType=VARCHAR}, #{supplierId,jdbcType=BIGINT}, #{dwg,jdbcType=VARCHAR},
         #{note,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT},
         #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
-        #{synchronizeFlag,jdbcType=BOOLEAN}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
-        #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL})
+        #{idClass,jdbcType=BOOLEAN}, #{synchronizeFlag,jdbcType=BOOLEAN}, #{def1,jdbcType=VARCHAR},
+        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL}
+        )
         on duplicate key update
         id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
@@ -269,6 +276,7 @@
         created_time = #{createdTime,jdbcType=TIMESTAMP},
         updated_by = #{updatedBy,jdbcType=BIGINT},
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+        id_class = #{idClass,jdbcType=BOOLEAN},
         synchronize_flag = #{synchronizeFlag,jdbcType=BOOLEAN},
         def1 = #{def1,jdbcType=VARCHAR},
         def2 = #{def2,jdbcType=VARCHAR},
@@ -354,6 +362,9 @@
             </if>
             <if test="updatedTime != null">
                 updated_time,
+            </if>
+            <if test="idClass != null">
+                id_class,
             </if>
             <if test="synchronizeFlag != null">
                 synchronize_flag,
@@ -451,6 +462,9 @@
             <if test="updatedTime != null">
                 #{updatedTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="idClass != null">
+                #{idClass,jdbcType=BOOLEAN},
+            </if>
             <if test="synchronizeFlag != null">
                 #{synchronizeFlag,jdbcType=BOOLEAN},
             </if>
@@ -546,6 +560,9 @@
             </if>
             <if test="updatedTime != null">
                 updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="idClass != null">
+                id_class = #{idClass,jdbcType=BOOLEAN},
             </if>
             <if test="synchronizeFlag != null">
                 synchronize_flag = #{synchronizeFlag,jdbcType=BOOLEAN},
