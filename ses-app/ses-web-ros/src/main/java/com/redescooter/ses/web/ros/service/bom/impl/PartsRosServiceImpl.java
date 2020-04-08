@@ -384,8 +384,9 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         //校验部件是否有商品绑定
         List<DeletePartResult> result = buildDeletePartResult(partIds, opePartList);
-        if (result != null)
+        if (result != null) {
             return result;
+        }
         if (deletes.size() > 0) {
             opePartsDraftService.removeByIds(deletes);
             partsHistoryRecordService.saveBatch(insters);
