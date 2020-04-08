@@ -48,37 +48,37 @@ public class CombinationController {
     }
 
     @PostMapping(value = "/combinationList")
-    @ApiOperation(value ="组合列表", response = CombinationListResult.class)
+    @ApiOperation(value = "组合列表", response = CombinationListResult.class)
     public Response<PageResult<CombinationListResult>> combinationList(@ModelAttribute @ApiParam("请求参数") CombinationListEnter enter) {
         return new Response<>(bomRosService.combinationList(enter));
     }
 
     @PostMapping(value = "/combinationListPartList")
-    @ApiOperation(value ="组合列表中的部品列表", response = QueryPartListResult.class)
+    @ApiOperation(value = "组合列表中的部品列表", response = QueryPartListResult.class)
     public Response<List<QueryPartListResult>> combinationListPartList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(bomRosService.combinationListPartList(enter));
     }
 
     @PostMapping(value = "/combinationDetail")
-    @ApiOperation(value ="组合详情", response = CombinationDetailResult.class)
+    @ApiOperation(value = "组合详情", response = CombinationDetailResult.class)
     public Response<CombinationDetailResult> combinationDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(bomRosService.combinationDetail(enter));
     }
 
     @PostMapping(value = "/deleteCombinationPart")
-    @ApiOperation(value ="组合部品删除", response = GeneralResult.class)
+    @ApiOperation(value = "组合部品删除", response = GeneralResult.class)
     public Response<GeneralResult> deleteCombinationPart(@ModelAttribute @ApiParam("请求参数") DeletePartEnter enter) {
         return new Response<>(bomRosService.deleteCombinationPart(enter));
     }
 
     @PostMapping(value = "/deleteCombination")
-    @ApiOperation(value ="组合删除", response = GeneralResult.class)
+    @ApiOperation(value = "组合删除", response = GeneralResult.class)
     public Response<GeneralResult> deleteCombination(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(bomRosService.deleteCombination(enter));
     }
 
     @PostMapping(value = "/saveCombination")
-    @ApiOperation(value ="组合保存", response = GeneralResult.class)
+    @ApiOperation(value = "组合保存", response = GeneralResult.class)
     public Response<GeneralResult> saveCombination(@ModelAttribute @ApiParam("请求参数") SaveCombinationEnter enter) {
         return new Response<>(bomRosService.saveCombination(enter));
     }

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpePartQcTemplateMapper">
-    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpePartQcTemplate">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductQcTemplateBMapper">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductQcTemplateB">
         <!--@mbg.generated-->
-        <!--@Table ope_part_qc_template-->
+        <!--@Table ope_product_qc_template_b-->
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="part_id" jdbcType="BIGINT" property="partId"/>
-        <result column="import_excel_batch_no" jdbcType="VARCHAR" property="importExcelBatchNo"/>
-        <result column="source_type" jdbcType="VARCHAR" property="sourceType"/>
-        <result column="qc_item_name" jdbcType="VARCHAR" property="qcItemName"/>
+        <result column="product_qc_template_id" jdbcType="BIGINT" property="productQcTemplateId"/>
+        <result column="qc_result" jdbcType="VARCHAR" property="qcResult"/>
+        <result column="upload_flag" jdbcType="BOOLEAN" property="uploadFlag"/>
+        <result column="results_sequence" jdbcType="INTEGER" property="resultsSequence"/>
         <result column="revision" jdbcType="INTEGER" property="revision"/>
         <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
@@ -23,36 +23,36 @@
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
-        id, dr, part_id, import_excel_batch_no, source_type, qc_item_name, revision, created_by,
-        created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+        id, dr, product_qc_template_id, qc_result, upload_flag, results_sequence, revision,
+        created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->
-        update ope_part_qc_template
+        update ope_product_qc_template_b
         <trim prefix="set" suffixOverrides=",">
             <trim prefix="dr = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
                     when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
                 </foreach>
             </trim>
-            <trim prefix="part_id = case" suffix="end,">
+            <trim prefix="product_qc_template_id = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.partId,jdbcType=BIGINT}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.productQcTemplateId,jdbcType=BIGINT}
                 </foreach>
             </trim>
-            <trim prefix="import_excel_batch_no = case" suffix="end,">
+            <trim prefix="qc_result = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.importExcelBatchNo,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.qcResult,jdbcType=VARCHAR}
                 </foreach>
             </trim>
-            <trim prefix="source_type = case" suffix="end,">
+            <trim prefix="upload_flag = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.sourceType,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.uploadFlag,jdbcType=BOOLEAN}
                 </foreach>
             </trim>
-            <trim prefix="qc_item_name = case" suffix="end,">
+            <trim prefix="results_sequence = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.qcItemName,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.resultsSequence,jdbcType=INTEGER}
                 </foreach>
             </trim>
             <trim prefix="revision = case" suffix="end,">
@@ -113,39 +113,42 @@
     </update>
     <insert id="batchInsert" parameterType="map">
         <!--@mbg.generated-->
-        insert into ope_part_qc_template
-        (id, dr, part_id, import_excel_batch_no, source_type, qc_item_name, revision, created_by,
-        created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+        insert into ope_product_qc_template_b
+        (id, dr, product_qc_template_id, qc_result, upload_flag, results_sequence, revision,
+        created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+        )
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.partId,jdbcType=BIGINT},
-            #{item.importExcelBatchNo,jdbcType=VARCHAR}, #{item.sourceType,jdbcType=VARCHAR},
-            #{item.qcItemName,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-            #{item.updatedTime,jdbcType=TIMESTAMP},
-            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
-            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL})
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.productQcTemplateId,jdbcType=BIGINT},
+            #{item.qcResult,jdbcType=VARCHAR}, #{item.uploadFlag,jdbcType=BOOLEAN},
+            #{item.resultsSequence,jdbcType=INTEGER},
+            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
+            #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
+            #{item.def6,jdbcType=DECIMAL})
         </foreach>
     </insert>
-    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpePartQcTemplate">
+    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductQcTemplateB">
         <!--@mbg.generated-->
-        insert into ope_part_qc_template
-        (id, dr, part_id, import_excel_batch_no, source_type, qc_item_name, revision, created_by,
-        created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+        insert into ope_product_qc_template_b
+        (id, dr, product_qc_template_id, qc_result, upload_flag, results_sequence, revision,
+        created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+        )
         values
-        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{partId,jdbcType=BIGINT},
-        #{importExcelBatchNo,jdbcType=VARCHAR},
-        #{sourceType,jdbcType=VARCHAR}, #{qcItemName,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER},
-        #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
-        #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
-        #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL})
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{productQcTemplateId,jdbcType=BIGINT},
+        #{qcResult,jdbcType=VARCHAR}, #{uploadFlag,jdbcType=BOOLEAN}, #{resultsSequence,jdbcType=INTEGER},
+        #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+        #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
+        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL}
+        )
         on duplicate key update
         id = #{id,jdbcType=BIGINT},
         dr = #{dr,jdbcType=INTEGER},
-        part_id = #{partId,jdbcType=BIGINT},
-        import_excel_batch_no = #{importExcelBatchNo,jdbcType=VARCHAR},
-        source_type = #{sourceType,jdbcType=VARCHAR},
-        qc_item_name = #{qcItemName,jdbcType=VARCHAR},
+        product_qc_template_id = #{productQcTemplateId,jdbcType=BIGINT},
+        qc_result = #{qcResult,jdbcType=VARCHAR},
+        upload_flag = #{uploadFlag,jdbcType=BOOLEAN},
+        results_sequence = #{resultsSequence,jdbcType=INTEGER},
         revision = #{revision,jdbcType=INTEGER},
         created_by = #{createdBy,jdbcType=BIGINT},
         created_time = #{createdTime,jdbcType=TIMESTAMP},
@@ -157,9 +160,9 @@
         def5 = #{def5,jdbcType=VARCHAR},
         def6 = #{def6,jdbcType=DECIMAL}
     </insert>
-    <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpePartQcTemplate">
+    <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductQcTemplateB">
         <!--@mbg.generated-->
-        insert into ope_part_qc_template
+        insert into ope_product_qc_template_b
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -167,17 +170,17 @@
             <if test="dr != null">
                 dr,
             </if>
-            <if test="partId != null">
-                part_id,
+            <if test="productQcTemplateId != null">
+                product_qc_template_id,
             </if>
-            <if test="importExcelBatchNo != null">
-                import_excel_batch_no,
+            <if test="qcResult != null">
+                qc_result,
             </if>
-            <if test="sourceType != null">
-                source_type,
+            <if test="uploadFlag != null">
+                upload_flag,
             </if>
-            <if test="qcItemName != null">
-                qc_item_name,
+            <if test="resultsSequence != null">
+                results_sequence,
             </if>
             <if test="revision != null">
                 revision,
@@ -218,17 +221,17 @@
             <if test="dr != null">
                 #{dr,jdbcType=INTEGER},
             </if>
-            <if test="partId != null">
-                #{partId,jdbcType=BIGINT},
+            <if test="productQcTemplateId != null">
+                #{productQcTemplateId,jdbcType=BIGINT},
             </if>
-            <if test="importExcelBatchNo != null">
-                #{importExcelBatchNo,jdbcType=VARCHAR},
+            <if test="qcResult != null">
+                #{qcResult,jdbcType=VARCHAR},
             </if>
-            <if test="sourceType != null">
-                #{sourceType,jdbcType=VARCHAR},
+            <if test="uploadFlag != null">
+                #{uploadFlag,jdbcType=BOOLEAN},
             </if>
-            <if test="qcItemName != null">
-                #{qcItemName,jdbcType=VARCHAR},
+            <if test="resultsSequence != null">
+                #{resultsSequence,jdbcType=INTEGER},
             </if>
             <if test="revision != null">
                 #{revision,jdbcType=INTEGER},
@@ -269,17 +272,17 @@
             <if test="dr != null">
                 dr = #{dr,jdbcType=INTEGER},
             </if>
-            <if test="partId != null">
-                part_id = #{partId,jdbcType=BIGINT},
+            <if test="productQcTemplateId != null">
+                product_qc_template_id = #{productQcTemplateId,jdbcType=BIGINT},
             </if>
-            <if test="importExcelBatchNo != null">
-                import_excel_batch_no = #{importExcelBatchNo,jdbcType=VARCHAR},
+            <if test="qcResult != null">
+                qc_result = #{qcResult,jdbcType=VARCHAR},
             </if>
-            <if test="sourceType != null">
-                source_type = #{sourceType,jdbcType=VARCHAR},
+            <if test="uploadFlag != null">
+                upload_flag = #{uploadFlag,jdbcType=BOOLEAN},
             </if>
-            <if test="qcItemName != null">
-                qc_item_name = #{qcItemName,jdbcType=VARCHAR},
+            <if test="resultsSequence != null">
+                results_sequence = #{resultsSequence,jdbcType=INTEGER},
             </if>
             <if test="revision != null">
                 revision = #{revision,jdbcType=INTEGER},

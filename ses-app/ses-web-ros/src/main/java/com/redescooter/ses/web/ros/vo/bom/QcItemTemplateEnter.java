@@ -9,8 +9,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * @ClassName:QcItemTemplateEnter
  * @description: QcItemTemplateEnter
@@ -24,14 +22,14 @@ import java.util.List;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class QcItemTemplateResult extends GeneralEnter {
+public class QcItemTemplateEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id")
     private Long id;
 
     @ApiModelProperty(value = "质检名称")
-    private String qcitemName;
+    private String qcItemName;
 
     @ApiModelProperty(value = "质检项结果")
-    private List<QcResultEnter> qcResuleEnterList;
+    private String qcResultEnter;
 }

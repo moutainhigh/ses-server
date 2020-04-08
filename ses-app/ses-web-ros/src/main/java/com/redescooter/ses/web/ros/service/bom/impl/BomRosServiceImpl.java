@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.PartsEventEnums;
+import com.redescooter.ses.api.common.enums.bom.QcSourceTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -22,6 +24,8 @@ import com.redescooter.ses.web.ros.dm.OpePartQcTemplateB;
 import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
+import com.redescooter.ses.web.ros.dm.OpeProductQcTemplate;
+import com.redescooter.ses.web.ros.dm.OpeProductQcTemplateB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartQcTemplateBService;
@@ -29,9 +33,13 @@ import com.redescooter.ses.web.ros.service.base.OpePartQcTemplateService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
+import com.redescooter.ses.web.ros.service.base.OpeProductQcTemplateBService;
+import com.redescooter.ses.web.ros.service.base.OpeProductQcTemplateService;
 import com.redescooter.ses.web.ros.service.bom.BomRosService;
 import com.redescooter.ses.web.ros.vo.bom.ProdoctPartListEnter;
-import com.redescooter.ses.web.ros.vo.bom.QcItemTemplateResult;
+import com.redescooter.ses.web.ros.vo.bom.QcItemTemplateEnter;
+import com.redescooter.ses.web.ros.vo.bom.QcResultEnter;
+import com.redescooter.ses.web.ros.vo.bom.QcResultResult;
 import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
@@ -47,6 +55,7 @@ import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +66,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -90,6 +100,13 @@ public class BomRosServiceImpl implements BomRosService {
 
     @Autowired
     private OpePartQcTemplateBService opePartQcTemplateBService;
+
+    @Autowired
+    private OpeProductQcTemplateService opeProductQcTemplateService;
+
+    @Autowired
+    private OpeProductQcTemplateBService opeProductQcTemplateBService;
+
 
     /**
      * @param enter
@@ -218,7 +235,6 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsProduct.setUpdatedTime(new Date());
 
         //部品没有价格 没有供应商 不可组合车辆
-
         opePartsProductBService.saveOrUpdateBatch(opePartsProductList);
 
         opePartsProductService.saveOrUpdate(opePartsProduct);
@@ -620,45 +636,46 @@ public class BomRosServiceImpl implements BomRosService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
-    public GeneralResult saveQcTemplate(SaveQcTemplateEnter enter) {
-        //数据解析
-        List<QcItemTemplateResult> qcItemTemplateEnterList = null;
+    public GeneralResult savePartsQcTemplate(SaveQcTemplateEnter enter) {
+        //数据保存集合
+        List<OpePartQcTemplate> saveOpePartQcTemplateList = new ArrayList<>();
+
+        List<OpePartQcTemplateB> saveOpePartQcTemplateBList = new ArrayList<>();
+
+        //数据解析集合
+        List<QcItemTemplateEnter> qcItemTemplateEnterList = null;
+        Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap = Maps.newHashMap();
         try {
-            qcItemTemplateEnterList = JSON.parseArray(enter.getQcItemTemplateEnter(), QcItemTemplateResult.class);
+            qcItemTemplateEnterList = JSON.parseArray(enter.getQcItemTemplateEnter(), QcItemTemplateEnter.class);
+            if (CollectionUtils.isEmpty(qcItemTemplateEnterList)) {
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            qcItemTemplateEnterList.forEach(item -> {
+                List<QcResultEnter> qcResultEnterList = JSON.parseArray(item.getQcResultEnter(), QcResultEnter.class);
+                qcResultEnterMap.put(item, qcResultEnterList);
+            });
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        if (CollectionUtils.isNotEmpty(qcItemTemplateEnterList)) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+
+        checkParameterEnter(enter, qcResultEnterMap);
+
+        //查询是否存在质检项 若存在删除所有质检项
+        List<OpePartQcTemplate> partQcTemplateList = deleteOpePartQcTemplates(enter);
+        //形成质检项
+        buildPartQcTemplate(enter, saveOpePartQcTemplateList, saveOpePartQcTemplateBList, qcResultEnterMap, partQcTemplateList);
+
+        //质检模板数据保存
+        if (CollectionUtils.isNotEmpty(saveOpePartQcTemplateList)) {
+            opePartQcTemplateService.saveOrUpdateBatch(saveOpePartQcTemplateList);
+
         }
+        //质检项结果集数据保存
+        opePartQcTemplateBService.saveBatch(saveOpePartQcTemplateBList);
 
-        //部品验证
-        OpeParts opeParts = opePartsService.getById(enter.getId());
-        if (opeParts != null) {
-            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
-        }
-
-        //查询是否存在质检项
-        QueryWrapper<OpePartQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
-        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplate.COL_PART_ID, enter.getId());
-        List<OpePartQcTemplate> partQcTemplateList = opePartQcTemplateService.list(opePartQcTemplateQueryWrapper);
-        if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
-            Set<Long> partQcTemplateIds = Sets.newHashSet();
-            partQcTemplateList.forEach(item -> {
-                partQcTemplateIds.add(item.getId());
-            });
-
-            //查询质检结果项
-            QueryWrapper<OpePartQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
-            opePartQcTemplateBQueryWrapper.in(OpePartQcTemplateB.COL_PART_QC_TEMPLATE_ID, new ArrayList<>(partQcTemplateIds));
-//            List<OpePartQcTemplateB> templateBList = opePartQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
-//            if (CollectionUtils.isNotEmpty(templateBList)) {
-//                opePartQcTemplateBService.removeByIds();
-//            }
-        }
-
-        return null;
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -668,9 +685,333 @@ public class BomRosServiceImpl implements BomRosService {
      * @return
      */
     @Override
-    public QcTemplateDetailResult qcTemplateResult(IdEnter enter) {
-        return null;
+    public List<QcTemplateDetailResult> partsQcTemplateDetail(IdEnter enter) {
+
+        List<QcTemplateDetailResult> result = Lists.newArrayList();
+        //部品验证
+        OpeParts opeParts = opePartsService.getById(enter.getId());
+        if (opeParts == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
+        //查询质检项
+        QueryWrapper<OpePartQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
+        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplate.COL_PART_ID, enter.getId());
+        List<OpePartQcTemplate> partQcTemplateList = opePartQcTemplateService.list(opePartQcTemplateQueryWrapper);
+        if (CollectionUtils.isEmpty(partQcTemplateList)) {
+            return result;
+        }
+        List<Long> templateIds = Lists.newArrayList();
+        partQcTemplateList.forEach(item -> {
+            templateIds.add(item.getId());
+        });
+
+        //查询质检项结果
+        QueryWrapper<OpePartQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
+        opePartQcTemplateBQueryWrapper.in(OpePartQcTemplateB.COL_PART_QC_TEMPLATE_ID, templateIds);
+        List<OpePartQcTemplateB> templateBList = opePartQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
+        if (CollectionUtils.isEmpty(templateBList)) {
+            partQcTemplateList.forEach(item -> {
+                result.add(
+                        QcTemplateDetailResult.builder()
+                                .id(item.getId())
+                                .qcitemName(item.getQcItemName())
+                                .qcResultResultList(new ArrayList<>())
+                                .build()
+                );
+            });
+        } else {
+            partQcTemplateList.forEach(item -> {
+                List<QcResultResult> resultTemplateBList = Lists.newArrayList();
+                templateBList.forEach(templateb -> {
+                    if (item.getId().equals(templateb.getPartQcTemplateId())) {
+                        resultTemplateBList.add(
+                                QcResultResult.builder()
+                                        .result(templateb.getQcResult())
+                                        .resultSequence(templateb.getResultsSequence())
+                                        .uploadPicture(templateb.getUploadFlag())
+                                        .build()
+                        );
+                    }
+                });
+                result.add(
+                        QcTemplateDetailResult.builder()
+                                .id(item.getId())
+                                .qcitemName(item.getQcItemName())
+                                .qcResultResultList(resultTemplateBList)
+                                .build()
+                );
+            });
+        }
+        return result;
     }
+
+    /**
+     * 产品质检模板保存
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult saveProductQcTemplate(SaveQcTemplateEnter enter) {
+        //数据保存集合
+        List<OpeProductQcTemplate> saveOpeProductQcTemplateList = new ArrayList<>();
+
+        List<OpeProductQcTemplateB> saveOpeProductQcTemplateBList = new ArrayList<>();
+
+        //数据解析集合
+        List<QcItemTemplateEnter> qcItemTemplateEnterList = null;
+        Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap = Maps.newHashMap();
+        try {
+            qcItemTemplateEnterList = JSON.parseArray(enter.getQcItemTemplateEnter(), QcItemTemplateEnter.class);
+            if (CollectionUtils.isEmpty(qcItemTemplateEnterList)) {
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            qcItemTemplateEnterList.forEach(item -> {
+                List<QcResultEnter> qcResultEnterList = JSON.parseArray(item.getQcResultEnter(), QcResultEnter.class);
+                qcResultEnterMap.put(item, qcResultEnterList);
+            });
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        if (qcResultEnterMap.containsKey(null) || qcResultEnterMap.containsValue(null)) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        //入参校验
+        qcResultEnterMap.forEach((key, value) -> {
+            //质检项校验
+            if (StringUtils.isBlank(key.getQcItemName())) {
+                throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getMessage());
+            }
+
+            value.forEach(item -> {
+                if (StringUtils.isBlank(item.getResult())) {
+                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getMessage());
+                }
+                if (item.getUploadPictureFalg() == null || item.getUploadPictureFalg().equals("")) {
+                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getCode(),
+                            ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getMessage());
+                }
+                if (item.getResultSequence() == 0 || item.getResultSequence() == null) {
+                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(),
+                            ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
+                }
+            });
+        });
+
+        //商品验证
+        OpePartsProduct opePartsProduct = opePartsProductService.getById(enter.getId());
+        if (opePartsProduct == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+        List<OpeProductQcTemplate> opeProductQcTemplateList = deleteOpeProductQcTemplates(enter);
+        //构建质检模板
+        buildProductTemplate(enter, saveOpeProductQcTemplateList, saveOpeProductQcTemplateBList, qcResultEnterMap, opeProductQcTemplateList);
+        //质检模板数据保存
+        if (CollectionUtils.isNotEmpty(saveOpeProductQcTemplateList)) {
+            opeProductQcTemplateService.saveOrUpdateBatch(saveOpeProductQcTemplateList);
+
+        }
+        //质检项结果集数据保存
+        opeProductQcTemplateBService.saveBatch(saveOpeProductQcTemplateBList);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 产品质检模板详情
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<QcTemplateDetailResult> productQcTemplateDetail(IdEnter enter) {
+        List<QcTemplateDetailResult> result = Lists.newArrayList();
+        //部品验证
+        OpePartsProduct opePartsProduct = opePartsProductService.getById(enter.getId());
+        if (opePartsProduct == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+
+        //查询质检项
+        QueryWrapper<OpeProductQcTemplate> opeProductQcTemplateQueryWrapper = new QueryWrapper<>();
+        opeProductQcTemplateQueryWrapper.eq(OpeProductQcTemplate.COL_PRODUCT_ID, enter.getId());
+        List<OpeProductQcTemplate> productQcTemplateList = opeProductQcTemplateService.list(opeProductQcTemplateQueryWrapper);
+        if (CollectionUtils.isEmpty(productQcTemplateList)) {
+            return result;
+        }
+        List<Long> templateIds = Lists.newArrayList();
+        productQcTemplateList.forEach(item -> {
+            templateIds.add(item.getId());
+        });
+
+        //查询质检项结果
+        QueryWrapper<OpeProductQcTemplateB> opeProductQcTemplateBQueryWrapper = new QueryWrapper<>();
+        opeProductQcTemplateBQueryWrapper.in(OpeProductQcTemplateB.COL_PRODUCT_QC_TEMPLATE_ID, templateIds);
+        List<OpeProductQcTemplateB> productQcTemplateBList = opeProductQcTemplateBService.list(opeProductQcTemplateBQueryWrapper);
+
+        if (CollectionUtils.isEmpty(productQcTemplateBList)) {
+            productQcTemplateList.forEach(item -> {
+                result.add(
+                        QcTemplateDetailResult.builder()
+                                .id(item.getId())
+                                .qcitemName(item.getQcItemName())
+                                .qcResultResultList(new ArrayList<>())
+                                .build()
+                );
+            });
+        } else {
+            productQcTemplateList.forEach(item -> {
+                List<QcResultResult> resultTemplateBList = Lists.newArrayList();
+                productQcTemplateBList.forEach(templateb -> {
+                    if (item.getId().equals(templateb.getProductQcTemplateId())) {
+                        resultTemplateBList.add(
+                                QcResultResult.builder()
+                                        .result(templateb.getQcResult())
+                                        .resultSequence(templateb.getResultsSequence())
+                                        .uploadPicture(templateb.getUploadFlag())
+                                        .build()
+                        );
+                    }
+                });
+                result.add(
+                        QcTemplateDetailResult.builder()
+                                .id(item.getId())
+                                .qcitemName(item.getQcItemName())
+                                .qcResultResultList(resultTemplateBList)
+                                .build()
+                );
+            });
+        }
+        return result;
+    }
+
+    /**
+     * 产品质检模板封装
+     *
+     * @param enter
+     * @param saveOpeProductQcTemplateList
+     * @param saveOpeProductQcTemplateBList
+     * @param qcResultEnterMap
+     * @param opeProductQcTemplateList
+     */
+    private void buildProductTemplate(SaveQcTemplateEnter enter, List<OpeProductQcTemplate> saveOpeProductQcTemplateList, List<OpeProductQcTemplateB> saveOpeProductQcTemplateBList,
+                                      Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap, List<OpeProductQcTemplate> opeProductQcTemplateList) {
+        if (CollectionUtils.isNotEmpty(opeProductQcTemplateList)) {
+            opeProductQcTemplateList.forEach(template -> {
+
+                qcResultEnterMap.forEach((key, value) -> {
+
+                    if (template.getId().equals(key.getId())) {
+                        saveOpeProductQcTemplateList.add(
+                                OpeProductQcTemplate.builder()
+                                        .id(template.getId())
+                                        .dr(0)
+                                        .productId(enter.getId())
+                                        .importExcelBatchNo(template.getImportExcelBatchNo())
+                                        .sourceType(template.getSourceType())
+                                        .qcItemName(key.getQcItemName())
+                                        .revision(0)
+                                        .createdBy(enter.getUserId())
+                                        .createdTime(new Date())
+                                        .updatedBy(enter.getUserId())
+                                        .updatedTime(new Date())
+                                        .build()
+
+                        );
+                    }
+                    value.forEach(item -> {
+                        saveOpeProductQcTemplateBList.add(
+                                OpeProductQcTemplateB.builder()
+                                        .id(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE_B))
+                                        .dr(0)
+                                        .productQcTemplateId(template.getId())
+                                        .qcResult(item.getResult())
+                                        .uploadFlag(item.getUploadPictureFalg())
+                                        .resultsSequence(item.getResultSequence())
+                                        .revision(0)
+                                        .createdBy(enter.getUserId())
+                                        .createdTime(new Date())
+                                        .updatedBy(enter.getUserId())
+                                        .updatedTime(new Date())
+                                        .build()
+                        );
+                    });
+                });
+            });
+
+        } else {
+            qcResultEnterMap.forEach((key, value) -> {
+                Long templateId = idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE);
+                saveOpeProductQcTemplateList.add(
+                        OpeProductQcTemplate.builder()
+                                .id(templateId)
+                                .dr(0)
+                                .productId(enter.getId())
+                                .importExcelBatchNo(null)
+                                .sourceType(QcSourceTypeEnums.MANUAL_ENTRY.getValue())
+                                .qcItemName(key.getQcItemName())
+                                .revision(0)
+                                .createdBy(enter.getUserId())
+                                .createdTime(new Date())
+                                .updatedBy(enter.getUserId())
+                                .updatedTime(new Date())
+                                .build()
+
+                );
+                value.forEach(item -> {
+                    saveOpeProductQcTemplateBList.add(
+                            OpeProductQcTemplateB.builder()
+                                    .id(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE_B))
+                                    .dr(0)
+                                    .productQcTemplateId(templateId)
+                                    .qcResult(item.getResult())
+                                    .uploadFlag(item.getUploadPictureFalg())
+                                    .resultsSequence(item.getResultSequence())
+                                    .revision(0)
+                                    .createdBy(enter.getUserId())
+                                    .createdTime(new Date())
+                                    .updatedBy(enter.getUserId())
+                                    .updatedTime(new Date())
+                                    .build()
+                    );
+                });
+            });
+        }
+    }
+
+    /**
+     * 删除产品质检项
+     *
+     * @param enter
+     * @return
+     */
+    private List<OpeProductQcTemplate> deleteOpeProductQcTemplates(SaveQcTemplateEnter enter) {
+        //查询质检项 存在的话删除掉
+        QueryWrapper<OpeProductQcTemplate> opeProductQcTemplateQueryWrapper = new QueryWrapper<>();
+        opeProductQcTemplateQueryWrapper.eq(OpeProductQcTemplate.COL_PRODUCT_ID, enter.getId());
+        List<OpeProductQcTemplate> opeProductQcTemplateList = opeProductQcTemplateService.list(opeProductQcTemplateQueryWrapper);
+        if (CollectionUtils.isNotEmpty(opeProductQcTemplateList)) {
+            List<Long> productTemplateIds = Lists.newArrayList();
+            opeProductQcTemplateList.forEach(item -> {
+                productTemplateIds.add(item.getId());
+            });
+            //查询质检结果
+            QueryWrapper<OpeProductQcTemplateB> opeProductQcTemplateBQueryWrapper = new QueryWrapper<>();
+            opeProductQcTemplateBQueryWrapper.in(OpeProductQcTemplateB.COL_PRODUCT_QC_TEMPLATE_ID, productTemplateIds);
+            List<OpeProductQcTemplateB> productQcTemplateBList = opeProductQcTemplateBService.list(opeProductQcTemplateBQueryWrapper);
+            if (CollectionUtils.isNotEmpty(productQcTemplateBList)) {
+                List<Long> templateBIds = Lists.newArrayList();
+                productQcTemplateBList.forEach(item -> {
+                    templateBIds.add(item.getId());
+                });
+                opeProductQcTemplateBService.removeByIds(templateBIds);
+            }
+        }
+        return opeProductQcTemplateList;
+    }
+
 
     private OpePartsProductB buildOpePartsProductBSingle(Long userId, Long ProductId, ProdoctPartListEnter item) {
         return OpePartsProductB.builder()
@@ -745,6 +1086,170 @@ public class BomRosServiceImpl implements BomRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
                         ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
             }
+        }
+    }
+
+    /**
+     * 部件质检项删除
+     *
+     * @param enter
+     * @return
+     */
+    private List<OpePartQcTemplate> deleteOpePartQcTemplates(SaveQcTemplateEnter enter) {
+        QueryWrapper<OpePartQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
+        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplate.COL_PART_ID, enter.getId());
+        List<OpePartQcTemplate> partQcTemplateList = opePartQcTemplateService.list(opePartQcTemplateQueryWrapper);
+        if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
+            Set<Long> partQcTemplateIds = Sets.newHashSet();
+            partQcTemplateList.forEach(item -> {
+                partQcTemplateIds.add(item.getId());
+            });
+
+            //查询质检结果项
+            QueryWrapper<OpePartQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
+            opePartQcTemplateBQueryWrapper.in(OpePartQcTemplateB.COL_PART_QC_TEMPLATE_ID, new ArrayList<>(partQcTemplateIds));
+            List<OpePartQcTemplateB> templateBList = opePartQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
+            if (CollectionUtils.isNotEmpty(templateBList)) {
+                Set<Long> deleteTemplateBIds = Sets.newHashSet();
+                templateBList.stream().forEach(item -> deleteTemplateBIds.add(item.getId()));
+                opePartQcTemplateBService.removeByIds(deleteTemplateBIds);
+            }
+            opePartQcTemplateService.removeByIds(partQcTemplateIds);
+        }
+        return partQcTemplateList;
+    }
+
+    /**
+     * 封装QC质检项模板
+     *
+     * @param enter
+     * @param saveOpePartQcTemplateList
+     * @param saveOpePartQcTemplateBList
+     * @param qcResultEnterMap
+     * @param partQcTemplateList
+     */
+    private void buildPartQcTemplate(SaveQcTemplateEnter enter, List<OpePartQcTemplate> saveOpePartQcTemplateList, List<OpePartQcTemplateB> saveOpePartQcTemplateBList, Map<QcItemTemplateEnter,
+            List<QcResultEnter>> qcResultEnterMap, List<OpePartQcTemplate> partQcTemplateList) {
+        if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
+            partQcTemplateList.forEach(template -> {
+
+                qcResultEnterMap.forEach((key, value) -> {
+
+                    if (template.getId().equals(key.getId())) {
+                        saveOpePartQcTemplateList.add(
+                                OpePartQcTemplate.builder()
+                                        .id(template.getId())
+                                        .dr(0)
+                                        .partId(enter.getId())
+                                        .importExcelBatchNo(template.getImportExcelBatchNo())
+                                        .sourceType(template.getSourceType())
+                                        .qcItemName(key.getQcItemName())
+                                        .revision(0)
+                                        .createdBy(enter.getUserId())
+                                        .createdTime(new Date())
+                                        .updatedBy(enter.getUserId())
+                                        .updatedTime(new Date())
+                                        .build()
+
+                        );
+                    }
+                    value.forEach(item -> {
+                        saveOpePartQcTemplateBList.add(
+                                OpePartQcTemplateB.builder()
+                                        .id(idAppService.getId(SequenceName.OPE_PART_QC_TEMPLATE_B))
+                                        .dr(0)
+                                        .partQcTemplateId(template.getId())
+                                        .qcResult(item.getResult())
+                                        .uploadFlag(item.getUploadPictureFalg())
+                                        .resultsSequence(item.getResultSequence())
+                                        .revision(0)
+                                        .createdBy(enter.getUserId())
+                                        .createdTime(new Date())
+                                        .updatedBy(enter.getUserId())
+                                        .updatedTime(new Date())
+                                        .build()
+                        );
+                    });
+                });
+            });
+
+        } else {
+            qcResultEnterMap.forEach((key, value) -> {
+                Long templateId = idAppService.getId(SequenceName.OPE_PART_QC_TEMPLATE);
+                saveOpePartQcTemplateList.add(
+                        OpePartQcTemplate.builder()
+                                .id(templateId)
+                                .dr(0)
+                                .partId(enter.getId())
+                                .importExcelBatchNo(null)
+                                .sourceType(QcSourceTypeEnums.MANUAL_ENTRY.getValue())
+                                .qcItemName(key.getQcItemName())
+                                .revision(0)
+                                .createdBy(enter.getUserId())
+                                .createdTime(new Date())
+                                .updatedBy(enter.getUserId())
+                                .updatedTime(new Date())
+                                .build()
+
+                );
+                value.forEach(item -> {
+                    saveOpePartQcTemplateBList.add(
+                            OpePartQcTemplateB.builder()
+                                    .id(idAppService.getId(SequenceName.OPE_PART_QC_TEMPLATE_B))
+                                    .dr(0)
+                                    .partQcTemplateId(templateId)
+                                    .qcResult(item.getResult())
+                                    .uploadFlag(item.getUploadPictureFalg())
+                                    .resultsSequence(item.getResultSequence())
+                                    .revision(0)
+                                    .createdBy(enter.getUserId())
+                                    .createdTime(new Date())
+                                    .updatedBy(enter.getUserId())
+                                    .updatedTime(new Date())
+                                    .build()
+                    );
+                });
+            });
+        }
+    }
+
+    /**
+     * QC 质检模板入参校验
+     *
+     * @param enter
+     * @param qcResultEnterMap
+     */
+    private void checkParameterEnter(SaveQcTemplateEnter enter, Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap) {
+        if (qcResultEnterMap.containsKey(null) || qcResultEnterMap.containsValue(null)) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        //入参校验
+        qcResultEnterMap.forEach((key, value) -> {
+            //质检项校验
+            if (StringUtils.isBlank(key.getQcItemName())) {
+                throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getMessage());
+            }
+
+            value.forEach(item -> {
+                if (StringUtils.isBlank(item.getResult())) {
+                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getMessage());
+                }
+                if (item.getUploadPictureFalg() == null || item.getUploadPictureFalg().equals("")) {
+                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getCode(),
+                            ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getMessage());
+                }
+                if (item.getResultSequence() == 0 || item.getResultSequence() == null) {
+                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(),
+                            ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
+                }
+            });
+        });
+
+        //部品验证
+        OpeParts opeParts = opePartsService.getById(enter.getId());
+        if (opeParts == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
     }
 }

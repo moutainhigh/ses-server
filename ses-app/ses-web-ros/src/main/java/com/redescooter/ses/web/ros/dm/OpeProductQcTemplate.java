@@ -16,13 +16,13 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartQcTemplate")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductQcTemplate")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_part_qc_template")
-public class OpePartQcTemplate implements Serializable {
+@TableName(value = "ope_product_qc_template")
+public class OpeProductQcTemplate implements Serializable {
     /**
      * 主键
      */
@@ -39,11 +39,11 @@ public class OpePartQcTemplate implements Serializable {
     private Integer dr;
 
     /**
-     * 部件Id
+     * 产品Id
      */
-    @TableField(value = "part_id")
-    @ApiModelProperty(value = "部件Id")
-    private Long partId;
+    @TableField(value = "product_id")
+    @ApiModelProperty(value = "产品Id")
+    private Long productId;
 
     /**
      * 导入批次号
@@ -142,7 +142,7 @@ public class OpePartQcTemplate implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_PART_ID = "part_id";
+    public static final String COL_PRODUCT_ID = "product_id";
 
     public static final String COL_IMPORT_EXCEL_BATCH_NO = "import_excel_batch_no";
 
@@ -169,8 +169,4 @@ public class OpePartQcTemplate implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpePartQcTemplateBuilder builder() {
-        return new OpePartQcTemplateBuilder();
-    }
 }

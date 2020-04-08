@@ -36,3 +36,4 @@ public class OpePartQcTemplateServiceImpl extends ServiceImpl<OpePartQcTemplateM
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

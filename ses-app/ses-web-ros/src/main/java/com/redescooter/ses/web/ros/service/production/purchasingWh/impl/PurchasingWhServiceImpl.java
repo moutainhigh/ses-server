@@ -133,11 +133,11 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public PageResult<AvailableListResult> availableList(WhEnter enter) {
-        OpeWhse opeWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.PURCHAS.getValue())).get(0);
-
-        if (StringUtils.isBlank(enter.getType())) {
+        if (StringUtils.isNotEmpty(enter.getType())) {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }
+
+        OpeWhse opeWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.PURCHAS.getValue())).get(0);
 
         int count = purchasingWhServiceMapper.availableListCount(enter, opeWhse.getId());
         if (count == 0) {
@@ -209,6 +209,9 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public PageResult<QcingListResult> qcingList(WhEnter enter) {
+        if (StringUtils.isNotEmpty(enter.getType())) {
+            enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
+        }
         if (StringUtils.isBlank(enter.getType())) {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }
@@ -227,6 +230,9 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public PageResult<TobeStoredResult> tobeStoredList(WhEnter enter) {
+        if (StringUtils.isNotEmpty(enter.getType())) {
+            enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
+        }
         if (StringUtils.isBlank(enter.getType())) {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }
