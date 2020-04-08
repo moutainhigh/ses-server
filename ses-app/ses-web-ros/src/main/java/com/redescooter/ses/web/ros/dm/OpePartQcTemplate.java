@@ -6,15 +6,14 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartQcTemplate")
 @Data
@@ -77,7 +76,7 @@ public class OpePartQcTemplate implements Serializable {
      */
     @TableField(value = "created_by")
     @ApiModelProperty(value = "创建人")
-    private Integer createdBy;
+    private Long createdBy;
 
     /**
      * 创建时间
@@ -168,4 +167,8 @@ public class OpePartQcTemplate implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpePartQcTemplateBuilder builder() {
+        return new OpePartQcTemplateBuilder();
+    }
 }

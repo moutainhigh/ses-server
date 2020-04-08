@@ -1,12 +1,12 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.redescooter.ses.web.ros.dao.base.OpePartQcTemplateBMapper;
+import com.redescooter.ses.web.ros.dm.OpePartQcTemplateB;
+import com.redescooter.ses.web.ros.service.base.OpePartQcTemplateBService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.web.ros.dao.base.OpePartQcTemplateBMapper;
-import com.redescooter.ses.web.ros.service.base.OpePartQcTemplateBService;
 
 @Service
 public class OpePartQcTemplateBServiceImpl extends ServiceImpl<OpePartQcTemplateBMapper, OpePartQcTemplateB> implements OpePartQcTemplateBService {
@@ -31,5 +31,6 @@ public class OpePartQcTemplateBServiceImpl extends ServiceImpl<OpePartQcTemplate
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
 
 

@@ -17,3 +17,4 @@ public interface OpePartQcTemplateService extends IService<OpePartQcTemplate> {
     int insertOrUpdateSelective(OpePartQcTemplate record);
 
 }
+

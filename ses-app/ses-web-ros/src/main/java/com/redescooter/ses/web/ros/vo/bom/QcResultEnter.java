@@ -28,7 +28,7 @@ public class QcResultEnter extends GeneralEnter {
     private String result;
 
     @ApiModelProperty(value = "是否上传图片")
-    private Boolean uploadPicture;
+    private Boolean uploadPictureFalg;
 
     @ApiModelProperty(value = "结果项排序")
     private Integer resultSequence;

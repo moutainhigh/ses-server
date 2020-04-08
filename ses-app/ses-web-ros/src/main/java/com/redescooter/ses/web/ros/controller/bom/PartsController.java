@@ -1,15 +1,32 @@
 package com.redescooter.ses.web.ros.controller.bom;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.MapResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.service.bom.BomRosService;
+import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.*;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.EditSavePartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -91,4 +108,9 @@ public class PartsController {
         return new Response<>(bomRosService.secList(enter));
     }
 
+    @PostMapping(value = "/savePartsQcTemplate")
+    @ApiOperation(value = "部件质检模板", response = GeneralResult.class)
+    public Response<GeneralResult> savePartsQcTemplate(@ModelAttribute @ApiParam("请求参数") SaveQcTemplateEnter enter) {
+        return new Response<>(bomRosService.savePartsQcTemplate(enter));
+    }
 }

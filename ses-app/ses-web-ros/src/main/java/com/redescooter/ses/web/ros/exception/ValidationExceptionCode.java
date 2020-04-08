@@ -150,4 +150,6 @@ public interface ValidationExceptionCode {
     int PRODUCT_IS_EMPTY = 10093;
     //加工费比例为空
     int PROCESSCOST_RATIO_IS_EMPTY = 10094;
+    //质检模板为空
+    int QC_TEMPLATE_IS_EMPTY = 10095;
 }

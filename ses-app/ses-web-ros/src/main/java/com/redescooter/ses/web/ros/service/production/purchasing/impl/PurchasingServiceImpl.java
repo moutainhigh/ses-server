@@ -614,6 +614,9 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<PruchasingItemResult> pruchasingDetailProductList(PruchasingDetailProductEnter enter) {
+        if (StringUtils.isNotEmpty(enter.getType())) {
+            enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
+        }
         OpePurchas opePurchas = opePurchasService.getById(enter.getId());
         if (opePurchas == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());

@@ -11,7 +11,7 @@
         <result column="source_type" jdbcType="VARCHAR" property="sourceType"/>
         <result column="qc_item_name" jdbcType="VARCHAR" property="qcItemName"/>
         <result column="revision" jdbcType="INTEGER" property="revision"/>
-        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
         <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
@@ -62,7 +62,7 @@
             </trim>
             <trim prefix="created_by = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=INTEGER}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
                 </foreach>
             </trim>
             <trim prefix="created_time = case" suffix="end,">
@@ -120,7 +120,7 @@
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.partId,jdbcType=BIGINT},
             #{item.importExcelBatchNo,jdbcType=VARCHAR}, #{item.sourceType,jdbcType=VARCHAR},
-            #{item.qcItemName,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=INTEGER},
+            #{item.qcItemName,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
             #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
             #{item.updatedTime,jdbcType=TIMESTAMP},
             #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
@@ -136,7 +136,7 @@
         (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{partId,jdbcType=BIGINT},
         #{importExcelBatchNo,jdbcType=VARCHAR},
         #{sourceType,jdbcType=VARCHAR}, #{qcItemName,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER},
-        #{createdBy,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+        #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
         #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
         #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL})
         on duplicate key update
@@ -147,7 +147,7 @@
         source_type = #{sourceType,jdbcType=VARCHAR},
         qc_item_name = #{qcItemName,jdbcType=VARCHAR},
         revision = #{revision,jdbcType=INTEGER},
-        created_by = #{createdBy,jdbcType=INTEGER},
+        created_by = #{createdBy,jdbcType=BIGINT},
         created_time = #{createdTime,jdbcType=TIMESTAMP},
         updated_by = #{updatedBy,jdbcType=BIGINT},
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
@@ -234,7 +234,7 @@
                 #{revision,jdbcType=INTEGER},
             </if>
             <if test="createdBy != null">
-                #{createdBy,jdbcType=INTEGER},
+                #{createdBy,jdbcType=BIGINT},
             </if>
             <if test="createdTime != null">
                 #{createdTime,jdbcType=TIMESTAMP},
@@ -285,7 +285,7 @@
                 revision = #{revision,jdbcType=INTEGER},
             </if>
             <if test="createdBy != null">
-                created_by = #{createdBy,jdbcType=INTEGER},
+                created_by = #{createdBy,jdbcType=BIGINT},
             </if>
             <if test="createdTime != null">
                 created_time = #{createdTime,jdbcType=TIMESTAMP},

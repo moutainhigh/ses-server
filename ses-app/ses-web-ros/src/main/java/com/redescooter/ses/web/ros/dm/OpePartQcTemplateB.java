@@ -6,14 +6,15 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartQcTemplateB")
 @Data
@@ -22,6 +23,7 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "ope_part_qc_template_b")
 public class OpePartQcTemplateB implements Serializable {
+    public static final String COL_QC_RESULT_PICTURE = "qc_result_picture";
     /**
      * 主键
      */
@@ -56,13 +58,6 @@ public class OpePartQcTemplateB implements Serializable {
     @TableField(value = "upload_flag")
     @ApiModelProperty(value = "是否允许上传图片")
     private Boolean uploadFlag;
-
-    /**
-     * 质检结果图片
-     */
-    @TableField(value = "qc_result_picture")
-    @ApiModelProperty(value = "质检结果图片")
-    private String qcResultPicture;
 
     /**
      * 乐观锁
@@ -146,8 +141,6 @@ public class OpePartQcTemplateB implements Serializable {
 
     public static final String COL_UPLOAD_FLAG = "upload_flag";
 
-    public static final String COL_QC_RESULT_PICTURE = "qc_result_picture";
-
     public static final String COL_REVISION = "revision";
 
     public static final String COL_CREATED_BY = "created_by";
@@ -167,4 +160,8 @@ public class OpePartQcTemplateB implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpePartQcTemplateBBuilder builder() {
+        return new OpePartQcTemplateBBuilder();
+    }
 }
