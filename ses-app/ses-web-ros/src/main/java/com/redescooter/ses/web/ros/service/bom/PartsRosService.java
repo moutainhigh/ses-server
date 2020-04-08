@@ -70,7 +70,15 @@ public interface PartsRosService {
      * @param enter
      * @return
      */
-    GeneralResult deletes(StringEnter enter);
+    List<DeletePartResult> deletes(StringEnter enter);
+
+    /**
+     * 部品解绑商品
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult partUnbind(PartUnbindEnter enter);
 
     /**
      * 详情

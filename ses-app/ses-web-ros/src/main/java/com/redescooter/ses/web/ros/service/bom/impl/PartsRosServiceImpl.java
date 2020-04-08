@@ -1,33 +1,51 @@
 package com.redescooter.ses.web.ros.service.bom.impl;
 
-import java.math.BigDecimal;
-
-
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.PartsEventEnums;
 import com.redescooter.ses.api.common.enums.product.PartsProductEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.MapResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.dao.bom.PartsServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeExcleImport;
+import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.dm.OpePartsDraft;
+import com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord;
+import com.redescooter.ses.web.ros.dm.OpePartsProduct;
+import com.redescooter.ses.web.ros.dm.OpePartsProductB;
+import com.redescooter.ses.web.ros.dm.OpePartsType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.PartsRosService;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeExcleImportService;
+import com.redescooter.ses.web.ros.service.base.OpePartsDraftService;
+import com.redescooter.ses.web.ros.service.base.OpePartsHistoryRecordService;
+import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
+import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
+import com.redescooter.ses.web.ros.service.base.OpePartsService;
+import com.redescooter.ses.web.ros.service.base.OpePartsTypeService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.AddPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DeletePartBindProductResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.DeletePartResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.EditSavePartsEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
@@ -36,24 +54,28 @@ import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartUnbindEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.apache.zookeeper.Op;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName PartsRosServiceImpl
@@ -91,6 +113,15 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Autowired
     private OpePartsDraftService opePartsDraftService;
+
+    @Autowired
+    private OpePartsProductBService opePartsProductBService;
+
+    @Autowired
+    private OpePartsProductService opePartsProductService;
+
+    @Autowired
+    private OpePartsService opePartsService;
 
     @Reference
     private IdAppService idAppService;
@@ -314,7 +345,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Transient
     @Override
-    public GeneralResult deletes(StringEnter enter) {
+    public List<DeletePartResult> deletes(StringEnter enter) {
 
         List<IdEnter> enters = null;
         try {
@@ -325,21 +356,79 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         List<Long> deletes = new ArrayList<>();
         List<OpePartsHistoryRecord> insters = new ArrayList<>();
-        if (enters.size() > 0) {
-            enters.forEach(dl -> {
-                if (!org.springframework.util.StringUtils.isEmpty(dl.getId())) {
-                    OpeParts byId = partsService.getById(dl.getId());
-                    if (byId != null) {
-                        deletes.add(byId.getId());
-                        insters.add(createPartsHistory(byId, PartsEventEnums.DELETE.getValue(), enter.getUserId(), byId.getPartsNumber()));
-                    }
-                }
-            });
+
+        Set<Long> partIds = new HashSet<>();
+        enters.forEach(item -> {
+            partIds.add(item.getId());
+        });
+        Collection<OpeParts> opePartList = partsService.listByIds(partIds);
+        if (CollectionUtils.isEmpty(opePartList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
+
+        if (enters.size() > 0) {
+            for (OpeParts item : opePartList) {
+                enters.forEach(dl -> {
+                    if (!org.springframework.util.StringUtils.isEmpty(dl.getId())) {
+                        if (item.getId().equals(dl.getId())) {
+                            deletes.add(item.getId());
+                            insters.add(createPartsHistory(item, PartsEventEnums.DELETE.getValue(), enter.getUserId(), item.getPartsNumber()));
+                        }
+                    }
+                });
+            }
+        }
+
+        //校验部件是否有商品绑定
+        List<DeletePartResult> result = buildDeletePartResult(partIds, opePartList);
+        if (result != null)
+            return result;
         if (deletes.size() > 0) {
             opePartsDraftService.removeByIds(deletes);
             partsHistoryRecordService.saveBatch(insters);
         }
+        return new ArrayList<>();
+    }
+
+    /**
+     * 部品解绑商品
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult partUnbind(PartUnbindEnter enter) {
+        OpeParts opeParts = opePartsService.getById(enter.getId());
+        if (opeParts == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+        //查询商品 是否存在
+        Collection<OpePartsProduct> opePartsProductList = opePartsProductService.listByIds(enter.getProductIds());
+        if (CollectionUtils.isEmpty(opePartsProductList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+        //查询商品部件
+        QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
+        opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_ID, enter.getId());
+        List<OpePartsProductB> partsProductBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
+        if (CollectionUtils.isEmpty(partsProductBList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_BIND_PRODUCT.getCode(), ExceptionCodeEnums.PART_IS_NOT_BIND_PRODUCT.getMessage());
+        }
+        partsProductBList.forEach(item -> {
+            opePartsProductList.forEach(product -> {
+                if (item.getPartsProductId().equals(product.getId())) {
+                    product.setSumPartsQty(product.getSumPartsQty() - item.getPartsQty());
+                    product.setUpdatedBy(enter.getUserId());
+                    product.setUpdatedTime(new Date());
+                }
+            });
+        });
+
+        //移除绑定的部件
+        opePartsProductBService.removeByIds(partsProductBList.stream().map(OpePartsProductB::getId).collect(Collectors.toList()));
+        //更新productbom
+        opePartsProductService.updateBatchById(opePartsProductList);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -423,7 +512,9 @@ public class PartsRosServiceImpl implements PartsRosService {
         List<OpePartsProduct> productSave = new ArrayList<>();
 
         //1.进行查询需要同步的部件
-        List<OpePartsDraft> partsDrafts = opePartsDraftService.list(new LambdaQueryWrapper<OpePartsDraft>().eq(OpePartsDraft::getDr, 0).eq(OpePartsDraft::getPerfectFlag, Boolean.TRUE).eq(OpePartsDraft::getSynchronizeFlag, Boolean.TRUE));
+        List<OpePartsDraft> partsDrafts =
+                opePartsDraftService.list(new LambdaQueryWrapper<OpePartsDraft>().eq(OpePartsDraft::getDr, 0).eq(OpePartsDraft::getPerfectFlag, Boolean.TRUE).eq(OpePartsDraft::getSynchronizeFlag,
+                        Boolean.TRUE));
         //2.将待同步的部件进行安装是否可进行销售，区分为生产部件及产品
 
         if (CollectionUtil.isNotEmpty(partsDrafts)) {
@@ -695,5 +786,75 @@ public class PartsRosServiceImpl implements PartsRosService {
             }
         }
 
+    }
+
+    /**
+     * 删除部件封装返回值
+     *
+     * @param partIds
+     * @param opePartList
+     * @return
+     */
+    private List<DeletePartResult> buildDeletePartResult(Set<Long> partIds, Collection<OpeParts> opePartList) {
+        QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
+        opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_ID, new ArrayList<>(partIds));
+
+        List<OpePartsProductB> partsProductBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
+        if (CollectionUtils.isNotEmpty(partsProductBList)) {
+            //查询相应产品
+            Map<Long, Long> productIdMaps = Maps.newHashMap();
+            partsProductBList.forEach(item -> {
+                productIdMaps.put(item.getPartsProductId(), item.getPartsId());
+            });
+
+            Collection<OpePartsProduct> opePartsProductList = opePartsProductService.listByIds(productIdMaps.entrySet().stream().map(item -> item.getKey()).collect(Collectors.toList()));
+            if (CollectionUtils.isNotEmpty(opePartsProductList)) {
+                List<DeletePartResult> result = new ArrayList<>();
+                opePartList.forEach(part -> {
+                    if (productIdMaps.containsValue(part.getId())) {
+                        //封装数据返回
+                        List<DeletePartBindProductResult> scooterList = new ArrayList<>();
+
+                        List<DeletePartBindProductResult> combinationList = new ArrayList<>();
+
+                        opePartsProductList.forEach(item -> {
+                            if (StringUtils.equals(item.getProductType().toString(), BomCommonTypeEnums.SCOOTER.getValue())) {
+                                //整车
+                                scooterList.add(
+                                        DeletePartBindProductResult.builder()
+                                                .id(item.getId())
+                                                .cnName(item.getCnName())
+                                                .enName(item.getEnName())
+                                                .productN(item.getProductNumber())
+                                                .build()
+                                );
+                            } else {
+                                //组合
+                                combinationList.add(
+                                        DeletePartBindProductResult.builder()
+                                                .id(item.getId())
+                                                .cnName(item.getCnName())
+                                                .enName(item.getEnName())
+                                                .productN(item.getProductNumber())
+                                                .build()
+                                );
+                            }
+                        });
+                        result.add(
+                                DeletePartResult.builder()
+                                        .id(part.getId())
+                                        .cnName(part.getCnName())
+                                        .enName(part.getEnName())
+                                        .partsN(part.getPartsNumber())
+                                        .scooterList(scooterList)
+                                        .combinationList(combinationList)
+                                        .build()
+                        );
+                    }
+                });
+                return result;
+            }
+        }
+        return null;
     }
 }

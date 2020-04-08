@@ -13,12 +13,14 @@ import com.redescooter.ses.web.ros.service.bom.BomRosService;
 import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.DeletePartResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.EditSavePartsEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartUnbindEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -93,9 +95,15 @@ public class PartsController {
     }
 
     @PostMapping(value = "/deletes")
-    @ApiOperation(value = "批量删除", response = IdEnter.class)
-    public Response<GeneralResult> deletes(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+    @ApiOperation(value = "批量删除", response = DeletePartResult.class)
+    public Response<List<DeletePartResult>> deletes(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(partsRosService.deletes(enter));
+    }
+
+    @PostMapping(value = "/partUnbind")
+    @ApiOperation(value = "部件解除绑定", response = GeneralResult.class)
+    public Response<GeneralResult> partUnbind(@ModelAttribute @ApiParam("请求参数") PartUnbindEnter enter) {
+        return new Response<>(partsRosService.partUnbind(enter));
     }
 
     @PostMapping(value = "/details")
