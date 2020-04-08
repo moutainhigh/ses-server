@@ -123,6 +123,9 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Autowired
     private OpePartsService opePartsService;
 
+    @Autowired
+    private OpePartsDraftService getOpePartsDraftService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -131,10 +134,10 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Override
     public MapResult commonCountStatus(GeneralEnter enter) {
-        QueryWrapper<OpeParts> partsQueryWrapper = new QueryWrapper<>();
-        partsQueryWrapper.eq(OpeParts.COL_DR, 0);
-        partsQueryWrapper.eq(OpeParts.COL_USER_ID, enter.getUserId());
-        int partsCount = partsService.count(partsQueryWrapper);
+        QueryWrapper<OpePartsDraft> partsQueryWrapper = new QueryWrapper<>();
+        partsQueryWrapper.eq(OpePartsDraft.COL_DR, 0);
+        partsQueryWrapper.eq(OpePartsDraft.COL_USER_ID, enter.getUserId());
+        int partsCount = getOpePartsDraftService.count(partsQueryWrapper);
 
         QueryWrapper<OpePartsProduct> scooter = new QueryWrapper<>();
         scooter.eq(OpePartsProduct.COL_DR, 0);

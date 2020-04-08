@@ -38,4 +38,7 @@ public class SaveAssemblyProductResult extends GeneralResult {
 
     @ApiModelProperty(value = "库存数量")
     private Integer stocks;
+
+    @ApiModelProperty(value = "已选择的数量")
+    private int selectedQty;
 }
