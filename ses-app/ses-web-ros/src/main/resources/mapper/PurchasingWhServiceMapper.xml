@@ -68,6 +68,26 @@
         </if>
     </sql>
 
+    <sql id="where_OutWh_Allocate">
+        where stock.dr=0
+        <if test="whseIds != null and whseIds.size() != 0">
+            and stock.whse_id in
+            <foreach collection="whseIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="enter.type != null and enter.type != ''">
+            and parts.parts_type =#{enter.type}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (
+            parts.parts_number like concat ("%",#{enter.keyword},"%") or
+            parts.en_name like concat ("%",#{enter.keyword},"%") or
+            parts.cn_name like concat ("%",#{enter.keyword},"%")
+            )
+        </if>
+    </sql>
+
     <select id="availableListCount" resultType="int">
         select count(*)
         from ope_stock stock
@@ -175,7 +195,6 @@
     </select>
 
     <select id="wasteListCount" resultType="int">
-
     </select>
 
     <select id="wasteList" resultType="com.redescooter.ses.web.ros.vo.production.wh.WasteResult">
@@ -198,11 +217,22 @@
     </select>
 
     <select id="outWhListAllocateCount" resultType="java.lang.Integer">
-
+        select count(*)
+        from ope_stock stock
+        inner join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
+        <include refid="where_OutWh_Allocate"/>
     </select>
 
     <select id="outWhListAllocate" resultType="com.redescooter.ses.web.ros.vo.production.wh.OutWhResult">
-
+        select stock.id as id,
+        parts.parts_number as partN,
+        parts.parts_type as type,
+        parts.en_name as enName,
+        parts.cn_name as cnName,
+        stock.available_total as qty
+        from ope_stock stock
+        inner join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
+        <include refid="where_OutWh_Allocate"/>
     </select>
     <select id="countByTypeQcCount" resultType="int">
         select count(*) from

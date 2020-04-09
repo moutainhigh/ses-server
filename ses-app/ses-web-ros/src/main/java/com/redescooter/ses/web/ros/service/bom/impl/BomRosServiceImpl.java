@@ -694,8 +694,9 @@ public class BomRosServiceImpl implements BomRosService {
 
         List<QcTemplateDetailResult> result = Lists.newArrayList();
         //部品验证
-        OpeParts opeParts = opePartsService.getById(enter.getId());
-        if (opeParts == null) {
+
+        OpePartsDraft opePartsDraft = opePartsDraftService.getById(enter.getId());
+        if (opePartsDraft == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
 
@@ -720,7 +721,7 @@ public class BomRosServiceImpl implements BomRosService {
                 result.add(
                         QcTemplateDetailResult.builder()
                                 .id(item.getId())
-                                .qcitemName(item.getQcItemName())
+                                .qcItemName(item.getQcItemName())
                                 .qcResultResultList(new ArrayList<>())
                                 .build()
                 );
@@ -734,7 +735,7 @@ public class BomRosServiceImpl implements BomRosService {
                                 QcResultResult.builder()
                                         .result(templateb.getQcResult())
                                         .resultSequence(templateb.getResultsSequence())
-                                        .uploadPicture(templateb.getUploadFlag())
+                                        .uploadPictureFalg(templateb.getUploadFlag())
                                         .build()
                         );
                     }
@@ -742,7 +743,7 @@ public class BomRosServiceImpl implements BomRosService {
                 result.add(
                         QcTemplateDetailResult.builder()
                                 .id(item.getId())
-                                .qcitemName(item.getQcItemName())
+                                .qcItemName(item.getQcItemName())
                                 .qcResultResultList(resultTemplateBList)
                                 .build()
                 );
@@ -861,7 +862,7 @@ public class BomRosServiceImpl implements BomRosService {
                 result.add(
                         QcTemplateDetailResult.builder()
                                 .id(item.getId())
-                                .qcitemName(item.getQcItemName())
+                                .qcItemName(item.getQcItemName())
                                 .qcResultResultList(new ArrayList<>())
                                 .build()
                 );
@@ -875,7 +876,7 @@ public class BomRosServiceImpl implements BomRosService {
                                 QcResultResult.builder()
                                         .result(templateb.getQcResult())
                                         .resultSequence(templateb.getResultsSequence())
-                                        .uploadPicture(templateb.getUploadFlag())
+                                        .uploadPictureFalg(templateb.getUploadFlag())
                                         .build()
                         );
                     }
@@ -883,7 +884,7 @@ public class BomRosServiceImpl implements BomRosService {
                 result.add(
                         QcTemplateDetailResult.builder()
                                 .id(item.getId())
-                                .qcitemName(item.getQcItemName())
+                                .qcItemName(item.getQcItemName())
                                 .qcResultResultList(resultTemplateBList)
                                 .build()
                 );

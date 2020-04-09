@@ -180,5 +180,5 @@ public interface PurchasingServiceMapper {
      * @param enter
      * @return
      */
-    List<CountByStatusResult> qcCountByStatus(IdEnter enter);
+    List<OpePurchasBQc> qcCountByStatus(IdEnter enter);
 }
