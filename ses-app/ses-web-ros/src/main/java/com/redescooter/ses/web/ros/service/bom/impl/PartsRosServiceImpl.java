@@ -348,7 +348,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Transient
     @Override
-    public List<DeletePartResult> deletes(StringEnter enter) {
+    public GeneralResult deletes(StringEnter enter) {
 
         List<IdEnter> enters = null;
         try {
@@ -360,17 +360,17 @@ public class PartsRosServiceImpl implements PartsRosService {
         List<Long> deletes = new ArrayList<>();
         List<OpePartsHistoryRecord> insters = new ArrayList<>();
 
-        Set<Long> partIds = new HashSet<>();
+        Set<Long> partDraftIds = new HashSet<>();
         enters.forEach(item -> {
-            partIds.add(item.getId());
+            partDraftIds.add(item.getId());
         });
-        Collection<OpeParts> opePartList = partsService.listByIds(partIds);
-        if (CollectionUtils.isEmpty(opePartList)) {
+        Collection<OpePartsDraft> opePartDraftList = opePartsDraftService.listByIds(new ArrayList<>(partDraftIds));
+        if (CollectionUtils.isEmpty(opePartDraftList)) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
 
         if (enters.size() > 0) {
-            for (OpeParts item : opePartList) {
+            for (OpePartsDraft item : opePartDraftList) {
                 enters.forEach(dl -> {
                     if (!org.springframework.util.StringUtils.isEmpty(dl.getId())) {
                         if (item.getId().equals(dl.getId())) {
@@ -382,16 +382,44 @@ public class PartsRosServiceImpl implements PartsRosService {
             }
         }
 
-        //校验部件是否有商品绑定
-        List<DeletePartResult> result = buildDeletePartResult(partIds, opePartList);
-        if (result != null) {
-            return result;
-        }
         if (deletes.size() > 0) {
             opePartsDraftService.removeByIds(deletes);
             partsHistoryRecordService.saveBatch(insters);
         }
-        return new ArrayList<>();
+        //todo 要删除 报价 、part表数据
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 查询部件绑定的商品
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<DeletePartResult> queryPartBindProduct(StringEnter enter) {
+        List<IdEnter> enters = null;
+        try {
+            enters = JSONArray.parseArray(enter.getSt(), IdEnter.class);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        Set<Long> partDraftIds = new HashSet<>();
+        enters.forEach(item -> {
+            partDraftIds.add(item.getId());
+        });
+        Collection<OpePartsDraft> opePartDraftList = opePartsDraftService.listByIds(new ArrayList<>(partDraftIds));
+        if (CollectionUtils.isEmpty(opePartDraftList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
+        //校验部件是否有商品绑定
+        List<DeletePartResult> result = buildDeletePartResult(partDraftIds, opePartDraftList);
+        if (result != null) {
+            return result;
+        }
+        return null;
     }
 
     /**
@@ -403,8 +431,8 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Transactional
     @Override
     public GeneralResult partUnbind(PartUnbindEnter enter) {
-        OpeParts opeParts = opePartsService.getById(enter.getId());
-        if (opeParts == null) {
+        OpePartsDraft partsDraft = opePartsDraftService.getById(enter.getId());
+        if (partsDraft == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
         //查询商品 是否存在
@@ -412,6 +440,13 @@ public class PartsRosServiceImpl implements PartsRosService {
         if (CollectionUtils.isEmpty(opePartsProductList)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
+//        QueryWrapper<OpeParts> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq(OpeParts.COL_PARTS_DRAFT_ID, enter.getId());
+//        OpeParts opeParts = opePartsService.getOne(queryWrapper);
+//        if (opeParts == null) {
+//            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+//        }
+
         //查询商品部件
         QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
         opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_ID, enter.getId());
@@ -630,7 +665,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         return PageResult.create(enter, count, partsServiceMapper.partList(enter));
     }
 
-    private OpePartsHistoryRecord createPartsHistory(OpeParts parts, String event, long userId, String partNum) {
+    private OpePartsHistoryRecord createPartsHistory(OpePartsDraft parts, String event, long userId, String partNum) {
         OpePartsHistoryRecord record = new OpePartsHistoryRecord();
         record.setId(idAppService.getId(SequenceName.OPE_PARTS_HISTORY_RECORD));
         record.setDr(0);
@@ -806,11 +841,9 @@ public class PartsRosServiceImpl implements PartsRosService {
      * @param opePartList
      * @return
      */
-    private List<DeletePartResult> buildDeletePartResult(Set<Long> partIds, Collection<OpeParts> opePartList) {
-        QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
-        opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_ID, new ArrayList<>(partIds));
+    private List<DeletePartResult> buildDeletePartResult(Set<Long> partIds, Collection<OpePartsDraft> opePartList) {
 
-        List<OpePartsProductB> partsProductBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
+        List<OpePartsProductB> partsProductBList = bomRosServiceMapper.opePartsProductBListByPartIDraftds(new ArrayList<>(partIds));
         if (CollectionUtils.isNotEmpty(partsProductBList)) {
             //查询相应产品
             Map<Long, Long> productIdMaps = Maps.newHashMap();

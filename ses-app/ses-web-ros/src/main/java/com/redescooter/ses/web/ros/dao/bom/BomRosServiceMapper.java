@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.dao.bom;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
@@ -9,6 +10,7 @@ import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -95,4 +97,12 @@ public interface BomRosServiceMapper {
      * @return
      */
     int countSupplierWithPriceByPartIds(List<Long> partsIdList);
+
+    /**
+     * 查询 关联的产品部件
+     *
+     * @param longs
+     * @return
+     */
+    List<OpePartsProductB> opePartsProductBListByPartIDraftds(ArrayList<Long> longs);
 }

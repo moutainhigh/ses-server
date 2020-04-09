@@ -821,7 +821,7 @@ public class BomRosServiceImpl implements BomRosService {
 
         }
         //质检项结果集数据保存
-        opeProductQcTemplateBService.saveBatch(saveOpeProductQcTemplateBList);
+        opeProductQcTemplateBService.saveOrUpdateBatch(saveOpeProductQcTemplateBList);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -905,43 +905,27 @@ public class BomRosServiceImpl implements BomRosService {
     private void buildProductTemplate(SaveQcTemplateEnter enter, List<OpeProductQcTemplate> saveOpeProductQcTemplateList, List<OpeProductQcTemplateB> saveOpeProductQcTemplateBList,
                                       Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap, List<OpeProductQcTemplate> opeProductQcTemplateList) {
         if (CollectionUtils.isNotEmpty(opeProductQcTemplateList)) {
-            opeProductQcTemplateList.forEach(template -> {
-
-                qcResultEnterMap.forEach((key, value) -> {
-
+            qcResultEnterMap.forEach((key, value) -> {
+                Long templateId = idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE);
+                opeProductQcTemplateList.forEach(template -> {
+                    if (key.getId() == null || key.getId() == 0) {
+                        saveOpeProductQcTemplateList.add(
+                                buildProductQcTemplate(enter, templateId, key.getQcItemName(), null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
+                        );
+                        value.forEach(item -> {
+                            saveOpeProductQcTemplateBList.add(
+                                    buildProductQcTemplateB(enter, templateId, item)
+                            );
+                        });
+                    }
                     if (template.getId().equals(key.getId())) {
                         saveOpeProductQcTemplateList.add(
-                                OpeProductQcTemplate.builder()
-                                        .id(template.getId())
-                                        .dr(0)
-                                        .productId(enter.getId())
-                                        .importExcelBatchNo(template.getImportExcelBatchNo())
-                                        .sourceType(template.getSourceType())
-                                        .qcItemName(key.getQcItemName())
-                                        .revision(0)
-                                        .createdBy(enter.getUserId())
-                                        .createdTime(new Date())
-                                        .updatedBy(enter.getUserId())
-                                        .updatedTime(new Date())
-                                        .build()
-
+                                buildProductQcTemplate(enter, templateId, key.getQcItemName(), template.getImportExcelBatchNo(), template.getSourceType())
                         );
                     }
                     value.forEach(item -> {
                         saveOpeProductQcTemplateBList.add(
-                                OpeProductQcTemplateB.builder()
-                                        .id(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE_B))
-                                        .dr(0)
-                                        .productQcTemplateId(template.getId())
-                                        .qcResult(item.getResult())
-                                        .uploadFlag(item.getUploadPictureFalg())
-                                        .resultsSequence(item.getResultSequence())
-                                        .revision(0)
-                                        .createdBy(enter.getUserId())
-                                        .createdTime(new Date())
-                                        .updatedBy(enter.getUserId())
-                                        .updatedTime(new Date())
-                                        .build()
+                                buildProductQcTemplateB(enter, templateId, item)
                         );
                     });
                 });
@@ -951,40 +935,48 @@ public class BomRosServiceImpl implements BomRosService {
             qcResultEnterMap.forEach((key, value) -> {
                 Long templateId = idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE);
                 saveOpeProductQcTemplateList.add(
-                        OpeProductQcTemplate.builder()
-                                .id(templateId)
-                                .dr(0)
-                                .productId(enter.getId())
-                                .importExcelBatchNo(null)
-                                .sourceType(QcSourceTypeEnums.MANUAL_ENTRY.getValue())
-                                .qcItemName(key.getQcItemName())
-                                .revision(0)
-                                .createdBy(enter.getUserId())
-                                .createdTime(new Date())
-                                .updatedBy(enter.getUserId())
-                                .updatedTime(new Date())
-                                .build()
+                        buildProductQcTemplate(enter, templateId, key.getQcItemName(), null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
 
                 );
                 value.forEach(item -> {
                     saveOpeProductQcTemplateBList.add(
-                            OpeProductQcTemplateB.builder()
-                                    .id(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE_B))
-                                    .dr(0)
-                                    .productQcTemplateId(templateId)
-                                    .qcResult(item.getResult())
-                                    .uploadFlag(item.getUploadPictureFalg())
-                                    .resultsSequence(item.getResultSequence())
-                                    .revision(0)
-                                    .createdBy(enter.getUserId())
-                                    .createdTime(new Date())
-                                    .updatedBy(enter.getUserId())
-                                    .updatedTime(new Date())
-                                    .build()
+                            buildProductQcTemplateB(enter, templateId, item)
                     );
                 });
             });
         }
+    }
+
+    private OpeProductQcTemplateB buildProductQcTemplateB(SaveQcTemplateEnter enter, Long templateId, QcResultEnter item) {
+        return OpeProductQcTemplateB.builder()
+                .id(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE_B))
+                .dr(0)
+                .productQcTemplateId(templateId)
+                .qcResult(item.getResult())
+                .uploadFlag(item.getUploadPictureFalg())
+                .resultsSequence(item.getResultSequence())
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+    }
+
+    private OpeProductQcTemplate buildProductQcTemplate(SaveQcTemplateEnter enter, Long templateId, String qcItemName, String importExcelBatchNo, String sourceType) {
+        return OpeProductQcTemplate.builder()
+                .id(templateId)
+                .dr(0)
+                .productId(enter.getId())
+                .importExcelBatchNo(importExcelBatchNo)
+                .sourceType(sourceType)
+                .qcItemName(qcItemName)
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
     }
 
     /**
@@ -1014,6 +1006,7 @@ public class BomRosServiceImpl implements BomRosService {
                 });
                 opeProductQcTemplateBService.removeByIds(templateBIds);
             }
+            opeProductQcTemplateService.removeByIds(productTemplateIds);
         }
         return opeProductQcTemplateList;
     }
@@ -1136,88 +1129,81 @@ public class BomRosServiceImpl implements BomRosService {
      */
     private void buildPartQcTemplate(SaveQcTemplateEnter enter, List<OpePartDraftQcTemplate> saveOpePartQcTemplateList, List<OpePartDraftQcTemplateB> saveOpePartQcTemplateBList,
                                      Map<QcItemTemplateEnter,
-            List<QcResultEnter>> qcResultEnterMap, List<OpePartDraftQcTemplate> partQcTemplateList) {
+                                             List<QcResultEnter>> qcResultEnterMap, List<OpePartDraftQcTemplate> partQcTemplateList) {
         if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
-            partQcTemplateList.forEach(template -> {
-
-                qcResultEnterMap.forEach((key, value) -> {
-
+            for (Map.Entry<QcItemTemplateEnter, List<QcResultEnter>> entry : qcResultEnterMap.entrySet()) {
+                QcItemTemplateEnter key = entry.getKey();
+                List<QcResultEnter> value = entry.getValue();
+                Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
+                if (key.getId() == null || key.getId() == 0) {
+                    saveOpePartQcTemplateList.add(
+                            buildOpePartTemplate(enter, key.getQcItemName(), templateId, null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
+                    );
+                    value.forEach(item -> {
+                        saveOpePartQcTemplateBList.add(
+                                buildPartTemplateB(enter, templateId, item)
+                        );
+                    });
+                    break;
+                }
+                partQcTemplateList.forEach(template -> {
                     if (template.getId().equals(key.getId())) {
                         saveOpePartQcTemplateList.add(
-                                OpePartDraftQcTemplate.builder()
-                                        .id(template.getId())
-                                        .dr(0)
-                                        .partDraftId(enter.getId())
-                                        .importExcelBatchNo(template.getImportExcelBatchNo())
-                                        .sourceType(template.getSourceType())
-                                        .qcItemName(key.getQcItemName())
-                                        .revision(0)
-                                        .createdBy(enter.getUserId())
-                                        .createdTime(new Date())
-                                        .updatedBy(enter.getUserId())
-                                        .updatedTime(new Date())
-                                        .build()
-
+                                buildOpePartTemplate(enter, key.getQcItemName(), templateId, template.getImportExcelBatchNo(), template.getSourceType())
                         );
                     }
                     value.forEach(item -> {
-                        saveOpePartQcTemplateBList.add(
-                                OpePartDraftQcTemplateB.builder()
-                                        .id(idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE_B))
-                                        .dr(0)
-                                        .partDraftQcTemplateId(template.getId())
-                                        .qcResult(item.getResult())
-                                        .uploadFlag(item.getUploadPictureFalg())
-                                        .resultsSequence(item.getResultSequence())
-                                        .revision(0)
-                                        .createdBy(enter.getUserId())
-                                        .createdTime(new Date())
-                                        .updatedBy(enter.getUserId())
-                                        .updatedTime(new Date())
-                                        .build()
-                        );
+                        saveOpePartQcTemplateBList.add(buildPartTemplateB(enter, templateId, item));
                     });
                 });
-            });
+            }
 
         } else {
             qcResultEnterMap.forEach((key, value) -> {
                 Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
                 saveOpePartQcTemplateList.add(
-                        OpePartDraftQcTemplate.builder()
-                                .id(templateId)
-                                .dr(0)
-                                .partDraftId(enter.getId())
-                                .importExcelBatchNo(null)
-                                .sourceType(QcSourceTypeEnums.MANUAL_ENTRY.getValue())
-                                .qcItemName(key.getQcItemName())
-                                .revision(0)
-                                .createdBy(enter.getUserId())
-                                .createdTime(new Date())
-                                .updatedBy(enter.getUserId())
-                                .updatedTime(new Date())
-                                .build()
+                        buildOpePartTemplate(enter, key.getQcItemName(), templateId, null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
 
                 );
                 value.forEach(item -> {
                     saveOpePartQcTemplateBList.add(
-                            OpePartDraftQcTemplateB.builder()
-                                    .id(idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE_B))
-                                    .dr(0)
-                                    .partDraftQcTemplateId(templateId)
-                                    .qcResult(item.getResult())
-                                    .uploadFlag(item.getUploadPictureFalg())
-                                    .resultsSequence(item.getResultSequence())
-                                    .revision(0)
-                                    .createdBy(enter.getUserId())
-                                    .createdTime(new Date())
-                                    .updatedBy(enter.getUserId())
-                                    .updatedTime(new Date())
-                                    .build()
+                            buildPartTemplateB(enter, templateId, item)
                     );
                 });
             });
         }
+    }
+
+    private OpePartDraftQcTemplateB buildPartTemplateB(SaveQcTemplateEnter enter, Long templateId, QcResultEnter item) {
+        return OpePartDraftQcTemplateB.builder()
+                .id(idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE_B))
+                .dr(0)
+                .partDraftQcTemplateId(templateId)
+                .qcResult(item.getResult())
+                .uploadFlag(item.getUploadPictureFalg())
+                .resultsSequence(item.getResultSequence())
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+    }
+
+    private OpePartDraftQcTemplate buildOpePartTemplate(SaveQcTemplateEnter enter, String qcItemName, Long templateId, String importExcelBatchNo, String sourceType) {
+        return OpePartDraftQcTemplate.builder()
+                .id(templateId)
+                .dr(0)
+                .partDraftId(enter.getId())
+                .importExcelBatchNo(importExcelBatchNo)
+                .sourceType(sourceType)
+                .qcItemName(qcItemName)
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
     }
 
     /**
