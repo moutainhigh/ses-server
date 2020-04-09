@@ -7,23 +7,23 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartQcTemplateB")
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartDraftQcTemplate")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_part_qc_template_b")
-public class OpePartQcTemplateB implements Serializable {
-    public static final String COL_QC_RESULT_PICTURE = "qc_result_picture";
+@TableName(value = "ope_part_draft_qc_template")
+public class OpePartDraftQcTemplate implements Serializable {
     /**
      * 主键
      */
@@ -40,32 +40,32 @@ public class OpePartQcTemplateB implements Serializable {
     private Integer dr;
 
     /**
-     * 质检项Id
+     * 部件Id
      */
-    @TableField(value = "part_qc_template_id")
-    @ApiModelProperty(value = "质检项Id")
-    private Long partQcTemplateId;
+    @TableField(value = "part_draft_id")
+    @ApiModelProperty(value = "部件Id")
+    private Long partDraftId;
 
     /**
-     * 质检结果
+     * 导入批次号
      */
-    @TableField(value = "qc_result")
-    @ApiModelProperty(value = "质检结果")
-    private String qcResult;
+    @TableField(value = "import_excel_batch_no")
+    @ApiModelProperty(value = "导入批次号")
+    private String importExcelBatchNo;
 
     /**
-     * 是否允许上传图片
+     * 来源方式
      */
-    @TableField(value = "upload_flag")
-    @ApiModelProperty(value = "是否允许上传图片")
-    private Boolean uploadFlag;
+    @TableField(value = "source_type")
+    @ApiModelProperty(value = "来源方式")
+    private String sourceType;
 
     /**
-     * 结果集排序优先级
+     * 质检项名称
      */
-    @TableField(value = "results_sequence")
-    @ApiModelProperty(value = "结果集排序优先级")
-    private Integer resultsSequence;
+    @TableField(value = "qc_item_name")
+    @ApiModelProperty(value = "质检项名称")
+    private String qcItemName;
 
     /**
      * 乐观锁
@@ -143,13 +143,13 @@ public class OpePartQcTemplateB implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_PART_QC_TEMPLATE_ID = "part_qc_template_id";
+    public static final String COL_PART_DRAFT_ID = "part_draft_id";
 
-    public static final String COL_QC_RESULT = "qc_result";
+    public static final String COL_IMPORT_EXCEL_BATCH_NO = "import_excel_batch_no";
 
-    public static final String COL_UPLOAD_FLAG = "upload_flag";
+    public static final String COL_SOURCE_TYPE = "source_type";
 
-    public static final String COL_RESULTS_SEQUENCE = "results_sequence";
+    public static final String COL_QC_ITEM_NAME = "qc_item_name";
 
     public static final String COL_REVISION = "revision";
 
@@ -170,8 +170,4 @@ public class OpePartQcTemplateB implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpePartQcTemplateBBuilder builder() {
-        return new OpePartQcTemplateBBuilder();
-    }
 }

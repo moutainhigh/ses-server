@@ -251,33 +251,27 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public PageResult<OutWhResult> outWhList(WhEnter enter) {
-        if (StringUtils.isBlank(enter.getType())) {
+        if (StringUtils.isNotBlank(enter.getType())) {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }
-        List<OpeWhse> assemblyWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ASSEMBLY.getValue()));
-
-        //组装仓库 数据
-        int countAssembly = purchasingWhServiceMapper.outWhListAssemblyCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
-
-        List<OutWhResult> whResultListAssembly = purchasingWhServiceMapper.outWhListAssembly(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
-
-        //调拨仓库数据
-
-//        List<OpeWhse> allocateWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue()));
+//        List<OpeWhse> assemblyWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ASSEMBLY.getValue()));
 //
-////        int countAllocate = purchasingWhServiceMapper.outWhListAllocateCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
-////
-////        List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
+//        //组装仓库 数据
+//        int countAssembly = purchasingWhServiceMapper.outWhListAssemblyCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
 //
+//        List<OutWhResult> whResultListAssembly = purchasingWhServiceMapper.outWhListAssembly(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
 //
-//        int count = countAssembly + countAllocate;
-//        if (count == 0) {
-//            return PageResult.createZeroRowResult(enter);
-//        }
-//        List<OutWhResult> result = Lists.newArrayList();
-//        result.addAll(whResultListAssembly);
-//        result.addAll(whResultListAllocate);
-        return PageResult.create(enter, countAssembly, whResultListAssembly);
+//        //调拨仓库数据
+        List<OpeWhse> allocateWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue()));
+
+        int countAllocate = purchasingWhServiceMapper.outWhListAllocateCount(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
+
+        if (countAllocate == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
+
+        return PageResult.create(enter, countAllocate, whResultListAllocate);
     }
 
     /**

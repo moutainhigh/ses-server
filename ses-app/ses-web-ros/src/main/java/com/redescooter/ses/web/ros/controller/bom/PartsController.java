@@ -95,9 +95,15 @@ public class PartsController {
     }
 
     @PostMapping(value = "/deletes")
-    @ApiOperation(value = "批量删除", response = DeletePartResult.class)
-    public Response<List<DeletePartResult>> deletes(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+    @ApiOperation(value = "批量删除", response = GeneralResult.class)
+    public Response<GeneralResult> deletes(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(partsRosService.deletes(enter));
+    }
+
+    @PostMapping(value = "/queryPartBindProduct")
+    @ApiOperation(value = "查询部件是否绑定商品", response = DeletePartResult.class)
+    public Response<List<DeletePartResult>> queryPartBindProduct(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+        return new Response<>(partsRosService.queryPartBindProduct(enter));
     }
 
     @PostMapping(value = "/partUnbind")
@@ -133,7 +139,7 @@ public class PartsController {
     @PostMapping(value = "/savePartsQcTemplate")
     @ApiOperation(value = "保存部件质检模板", response = GeneralResult.class)
     public Response<GeneralResult> savePartsQcTemplate(@ModelAttribute @ApiParam("请求参数") SaveQcTemplateEnter enter) {
-        return new Response<>(bomRosService.savePartsQcTemplate(enter));
+        return new Response<>(bomRosService.savePartsDraftQcTemplate(enter));
     }
 
     @PostMapping(value = "/partsQcTemplateDetail")

@@ -136,21 +136,21 @@ public interface PurchasingWhServiceMapper {
      */
     int countByTypeOutWhCount(GeneralEnter enter);
 
-//    /**
-//     * 调波 出库列表
-//     *
-//     * @param enter
-//     * @param whseIds
-//     * @return
-//     */
-//    int outWhListAllocateCount(@Param("enter") WhEnter enter, @Param("whseIds") ArrayList<Long> whseIds);
-//
-//    /**
-//     * 调拨 出库列表
-//     *
-//     * @param enter
-//     * @param whseIds
-//     * @return
-//     */
-//    List<OutWhResult> outWhListAllocate(@Param("enter") WhEnter enter, @Param("whseIds") ArrayList<Long> whseIds);
+    /**
+     * 调波 出库列表
+     *
+     * @param enter
+     * @param whseIds
+     * @return
+     */
+    int outWhListAllocateCount(@Param("enter") WhEnter enter, @Param("whseIds") List<Long> whseIds);
+
+    /**
+     * 调拨 出库列表
+     *
+     * @param enter
+     * @param whseIds
+     * @return
+     */
+    List<OutWhResult> outWhListAllocate(@Param("enter") WhEnter enter, @Param("whseIds") List<Long> whseIds);
 }

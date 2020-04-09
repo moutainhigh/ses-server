@@ -155,7 +155,7 @@ public interface BomRosService {
      * @param enter
      * @return
      */
-    GeneralResult savePartsQcTemplate(SaveQcTemplateEnter enter);
+    GeneralResult savePartsDraftQcTemplate(SaveQcTemplateEnter enter);
 
     /**
      * 部件质检模板详情

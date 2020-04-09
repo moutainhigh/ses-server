@@ -125,4 +125,17 @@
         </if>
     </select>
 
+    <select id="opePartsProductBListByPartIDraftds"
+            resultType="com.redescooter.ses.web.ros.dm.OpePartsProductB">
+        select productB.*
+        from ope_parts_product_b productB
+        inner join ope_parts_draft draft on productB.parts_id=draft.id and draft.dr=0
+        left join ope_parts parts on draft.id = parts.parts_draft_id and parts.dr = 0
+        where productB.dr = 0
+        and draft.id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
 </mapper>

@@ -305,7 +305,7 @@
         <if test="keyword != null and keyword != ''">
             and(
             parts.parts_number like concat ("%",#{keyword},"%") or
-            parts.en_name like concat ("%",#{keyword},"%")
+            parts.en_name like concat ("%",#{keyword},"%") or
             parts.cn_name like concat ("%",#{keyword},"%")
             )
         </if>
@@ -410,12 +410,11 @@
     <update id="updatePurchasBQcStatus">
         update ope_purchas_b set qc_status=#{status} where ope_purchas_b.dr=0 and ope_purchas_b.purchas_id=#{id}
     </update>
-    <select id="qcCountByStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
-        select qc_status as status, count(*) as totalCount
-        from ope_purchas_b
-        where purchas_id=#{id}
-        and dr=0
-        and total_count != 0
-        group by qc_status
+    <select id="qcCountByStatus" resultType="com.redescooter.ses.web.ros.dm.OpePurchasBQc">
+        select qc.*
+        from ope_purchas_b purchasb
+        inner join ope_purchas_b_qc qc on purchasb.id = qc.purchas_b_id
+        where purchasb.purchas_id =#{id}
+        and purchasb.dr = 0
     </select>
 </mapper>

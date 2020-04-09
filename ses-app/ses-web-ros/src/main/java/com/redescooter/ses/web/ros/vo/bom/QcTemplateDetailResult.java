@@ -27,7 +27,7 @@ public class QcTemplateDetailResult extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "质检名称")
-    private String qcitemName;
+    private String qcItemName;
 
     @ApiModelProperty(value = "质检项结果")
     private List<QcResultResult> qcResultResultList;

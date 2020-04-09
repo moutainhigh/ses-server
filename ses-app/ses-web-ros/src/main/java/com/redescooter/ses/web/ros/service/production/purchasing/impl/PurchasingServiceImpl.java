@@ -946,11 +946,24 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public Map<String, Integer> qcCountByStatus(IdEnter enter) {
-        List<CountByStatusResult> countByStatus = purchasingServiceMapper.qcCountByStatus(enter);
-        Map<String, Integer> map = new HashMap<>();
-        countByStatus.forEach(item -> {
-            map.put(item.getStatus(), item.getTotalCount());
-        });
+        Map<String, Integer> map = Maps.newHashMap();
+        List<OpePurchasBQc> opePurchasBQcList = purchasingServiceMapper.qcCountByStatus(enter);
+        if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
+            int passTotal = 0;
+            int failTotal = 0;
+            for (OpePurchasBQc item : opePurchasBQcList) {
+                if (item.getPassCount() != 0) {
+                    passTotal++;
+                }
+                if (item.getFailCount() != 0) {
+                    failTotal++;
+                }
+            }
+            map.put(QcStatusEnums.PASS.getValue(), passTotal);
+            map.put(QcStatusEnums.FAIL.getValue(), failTotal);
+        }
+
+
         for (QcStatusEnums item : QcStatusEnums.values()) {
             if (!map.containsKey(item.getValue())) {
                 map.put(item.getValue(), 0);
@@ -990,13 +1003,16 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
 
         for (QcInfoResult item : qcPartList) {
+
             List<QcItemDetailResult> qcItemResultList = Lists.newArrayList();
+
             for (QcItemDetailResult qc : qcItemList) {
+
                 if (item.getId().equals(qc.getPruchasBId())) {
-                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.PASS.getValue()) && qc.getFailQty() == 0) {
+                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.PASS.getValue()) && qc.getPassQty() != 0) {
                         qcItemResultList.add(qc);
                     }
-                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.FAIL.getValue()) && qc.getPassQty() == 0) {
+                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.FAIL.getValue()) && qc.getFailQty() != 0) {
                         qcItemResultList.add(qc);
                     }
                 }
@@ -1004,7 +1020,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             item.setQcItemDetailResultList(qcItemResultList);
         }
         //todo 需修改
-//        qcPartList.removeIf(item -> CollectionUtils.isNotEmpty(item.getQcItemDetailResultList()));
+        qcPartList.removeIf(item -> CollectionUtils.isEmpty(item.getQcItemDetailResultList()));
 
         return qcPartList;
     }
