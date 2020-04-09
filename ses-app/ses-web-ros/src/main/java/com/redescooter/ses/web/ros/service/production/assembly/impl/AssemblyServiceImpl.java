@@ -338,13 +338,12 @@ public class AssemblyServiceImpl implements AssemblyService {
         //给结果集添加已选择的数量
         for (SaveAssemblyProductResult item : result) {
             if (CollectionUtils.isNotEmpty(productList)) {
-                productList.forEach(product -> {
+                for (ProductionPartsEnter product : productList) {
                     if (item.getId().equals(product.getId())) {
                         item.setSelectedQty(product.getQty());
-                    } else {
-                        item.setSelectedQty(0);
+                        break;
                     }
-                });
+                }
             }
         }
         return result;

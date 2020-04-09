@@ -952,6 +952,10 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<QcInfoResult> qcList(QcItemListEnter enter) {
+        if (StringUtils.isNotEmpty(enter.getType())) {
+            enter.setStatus(BomCommonTypeEnums.getCodeByValue(enter.getType()));
+        }
+
         checkPurchasRepeatedly(enter.getId(), null);
         List<QcInfoResult> qcPartList = purchasingServiceMapper.qcPartListByPurchasId(enter);
 
@@ -1037,6 +1041,9 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public GeneralResult returnedPurchase(IdEnter enter) {
         OpePurchas opePurchas = checkPurchasRepeatedly(enter.getId(), PurchasingStatusEnums.MATERIALS_QC);
+
+        //采购单原始总价
+        BigDecimal originalPrice = opePurchas.getTotalPrice();
 
         //查询采购条目
         QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
@@ -1152,13 +1159,15 @@ public class PurchasingServiceImpl implements PurchasingService {
         //Qc 质检通过
         opePurchasBQcService.updateBatchById(purchasBQcList);
 
+        String memo = new StringBuffer(originalPrice.toString() + CurrencyUnitEnums.FR.getName()).append(",").append(retureTotalPrice.toString() + CurrencyUnitEnums.FR.getName()).toString();
+
         //节点
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
         saveNodeEnter.setId(opePurchas.getId());
         saveNodeEnter.setStatus(PurchasingStatusEnums.RETURN.getValue());
         saveNodeEnter.setEvent(PurchasingEventEnums.RETURN.getValue());
-        saveNodeEnter.setMemo(retureTotalPrice.toString() + CurrencyUnitEnums.FR.getName());
+        saveNodeEnter.setMemo(memo);
         this.savePurchasingNode(saveNodeEnter);
         return new GeneralResult(enter.getRequestId());
     }
