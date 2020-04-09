@@ -21,6 +21,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplier
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -108,7 +109,7 @@ public interface PurchasingService {
      * @param enter
      * @return
      */
-    GeneralResult export(IdEnter enter);
+    GeneralResult export(IdEnter enter,HttpServletResponse response);
 
     /**
      * 付款详情

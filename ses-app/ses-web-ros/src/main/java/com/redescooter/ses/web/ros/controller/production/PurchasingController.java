@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -131,8 +132,8 @@ public class PurchasingController {
 
     @PostMapping(value = "/export")
     @ApiOperation(value = "采购单信息导出", response = GeneralResult.class)
-    public Response<GeneralResult> export(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(purchasingService.export(enter));
+    public Response<GeneralResult> export(@ModelAttribute @ApiParam("请求参数") IdEnter enter,HttpServletResponse response) {
+        return new Response<>(purchasingService.export(enter,response));
     }
 
     @PostMapping(value = "/paymentDetail")

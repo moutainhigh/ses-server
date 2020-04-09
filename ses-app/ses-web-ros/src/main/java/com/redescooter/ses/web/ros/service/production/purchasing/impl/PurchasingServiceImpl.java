@@ -27,6 +27,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.poi.EasyPoiUtils;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper;
@@ -89,10 +90,13 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -444,8 +448,20 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @return
      */
     @Override
-    public GeneralResult export(IdEnter enter) {
-        return null;
+    public GeneralResult export(IdEnter enter, HttpServletResponse response) {
+
+        String path = "src/main/resources/template/";
+
+        PurchasingResult purchasingResult = this.detail(enter);
+
+        try {
+            Workbook workbook = EasyPoiUtils.exportExcel(PurchasingResult.class, (Collection<?>) purchasingResult, path, purchasingResult.getContractN());
+            EasyPoiUtils.downLoadExcel(purchasingResult.getContractN(), workbook, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new GeneralResult();
     }
 
     /**
