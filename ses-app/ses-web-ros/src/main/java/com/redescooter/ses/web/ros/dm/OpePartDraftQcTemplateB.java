@@ -16,13 +16,13 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartQcTemplate")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartDraftQcTemplateB")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_part_qc_template")
-public class OpePartQcTemplate implements Serializable {
+@TableName(value = "ope_part_draft_qc_template_b")
+public class OpePartDraftQcTemplateB implements Serializable {
     /**
      * 主键
      */
@@ -39,32 +39,32 @@ public class OpePartQcTemplate implements Serializable {
     private Integer dr;
 
     /**
-     * 部件Id
+     * 质检项Id
      */
-    @TableField(value = "part_id")
-    @ApiModelProperty(value = "部件Id")
-    private Long partId;
+    @TableField(value = "part_draft_qc_template_id")
+    @ApiModelProperty(value = "质检项Id")
+    private Long partDraftQcTemplateId;
 
     /**
-     * 导入批次号
+     * 质检结果
      */
-    @TableField(value = "import_excel_batch_no")
-    @ApiModelProperty(value = "导入批次号")
-    private String importExcelBatchNo;
+    @TableField(value = "qc_result")
+    @ApiModelProperty(value = "质检结果")
+    private String qcResult;
 
     /**
-     * 来源方式
+     * 是否允许上传图片
      */
-    @TableField(value = "source_type")
-    @ApiModelProperty(value = "来源方式")
-    private String sourceType;
+    @TableField(value = "upload_flag")
+    @ApiModelProperty(value = "是否允许上传图片")
+    private Boolean uploadFlag;
 
     /**
-     * 质检项名称
+     * 结果集排序优先级
      */
-    @TableField(value = "qc_item_name")
-    @ApiModelProperty(value = "质检项名称")
-    private String qcItemName;
+    @TableField(value = "results_sequence")
+    @ApiModelProperty(value = "结果集排序优先级")
+    private Integer resultsSequence;
 
     /**
      * 乐观锁
@@ -142,13 +142,13 @@ public class OpePartQcTemplate implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_PART_ID = "part_id";
+    public static final String COL_PART_DRAFT_QC_TEMPLATE_ID = "part_draft_qc_template_id";
 
-    public static final String COL_IMPORT_EXCEL_BATCH_NO = "import_excel_batch_no";
+    public static final String COL_QC_RESULT = "qc_result";
 
-    public static final String COL_SOURCE_TYPE = "source_type";
+    public static final String COL_UPLOAD_FLAG = "upload_flag";
 
-    public static final String COL_QC_ITEM_NAME = "qc_item_name";
+    public static final String COL_RESULTS_SEQUENCE = "results_sequence";
 
     public static final String COL_REVISION = "revision";
 
@@ -170,7 +170,7 @@ public class OpePartQcTemplate implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpePartQcTemplateBuilder builder() {
-        return new OpePartQcTemplateBuilder();
+    public static OpePartDraftQcTemplateBBuilder builder() {
+        return new OpePartDraftQcTemplateBBuilder();
     }
 }

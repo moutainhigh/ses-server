@@ -19,17 +19,19 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpePartQcTemplate;
-import com.redescooter.ses.web.ros.dm.OpePartQcTemplateB;
+import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplate;
+import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplateB;
 import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.dm.OpePartsDraft;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.dm.OpeProductQcTemplate;
 import com.redescooter.ses.web.ros.dm.OpeProductQcTemplateB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpePartQcTemplateBService;
-import com.redescooter.ses.web.ros.service.base.OpePartQcTemplateService;
+import com.redescooter.ses.web.ros.service.base.OpePartDraftQcTemplateBService;
+import com.redescooter.ses.web.ros.service.base.OpePartDraftQcTemplateService;
+import com.redescooter.ses.web.ros.service.base.OpePartsDraftService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
@@ -96,16 +98,19 @@ public class BomRosServiceImpl implements BomRosService {
     private OpePartsService opePartsService;
 
     @Autowired
-    private OpePartQcTemplateService opePartQcTemplateService;
+    private OpePartDraftQcTemplateService opePartDraftQcTemplateService;
 
     @Autowired
-    private OpePartQcTemplateBService opePartQcTemplateBService;
+    private OpePartDraftQcTemplateBService opePartDraftQcTemplateBService;
 
     @Autowired
     private OpeProductQcTemplateService opeProductQcTemplateService;
 
     @Autowired
     private OpeProductQcTemplateBService opeProductQcTemplateBService;
+
+    @Autowired
+    private OpePartsDraftService opePartsDraftService;
 
 
     /**
@@ -638,11 +643,11 @@ public class BomRosServiceImpl implements BomRosService {
      */
     @Transactional
     @Override
-    public GeneralResult savePartsQcTemplate(SaveQcTemplateEnter enter) {
+    public GeneralResult savePartsDraftQcTemplate(SaveQcTemplateEnter enter) {
         //数据保存集合
-        List<OpePartQcTemplate> saveOpePartQcTemplateList = new ArrayList<>();
+        List<OpePartDraftQcTemplate> saveOpePartDraftQcTemplateList = new ArrayList<>();
 
-        List<OpePartQcTemplateB> saveOpePartQcTemplateBList = new ArrayList<>();
+        List<OpePartDraftQcTemplateB> saveOpePartDraftQcTemplateBList = new ArrayList<>();
 
         //数据解析集合
         List<QcItemTemplateEnter> qcItemTemplateEnterList = null;
@@ -663,17 +668,17 @@ public class BomRosServiceImpl implements BomRosService {
         checkParameterEnter(enter, qcResultEnterMap);
 
         //查询是否存在质检项 若存在删除所有质检项
-        List<OpePartQcTemplate> partQcTemplateList = deleteOpePartQcTemplates(enter);
+        List<OpePartDraftQcTemplate> partQcTemplateList = deleteOpePartQcTemplates(enter);
         //形成质检项
-        buildPartQcTemplate(enter, saveOpePartQcTemplateList, saveOpePartQcTemplateBList, qcResultEnterMap, partQcTemplateList);
+        buildPartQcTemplate(enter, saveOpePartDraftQcTemplateList, saveOpePartDraftQcTemplateBList, qcResultEnterMap, partQcTemplateList);
 
         //质检模板数据保存
-        if (CollectionUtils.isNotEmpty(saveOpePartQcTemplateList)) {
-            opePartQcTemplateService.saveOrUpdateBatch(saveOpePartQcTemplateList);
+        if (CollectionUtils.isNotEmpty(saveOpePartDraftQcTemplateList)) {
+            opePartDraftQcTemplateService.saveOrUpdateBatch(saveOpePartDraftQcTemplateList);
 
         }
         //质检项结果集数据保存
-        opePartQcTemplateBService.saveBatch(saveOpePartQcTemplateBList);
+        opePartDraftQcTemplateBService.saveOrUpdateBatch(saveOpePartDraftQcTemplateBList);
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -695,9 +700,9 @@ public class BomRosServiceImpl implements BomRosService {
         }
 
         //查询质检项
-        QueryWrapper<OpePartQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
-        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplate.COL_PART_ID, enter.getId());
-        List<OpePartQcTemplate> partQcTemplateList = opePartQcTemplateService.list(opePartQcTemplateQueryWrapper);
+        QueryWrapper<OpePartDraftQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
+        opePartQcTemplateQueryWrapper.eq(OpePartDraftQcTemplate.COL_PART_DRAFT_ID, enter.getId());
+        List<OpePartDraftQcTemplate> partQcTemplateList = opePartDraftQcTemplateService.list(opePartQcTemplateQueryWrapper);
         if (CollectionUtils.isEmpty(partQcTemplateList)) {
             return result;
         }
@@ -707,9 +712,9 @@ public class BomRosServiceImpl implements BomRosService {
         });
 
         //查询质检项结果
-        QueryWrapper<OpePartQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
-        opePartQcTemplateBQueryWrapper.in(OpePartQcTemplateB.COL_PART_QC_TEMPLATE_ID, templateIds);
-        List<OpePartQcTemplateB> templateBList = opePartQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
+        QueryWrapper<OpePartDraftQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
+        opePartQcTemplateBQueryWrapper.in(OpePartDraftQcTemplateB.COL_PART_DRAFT_QC_TEMPLATE_ID, templateIds);
+        List<OpePartDraftQcTemplateB> templateBList = opePartDraftQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
         if (CollectionUtils.isEmpty(templateBList)) {
             partQcTemplateList.forEach(item -> {
                 result.add(
@@ -724,7 +729,7 @@ public class BomRosServiceImpl implements BomRosService {
             partQcTemplateList.forEach(item -> {
                 List<QcResultResult> resultTemplateBList = Lists.newArrayList();
                 templateBList.forEach(templateb -> {
-                    if (item.getId().equals(templateb.getPartQcTemplateId())) {
+                    if (item.getId().equals(templateb.getPartDraftQcTemplateId())) {
                         resultTemplateBList.add(
                                 QcResultResult.builder()
                                         .result(templateb.getQcResult())
@@ -1095,10 +1100,10 @@ public class BomRosServiceImpl implements BomRosService {
      * @param enter
      * @return
      */
-    private List<OpePartQcTemplate> deleteOpePartQcTemplates(SaveQcTemplateEnter enter) {
-        QueryWrapper<OpePartQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
-        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplate.COL_PART_ID, enter.getId());
-        List<OpePartQcTemplate> partQcTemplateList = opePartQcTemplateService.list(opePartQcTemplateQueryWrapper);
+    private List<OpePartDraftQcTemplate> deleteOpePartQcTemplates(SaveQcTemplateEnter enter) {
+        QueryWrapper<OpePartDraftQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
+        opePartQcTemplateQueryWrapper.eq(OpePartDraftQcTemplate.COL_PART_DRAFT_ID, enter.getId());
+        List<OpePartDraftQcTemplate> partQcTemplateList = opePartDraftQcTemplateService.list(opePartQcTemplateQueryWrapper);
         if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
             Set<Long> partQcTemplateIds = Sets.newHashSet();
             partQcTemplateList.forEach(item -> {
@@ -1106,15 +1111,15 @@ public class BomRosServiceImpl implements BomRosService {
             });
 
             //查询质检结果项
-            QueryWrapper<OpePartQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
-            opePartQcTemplateBQueryWrapper.in(OpePartQcTemplateB.COL_PART_QC_TEMPLATE_ID, new ArrayList<>(partQcTemplateIds));
-            List<OpePartQcTemplateB> templateBList = opePartQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
+            QueryWrapper<OpePartDraftQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
+            opePartQcTemplateBQueryWrapper.in(OpePartDraftQcTemplateB.COL_PART_DRAFT_QC_TEMPLATE_ID, new ArrayList<>(partQcTemplateIds));
+            List<OpePartDraftQcTemplateB> templateBList = opePartDraftQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
             if (CollectionUtils.isNotEmpty(templateBList)) {
                 Set<Long> deleteTemplateBIds = Sets.newHashSet();
                 templateBList.stream().forEach(item -> deleteTemplateBIds.add(item.getId()));
-                opePartQcTemplateBService.removeByIds(deleteTemplateBIds);
+                opePartDraftQcTemplateBService.removeByIds(deleteTemplateBIds);
             }
-            opePartQcTemplateService.removeByIds(partQcTemplateIds);
+            opePartDraftQcTemplateService.removeByIds(partQcTemplateIds);
         }
         return partQcTemplateList;
     }
@@ -1128,8 +1133,9 @@ public class BomRosServiceImpl implements BomRosService {
      * @param qcResultEnterMap
      * @param partQcTemplateList
      */
-    private void buildPartQcTemplate(SaveQcTemplateEnter enter, List<OpePartQcTemplate> saveOpePartQcTemplateList, List<OpePartQcTemplateB> saveOpePartQcTemplateBList, Map<QcItemTemplateEnter,
-            List<QcResultEnter>> qcResultEnterMap, List<OpePartQcTemplate> partQcTemplateList) {
+    private void buildPartQcTemplate(SaveQcTemplateEnter enter, List<OpePartDraftQcTemplate> saveOpePartQcTemplateList, List<OpePartDraftQcTemplateB> saveOpePartQcTemplateBList,
+                                     Map<QcItemTemplateEnter,
+            List<QcResultEnter>> qcResultEnterMap, List<OpePartDraftQcTemplate> partQcTemplateList) {
         if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
             partQcTemplateList.forEach(template -> {
 
@@ -1137,10 +1143,10 @@ public class BomRosServiceImpl implements BomRosService {
 
                     if (template.getId().equals(key.getId())) {
                         saveOpePartQcTemplateList.add(
-                                OpePartQcTemplate.builder()
+                                OpePartDraftQcTemplate.builder()
                                         .id(template.getId())
                                         .dr(0)
-                                        .partId(enter.getId())
+                                        .partDraftId(enter.getId())
                                         .importExcelBatchNo(template.getImportExcelBatchNo())
                                         .sourceType(template.getSourceType())
                                         .qcItemName(key.getQcItemName())
@@ -1155,10 +1161,10 @@ public class BomRosServiceImpl implements BomRosService {
                     }
                     value.forEach(item -> {
                         saveOpePartQcTemplateBList.add(
-                                OpePartQcTemplateB.builder()
-                                        .id(idAppService.getId(SequenceName.OPE_PART_QC_TEMPLATE_B))
+                                OpePartDraftQcTemplateB.builder()
+                                        .id(idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE_B))
                                         .dr(0)
-                                        .partQcTemplateId(template.getId())
+                                        .partDraftQcTemplateId(template.getId())
                                         .qcResult(item.getResult())
                                         .uploadFlag(item.getUploadPictureFalg())
                                         .resultsSequence(item.getResultSequence())
@@ -1175,12 +1181,12 @@ public class BomRosServiceImpl implements BomRosService {
 
         } else {
             qcResultEnterMap.forEach((key, value) -> {
-                Long templateId = idAppService.getId(SequenceName.OPE_PART_QC_TEMPLATE);
+                Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
                 saveOpePartQcTemplateList.add(
-                        OpePartQcTemplate.builder()
+                        OpePartDraftQcTemplate.builder()
                                 .id(templateId)
                                 .dr(0)
-                                .partId(enter.getId())
+                                .partDraftId(enter.getId())
                                 .importExcelBatchNo(null)
                                 .sourceType(QcSourceTypeEnums.MANUAL_ENTRY.getValue())
                                 .qcItemName(key.getQcItemName())
@@ -1194,10 +1200,10 @@ public class BomRosServiceImpl implements BomRosService {
                 );
                 value.forEach(item -> {
                     saveOpePartQcTemplateBList.add(
-                            OpePartQcTemplateB.builder()
-                                    .id(idAppService.getId(SequenceName.OPE_PART_QC_TEMPLATE_B))
+                            OpePartDraftQcTemplateB.builder()
+                                    .id(idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE_B))
                                     .dr(0)
-                                    .partQcTemplateId(templateId)
+                                    .partDraftQcTemplateId(templateId)
                                     .qcResult(item.getResult())
                                     .uploadFlag(item.getUploadPictureFalg())
                                     .resultsSequence(item.getResultSequence())
@@ -1247,8 +1253,9 @@ public class BomRosServiceImpl implements BomRosService {
         });
 
         //部品验证
-        OpeParts opeParts = opePartsService.getById(enter.getId());
-        if (opeParts == null) {
+
+        OpePartsDraft opePartsDraft = opePartsDraftService.getById(enter.getId());
+        if (opePartsDraft == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
     }

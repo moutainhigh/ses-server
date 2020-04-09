@@ -133,7 +133,7 @@ public class PartsController {
     @PostMapping(value = "/savePartsQcTemplate")
     @ApiOperation(value = "保存部件质检模板", response = GeneralResult.class)
     public Response<GeneralResult> savePartsQcTemplate(@ModelAttribute @ApiParam("请求参数") SaveQcTemplateEnter enter) {
-        return new Response<>(bomRosService.savePartsQcTemplate(enter));
+        return new Response<>(bomRosService.savePartsDraftQcTemplate(enter));
     }
 
     @PostMapping(value = "/partsQcTemplateDetail")
