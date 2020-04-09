@@ -238,6 +238,9 @@ public class AssemblyServiceImpl implements AssemblyService {
                     opeStockList.forEach(stock -> {
                         if (stock.getMaterielProductId().equals(item.getPartsId())) {
                             stock.setAvailableTotal(stock.getAvailableTotal() - item.getPartsQty() * product.getQty());
+                            if (stock.getAvailableTotal() < 0) {
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            }
                         }
                     });
                 }
@@ -328,20 +331,22 @@ public class AssemblyServiceImpl implements AssemblyService {
             }
             result.add(productResult);
         });
+        //去除结果集上的空集
+        result.removeIf(item -> item == null);
+
 
         //给结果集添加已选择的数量
-//        for (SaveAssemblyProductResult item : result) {
-//            if (CollectionUtils.isNotEmpty(productList)) {
-//                productList.forEach(product -> {
-//                    if (item.getId().equals(product.getId())){
-//                        item.setSelectedQty(product.getQty());
-//                    }else {
-//                        item.setSelectedQty(0);
-//                    }
-//                });
-//            }
-//        }
-
+        for (SaveAssemblyProductResult item : result) {
+            if (CollectionUtils.isNotEmpty(productList)) {
+                productList.forEach(product -> {
+                    if (item.getId().equals(product.getId())) {
+                        item.setSelectedQty(product.getQty());
+                    } else {
+                        item.setSelectedQty(0);
+                    }
+                });
+            }
+        }
         return result;
     }
 
