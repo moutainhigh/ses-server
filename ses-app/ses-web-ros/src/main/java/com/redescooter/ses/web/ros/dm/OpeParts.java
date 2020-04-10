@@ -34,7 +34,8 @@ public class OpeParts implements Serializable {
      * 逻辑删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除")
+    @ApiModelProperty(value = "逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**

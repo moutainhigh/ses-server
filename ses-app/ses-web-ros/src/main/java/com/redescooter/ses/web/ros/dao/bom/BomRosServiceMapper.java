@@ -3,14 +3,15 @@ package com.redescooter.ses.web.ros.dao.bom;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -104,5 +105,21 @@ public interface BomRosServiceMapper {
      * @param longs
      * @return
      */
-    List<OpePartsProductB> opePartsProductBListByPartIDraftds(ArrayList<Long> longs);
+    List<OpePartsProductB> opePartsProductBListByPartIDraftds(List<Long> longs);
+
+    /**
+     * 保存组合部件列表
+     *
+     * @param enter
+     * @return
+     */
+    int saveProductPartListCount(QueryPartListEnter enter);
+
+    /**
+     * 保存组合部件列表
+     *
+     * @param enter
+     * @return
+     */
+    List<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter);
 }

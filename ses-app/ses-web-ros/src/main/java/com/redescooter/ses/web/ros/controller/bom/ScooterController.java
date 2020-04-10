@@ -11,6 +11,7 @@ import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.DeletePartEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
@@ -52,6 +53,7 @@ public class ScooterController {
         return new Response<>(bomRosService.scooterList(enter));
     }
 
+
     @PostMapping(value = "/saveScooter")
     @ApiOperation(value = "整车保存", response = GeneralResult.class)
     public Response<GeneralResult> saveScooter(@ModelAttribute @ApiParam("请求参数") SaveScooterEnter enter) {
@@ -70,14 +72,21 @@ public class ScooterController {
         return new Response<>(partsRosService.partList(enter));
     }
 
+    @PostMapping(value = "/saveProductPartList")
+    @ApiOperation(value = "保存部品列表", response = DetailsPartsResult.class)
+    public Response<PageResult<DetailsPartsResult>> saveProductPartList(@ModelAttribute @ApiParam("请求参数") QueryPartListEnter enter) {
+        return new Response<>(partsRosService.saveProductPartList(enter));
+    }
+
+
     @PostMapping(value = "/scooterDetail")
-    @ApiOperation(value ="整车详情", response = ScooterDetailResult.class)
+    @ApiOperation(value = "整车详情", response = ScooterDetailResult.class)
     public Response<ScooterDetailResult> scooterDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(bomRosService.scooterDetail(enter));
     }
 
     @PostMapping(value = "/deleteScooterPart")
-    @ApiOperation(value ="整车部品删除", response = GeneralResult.class)
+    @ApiOperation(value = "整车部品删除", response = GeneralResult.class)
     public Response<GeneralResult> deleteScooterPart(@ModelAttribute @ApiParam("请求参数") DeletePartEnter enter) {
         return new Response<>(bomRosService.deleteScooterPart(enter));
     }

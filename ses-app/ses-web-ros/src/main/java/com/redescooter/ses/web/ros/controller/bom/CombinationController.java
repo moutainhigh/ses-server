@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.bom.BomRosService;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationDetailResult;
@@ -13,6 +14,7 @@ import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.DeletePartEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.SaveCombinationEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -82,4 +84,11 @@ public class CombinationController {
     public Response<GeneralResult> saveCombination(@ModelAttribute @ApiParam("请求参数") SaveCombinationEnter enter) {
         return new Response<>(bomRosService.saveCombination(enter));
     }
+
+    @PostMapping(value = "/saveProductPartList")
+    @ApiOperation(value = "保存部品列表", response = DetailsPartsResult.class)
+    public Response<PageResult<DetailsPartsResult>> saveProductPartList(@ModelAttribute @ApiParam("请求参数") QueryPartListEnter enter) {
+        return new Response<>(bomRosService.saveProductPartList(enter));
+    }
+
 }

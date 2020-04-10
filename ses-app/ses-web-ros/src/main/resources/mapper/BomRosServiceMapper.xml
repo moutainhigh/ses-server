@@ -48,6 +48,24 @@
         </if>
     </sql>
 
+    <sql id="saveProduct_List">
+        <where>
+            and parts.dr = 0
+            and parts.user_id=#{userId}
+            <if test="sec != null and sec != ''">
+                and parts.sec =#{sec}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (parts.cn_name like concat("%",#{keyword},"%")
+                or parts.en_name like concat("%",#{keyword},"%")
+                or parts.fr_name like concat("%",#{keyword},"%")
+                or os.supplier_name like concat("%",#{keyword},"%")
+                or parts.parts_number LIKE CONCAT("%",#{keyword},"%")
+                )
+            </if>
+        </where>
+    </sql>
+
     <select id="scooterListCount" resultType="java.lang.Integer">
         select count(*)
         from ope_parts_product opp
@@ -129,13 +147,52 @@
             resultType="com.redescooter.ses.web.ros.dm.OpePartsProductB">
         select productB.*
         from ope_parts_product_b productB
-        inner join ope_parts_draft draft on productB.parts_id=draft.id and draft.dr=0
-        left join ope_parts parts on draft.id = parts.parts_draft_id and parts.dr = 0
+        inner join ope_parts parts on parts.id = productB.parts_id and parts.dr = 0
+        inner join ope_parts_draft draft on parts.parts_draft_id = draft.id and draft.dr = 0
         where productB.dr = 0
         and draft.id in
         <foreach collection="list" open="(" close=")" separator="," item="item">
             #{item}
         </foreach>
     </select>
+
+    <select id="saveProductPartListCount" resultType="int">
+        select count(*)
+        from ope_parts parts
+        left join ope_supplier os on parts.supplier_id = os.id and os.dr = 0
+        <include refid="saveProduct_List"/>
+    </select>
+
+    <select id="saveProductPartList" resultType="com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult">
+        select
+        parts.id,
+        parts.user_id,
+        parts.Import_lot,
+        parts.parts_type,
+        parts.sec,
+        parts.parts_number,
+        parts.cn_name,
+        parts.fr_name,
+        parts.en_name,
+        case when (parts.sn_class='1') then 'SC' else 'SSC' end as snClassFlag,
+        parts.parts_qty,
+        parts.production_cycle,
+        parts.supplier_id,
+        parts.dwg,
+        parts.note,
+        parts.revision,
+        parts.created_time,
+        os.supplier_name,
+        parts.synchronize_flag,
+        parts.id_class
+        from ope_parts parts
+        left join ope_supplier os on parts.supplier_id = os.id and os.dr = 0
+        <include refid="saveProduct_List"/>
+        <!--        group by-->
+        <!--        <include refid="group_by_parts_list"/>-->
+        order by parts.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
 
 </mapper>

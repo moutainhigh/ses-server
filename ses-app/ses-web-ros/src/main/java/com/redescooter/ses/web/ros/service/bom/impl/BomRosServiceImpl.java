@@ -43,6 +43,7 @@ import com.redescooter.ses.web.ros.vo.bom.QcItemTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.QcResultEnter;
 import com.redescooter.ses.web.ros.vo.bom.QcResultResult;
 import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
@@ -51,6 +52,7 @@ import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.DeletePartEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.SaveCombinationEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
@@ -70,6 +72,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:BomRosServiceImpl
@@ -178,6 +181,12 @@ public class BomRosServiceImpl implements BomRosService {
                 .revision(0)
                 .build();
 
+        // 校验部品既有价格又有供应商的 部品
+        List<Long> partsIdList = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
+        if (bomRosServiceMapper.countSupplierWithPriceByPartIds(partsIdList) != partsIdList.size()) {
+            throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
+                    ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
+        }
         if (enter.getId() == null || enter.getId() == 0) {
             //保存
             Long productId = idAppService.getId(SequenceName.OPE_PARTS_PRODUCT);
@@ -231,15 +240,17 @@ public class BomRosServiceImpl implements BomRosService {
                     opePartsProductB.setCreatedTime(new Date());
                     opePartsProductB.setId(idAppService.getId(SequenceName.OPE_PARTS_PRODUCT_B));
                     opePartsProductList.add(opePartsProductB);
+                    partAllQty += item.getQty();
                 }
             }
             opePartsProduct.setId(enter.getId());
         }
-        opePartsProduct.setSumPartsQty(partList.size());
+        opePartsProduct.setSumPartsQty(partAllQty);
         opePartsProduct.setUpdatedBy(enter.getUserId());
         opePartsProduct.setUpdatedTime(new Date());
 
         //部品没有价格 没有供应商 不可组合车辆
+
         opePartsProductBService.saveOrUpdateBatch(opePartsProductList);
 
         opePartsProductService.saveOrUpdate(opePartsProduct);
@@ -531,6 +542,12 @@ public class BomRosServiceImpl implements BomRosService {
         });
         if (partIds.size() != partList.size()) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        // 校验部品既有价格又有供应商的 部品
+        List<Long> partsIdList = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
+        if (bomRosServiceMapper.countSupplierWithPriceByPartIds(partsIdList) != partsIdList.size()) {
+            throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
+                    ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
         }
 
         // 配件过滤
@@ -825,6 +842,24 @@ public class BomRosServiceImpl implements BomRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
+
+    /**
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter) {
+        int count = bomRosServiceMapper.saveProductPartListCount(enter);
+
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+
+        List<DetailsPartsResult> list = bomRosServiceMapper.saveProductPartList(enter);
+
+        return PageResult.create(enter, count, list);
+    }
+
     /**
      * 产品质检模板详情
      *
@@ -922,12 +957,12 @@ public class BomRosServiceImpl implements BomRosService {
                         saveOpeProductQcTemplateList.add(
                                 buildProductQcTemplate(enter, templateId, key.getQcItemName(), template.getImportExcelBatchNo(), template.getSourceType())
                         );
+                        value.forEach(item -> {
+                            saveOpeProductQcTemplateBList.add(
+                                    buildProductQcTemplateB(enter, templateId, item)
+                            );
+                        });
                     }
-                    value.forEach(item -> {
-                        saveOpeProductQcTemplateBList.add(
-                                buildProductQcTemplateB(enter, templateId, item)
-                        );
-                    });
                 });
             });
 
@@ -1080,11 +1115,6 @@ public class BomRosServiceImpl implements BomRosService {
                 }
                 partsIdList.add(item.getId());
             });
-            // 校验部品既有价格又有供应商的 部品
-            if (bomRosServiceMapper.countSupplierWithPriceByPartIds(partsIdList) != partsIdList.size()) {
-                throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
-                        ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
-            }
         }
     }
 
@@ -1105,14 +1135,16 @@ public class BomRosServiceImpl implements BomRosService {
             });
 
             //查询质检结果项
+//            QueryWrapper<OpePartDraftQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
+//            opePartQcTemplateBQueryWrapper.in(OpePartDraftQcTemplateB.COL_PART_DRAFT_QC_TEMPLATE_ID, new ArrayList<>(partQcTemplateIds));
+//            List<OpePartDraftQcTemplateB> templateBList = opePartDraftQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
+//            if (CollectionUtils.isNotEmpty(templateBList)) {
+//                opePartDraftQcTemplateBService.removeByIds(templateBList.stream().map(OpePartDraftQcTemplateB::getId).collect(Collectors.toList()));
+//            }
             QueryWrapper<OpePartDraftQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
             opePartQcTemplateBQueryWrapper.in(OpePartDraftQcTemplateB.COL_PART_DRAFT_QC_TEMPLATE_ID, new ArrayList<>(partQcTemplateIds));
-            List<OpePartDraftQcTemplateB> templateBList = opePartDraftQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
-            if (CollectionUtils.isNotEmpty(templateBList)) {
-                Set<Long> deleteTemplateBIds = Sets.newHashSet();
-                templateBList.stream().forEach(item -> deleteTemplateBIds.add(item.getId()));
-                opePartDraftQcTemplateBService.removeByIds(deleteTemplateBIds);
-            }
+            opePartDraftQcTemplateBService.remove(opePartQcTemplateBQueryWrapper);
+
             opePartDraftQcTemplateService.removeByIds(partQcTemplateIds);
         }
         return partQcTemplateList;
@@ -1151,10 +1183,11 @@ public class BomRosServiceImpl implements BomRosService {
                         saveOpePartQcTemplateList.add(
                                 buildOpePartTemplate(enter, key.getQcItemName(), templateId, template.getImportExcelBatchNo(), template.getSourceType())
                         );
+
+                        value.forEach(item -> {
+                            saveOpePartQcTemplateBList.add(buildPartTemplateB(enter, templateId, item));
+                        });
                     }
-                    value.forEach(item -> {
-                        saveOpePartQcTemplateBList.add(buildPartTemplateB(enter, templateId, item));
-                    });
                 });
             }
 
