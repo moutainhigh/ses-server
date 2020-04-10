@@ -549,6 +549,13 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         List<DetailsPartsResult> list = partsServiceMapper.list(enter);
 
+        //去除历史重复部品号
+        for (DetailsPartsResult item : list) {
+            if (CollectionUtils.isNotEmpty(item.getHistoryHist())) {
+                item.getHistoryHist().removeIf(hist -> StringUtils.equals(hist.getPartsNumber(), item.getPartsNumber()));
+            }
+        }
+
         return PageResult.create(enter, count, list);
     }
 

@@ -567,7 +567,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
         List<String> productTypeList = new ArrayList<String>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
+            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue())) {
                 productTypeList.add(item.getValue());
             }
         }
