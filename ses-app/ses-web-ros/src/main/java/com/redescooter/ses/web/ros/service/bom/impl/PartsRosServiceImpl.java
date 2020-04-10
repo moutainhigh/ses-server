@@ -31,8 +31,6 @@ import com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.dm.OpePartsType;
-import com.redescooter.ses.web.ros.dm.OpePriceSheet;
-import com.redescooter.ses.web.ros.dm.OpePriceSheetHistory;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.PartsRosService;
@@ -410,15 +408,15 @@ public class PartsRosServiceImpl implements PartsRosService {
 
             //删除定稿部品
             opePartsService.removeByIds(opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
-            //产品报价删除
-            QueryWrapper<OpePriceSheet> opePriceSheetQueryWrapper = new QueryWrapper<>();
-            opePartsQueryWrapper.in(OpePriceSheet.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
-            opePriceSheetService.remove(opePriceSheetQueryWrapper);
+            //todo 产品报价删除
+//            QueryWrapper<OpePriceSheet> opePriceSheetQueryWrapper = new QueryWrapper<>();
+//            opePartsQueryWrapper.in(OpePriceSheet.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
+//            opePriceSheetService.remove(opePriceSheetQueryWrapper);
 
             //报价记录删除
-            QueryWrapper<OpePriceSheetHistory> opePriceSheetHistoryQueryWrapper = new QueryWrapper<>();
-            opePriceSheetHistoryQueryWrapper.in(OpePriceSheetHistory.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
-            opePriceSheetHistoryService.remove(opePriceSheetHistoryQueryWrapper);
+//            QueryWrapper<OpePriceSheetHistory> opePriceSheetHistoryQueryWrapper = new QueryWrapper<>();
+//            opePriceSheetHistoryQueryWrapper.in(OpePriceSheetHistory.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
+//            opePriceSheetHistoryService.remove(opePriceSheetHistoryQueryWrapper);
         }
         if (deletes.size() > 0) {
             opePartsDraftService.removeByIds(deletes);
@@ -606,12 +604,12 @@ public class PartsRosServiceImpl implements PartsRosService {
                 //设置已同步标识
                 p.setSynchronizeFlag(Boolean.TRUE);
 
-                if (p.getSnClass().equals(BomSnClassEnums.SC.getValue())) {
+                if (p.getSnClass().equals(BomSnClassEnums.SC.getCode())) {
                     OpeParts parts = new OpeParts();
                     BeanUtils.copyProperties(p, parts);
                     parts.setPartsDraftId(p.getId());
                     partsSave.add(parts);
-                } else if (p.getSnClass().equals(BomSnClassEnums.SSC.getValue())) {
+                } else if (p.getSnClass().equals(BomSnClassEnums.SSC.getCode())) {
 
                     OpeParts parts = new OpeParts();
                     BeanUtils.copyProperties(p, parts);
@@ -624,7 +622,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                     product.setUserId(p.getUserId());
                     product.setStatus(PartsProductEnums.DOWN.getValue());
                     product.setSnClass(p.getSnClass());
-                    product.setProductType(Integer.parseInt(p.getPartsType()));
+                    product.setProductType(Integer.parseInt(BomCommonTypeEnums.getValueByCode(p.getPartsType())));
                     product.setProductCode(p.getEnName());
                     product.setProductNumber(p.getPartsNumber());
                     product.setCnName(p.getCnName());
@@ -692,9 +690,12 @@ public class PartsRosServiceImpl implements PartsRosService {
                     productUpdate.add(p);
                 }
             });
-
-            partsProductService.saveBatch(productInsert);
-            partsProductService.updateBatch(productUpdate);
+            if (CollectionUtils.isNotEmpty(productInsert)) {
+                partsProductService.saveBatch(productInsert);
+            }
+            if (CollectionUtils.isNotEmpty(productUpdate)) {
+                partsProductService.updateBatch(productUpdate);
+            }
         }
 
         return new GeneralResult(enter.getRequestId());
@@ -842,7 +843,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             partsDraft.setId(enter.getId());
         }
         partsDraft.setPartsType(BomCommonTypeEnums.checkCode(enter.getPartsType()));
-        partsDraft.setSnClass(BomSnClassEnums.getValueByCode(enter.getSnClassFlag()));
+        partsDraft.setSnClass(enter.getSnClassFlag());
         partsDraft.setSec(ESCUtils.checkESC(enter.getSec()));
         partsDraft.setCnName(enter.getCnName());
         partsDraft.setFrName(enter.getFrName());
