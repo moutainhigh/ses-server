@@ -621,7 +621,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                     product.setTenantId(p.getTenantId());
                     product.setUserId(p.getUserId());
                     product.setStatus(PartsProductEnums.DOWN.getValue());
-                    product.setSnClass(p.getSnClass());
+                    product.setSnClass(BomSnClassEnums.getValueByCode(p.getSnClass()));
                     product.setProductType(Integer.parseInt(BomCommonTypeEnums.getValueByCode(p.getPartsType())));
                     product.setProductCode(p.getEnName());
                     product.setProductNumber(p.getPartsNumber());

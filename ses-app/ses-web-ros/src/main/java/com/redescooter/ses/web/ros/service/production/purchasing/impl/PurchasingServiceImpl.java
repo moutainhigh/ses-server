@@ -590,19 +590,21 @@ public class PurchasingServiceImpl implements PurchasingService {
         // 查询零部件
         List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
 
-        //整车查询
-        List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter, BomCommonTypeEnums.SCOOTER.getValue());
-        //查询整车所有部品
+        //商品查询
+        List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter, productTypeList);
+        //查询商品所有部品
         if (CollectionUtils.isNotEmpty(scooterProductList)) {
-            List<Long> partIds = Lists.newArrayList();
+            List<Long> productIds = Lists.newArrayList();
             scooterProductList.forEach(item -> {
-                partIds.add(item.getId());
+                productIds.add(item.getId());
             });
-            List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(partIds);
+            List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
             if (CollectionUtils.isNotEmpty(partList)) {
+
                 for (PruchasingItemResult scooter : scooterProductList) {
                     BigDecimal totalPrice = BigDecimal.ZERO;
                     List<PruchasingItemResult> scooterPartList = Lists.newArrayList();
+
                     for (PruchasingItemResult item : partList) {
                         if (item.getId().equals(scooter.getId())) {
                             totalPrice = totalPrice.add(item.getPrice());
