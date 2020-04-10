@@ -43,6 +43,7 @@ import com.redescooter.ses.web.ros.vo.bom.QcItemTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.QcResultEnter;
 import com.redescooter.ses.web.ros.vo.bom.QcResultResult;
 import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
@@ -51,6 +52,7 @@ import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.DeletePartEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.SaveCombinationEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
@@ -823,6 +825,24 @@ public class BomRosServiceImpl implements BomRosService {
         //质检项结果集数据保存
         opeProductQcTemplateBService.saveOrUpdateBatch(saveOpeProductQcTemplateBList);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    /**
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter) {
+        int count = bomRosServiceMapper.saveProductPartListCount(enter);
+
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+
+        List<DetailsPartsResult> list = bomRosServiceMapper.saveProductPartList(enter);
+
+        return PageResult.create(enter, count, list);
     }
 
     /**

@@ -138,4 +138,9 @@ public interface PartsRosService {
      */
     PageResult<QueryPartListResult> partList(QueryPartListEnter enter);
 
+    /**
+     * @param enter
+     * @return
+     */
+    PageResult<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter);
 }

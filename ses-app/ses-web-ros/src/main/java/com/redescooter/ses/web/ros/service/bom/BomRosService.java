@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
+import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
@@ -13,6 +14,7 @@ import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.DeletePartEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.SaveCombinationEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
@@ -180,4 +182,11 @@ public interface BomRosService {
      * @return
      */
     List<QcTemplateDetailResult> productQcTemplateDetail(IdEnter enter);
+
+
+    /**
+     * @param enter
+     * @return
+     */
+    PageResult<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter);
 }

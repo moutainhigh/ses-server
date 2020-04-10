@@ -72,4 +72,19 @@ public interface PartsServiceMapper {
      */
     List<QueryPartListResult> partList(QueryPartListEnter enter);
 
+    /**
+     * 正式定稿 的部件列表
+     *
+     * @param enter
+     * @return
+     */
+    int saveProductPartListCount(QueryPartListEnter enter);
+
+    /**
+     * 正式定稿 的部件列表
+     *
+     * @param enter
+     * @return
+     */
+    List<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter);
 }

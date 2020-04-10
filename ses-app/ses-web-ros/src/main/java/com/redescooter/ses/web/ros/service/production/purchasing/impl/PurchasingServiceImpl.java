@@ -375,6 +375,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                     .lastName(item.getLastName())
                     .phoneCountryCode(item.getCountryCode())
                     .phone(item.getTelNumber())
+                    .email(item.getEmail())
                     .build());
         });
         return consigneeResultlist;
