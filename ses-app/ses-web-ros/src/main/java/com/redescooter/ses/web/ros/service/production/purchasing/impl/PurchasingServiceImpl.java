@@ -617,6 +617,8 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         partProductList.addAll(scooterProductList);
 
+        partProductList.removeIf(item -> CollectionUtils.isEmpty(item.getPruchasingItemResultList()));
+
         if (CollectionUtils.isEmpty(partProductList)) {
             return new ArrayList<>();
         }
