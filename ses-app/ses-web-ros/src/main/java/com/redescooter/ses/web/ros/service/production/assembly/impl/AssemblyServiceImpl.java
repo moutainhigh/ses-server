@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.service.production.assembly.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -1205,6 +1207,20 @@ public class AssemblyServiceImpl implements AssemblyService {
     public List<productItemResult> productItemList(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), null);
         return assemblyServiceMapper.productItemList(enter);
+    }
+
+    @Override
+    public List<productItemResult> ordinaryProductItemList(IdEnter enter) {
+        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), null);
+        List<productItemResult> list = assemblyServiceMapper.productItemList(enter);
+
+        if (CollectionUtil.isEmpty(list)) {
+            list.forEach(productItemResult -> {
+                productItemResult.setPrice(null);
+            });
+        }
+
+        return list;
     }
 
     /**

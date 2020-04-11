@@ -245,4 +245,12 @@ public interface AssemblyService {
      */
     List<productItemResult> productItemList(IdEnter enter);
 
+    /**
+     * 组装单详情商品列表
+     *
+     * @param enter
+     * @return
+     */
+    List<productItemResult> ordinaryProductItemList(IdEnter enter);
+
 }
