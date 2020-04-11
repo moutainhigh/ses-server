@@ -79,11 +79,11 @@
         order by opp.created_time desc
         limit #{startRow},#{pageSize}
     </select>
-    <select id="UsingProductNumList" resultType="java.lang.String">
-        select opd.parts_number as productN
-        from ope_parts_draft opd
-        where opd.user_id=#{userId}
-        and opd.dr =0
+    <select id="checkProductNums" resultType="java.lang.String">
+     select opd.parts_number as productN
+     from ope_parts_draft opd
+     where opd.dr = 0
+     group by productN
     </select>
     <select id="secList" resultType="com.redescooter.ses.web.ros.vo.bom.SecResult">
         select sec.id   as id,

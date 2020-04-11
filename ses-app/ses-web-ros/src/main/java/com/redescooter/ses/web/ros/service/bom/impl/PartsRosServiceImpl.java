@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
@@ -24,27 +25,11 @@ import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.dao.bom.PartsServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeExcleImport;
-import com.redescooter.ses.web.ros.dm.OpeParts;
-import com.redescooter.ses.web.ros.dm.OpePartsDraft;
-import com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord;
-import com.redescooter.ses.web.ros.dm.OpePartsProduct;
-import com.redescooter.ses.web.ros.dm.OpePartsProductB;
-import com.redescooter.ses.web.ros.dm.OpePartsType;
-import com.redescooter.ses.web.ros.dm.OpePriceSheet;
-import com.redescooter.ses.web.ros.dm.OpePriceSheetHistory;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.PartsRosService;
-import com.redescooter.ses.web.ros.service.base.OpeExcleImportService;
-import com.redescooter.ses.web.ros.service.base.OpePartsDraftService;
-import com.redescooter.ses.web.ros.service.base.OpePartsHistoryRecordService;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
-import com.redescooter.ses.web.ros.service.base.OpePartsService;
-import com.redescooter.ses.web.ros.service.base.OpePartsTypeService;
-import com.redescooter.ses.web.ros.service.base.OpePriceSheetHistoryService;
-import com.redescooter.ses.web.ros.service.base.OpePriceSheetService;
+import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
@@ -102,7 +87,7 @@ public class PartsRosServiceImpl implements PartsRosService {
     private OpePartsProductService partsProductService;
 
     @Autowired
-    private OpePartsHistoryRecordService partsHistoryRecordService;
+    private OpePartsDraftHistoryRecordService partsDraftHistoryRecordService;
 
     @Autowired
     private OpePartsTypeService partsTypeService;
@@ -199,7 +184,7 @@ public class PartsRosServiceImpl implements PartsRosService {
     public ImportExcelPartsResult savePartsList(List<ExpressPartsExcleData> list, ImportPartsEnter enter) {
         ImportExcelPartsResult result = new ImportExcelPartsResult();
         List<OpePartsDraft> saveList = new ArrayList<>();
-        List<OpePartsHistoryRecord> instersHistory = new ArrayList<>();
+        List<OpePartsDraftHistoryRecord> instersHistory = new ArrayList<>();
 
         String lot = generateService.getOrderNo();
         for (ExpressPartsExcleData excleData : list) {
@@ -233,7 +218,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         excleImportService.save(excleImport);
         opePartsDraftService.batchInsert(saveList);
-        partsHistoryRecordService.saveBatch(instersHistory);
+        partsDraftHistoryRecordService.saveBatch(instersHistory);
 
         result.setSuccess(Boolean.TRUE);
         result.setSuccessNum(list.size());
@@ -257,7 +242,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         List<OpePartsDraft> updates = new ArrayList<>();
         List<OpePartsDraft> insters = new ArrayList<>();
-        List<OpePartsHistoryRecord> instersHistory = new ArrayList<>();
+        List<OpePartsDraftHistoryRecord> instersHistory = new ArrayList<>();
 
         if (enters.size() > 0) {
             String lot = generateService.getOrderNo();
@@ -283,7 +268,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             opePartsDraftService.updateBatchById(updates);
         }
         if (instersHistory.size() > 0) {
-            partsHistoryRecordService.saveBatch(instersHistory);
+            partsDraftHistoryRecordService.saveBatch(instersHistory);
         }
         return new GeneralResult(enter.getRequestId());
     }
@@ -292,72 +277,69 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public List<DetailsPartsResult> iterations(StringEnter enter) {
 
-        List<AddPartsEnter> enters = null;
+        List<AddPartsEnter> partsDraft = new ArrayList<>();
+        List<OpePartsDraft> updatePartsDrafts = new ArrayList<>();
+        List<OpePartsDraftHistoryRecord> savePartsDraftHistory = new ArrayList<>();
+        //返回历史记录
+        DetailsPartsResult detailsPartsResult = new DetailsPartsResult();
+        List<DetailsPartsResult> result = new ArrayList<>();
         try {
-            enters = JSONArray.parseArray(enter.getSt(), AddPartsEnter.class);
+            partsDraft = JSONArray.parseArray(enter.getSt(), AddPartsEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
-        List<OpePartsDraft> update = new ArrayList<>();
-        List<OpePartsHistoryRecord> instersHistory = new ArrayList<>();
-
-        DetailsPartsResult detailsPartsResult = new DetailsPartsResult();
-        List<DetailsPartsResult> result = new ArrayList<>();
-
         //判断是否进行部品号的迭代
-        if (enters.size() > 0) {
-            enters.forEach(ne -> {
-                OpePartsDraft olod = opePartsDraftService.getById(ne.getId());
-                Optional.ofNullable(olod).ifPresent(oloPid -> {
+        if (partsDraft.size() > 0) {
+            partsDraft.forEach(p -> {
+                OpePartsDraft originalPartsDraft = opePartsDraftService.getById(p.getId());
+                Optional.ofNullable(originalPartsDraft).ifPresent(original -> {
                     //验证是否已存在
-                    List<String> usingProductNumList = bomRosServiceMapper.UsingProductNumList(enter);
-                    if (usingProductNumList.contains(ne)) {
+                    List<String> checkProductNums = bomRosServiceMapper.checkProductNums(enter);
+                    if (checkProductNums.contains(p)) {
                         throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                     }
                     //保存记录
-                    OpePartsDraft news = new OpePartsDraft();
-                    news.setId(oloPid.getId());
-                    news.setPartsNumber(ne.getPartsNumber());
-                    news.setUpdatedBy(enter.getUserId());
-                    news.setUpdatedTime(new Date());
-                    update.add(news);
-                    instersHistory.add(createPartsDraftHistory(oloPid, PartsEventEnums.ADD.getValue(), enter.getUserId(), ne.getPartsNumber()));
+                    OpePartsDraft newPartsDraft = new OpePartsDraft();
+                    newPartsDraft.setId(original.getId());
+                    newPartsDraft.setPartsNumber(p.getPartsNumber());
+                    newPartsDraft.setUpdatedBy(enter.getUserId());
+                    newPartsDraft.setUpdatedTime(new Date());
+                    updatePartsDrafts.add(newPartsDraft);
+                    savePartsDraftHistory.add(createPartsDraftHistory(original, PartsEventEnums.ADD.getValue(), enter.getUserId(), p.getPartsNumber()));
 
                     // 查询历史的订单编号
-                    QueryWrapper<OpePartsHistoryRecord> opePartsHistoryRecordQueryWrapper = new QueryWrapper<>();
-                    opePartsHistoryRecordQueryWrapper.eq(OpePartsHistoryRecord.COL_PARTS_ID, news.getId());
-                    opePartsHistoryRecordQueryWrapper.eq(OpePartsHistoryRecord.COL_DR, 0);
-
-                    List<OpePartsHistoryRecord> opePartsHistoryRecordList = partsHistoryRecordService.list(opePartsHistoryRecordQueryWrapper);
-                    if (CollectionUtils.isEmpty(opePartsHistoryRecordList)) {
-                        opePartsHistoryRecordList = new ArrayList<>();
+                    List<OpePartsDraftHistoryRecord> partsHistoryRecordList = partsDraftHistoryRecordService.list(new LambdaQueryWrapper<OpePartsDraftHistoryRecord>()
+                            .eq(OpePartsDraftHistoryRecord::getPartsDraftId, newPartsDraft.getId())
+                            .eq(OpePartsDraftHistoryRecord::getDr, Constant.DR_FALSE));
+                    if (CollectionUtils.isEmpty(partsHistoryRecordList)) {
+                        partsHistoryRecordList = new ArrayList<>();
                     }
                     // 返回修改的信息记录
                     List<HistoryPartsDto> historyPartsDtoList = new ArrayList<>();
-                    opePartsHistoryRecordList.forEach(item -> {
+                    partsHistoryRecordList.forEach(item -> {
                         historyPartsDtoList.add(HistoryPartsDto.builder()
                                 .id(item.getId())
                                 .createdTime(item.getCreatedTime())
                                 .partsNumber(item.getPartsNumber())
                                 .build());
                     });
-                    detailsPartsResult.setId(news.getId());
-                    detailsPartsResult.setPartsNumber(news.getPartsNumber());
+                    detailsPartsResult.setId(newPartsDraft.getId());
+                    detailsPartsResult.setPartsNumber(newPartsDraft.getPartsNumber());
                     detailsPartsResult.setHistoryHist(historyPartsDtoList);
                     result.add(detailsPartsResult);
                 });
             });
         }
-        if (update.size() > 0 && instersHistory.size() > 0) {
-            opePartsDraftService.updateBatchById(update);
-            partsHistoryRecordService.saveBatch(instersHistory);
+        if (updatePartsDrafts.size() > 0 && savePartsDraftHistory.size() > 0) {
+            opePartsDraftService.updateBatchById(updatePartsDrafts);
+            partsDraftHistoryRecordService.saveBatch(savePartsDraftHistory);
         }
 
         return result;
     }
 
-    @Transient
+    @Transactional
     @Override
     public GeneralResult deletes(StringEnter enter) {
 
@@ -369,7 +351,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         }
 
         List<Long> deletes = new ArrayList<>();
-        List<OpePartsHistoryRecord> insters = new ArrayList<>();
+        List<OpePartsDraftHistoryRecord> insters = new ArrayList<>();
 
         Set<Long> partDraftIds = new HashSet<>();
         enters.forEach(item -> {
@@ -422,7 +404,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         }
         if (deletes.size() > 0) {
             opePartsDraftService.removeByIds(deletes);
-            partsHistoryRecordService.saveBatch(insters);
+            partsDraftHistoryRecordService.saveBatch(insters);
         }
         return new GeneralResult(enter.getRequestId());
     }
@@ -453,10 +435,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         //校验部件是否有商品绑定
         List<DeletePartResult> result = buildDeletePartResult(partDraftIds, opePartDraftList);
-        if (result != null) {
-            return result;
-        }
-        return null;
+        return result;
     }
 
     /**
@@ -481,12 +460,6 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         List<Long> productIds = partsProductBList.stream().map(OpePartsProductB::getPartsProductId).collect(Collectors.toList());
 
-//        QueryWrapper<OpeParts> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq(OpeParts.COL_PARTS_DRAFT_ID, enter.getId());
-//        OpeParts opeParts = opePartsService.getOne(queryWrapper);
-//        if (opeParts == null) {
-//            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
-//        }
         Collection<OpePartsProduct> opePartsProductList = opePartsProductService.listByIds(productIds);
         if (CollectionUtils.isEmpty(opePartsProductList)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
@@ -517,11 +490,11 @@ public class PartsRosServiceImpl implements PartsRosService {
         DetailsPartsResult result = new DetailsPartsResult();
         BeanUtils.copyProperties(byId, result);
 
-        QueryWrapper<OpePartsHistoryRecord> wrapper = new QueryWrapper<>();
-        wrapper.eq(OpePartsHistoryRecord.COL_PARTS_ID, enter.getId());
-        wrapper.eq(OpePartsHistoryRecord.COL_DR, 0);
-        wrapper.eq(OpePartsHistoryRecord.COL_EVENT, PartsEventEnums.ADD.getValue());
-        List<OpePartsHistoryRecord> historyLists = partsHistoryRecordService.list(wrapper);
+        QueryWrapper<OpePartsDraftHistoryRecord> wrapper = new QueryWrapper<>();
+        wrapper.eq(OpePartsDraftHistoryRecord.COL_PARTS_DRAFT_ID, enter.getId());
+        wrapper.eq(OpePartsDraftHistoryRecord.COL_DR, 0);
+        wrapper.eq(OpePartsDraftHistoryRecord.COL_EVENT, PartsEventEnums.ADD.getValue());
+        List<OpePartsDraftHistoryRecord> historyLists = partsDraftHistoryRecordService.list(wrapper);
         List<HistoryPartsDto> list = new ArrayList<>();
 
         if (historyLists.size() > 0) {
@@ -562,11 +535,11 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public HistoryPartsResult historys(IdEnter enter) {
 
-        QueryWrapper<OpePartsHistoryRecord> wrapper = new QueryWrapper<>();
-        wrapper.eq(OpePartsHistoryRecord.COL_PARTS_ID, enter.getId());
-        wrapper.eq(OpePartsHistoryRecord.COL_DR, 0);
-        wrapper.eq(OpePartsHistoryRecord.COL_EVENT, PartsEventEnums.ADD.getValue());
-        List<OpePartsHistoryRecord> historyLists = partsHistoryRecordService.list(wrapper);
+        QueryWrapper<OpePartsDraftHistoryRecord> wrapper = new QueryWrapper<>();
+        wrapper.eq(OpePartsDraftHistoryRecord.COL_PARTS_DRAFT_ID, enter.getId());
+        wrapper.eq(OpePartsDraftHistoryRecord.COL_DR, 0);
+        wrapper.eq(OpePartsDraftHistoryRecord.COL_EVENT, PartsEventEnums.ADD.getValue());
+        List<OpePartsDraftHistoryRecord> historyLists = partsDraftHistoryRecordService.list(wrapper);
         HistoryPartsResult historyPartsResult = new HistoryPartsResult();
 
         List<HistoryPartsDto> list = new ArrayList<>();
@@ -731,16 +704,16 @@ public class PartsRosServiceImpl implements PartsRosService {
         return PageResult.create(enter, count, list);
     }
 
-    private OpePartsHistoryRecord createPartsHistory(OpePartsDraft parts, String event, long userId, String partNum) {
-        OpePartsHistoryRecord record = new OpePartsHistoryRecord();
-        record.setId(idAppService.getId(SequenceName.OPE_PARTS_HISTORY_RECORD));
+    private OpePartsDraftHistoryRecord createPartsHistory(OpePartsDraft parts, String event, long userId, String partNum) {
+        OpePartsDraftHistoryRecord record = new OpePartsDraftHistoryRecord();
+        record.setId(idAppService.getId(SequenceName.OPE_PARTS_DRAFT_HISTORY_RECORD));
         record.setDr(0);
         record.setTenantId(0L);
         record.setUserId(userId);
         record.setStatus(BomStatusEnums.NORMAL.getValue());
         record.setPartsNumber(partNum);
         record.setImportLot(parts.getImportLot());
-        record.setPartsId(parts.getId());
+        record.setPartsDraftId(parts.getId());
         record.setEvent(event);
         record.setPartsType(parts.getPartsType());
         record.setSec(parts.getSec());
@@ -761,28 +734,28 @@ public class PartsRosServiceImpl implements PartsRosService {
         return record;
     }
 
-    private OpePartsHistoryRecord createPartsDraftHistory(OpePartsDraft parts, String event, long userId, String partNum) {
-        OpePartsHistoryRecord record = new OpePartsHistoryRecord();
-        record.setId(idAppService.getId(SequenceName.OPE_PARTS_HISTORY_RECORD));
+    private OpePartsDraftHistoryRecord createPartsDraftHistory(OpePartsDraft partsDraft, String event, long userId, String partNum) {
+        OpePartsDraftHistoryRecord record = new OpePartsDraftHistoryRecord();
+        record.setId(idAppService.getId(SequenceName.OPE_PARTS_DRAFT_HISTORY_RECORD));
         record.setDr(0);
         record.setTenantId(0L);
         record.setUserId(userId);
         record.setStatus(BomStatusEnums.NORMAL.getValue());
         record.setPartsNumber(partNum);
-        record.setImportLot(parts.getImportLot());
-        record.setPartsId(parts.getId());
+        record.setImportLot(partsDraft.getImportLot());
+        record.setPartsDraftId(partsDraft.getId());
         record.setEvent(event);
-        record.setPartsType(parts.getPartsType());
-        record.setSec(parts.getSec());
-        record.setCnName(parts.getCnName());
-        record.setFrName(parts.getFrName());
-        record.setEnName(parts.getEnName());
-        record.setSnClass(parts.getSnClass());
+        record.setPartsType(partsDraft.getPartsType());
+        record.setSec(partsDraft.getSec());
+        record.setCnName(partsDraft.getCnName());
+        record.setFrName(partsDraft.getFrName());
+        record.setEnName(partsDraft.getEnName());
+        record.setSnClass(partsDraft.getSnClass());
         record.setPartsQty(0);
-        record.setProductionCycle(parts.getProductionCycle());
-        record.setSupplierId(parts.getSupplierId());
-        record.setDwg(parts.getDwg());
-        record.setNote(parts.getNote());
+        record.setProductionCycle(partsDraft.getProductionCycle());
+        record.setSupplierId(partsDraft.getSupplierId());
+        record.setDwg(partsDraft.getDwg());
+        record.setNote(partsDraft.getNote());
         record.setRevision(0);
         record.setCreatedBy(userId);
         record.setCreatedTime(new Date());

@@ -581,6 +581,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
+        log.info("=========入参===={}",enter.toString());
         List<String> productTypeList = new ArrayList<String>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
             if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue())) {
@@ -592,6 +593,8 @@ public class PurchasingServiceImpl implements PurchasingService {
 
         //整车查询
         List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter, BomCommonTypeEnums.SCOOTER.getValue());
+
+        log.info("========整车信息===={}",scooterProductList.toString());
         //查询整车所有部品
         if (CollectionUtils.isNotEmpty(scooterProductList)) {
             List<Long> partIds = Lists.newArrayList();
@@ -599,6 +602,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                 partIds.add(item.getId());
             });
             List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(partIds);
+
+            log.info("=======部件列表==={}",partList.toString());
             if (CollectionUtils.isNotEmpty(partList)) {
                 for (PruchasingItemResult scooter : scooterProductList) {
                     BigDecimal totalPrice = BigDecimal.ZERO;
@@ -611,11 +616,11 @@ public class PurchasingServiceImpl implements PurchasingService {
                     }
                     scooter.setPrice(totalPrice);
                     scooter.setPruchasingItemResultList(scooterPartList);
-
                 }
             }
         }
         partProductList.addAll(scooterProductList);
+        log.info("=======结果集==={}",partProductList.toString());
 
         if (CollectionUtils.isEmpty(partProductList)) {
             return new ArrayList<>();

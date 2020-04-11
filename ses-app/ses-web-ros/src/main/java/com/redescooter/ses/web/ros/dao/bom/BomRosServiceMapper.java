@@ -49,7 +49,7 @@ public interface BomRosServiceMapper {
      * @param enter
      * @return
      */
-    List<String> UsingProductNumList(GeneralEnter enter);
+    List<String> checkProductNums(GeneralEnter enter);
 
     /**
      * @desc: sec 列表

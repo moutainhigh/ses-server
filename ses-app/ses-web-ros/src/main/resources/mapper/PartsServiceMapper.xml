@@ -99,7 +99,6 @@
         <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
         <result column="dwg" jdbcType="VARCHAR" property="dwg"/>
         <result column="note" jdbcType="VARCHAR" property="note"/>
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
         <collection property="historyHist"
                     javaType="java.util.ArrayList"
                     ofType="com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto"
@@ -118,17 +117,15 @@
         from ope_parts_draft op
         left join ope_supplier os on op.supplier_id = os.id and os.dr = 0
         <include refid="where_query_parts_list"/>
-        <!--        group by-->
-        <!--        <include refid="group_by_parts_list"/>-->
         order by op.created_time desc
         limit #{startRow},#{pageSize}
     </select>
     <select id="historyList" resultType="com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto">
      select id,parts_number,created_time
-     from ope_parts_history_record
+     from ope_parts_draft_history_record
      where dr = 0
        and event='2'
-       and parts_id =#{partsId}
+       and parts_draft_id =#{partsId}
        and user_id =#{userId}
     order by created_time desc
     </select>

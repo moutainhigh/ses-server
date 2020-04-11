@@ -191,7 +191,7 @@ public class BomRosServiceImpl implements BomRosService {
             //保存
             Long productId = idAppService.getId(SequenceName.OPE_PARTS_PRODUCT);
             // 产品编号过滤
-            List<String> productNList = bomRosServiceMapper.UsingProductNumList(enter);
+            List<String> productNList = bomRosServiceMapper.checkProductNums(enter);
             if (productNList.contains(enter.getProductN())) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
             }
@@ -220,7 +220,7 @@ public class BomRosServiceImpl implements BomRosService {
             }
             //产品编号一致 跳过校验 ，不一致重新校验
             if (!SesStringUtils.equals(partsProduct.getProductNumber(), enter.getProductN())) {
-                List<String> productNList = bomRosServiceMapper.UsingProductNumList(enter);
+                List<String> productNList = bomRosServiceMapper.checkProductNums(enter);
                 if (productNList.contains(enter.getProductN())) {
                     throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
                 }
@@ -583,7 +583,7 @@ public class BomRosServiceImpl implements BomRosService {
 
         if (enter.getId() == null || enter.getId() == 0) {
             // 产品编号过滤
-            List<String> productNList = bomRosServiceMapper.UsingProductNumList(enter);
+            List<String> productNList = bomRosServiceMapper.checkProductNums(enter);
             if (productNList.contains(enter.getProductN())) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
             }
@@ -613,7 +613,7 @@ public class BomRosServiceImpl implements BomRosService {
             }
             //产品编号一致 跳过校验 ，不一致重新校验
             if (!SesStringUtils.equals(partsProduct.getProductNumber(), enter.getProductN())) {
-                List<String> productNList = bomRosServiceMapper.UsingProductNumList(enter);
+                List<String> productNList = bomRosServiceMapper.checkProductNums(enter);
                 if (productNList.contains(enter.getProductN())) {
                     throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
                 }

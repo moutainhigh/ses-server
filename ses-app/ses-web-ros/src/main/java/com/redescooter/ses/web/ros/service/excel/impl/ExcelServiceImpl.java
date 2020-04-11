@@ -6,8 +6,8 @@ import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
-import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
@@ -101,7 +101,7 @@ public class ExcelServiceImpl implements ExcelService {
         }
 
         //2.判断与数据库中部件草稿中是否有已存在的产品编号
-        List<String> usingProductNumList = bomRosServiceMapper.UsingProductNumList(enter);
+        List<String> usingProductNumList = bomRosServiceMapper.checkProductNums(enter);
         if (CollectionUtils.isNotEmpty(usingProductNumList)) {
             productNSet.forEach(item -> {
                 if (usingProductNumList.contains(item)) {

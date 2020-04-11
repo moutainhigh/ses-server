@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,13 +15,16 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartsHistoryRecord")
+/**
+ * BOM产品部件草稿表操作记录表
+ */
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartsDraftHistoryRecord")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_parts_history_record")
-public class OpePartsHistoryRecord implements Serializable {
+@TableName(value = "ope_parts_draft_history_record")
+public class OpePartsDraftHistoryRecord implements Serializable {
     /**
      * 主键
      */
@@ -34,7 +36,6 @@ public class OpePartsHistoryRecord implements Serializable {
      * 逻辑删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除")
     private Integer dr;
 
@@ -55,9 +56,9 @@ public class OpePartsHistoryRecord implements Serializable {
     /**
      * 产品部品表主键
      */
-    @TableField(value = "parts_id")
+    @TableField(value = "parts_draft_id")
     @ApiModelProperty(value = "产品部品表主键")
-    private Long partsId;
+    private Long partsDraftId;
 
     /**
      * 操作事件
@@ -251,7 +252,7 @@ public class OpePartsHistoryRecord implements Serializable {
 
     public static final String COL_USER_ID = "user_id";
 
-    public static final String COL_PARTS_ID = "parts_id";
+    public static final String COL_PARTS_DRAFT_ID = "parts_draft_id";
 
     public static final String COL_EVENT = "event";
 
@@ -305,7 +306,7 @@ public class OpePartsHistoryRecord implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord.OpePartsHistoryRecordBuilder builder() {
-        return new com.redescooter.ses.web.ros.dm.OpePartsHistoryRecord.OpePartsHistoryRecordBuilder();
+    public static OpePartsDraftHistoryRecordBuilder builder() {
+        return new OpePartsDraftHistoryRecordBuilder();
     }
 }
