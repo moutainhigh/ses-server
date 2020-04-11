@@ -736,6 +736,20 @@ public class AssemblyServiceImpl implements AssemblyService {
         return assemblyServiceMapper.detail(enter);
     }
 
+    @Override
+    public AssemblyResult ordinaryDetail(IdEnter enter) {
+        //组装单校验
+        checkAssembly(enter.getId(), null);
+        AssemblyResult detail = assemblyServiceMapper.detail(enter);
+        detail.setTotalPrice(null);
+        detail.setStagTotal(null);
+        detail.setProductPrice(null);
+        detail.setProcessCost(null);
+        detail.setProcessCostRatio(null);
+        detail.setPaymentItemDetailResultList(null);
+        return detail;
+    }
+
 
     /**
      * 组装单节点

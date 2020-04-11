@@ -95,7 +95,7 @@ public class AssemblyController {
     @PostMapping(value = "/ordinary/list")
     @ApiOperation(value = "普通权限组装列表", response = AssemblyResult.class)
     public Response<PageResult<AssemblyResult>> ordinaryList(@ModelAttribute @ApiParam("请求参数") AssemblyListEnter enter) {
-        return new Response<>(assemblyService.list(enter));
+        return new Response<>(assemblyService.ordinaryList(enter));
     }
 
     @PostMapping(value = "/property/list")
@@ -105,14 +105,14 @@ public class AssemblyController {
     }
 
     @PostMapping(value = "ordinary/detail")
-    @ApiOperation(value = "组装单普通详情", response = AssemblyResult.class)
+    @ApiOperation(value = "非财务人员组装单普通详情", response = AssemblyResult.class)
     public Response<AssemblyResult> ordinaryDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(assemblyService.detail(enter));
+        return new Response<>(assemblyService.ordinaryDetail(enter));
     }
 
     @PostMapping(value = "/property/detail")
-    @ApiOperation(value = "组装单详情", response = AssemblyResult.class)
-    public Response<AssemblyResult> detail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    @ApiOperation(value = "财务人员组装单详情", response = AssemblyResult.class)
+    public Response<AssemblyResult> propertyDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(assemblyService.detail(enter));
     }
 

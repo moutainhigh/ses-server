@@ -114,7 +114,13 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    AssemblyResult detail(IdEnter enter);
+    AssemblyResult detail(IdEnter enter);    /**
+     * 详情
+     *
+     * @param enter
+     * @return
+     */
+    AssemblyResult ordinaryDetail(IdEnter enter);
 
     /**
      * 组装单节点
