@@ -543,12 +543,12 @@ public class BomRosServiceImpl implements BomRosService {
         if (partIds.size() != partList.size()) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        // 校验部品既有价格又有供应商的 部品
-        List<Long> partsIdList = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
-        if (bomRosServiceMapper.countSupplierWithPriceByPartIds(partsIdList) != partsIdList.size()) {
-            throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
-                    ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
-        }
+        //todo  校验部品既有价格又有供应商的 部品
+//        List<Long> partsIdList = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
+//        if (bomRosServiceMapper.countSupplierWithPriceByPartIds(partsIdList) != partsIdList.size()) {
+//            throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
+//                    ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
+//        }
 
         // 配件过滤
         List<Long> partIdList = new ArrayList<>();

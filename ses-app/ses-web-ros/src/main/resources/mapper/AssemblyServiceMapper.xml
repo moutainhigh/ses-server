@@ -136,6 +136,7 @@
         left join ope_sys_user_profile profile on trace.created_by = profile.sys_user_id and profile.dr = 0
         where trace.dr = 0
         and trace.ope_assembiy_order_id =#{id}
+        order by trace.created_time asc
     </select>
     <select id="partDetailListByPartIds" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">
         select parts.id as partId,

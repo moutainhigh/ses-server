@@ -581,7 +581,6 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
-        log.info("=========入参===={}",enter.toString());
         List<String> productTypeList = new ArrayList<String>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
             if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue())) {
@@ -591,23 +590,21 @@ public class PurchasingServiceImpl implements PurchasingService {
         // 查询零部件
         List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
 
-        //整车查询
-        List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter, BomCommonTypeEnums.SCOOTER.getValue());
-
-        log.info("========整车信息===={}",scooterProductList.toString());
-        //查询整车所有部品
+        //商品查询
+        List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter, productTypeList);
+        //查询商品所有部品
         if (CollectionUtils.isNotEmpty(scooterProductList)) {
-            List<Long> partIds = Lists.newArrayList();
+            List<Long> productIds = Lists.newArrayList();
             scooterProductList.forEach(item -> {
-                partIds.add(item.getId());
+                productIds.add(item.getId());
             });
-            List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(partIds);
-
-            log.info("=======部件列表==={}",partList.toString());
+            List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
             if (CollectionUtils.isNotEmpty(partList)) {
+
                 for (PruchasingItemResult scooter : scooterProductList) {
                     BigDecimal totalPrice = BigDecimal.ZERO;
                     List<PruchasingItemResult> scooterPartList = Lists.newArrayList();
+
                     for (PruchasingItemResult item : partList) {
                         if (item.getId().equals(scooter.getId())) {
                             totalPrice = totalPrice.add(item.getPrice());
@@ -616,11 +613,13 @@ public class PurchasingServiceImpl implements PurchasingService {
                     }
                     scooter.setPrice(totalPrice);
                     scooter.setPruchasingItemResultList(scooterPartList);
+
                 }
             }
         }
         partProductList.addAll(scooterProductList);
-        log.info("=======结果集==={}",partProductList.toString());
+
+        partProductList.removeIf(item -> CollectionUtils.isEmpty(item.getPruchasingItemResultList()));
 
         if (CollectionUtils.isEmpty(partProductList)) {
             return new ArrayList<>();

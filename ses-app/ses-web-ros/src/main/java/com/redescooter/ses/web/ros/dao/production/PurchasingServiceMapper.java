@@ -97,10 +97,10 @@ public interface PurchasingServiceMapper {
 
     /**
      * @param enter
-     * @param scooterValue
+     * @param productTypeList
      * @return
      */
-    List<PruchasingItemResult> queryPurchasScooter(@Param("enter") PruchasingItemListEnter enter, @Param("scooterValue") String scooterValue);
+    List<PruchasingItemResult> queryPurchasScooter(@Param("enter") PruchasingItemListEnter enter, @Param("productTypeList") List<String> productTypeList);
 
     /**
      * 查询部件详情

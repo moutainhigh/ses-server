@@ -138,7 +138,10 @@
                     and product.product_type =#{enter.productType}
                 </when>
                 <otherwise>
-                    and product.product_type =#{scooterValue}
+                    and product.product_type in
+                    <foreach collection="productTypeList" item="item" separator="," open="(" close=")">
+                        #{item}
+                    </foreach>
                 </otherwise>
             </choose>
             <if test="enter.keyword != null and enter.keyword != ''">

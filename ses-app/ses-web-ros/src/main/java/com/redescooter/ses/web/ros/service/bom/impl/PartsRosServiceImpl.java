@@ -392,15 +392,15 @@ public class PartsRosServiceImpl implements PartsRosService {
 
             //删除定稿部品
             opePartsService.removeByIds(opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
-            //产品报价删除
-            QueryWrapper<OpePriceSheet> opePriceSheetQueryWrapper = new QueryWrapper<>();
-            opePartsQueryWrapper.in(OpePriceSheet.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
-            opePriceSheetService.remove(opePriceSheetQueryWrapper);
+            //todo 产品报价删除
+//            QueryWrapper<OpePriceSheet> opePriceSheetQueryWrapper = new QueryWrapper<>();
+//            opePartsQueryWrapper.in(OpePriceSheet.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
+//            opePriceSheetService.remove(opePriceSheetQueryWrapper);
 
             //报价记录删除
-            QueryWrapper<OpePriceSheetHistory> opePriceSheetHistoryQueryWrapper = new QueryWrapper<>();
-            opePriceSheetHistoryQueryWrapper.in(OpePriceSheetHistory.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
-            opePriceSheetHistoryService.remove(opePriceSheetHistoryQueryWrapper);
+//            QueryWrapper<OpePriceSheetHistory> opePriceSheetHistoryQueryWrapper = new QueryWrapper<>();
+//            opePriceSheetHistoryQueryWrapper.in(OpePriceSheetHistory.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
+//            opePriceSheetHistoryService.remove(opePriceSheetHistoryQueryWrapper);
         }
         if (deletes.size() > 0) {
             opePartsDraftService.removeByIds(deletes);
@@ -435,7 +435,10 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         //校验部件是否有商品绑定
         List<DeletePartResult> result = buildDeletePartResult(partDraftIds, opePartDraftList);
-        return result;
+        if (result != null) {
+            return result;
+        }
+        return null;
     }
 
     /**
@@ -579,12 +582,12 @@ public class PartsRosServiceImpl implements PartsRosService {
                 //设置已同步标识
                 p.setSynchronizeFlag(Boolean.TRUE);
 
-                if (p.getSnClass().equals(BomSnClassEnums.SC.getValue())) {
+                if (p.getSnClass().equals(BomSnClassEnums.SC.getCode())) {
                     OpeParts parts = new OpeParts();
                     BeanUtils.copyProperties(p, parts);
                     parts.setPartsDraftId(p.getId());
                     partsSave.add(parts);
-                } else if (p.getSnClass().equals(BomSnClassEnums.SSC.getValue())) {
+                } else if (p.getSnClass().equals(BomSnClassEnums.SSC.getCode())) {
 
                     OpeParts parts = new OpeParts();
                     BeanUtils.copyProperties(p, parts);
@@ -596,8 +599,8 @@ public class PartsRosServiceImpl implements PartsRosService {
                     product.setTenantId(p.getTenantId());
                     product.setUserId(p.getUserId());
                     product.setStatus(PartsProductEnums.DOWN.getValue());
-                    product.setSnClass(p.getSnClass());
-                    product.setProductType(Integer.parseInt(p.getPartsType()));
+                    product.setSnClass(BomSnClassEnums.getValueByCode(p.getSnClass()));
+                    product.setProductType(Integer.parseInt(BomCommonTypeEnums.getValueByCode(p.getPartsType())));
                     product.setProductCode(p.getEnName());
                     product.setProductNumber(p.getPartsNumber());
                     product.setCnName(p.getCnName());
@@ -665,9 +668,12 @@ public class PartsRosServiceImpl implements PartsRosService {
                     productUpdate.add(p);
                 }
             });
-
-            partsProductService.saveBatch(productInsert);
-            partsProductService.updateBatch(productUpdate);
+            if (CollectionUtils.isNotEmpty(productInsert)) {
+                partsProductService.saveBatch(productInsert);
+            }
+            if (CollectionUtils.isNotEmpty(productUpdate)) {
+                partsProductService.updateBatch(productUpdate);
+            }
         }
 
         return new GeneralResult(enter.getRequestId());
@@ -704,16 +710,16 @@ public class PartsRosServiceImpl implements PartsRosService {
         return PageResult.create(enter, count, list);
     }
 
-    private OpePartsDraftHistoryRecord createPartsHistory(OpePartsDraft parts, String event, long userId, String partNum) {
-        OpePartsDraftHistoryRecord record = new OpePartsDraftHistoryRecord();
-        record.setId(idAppService.getId(SequenceName.OPE_PARTS_DRAFT_HISTORY_RECORD));
+    private OpePartsHistoryRecord createPartsHistory(OpePartsDraft parts, String event, long userId, String partNum) {
+        OpePartsHistoryRecord record = new OpePartsHistoryRecord();
+        record.setId(idAppService.getId(SequenceName.OPE_PARTS_HISTORY_RECORD));
         record.setDr(0);
         record.setTenantId(0L);
         record.setUserId(userId);
         record.setStatus(BomStatusEnums.NORMAL.getValue());
         record.setPartsNumber(partNum);
         record.setImportLot(parts.getImportLot());
-        record.setPartsDraftId(parts.getId());
+        record.setPartsId(parts.getId());
         record.setEvent(event);
         record.setPartsType(parts.getPartsType());
         record.setSec(parts.getSec());
@@ -734,28 +740,28 @@ public class PartsRosServiceImpl implements PartsRosService {
         return record;
     }
 
-    private OpePartsDraftHistoryRecord createPartsDraftHistory(OpePartsDraft partsDraft, String event, long userId, String partNum) {
-        OpePartsDraftHistoryRecord record = new OpePartsDraftHistoryRecord();
-        record.setId(idAppService.getId(SequenceName.OPE_PARTS_DRAFT_HISTORY_RECORD));
+    private OpePartsHistoryRecord createPartsDraftHistory(OpePartsDraft parts, String event, long userId, String partNum) {
+        OpePartsHistoryRecord record = new OpePartsHistoryRecord();
+        record.setId(idAppService.getId(SequenceName.OPE_PARTS_HISTORY_RECORD));
         record.setDr(0);
         record.setTenantId(0L);
         record.setUserId(userId);
         record.setStatus(BomStatusEnums.NORMAL.getValue());
         record.setPartsNumber(partNum);
-        record.setImportLot(partsDraft.getImportLot());
-        record.setPartsDraftId(partsDraft.getId());
+        record.setImportLot(parts.getImportLot());
+        record.setPartsId(parts.getId());
         record.setEvent(event);
-        record.setPartsType(partsDraft.getPartsType());
-        record.setSec(partsDraft.getSec());
-        record.setCnName(partsDraft.getCnName());
-        record.setFrName(partsDraft.getFrName());
-        record.setEnName(partsDraft.getEnName());
-        record.setSnClass(partsDraft.getSnClass());
+        record.setPartsType(parts.getPartsType());
+        record.setSec(parts.getSec());
+        record.setCnName(parts.getCnName());
+        record.setFrName(parts.getFrName());
+        record.setEnName(parts.getEnName());
+        record.setSnClass(parts.getSnClass());
         record.setPartsQty(0);
-        record.setProductionCycle(partsDraft.getProductionCycle());
-        record.setSupplierId(partsDraft.getSupplierId());
-        record.setDwg(partsDraft.getDwg());
-        record.setNote(partsDraft.getNote());
+        record.setProductionCycle(parts.getProductionCycle());
+        record.setSupplierId(parts.getSupplierId());
+        record.setDwg(parts.getDwg());
+        record.setNote(parts.getNote());
         record.setRevision(0);
         record.setCreatedBy(userId);
         record.setCreatedTime(new Date());
