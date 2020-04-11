@@ -104,7 +104,7 @@ public class AssemblyController {
         return new Response<>(assemblyService.list(enter));
     }
 
-    @PostMapping(value = "ordinary/detail")
+    @PostMapping(value = "/ordinary/detail")
     @ApiOperation(value = "非财务人员组装单普通详情", response = AssemblyResult.class)
     public Response<AssemblyResult> ordinaryDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(assemblyService.ordinaryDetail(enter));
@@ -116,9 +116,15 @@ public class AssemblyController {
         return new Response<>(assemblyService.detail(enter));
     }
 
-    @PostMapping(value = "/assemblyNode")
-    @ApiOperation(value = "组装单节点", response = CommonNodeResult.class)
-    public Response<List<CommonNodeResult>> assemblyNode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    @PostMapping(value = "/ordinary/assemblyNode")
+    @ApiOperation(value = "非财务人员组装单节点", response = CommonNodeResult.class)
+    public Response<List<CommonNodeResult>> ordinaryAssemblyNode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(assemblyService.ordinaryAssemblyNode(enter));
+    }
+
+    @PostMapping(value = "/property/assemblyNode")
+    @ApiOperation(value = "财务人员组装单节点", response = CommonNodeResult.class)
+    public Response<List<CommonNodeResult>> propertyAssemblyNode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(assemblyService.assemblyNode(enter));
     }
 

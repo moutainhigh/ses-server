@@ -763,6 +763,12 @@ public class AssemblyServiceImpl implements AssemblyService {
         return assemblyServiceMapper.assemblyNode(enter);
     }
 
+    @Override
+    public List<CommonNodeResult> ordinaryAssemblyNode(IdEnter enter) {
+        checkAssembly(enter.getId(), null);
+        return assemblyServiceMapper.ordinaryAssemblyNode(enter);
+    }
+
     /**
      * 组装单信息导出
      *

@@ -74,6 +74,14 @@ public interface AssemblyServiceMapper {
     List<CommonNodeResult> assemblyNode(IdEnter enter);
 
     /**
+     * 组装单节点
+     *
+     * @param enter
+     * @return
+     */
+    List<CommonNodeResult> ordinaryAssemblyNode(IdEnter enter);
+
+    /**
      * 获取部件详情列表
      *
      * @param partIds
