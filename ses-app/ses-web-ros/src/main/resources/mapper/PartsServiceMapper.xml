@@ -60,6 +60,12 @@
                 or op.parts_number LIKE CONCAT("%",#{keyword},"%")
                 )
             </if>
+            <if test="ids != null and ids.size() != 0">
+                and
+                <foreach collection="ids" open="(" separator="," item="item" close=")">
+                    #{item}
+                </foreach>
+            </if>
         </where>
     </sql>
     <sql id="group_by_parts_list">

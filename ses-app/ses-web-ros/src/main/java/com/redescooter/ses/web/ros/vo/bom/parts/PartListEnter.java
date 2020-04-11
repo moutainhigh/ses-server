@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * @ClassName:SaveScooterPartResult
  * @description: SaveScooterPartResult
@@ -28,5 +30,8 @@ public class PartListEnter extends PageEnter {
 
     @ApiModelProperty(value = "关键字查询")
     private String keyword;
+
+    @ApiModelProperty(value = "选中的部件")
+    private List<Long> ids;
 
 }
