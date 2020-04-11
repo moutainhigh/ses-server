@@ -61,7 +61,7 @@
                 )
             </if>
             <if test="ids != null and ids.size() != 0">
-                and
+                and op.id in
                 <foreach collection="ids" open="(" separator="," item="item" close=")">
                     #{item}
                 </foreach>
