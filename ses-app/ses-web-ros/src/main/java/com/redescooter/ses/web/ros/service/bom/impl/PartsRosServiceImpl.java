@@ -368,7 +368,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                     if (!org.springframework.util.StringUtils.isEmpty(dl.getId())) {
                         if (item.getId().equals(dl.getId())) {
                             deletes.add(item.getId());
-                            insters.add(createPartsHistory(item, PartsEventEnums.DELETE.getValue(), enter.getUserId(), item.getPartsNumber()));
+                            insters.add(createPartsDraftHistory(item, PartsEventEnums.DELETE.getValue(), enter.getUserId(), item.getPartsNumber()));
                         }
                     }
                 });
@@ -435,10 +435,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         //校验部件是否有商品绑定
         List<DeletePartResult> result = buildDeletePartResult(partDraftIds, opePartDraftList);
-        if (result != null) {
-            return result;
-        }
-        return null;
+        return result;
     }
 
     /**
@@ -700,68 +697,36 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public PageResult<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter) {
         int count = partsServiceMapper.saveProductPartListCount(enter);
-
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
 
         List<DetailsPartsResult> list = partsServiceMapper.saveProductPartList(enter);
-
         return PageResult.create(enter, count, list);
     }
 
-    private OpePartsHistoryRecord createPartsHistory(OpePartsDraft parts, String event, long userId, String partNum) {
-        OpePartsHistoryRecord record = new OpePartsHistoryRecord();
-        record.setId(idAppService.getId(SequenceName.OPE_PARTS_HISTORY_RECORD));
+    private OpePartsDraftHistoryRecord createPartsDraftHistory(OpePartsDraft partsDraft, String event, long userId, String partNum) {
+        OpePartsDraftHistoryRecord record = new OpePartsDraftHistoryRecord();
+        record.setId(idAppService.getId(SequenceName.OPE_PARTS_DRAFT_HISTORY_RECORD));
         record.setDr(0);
         record.setTenantId(0L);
         record.setUserId(userId);
         record.setStatus(BomStatusEnums.NORMAL.getValue());
         record.setPartsNumber(partNum);
-        record.setImportLot(parts.getImportLot());
-        record.setPartsId(parts.getId());
+        record.setImportLot(partsDraft.getImportLot());
+        record.setPartsDraftId(partsDraft.getId());
         record.setEvent(event);
-        record.setPartsType(parts.getPartsType());
-        record.setSec(parts.getSec());
-        record.setCnName(parts.getCnName());
-        record.setFrName(parts.getFrName());
-        record.setEnName(parts.getEnName());
-        record.setSnClass(parts.getSnClass());
+        record.setPartsType(partsDraft.getPartsType());
+        record.setSec(partsDraft.getSec());
+        record.setCnName(partsDraft.getCnName());
+        record.setFrName(partsDraft.getFrName());
+        record.setEnName(partsDraft.getEnName());
+        record.setSnClass(partsDraft.getSnClass());
         record.setPartsQty(0);
-        record.setProductionCycle(parts.getProductionCycle());
-        record.setSupplierId(parts.getSupplierId());
-        record.setDwg(parts.getDwg());
-        record.setNote(parts.getNote());
-        record.setRevision(0);
-        record.setCreatedBy(userId);
-        record.setCreatedTime(new Date());
-        record.setUpdatedBy(userId);
-        record.setUpdatedTime(new Date());
-        return record;
-    }
-
-    private OpePartsHistoryRecord createPartsDraftHistory(OpePartsDraft parts, String event, long userId, String partNum) {
-        OpePartsHistoryRecord record = new OpePartsHistoryRecord();
-        record.setId(idAppService.getId(SequenceName.OPE_PARTS_HISTORY_RECORD));
-        record.setDr(0);
-        record.setTenantId(0L);
-        record.setUserId(userId);
-        record.setStatus(BomStatusEnums.NORMAL.getValue());
-        record.setPartsNumber(partNum);
-        record.setImportLot(parts.getImportLot());
-        record.setPartsId(parts.getId());
-        record.setEvent(event);
-        record.setPartsType(parts.getPartsType());
-        record.setSec(parts.getSec());
-        record.setCnName(parts.getCnName());
-        record.setFrName(parts.getFrName());
-        record.setEnName(parts.getEnName());
-        record.setSnClass(parts.getSnClass());
-        record.setPartsQty(0);
-        record.setProductionCycle(parts.getProductionCycle());
-        record.setSupplierId(parts.getSupplierId());
-        record.setDwg(parts.getDwg());
-        record.setNote(parts.getNote());
+        record.setProductionCycle(partsDraft.getProductionCycle());
+        record.setSupplierId(partsDraft.getSupplierId());
+        record.setDwg(partsDraft.getDwg());
+        record.setNote(partsDraft.getNote());
         record.setRevision(0);
         record.setCreatedBy(userId);
         record.setCreatedTime(new Date());
