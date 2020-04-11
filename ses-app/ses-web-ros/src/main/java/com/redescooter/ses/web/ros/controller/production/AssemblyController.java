@@ -194,9 +194,15 @@ public class AssemblyController {
         return new Response<>(assemblyService.pay(enter));
     }
 
-    @PostMapping(value = "/productItemList")
-    @ApiOperation(value = "组装单中商品列表", response = productItemResult.class)
-    public Response<List<productItemResult>> productItemList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    @PostMapping(value = "/ordinary/productItemList")
+    @ApiOperation(value = "非财务人员组装单中商品列表", response = productItemResult.class)
+    public Response<List<productItemResult>> ordinaryProductItemList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(assemblyService.productItemList(enter));
+    }
+
+    @PostMapping(value = "/property/productItemList")
+    @ApiOperation(value = "财务人员组装单中商品列表", response = productItemResult.class)
+    public Response<List<productItemResult>> propertyProductItemList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(assemblyService.productItemList(enter));
     }
 }
