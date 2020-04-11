@@ -399,10 +399,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         opeStockList.addAll(opeStockService.list(opeStockQueryWrapper));
-        if (CollectionUtils.isEmpty(opeStockList)) {
-            return true;
-        }
-        return false;
+        return CollectionUtils.isEmpty(opeStockList);
     }
 
     /**
@@ -620,6 +617,35 @@ public class AssemblyServiceImpl implements AssemblyService {
                     .build());
         });
         return consigneeResultlist;
+    }
+
+    @Override
+    public PageResult<AssemblyResult> ordinaryList(AssemblyListEnter enter) {
+        //对type 进行拆分 组装statusList
+        List<String> statusList = Lists.newArrayList();
+        if (StringUtils.equals(enter.getType(), ProductionTypeEnums.TODO.getValue())) {
+            for (AssemblyStatusEnums item : AssemblyStatusEnums.values()) {
+                statusList.add(item.getValue());
+            }
+            statusList.remove(AssemblyStatusEnums.CANCELLED.getValue());
+            statusList.remove(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
+        }
+        if (StringUtils.equals(enter.getType(), ProductionTypeEnums.HISTORY.getValue())) {
+            statusList.add(AssemblyStatusEnums.CANCELLED.getValue());
+            statusList.add(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
+        }
+
+        int count = assemblyServiceMapper.assemblyListCount(enter, statusList);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+
+        List<AssemblyResult> assemblyResultList = assemblyServiceMapper.ordinaryList(enter, statusList);
+        if (CollectionUtils.isEmpty(assemblyResultList)) {
+            return PageResult.createZeroRowResult(enter);
+        }
+
+        return PageResult.create(enter, count, assemblyResultList);
     }
 
     /**

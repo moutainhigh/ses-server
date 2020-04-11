@@ -47,6 +47,8 @@ public interface AssemblyServiceMapper {
      */
     List<AssemblyResult> assemblyList(@Param("enter") AssemblyListEnter enter, @Param("statusList") List<String> statusList);
 
+    List<AssemblyResult> ordinaryList(@Param("enter") AssemblyListEnter enter, @Param("statusList") List<String> statusList);
+
     /**
      * 支付信息
      *

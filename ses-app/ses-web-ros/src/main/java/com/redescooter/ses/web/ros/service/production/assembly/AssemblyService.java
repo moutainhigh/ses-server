@@ -98,6 +98,14 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
+    PageResult<AssemblyResult> ordinaryList(AssemblyListEnter enter);
+
+    /**
+     * 组装列表
+     *
+     * @param enter
+     * @return
+     */
     PageResult<AssemblyResult> list(AssemblyListEnter enter);
 
     /**

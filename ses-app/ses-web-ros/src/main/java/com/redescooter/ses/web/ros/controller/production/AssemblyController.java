@@ -92,9 +92,15 @@ public class AssemblyController {
         return new Response<>(assemblyService.consigneeList(enter));
     }
 
-    @PostMapping(value = "/list")
-    @ApiOperation(value = "组装列表", response = AssemblyResult.class)
-    public Response<PageResult<AssemblyResult>> list(@ModelAttribute @ApiParam("请求参数") AssemblyListEnter enter) {
+    @PostMapping(value = "/ordinary/list/")
+    @ApiOperation(value = "普通权限组装列表", response = AssemblyResult.class)
+    public Response<PageResult<AssemblyResult>> ordinaryList(@ModelAttribute @ApiParam("请求参数") AssemblyListEnter enter) {
+        return new Response<>(assemblyService.list(enter));
+    }
+
+    @PostMapping(value = "/property/list/")
+    @ApiOperation(value = "财务权限组装列表", response = AssemblyResult.class)
+    public Response<PageResult<AssemblyResult>> propertyList(@ModelAttribute @ApiParam("请求参数") AssemblyListEnter enter) {
         return new Response<>(assemblyService.list(enter));
     }
 

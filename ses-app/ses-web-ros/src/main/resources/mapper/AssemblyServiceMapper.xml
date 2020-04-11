@@ -3,6 +3,32 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper">
 
 
+    <sql id="field_ordinaryList">
+           ass.id                             as id,
+       ass.assembly_number                as contractN,
+       ass.status                         as status,
+       ass.factory_id                     as factoryId,
+       factory.factory_name               as factoryName,
+       factory.contact_first_name         as contactFirstName,
+       factory.contact_last_name          as contactLastName,
+       factory.contact_full_name          as contactFullName,
+       factory.contact_phone              as contactPhone,
+       factory.contact_phone_country_code as contactPhoneCountryCode,
+       factory.contact_email              as contactEmail,
+       ass.total_qty                      as qty,
+       ass.created_time                   as createdTime,
+       ass.consignee_id                   as consigneeId,
+       profile.first_name                 as consigneeFirstName,
+       profile.last_name                  as consigneeLastName,
+       profile.full_name                  as consigneeFullName,
+       profile.tel_number                 as consigneePhone,
+       profile.country_code               as consigneePhoneCountryCode,
+       profile.email                      as consigneeEmail,
+       ass.processing_fee                 as processCost,
+       ass.processing_fee_ratio           as processCostRatio
+    </sql>
+
+
     <sql id="field_assemblyList">
            ass.id                             as id,
        ass.assembly_number                as contractN,
@@ -185,6 +211,16 @@
         from ope_assembly_b_order assOrder
         where assOrder.dr = 0
         and assOrder.assembly_id =#{id}
+    </select>
+    <select id="ordinaryList" resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult">
+        select
+        <include refid="field_ordinaryList"/>
+        from ope_assembly_order ass
+        left join ope_factory factory on factory.id = ass.factory_id and factory.dr = 0
+        left join ope_sys_user_profile profile on profile.sys_user_id = ass.consignee_id and profile.dr = 0
+        <include refid="where_assemblyList"/>
+        order by ass.created_time desc
+        limit #{enter.startRow},#{enter.pageSize}
     </select>
 
 </mapper>
