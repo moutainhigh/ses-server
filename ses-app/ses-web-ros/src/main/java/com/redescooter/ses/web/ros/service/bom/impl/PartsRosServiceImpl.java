@@ -311,7 +311,8 @@ public class PartsRosServiceImpl implements PartsRosService {
                     // 查询历史的订单编号
                     List<OpePartsDraftHistoryRecord> partsHistoryRecordList = partsDraftHistoryRecordService.list(new LambdaQueryWrapper<OpePartsDraftHistoryRecord>()
                             .eq(OpePartsDraftHistoryRecord::getPartsDraftId, newPartsDraft.getId())
-                            .eq(OpePartsDraftHistoryRecord::getDr, Constant.DR_FALSE));
+                            .eq(OpePartsDraftHistoryRecord::getDr, Constant.DR_FALSE)
+                            .eq(OpePartsDraftHistoryRecord::getEvent, PartsEventEnums.ADD.getValue()));
                     if (CollectionUtils.isEmpty(partsHistoryRecordList)) {
                         partsHistoryRecordList = new ArrayList<>();
                     }
