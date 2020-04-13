@@ -98,7 +98,7 @@ public class RedisBeanConfig extends CachingConfigurerSupport {
             sb.append(":");
             sb.append(method.getName());
             for (Object obj : params) {
-                sb.append(":" + String.valueOf(obj));
+                sb.append(":" + obj);
             }
             String rsToUse = String.valueOf(sb);
             log.info("自动生成Redis Key -> [{}]", rsToUse);

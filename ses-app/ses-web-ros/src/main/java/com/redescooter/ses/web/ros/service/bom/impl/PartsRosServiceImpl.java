@@ -569,6 +569,10 @@ public class PartsRosServiceImpl implements PartsRosService {
         //产品容器
         List<OpePartsProduct> productSave = new ArrayList<>();
 
+        //产品容器子表
+        List<OpePartsProductB> savePartsProductBList = new ArrayList<>();
+
+
         //1.进行查询需要同步的部件
         List<OpePartsDraft> partsDrafts =
                 opePartsDraftService.list(new LambdaQueryWrapper<OpePartsDraft>().eq(OpePartsDraft::getDr, 0).eq(OpePartsDraft::getPerfectFlag, Boolean.TRUE).eq(OpePartsDraft::getSynchronizeFlag,
@@ -579,45 +583,10 @@ public class PartsRosServiceImpl implements PartsRosService {
             partsDrafts.forEach(p -> {
                 //设置已同步标识
                 p.setSynchronizeFlag(Boolean.TRUE);
-
-                if (p.getSnClass().equals(BomSnClassEnums.SC.getCode())) {
-                    OpeParts parts = new OpeParts();
-                    BeanUtils.copyProperties(p, parts);
-                    parts.setPartsDraftId(p.getId());
-                    partsSave.add(parts);
-                } else if (p.getSnClass().equals(BomSnClassEnums.SSC.getCode())) {
-
-                    OpeParts parts = new OpeParts();
-                    BeanUtils.copyProperties(p, parts);
-                    parts.setPartsDraftId(p.getId());
-                    partsSave.add(parts);
-
-                    OpePartsProduct product = new OpePartsProduct();
-                    product.setDr(0);
-                    product.setTenantId(p.getTenantId());
-                    product.setUserId(p.getUserId());
-                    product.setStatus(PartsProductEnums.DOWN.getValue());
-                    product.setSnClass(BomSnClassEnums.getValueByCode(p.getSnClass()));
-                    product.setProductType(Integer.parseInt(BomCommonTypeEnums.getValueByCode(p.getPartsType())));
-                    product.setProductCode(p.getEnName());
-                    product.setProductNumber(p.getPartsNumber());
-                    product.setCnName(p.getCnName());
-                    product.setFrName(p.getFrName());
-                    product.setEnName(p.getEnName());
-                    product.setProductionCycle(p.getProductionCycle());
-                    product.setSumPartsQty(1);
-                    product.setModel(p.getPartsNumber());
-                    product.setPictures(p.getDwg());
-                    product.setAfterSalesFlag(false);
-                    product.setAddedServicesFlag(false);
-                    product.setRevision(0);
-                    product.setCreatedBy(enter.getUserId());
-                    product.setCreatedTime(new Date());
-                    product.setUpdatedBy(enter.getUserId());
-                    product.setUpdatedTime(new Date());
-                    product.setDef1(String.valueOf(p.getId()));
-                    productSave.add(product);
-                }
+                OpeParts parts = new OpeParts();
+                BeanUtils.copyProperties(p, parts);
+                parts.setPartsDraftId(p.getId());
+                partsSave.add(parts);
             });
 
             //更新已同步标识
@@ -639,6 +608,33 @@ public class PartsRosServiceImpl implements PartsRosService {
                     p.setId(oneParts.getId());
                     partsUpdate.add(p);
                 }
+                if (p.getSnClass().equals(BomSnClassEnums.SSC.getValue())) {
+                    OpePartsProduct product = new OpePartsProduct();
+                    product.setDr(0);
+                    product.setTenantId(p.getTenantId());
+                    product.setUserId(p.getUserId());
+                    product.setStatus(PartsProductEnums.DOWN.getValue());
+                    product.setSnClass(BomSnClassEnums.SSC.getValue());
+                    product.setProductType(Integer.parseInt(BomCommonTypeEnums.getValueByCode(p.getPartsType())));
+                    product.setProductCode(p.getEnName());
+                    product.setProductNumber(p.getPartsNumber());
+                    product.setCnName(p.getCnName());
+                    product.setFrName(p.getFrName());
+                    product.setEnName(p.getEnName());
+                    product.setProductionCycle(p.getProductionCycle());
+                    product.setSumPartsQty(1);
+                    product.setModel(p.getPartsNumber());
+                    product.setPictures(p.getDwg());
+                    product.setAfterSalesFlag(false);
+                    product.setAddedServicesFlag(false);
+                    product.setRevision(0);
+                    product.setCreatedBy(enter.getUserId());
+                    product.setCreatedTime(new Date());
+                    product.setUpdatedBy(enter.getUserId());
+                    product.setUpdatedTime(new Date());
+                    product.setDef1(String.valueOf(p.getId()));
+                    productSave.add(product);
+                }
             });
             if (CollectionUtils.isNotEmpty(partsInsert)) {
                 partsService.saveBatch(partsInsert);
@@ -654,8 +650,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             List<OpePartsProduct> productUpdate = new ArrayList<>();
             //部件插入集合
             List<OpePartsProduct> productInsert = new ArrayList<>();
-            productSave.forEach(p -> {
-
+            for (OpePartsProduct p : productSave) {
                 OpePartsProduct oneProduct = partsProductService.getOne(new LambdaQueryWrapper<OpePartsProduct>().eq(OpePartsProduct::getDr, 0).eq(OpePartsProduct::getDef1, p.getId()));
 
                 if (oneProduct == null) {
@@ -665,16 +660,54 @@ public class PartsRosServiceImpl implements PartsRosService {
                     p.setId(p.getId());
                     productUpdate.add(p);
                 }
+            }
+
+            productSave.forEach(product -> {
+                //查询是否子表数据
+                QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
+                opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, product.getId());
+                opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_ID, Long.valueOf(product.getDef1()));
+                OpePartsProductB partsProductB = opePartsProductBService.getOne(opePartsProductBQueryWrapper);
+                //保存子表数据
+                if (partsProductB == null) {
+                    savePartsProductBList.add(buildPartProductB(enter, product.getId(), Long.valueOf(product.getDef1()), idAppService.getId(SequenceName.OPE_PARTS_PRODUCT_B)));
+                } else {
+                    savePartsProductBList.add(buildPartProductB(enter, product.getId(), Long.valueOf(product.getDef1()), partsProductB.getId()));
+                }
             });
+
+
             if (CollectionUtils.isNotEmpty(productInsert)) {
                 partsProductService.saveBatch(productInsert);
             }
             if (CollectionUtils.isNotEmpty(productUpdate)) {
                 partsProductService.updateBatch(productUpdate);
             }
+            if (CollectionUtils.isNotEmpty(savePartsProductBList)) {
+                opePartsProductBService.saveOrUpdateBatch(savePartsProductBList);
+            }
         }
 
         return new GeneralResult(enter.getRequestId());
+    }
+
+    private OpePartsProductB buildPartProductB(GeneralEnter enter, Long productId, Long partId, Long id) {
+        return OpePartsProductB.builder()
+                .id(id)
+                .dr(0)
+                .tenantId(0L)
+                .userId(enter.getUserId())
+                .status(BomStatusEnums.NORMAL.getValue())
+                .partsProductId(productId)
+                .partsId(partId)
+                .partsQty(1)
+                .note(null)
+                .revision(0)
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .build();
     }
 
     @Override
@@ -787,7 +820,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             partsDraft.setId(enter.getId());
         }
         partsDraft.setPartsType(BomCommonTypeEnums.checkCode(enter.getPartsType()));
-        partsDraft.setSnClass(BomSnClassEnums.getValueByCode(enter.getSnClassFlag()));
+        partsDraft.setSnClass(enter.getSnClassFlag());
         partsDraft.setSec(ESCUtils.checkESC(enter.getSec()));
         partsDraft.setCnName(enter.getCnName());
         partsDraft.setFrName(enter.getFrName());

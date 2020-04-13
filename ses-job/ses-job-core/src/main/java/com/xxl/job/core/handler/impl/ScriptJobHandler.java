@@ -32,7 +32,7 @@ public class ScriptJobHandler extends IJobHandler {
             File[] glueSrcFileList = glueSrcPath.listFiles();
             if (glueSrcFileList!=null && glueSrcFileList.length>0) {
                 for (File glueSrcFileItem : glueSrcFileList) {
-                    if (glueSrcFileItem.getName().startsWith(String.valueOf(jobId)+"_")) {
+                    if (glueSrcFileItem.getName().startsWith(jobId +"_")) {
                         glueSrcFileItem.delete();
                     }
                 }

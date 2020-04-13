@@ -181,13 +181,13 @@ public class BomRosServiceImpl implements BomRosService {
                 .revision(0)
                 .build();
 
-        // 校验部品既有价格又有供应商的 部品
-        List<Long> partsIdList = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
-        if (bomRosServiceMapper.countSupplierWithPriceByPartIds(partsIdList) != partsIdList.size()) {
-            throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
-                    ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
-        }
         if (enter.getId() == null || enter.getId() == 0) {
+            // 校验部品既有价格又有供应商的 部品
+            List<Long> partsIdList = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
+            if (bomRosServiceMapper.countSupplierWithPriceByPartIds(partsIdList) != partsIdList.size()) {
+                throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
+                        ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
+            }
             //保存
             Long productId = idAppService.getId(SequenceName.OPE_PARTS_PRODUCT);
             // 产品编号过滤
@@ -249,9 +249,16 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsProduct.setUpdatedBy(enter.getUserId());
         opePartsProduct.setUpdatedTime(new Date());
 
-        //部品没有价格 没有供应商 不可组合车辆
+        if (CollectionUtils.isNotEmpty(opePartsProductList)) {
+            opePartsProductBService.saveOrUpdateBatch(opePartsProductList);
+        }
 
-        opePartsProductBService.saveOrUpdateBatch(opePartsProductList);
+        if (CollectionUtils.isEmpty(partList)) {
+            //部件 删除
+            QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
+            opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, enter.getId());
+            opePartsProductBService.remove(opePartsProductBQueryWrapper);
+        }
 
         opePartsProductService.saveOrUpdate(opePartsProduct);
         return new GeneralResult(enter.getRequestId());
@@ -543,12 +550,6 @@ public class BomRosServiceImpl implements BomRosService {
         if (partIds.size() != partList.size()) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        //todo  校验部品既有价格又有供应商的 部品
-//        List<Long> partsIdList = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
-//        if (bomRosServiceMapper.countSupplierWithPriceByPartIds(partsIdList) != partsIdList.size()) {
-//            throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
-//                    ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
-//        }
 
         // 配件过滤
         List<Long> partIdList = new ArrayList<>();
@@ -582,6 +583,12 @@ public class BomRosServiceImpl implements BomRosService {
                 .build();
 
         if (enter.getId() == null || enter.getId() == 0) {
+            //todo  校验部品既有价格又有供应商的 部品
+            List<Long> partsIdList = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
+            if (bomRosServiceMapper.countSupplierWithPriceByPartIds(partsIdList) != partsIdList.size()) {
+                throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
+                        ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
+            }
             // 产品编号过滤
             List<String> productNList = bomRosServiceMapper.checkProductNums(enter);
             if (productNList.contains(enter.getProductN())) {
@@ -644,8 +651,16 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsProduct.setUpdatedBy(enter.getUserId());
         opePartsProduct.setUpdatedTime(new Date());
 
-        // 子表数据保存
-        opePartsProductBService.saveOrUpdateBatch(opePartsProductList);
+        if (CollectionUtils.isEmpty(partList)) {
+            //部件 删除
+            QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
+            opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, enter.getId());
+            opePartsProductBService.remove(opePartsProductBQueryWrapper);
+        }
+        if (CollectionUtils.isNotEmpty(opePartsProductList)) {
+            // 子表数据保存
+            opePartsProductBService.saveOrUpdateBatch(opePartsProductList);
+        }
 
         // 主表数据保存
         opePartsProductService.saveOrUpdate(opePartsProduct);

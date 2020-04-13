@@ -108,4 +108,5 @@ public class AllocateController {
     public Response<List<ConsigneeResult>> consigneeList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(allocateService.consigneeList(enter));
     }
+
 }

@@ -122,7 +122,7 @@ public class JobResult extends GeneralResult {
         return sb.toString();
     }
 
-    public static enum Status {
+    public enum Status {
         /**
          * 状态
          */

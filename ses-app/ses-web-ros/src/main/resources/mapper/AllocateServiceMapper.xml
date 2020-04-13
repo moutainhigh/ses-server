@@ -126,8 +126,8 @@
         inner join ope_supplier supplier on supplier.id = parts.supplier_id and supplier.dr = 0
         where stock.dr = 0
         and stock.whse_id=#{whseId}
-        <if test="enter.type != null and enter.type != ''">
-            and parts.parts_type =#{enter.type}
+        <if test="enter.productType != null and enter.productType != ''">
+            and parts.parts_type =#{enter.productType}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and(

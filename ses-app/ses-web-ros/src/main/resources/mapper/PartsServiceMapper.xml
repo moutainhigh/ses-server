@@ -130,7 +130,6 @@
      select id,parts_number,created_time
      from ope_parts_draft_history_record
      where dr = 0
-       and event='2'
        and parts_draft_id =#{partsId}
        and user_id =#{userId}
     order by created_time desc

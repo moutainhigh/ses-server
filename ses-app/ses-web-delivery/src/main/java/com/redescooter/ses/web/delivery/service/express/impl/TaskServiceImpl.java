@@ -185,7 +185,6 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResult detail(IdEnter enter) {
         TaskResult result = taskServiceMapper.detail(enter);
-        ;
         List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(result.getScooterId());
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);

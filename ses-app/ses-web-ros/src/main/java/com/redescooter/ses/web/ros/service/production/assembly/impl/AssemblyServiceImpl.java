@@ -1422,10 +1422,20 @@ public class AssemblyServiceImpl implements AssemblyService {
     private OpeAssemblyOrder buildOpeAssemblyOrder(SaveAssemblyEnter enter, List<ProductionPartsEnter> productList, Long assemblyId, Map<Long, BigDecimal> productUnitPrice) {
 
         BigDecimal totalPrice = BigDecimal.ZERO;
-        for (Map.Entry<Long, BigDecimal> entry : productUnitPrice.entrySet()) {
-            Long key = entry.getKey();
-            BigDecimal value = entry.getValue();
-            totalPrice = totalPrice.add(value);
+        int productTotal = 0;
+//        for (Map.Entry<Long, BigDecimal> entry : productUnitPrice.entrySet()) {
+//            Long key = entry.getKey();
+//            BigDecimal value = entry.getValue();
+//            productList.forEach(item->{
+//            });
+//            totalPrice = totalPrice.add(value);
+//        }
+
+        for (ProductionPartsEnter item : productList) {
+            if (productUnitPrice.containsKey(item.getId())) {
+                totalPrice = totalPrice.add(productUnitPrice.get(item.getId()).multiply(new BigDecimal(item.getQty())));
+                productTotal += item.getQty();
+            }
         }
 
         OpeAssemblyOrder saveOpeAssemblyOrder = OpeAssemblyOrder.builder()
@@ -1435,12 +1445,12 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .tenantId(0L)
                 .status(AssemblyStatusEnums.PENDING.getValue())
                 .assemblyNumber("REDE" + RandomUtil.randomNumbers(7))
-                .totalQty(productList.stream().mapToInt(ProductionPartsEnter::getQty).sum())
+                .totalQty(productTotal)
                 .totalPrice(null)
                 .processingFee(null)
                 .processingFeeRatio(null)
                 .paymentType(null)
-                .productPrice(totalPrice.multiply(new BigDecimal(productList.stream().mapToInt(ProductionPartsEnter::getQty).sum())))
+                .productPrice(totalPrice)
                 .factoryId(enter.getFactoryId())
                 .factoryAnnex(null)
                 .consigneeId(enter.getConsigneeId())

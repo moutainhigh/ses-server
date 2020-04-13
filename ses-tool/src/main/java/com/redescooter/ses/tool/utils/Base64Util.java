@@ -4,6 +4,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class Base64Util {
 
@@ -36,11 +37,7 @@ public class Base64Util {
             return null;
         }
         String str = null;
-        try {
-            str = new String(Base64.decodeBase64(base64), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        str = new String(Base64.decodeBase64(base64), StandardCharsets.UTF_8);
         return str;
     }
 
@@ -54,11 +51,7 @@ public class Base64Util {
     //重载
     public static String decode(byte[] binaryData) {
         String str = null;
-        try {
-            str = new String(Base64.decodeBase64(binaryData), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        str = new String(Base64.decodeBase64(binaryData), StandardCharsets.UTF_8);
         return str;
     }
 

@@ -104,8 +104,8 @@ public class HttpUtils {
 	                            disposition.length() - 1);
 	                }
 	            } else {
-	                fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1,
-	                        fileURL.length());
+	                fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1
+                    );
 	            }
 	            InputStream inputStream = httpConn.getInputStream();
 	            String saveFilePath = saveDir + File.separator + fileName;
