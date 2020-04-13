@@ -22,6 +22,7 @@
         <module>ses-web-delivery</module>
         <module>ses-web-repair</module>
         <module>ses-web-ros</module>
+        <module>ses-mobile-rps</module>
     </modules>
 
     <build>
