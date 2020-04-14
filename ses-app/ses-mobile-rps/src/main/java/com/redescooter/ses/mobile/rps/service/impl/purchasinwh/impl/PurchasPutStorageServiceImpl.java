@@ -36,10 +36,16 @@ class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 PutStorageResult outStorageResult= PutStorageResult.builder()
                 .createTime(new Date())
                 .contractNo("YUUG0989821")
-                .inWaitWhTotal("8999").build();
+                .inWaitWhTotal("899").build();
+
+
+        PutStorageResult outStorageResult1= PutStorageResult.builder()
+                .createTime(new Date())
+                .contractNo("YUUG088854")
+                .inWaitWhTotal("66").build();
                 int count=1;
 
-        return PageResult.create(enter,count, Arrays.asList(outStorageResult));
+        return PageResult.create(enter,count, Arrays.asList(outStorageResult,outStorageResult1));
     }
 
     @Override
@@ -50,50 +56,54 @@ class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
         }*/
         PurchasDetailsListResult purchasDetailsListResult=PurchasDetailsListResult.builder()
-                .contractNo("UUU89879977")
+                .contractNo("YUUG088854")
                 .inWaitWhQty("888")
                 .partsNumber("OOOIIHYYYH")
-                .cnName("小花").build();
+                .cnName("轮胎").build();
+        PurchasDetailsListResult purchasDetailsListResult1=PurchasDetailsListResult.builder()
+                .contractNo("UUU8")
+                .inWaitWhQty("888")
+                .partsNumber("OOOIIHYYYH")
+                .cnName("螺丝").build();
         int count=1;
         //return PageResult.create(enter,count, purchasPutStorageMapper.storageDetailsResult(enter)) ;
-        return PageResult.create(enter,count, Arrays.asList(purchasDetailsListResult));
+        return PageResult.create(enter,count, Arrays.asList(purchasDetailsListResult,purchasDetailsListResult1));
     }
 
     @Override
-    public PageResult<HaveIDPartsResult> haveIDPartsResult(PurchasDetailsEnter enter) {
+    public HaveIDPartsResult haveIDPartsResult(PurchasDetailsEnter enter) {
         HaveIDPartsResult haveIDPartsResult=HaveIDPartsResult.builder()
-                .serialNum("IUHUGHU093")
-                .batchNo("UUU89879977")
+                .serialNum("IUHUGHU066")
+                .batchNo("YUUG088854")
                 .inWaitWhQty("888")
                 .partsNumber("OOOIIHYYYH")
-                .cnName("小花").build();
-        int count=1;
+                .cnName("螺丝").build();
+
         //return PageResult.create(enter,count, purchasPutStorageMapper.storageDetailsResult(enter)) ;
-        return PageResult.create(enter,count, Arrays.asList(haveIDPartsResult));
+        return haveIDPartsResult;
     }
 
     @Override
-    public PageResult<NotIDPartsResult> notIDPartsResult(PurchasDetailsEnter enter) {
+    public NotIDPartsResult notIDPartsResult(PurchasDetailsEnter enter) {
         NotIDPartsResult notIDPartsResult=NotIDPartsResult.builder()
                 .batchNo("UUU89879977")
                 .partsNumber("OOOIIHYYYH")
                 .inWaitWhQty("22")
-                .cnName("小花").build();
-        int count=1;
+                .cnName("轮胎").build();
+
         //return PageResult.create(enter,count, purchasPutStorageMapper.storageDetailsResult(enter)) ;
-        return PageResult.create(enter,count, Arrays.asList(notIDPartsResult));
+        return notIDPartsResult;
     }
 
     @Override
-    public PageResult<NotIDPartsSucceedResult> otIDPartsSucceedResult(PurchasDetailsEnter enter) {
+    public NotIDPartsSucceedResult otIDPartsSucceedResult(PurchasDetailsEnter enter) {
         NotIDPartsSucceedResult notIDPartsSucceedResult=NotIDPartsSucceedResult.builder()
                 .batchNo("UUU89879977")
                 .partsNumber("OOOIIHYYYH")
                 .inWaitWhQty("88")
-                .cnName("小花").build();
-        int count=1;
+                .cnName("轮胎").build();
         //return PageResult.create(enter,count, purchasPutStorageMapper.storageDetailsResult(enter)) ;
-        return PageResult.create(enter,count, Arrays.asList(notIDPartsSucceedResult));
+        return notIDPartsSucceedResult;
     }
 
 

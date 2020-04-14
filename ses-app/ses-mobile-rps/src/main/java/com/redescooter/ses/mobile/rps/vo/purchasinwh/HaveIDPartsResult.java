@@ -22,6 +22,5 @@ public class HaveIDPartsResult extends GeneralResult {
     private  String serialNum;
     @ApiModelProperty(value = "待入库数量")
     private String inWaitWhQty;
-    @ApiModelProperty(value = "已入库总数")
-    private String totalInventory;
+
 }

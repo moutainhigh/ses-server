@@ -56,20 +56,20 @@ public class PurchasPutStroageController{
     @IgnoreLoginCheck
     @PostMapping(value = "/HaveSucceed")
     @ApiOperation(value = "有ID入库成功", response = HaveIDPartsResult.class)
-    public Response<PageResult<HaveIDPartsResult>> HaveIDPartsResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
+    public Response<HaveIDPartsResult> HaveIDPartsResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.haveIDPartsResult(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/NotID")
     @ApiOperation(value = "无ID入库", response = NotIDPartsResult.class)
-    public Response<PageResult<NotIDPartsResult>> NotIDPartsResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
+    public Response<NotIDPartsResult> NotIDPartsResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.notIDPartsResult(enter));
     }
     @IgnoreLoginCheck
     @PostMapping(value = "/NotIDSucceed")
     @ApiOperation(value = "无ID入库成功", response = PurchasDetailsListResult.class)
-    public Response<PageResult<NotIDPartsSucceedResult>> NotIDPartsSucceedResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
+    public Response<NotIDPartsSucceedResult> NotIDPartsSucceedResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.otIDPartsSucceedResult(enter));
     }
 }
