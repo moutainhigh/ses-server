@@ -1,16 +1,20 @@
 package com.redescooter.ses.mobile.rps.service.material;
 
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
+import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcListResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcTemplateDetailResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.ReturnedCompletedEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcResult;
+
+import java.util.Map;
 
 /**
  * @ClassName:RpsMaterialService
@@ -20,6 +24,15 @@ import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcResult;
  * @create: 2020/04/13 16:07
  */
 public interface MaterialService {
+
+    /**
+     * 状态统计
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> countByStatus(GeneralEnter enter);
+
     /**
      * 来料质检列表
      *
@@ -50,7 +63,7 @@ public interface MaterialService {
      * @param enter
      * @return
      */
-    GeneralResult againQc(GeneralEnter enter);
+    GeneralResult againQc(IdEnter enter);
 
     /**
      * 来料质检详情
@@ -58,7 +71,7 @@ public interface MaterialService {
      * @param enter
      * @return
      */
-    MaterialDetailResult materialQcDetail(IdEnter enter);
+    PageResult<MaterialDetailResult> materialQcDetail(MaterialQcDetailEnter enter);
 
     /**
      * 来料质检失败详情
@@ -66,7 +79,7 @@ public interface MaterialService {
      * @param enter
      * @return
      */
-    MaterialDetailResult materialQcFailDetail(IdEnter enter);
+    PageResult<MaterialDetailResult> materialQcFailDetail(MaterialQcDetailEnter enter);
 
     /**
      * 部件质检模板
@@ -76,6 +89,8 @@ public interface MaterialService {
     MaterialQcTemplateDetailResult MaterialQcTemplate(IdEnter enter);
 
     /**
+     * 保存来料质检结果
+     *
      * @param enter
      * @return
      */

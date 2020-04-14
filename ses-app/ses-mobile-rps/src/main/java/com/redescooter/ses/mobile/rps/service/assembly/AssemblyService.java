@@ -1,9 +1,14 @@
 package com.redescooter.ses.mobile.rps.service.assembly;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.mobile.rps.vo.assembly.AssemblyDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.assembly.PrintCodeEnter;
 import com.redescooter.ses.mobile.rps.vo.assembly.ProductFormulaResult;
+import com.redescooter.ses.mobile.rps.vo.assembly.QueryProductCodeResult;
 import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaDateEnter;
 import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaDateResult;
 import com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyDetailResult;
@@ -23,7 +28,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    WaitAssemblyListResult list(GeneralEnter enter);
+    PageResult<WaitAssemblyListResult> list(PageEnter enter);
 
     /**
      * 待组装详情
@@ -31,7 +36,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    WaitAssemblyDetailResult detail(GeneralEnter enter);
+    PageResult<WaitAssemblyDetailResult> detail(AssemblyDetailEnter enter);
 
     /**
      * 产品配方
@@ -55,5 +60,13 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    GeneralEnter printCode(PrintCodeEnter enter);
+    GeneralResult printCode(PrintCodeEnter enter);
+
+    /**
+     * 查询打印条码结果
+     *
+     * @param enter
+     * @return
+     */
+    QueryProductCodeResult queryProductCode(IdEnter enter);
 }
