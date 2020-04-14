@@ -56,7 +56,11 @@ public enum ExceptionCodeEnums {
 
     COUNTRY_CANNOT_EMPTY(10019, "国家为空"),
 
-    ;
+    STATUS_IS_ILLEGAL(10020,"状态非法"),
+
+    PURCHAS_IS_NOT_EXIST(10030,"采购单不存在"),
+
+  ;
 
     private int code;
 

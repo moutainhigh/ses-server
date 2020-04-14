@@ -40,8 +40,8 @@ public class MaterialDetailResult extends GeneralResult {
     private String partN;
 
     @ApiModelProperty(value = "部品质检方式")
-    private String idClass;
+    private Boolean idClass;
 
-    @ApiModelProperty(value = "待入库")
+    @ApiModelProperty(value = "待质检数量")
     private int laveWaitQcQty;
 }
