@@ -27,6 +27,9 @@ public class PartTemplateEnter extends GeneralEnter {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "部件质检项")
-    private String partQcResultListJson;
+    @ApiModelProperty(value = "图片 多个图片逗号分隔")
+    private String pictureList;
+
+    @ApiModelProperty(value = "部件质检结果ids")
+    private String partQcResultIdListJson;
 }

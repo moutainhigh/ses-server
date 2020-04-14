@@ -56,11 +56,22 @@ public enum ExceptionCodeEnums {
 
     COUNTRY_CANNOT_EMPTY(10019, "国家为空"),
 
-    STATUS_IS_ILLEGAL(10020,"状态非法"),
+    STATUS_IS_ILLEGAL(10020, "状态非法"),
 
-    PURCHAS_IS_NOT_EXIST(10030,"采购单不存在"),
+    ILLEGAL_DATA(10021,"数据非法"),
 
-  ;
+
+    PURCHAS_IS_NOT_EXIST(10030, "采购单不存在"),
+
+    PART_IS_NOT_HAVE_QC_TEMPLATE(10031, "部件暂无质检模板"),
+
+    PART_IS_NOT_EXIST(10032, "部件不存在"),
+
+    PART_QC_QTY_IS_EMPTY(10033,"部件质检数量为空"),
+
+    PART_TEMPLATE_IS_NOT_EXIST(10034,"部件模板不存在"),
+
+    ;
 
     private int code;
 

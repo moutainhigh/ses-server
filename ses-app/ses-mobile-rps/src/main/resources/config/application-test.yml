@@ -47,7 +47,7 @@ spring:                                                                         
         group-name: Sign-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: ROS Sign接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
         description: 用户登录注销创建操作                                                                                  #api组的描述，会在swagger-ui的描述中显示
-        base-package: com.redescooter.ses.web.ros
+        base-package: com.redescooter.ses.mobile.rps
         path-regex: /sign/token/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.2.0                                                                                                 #Api版本
@@ -65,7 +65,7 @@ spring:                                                                         
         title: Rps接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
         description: Rps 相关接口
         #api组的描述，会在swagger-ui的描述中显示
-        base-package: com.redescooter.ses.web.ros
+        base-package: com.redescooter.ses.mobile.rps
         path-regex: /rps/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀

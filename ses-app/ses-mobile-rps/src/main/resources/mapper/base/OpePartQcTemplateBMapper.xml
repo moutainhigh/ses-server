@@ -6,7 +6,7 @@
     <!--@Table ope_part_qc_template_b-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="part_qc_template_id" jdbcType="INTEGER" property="partQcTemplateId" />
+    <result column="part_qc_template_id" jdbcType="BIGINT" property="partQcTemplateId" />
     <result column="qc_result" jdbcType="VARCHAR" property="qcResult" />
     <result column="upload_flag" jdbcType="BOOLEAN" property="uploadFlag" />
     <result column="results_sequence" jdbcType="INTEGER" property="resultsSequence" />
@@ -37,7 +37,7 @@
       </trim>
       <trim prefix="part_qc_template_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateId,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="qc_result = case" suffix="end,">
@@ -119,7 +119,7 @@
       )
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.partQcTemplateId,jdbcType=INTEGER}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.partQcTemplateId,jdbcType=BIGINT}, 
         #{item.qcResult,jdbcType=VARCHAR}, #{item.uploadFlag,jdbcType=BOOLEAN}, #{item.resultsSequence,jdbcType=INTEGER}, 
         #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
         #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
@@ -134,7 +134,7 @@
       created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
       )
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{partQcTemplateId,jdbcType=INTEGER}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{partQcTemplateId,jdbcType=BIGINT}, 
       #{qcResult,jdbcType=VARCHAR}, #{uploadFlag,jdbcType=BOOLEAN}, #{resultsSequence,jdbcType=INTEGER}, 
       #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
@@ -143,7 +143,7 @@
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
-    part_qc_template_id = #{partQcTemplateId,jdbcType=INTEGER}, 
+    part_qc_template_id = #{partQcTemplateId,jdbcType=BIGINT}, 
     qc_result = #{qcResult,jdbcType=VARCHAR}, 
     upload_flag = #{uploadFlag,jdbcType=BOOLEAN}, 
     results_sequence = #{resultsSequence,jdbcType=INTEGER}, 
@@ -220,7 +220,7 @@
         #{dr,jdbcType=INTEGER},
       </if>
       <if test="partQcTemplateId != null">
-        #{partQcTemplateId,jdbcType=INTEGER},
+        #{partQcTemplateId,jdbcType=BIGINT},
       </if>
       <if test="qcResult != null">
         #{qcResult,jdbcType=VARCHAR},
@@ -271,7 +271,7 @@
         dr = #{dr,jdbcType=INTEGER},
       </if>
       <if test="partQcTemplateId != null">
-        part_qc_template_id = #{partQcTemplateId,jdbcType=INTEGER},
+        part_qc_template_id = #{partQcTemplateId,jdbcType=BIGINT},
       </if>
       <if test="qcResult != null">
         qc_result = #{qcResult,jdbcType=VARCHAR},

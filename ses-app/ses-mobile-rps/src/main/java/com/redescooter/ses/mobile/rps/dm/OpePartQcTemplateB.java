@@ -41,7 +41,7 @@ public class OpePartQcTemplateB {
      */
     @TableField(value = "part_qc_template_id")
     @ApiModelProperty(value = "质检项Id")
-    private Integer partQcTemplateId;
+    private Long partQcTemplateId;
 
     /**
      * 质检结果
