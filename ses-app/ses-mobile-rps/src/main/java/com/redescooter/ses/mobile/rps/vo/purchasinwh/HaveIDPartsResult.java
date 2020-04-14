@@ -11,12 +11,17 @@ import io.swagger.annotations.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class HaveIDPartsListResult extends GeneralResult {
+public class HaveIDPartsResult extends GeneralResult {
     @ApiModelProperty(value = "部品号")
-    private String artsNumber;
+    private String partsNumber;
     @ApiModelProperty(value = "质检批次号")
     private String batchNo;
     @ApiModelProperty(value = "零配件中文名称")
     private String cnName;
-
+    @ApiModelProperty(value = "商品序列号")
+    private  String serialNum;
+    @ApiModelProperty(value = "待入库数量")
+    private String inWaitWhQty;
+    @ApiModelProperty(value = "已入库总数")
+    private String totalInventory;
 }
