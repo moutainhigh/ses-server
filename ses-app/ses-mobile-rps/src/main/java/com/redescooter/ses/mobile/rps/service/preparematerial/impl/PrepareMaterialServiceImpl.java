@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.preparematerial.impl;
 
+import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -14,6 +15,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 /**
  * @ClassName:PrepareMaterialServiceImpl
@@ -33,7 +36,12 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      */
     @Override
     public PageResult<PrepareMaterialListResult> list(PageEnter enter) {
-        return null;
+        return PageResult.create(enter,1, Lists.newArrayList(PrepareMaterialListResult.builder()
+                .id(1312321L)
+                .allocatN("dasdasda")
+                .createdTime(new Date())
+                .preparationWaitTotal(0)
+                .build()));
     }
 
     /**
@@ -44,7 +52,12 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      */
     @Override
     public PageResult<PrepareMaterialDetailResult> detail(PrepareMaterialDetailEnter enter) {
-        return null;
+        return PageResult.create(enter,1,Lists.newArrayList(PrepareMaterialDetailResult.builder()
+                .id(423432L)
+                .partId(443432L)
+                .partCnName("轮胎")
+                .preparationWaitQty(0)
+                .build()));
     }
 
     /**
@@ -55,6 +68,6 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      */
     @Override
     public GeneralResult save(SavePrepareMaterialEnter enter) {
-        return null;
+        return new GeneralResult(enter.getRequestId());
     }
 }

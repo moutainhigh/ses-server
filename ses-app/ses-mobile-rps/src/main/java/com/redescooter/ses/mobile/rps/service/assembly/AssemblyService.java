@@ -14,6 +14,8 @@ import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaDateResult;
 import com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyDetailResult;
 import com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyListResult;
 
+import java.util.List;
+
 /**
  * @ClassName:AssemblyService
  * @description: AssemblyService
@@ -44,7 +46,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    ProductFormulaResult formula(IdEnter enter);
+    List<ProductFormulaResult> formula(IdEnter enter);
 
     /**
      * 保存产品组装数据

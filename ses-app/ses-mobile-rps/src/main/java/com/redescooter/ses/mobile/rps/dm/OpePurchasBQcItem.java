@@ -3,7 +3,6 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,7 +31,6 @@ public class OpePurchasBQcItem {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标志")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -89,7 +87,7 @@ public class OpePurchasBQcItem {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Integer updatedBy;
+    private Long updatedBy;
 
     /**
      * 更新时间

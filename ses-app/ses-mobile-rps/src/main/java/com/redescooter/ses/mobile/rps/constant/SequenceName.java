@@ -7,5 +7,5 @@ package com.redescooter.ses.mobile.rps.constant;
  */
 public interface SequenceName {
 
-
+    String OPE_PURCHAS_B_QC_ITEM = "OPE_PURCHAS_B_QC_ITEM";
 }
