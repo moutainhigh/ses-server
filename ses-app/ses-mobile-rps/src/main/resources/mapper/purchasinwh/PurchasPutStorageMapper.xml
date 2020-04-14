@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.purchasinwh.PurchasPutStorageMapper">
+
+
+    <select id="putStorageResult" resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.PutStorageResult">
+        SELECT
+     created_time AS createTime,
+	contract_no AS contractNo,
+	in_wait_wh_total AS inWaitWhTotal,
+	part_id AS  partId
+FROM
+	ope_purchas
+    </select>
+</mapper>
