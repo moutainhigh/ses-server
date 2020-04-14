@@ -65,6 +65,10 @@
         limit #{startRow},#{pageSize}
     </select>
     <select id="qcFailType" resultType="java.lang.Integer">
-
+        select count(purchas.id)
+        from ope_purchas purchas
+                 left join ope_purchas_b purchasb on purchas.id = purchasb.purchas_id
+                 inner join ope_purchas_b_qc purchasbqc on purchasb.id = purchasbqc.purchas_b_id
+        where purchasbqc.fail_count != 0
     </select>
 </mapper>

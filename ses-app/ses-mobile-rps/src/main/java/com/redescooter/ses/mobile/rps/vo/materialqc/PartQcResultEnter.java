@@ -26,7 +26,4 @@ public class PartQcResultEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id")
     private Long id;
-
-    @ApiModelProperty(value = "模板质检项Id")
-    private Long partQcTemplateId;
 }

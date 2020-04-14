@@ -40,7 +40,7 @@ import java.util.Map;
 @Api(tags = {"备料模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/preparematerial")
+@RequestMapping(value = "/rps/preparematerial")
 public class PrepareMaterialController {
 
     @Autowired

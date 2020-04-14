@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = {"Rps首页"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rps")
+@RequestMapping(value = "/rps/head")
 public class RpsHeadController {
 
     @Autowired

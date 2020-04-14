@@ -33,6 +33,9 @@ public class SaveMaterialQcEnter extends GeneralEnter {
     @ApiModelProperty(value = "产品序列号")
     private String serialNum;
 
+    @ApiModelProperty(value = "质检数量")
+    private Integer qty;
+
     @ApiModelProperty(value = "采购单质检记录 json格式：  [\n" +
             "    {\n" +
             "        \"id\":132,\n" +
