@@ -2,6 +2,9 @@ package com.redescooter.ses.mobile.rps.service.preparematerial;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.SavePrepareMaterialEnter;
@@ -22,7 +25,7 @@ public interface PrepareMaterialService {
      * @param enter
      * @return
      */
-    PrepareMaterialListResult list(GeneralEnter enter);
+    PageResult<PrepareMaterialListResult> list(PageEnter enter);
 
     /**
      * 待备料详情
@@ -30,7 +33,7 @@ public interface PrepareMaterialService {
      * @param enter
      * @return
      */
-    List<PrepareMaterialDetailResult> detail(GeneralEnter enter);
+    PageResult<PrepareMaterialDetailResult> detail(PrepareMaterialDetailEnter enter);
 
     /**
      * 保存
