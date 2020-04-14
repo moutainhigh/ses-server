@@ -6,6 +6,8 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.assembly.*;
 
+import java.util.List;
+
 /**
  * @ClassName:AssemblyService
  * @description: AssemblyService
@@ -36,7 +38,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    ProductFormulaResult formula(IdEnter enter);
+    List<ProductFormulaResult> formula(IdEnter enter);
 
     /**
      * 保存产品组装数据
