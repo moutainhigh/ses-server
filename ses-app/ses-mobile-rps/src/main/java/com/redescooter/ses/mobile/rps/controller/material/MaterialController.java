@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.controller.material;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -44,54 +45,56 @@ public class MaterialController {
     @Autowired
     private MaterialService materialService;
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/countByStatus")
     @ApiOperation(value = "状态统计", response = Map.class)
     public Response<Map<String, Integer>> countByStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(materialService.countByStatus(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/list")
     @ApiOperation(value = "来料质检列表", response = MaterialQcListResult.class)
     public Response<PageResult<MaterialQcListResult>> list(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response<>(materialService.list(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/failList")
     @ApiOperation(value = "来料质检失败列表", response = MaterialQcListResult.class)
     public Response<PageResult<MaterialQcListResult>> failList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response<>(materialService.failList(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/returnedCompleted")
     @ApiOperation(value = "退货并完成", response = GeneralResult.class)
     public Response<GeneralResult> returnedCompleted(@ModelAttribute @ApiParam("请求参数") ReturnedCompletedEnter enter) {
         return new Response<>(materialService.returnedCompleted(enter));
     }
 
-    @PostMapping(value = "/returnedCompleted")
-    @ApiOperation(value = "退货并完成", response = GeneralResult.class)
-    public Response<GeneralResult> returnedCompleted(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(materialService.againQc(enter));
-    }
-
+    @IgnoreLoginCheck
     @PostMapping(value = "/detail")
     @ApiOperation(value = "详情", response = MaterialDetailResult.class)
     public Response<PageResult<MaterialDetailResult>> materialQcDetail(@ModelAttribute @ApiParam("请求参数") MaterialQcDetailEnter enter) {
         return new Response<>(materialService.materialQcDetail(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/failDetail")
     @ApiOperation(value = "质检失败详情", response = MaterialDetailResult.class)
     public Response<PageResult<MaterialDetailResult>> materialQcFailDetail(@ModelAttribute @ApiParam("请求参数") MaterialQcDetailEnter enter) {
         return new Response<>(materialService.materialQcFailDetail(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/materialQcTemplate")
     @ApiOperation(value = "查询质检模板", response = MaterialDetailResult.class)
     public Response<MaterialQcTemplateDetailResult> MaterialQcTemplate(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(materialService.MaterialQcTemplate(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存来料质检结果", response = SaveMaterialQcResult.class)
     public Response<SaveMaterialQcResult> saveMaterialQc(@ModelAttribute @ApiParam("请求参数") SaveMaterialQcEnter enter) {

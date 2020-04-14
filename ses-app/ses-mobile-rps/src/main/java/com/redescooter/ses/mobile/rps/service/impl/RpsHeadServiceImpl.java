@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * @ClassName:RpsHeadServiceImpl
@@ -16,11 +17,7 @@ import lombok.NoArgsConstructor;
  * @Version：1.3
  * @create: 2020/04/14 11:46
  */
-@Data //生成getter,setter等函数
-@AllArgsConstructor //生成全参数构造函数
-@NoArgsConstructor//生成无参构造函数
-@EqualsAndHashCode(callSuper = false)
-@Builder
+@Service
 public class RpsHeadServiceImpl implements RpsHeadService {
     /**
      * rps 首页数据
