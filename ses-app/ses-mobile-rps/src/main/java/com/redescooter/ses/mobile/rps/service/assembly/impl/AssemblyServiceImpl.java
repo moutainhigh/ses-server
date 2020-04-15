@@ -1,24 +1,16 @@
 package com.redescooter.ses.mobile.rps.service.assembly.impl;
 
+import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.service.assembly.AssemblyService;
-import com.redescooter.ses.mobile.rps.vo.assembly.AssemblyDetailEnter;
-import com.redescooter.ses.mobile.rps.vo.assembly.PrintCodeEnter;
-import com.redescooter.ses.mobile.rps.vo.assembly.ProductFormulaResult;
-import com.redescooter.ses.mobile.rps.vo.assembly.QueryProductCodeResult;
-import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaDateEnter;
-import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaDateResult;
-import com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyDetailResult;
-import com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyListResult;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.redescooter.ses.mobile.rps.vo.assembly.*;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName:AssemblyServiceImpl
@@ -38,7 +30,12 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public PageResult<WaitAssemblyListResult> list(PageEnter enter) {
-        return null;
+        return PageResult.create(enter,1, Lists.newArrayList(WaitAssemblyListResult.builder()
+                .id(2312312L)
+                .assemblyN("eqwewqeqw")
+                .createdTime(new Date())
+                .waitAssemblyTotal(0)
+                .build()));
     }
 
     /**
@@ -49,7 +46,13 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public PageResult<WaitAssemblyDetailResult> detail(AssemblyDetailEnter enter) {
-        return null;
+        return PageResult.create(enter,1, Lists.newArrayList(WaitAssemblyDetailResult.builder()
+                .id(2312312L)
+                .assemblyId(43432L)
+                .productCnName("电机")
+                .productN("dasdasdad")
+                .waitAssemblyQty(0)
+                .build()));
     }
 
     /**
@@ -59,8 +62,14 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @return
      */
     @Override
-    public ProductFormulaResult formula(IdEnter enter) {
-        return null;
+    public List<ProductFormulaResult> formula(IdEnter enter) {
+        return Lists.newArrayList(ProductFormulaResult.builder()
+                .id(321312L)
+                .partCnName("轮胎")
+                .partId(423432L)
+                .partN("dadad")
+                .qty(0)
+                .build());
     }
 
     /**
@@ -71,7 +80,13 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public SaveFormulaDateResult save(SaveFormulaDateEnter enter) {
-        return null;
+        return SaveFormulaDateResult.builder()
+                .id(3432L)
+                .productN("dasasda")
+                .createdTime(new Date())
+                .productName("REDE——2W")
+                .serialNum("dasasdada")
+                .build();
     }
 
     /**
@@ -82,7 +97,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public GeneralResult printCode(PrintCodeEnter enter) {
-        return null;
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -93,6 +108,9 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public QueryProductCodeResult queryProductCode(IdEnter enter) {
-        return null;
+        return QueryProductCodeResult.builder()
+                .id(31231L)
+                .printCodeResult(Boolean.TRUE)
+                .build();
     }
 }

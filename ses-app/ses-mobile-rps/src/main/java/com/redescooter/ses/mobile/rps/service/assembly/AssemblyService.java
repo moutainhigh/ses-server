@@ -1,18 +1,12 @@
 package com.redescooter.ses.mobile.rps.service.assembly;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.mobile.rps.vo.assembly.AssemblyDetailEnter;
-import com.redescooter.ses.mobile.rps.vo.assembly.PrintCodeEnter;
-import com.redescooter.ses.mobile.rps.vo.assembly.ProductFormulaResult;
-import com.redescooter.ses.mobile.rps.vo.assembly.QueryProductCodeResult;
-import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaDateEnter;
-import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaDateResult;
-import com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyDetailResult;
-import com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyListResult;
+import com.redescooter.ses.mobile.rps.vo.assembly.*;
+
+import java.util.List;
 
 /**
  * @ClassName:AssemblyService
@@ -44,7 +38,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    ProductFormulaResult formula(IdEnter enter);
+    List<ProductFormulaResult> formula(IdEnter enter);
 
     /**
      * 保存产品组装数据

@@ -39,7 +39,7 @@ import java.util.Map;
 @Api(tags = {"来料质检模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rps/material")
+@RequestMapping(value = "/material")
 public class MaterialController {
 
     @Autowired

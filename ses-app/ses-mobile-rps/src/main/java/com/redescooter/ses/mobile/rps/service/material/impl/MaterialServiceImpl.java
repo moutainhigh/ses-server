@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.material.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
@@ -12,12 +13,14 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.material.MaterialServiceMapper;
 import com.redescooter.ses.mobile.rps.dm.OpePartQcTemplate;
 import com.redescooter.ses.mobile.rps.dm.OpePartQcTemplateB;
 import com.redescooter.ses.mobile.rps.dm.OpeParts;
 import com.redescooter.ses.mobile.rps.dm.OpePurchas;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasBQcItem;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCode;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
@@ -38,18 +41,17 @@ import com.redescooter.ses.mobile.rps.vo.materialqc.PartTemplateResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.ReturnedCompletedEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcResult;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import springfox.documentation.spring.web.json.Json;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -79,6 +81,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     private OpePartsService opePartsService;
+
+    @Reference
+    private IdAppService idappService;
 
     /**
      * 状态统计
@@ -290,7 +295,36 @@ public class MaterialServiceImpl implements MaterialService {
         List<PartTemplateEnter> partQcResultList = Lists.newArrayList();
         //设置 模板、模板结果 之间关系
         Map<Long, Long> templateMap = Maps.newHashMap();
-        //解析质检模板数据
+
+        OpeParts opeParts = checkSaveMaterialEnter(enter, partQcResultList, templateMap);
+
+        //保存质检条目
+        OpePurchasBQcItem purchasBQcItem = OpePurchasBQcItem.builder()
+                .id(idappService.getId(SequenceName.OPE_PURCHAS_B_QC_ITEM))
+                .dr(0)
+                .partId(opeParts.getId())
+                .purchasBId(enter.getPurchasBId())
+                .qcBatchTotal(opeParts.getIdClass() == true ? 1 : enter.getQty())
+                .serialNum(opeParts.getIdClass() == true ? "REDE" + RandomUtil.BASE_CHAR_NUMBER : null)
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+
+
+        return null;
+    }
+
+    /**
+     * 保存质检记录 入参校验
+     *
+     * @param enter
+     * @param partQcResultList
+     * @param templateMap
+     */
+    private OpeParts checkSaveMaterialEnter(SaveMaterialQcEnter enter, List<PartTemplateEnter> partQcResultList, Map<Long, Long> templateMap) {
         try {
             partQcResultList.addAll(JSON.parseArray(enter.getPartTemplateListJson(), PartTemplateEnter.class));
             if (CollectionUtils.isEmpty(partQcResultList)) {
@@ -332,14 +366,12 @@ public class MaterialServiceImpl implements MaterialService {
         }
         //查询模板对应的结果集
         Collection<OpePartQcTemplateB> opePartQcTemplateBList = opePartQcTemplateBService.listByIds(templateMap.values());
-        if (CollectionUtils.isEmpty(opePartQcTemplateBList)){
+        if (CollectionUtils.isEmpty(opePartQcTemplateBList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getMessage());
         }
-        if (opePartQcTemplateBList.size()!=templateMap.values().size()){
+        if (opePartQcTemplateBList.size() != templateMap.values().size()) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getMessage());
         }
-
-
-        return null;
+        return opeParts;
     }
 }

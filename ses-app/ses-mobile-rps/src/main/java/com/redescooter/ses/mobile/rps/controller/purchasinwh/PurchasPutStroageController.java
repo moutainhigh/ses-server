@@ -25,20 +25,13 @@ import java.util.List;
 @Api(tags = {"采购仓库待入库信息"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rps")
+@RequestMapping(value = "/purchas")
 public class PurchasPutStroageController{
 
     @Autowired
      PurchasPutStroageService purchasPutStroageService;
-    /**
-     * @Author Joan
-     * @Description //TODO
-     * @Date  2020/4/14 14:34
-     * @Param [enter]
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.PageResult<com.redescooter.ses.mobile.rps.vo.purchasinwh.PutStorageResult>>
-     **/
 
-    @PostMapping(value = "/List")
+    @PostMapping(value = "/list")
     @ApiOperation(value = "采购仓库待入库列表", response = PutStorageResult.class)
     @IgnoreLoginCheck
     public Response<PageResult<PutStorageResult>> purchasPutStroageList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
@@ -46,7 +39,7 @@ public class PurchasPutStroageController{
     }
 
     @IgnoreLoginCheck
-    @PostMapping(value = "/DetailsList")
+    @PostMapping(value = "/detailsList")
     @ApiOperation(value = "采购仓库待入库部件列表", response = PurchasDetailsListResult.class)
     public Response<PageResult<PurchasDetailsListResult>> storageDetailsList(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.storageDetailsList(enter));
@@ -54,20 +47,20 @@ public class PurchasPutStroageController{
 
 
     @IgnoreLoginCheck
-    @PostMapping(value = "/HaveSucceed")
+    @PostMapping(value = "/haveSucceed")
     @ApiOperation(value = "有ID入库成功", response = HaveIDPartsResult.class)
     public Response<HaveIDPartsResult> HaveIDPartsResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.haveIDPartsResult(enter));
     }
 
     @IgnoreLoginCheck
-    @PostMapping(value = "/NotID")
+    @PostMapping(value = "/notID")
     @ApiOperation(value = "无ID入库", response = NotIDPartsResult.class)
     public Response<NotIDPartsResult> NotIDPartsResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.notIDPartsResult(enter));
     }
     @IgnoreLoginCheck
-    @PostMapping(value = "/NotIDSucceed")
+    @PostMapping(value = "/notIDSucceed")
     @ApiOperation(value = "无ID入库成功", response = PurchasDetailsListResult.class)
     public Response<NotIDPartsSucceedResult> NotIDPartsSucceedResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.otIDPartsSucceedResult(enter));
