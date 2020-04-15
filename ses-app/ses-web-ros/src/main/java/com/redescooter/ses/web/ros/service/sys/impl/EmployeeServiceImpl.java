@@ -345,7 +345,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             jedisService.delKey(opeSysUser.getLastLoginToken());
         }
         // 删除员工
-        opeSysStaffService.removeById(opeSysStaff);
+        opeSysStaffService.removeById(opeSysStaff.getSysUserId());
         // 删除员工账户
         opeSysUserService.removeById(opeSysStaff.getSysUserId());
         // 删除员工信息

@@ -1563,7 +1563,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                             .tenantId(0L)
                             .assemblyId(assemblyId)
                             .productId(item.getId())
-                            .assemblyBNumber("REDE" + RandomUtil.randomNumbers(6))
+                            .assemblybNumber("REDE" + RandomUtil.randomNumbers(6))
                             .productNumber(item.getProductNumber())
                             .enName(item.getEnName())
                             .price(null)
@@ -1588,7 +1588,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         }
         saveOpeAssemblyBOrderList.forEach(item -> {
             if (productUnitPrice.containsKey(item.getProductId())) {
-                item.setAssemblyBNumber(item.getAssemblyBNumber() + new Random().nextInt(100));
+                item.setAssemblybNumber(item.getAssemblybNumber() + new Random().nextInt(100));
                 item.setPrice(productUnitPrice.get(item.getProductId()));
             }
         });

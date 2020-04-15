@@ -29,9 +29,9 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-      id, dr, p_id, `name`, code, permission, `path`, component, `type`, icon, `level`,
-      sort, remark, created_by, created_time, updated_by, updated_time, def1, def2, def3,
-      def5, def6
+    id, dr, p_id, `name`, code, permission, `path`, component, `type`, icon, `level`, 
+    sort, remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+    def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -150,21 +150,21 @@
   </update>
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
-      insert into ope_sys_menu
-      (dr, p_id, `name`, code, permission, `path`, component, `type`, icon, `level`, sort,
-      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5,
+    insert into ope_sys_menu
+    (dr, p_id, `name`, code, permission, `path`, component, `type`, icon, `level`, sort, 
+      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
       def6)
-      values
-      <foreach collection="list" item="item" separator=",">
-          (#{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT}, #{item.name,jdbcType=VARCHAR},
-          #{item.code,jdbcType=VARCHAR}, #{item.permission,jdbcType=VARCHAR}, #{item.path,jdbcType=VARCHAR},
-          #{item.component,jdbcType=VARCHAR}, #{item.type,jdbcType=CHAR}, #{item.icon,jdbcType=VARCHAR},
-          #{item.level,jdbcType=INTEGER}, #{item.sort,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR},
-          #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-          #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
-          #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}, #{item.def6,jdbcType=VARCHAR}
-          )
-      </foreach>
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT}, #{item.name,jdbcType=VARCHAR}, 
+        #{item.code,jdbcType=VARCHAR}, #{item.permission,jdbcType=VARCHAR}, #{item.path,jdbcType=VARCHAR}, 
+        #{item.component,jdbcType=VARCHAR}, #{item.type,jdbcType=CHAR}, #{item.icon,jdbcType=VARCHAR}, 
+        #{item.level,jdbcType=INTEGER}, #{item.sort,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}, #{item.def6,jdbcType=VARCHAR}
+        )
+    </foreach>
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysMenu" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -222,8 +222,8 @@
       #{def5,jdbcType=DECIMAL},
       #{def6,jdbcType=VARCHAR},
     </trim>
-      on duplicate key update
-      <trim suffixOverrides=",">
+    on duplicate key update 
+    <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
       </if>
@@ -390,8 +390,8 @@
         #{def6,jdbcType=VARCHAR},
       </if>
     </trim>
-      on duplicate key update
-      <trim suffixOverrides=",">
+    on duplicate key update 
+    <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
       </if>

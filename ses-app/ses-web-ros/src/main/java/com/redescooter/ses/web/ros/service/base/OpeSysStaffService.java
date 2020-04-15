@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Transactional
-public interface OpeSysStaffService extends IService<OpeSysStaff> {
+public interface OpeSysStaffService extends IService<OpeSysStaff>{
 
 
     int updateBatch(List<OpeSysStaff> list);
@@ -19,7 +18,3 @@ public interface OpeSysStaffService extends IService<OpeSysStaff> {
     int insertOrUpdateSelective(OpeSysStaff record);
 
 }
-
-
-
-

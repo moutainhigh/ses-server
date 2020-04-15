@@ -1,7 +1,8 @@
 package com.redescooter.ses.web.ros.dm;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,15 +11,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysDeptRelation")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_sys_dept_relation")
-public class OpeSysDeptRelation implements Serializable {
+public class OpeSysDeptRelation {
     /**
      * 祖先节点
      */
@@ -30,17 +29,14 @@ public class OpeSysDeptRelation implements Serializable {
      * 后代节点
      */
     @TableField(value = "descendant")
-    @TableLogic
     @ApiModelProperty(value = "后代节点")
     private Long descendant;
-
-    private static final long serialVersionUID = 1L;
 
     public static final String COL_ANCESTOR = "ancestor";
 
     public static final String COL_DESCENDANT = "descendant";
 
-    public static com.redescooter.ses.web.ros.dm.OpeSysDeptRelation.OpeSysDeptRelationBuilder builder() {
-        return new com.redescooter.ses.web.ros.dm.OpeSysDeptRelation.OpeSysDeptRelationBuilder();
+    public static OpeSysDeptRelationBuilder builder() {
+        return new OpeSysDeptRelationBuilder();
     }
 }

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
-import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.QcTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -20,10 +19,7 @@ import com.redescooter.ses.mobile.rps.dm.OpePartQcTemplateB;
 import com.redescooter.ses.mobile.rps.dm.OpeParts;
 import com.redescooter.ses.mobile.rps.dm.OpePurchas;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
-import com.redescooter.ses.mobile.rps.dm.OpePurchasBQc;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasBQcItem;
-import com.redescooter.ses.mobile.rps.dm.OpePurchasQcTrace;
-import com.redescooter.ses.mobile.rps.exception.ExceptionCode;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
@@ -37,7 +33,6 @@ import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcListResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcTemplateDetailResult;
-import com.redescooter.ses.mobile.rps.vo.materialqc.PartQcResultEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.PartQcResultResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.PartTemplateEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.PartTemplateResult;
@@ -51,7 +46,6 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -124,7 +118,7 @@ public class MaterialServiceImpl implements MaterialService {
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, 1, materialServiceMapper.list(enter));
+        return PageResult.create(enter, count, materialServiceMapper.list(enter));
     }
 
     /**

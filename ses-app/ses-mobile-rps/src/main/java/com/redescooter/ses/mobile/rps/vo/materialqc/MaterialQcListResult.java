@@ -1,5 +1,7 @@
 package com.redescooter.ses.mobile.rps.vo.materialqc;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:MaterialQcListResult
@@ -30,6 +33,8 @@ public class MaterialQcListResult extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "订单创建时间")
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date createdTime;
 
     @ApiModelProperty(value = "订单编号")

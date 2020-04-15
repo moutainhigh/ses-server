@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.controller;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -38,6 +39,7 @@ public class RpsHeadController {
     @Autowired
     private RpsHeadService rpsHeadService;
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/index")
     @ApiOperation(value = "Rps首页数据", response = RpsHeadResult.class)
     public Response<RpsHeadResult> accountList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {

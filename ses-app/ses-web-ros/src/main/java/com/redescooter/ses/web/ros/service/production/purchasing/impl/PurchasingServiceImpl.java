@@ -578,7 +578,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
         List<String> productTypeList = new ArrayList<String>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
+            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
                 productTypeList.add(item.getValue());
             }
         }
@@ -1413,6 +1413,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                             .price(item.getPrice())
                             .totalPrice(item.getPrice().equals(BigDecimal.ZERO) ? BigDecimal.ZERO : item.getPrice().multiply(new BigDecimal(v)))
                             .totalCount(v)
+                            .laveWaitQcQty(v)
+                            .inWaitWhQty(v)
                             .createdBy(enter.getUserId())
                             .createdTime(new Date())
                             .updatedTime(new Date())
@@ -1437,6 +1439,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .factoryId(enter.getFactoryId())
                 .totalPrice(totalPrice)
                 .totalQty(totalCount)
+                .laveWaitQcTotal(totalCount)
+                .inWaitWhTotal(totalCount)
                 .revision(0)
                 .createdBy(enter.getUserId())
                 .createdTime(new Date())

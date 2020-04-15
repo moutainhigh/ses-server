@@ -1,14 +1,12 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpePurchasTrace;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Transactional
-
-public interface OpePurchasTraceService extends IService<OpePurchasTrace> {
+public interface OpePurchasTraceService extends IService<OpePurchasTrace>{
 
 
     int updateBatch(List<OpePurchasTrace> list);
@@ -20,5 +18,3 @@ public interface OpePurchasTraceService extends IService<OpePurchasTrace> {
     int insertOrUpdateSelective(OpePurchasTrace record);
 
 }
-
-

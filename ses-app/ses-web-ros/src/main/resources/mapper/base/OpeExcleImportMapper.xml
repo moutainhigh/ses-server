@@ -8,6 +8,7 @@
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+    <result column="data_json" jdbcType="LONGVARCHAR" property="dataJson" />
     <result column="count" jdbcType="INTEGER" property="count" />
     <result column="attachment" jdbcType="VARCHAR" property="attachment" />
     <result column="service_type" jdbcType="VARCHAR" property="serviceType" />
@@ -22,19 +23,10 @@
     <result column="def5" jdbcType="VARCHAR" property="def5" />
     <result column="def6" jdbcType="DOUBLE" property="def6" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.redescooter.ses.web.ros.dm.OpeExcleImport">
-    <!--@mbg.generated-->
-    <!--@Table ope_excle_import-->
-    <result column="data_json" jdbcType="LONGVARCHAR" property="dataJson" />
-  </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, `status`, batch_no, `count`, attachment, service_type, message, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-  </sql>
-  <sql id="Blob_Column_List">
-    <!--@mbg.generated-->
-    data_json
+    id, dr, `status`, batch_no, data_json, `count`, attachment, service_type, message, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -53,6 +45,11 @@
       <trim prefix="batch_no = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.batchNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="data_json = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dataJson,jdbcType=LONGVARCHAR}
         </foreach>
       </trim>
       <trim prefix="`count` = case" suffix="end,">
@@ -120,11 +117,6 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
         </foreach>
       </trim>
-      <trim prefix="data_json = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.dataJson,jdbcType=LONGVARCHAR}
-        </foreach>
-      </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
@@ -134,37 +126,39 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_excle_import
-    (id, dr, `status`, batch_no, `count`, attachment, service_type, message, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6, data_json
+    (id, dr, `status`, batch_no, data_json, `count`, attachment, service_type, message, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
       )
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.batchNo,jdbcType=VARCHAR}, #{item.count,jdbcType=INTEGER}, #{item.attachment,jdbcType=VARCHAR}, 
-        #{item.serviceType,jdbcType=VARCHAR}, #{item.message,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}, #{item.dataJson,jdbcType=LONGVARCHAR}
+        #{item.batchNo,jdbcType=VARCHAR}, #{item.dataJson,jdbcType=LONGVARCHAR}, #{item.count,jdbcType=INTEGER}, 
+        #{item.attachment,jdbcType=VARCHAR}, #{item.serviceType,jdbcType=VARCHAR}, #{item.message,jdbcType=VARCHAR}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
         )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeExcleImport">
     <!--@mbg.generated-->
     insert into ope_excle_import
-    (id, dr, `status`, batch_no, `count`, attachment, service_type, message, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+    (id, dr, `status`, batch_no, data_json, `count`, attachment, service_type, message, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR}, 
-      #{count,jdbcType=INTEGER}, #{attachment,jdbcType=VARCHAR}, #{serviceType,jdbcType=VARCHAR}, 
-      #{message,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
-      )
+      #{dataJson,jdbcType=LONGVARCHAR}, #{count,jdbcType=INTEGER}, #{attachment,jdbcType=VARCHAR}, 
+      #{serviceType,jdbcType=VARCHAR}, #{message,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
     `status` = #{status,jdbcType=VARCHAR}, 
     batch_no = #{batchNo,jdbcType=VARCHAR}, 
+    data_json = #{dataJson,jdbcType=LONGVARCHAR}, 
     `count` = #{count,jdbcType=INTEGER}, 
     attachment = #{attachment,jdbcType=VARCHAR}, 
     service_type = #{serviceType,jdbcType=VARCHAR}, 
@@ -178,39 +172,6 @@
     def3 = #{def3,jdbcType=VARCHAR}, 
     def5 = #{def5,jdbcType=VARCHAR}, 
     def6 = #{def6,jdbcType=DOUBLE}
-  </insert>
-  <insert id="insertOrUpdateWithBLOBs" parameterType="com.redescooter.ses.web.ros.dm.OpeExcleImport">
-    <!--@mbg.generated-->
-    insert into ope_excle_import
-    (id, dr, `status`, batch_no, `count`, attachment, service_type, message, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6, data_json
-      )
-    values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR}, 
-      #{count,jdbcType=INTEGER}, #{attachment,jdbcType=VARCHAR}, #{serviceType,jdbcType=VARCHAR}, 
-      #{message,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}, 
-      #{dataJson,jdbcType=LONGVARCHAR})
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    `status` = #{status,jdbcType=VARCHAR}, 
-    batch_no = #{batchNo,jdbcType=VARCHAR}, 
-    `count` = #{count,jdbcType=INTEGER}, 
-    attachment = #{attachment,jdbcType=VARCHAR}, 
-    service_type = #{serviceType,jdbcType=VARCHAR}, 
-    message = #{message,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def5 = #{def5,jdbcType=VARCHAR}, 
-    def6 = #{def6,jdbcType=DOUBLE}, 
-    data_json = #{dataJson,jdbcType=LONGVARCHAR}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeExcleImport">
     <!--@mbg.generated-->
@@ -227,6 +188,9 @@
       </if>
       <if test="batchNo != null">
         batch_no,
+      </if>
+      <if test="dataJson != null">
+        data_json,
       </if>
       <if test="count != null">
         `count`,
@@ -267,9 +231,6 @@
       <if test="def6 != null">
         def6,
       </if>
-      <if test="dataJson != null">
-        data_json,
-      </if>
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -284,6 +245,9 @@
       </if>
       <if test="batchNo != null">
         #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dataJson != null">
+        #{dataJson,jdbcType=LONGVARCHAR},
       </if>
       <if test="count != null">
         #{count,jdbcType=INTEGER},
@@ -324,9 +288,6 @@
       <if test="def6 != null">
         #{def6,jdbcType=DOUBLE},
       </if>
-      <if test="dataJson != null">
-        #{dataJson,jdbcType=LONGVARCHAR},
-      </if>
     </trim>
     on duplicate key update 
     <trim suffixOverrides=",">
@@ -341,6 +302,9 @@
       </if>
       <if test="batchNo != null">
         batch_no = #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dataJson != null">
+        data_json = #{dataJson,jdbcType=LONGVARCHAR},
       </if>
       <if test="count != null">
         `count` = #{count,jdbcType=INTEGER},
@@ -380,9 +344,6 @@
       </if>
       <if test="def6 != null">
         def6 = #{def6,jdbcType=DOUBLE},
-      </if>
-      <if test="dataJson != null">
-        data_json = #{dataJson,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>

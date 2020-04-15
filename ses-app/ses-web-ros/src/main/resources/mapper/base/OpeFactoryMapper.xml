@@ -44,11 +44,11 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, `status`, tenant_id, user_id, factory_name, factory_address, factory_country,
-    factory_longitude, factory_latitude, place_id, geo_hash, factory_tag, factory_memo,
-    contact_first_name, contact_last_name, contact_full_name, contact_email, contact_phone_country_code,
-    contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number,
-    business_license_annex, contract_number, contract_annex, overdue_flag, created_time,
+    id, dr, `status`, tenant_id, user_id, factory_name, factory_address, factory_country, 
+    factory_longitude, factory_latitude, place_id, geo_hash, factory_tag, factory_memo, 
+    contact_first_name, contact_last_name, contact_full_name, contact_email, contact_phone_country_code, 
+    contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number, 
+    business_license_annex, contract_number, contract_annex, overdue_flag, created_time, 
     created_by, updated_time, updated_by, def1, def2, def5, def3, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
@@ -244,94 +244,90 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_factory
-    (id, dr, `status`, tenant_id, user_id, factory_name, factory_address, factory_country,
-    factory_longitude, factory_latitude, place_id, geo_hash, factory_tag, factory_memo,
-    contact_first_name, contact_last_name, contact_full_name, contact_email, contact_phone_country_code,
-    contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number,
-    business_license_annex, contract_number, contract_annex, overdue_flag, created_time,
-    created_by, updated_time, updated_by, def1, def2, def5, def3, def6)
+    (id, dr, `status`, tenant_id, user_id, factory_name, factory_address, factory_country, 
+      factory_longitude, factory_latitude, place_id, geo_hash, factory_tag, factory_memo, 
+      contact_first_name, contact_last_name, contact_full_name, contact_email, contact_phone_country_code, 
+      contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number, 
+      business_license_annex, contract_number, contract_annex, overdue_flag, created_time, 
+      created_by, updated_time, updated_by, def1, def2, def5, def3, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR},
-      #{item.tenantId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}, #{item.factoryName,jdbcType=VARCHAR},
-      #{item.factoryAddress,jdbcType=VARCHAR}, #{item.factoryCountry,jdbcType=VARCHAR},
-      #{item.factoryLongitude,jdbcType=DECIMAL}, #{item.factoryLatitude,jdbcType=DECIMAL},
-      #{item.placeId,jdbcType=VARCHAR}, #{item.geoHash,jdbcType=VARCHAR}, #{item.factoryTag,jdbcType=VARCHAR},
-      #{item.factoryMemo,jdbcType=VARCHAR}, #{item.contactFirstName,jdbcType=VARCHAR},
-      #{item.contactLastName,jdbcType=VARCHAR}, #{item.contactFullName,jdbcType=VARCHAR},
-      #{item.contactEmail,jdbcType=VARCHAR}, #{item.contactPhoneCountryCode,jdbcType=VARCHAR},
-      #{item.contactPhone,jdbcType=VARCHAR}, #{item.paymentCycle,jdbcType=INTEGER},
-      #{item.cooperationTimeStart,jdbcType=TIMESTAMP},
-      #{item.cooperationTimeEnd,jdbcType=TIMESTAMP}, #{item.businessNumber,jdbcType=VARCHAR},
-      #{item.businessLicenseAnnex,jdbcType=VARCHAR}, #{item.contractNumber,jdbcType=VARCHAR},
-      #{item.contractAnnex,jdbcType=VARCHAR}, #{item.overdueFlag,jdbcType=INTEGER},
-      #{item.createdTime,jdbcType=TIMESTAMP},
-      #{item.createdBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-      #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
-      #{item.def3,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
+        #{item.tenantId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}, #{item.factoryName,jdbcType=VARCHAR}, 
+        #{item.factoryAddress,jdbcType=VARCHAR}, #{item.factoryCountry,jdbcType=VARCHAR}, 
+        #{item.factoryLongitude,jdbcType=DECIMAL}, #{item.factoryLatitude,jdbcType=DECIMAL}, 
+        #{item.placeId,jdbcType=VARCHAR}, #{item.geoHash,jdbcType=VARCHAR}, #{item.factoryTag,jdbcType=VARCHAR}, 
+        #{item.factoryMemo,jdbcType=VARCHAR}, #{item.contactFirstName,jdbcType=VARCHAR}, 
+        #{item.contactLastName,jdbcType=VARCHAR}, #{item.contactFullName,jdbcType=VARCHAR}, 
+        #{item.contactEmail,jdbcType=VARCHAR}, #{item.contactPhoneCountryCode,jdbcType=VARCHAR}, 
+        #{item.contactPhone,jdbcType=VARCHAR}, #{item.paymentCycle,jdbcType=INTEGER}, #{item.cooperationTimeStart,jdbcType=TIMESTAMP}, 
+        #{item.cooperationTimeEnd,jdbcType=TIMESTAMP}, #{item.businessNumber,jdbcType=VARCHAR}, 
+        #{item.businessLicenseAnnex,jdbcType=VARCHAR}, #{item.contractNumber,jdbcType=VARCHAR}, 
+        #{item.contractAnnex,jdbcType=VARCHAR}, #{item.overdueFlag,jdbcType=INTEGER}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeFactory">
     <!--@mbg.generated-->
     insert into ope_factory
-    (id, dr, `status`, tenant_id, user_id, factory_name, factory_address, factory_country,
-    factory_longitude, factory_latitude, place_id, geo_hash, factory_tag, factory_memo,
-    contact_first_name, contact_last_name, contact_full_name, contact_email, contact_phone_country_code,
-    contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number,
-    business_license_annex, contract_number, contract_annex, overdue_flag, created_time,
-    created_by, updated_time, updated_by, def1, def2, def5, def3, def6)
+    (id, dr, `status`, tenant_id, user_id, factory_name, factory_address, factory_country, 
+      factory_longitude, factory_latitude, place_id, geo_hash, factory_tag, factory_memo, 
+      contact_first_name, contact_last_name, contact_full_name, contact_email, contact_phone_country_code, 
+      contact_phone, payment_cycle, cooperation_time_start, cooperation_time_end, business_number, 
+      business_license_annex, contract_number, contract_annex, overdue_flag, created_time, 
+      created_by, updated_time, updated_by, def1, def2, def5, def3, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT},
-    #{userId,jdbcType=BIGINT}, #{factoryName,jdbcType=VARCHAR}, #{factoryAddress,jdbcType=VARCHAR},
-    #{factoryCountry,jdbcType=VARCHAR}, #{factoryLongitude,jdbcType=DECIMAL}, #{factoryLatitude,jdbcType=DECIMAL},
-    #{placeId,jdbcType=VARCHAR}, #{geoHash,jdbcType=VARCHAR}, #{factoryTag,jdbcType=VARCHAR},
-    #{factoryMemo,jdbcType=VARCHAR}, #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR},
-    #{contactFullName,jdbcType=VARCHAR}, #{contactEmail,jdbcType=VARCHAR},
-    #{contactPhoneCountryCode,jdbcType=VARCHAR},
-    #{contactPhone,jdbcType=VARCHAR}, #{paymentCycle,jdbcType=INTEGER}, #{cooperationTimeStart,jdbcType=TIMESTAMP},
-    #{cooperationTimeEnd,jdbcType=TIMESTAMP}, #{businessNumber,jdbcType=VARCHAR},
-    #{businessLicenseAnnex,jdbcType=VARCHAR},
-    #{contractNumber,jdbcType=VARCHAR}, #{contractAnnex,jdbcType=VARCHAR}, #{overdueFlag,jdbcType=INTEGER},
-    #{createdTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
-    #{updatedBy,jdbcType=BIGINT}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
-    #{def5,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
-    on duplicate key update
-    id = #{id,jdbcType=BIGINT},
-    dr = #{dr,jdbcType=INTEGER},
-    `status` = #{status,jdbcType=VARCHAR},
-    tenant_id = #{tenantId,jdbcType=BIGINT},
-    user_id = #{userId,jdbcType=BIGINT},
-    factory_name = #{factoryName,jdbcType=VARCHAR},
-    factory_address = #{factoryAddress,jdbcType=VARCHAR},
-    factory_country = #{factoryCountry,jdbcType=VARCHAR},
-    factory_longitude = #{factoryLongitude,jdbcType=DECIMAL},
-    factory_latitude = #{factoryLatitude,jdbcType=DECIMAL},
-    place_id = #{placeId,jdbcType=VARCHAR},
-    geo_hash = #{geoHash,jdbcType=VARCHAR},
-    factory_tag = #{factoryTag,jdbcType=VARCHAR},
-    factory_memo = #{factoryMemo,jdbcType=VARCHAR},
-    contact_first_name = #{contactFirstName,jdbcType=VARCHAR},
-    contact_last_name = #{contactLastName,jdbcType=VARCHAR},
-    contact_full_name = #{contactFullName,jdbcType=VARCHAR},
-    contact_email = #{contactEmail,jdbcType=VARCHAR},
-    contact_phone_country_code = #{contactPhoneCountryCode,jdbcType=VARCHAR},
-    contact_phone = #{contactPhone,jdbcType=VARCHAR},
-    payment_cycle = #{paymentCycle,jdbcType=INTEGER},
-    cooperation_time_start = #{cooperationTimeStart,jdbcType=TIMESTAMP},
-    cooperation_time_end = #{cooperationTimeEnd,jdbcType=TIMESTAMP},
-    business_number = #{businessNumber,jdbcType=VARCHAR},
-    business_license_annex = #{businessLicenseAnnex,jdbcType=VARCHAR},
-    contract_number = #{contractNumber,jdbcType=VARCHAR},
-    contract_annex = #{contractAnnex,jdbcType=VARCHAR},
-    overdue_flag = #{overdueFlag,jdbcType=INTEGER},
-    created_time = #{createdTime,jdbcType=TIMESTAMP},
-    created_by = #{createdBy,jdbcType=BIGINT},
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-    updated_by = #{updatedBy,jdbcType=BIGINT},
-    def1 = #{def1,jdbcType=VARCHAR},
-    def2 = #{def2,jdbcType=VARCHAR},
-    def5 = #{def5,jdbcType=VARCHAR},
-    def3 = #{def3,jdbcType=VARCHAR},
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{tenantId,jdbcType=BIGINT}, 
+      #{userId,jdbcType=BIGINT}, #{factoryName,jdbcType=VARCHAR}, #{factoryAddress,jdbcType=VARCHAR}, 
+      #{factoryCountry,jdbcType=VARCHAR}, #{factoryLongitude,jdbcType=DECIMAL}, #{factoryLatitude,jdbcType=DECIMAL}, 
+      #{placeId,jdbcType=VARCHAR}, #{geoHash,jdbcType=VARCHAR}, #{factoryTag,jdbcType=VARCHAR}, 
+      #{factoryMemo,jdbcType=VARCHAR}, #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR}, 
+      #{contactFullName,jdbcType=VARCHAR}, #{contactEmail,jdbcType=VARCHAR}, #{contactPhoneCountryCode,jdbcType=VARCHAR}, 
+      #{contactPhone,jdbcType=VARCHAR}, #{paymentCycle,jdbcType=INTEGER}, #{cooperationTimeStart,jdbcType=TIMESTAMP}, 
+      #{cooperationTimeEnd,jdbcType=TIMESTAMP}, #{businessNumber,jdbcType=VARCHAR}, #{businessLicenseAnnex,jdbcType=VARCHAR}, 
+      #{contractNumber,jdbcType=VARCHAR}, #{contractAnnex,jdbcType=VARCHAR}, #{overdueFlag,jdbcType=INTEGER}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def5,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    `status` = #{status,jdbcType=VARCHAR}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    user_id = #{userId,jdbcType=BIGINT}, 
+    factory_name = #{factoryName,jdbcType=VARCHAR}, 
+    factory_address = #{factoryAddress,jdbcType=VARCHAR}, 
+    factory_country = #{factoryCountry,jdbcType=VARCHAR}, 
+    factory_longitude = #{factoryLongitude,jdbcType=DECIMAL}, 
+    factory_latitude = #{factoryLatitude,jdbcType=DECIMAL}, 
+    place_id = #{placeId,jdbcType=VARCHAR}, 
+    geo_hash = #{geoHash,jdbcType=VARCHAR}, 
+    factory_tag = #{factoryTag,jdbcType=VARCHAR}, 
+    factory_memo = #{factoryMemo,jdbcType=VARCHAR}, 
+    contact_first_name = #{contactFirstName,jdbcType=VARCHAR}, 
+    contact_last_name = #{contactLastName,jdbcType=VARCHAR}, 
+    contact_full_name = #{contactFullName,jdbcType=VARCHAR}, 
+    contact_email = #{contactEmail,jdbcType=VARCHAR}, 
+    contact_phone_country_code = #{contactPhoneCountryCode,jdbcType=VARCHAR}, 
+    contact_phone = #{contactPhone,jdbcType=VARCHAR}, 
+    payment_cycle = #{paymentCycle,jdbcType=INTEGER}, 
+    cooperation_time_start = #{cooperationTimeStart,jdbcType=TIMESTAMP}, 
+    cooperation_time_end = #{cooperationTimeEnd,jdbcType=TIMESTAMP}, 
+    business_number = #{businessNumber,jdbcType=VARCHAR}, 
+    business_license_annex = #{businessLicenseAnnex,jdbcType=VARCHAR}, 
+    contract_number = #{contractNumber,jdbcType=VARCHAR}, 
+    contract_annex = #{contractAnnex,jdbcType=VARCHAR}, 
+    overdue_flag = #{overdueFlag,jdbcType=INTEGER}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
     def6 = #{def6,jdbcType=DOUBLE}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeFactory">
@@ -564,7 +560,7 @@
         #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
-    on duplicate key update
+    on duplicate key update 
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},

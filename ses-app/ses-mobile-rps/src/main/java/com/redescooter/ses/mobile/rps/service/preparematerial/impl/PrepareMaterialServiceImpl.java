@@ -16,7 +16,6 @@ import com.redescooter.ses.mobile.rps.dm.OpeAllocate;
 import com.redescooter.ses.mobile.rps.dm.OpeAllocateB;
 import com.redescooter.ses.mobile.rps.dm.OpeAllocateBTrace;
 import com.redescooter.ses.mobile.rps.dm.OpeParts;
-import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBService;
@@ -36,9 +35,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
