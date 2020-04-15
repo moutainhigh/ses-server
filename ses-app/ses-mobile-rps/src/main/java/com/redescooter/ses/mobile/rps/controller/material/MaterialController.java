@@ -89,7 +89,7 @@ public class MaterialController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/materialQcTemplate")
-    @ApiOperation(value = "查询质检模板", response = MaterialDetailResult.class)
+    @ApiOperation(value = "查询质检模板", response = MaterialQcTemplateDetailResult.class)
     public Response<MaterialQcTemplateDetailResult> MaterialQcTemplate(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(materialService.MaterialQcTemplate(enter));
     }
