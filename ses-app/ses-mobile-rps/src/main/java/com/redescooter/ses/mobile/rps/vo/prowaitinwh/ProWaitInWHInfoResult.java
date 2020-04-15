@@ -6,6 +6,8 @@ import lombok.*;
 
 import io.swagger.annotations.*;
 
+import java.util.Date;
+
 /**
  * @ClassNameProWaitInWHInfoResult
  * @Description
@@ -47,5 +49,8 @@ public class ProWaitInWHInfoResult extends GeneralResult {
 
     @ApiModelProperty(value = "剩余数量")
     private Integer residueNum;
+
+    @ApiModelProperty(value = "生产日期")
+    private Date proTime;
 
 }
