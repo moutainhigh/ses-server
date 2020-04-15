@@ -71,6 +71,10 @@ public enum ExceptionCodeEnums {
 
     PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE(10035,"部件质检项不完整"),
 
+    ALLOCATE_ORDER_IS_NOT_EXIST(10036,"调拨单不存在"),
+
+    PREPARE_MATERIAL_QTY_IS_WRONG(10037,"备料数量不匹配"),
+
     ;
 
     private int code;

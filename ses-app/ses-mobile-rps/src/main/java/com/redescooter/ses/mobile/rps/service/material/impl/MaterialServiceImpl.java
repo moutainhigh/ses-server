@@ -344,28 +344,28 @@ public class MaterialServiceImpl implements MaterialService {
 //                .purchasBQcId(opePurchasB.getId())
 //                .
 //                .build();
-        IdEnter batchNoEnter = new IdEnter();
-        batchNoEnter.setId(opePurchasB.getId());
-        OpePurchasBQc.builder()
-                .id(idappService.getId(SequenceName.OPE_PURCHAS_B_QC))
-                .dr(0)
-                .tenantId(0L)
-                .userId(0L)
-                .purchasBId(opePurchasB.getId())
-                .partsId(enter.getId())
-                .qualityInspectorId(enter.getUserId())
-                .batchNo(bussinessNumberService.materialQcBatchNo(batchNoEnter))
-                .status()
-                .totalQualityInspected(opeParts.getIdClass() == true ? 1 : enter.getQty())
-                .passCount()
-                .failCount()
-                .qualityInspectionTime(new Date())
-                .revision(0)
-                .createdBy(enter.getUserId())
-                .createdTime(new Date())
-                .updatedBy(enter.getUserId())
-                .updatedTime(new Date())
-                .build();
+//        IdEnter batchNoEnter = new IdEnter();
+//        batchNoEnter.setId(opePurchasB.getId());
+//        OpePurchasBQc.builder()
+//                .id(idappService.getId(SequenceName.OPE_PURCHAS_B_QC))
+//                .dr(0)
+//                .tenantId(0L)
+//                .userId(0L)
+//                .purchasBId(opePurchasB.getId())
+//                .partsId(enter.getId())
+//                .qualityInspectorId(enter.getUserId())
+//                .batchNo(bussinessNumberService.materialQcBatchNo(batchNoEnter))
+////                .status()
+//                .totalQualityInspected(opeParts.getIdClass() == true ? 1 : enter.getQty())
+//                .passCount()
+//                .failCount()
+//                .qualityInspectionTime(new Date())
+//                .revision(0)
+//                .createdBy(enter.getUserId())
+//                .createdTime(new Date())
+//                .updatedBy(enter.getUserId())
+//                .updatedTime(new Date())
+//                .build();
 
 
         return null;

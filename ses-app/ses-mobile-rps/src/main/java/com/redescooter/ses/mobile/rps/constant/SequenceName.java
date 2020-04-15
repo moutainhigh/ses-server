@@ -12,4 +12,6 @@ public interface SequenceName {
     String OPE_PURCHAS_QC_TRACE = "OPE_PURCHAS_QC_TRACE";
 
     String OPE_PURCHAS_B_QC="OPE_PURCHAS_B_QC";
+
+    String OPE_ALLOCATE_B_TRACE="OPE_ALLOCATE_B_TRACE";
 }

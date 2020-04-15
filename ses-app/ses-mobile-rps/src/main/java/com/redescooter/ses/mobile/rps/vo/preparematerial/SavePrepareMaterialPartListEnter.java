@@ -10,20 +10,23 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName:SavePrepareMaterialEnter
- * @description: SavePrepareMaterialEnter
+ * @ClassName:SavePrepareMaterialPartListEnter
+ * @description: SavePrepareMaterialPartListEnter
  * @author: Alex
  * @Version：1.3
- * @create: 2020/04/13 19:14
+ * @create: 2020/04/15 13:09
  */
-@ApiModel(value = "保存备料入参", description = "保存备料入参")
+@ApiModel(value = "保存备料部件列表", description = "保存备料部件列表")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SavePrepareMaterialEnter extends GeneralEnter {
+public class SavePrepareMaterialPartListEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "备料部件列表")
+    @ApiModelProperty(value = "id")
+    private Long id;
+
+    @ApiModelProperty(value = "部件列表")
     private String partListJson;
 }
