@@ -98,13 +98,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -584,13 +578,13 @@ public class PurchasingServiceImpl implements PurchasingService {
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
         List<String> productTypeList = new ArrayList<String>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
+            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
                 productTypeList.add(item.getValue());
             }
         }
-        //商品查询
+        //整车产品查询列表
         List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter, Lists.newArrayList(BomCommonTypeEnums.SCOOTER.getValue()));
-        //查询商品所有部品
+        //查询产品中包含的所有的部件
         if (CollectionUtils.isNotEmpty(scooterProductList)) {
             List<Long> productIds = Lists.newArrayList();
             scooterProductList.forEach(item -> {
@@ -615,6 +609,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                 }
             }
         }
+
+        //除整车外的所有产品列表
         List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
         scooterProductList.addAll(partProductList);
 
@@ -1435,7 +1431,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .userId(enter.getUserId())
                 .tenantId(0L)
                 .consigneeId(enter.getConsigneeId())
-                .contractNo("REDE" + RandomUtil.getRandom())
+                .contractNo("REDE" + new Random().nextInt(10000))
                 .status(PurchasingStatusEnums.PENDING.getValue())
                 .paymentType(enter.getPaymentType())
                 .factoryId(enter.getFactoryId())

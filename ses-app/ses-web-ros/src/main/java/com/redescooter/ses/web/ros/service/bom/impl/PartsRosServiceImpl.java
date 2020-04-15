@@ -572,7 +572,6 @@ public class PartsRosServiceImpl implements PartsRosService {
         //产品容器子表
         List<OpePartsProductB> savePartsProductBList = new ArrayList<>();
 
-
         //1.进行查询需要同步的部件
         List<OpePartsDraft> partsDrafts =
                 opePartsDraftService.list(new LambdaQueryWrapper<OpePartsDraft>().eq(OpePartsDraft::getDr, 0).eq(OpePartsDraft::getPerfectFlag, Boolean.TRUE).eq(OpePartsDraft::getSynchronizeFlag,

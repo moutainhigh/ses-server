@@ -83,10 +83,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName:AssemblyServiceImpl
@@ -238,8 +235,10 @@ public class AssemblyServiceImpl implements AssemblyService {
                 }
                 for (OpePartsProductB item : productMap.get(product.getId())) {
                     opeStockList.forEach(stock -> {
+                        Integer qty = product.getQty() == null ? 0 : product.getQty();
+
                         if (stock.getMaterielProductId().equals(item.getPartsId())) {
-                            stock.setAvailableTotal(stock.getAvailableTotal() - item.getPartsQty() * product.getQty());
+                            stock.setAvailableTotal(stock.getAvailableTotal() - item.getPartsQty() * qty);
                             if (stock.getAvailableTotal() < 0) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
@@ -342,7 +341,7 @@ public class AssemblyServiceImpl implements AssemblyService {
             if (CollectionUtils.isNotEmpty(productList)) {
                 for (ProductionPartsEnter product : productList) {
                     if (item.getId().equals(product.getId())) {
-                        item.setSelectedQty(product.getQty());
+                        item.setSelectedQty(product.getQty() == null ? 0 : product.getQty());
                         break;
                     }
                 }
@@ -1589,6 +1588,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         }
         saveOpeAssemblyBOrderList.forEach(item -> {
             if (productUnitPrice.containsKey(item.getProductId())) {
+                item.setAssemblyBNumber(item.getAssemblyBNumber() + new Random().nextInt(100));
                 item.setPrice(productUnitPrice.get(item.getProductId()));
             }
         });

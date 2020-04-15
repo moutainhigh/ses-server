@@ -122,8 +122,8 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 .shouldInWHNum(100)
                 .inWHNum(70)
                 .residueNum(30)
+                .proTime(new Date())
                 .build();
-
 
         return proWaitInWHInfoResult;
     }

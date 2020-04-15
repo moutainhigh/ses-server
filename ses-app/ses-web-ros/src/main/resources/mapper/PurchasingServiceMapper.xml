@@ -97,24 +97,23 @@
         inner join ope_supplier supplier on supplier.id = part.supplier_id and supplier.dr = 0
         left join ope_price_sheet sheet on sheet.parts_id = productb.parts_id and sheet.currency_unit = 1
         <where>
-
-        <if test="enter.supplierId != null">
+            <if test="enter.supplierId != null">
                 and supplier.id=#{enter.supplierId}
-        </if>
+            </if>
             and product.product_type in
             <foreach collection="productTypeList" open="(" separator="," close=")" item="item">
                 #{item}
             </foreach>
-        <if test="enter.productType !=null and enter.productType !=''">
+            <if test="enter.productType !=null and enter.productType !=''">
                 and product.product_type =#{enter.productType}
-        </if>
-        <if test="enter.keyword != null and enter.keyword != ''">
+            </if>
+            <if test="enter.keyword != null and enter.keyword != ''">
                 and (
                 product.product_number like concat("%",#{enter.keyword},"%")
                 or product.en_name like concat("%",#{enter.keyword},"%")
                 or product.cn_name like concat("%",#{enter.keyword},"%")
                 )
-        </if>
+            </if>
         </where>
     </select>
     <select id="queryPurchasScooter"
