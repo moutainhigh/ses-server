@@ -584,7 +584,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
         List<String> productTypeList = new ArrayList<String>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
+            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
                 productTypeList.add(item.getValue());
             }
         }
@@ -596,6 +596,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             scooterProductList.forEach(item -> {
                 productIds.add(item.getId());
             });
+            //查询产品所有部件
             List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
             if (CollectionUtils.isNotEmpty(partList)) {
 
@@ -614,11 +615,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                 }
             }
         }
-        List<Long> productIds = scooterProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList());
         List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
         scooterProductList.addAll(partProductList);
-
-        scooterProductList.removeIf(item -> StringUtils.equals(item.getProductType(), BomCommonTypeEnums.COMBINATION.getValue()));
 
         if (CollectionUtils.isEmpty(scooterProductList)) {
             return new ArrayList<>();

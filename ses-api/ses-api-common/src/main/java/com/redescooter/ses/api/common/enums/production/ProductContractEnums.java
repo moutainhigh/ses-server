@@ -16,7 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum ProductContractEnums {
 
-    REDE("REDE", "REDE", "1");
+    REDE("REDE", "REDE", "1"),
+    //规则 “PN”+“年份”+“日期”+“3位数递增”。例如：PN202002020014
+    MATERIALQCBATCHNO("PN","来料质检前缀","2"),
+    ;
 
     private String code;
 

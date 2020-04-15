@@ -69,7 +69,7 @@ public enum ExceptionCodeEnums {
 
     PART_QC_QTY_IS_EMPTY(10033,"部件质检数量为空"),
 
-    PART_TEMPLATE_IS_NOT_EXIST(10034,"部件模板不存在"),
+    PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE(10035,"部件质检项不完整"),
 
     ;
 

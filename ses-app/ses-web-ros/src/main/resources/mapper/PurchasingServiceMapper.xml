@@ -100,17 +100,21 @@
 
         <if test="enter.supplierId != null">
                 and supplier.id=#{enter.supplierId}
-            </if>
-            <if test="enter.productType !=null and enter.productType !=''">
+        </if>
+            and product.product_type in
+            <foreach collection="productTypeList" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
+        <if test="enter.productType !=null and enter.productType !=''">
                 and product.product_type =#{enter.productType}
-            </if>
-            <if test="enter.keyword != null and enter.keyword != ''">
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
                 and (
                 product.product_number like concat("%",#{enter.keyword},"%")
                 or product.en_name like concat("%",#{enter.keyword},"%")
                 or product.cn_name like concat("%",#{enter.keyword},"%")
                 )
-            </if>
+        </if>
         </where>
     </select>
     <select id="queryPurchasScooter"

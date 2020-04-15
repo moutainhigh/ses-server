@@ -651,7 +651,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             //部件插入集合
             List<OpePartsProduct> productInsert = new ArrayList<>();
             for (OpePartsProduct p : productSave) {
-                OpePartsProduct oneProduct = partsProductService.getOne(new LambdaQueryWrapper<OpePartsProduct>().eq(OpePartsProduct::getDr, 0).eq(OpePartsProduct::getDef1, p.getId()));
+                OpePartsProduct oneProduct = partsProductService.getOne(new LambdaQueryWrapper<OpePartsProduct>().eq(OpePartsProduct::getDr, 0).eq(OpePartsProduct::getDef1, p.getDef1()));
 
                 if (oneProduct == null) {
                     p.setId(idAppService.getId(SequenceName.OPE_PARTS_PRODUCT));
@@ -663,6 +663,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             }
 
             productSave.forEach(product -> {
+
                 //查询是否子表数据
                 QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
                 opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, product.getId());

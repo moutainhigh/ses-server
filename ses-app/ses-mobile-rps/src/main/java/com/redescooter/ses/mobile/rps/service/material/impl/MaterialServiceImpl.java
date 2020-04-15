@@ -20,10 +20,13 @@ import com.redescooter.ses.mobile.rps.dm.OpePartQcTemplateB;
 import com.redescooter.ses.mobile.rps.dm.OpeParts;
 import com.redescooter.ses.mobile.rps.dm.OpePurchas;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasBQc;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasBQcItem;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasQcTrace;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCode;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
+import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.base.OpePartQcTemplateBService;
 import com.redescooter.ses.mobile.rps.service.base.OpePartQcTemplateService;
 import com.redescooter.ses.mobile.rps.service.base.OpePartsService;
@@ -81,6 +84,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     private OpePartsService opePartsService;
+
+    @Autowired
+    private BussinessNumberService bussinessNumberService;
 
     @Reference
     private IdAppService idappService;
@@ -183,7 +189,7 @@ public class MaterialServiceImpl implements MaterialService {
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, 1, materialServiceMapper.detail(enter));
+        return PageResult.create(enter, count, materialServiceMapper.detail(enter));
     }
 
     /**
@@ -295,8 +301,26 @@ public class MaterialServiceImpl implements MaterialService {
         List<PartTemplateEnter> partQcResultList = Lists.newArrayList();
         //设置 模板、模板结果 之间关系
         Map<Long, Long> templateMap = Maps.newHashMap();
+        //质检通过模板
+        Map<Long, Long> passTemplateMap = Maps.newHashMap();
 
-        OpeParts opeParts = checkSaveMaterialEnter(enter, partQcResultList, templateMap);
+        //对入参数据做校验
+        OpeParts opeParts = opePartsService.getById(enter.getId());
+        if (opeParts == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+        //根据质检类型校验质检数量
+        if (opeParts.getIdClass().equals(Boolean.TRUE)) {
+            if (enter.getQty() == null || enter.getQty() == 0) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getCode(), ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getMessage());
+            }
+        }
+
+        OpePurchasB opePurchasB = checkSaveMaterialEnter(enter, partQcResultList, templateMap, passTemplateMap);
+
+
+        //质检结果
+
 
         //保存质检条目
         OpePurchasBQcItem purchasBQcItem = OpePurchasBQcItem.builder()
@@ -312,6 +336,36 @@ public class MaterialServiceImpl implements MaterialService {
                 .updatedBy(enter.getUserId())
                 .updatedTime(new Date())
                 .build();
+//        OpePurchasQcTrace.builder()
+//                .id(idappService.getId(SequenceName.OPE_PURCHAS_QC_TRACE))
+//                .dr(0)
+//                .partId(enter.getId())
+//                .purchasId(opePurchasB.getPurchasId())
+//                .purchasBQcId(opePurchasB.getId())
+//                .
+//                .build();
+//        IdEnter batchNoEnter = new IdEnter();
+//        batchNoEnter.setId(opePurchasB.getId());
+//        OpePurchasBQc.builder()
+//                .id(idappService.getId(SequenceName.OPE_PURCHAS_B_QC))
+//                .dr(0)
+//                .tenantId(0L)
+//                .userId(0L)
+//                .purchasBId(opePurchasB.getId())
+//                .partsId(enter.getId())
+//                .qualityInspectorId(enter.getUserId())
+//                .batchNo(bussinessNumberService.materialQcBatchNo(batchNoEnter))
+//                .status()
+//                .totalQualityInspected(opeParts.getIdClass() == true ? 1 : enter.getQty())
+//                .passCount()
+//                .failCount()
+//                .qualityInspectionTime(new Date())
+//                .revision(0)
+//                .createdBy(enter.getUserId())
+//                .createdTime(new Date())
+//                .updatedBy(enter.getUserId())
+//                .updatedTime(new Date())
+//                .build();
 
 
         return null;
@@ -324,7 +378,7 @@ public class MaterialServiceImpl implements MaterialService {
      * @param partQcResultList
      * @param templateMap
      */
-    private OpeParts checkSaveMaterialEnter(SaveMaterialQcEnter enter, List<PartTemplateEnter> partQcResultList, Map<Long, Long> templateMap) {
+    private OpePurchasB checkSaveMaterialEnter(SaveMaterialQcEnter enter, List<PartTemplateEnter> partQcResultList, Map<Long, Long> templateMap, Map<Long, Long> passTemplateMap) {
         try {
             partQcResultList.addAll(JSON.parseArray(enter.getPartTemplateListJson(), PartTemplateEnter.class));
             if (CollectionUtils.isEmpty(partQcResultList)) {
@@ -336,42 +390,44 @@ public class MaterialServiceImpl implements MaterialService {
         } catch (Exception e) {
             throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(), ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
         }
-        //对入参数据做校验
-        OpeParts opeParts = opePartsService.getById(enter.getId());
-        if (opeParts == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
-        }
 
         OpePurchasB opePurchasB = opePurchasBService.getById(enter.getPurchasBId());
         if (opePurchasB == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
 
-        if (!opePurchasB.getPartId().equals(opeParts.getId())) {
+        if (!opePurchasB.getPartId().equals(enter.getId())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(), ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
         }
-        //根据质检类型校验质检数量
-        if (opeParts.getIdClass().equals(Boolean.TRUE)) {
-            if (enter.getQty() == null || enter.getQty() == 0) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getCode(), ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getMessage());
-            }
-        }
         //查询质检模板
-        Collection<OpePartQcTemplate> opePartQcTemplateList = opePartQcTemplateService.listByIds(templateMap.keySet().stream().collect(Collectors.toList()));
-        if (CollectionUtils.isEmpty(opePartQcTemplateList)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getMessage());
+        QueryWrapper<OpePartQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
+        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplate.COL_PART_ID, enter.getId());
+        List<OpePartQcTemplate> partQcTemplateList = opePartQcTemplateService.list(opePartQcTemplateQueryWrapper);
+        if (CollectionUtils.isEmpty(partQcTemplateList)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getCode(), ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getMessage());
         }
-        if (templateMap.keySet().size() != opePartQcTemplateList.size()) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getMessage());
+        if (templateMap.keySet().size() != partQcTemplateList.size()) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getCode(), ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getMessage());
         }
         //查询模板对应的结果集
         Collection<OpePartQcTemplateB> opePartQcTemplateBList = opePartQcTemplateBService.listByIds(templateMap.values());
         if (CollectionUtils.isEmpty(opePartQcTemplateBList)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getCode(), ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getMessage());
         }
         if (opePartQcTemplateBList.size() != templateMap.values().size()) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_TEMPLATE_IS_NOT_EXIST.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getCode(), ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getMessage());
         }
-        return opeParts;
+
+        //封装质检通过模板
+//        partQcTemplateList.forEach(item -> {
+//            opePartQcTemplateBList.forEach(template -> {
+//                if (item.getId().equals(template.getPartQcTemplateId())) {
+//                    if (templateMap.containsKey(item.getId())){
+//                        templateMap.put(item.getId(),templateMap.get(item.getId()));
+//                    }
+//                }
+//            });
+//        });
+        return opePurchasB;
     }
 }
