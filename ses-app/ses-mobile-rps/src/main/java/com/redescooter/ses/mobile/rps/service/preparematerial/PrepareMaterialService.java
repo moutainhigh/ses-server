@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.rps.service.preparematerial;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -8,8 +7,6 @@ import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailEn
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.SavePrepareMaterialEnter;
-
-import java.util.List;
 
 /**
  * @ClassName:PrepareMaterialService

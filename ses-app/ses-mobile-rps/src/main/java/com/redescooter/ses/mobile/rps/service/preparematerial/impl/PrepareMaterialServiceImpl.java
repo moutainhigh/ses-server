@@ -9,11 +9,6 @@ import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailEn
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.SavePrepareMaterialEnter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

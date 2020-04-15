@@ -46,6 +46,7 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+*.mvn/*
 
 ### macOS
 # General
