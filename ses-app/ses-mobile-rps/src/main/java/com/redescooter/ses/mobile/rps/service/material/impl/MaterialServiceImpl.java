@@ -344,28 +344,28 @@ public class MaterialServiceImpl implements MaterialService {
 //                .purchasBQcId(opePurchasB.getId())
 //                .
 //                .build();
-//        IdEnter batchNoEnter = new IdEnter();
-//        batchNoEnter.setId(opePurchasB.getId());
-//        OpePurchasBQc.builder()
-//                .id(idappService.getId(SequenceName.OPE_PURCHAS_B_QC))
-//                .dr(0)
-//                .tenantId(0L)
-//                .userId(0L)
-//                .purchasBId(opePurchasB.getId())
-//                .partsId(enter.getId())
-//                .qualityInspectorId(enter.getUserId())
-//                .batchNo(bussinessNumberService.materialQcBatchNo(batchNoEnter))
-//                .status()
-//                .totalQualityInspected(opeParts.getIdClass() == true ? 1 : enter.getQty())
-//                .passCount()
-//                .failCount()
-//                .qualityInspectionTime(new Date())
-//                .revision(0)
-//                .createdBy(enter.getUserId())
-//                .createdTime(new Date())
-//                .updatedBy(enter.getUserId())
-//                .updatedTime(new Date())
-//                .build();
+        IdEnter batchNoEnter = new IdEnter();
+        batchNoEnter.setId(opePurchasB.getId());
+        OpePurchasBQc.builder()
+                .id(idappService.getId(SequenceName.OPE_PURCHAS_B_QC))
+                .dr(0)
+                .tenantId(0L)
+                .userId(0L)
+                .purchasBId(opePurchasB.getId())
+                .partsId(enter.getId())
+                .qualityInspectorId(enter.getUserId())
+                .batchNo(bussinessNumberService.materialQcBatchNo(batchNoEnter))
+                .status()
+                .totalQualityInspected(opeParts.getIdClass() == true ? 1 : enter.getQty())
+                .passCount()
+                .failCount()
+                .qualityInspectionTime(new Date())
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
 
 
         return null;
@@ -409,16 +409,21 @@ public class MaterialServiceImpl implements MaterialService {
         if (templateMap.keySet().size() != partQcTemplateList.size()) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getCode(), ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getMessage());
         }
-        //查询模板对应的结果集
-        Collection<OpePartQcTemplateB> opePartQcTemplateBList = opePartQcTemplateBService.listByIds(templateMap.values());
-        if (CollectionUtils.isEmpty(opePartQcTemplateBList)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getCode(), ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getMessage());
-        }
-        if (opePartQcTemplateBList.size() != templateMap.values().size()) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getCode(), ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getMessage());
-        }
 
-        //封装质检通过模板
+//        QueryWrapper<OpePartQcTemplateB> opePartQcTemplateQueryWrapper=new QueryWrapper<>();
+//        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplateB.COL_DR,0);
+//        opePartQcTemplateQueryWrapper.in(OpePartQcTemplateB.COL_PART_QC_TEMPLATE_ID,templateMap.values());
+//        opePartQcTemplateQueryWrapper.eq();
+//        //查询模板对应的结果集
+//        Collection<OpePartQcTemplateB> opePartQcTemplateBList = opePartQcTemplateBService.list();
+//        if (CollectionUtils.isEmpty(opePartQcTemplateBList)) {
+//            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getCode(), ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getMessage());
+//        }
+//        if (opePartQcTemplateBList.size() != templateMap.values().size()) {
+//            throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getCode(), ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getMessage());
+//        }
+//
+//        //封装质检通过模板
 //        partQcTemplateList.forEach(item -> {
 //            opePartQcTemplateBList.forEach(template -> {
 //                if (item.getId().equals(template.getPartQcTemplateId())) {
