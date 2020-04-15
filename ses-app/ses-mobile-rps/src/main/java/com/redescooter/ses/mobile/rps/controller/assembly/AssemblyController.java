@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.controller.assembly;
 
 import cn.hutool.db.Page;
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,42 +47,48 @@ import java.util.Map;
 @Api(tags = {"组装模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rps/assembly")
+@RequestMapping(value = "/assembly")
 public class AssemblyController {
 
     @Autowired
     private AssemblyService assemblyService;
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/list")
     @ApiOperation(value = "列表", response = WaitAssemblyListResult.class)
     public Response<PageResult<WaitAssemblyListResult>> list(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response<>(assemblyService.list(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/detail")
     @ApiOperation(value = "详情", response = WaitAssemblyListResult.class)
     public Response<PageResult<WaitAssemblyDetailResult>> detail(@ModelAttribute @ApiParam("请求参数") AssemblyDetailEnter enter) {
         return new Response<>(assemblyService.detail(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/formula")
     @ApiOperation(value = "产品配方", response = ProductFormulaResult.class)
-    public Response<ProductFormulaResult> formula(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<List<ProductFormulaResult>> formula(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(assemblyService.formula(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存组装数据", response = SaveFormulaDateResult.class)
     public Response<SaveFormulaDateResult> save(@ModelAttribute @ApiParam("请求参数") SaveFormulaDateEnter enter) {
         return new Response<>(assemblyService.save(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/printCode")
     @ApiOperation(value = "打印条码", response = GeneralResult.class)
     public Response<GeneralResult> printCode(@ModelAttribute @ApiParam("请求参数") PrintCodeEnter enter) {
         return new Response<>(assemblyService.printCode(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/queryProductCode")
     @ApiOperation(value = "查询打印产品条码结果", response = QueryProductCodeResult.class)
     public Response<QueryProductCodeResult> queryProductCode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {

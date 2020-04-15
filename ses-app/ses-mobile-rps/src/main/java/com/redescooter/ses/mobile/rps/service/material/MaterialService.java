@@ -1,18 +1,7 @@
 package com.redescooter.ses.mobile.rps.service.material;
 
-import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
-import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
-import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcListResult;
-import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcTemplateDetailResult;
-import com.redescooter.ses.mobile.rps.vo.materialqc.ReturnedCompletedEnter;
-import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcEnter;
-import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcResult;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.mobile.rps.vo.materialqc.*;
 
 import java.util.Map;
 
