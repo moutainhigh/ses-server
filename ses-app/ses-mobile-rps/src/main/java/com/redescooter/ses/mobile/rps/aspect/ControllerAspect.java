@@ -43,7 +43,6 @@ public class ControllerAspect {
     @Autowired
     private TokenService tokenService;
 
-
     @Around("execution(* com.redescooter.ses.mobile.rps.controller..*.*(..))")
     public Object check(ProceedingJoinPoint point) throws Throwable {
         Object[] objs = point.getArgs();
@@ -110,7 +109,7 @@ public class ControllerAspect {
             log.error("get method failure:", e);
         }
         if (method.getAnnotation(IgnoreLoginCheck.class) == null) {
-            UserToken userToken = tokenService.checkAndGetSession(enter);
+            UserToken userToken = tokenService.checkToken(enter);
             enter.setUserId(userToken.getUserId());
             enter.setTenantId(userToken.getTenantId());
         }

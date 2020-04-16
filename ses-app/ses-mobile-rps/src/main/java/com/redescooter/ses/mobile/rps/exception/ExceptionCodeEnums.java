@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -59,6 +60,8 @@ public enum ExceptionCodeEnums {
     STATUS_IS_ILLEGAL(10020, "状态非法"),
 
     ILLEGAL_DATA(10021,"数据非法"),
+
+    INSUFFICIENT_PERMISSIONS(10022,"用户暂无权限"),
 
 
     PURCHAS_IS_NOT_EXIST(10030, "采购单不存在"),
