@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_part_draft_qc_template")
-public class OpePartDraftQcTemplate {
+public class OpePartDraftQcTemplate implements Serializable {
     /**
      * 主键
      */
@@ -131,6 +132,8 @@ public class OpePartDraftQcTemplate {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def6;
+
+    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 
