@@ -1,5 +1,9 @@
 package com.redescooter.ses.web.ros.service.bom.impl;
 
+import java.util.stream.Collectors;
+
+import java.util.ArrayList;
+
 import java.util.ArrayList;
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -123,6 +127,12 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Autowired
     private OpePartQcTemplateBService opePartQcTemplateBService;
+
+    @Autowired
+    private OpeProductQcTemplateService opeProductQcTemplateService;
+
+    @Autowired
+    private OpeProductQcTemplateBService opeProductQcTemplateBService;
 
     @Autowired
     private OpePriceSheetService opePriceSheetService;
@@ -591,6 +601,10 @@ public class PartsRosServiceImpl implements PartsRosService {
         List<OpePartQcTemplateB> savePartQcTemplateBList = new ArrayList<>();
         //草稿、定稿部件关系 Map
         Map<Long, Long> partDraftMap = Maps.newHashMap();
+        //保存产品模板
+        List<OpeProductQcTemplate> saveProductQcTemplate = new ArrayList<>();
+        //保存产品模板
+        List<OpeProductQcTemplateB> saveProductQcTemplateB = new ArrayList<>();
 
         //1.进行查询需要同步的部件
         List<OpePartsDraft> partsDrafts =
@@ -679,7 +693,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                     productUpdate.add(p);
                 }
             }
-            //将更新 保存 产品
+            //将更新 保存集合放在一起 产品
             List<OpePartsProduct> opePartsProductList = Lists.newArrayList();
             opePartsProductList.addAll(productUpdate);
             if (CollectionUtils.isNotEmpty(productInsert)) {
@@ -700,63 +714,29 @@ public class PartsRosServiceImpl implements PartsRosService {
                     savePartsProductBList.add(buildPartProductB(enter, partsProductB.getPartsProductId(), Long.valueOf(product.getDef1()), partsProductB.getId()));
                 }
             });
+
             //将部件数据集合放在一起
             partsSave.clear();
             partsSave.addAll(partsInsert);
             partsSave.addAll(partsUpdate);
-            //查询部件质检模板记录
-            List<OpePartQcTemplate> opePartQcTemplateList = opePartQcTemplateService.list(new LambdaQueryWrapper<OpePartQcTemplate>().in(OpePartQcTemplate::getPartId,
-                    partsSave.stream().map(OpeParts::getId).collect(Collectors.toList())).eq(OpePartQcTemplate::getDr, 0));
 
-            if (CollectionUtils.isNotEmpty(opePartQcTemplateList)) {
-                //查询结果集
-                List<OpePartQcTemplateB> opePartQcTemplateBList = opePartQcTemplateBService.list(new LambdaQueryWrapper<OpePartQcTemplateB>().in(OpePartQcTemplateB::getPartQcTemplateId,
-                        opePartQcTemplateList.stream().map(OpePartQcTemplate::getId).collect(Collectors.toList())).eq(OpePartQcTemplateB::getDr, 0));
+            //同步部件模板
+            syncTemplateSingle(partsSave, savePartQcTemplateList, savePartQcTemplateBList, partDraftMap, saveProductQcTemplate, saveProductQcTemplateB, partsDrafts, opePartsProductList);
 
-                //删除部件的质检模板列表
-                opePartQcTemplateService.removeByIds(opePartQcTemplateList.stream().map(OpePartQcTemplate::getId).collect(Collectors.toList()));
-                if (CollectionUtils.isNotEmpty(opePartQcTemplateBList)) {
-                    //删除质检项结果集
-                    opePartQcTemplateBService.removeByIds(opePartQcTemplateBList.stream().map(OpePartQcTemplateB::getId).collect(Collectors.toList()));
-                }
-            }
-
-            //查询草稿部件质检项
-            List<OpePartDraftQcTemplate> opePartDraftQcTemplateList = opePartDraftQcTemplateService.list(new LambdaQueryWrapper<OpePartDraftQcTemplate>().in(OpePartDraftQcTemplate::getPartDraftId,
-                    partsDrafts.stream().map(OpePartsDraft::getId).collect(Collectors.toList())));
-
-            if (CollectionUtils.isNotEmpty(opePartDraftQcTemplateList)) {
-                //查询质检项结果集
-                List<OpePartDraftQcTemplateB> partDraftQcTemplateBList =
-                        opePartDraftQcTemplateBService.list(new LambdaQueryWrapper<OpePartDraftQcTemplateB>().in(OpePartDraftQcTemplateB::getPartDraftQcTemplateId,
-                                opePartDraftQcTemplateList.stream().map(OpePartDraftQcTemplate::getId).collect(Collectors.toList())));
-                //同步部件模板数据
-
-                opePartDraftQcTemplateList.forEach(item -> {
-                    OpePartQcTemplate opePartQcTemplate = new OpePartQcTemplate();
-                    BeanUtils.copyProperties(item, opePartQcTemplate);
-                    opePartQcTemplate.setId(idAppService.getId(SequenceName.OPE_PART_QC_TEMPLATE));
-                    opePartQcTemplate.setPartId(partDraftMap.get(item.getPartDraftId()));
-                    savePartQcTemplateList.add(opePartQcTemplate);
-
-                    //同步部件质检项结果集
-                    partDraftQcTemplateBList.forEach(templateB -> {
-                        if (item.getId().equals(templateB.getPartDraftQcTemplateId())) {
-                            OpePartQcTemplateB opePartQcTemplateB = new OpePartQcTemplateB();
-                            BeanUtils.copyProperties(templateB, opePartQcTemplateB);
-                            opePartQcTemplateB.setId(idAppService.getId(SequenceName.OPE_PART_QC_TEMPLATE_B));
-                            opePartQcTemplateB.setPartQcTemplateId(opePartQcTemplate.getId());
-                            savePartQcTemplateBList.add(opePartQcTemplateB);
-                        }
-                    });
-                });
-            }
+            //数据保存
             if (CollectionUtils.isNotEmpty(savePartQcTemplateList)) {
                 opePartQcTemplateService.saveBatch(savePartQcTemplateList);
             }
             if (CollectionUtils.isNotEmpty(savePartQcTemplateBList)) {
                 opePartQcTemplateBService.saveBatch(savePartQcTemplateBList);
             }
+            if (CollectionUtils.isNotEmpty(savePartQcTemplateList)) {
+                opeProductQcTemplateService.saveBatch(saveProductQcTemplate);
+            }
+            if (CollectionUtils.isNotEmpty(saveProductQcTemplateB)) {
+                opeProductQcTemplateBService.saveBatch(saveProductQcTemplateB);
+            }
+
 
             if (CollectionUtils.isNotEmpty(productInsert)) {
                 partsProductService.saveBatch(productInsert);
@@ -770,6 +750,124 @@ public class PartsRosServiceImpl implements PartsRosService {
         }
 
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 同步商品、部件质检模板
+     *
+     * @param partsSave
+     * @param savePartQcTemplateList
+     * @param savePartQcTemplateBList
+     * @param partDraftMap
+     * @param saveProductQcTemplate
+     * @param saveProductQcTemplateB
+     * @param partsDrafts
+     * @param opePartsProductList
+     */
+    private void syncTemplateSingle(List<OpeParts> partsSave, List<OpePartQcTemplate> savePartQcTemplateList, List<OpePartQcTemplateB> savePartQcTemplateBList, Map<Long, Long> partDraftMap,
+                                    List<OpeProductQcTemplate> saveProductQcTemplate, List<OpeProductQcTemplateB> saveProductQcTemplateB, List<OpePartsDraft> partsDrafts,
+                                    List<OpePartsProduct> opePartsProductList) {
+        //查询部件质检模板记录
+        List<OpePartQcTemplate> opePartQcTemplateList = opePartQcTemplateService.list(new LambdaQueryWrapper<OpePartQcTemplate>().in(OpePartQcTemplate::getPartId,
+                partsSave.stream().map(OpeParts::getId).collect(Collectors.toList())).eq(OpePartQcTemplate::getDr, 0));
+
+        if (CollectionUtils.isNotEmpty(opePartQcTemplateList)) {
+            //查询结果集
+            List<OpePartQcTemplateB> opePartQcTemplateBList = opePartQcTemplateBService.list(new LambdaQueryWrapper<OpePartQcTemplateB>().in(OpePartQcTemplateB::getPartQcTemplateId,
+                    opePartQcTemplateList.stream().map(OpePartQcTemplate::getId).collect(Collectors.toList())).eq(OpePartQcTemplateB::getDr, 0));
+
+            //删除部件的质检模板列表
+            opePartQcTemplateService.removeByIds(opePartQcTemplateList.stream().map(OpePartQcTemplate::getId).collect(Collectors.toList()));
+            if (CollectionUtils.isNotEmpty(opePartQcTemplateBList)) {
+                //删除质检项结果集
+                opePartQcTemplateBService.removeByIds(opePartQcTemplateBList.stream().map(OpePartQcTemplateB::getId).collect(Collectors.toList()));
+            }
+        }
+
+        //产品质检项
+        List<OpeProductQcTemplate> opeProductQcTemplateList = opeProductQcTemplateService.list(new LambdaQueryWrapper<OpeProductQcTemplate>().in(OpeProductQcTemplate::getProductId,
+                opePartsProductList.stream().map(OpePartsProduct::getId).collect(Collectors.toList())));
+        if (CollectionUtils.isNotEmpty(opeProductQcTemplateList)) {
+            //删除质检项
+            opeProductQcTemplateService.remove(new LambdaQueryWrapper<OpeProductQcTemplate>().in(OpeProductQcTemplate::getId,
+                    opeProductQcTemplateList.stream().map(OpeProductQcTemplate::getId).collect(Collectors.toList())));
+
+            //删除结果集
+            opeProductQcTemplateBService.remove(new LambdaQueryWrapper<OpeProductQcTemplateB>().in(OpeProductQcTemplateB::getProductQcTemplateId,
+                    opeProductQcTemplateList.stream().map(OpeProductQcTemplate::getId).collect(Collectors.toList())));
+        }
+
+        //查询草稿部件质检项
+        List<OpePartDraftQcTemplate> opePartDraftQcTemplateList = opePartDraftQcTemplateService.list(new LambdaQueryWrapper<OpePartDraftQcTemplate>().in(OpePartDraftQcTemplate::getPartDraftId,
+                partsDrafts.stream().map(OpePartsDraft::getId).collect(Collectors.toList())));
+
+        if (CollectionUtils.isNotEmpty(opePartDraftQcTemplateList)) {
+            //查询质检项结果集
+            List<OpePartDraftQcTemplateB> partDraftQcTemplateBList =
+                    opePartDraftQcTemplateBService.list(new LambdaQueryWrapper<OpePartDraftQcTemplateB>().in(OpePartDraftQcTemplateB::getPartDraftQcTemplateId,
+                            opePartDraftQcTemplateList.stream().map(OpePartDraftQcTemplate::getId).collect(Collectors.toList())));
+            //同步部件模板数据
+
+            opePartDraftQcTemplateList.forEach(item -> {
+                OpePartQcTemplate opePartQcTemplate = new OpePartQcTemplate();
+                BeanUtils.copyProperties(item, opePartQcTemplate);
+                opePartQcTemplate.setId(idAppService.getId(SequenceName.OPE_PART_QC_TEMPLATE));
+                opePartQcTemplate.setPartId(partDraftMap.get(item.getPartDraftId()));
+                savePartQcTemplateList.add(opePartQcTemplate);
+
+                //同步部件质检项结果集
+                partDraftQcTemplateBList.forEach(templateB -> {
+                    if (item.getId().equals(templateB.getPartDraftQcTemplateId())) {
+                        OpePartQcTemplateB opePartQcTemplateB = new OpePartQcTemplateB();
+                        BeanUtils.copyProperties(templateB, opePartQcTemplateB);
+                        opePartQcTemplateB.setId(idAppService.getId(SequenceName.OPE_PART_QC_TEMPLATE_B));
+                        opePartQcTemplateB.setPartQcTemplateId(opePartQcTemplate.getId());
+                        savePartQcTemplateBList.add(opePartQcTemplateB);
+                    }
+                });
+            });
+        }
+
+        //同步产品模板
+        if (CollectionUtils.isNotEmpty(savePartQcTemplateList)) {
+            opePartsProductList.forEach(item -> {
+                savePartQcTemplateList.forEach(template -> {
+
+                    if (Long.valueOf(item.getDef1()).equals(template.getPartId())) {
+                        //保存质检项
+                        OpeProductQcTemplate opeProductQcTemplate = new OpeProductQcTemplate();
+                        BeanUtils.copyProperties(template, opeProductQcTemplate);
+                        opeProductQcTemplate.setId(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE));
+                        opeProductQcTemplate.setProductId(item.getId());
+                        saveProductQcTemplate.add(opeProductQcTemplate);
+                    }
+
+                    //保存质检项结果
+                    savePartQcTemplateBList.forEach(templateB -> {
+                        if (template.getId().equals(templateB.getPartQcTemplateId())) {
+                            OpeProductQcTemplateB opeProductQcTemplateB = new OpeProductQcTemplateB();
+                            BeanUtils.copyProperties(template, opeProductQcTemplateB);
+                            opeProductQcTemplateB.setId(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE_B));
+                            opeProductQcTemplateB.setProductQcTemplateId(template.getId());
+                            saveProductQcTemplateB.add(opeProductQcTemplateB);
+                        }
+                    });
+                });
+            });
+        }
+    }
+
+    /**
+     * 同步部件模板
+     *
+     * @param partsSave
+     * @param savePartQcTemplateList
+     * @param savePartQcTemplateBList
+     * @param partDraftMap
+     * @param partsDrafts
+     */
+    private void syncPartTemplateSingle(List<OpeParts> partsSave, List<OpePartQcTemplate> savePartQcTemplateList, List<OpePartQcTemplateB> savePartQcTemplateBList, Map<Long, Long> partDraftMap,
+                                        List<OpePartsDraft> partsDrafts) {
     }
 
     private OpePartsProductB buildPartProductB(GeneralEnter enter, Long productId, Long partId, Long id) {
