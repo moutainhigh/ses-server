@@ -348,7 +348,7 @@ public class MaterialServiceImpl implements MaterialService {
             Long value = entry.getValue();
 
             //质检项
-            Boolean qcItem=Boolean.FALSE;
+            Boolean qcItem = Boolean.FALSE;
             for (OpePartQcTemplate item : passTemplateMap.keySet()) {
                 if (item.getId().equals(partTemplateEnter.getId())) {
                     qcItem = Boolean.TRUE;
@@ -362,45 +362,47 @@ public class MaterialServiceImpl implements MaterialService {
                 break;
             }
         }
+        if (qcResult) {
 
-        //判断采购单下其他部品状态
-        List<OpePurchasB> opePurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().eq(OpePurchasB::getPurchasId, opePurchasB.getPurchasId())
-                .ne(OpePurchasB::getId, opePurchasB.getId())
-                .ne(OpePurchasB::getLaveWaitQcQty, 0)
-        );
-        //根据质检方式减库存
-        if (opeParts.getIdClass()) {
-            opePurchasB.setLaveWaitQcQty(opePurchasB.getLaveWaitQcQty() - enter.getQty());
-        } else {
-            opePurchasB.setLaveWaitQcQty(opePurchasB.getLaveWaitQcQty() - 1);
-        }
-
-        //判断是否要更新采购单状态
-        Boolean updatePuchasStatus = Boolean.TRUE;
-        opePurchasBList.add(opePurchasB);
-        for (OpePurchasB item : opePurchasBList) {
-            if (item.getLaveWaitQcQty() != 0) {
-                updatePuchasStatus = Boolean.FALSE;
-                break;
+            //判断采购单下其他部品状态
+            List<OpePurchasB> opePurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().eq(OpePurchasB::getPurchasId, opePurchasB.getPurchasId())
+                    .ne(OpePurchasB::getId, opePurchasB.getId())
+                    .ne(OpePurchasB::getLaveWaitQcQty, 0)
+            );
+            //根据质检方式减库存
+            if (opeParts.getIdClass()) {
+                opePurchasB.setLaveWaitQcQty(opePurchasB.getLaveWaitQcQty() - enter.getQty());
+            } else {
+                opePurchasB.setLaveWaitQcQty(opePurchasB.getLaveWaitQcQty() - 1);
             }
-        }
-        //更新采购单状态以及采购单记录
-        if (updatePuchasStatus && qcResult) {
-            OpePurchas opePurchas = opePurchasService.getById(opePurchasB.getId());
-            opePurchas.setStatus(PurchasingStatusEnums.QC_COMPLETED.getValue());
-            opePurchas.setLaveWaitQcTotal(0);
-            opePurchas.setUpdatedBy(enter.getUserId());
-            opePurchas.setUpdatedTime(new Date());
-            opePurchasService.updateById(opePurchas);
 
-            //更新订单记录
-            SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
-            BeanUtils.copyProperties(enter, saveNodeEnter);
-            saveNodeEnter.setId(opePurchas.getId());
-            saveNodeEnter.setStatus(PurchasingStatusEnums.QC_COMPLETED.getValue());
-            saveNodeEnter.setEvent(PurchasingStatusEnums.QC_COMPLETED.getValue());
-            saveNodeEnter.setMemo(null);
-            this.saveNode(saveNodeEnter);
+            //判断是否要更新采购单状态
+            Boolean updatePuchasStatus = Boolean.TRUE;
+            opePurchasBList.add(opePurchasB);
+            for (OpePurchasB item : opePurchasBList) {
+                if (item.getLaveWaitQcQty() != 0) {
+                    updatePuchasStatus = Boolean.FALSE;
+                    break;
+                }
+            }
+            //更新采购单状态以及采购单记录
+            if (updatePuchasStatus && qcResult) {
+                OpePurchas opePurchas = opePurchasService.getById(opePurchasB.getId());
+                opePurchas.setStatus(PurchasingStatusEnums.QC_COMPLETED.getValue());
+                opePurchas.setLaveWaitQcTotal(0);
+                opePurchas.setUpdatedBy(enter.getUserId());
+                opePurchas.setUpdatedTime(new Date());
+                opePurchasService.updateById(opePurchas);
+
+                //更新订单记录
+                SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+                BeanUtils.copyProperties(enter, saveNodeEnter);
+                saveNodeEnter.setId(opePurchas.getId());
+                saveNodeEnter.setStatus(PurchasingStatusEnums.QC_COMPLETED.getValue());
+                saveNodeEnter.setEvent(PurchasingStatusEnums.QC_COMPLETED.getValue());
+                saveNodeEnter.setMemo(null);
+                this.saveNode(saveNodeEnter);
+            }
         }
 
         //保存质检结果
