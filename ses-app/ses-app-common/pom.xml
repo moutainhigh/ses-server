@@ -18,6 +18,12 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-tool</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-common</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-logs</artifactId>

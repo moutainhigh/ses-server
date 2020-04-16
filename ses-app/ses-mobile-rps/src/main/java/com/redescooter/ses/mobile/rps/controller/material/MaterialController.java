@@ -87,9 +87,9 @@ public class MaterialController {
         return new Response<>(materialService.MaterialQcTemplate(enter));
     }
 
-//    @PostMapping(value = "/save")
-//    @ApiOperation(value = "保存来料质检结果", response = SaveMaterialQcResult.class)
-//    public Response<SaveMaterialQcResult> saveMaterialQc(@ModelAttribute @ApiParam("请求参数") SaveMaterialQcEnter enter) {
-//        return new Response<>(materialService.saveMaterialQc(enter));
-//    }
+    @PostMapping(value = "/save")
+    @ApiOperation(value = "保存来料质检结果", response = SaveMaterialQcResult.class)
+    public Response<SaveMaterialQcResult> saveMaterialQc(@ModelAttribute @ApiParam("请求参数") SaveMaterialQcEnter enter) {
+        return new Response<>(materialService.saveMaterialQc(enter));
+    }
 }

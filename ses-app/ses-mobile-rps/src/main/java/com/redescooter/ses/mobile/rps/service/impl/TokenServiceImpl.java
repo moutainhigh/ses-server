@@ -10,27 +10,23 @@ import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeSysUserMapper;
 import com.redescooter.ses.mobile.rps.dao.base.OpeSysUserProfileMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeSysUser;
-import com.redescooter.ses.mobile.rps.dm.OpeSysUserProfile;
 import com.redescooter.ses.mobile.rps.dm.OpeSysUserRole;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
-import com.redescooter.ses.mobile.rps.service.TokenService;
+import com.redescooter.ses.mobile.rps.service.TokenRpsService;
 import com.redescooter.ses.mobile.rps.service.base.impl.OpeSysUserRoleService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +42,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class TokenServiceImpl implements TokenService {
+public class TokenServiceImpl implements TokenRpsService {
     @Autowired
     private JedisCluster jedisCluster;
     @Autowired

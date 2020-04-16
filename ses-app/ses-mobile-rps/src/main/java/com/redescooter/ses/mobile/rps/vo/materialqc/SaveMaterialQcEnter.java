@@ -24,11 +24,8 @@ import io.swagger.annotations.*;
 @Builder
 public class SaveMaterialQcEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "部件id")
-    private Long id;
-
     @ApiModelProperty(value = "采购单子表Id")
-    private Long purchasBId;
+    private Long id;
 
     @ApiModelProperty(value = "产品序列号")
     private String serialNum;

@@ -9,7 +9,7 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 
-public interface TokenService {
+public interface TokenRpsService {
 
     /**
      * 用户登录

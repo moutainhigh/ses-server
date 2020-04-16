@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.material;
 
+import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.vo.materialqc.*;
 
@@ -84,6 +85,14 @@ public interface MaterialService {
      * @return
      */
     SaveMaterialQcResult saveMaterialQc(SaveMaterialQcEnter enter);
+
+    /**
+     * 保存采购单记录
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult saveNode(SaveNodeEnter enter);
 
 
 }

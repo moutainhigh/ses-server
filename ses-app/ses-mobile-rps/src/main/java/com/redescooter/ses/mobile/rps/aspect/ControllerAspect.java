@@ -9,7 +9,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
-import com.redescooter.ses.mobile.rps.service.TokenService;
+import com.redescooter.ses.mobile.rps.service.TokenRpsService;
 import com.redescooter.ses.tool.utils.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +41,7 @@ public class ControllerAspect {
     private MessageSource messageSource;
 
     @Autowired
-    private TokenService tokenService;
+    private TokenRpsService tokenRpsService;
 
     @Around("execution(* com.redescooter.ses.mobile.rps.controller..*.*(..))")
     public Object check(ProceedingJoinPoint point) throws Throwable {
@@ -109,7 +109,7 @@ public class ControllerAspect {
             log.error("get method failure:", e);
         }
         if (method.getAnnotation(IgnoreLoginCheck.class) == null) {
-            UserToken userToken = tokenService.checkToken(enter);
+            UserToken userToken = tokenRpsService.checkToken(enter);
             enter.setUserId(userToken.getUserId());
             enter.setTenantId(userToken.getTenantId());
         }
