@@ -3,7 +3,6 @@ package com.redescooter.ses.mobile.rps.service.base.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeAllocateBMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeAllocateB;
-import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
