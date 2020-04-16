@@ -3,10 +3,10 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_parts_product")
-public class OpePartsProduct {
+public class OpePartsProduct implements Serializable {
     /**
      * 主键 主键
      */
@@ -33,7 +33,6 @@ public class OpePartsProduct {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -245,6 +244,8 @@ public class OpePartsProduct {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def6;
+
+    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 
