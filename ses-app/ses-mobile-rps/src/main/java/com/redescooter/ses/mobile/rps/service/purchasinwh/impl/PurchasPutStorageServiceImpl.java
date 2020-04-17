@@ -98,29 +98,26 @@ class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         return purchasPutStorageMapper.WhetherID(enter);
     }
 
-    /*  @Transactional
+      @Transactional
       @Override
       public GeneralResult haveIdPartsResult(PurchasDetailsEnter enter) {
           //库存数据更新
           List<OpeStock> saveStockList = Lists.newArrayList();
           //入库单数据保存
           List<OpeStockBill> saveOpeStockBillList = Lists.newArrayList();
+
+          OpePurchasB opePurchasB = opePurchasBService.getById(enter.getId());
+          if (opePurchasB == null) {
+              throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+          }
           //采购单状态更新
-          OpePurchas opePurchas = opePurchasService.getById(enter.getId());
+          OpePurchas opePurchas = opePurchasService.getById(opePurchasB.getPurchasId());
           if (opePurchas == null) {
               throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
           }
           if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.QC_COMPLETED.getValue()) && !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.RETURN.getValue())) {
               throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
           }
-
-
-          opePurchas.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
-          opePurchas.setUpdatedBy(enter.getUserId());
-          opePurchas.setUpdatedTime(new Date());
-          opePurchasService.updateById(opePurchas);
-
-
           // 封装 库存、入库单数据
           saveStockBillSingle(enter, saveStockList, saveOpeStockBillList, opePurchas);
 
@@ -129,12 +126,79 @@ class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
           //入库单 保存
           opeStockBillService.saveBatch(saveOpeStockBillList);
 
-          //todo 入库条目数据保存 暂无
-          HaveIdPartsResult haveIdPartsResult= purchasPutStorageMapper.haveIDPartsResult(enter);
-          haveIdPartsResult.getInWaitWhQty();
+          //采购部件入库数量更新
+          opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - 1);
+          opePurchasB.setUpdatedBy(enter.getUserId());
+          opePurchasB.setUpdatedTime(new Date());
+          opePurchasBService.updateById(opePurchasB);
+          //采购总数量更新
+          opePurchas.setTotalQty(opePurchas.getInWaitWhTotal() -1);
+          opePurchas.setId(opePurchasB.getPurchasId());
+          opePurchas.setUpdatedBy(enter.getUserId());
+          opePurchas.setUpdatedTime(new Date());
+          opePurchasService.updateById(opePurchas);
 
+          OpePurchas purchas = opePurchasService.getById(opePurchasB.getPurchasId());
+          if (purchas == null) {
+              throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
+          } else if (purchas.getTotalQty() == 0) {
+              //采购单状态更新
+              purchas.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
+              purchas.setUpdatedBy(enter.getUserId());
+              purchas.setUpdatedTime(new Date());
+              opePurchasService.updateById(purchas);
+          }
 
+          //查询仓库id
+          QueryWrapper<OpeWhse> opeWhse = new QueryWrapper<>();
+          opeWhse.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+          OpeWhse opeWhsegetid = opeWhseService.getOne(opeWhse);
+          QueryWrapper<OpeStock> opeStockPurchasQueryWrapper = new QueryWrapper<>();
+          opeStockPurchasQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opePurchasB.getPartId());
+          opeStockPurchasQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhsegetid.getType());
+          OpeStock opeStockData = opeStockService.getOne(opeStockPurchasQueryWrapper);
+          //拿取部件信息
+          OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
+         //查询序列号
+        QueryWrapper<OpePurchasBQcItem> OpePurchasBQcQueryWrapper = new QueryWrapper<>();
+        OpePurchasBQcQueryWrapper.eq(OpePurchasBQcItem.COL_PURCHAS_B_ID,opePurchasB.getId());
+        OpePurchasBQcQueryWrapper.eq(OpePurchasBQcItem.COL_PART_ID,opePurchasB.getPartId());
+        OpePurchasBQcItem  opePurchasBQcItem= opePurchasBQcItemService.getOne(OpePurchasBQcQueryWrapper);
+
+          //查询批次号
+          OpePurchasBQcItem opePurchasBQcIte= opePurchasBQcItemService.getOne(new LambdaQueryWrapper<OpePurchasBQcItem>().eq(OpePurchasBQcItem::getPurchasBId, opePurchasB.getId()).eq(OpePurchasBQcItem::getPartId, opePurchasB.getPartId()));
+          if (opePurchasBQcIte == null) {
+              throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+
+          }
+
+          OpePurchasBQc opePurchasBQc = opePurchasBQcService.getById(opePurchasBQcIte.getPurchasBQcId());
+          if (opePurchasBQc==null){
+              throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+
+          }
+
+          //入库条目数据增加
+          OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
+                  .dr(0)
+                  .status(ExceptionCodeEnums.STOCK_STATUS.getMessage())
+                  .stockId(opeStockData.getId())
+                  .partId(partsData.getId())
+                  .lot(opePurchasBQc.getBatchNo())
+                  .partNumber(partsData.getPartsNumber())
+                  .principalId(enter.getUserId())
+                  .serialNumber(opePurchasBQcItem.getSerialNum())
+                  .inStockTime(new Date())
+                  .revision(0)
+                  .createdBy(enter.getUserId())
+                  .createdTime(new Date())
+                  .updatedBy(enter.getUserId())
+                  .updatedTime(new Date())
+                  .build();
+
+          //增加仓库数据
+          opeStockPurchasService.save(opeStockPurchas);
           //节点
           SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
           BeanUtils.copyProperties(enter, saveNodeEnter);
@@ -143,22 +207,24 @@ class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
           saveNodeEnter.setEvent(PurchasingEventEnums.IN_PURCHASING_WH.getValue());
           saveNodeEnter.setMemo(null);
           this.savePurchasingNode(saveNodeEnter);
-          return new GeneralResult(enter.getRequestId());
-      }*/
+          return purchasPutStorageMapper.haveIDPartsResult(enter);
+      }
     @Transactional
     @Override
     public NotIdPartsSucceedResult notIdPartsSucceedResult(NotIdEnter enter) {
-        //库存数据更新
+
+        OpePurchasB opePurchasB = opePurchasBService.getById(enter.getId());
+        OpePurchas opePurchas = opePurchasService.getById(opePurchasB.getPurchasId());
+    /*    //库存数据更新
         List<OpeStock> saveStockList = Lists.newArrayList();
         //入库单数据保存
         List<OpeStockBill> saveOpeStockBillList = Lists.newArrayList();
 
-        OpePurchasB opePurchasB = opePurchasBService.getById(enter.getId());
         if (opePurchasB == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         //采购单状态更新
-        OpePurchas opePurchas = opePurchasService.getById(opePurchasB.getPurchasId());
+
         if (opePurchas == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
@@ -172,14 +238,13 @@ class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         opeStockService.saveOrUpdateBatch(saveStockList);
         //入库单 保存
         opeStockBillService.saveBatch(saveOpeStockBillList);
-
+*/
         //采购部件入库数量更新
         opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - enter.getInWaitWhQty());
         opePurchasB.setUpdatedBy(enter.getUserId());
         opePurchasB.setUpdatedTime(new Date());
         opePurchasBService.updateById(opePurchasB);
         //采购总数量更新
-        opePurchas.setTotalQty(opePurchas.getInWaitWhTotal() - enter.getInWaitWhQty());
         opePurchas.setTotalQty(opePurchas.getInWaitWhTotal() - enter.getInWaitWhQty());
         opePurchas.setId(opePurchasB.getPurchasId());
         opePurchas.setUpdatedBy(enter.getUserId());
@@ -210,12 +275,6 @@ class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         OpeStock opeStockData = opeStockService.getOne(opeStockPurchasQueryWrapper);
         //拿取部件信息
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-      /*  //查询序列号
-        QueryWrapper<OpePurchasBQcItem> OpePurchasBQcQueryWrapper = new QueryWrapper<>();
-        OpePurchasBQcQueryWrapper.eq(OpePurchasBQcItem.COL_PURCHAS_B_ID,opePurchasB.getId());
-        OpePurchasBQcQueryWrapper.eq(OpePurchasBQcItem.COL_PART_ID,opePurchasB.getPartId());
-        OpePurchasBQcItem  opePurchasBQcItem= opePurchasBQcItemService.getOne(OpePurchasBQcQueryWrapper);*/
-
         //查询批次号
         OpePurchasBQcItem opePurchasBQcItem = opePurchasBQcItemService.getOne(new LambdaQueryWrapper<OpePurchasBQcItem>().eq(OpePurchasBQcItem::getPurchasBId, opePurchasB.getId()).eq(OpePurchasBQcItem::getPartId, opePurchasB.getPartId()));
         if (opePurchasBQcItem == null) {

@@ -25,7 +25,7 @@ public interface PurchasPutStroageService {
   * @param
   * @return
   */
- HaveIDPartsResult haveIDPartsResult(PurchasDetailsEnter enter);
+ HaveIdPartsResult haveIDPartsResult(PurchasDetailsEnter enter);
 
  /**
   * 无ID入库信息
@@ -33,12 +33,12 @@ public interface PurchasPutStroageService {
   * @param
   * @return
   */
- NotIDPartsResult notIDPartsResult(PurchasDetailsEnter enter);
+ NotIdPartsResult notIDPartsResult(PurchasDetailsEnter enter);
  /**
   * 无ID入库成功信息
   *
   * @param
   * @return
   */
-NotIDPartsSucceedResult otIDPartsSucceedResult(PurchasDetailsEnter enter);
+NotIdPartsSucceedResult otIDPartsSucceedResult(PurchasDetailsEnter enter);
 }

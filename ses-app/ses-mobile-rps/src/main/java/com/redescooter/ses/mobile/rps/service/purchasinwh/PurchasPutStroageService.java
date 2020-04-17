@@ -37,10 +37,10 @@ public interface PurchasPutStroageService {
  *
  * @param
  * @return
- *//*
+ */
 
  GeneralResult haveIdPartsResult(PurchasDetailsEnter enter);
-*/
+
 
  /**
   * 无ID入库信息
