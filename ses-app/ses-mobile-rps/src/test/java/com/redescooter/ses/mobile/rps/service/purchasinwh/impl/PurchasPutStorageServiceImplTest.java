@@ -34,11 +34,5 @@ public class PurchasPutStorageServiceImplTest {
 
     }
 
-    @Test
-    public void getId() {
 
-        Long id = purchasPutStroageService.getId();
-        log.info(JSON.toJSONString(id));
-
-    }
 }
