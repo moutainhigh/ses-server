@@ -1,14 +1,15 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.redescooter.ses.web.ros.dm.OpeAssemblyBOrder;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyBOrder;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface OpeAssemblyBOrderService extends IService<OpeAssemblyBOrder> {
 
+
+    int updateBatch(List<OpeAssemblyBOrder> list);
 
     int batchInsert(List<OpeAssemblyBOrder> list);
 
@@ -16,8 +17,13 @@ public interface OpeAssemblyBOrderService extends IService<OpeAssemblyBOrder> {
 
     int insertOrUpdateSelective(OpeAssemblyBOrder record);
 
-    int updateBatch(List<OpeAssemblyBOrder> list);
 }
+
+
+
+
+
+
 
 
 

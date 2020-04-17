@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Transactional
-public interface OpeSysMenuService extends IService<OpeSysMenu> {
+public interface OpeSysMenuService extends IService<OpeSysMenu>{
 
 
     int updateBatch(List<OpeSysMenu> list);
@@ -19,5 +18,3 @@ public interface OpeSysMenuService extends IService<OpeSysMenu> {
     int insertOrUpdateSelective(OpeSysMenu record);
 
 }
-
-

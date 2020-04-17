@@ -12,11 +12,13 @@ import java.sql.Date;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class PurchasDetailsListResult extends GeneralEnter {
+public class PurchasDetailsListResult extends GeneralResult {
+    @ApiModelProperty(value = "id")
+    private Long id;
     @ApiModelProperty(value = "采购单号")
     private String contractNo;
     @ApiModelProperty(value = "待入库数量")
-    private String inWaitWhQty;
+    private int inWaitWhQty;
     @ApiModelProperty(value = "部品号")
     private String partsNumber;
     @ApiModelProperty(value = "零配件中文名称")

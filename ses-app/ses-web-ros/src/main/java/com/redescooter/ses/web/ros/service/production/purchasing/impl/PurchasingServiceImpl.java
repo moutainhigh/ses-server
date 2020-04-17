@@ -590,6 +590,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             scooterProductList.forEach(item -> {
                 productIds.add(item.getId());
             });
+            //查询产品所有部件
             List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
             if (CollectionUtils.isNotEmpty(partList)) {
 
@@ -1412,6 +1413,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                             .price(item.getPrice())
                             .totalPrice(item.getPrice().equals(BigDecimal.ZERO) ? BigDecimal.ZERO : item.getPrice().multiply(new BigDecimal(v)))
                             .totalCount(v)
+                            .laveWaitQcQty(v)
+                            .inWaitWhQty(v)
                             .createdBy(enter.getUserId())
                             .createdTime(new Date())
                             .updatedTime(new Date())
@@ -1436,6 +1439,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .factoryId(enter.getFactoryId())
                 .totalPrice(totalPrice)
                 .totalQty(totalCount)
+                .laveWaitQcTotal(totalCount)
+                .inWaitWhTotal(totalCount)
                 .revision(0)
                 .createdBy(enter.getUserId())
                 .createdTime(new Date())

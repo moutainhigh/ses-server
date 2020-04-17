@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.assembly.AssemblyServiceMapper">
+    <select id="list" resultType="com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyListResult">
+        select asso.id                  as id,
+               asso.assembly_number     as assemblyN,
+               asso.created_time        as createdTime,
+               asso.wait_assembly_total as waitAssemblyTotal
+        from ope_assembly_order asso
+        where asso.dr=0
+        and asso.waitAssemblyTotal!=0
+        and asso.status=3
+        order by  asso.created_time asc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="detailList" resultType="com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyDetailResult">
+        select assb.id                as id,
+               assb.assembly_id       as assemblyId,
+               product.cn_name        as productCnName,
+               assb.product_number    as productN,
+               assb.wait_assembly_qty as waitAssemblyQty
+        from ope_assembly_b_order assb
+                 inner join ope_parts_product product on assb.product_id = product.id and product.dr = 0
+        where assb.dr = 0
+          and assb.wait_assembly_qty != 0
+          order by assb.created_time asc
+          limit #{startRow},#{pageSize}
+    </select>
+    <select id="formulaByAssemblyBId"
+            resultType="com.redescooter.ses.mobile.rps.vo.assembly.ProductFormulaResult">
+        select productb.id        as id,
+               parts.id           as partId,
+               parts.cn_name      as partCnName,
+               parts.parts_number as partN,
+               productb.parts_qty as qty
+        from ope_parts_product_b productb
+                 inner join ope_parts parts on productb.parts_id = parts.id and productb.dr = 0
+        where productb.dr = 0
+          and productb.parts_product_id =#{id}
+    </select>
+</mapper>

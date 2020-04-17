@@ -235,7 +235,11 @@ public enum ExceptionCodeEnums {
     PART_IS_NOT_BIND_PRODUCT(10110, "部件未绑定产品"),
 
     PART_IS_BIND_PRODUCT(10111, "部件绑定产品,请先解绑"),
-    ;
+
+    QC_TEMPLATE_IS_NOT_EXIT(10112,"质检模板不存在"),
+
+    QC_PASS_RESULT_ONLY_ONE(10113,"质检项通过结果只能有一个"),
+  ;
 
 
     private int code;

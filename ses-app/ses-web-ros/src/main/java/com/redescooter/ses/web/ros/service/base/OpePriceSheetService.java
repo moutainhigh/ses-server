@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.web.ros.dm.OpePriceSheet;
+import java.util.List;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Transactional
-public interface OpePriceSheetService extends IService<OpePriceSheet> {
+public interface OpePriceSheetService extends IService<OpePriceSheet>{
 
 
     int updateBatch(List<OpePriceSheet> list);
@@ -19,12 +18,3 @@ public interface OpePriceSheetService extends IService<OpePriceSheet> {
     int insertOrUpdateSelective(OpePriceSheet record);
 
 }
-
-
-
-
-
-
-
-
-

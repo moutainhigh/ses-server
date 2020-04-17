@@ -3,10 +3,10 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +19,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_purchas_qc_trace")
-public class OpePurchasQcTrace {
+public class OpePurchasQcTrace implements Serializable {
+    public static final String COL_QC_RESULT = "qc_result";
     /**
      * 主键
      */
@@ -32,7 +33,6 @@ public class OpePurchasQcTrace {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -68,7 +68,7 @@ public class OpePurchasQcTrace {
      */
     @TableField(value = "part_qc_template_b_id")
     @ApiModelProperty(value = "质检结果Id")
-    private String partQcTemplateBId;
+    private Long partQcTemplateBId;
 
     /**
      * 质检条目Id
@@ -83,13 +83,6 @@ public class OpePurchasQcTrace {
     @TableField(value = "part_qc_picture")
     @ApiModelProperty(value = "质检图片的逗号分隔")
     private String partQcPicture;
-
-    /**
-     * 质检结果
-     */
-    @TableField(value = "qc_result")
-    @ApiModelProperty(value = "质检结果")
-    private String qcResult;
 
     /**
      * 乐观锁
@@ -161,6 +154,8 @@ public class OpePurchasQcTrace {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -178,8 +173,6 @@ public class OpePurchasQcTrace {
     public static final String COL_PURCHAS_B_QC_ITEM_ID = "purchas_b_qc_item_id";
 
     public static final String COL_PART_QC_PICTURE = "part_qc_picture";
-
-    public static final String COL_QC_RESULT = "qc_result";
 
     public static final String COL_REVISION = "revision";
 

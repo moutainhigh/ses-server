@@ -3,10 +3,10 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_parts_product_b")
-public class OpePartsProductB {
+public class OpePartsProductB implements Serializable {
     /**
      * 主键 主键
      */
@@ -33,7 +33,6 @@ public class OpePartsProductB {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除 逻辑删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -48,7 +47,7 @@ public class OpePartsProductB {
      */
     @TableField(value = "user_id")
     @ApiModelProperty(value = "用户ID 用户ID")
-    private Integer userId;
+    private Long userId;
 
     /**
      * 状态 状态
@@ -62,14 +61,14 @@ public class OpePartsProductB {
      */
     @TableField(value = "parts_id")
     @ApiModelProperty(value = "部品主键 部品主键")
-    private Integer partsId;
+    private Long partsId;
 
     /**
      * 部品组装表主键 部品组装表主键
      */
     @TableField(value = "parts_product_id")
     @ApiModelProperty(value = "部品组装表主键 部品组装表主键")
-    private Long partsProductId;
+    private Integer partsProductId;
 
     /**
      * 部品数量 数量
@@ -154,6 +153,8 @@ public class OpePartsProductB {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段 冗余字段")
     private BigDecimal def6;
+
+    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 

@@ -21,8 +21,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-      id, dr, p_id, tenant_id, principal, `level`, `name`, code, description, sort, created_by,
-      created_time, updated_by, updated_time
+    id, dr, p_id, tenant_id, principal, `level`, `name`, code, description, sort, created_by, 
+    created_time, updated_by, updated_time
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -101,17 +101,17 @@
   </update>
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
-      insert into ope_sys_dept
-      (dr, p_id, tenant_id, principal, `level`, `name`, code, description, sort, created_by,
+    insert into ope_sys_dept
+    (dr, p_id, tenant_id, principal, `level`, `name`, code, description, sort, created_by, 
       created_time, updated_by, updated_time)
-      values
-      <foreach collection="list" item="item" separator=",">
-          (#{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT},
-          #{item.principal,jdbcType=BIGINT}, #{item.level,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR},
-          #{item.code,jdbcType=VARCHAR}, #{item.description,jdbcType=VARCHAR}, #{item.sort,jdbcType=INTEGER},
-          #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-          #{item.updatedTime,jdbcType=TIMESTAMP})
-      </foreach>
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.principal,jdbcType=BIGINT}, #{item.level,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, 
+        #{item.code,jdbcType=VARCHAR}, #{item.description,jdbcType=VARCHAR}, #{item.sort,jdbcType=INTEGER}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP})
+    </foreach>
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysDept" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -153,8 +153,8 @@
       #{updatedBy,jdbcType=BIGINT},
       #{updatedTime,jdbcType=TIMESTAMP},
     </trim>
-      on duplicate key update
-      <trim suffixOverrides=",">
+    on duplicate key update 
+    <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
       </if>
@@ -265,8 +265,8 @@
         #{updatedTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
-      on duplicate key update
-      <trim suffixOverrides=",">
+    on duplicate key update 
+    <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
       </if>

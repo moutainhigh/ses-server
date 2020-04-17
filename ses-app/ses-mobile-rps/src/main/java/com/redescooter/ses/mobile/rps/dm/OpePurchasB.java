@@ -3,10 +3,10 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_purchas_b")
-public class OpePurchasB {
+public class OpePurchasB implements Serializable {
     /**
      * 主键
      */
@@ -33,7 +33,6 @@ public class OpePurchasB {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除表示")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -128,13 +127,6 @@ public class OpePurchasB {
     private Integer inWaitWhQty;
 
     /**
-     * 已入库总数
-     */
-    @TableField(value = "total_inventory")
-    @ApiModelProperty(value = "已入库总数")
-    private Integer totalInventory;
-
-    /**
      * 创建人
      */
     @TableField(value = "created_by")
@@ -153,7 +145,7 @@ public class OpePurchasB {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Long updatedBy;
+    private Integer updatedBy;
 
     /**
      * 更新时间
@@ -197,6 +189,8 @@ public class OpePurchasB {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -226,8 +220,6 @@ public class OpePurchasB {
     public static final String COL_LAVE_WAIT_QC_QTY = "lave_wait_qc_qty";
 
     public static final String COL_IN_WAIT_WH_QTY = "in_wait_wh_qty";
-
-    public static final String COL_TOTAL_INVENTORY = "total_inventory";
 
     public static final String COL_CREATED_BY = "created_by";
 

@@ -1,282 +1,281 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpePurchasProductMapper">
-    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpePurchasProduct">
-        <!--@mbg.generated-->
-        <!--@Table ope_purchas_product-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="tenant_id" jdbcType="INTEGER" property="tenantId"/>
-        <result column="user_id" jdbcType="BIGINT" property="userId"/>
-        <result column="purchas_id" jdbcType="BIGINT" property="purchasId"/>
-        <result column="product_id" jdbcType="BIGINT" property="productId"/>
-        <result column="id_class" jdbcType="VARCHAR" property="idClass"/>
-        <result column="product_type" jdbcType="VARCHAR" property="productType"/>
-        <result column="product_num" jdbcType="VARCHAR" property="productNum"/>
-        <result column="revision" jdbcType="INTEGER" property="revision"/>
-        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
-    </resultMap>
-    <sql id="Base_Column_List">
-        <!--@mbg.generated-->
-        id, dr, tenant_id, user_id, purchas_id, product_id, id_class, product_type, product_num,
-        revision, created_by, created_time, updated_by, updated_time
-    </sql>
-    <update id="updateBatch" parameterType="java.util.List">
-        <!--@mbg.generated-->
-        update ope_purchas_product
-        <trim prefix="set" suffixOverrides=",">
-            <trim prefix="dr = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-                </foreach>
-            </trim>
-            <trim prefix="tenant_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=INTEGER}
-                </foreach>
-            </trim>
-            <trim prefix="user_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="purchas_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.purchasId,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="product_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="id_class = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.idClass,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="product_type = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.productType,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="product_num = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.productNum,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="revision = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
-                </foreach>
-            </trim>
-            <trim prefix="created_by = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="created_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
-                </foreach>
-            </trim>
-            <trim prefix="updated_by = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="updated_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
-                </foreach>
-            </trim>
-        </trim>
-        where id in
-        <foreach close=")" collection="list" item="item" open="(" separator=", ">
-            #{item.id,jdbcType=BIGINT}
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpePurchasProduct">
+    <!--@mbg.generated-->
+    <!--@Table ope_purchas_product-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="purchas_id" jdbcType="BIGINT" property="purchasId" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="id_class" jdbcType="VARCHAR" property="idClass" />
+    <result column="product_type" jdbcType="VARCHAR" property="productType" />
+    <result column="product_num" jdbcType="VARCHAR" property="productNum" />
+    <result column="revision" jdbcType="INTEGER" property="revision" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, user_id, purchas_id, product_id, id_class, product_type, product_num, 
+    revision, created_by, created_time, updated_by, updated_time
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_purchas_product
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
         </foreach>
-    </update>
-    <insert id="batchInsert" parameterType="map">
-        <!--@mbg.generated-->
-        insert into ope_purchas_product
-        (id, dr, tenant_id, user_id, purchas_id, product_id, id_class, product_type, product_num,
-        revision, created_by, created_time, updated_by, updated_time)
-        values
-        <foreach collection="list" item="item" separator=",">
-            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=INTEGER},
-            #{item.userId,jdbcType=BIGINT}, #{item.purchasId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT},
-            #{item.idClass,jdbcType=VARCHAR}, #{item.productType,jdbcType=VARCHAR}, #{item.productNum,jdbcType=VARCHAR},
-            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP},
-            #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP})
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
         </foreach>
-    </insert>
-    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpePurchasProduct">
-        <!--@mbg.generated-->
-        insert into ope_purchas_product
-        (id, dr, tenant_id, user_id, purchas_id, product_id, id_class, product_type, product_num,
-        revision, created_by, created_time, updated_by, updated_time)
-        values
-        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT},
-        #{purchasId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{idClass,jdbcType=VARCHAR},
-        #{productType,jdbcType=VARCHAR}, #{productNum,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER},
-        #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
-        #{updatedTime,jdbcType=TIMESTAMP})
-        on duplicate key update
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="purchas_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.purchasId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="product_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="id_class = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.idClass,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="product_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="product_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productNum,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_purchas_product
+    (id, dr, tenant_id, user_id, purchas_id, product_id, id_class, product_type, product_num, 
+      revision, created_by, created_time, updated_by, updated_time)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.userId,jdbcType=BIGINT}, #{item.purchasId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, 
+        #{item.idClass,jdbcType=VARCHAR}, #{item.productType,jdbcType=VARCHAR}, #{item.productNum,jdbcType=VARCHAR}, 
+        #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpePurchasProduct">
+    <!--@mbg.generated-->
+    insert into ope_purchas_product
+    (id, dr, tenant_id, user_id, purchas_id, product_id, id_class, product_type, product_num, 
+      revision, created_by, created_time, updated_by, updated_time)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{purchasId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{idClass,jdbcType=VARCHAR}, 
+      #{productType,jdbcType=VARCHAR}, #{productNum,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP})
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    user_id = #{userId,jdbcType=BIGINT}, 
+    purchas_id = #{purchasId,jdbcType=BIGINT}, 
+    product_id = #{productId,jdbcType=BIGINT}, 
+    id_class = #{idClass,jdbcType=VARCHAR}, 
+    product_type = #{productType,jdbcType=VARCHAR}, 
+    product_num = #{productNum,jdbcType=VARCHAR}, 
+    revision = #{revision,jdbcType=INTEGER}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpePurchasProduct">
+    <!--@mbg.generated-->
+    insert into ope_purchas_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="purchasId != null">
+        purchas_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="idClass != null">
+        id_class,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="productNum != null">
+        product_num,
+      </if>
+      <if test="revision != null">
+        revision,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="purchasId != null">
+        #{purchasId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="idClass != null">
+        #{idClass,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="productNum != null">
+        #{productNum,jdbcType=VARCHAR},
+      </if>
+      <if test="revision != null">
+        #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
         id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
-        tenant_id = #{tenantId,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
         user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="purchasId != null">
         purchas_id = #{purchasId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
         product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="idClass != null">
         id_class = #{idClass,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
         product_type = #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="productNum != null">
         product_num = #{productNum,jdbcType=VARCHAR},
+      </if>
+      <if test="revision != null">
         revision = #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
         created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
         updated_by = #{updatedBy,jdbcType=BIGINT},
-        updated_time = #{updatedTime,jdbcType=TIMESTAMP}
-    </insert>
-    <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpePurchasProduct">
-        <!--@mbg.generated-->
-        insert into ope_purchas_product
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="dr != null">
-                dr,
-            </if>
-            <if test="tenantId != null">
-                tenant_id,
-            </if>
-            <if test="userId != null">
-                user_id,
-            </if>
-            <if test="purchasId != null">
-                purchas_id,
-            </if>
-            <if test="productId != null">
-                product_id,
-            </if>
-            <if test="idClass != null">
-                id_class,
-            </if>
-            <if test="productType != null">
-                product_type,
-            </if>
-            <if test="productNum != null">
-                product_num,
-            </if>
-            <if test="revision != null">
-                revision,
-            </if>
-            <if test="createdBy != null">
-                created_by,
-            </if>
-            <if test="createdTime != null">
-                created_time,
-            </if>
-            <if test="updatedBy != null">
-                updated_by,
-            </if>
-            <if test="updatedTime != null">
-                updated_time,
-            </if>
-        </trim>
-        values
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=BIGINT},
-            </if>
-            <if test="dr != null">
-                #{dr,jdbcType=INTEGER},
-            </if>
-            <if test="tenantId != null">
-                #{tenantId,jdbcType=INTEGER},
-            </if>
-            <if test="userId != null">
-                #{userId,jdbcType=BIGINT},
-            </if>
-            <if test="purchasId != null">
-                #{purchasId,jdbcType=BIGINT},
-            </if>
-            <if test="productId != null">
-                #{productId,jdbcType=BIGINT},
-            </if>
-            <if test="idClass != null">
-                #{idClass,jdbcType=VARCHAR},
-            </if>
-            <if test="productType != null">
-                #{productType,jdbcType=VARCHAR},
-            </if>
-            <if test="productNum != null">
-                #{productNum,jdbcType=VARCHAR},
-            </if>
-            <if test="revision != null">
-                #{revision,jdbcType=INTEGER},
-            </if>
-            <if test="createdBy != null">
-                #{createdBy,jdbcType=BIGINT},
-            </if>
-            <if test="createdTime != null">
-                #{createdTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updatedBy != null">
-                #{updatedBy,jdbcType=BIGINT},
-            </if>
-            <if test="updatedTime != null">
-                #{updatedTime,jdbcType=TIMESTAMP},
-            </if>
-        </trim>
-        on duplicate key update
-        <trim suffixOverrides=",">
-            <if test="id != null">
-                id = #{id,jdbcType=BIGINT},
-            </if>
-            <if test="dr != null">
-                dr = #{dr,jdbcType=INTEGER},
-            </if>
-            <if test="tenantId != null">
-                tenant_id = #{tenantId,jdbcType=INTEGER},
-            </if>
-            <if test="userId != null">
-                user_id = #{userId,jdbcType=BIGINT},
-            </if>
-            <if test="purchasId != null">
-                purchas_id = #{purchasId,jdbcType=BIGINT},
-            </if>
-            <if test="productId != null">
-                product_id = #{productId,jdbcType=BIGINT},
-            </if>
-            <if test="idClass != null">
-                id_class = #{idClass,jdbcType=VARCHAR},
-            </if>
-            <if test="productType != null">
-                product_type = #{productType,jdbcType=VARCHAR},
-            </if>
-            <if test="productNum != null">
-                product_num = #{productNum,jdbcType=VARCHAR},
-            </if>
-            <if test="revision != null">
-                revision = #{revision,jdbcType=INTEGER},
-            </if>
-            <if test="createdBy != null">
-                created_by = #{createdBy,jdbcType=BIGINT},
-            </if>
-            <if test="createdTime != null">
-                created_time = #{createdTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updatedBy != null">
-                updated_by = #{updatedBy,jdbcType=BIGINT},
-            </if>
-            <if test="updatedTime != null">
-                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-            </if>
-        </trim>
-    </insert>
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
 </mapper>

@@ -16,6 +16,6 @@ public interface OpePartsService extends IService<OpeParts> {
     int insertOrUpdate(OpeParts record);
 
     int insertOrUpdateSelective(OpeParts record);
-
 }
+
 

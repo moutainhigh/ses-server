@@ -1,10 +1,11 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplate;
-
 import java.util.List;
+import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplate;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public interface OpePartDraftQcTemplateService extends IService<OpePartDraftQcTemplate> {
 
 
@@ -17,6 +18,5 @@ public interface OpePartDraftQcTemplateService extends IService<OpePartDraftQcTe
     int insertOrUpdateSelective(OpePartDraftQcTemplate record);
 
 }
-
 
 
