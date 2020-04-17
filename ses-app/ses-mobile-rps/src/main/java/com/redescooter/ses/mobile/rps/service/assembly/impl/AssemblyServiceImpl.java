@@ -28,6 +28,7 @@ import com.redescooter.ses.mobile.rps.service.base.OpeProductAssemblyBService;
 import com.redescooter.ses.mobile.rps.service.base.OpeProductAssemblyService;
 import com.redescooter.ses.mobile.rps.vo.assembly.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
