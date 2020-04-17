@@ -7,51 +7,52 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.*;
 
 public interface PurchasPutStroageService {
- /**
-  * 采购仓库待入库信息
-  *
-  * @param
-  * @return
-  */
- PageResult<PutStorageResult> purchasPutStroageList(PageEnter enter);
+    /**
+     * 采购仓库待入库信息
+     *
+     * @param
+     * @return
+     */
+    PageResult<PutStorageResult> purchasPutStroageList(PageEnter enter);
 
- /**
-  * 采购仓库待入库详情信息
-  *
-  * @param
-  * @return
-  */
- PageResult<PurchasDetailsListResult> storageDetailsList(PurchasDetailsEnter enter);
+    /**
+     * 采购仓库待入库详情信息
+     *
+     * @param
+     * @return
+     */
+    PageResult<PurchasDetailsListResult> storageDetailsList(PurchasDetailsEnter enter);
 
- /**
-  * 有无ID
-  *
-  * @param
-  * @return
-  */
- WhetherIDResult whetherID(PurchasDetailsEnter enter);
- /*
-  */
-/**
- * 有ID入库成功信息
- *
- * @param
- * @return
- */
+    /**
+     * 有无ID
+     *
+     * @param
+     * @return
+     */
+    WhetherIDResult whetherID(PurchasDetailsEnter enter);
+    /*
+     */
 
- GeneralResult haveIdPartsResult(PurchasDetailsEnter enter);
+    /**
+     * 有ID入库成功信息
+     *
+     * @param
+     * @return
+     */
+
+    GeneralResult haveIdPartsResult(PurchasDetailsEnter enter);
 
 
- /**
-  * 无ID入库信息
-  *
-  * @param
-  * @return
-  */
- NotIdPartsResult notIdPartsResult(PurchasDetailsEnter enter);
+    /**
+     * 无ID入库信息
+     *
+     * @param
+     * @return
+     */
+    NotIdPartsResult notIdPartsResult(PurchasDetailsEnter enter);
 
- NotIdPartsSucceedResult notIdPartsSucceedResult(NotIdEnter enter);
+    NotIdPartsSucceedResult notIdPartsSucceedResult(NotIdEnter enter);
 
- GeneralResult savePurchasingNode(SaveNodeEnter enter);
+    GeneralResult savePurchasingNode(SaveNodeEnter enter);
 }
 

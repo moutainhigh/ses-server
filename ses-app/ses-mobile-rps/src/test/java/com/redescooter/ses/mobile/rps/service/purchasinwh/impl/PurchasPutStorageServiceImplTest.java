@@ -9,9 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 @Slf4j
-public class PurchasPutStorageServiceImplTest extends SesMobileRpsApplicationTests {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class PurchasPutStorageServiceImplTest {
 
     @Autowired
     private PurchasPutStroageService purchasPutStroageService;
@@ -27,6 +31,14 @@ public class PurchasPutStorageServiceImplTest extends SesMobileRpsApplicationTes
         GeneralResult result = purchasPutStroageService.notIdPartsSucceedResult(enter);
 
         log.info(JSON.toJSONString(result));
+
+    }
+
+    @Test
+    public void getId() {
+
+        Long id = purchasPutStroageService.getId();
+        log.info(JSON.toJSONString(id));
 
     }
 }
