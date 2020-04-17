@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.controller.scooterqc;
 
+import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.service.scooterqc.ScooterqcService;
@@ -22,79 +23,46 @@ import java.util.List;
 public class ScooterqcController {
 
     @Autowired
-    ScooterqcService scooterService;
+    private ScooterqcService scooterService;
 
-    /**
-     * @Author kyle
-     * @Description //1、查询整车质检列表
-     * @Date  2020/4/14 14:35
-     * @Param [enter]
-     **/
     @IgnoreLoginCheck
     @PostMapping(value = "/scooterQcList")
-    @ApiOperation(value = "整车质检列表", response = ScooterQcListResult.class)
-    public Response<PageResult<ScooterQcListResult>> scooterQcList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
+    @ApiOperation(value = "整车质检列表", response = ScooterQcOneResult.class)
+    public Response<PageResult<ScooterQcOneResult>> scooterQcList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response(scooterService.scooterQcList(enter));
     }
 
-    /**
-     * @Author kyle
-     * @Description //1、根据组装单id查询到对应的部件详情列表
-     * @Date  2020/4/14 14:35
-     * @Param [enter]
 
-     **/
     @IgnoreLoginCheck
     @PostMapping(value = "/partListById")
-    @ApiOperation(value = "整车质检部件列表/{整车组装单id}", response = ScooterQcPartsResult.class)
-    public Response<List<ScooterQcPartsResult>> partListById(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    @ApiOperation(value = "整车质检部件列表", response = ScooterQcPartResult.class)
+    public Response<PageResult<ScooterQcPartResult>> partListById(@ModelAttribute @ApiParam("请求参数") ScooterQcIdEnter enter) {
         return new Response(scooterService.partListById(enter));
     }
 
 
-    /**
-     * @Author kyle
-     * @Description //1、根据部件id查询部件质检选项详情列表
-     * @Date  2020/4/14 14:35
-     * @Param [enter]
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemResult>
-     **/
     @IgnoreLoginCheck
     @PostMapping(value = "/scooterQcItem")
     @ApiOperation(value = "整车质检具体选项处理", response = ScooterQcItemResult.class)
-    public Response<ScooterQcItemResult> scooterQcItem(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<PageResult<ScooterQcItemResult>> scooterQcItem(@ModelAttribute @ApiParam("请求参数") ScooterQcIdEnter enter) {
         return new Response(scooterService.scooterQcItem(enter));
     }
 
-    /**
-     * @Author kyle
-     * @Description //1、提交部件质检选项详情列表修改（成功）
-     * @Date  2020/4/14 14:27
-     * @Param [enter]
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemEnter>
-     **/
+
     @IgnoreLoginCheck
-    @PostMapping(value = "/setScooterQcItemSuccess")
-    @ApiOperation(value = "提交整车质检具体选项处理成功/{部件质检选项详情列表vo}", response = ScooterQcItemResult.class)
-    public Response<ScooterQcItemEnter> setScooterQcItemSuccess(@ModelAttribute @ApiParam("请求参数") ScooterQcItemEnter enter) {
+    @PostMapping(value = "/setScooterQcItem")
+    @ApiOperation(value = "提交整车质检具体选项处理", response = ScooterQcResidueNumResult.class)
+    public Response<ScooterQcResidueNumResult> setScooterQcItem(@ModelAttribute @ApiParam("请求参数") ScooterQcItemEnter enter) {
         return new Response(scooterService.setScooterQcItem(enter));
     }
 
 
-    /**
-     * @Author kyle
-     * @Description //1、提交部件质检选项详情列表修改（失败）
-     * @Date  2020/4/14 14:35
-     * @Param [enter]
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemEnter>
-     **/
-    @IgnoreLoginCheck
-    @PostMapping(value = "/setScooterQcItemFail")
-    @ApiOperation(value = "提交整车质检具体选项处理失败/{部件质检选项详情列表vo}", response = ScooterQcItemResult.class)
-    public Response<ScooterQcItemEnter> setScooterQcItemFail(@ModelAttribute @ApiParam("请求参数") ScooterQcItemEnter enter) {
-        return new Response(scooterService.setScooterQcItem(enter));
-    }
-
+//    @IgnoreLoginCheck
+//    @PostMapping(value = "/setScooterQcItemFail")
+//    @ApiOperation(value = "提交整车质检具体选项处理失败", response = ScooterQcResidueNumResult.class)
+//    public Response<ScooterQcResidueNumResult> setScooterQcItemFail(@ModelAttribute @ApiParam("请求参数") String JsonEnter) {
+//        return new Response(scooterService.setScooterQcItem(JsonEnter));
+//    }
 
 
 }

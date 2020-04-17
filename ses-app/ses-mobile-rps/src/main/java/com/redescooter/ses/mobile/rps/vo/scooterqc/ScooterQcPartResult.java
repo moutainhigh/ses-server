@@ -21,8 +21,8 @@ public class ScooterQcPartResult extends GeneralResult {
     @ApiModelProperty(value = "部件名称")
     private String partName;
 
-    @ApiModelProperty(value = "组装单id")
-    private Long scooterId;
+    @ApiModelProperty(value = "组装单子表id")
+    private Long scooterBId;
 
     @ApiModelProperty(value = "部件id")
     private Long partId;

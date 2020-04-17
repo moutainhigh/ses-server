@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.rps.service.impl.purchasinwh.impl;
+package com.redescooter.ses.mobile.rps.service.impl;
 
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;

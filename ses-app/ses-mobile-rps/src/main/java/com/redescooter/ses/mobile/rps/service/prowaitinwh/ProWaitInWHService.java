@@ -1,10 +1,7 @@
 package com.redescooter.ses.mobile.rps.service.prowaitinwh;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHInfoEnter;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHInfoResult;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHListResult;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitWHItemListResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.*;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemResult;
 
 /**
@@ -22,16 +19,16 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    PageResult<ProWaitInWHListResult> proWaitInWHList(PageEnter enter);
+    PageResult<ProWaitInWHLOneResult> proWaitInWHList(PageEnter enter);
 
     /**
      * @Author kyle
-     * @Description //1、根据组装单id查询对应的部件详情列表
+     * @Description //1、根据组装单id查询对应的待入库商品详情列表
      * @Date  2020/4/14 17:49
      * @Param [enter]
      * @return
      **/
-    ProWaitWHItemListResult proWaitWHItemList(IdEnter enter);
+    PageResult<ProWaitInWHItemResult> proWaitWHItemList(ProWaitInWHIdEnter enter);
 
 
     /**

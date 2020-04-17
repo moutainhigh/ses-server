@@ -71,6 +71,15 @@ public enum ExceptionCodeEnums {
 
     PART_TEMPLATE_IS_NOT_EXIST(10034,"部件模板不存在"),
 
+    OPE_B_ORDER_IS_EMPTY(10050,"组装单子表为空"),
+
+    OPE_TEMPLATE_IS_EMPTY(10051,"质检模板为空"),
+
+    OPE_OPTION_IS_EMPTY(10052,"质检项为空"),
+
+    WAIT_QC_NUM_ERROR(10053,"待质检总数异常")
+
+
     ;
 
     private int code;

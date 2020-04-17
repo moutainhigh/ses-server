@@ -6,9 +6,7 @@ import lombok.*;
 
 import io.swagger.annotations.*;
 
-import java.util.List;
-
-@ApiModel(value = "整车质检具体选项入参", description = "整车质检具体选项入参")
+@ApiModel(value = "整车部件质检项具体选项处理", description = "整车部件质检项具体选项处理")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,23 +14,19 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ScooterQcItemEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "主键", required = true)
-    private Long id;
+    @ApiModelProperty(value = "组装单子单id")//调整
+    private Long scooterBId;
 
-    @ApiModelProperty(value = "组装单id")
-    private Long scooterId;
-
-    @ApiModelProperty(value = "部件id")
+    @ApiModelProperty(value = "产品id")//调整
     private Long partId;
 
-    @ApiModelProperty(value = "组装单号")
-    private String scooterNum;
+    @ApiModelProperty(value = "质检项信息集合")
+    private String scooterQcItemOptionEnter;
 
-    @ApiModelProperty(value = "部件名称")
-    private String partName;
+    @ApiModelProperty(value = "待质检部品数量")
+    private Integer partNum;
 
-    @ApiModelProperty(value = "质检项")
-    private List<ScooterQcItemOptionsEnter> scooterQcItemOptionsEnterList;
+
 
 
 }

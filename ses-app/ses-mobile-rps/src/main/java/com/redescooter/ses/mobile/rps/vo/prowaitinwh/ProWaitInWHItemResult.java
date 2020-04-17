@@ -26,22 +26,19 @@ public class ProWaitInWHItemResult extends GeneralResult {
     @ApiModelProperty(value = "主键", required = true)
     private Long id;
 
-    @ApiModelProperty(value = "组装单号")
-    private String scooterNum;
-
-    @ApiModelProperty(value = "组装单id")
-    private Long scooterId;
-
     @ApiModelProperty(value = "部件名称")
     private String partName;
 
-    @ApiModelProperty(value = "部件型号/备注")
-    private String partType;
+    @ApiModelProperty(value = "组装单子表id")
+    private Long scooterBId;
 
     @ApiModelProperty(value = "部件id")
     private Long partId;
 
-    @ApiModelProperty(value = "待组装总数")
-    private Integer waitInWHNum;
+    @ApiModelProperty(value = "部件编号")
+    private String partStr;
+
+    @ApiModelProperty(value = "部件数量")
+    private Integer partNum;
 
 }

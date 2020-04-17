@@ -1,13 +1,23 @@
 package com.redescooter.ses.mobile.rps.service.prowaitinwh.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.mobile.rps.dao.prowaitinwh.ProWaitInWHMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyBOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.mobile.rps.service.prowaitinwh.ProWaitInWHService;
 import com.redescooter.ses.mobile.rps.vo.prowaitinwh.*;
-import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemResult;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcPartResult;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassNameProWaitInWHServiceImpl
@@ -20,6 +30,17 @@ import java.util.Date;
 public class ProWaitInWHServiceImpl implements ProWaitInWHService {
 
 
+    @Autowired
+    private ProWaitInWHMapper proWaitInWHMapper;
+
+    @Autowired
+    private OpeAssemblyOrderService opeAssemblyOrderService;
+
+    @Autowired
+    private OpeAssemblyBOrderService opeAssemblyBOrderService;
+
+
+
     /**
      * @param enter
      * @return
@@ -29,50 +50,77 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      * @Param [enter]
      */
     @Override
-    public PageResult<ProWaitInWHListResult> proWaitInWHList(PageEnter enter) {
-        ProWaitInWHLOneResult proWaitInWHLOneResult = ProWaitInWHLOneResult.builder()
-                .id(1L)
-                .waitInWHStr("REDE_INWH_01")
-                .waitInWHNum(520)
-                .scooterId(1L)
-                .inWHTListTime(new Date())
-                .scooterId(1L)
-                .build();
+    public PageResult<ProWaitInWHLOneResult> proWaitInWHList(PageEnter enter) {
 
-        ProWaitInWHListResult proWaitInWHListResult = ProWaitInWHListResult.builder()
-                .id(1L)
-                .scooterId(1L)
-                .proWaitInWHLOneResultList(Arrays.asList(proWaitInWHLOneResult))
-                .build();
 
-        return PageResult.create(enter,10,Arrays.asList(proWaitInWHListResult));
+        int count = proWaitInWHMapper.proWaitInWHListCount();
+        List<ProWaitInWHLOneResult> proWaitInWHLOneResults = new ArrayList<>();
+        ProWaitInWHLOneResult proWaitInWHLOneResult = null;
+        //opeAssemblyOrderService对应的数据库表为空的时候直接返回
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        } else {
+            QueryWrapper<OpeAssemblyOrder> opeAssemblyOrderQueryWrapper = new QueryWrapper<>();
+            //待入库数量不为0
+            opeAssemblyOrderQueryWrapper.ne(OpeAssemblyOrder.COL_IN_WAIT_WH_TOTAL,0);
+            List<OpeAssemblyOrder> opeAssemblyOrderList = opeAssemblyOrderService.list(opeAssemblyOrderQueryWrapper);
+            if (!CollectionUtils.isEmpty(opeAssemblyOrderList)) {
+                for (OpeAssemblyOrder opeAssemblyOrder : opeAssemblyOrderList) {
+                    proWaitInWHLOneResults.add(
+                            proWaitInWHLOneResult = ProWaitInWHLOneResult.builder()
+                                    .scooterId(opeAssemblyOrder.getId())
+                                    .waitInWHNum(opeAssemblyOrder.getInWaitWhTotal())
+                                    .waitInWHStr(opeAssemblyOrder.getAssemblyNumber())
+                                    .inWHTListTime(new Date())
+                                    .build());
+                }
+            } else {
+                return PageResult.createZeroRowResult(enter);
+            }
+        }
+        return PageResult.create(enter, count,proWaitInWHLOneResults);
     }
 
     /**
      * @param enter
      * @return
      * @Author kyle
-     * @Description //1、根据组装单id查询对应的部件详情列表
+     * @Description //1、根据组装单id查询对应的待入库商品部件详情列表
      * @Date 2020/4/14 17:49
      * @Param [enter]
      */
     @Override
-    public ProWaitWHItemListResult proWaitWHItemList(IdEnter enter) {
-        ProWaitInWHItemResult proWaitInWHItemResult = ProWaitInWHItemResult.builder()
-                .id(1L)
-                .scooterId(1L)
-                .scooterNum("#REDE_SCOOTERQC_01")
-                .waitInWHNum(2000)
-                .partId(1L)
-                .partName("轮胎")
-                .partType("120/70-14")
-                .build();
+    public PageResult<ProWaitInWHItemResult> proWaitWHItemList(ProWaitInWHIdEnter enter) {
+        int count = proWaitInWHMapper.proWaitWHItemListCount();
+        ProWaitInWHItemResult proWaitInWHItemResult = null;
+        List<ProWaitInWHItemResult> proWaitWHItemListResult = new ArrayList<>();
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        } else {
+            QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
+            opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_PRODUCT_ID, enter.getPartId());
+            //通过组装单子表id查找
+            opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ID, enter.getScooterBId());
+            List<OpeAssemblyBOrder> opeAssemblyBOrderList = opeAssemblyBOrderService.list(opeAssemblyBOrderQueryWrapper);
+            if (!CollectionUtils.isEmpty(opeAssemblyBOrderList)) {
+                for (OpeAssemblyBOrder opeAssemblyBOrder : opeAssemblyBOrderList) {
+                    proWaitWHItemListResult.add(
+                            proWaitInWHItemResult = ProWaitInWHItemResult.builder()
+                                    .id(opeAssemblyBOrder.getId())
+                                    .scooterBId(opeAssemblyBOrder.getAssemblyId())
+                                    .partId(opeAssemblyBOrder.getProductId())
+                                    .partNum(opeAssemblyBOrder.getLaveWaitQcQty())
+                                    .partStr(opeAssemblyBOrder.getProductNumber())
+                                    .partName(opeAssemblyBOrder.getEnName())
+                                    .build());
+                }
+                ;
+            } else {
+                return PageResult.createZeroRowResult(enter);
+            }
+        }
 
-        ProWaitWHItemListResult proWaitWHItemListResult = ProWaitWHItemListResult.builder()
-                .id(1L)
-                .proWaitInWHItemResultList(Arrays.asList(proWaitInWHItemResult))
-                .build();
-        return proWaitWHItemListResult;
+        return PageResult.create(enter,1,proWaitWHItemListResult);
     }
 
     /**
