@@ -1,10 +1,9 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.redescooter.ses.web.ros.dm.OpeProductQcTemplate;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
+import com.redescooter.ses.web.ros.dm.OpeProductQcTemplate;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface OpeProductQcTemplateService extends IService<OpeProductQcTemplate> {
@@ -19,3 +18,4 @@ public interface OpeProductQcTemplateService extends IService<OpeProductQcTempla
     int insertOrUpdateSelective(OpeProductQcTemplate record);
 
 }
+

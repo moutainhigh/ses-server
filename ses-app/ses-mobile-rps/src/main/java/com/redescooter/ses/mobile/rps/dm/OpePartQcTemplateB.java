@@ -3,10 +3,10 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_part_qc_template_b")
-public class OpePartQcTemplateB {
+public class OpePartQcTemplateB implements Serializable {
     /**
      * 主键
      */
@@ -33,7 +33,6 @@ public class OpePartQcTemplateB {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -49,6 +48,13 @@ public class OpePartQcTemplateB {
     @TableField(value = "qc_result")
     @ApiModelProperty(value = "质检结果")
     private String qcResult;
+
+    /**
+     * 通过标记
+     */
+    @TableField(value = "pass_flag")
+    @ApiModelProperty(value = "通过标记")
+    private Byte passFlag;
 
     /**
      * 是否允许上传图片
@@ -134,6 +140,8 @@ public class OpePartQcTemplateB {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -141,6 +149,8 @@ public class OpePartQcTemplateB {
     public static final String COL_PART_QC_TEMPLATE_ID = "part_qc_template_id";
 
     public static final String COL_QC_RESULT = "qc_result";
+
+    public static final String COL_PASS_FLAG = "pass_flag";
 
     public static final String COL_UPLOAD_FLAG = "upload_flag";
 

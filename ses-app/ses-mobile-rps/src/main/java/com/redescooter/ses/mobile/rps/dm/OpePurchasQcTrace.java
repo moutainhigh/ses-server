@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "ope_purchas_qc_trace")
 public class OpePurchasQcTrace implements Serializable {
+    public static final String COL_QC_RESULT = "qc_result";
     /**
      * 主键
      */
@@ -67,7 +68,7 @@ public class OpePurchasQcTrace implements Serializable {
      */
     @TableField(value = "part_qc_template_b_id")
     @ApiModelProperty(value = "质检结果Id")
-    private String partQcTemplateBId;
+    private Long partQcTemplateBId;
 
     /**
      * 质检条目Id
@@ -82,13 +83,6 @@ public class OpePurchasQcTrace implements Serializable {
     @TableField(value = "part_qc_picture")
     @ApiModelProperty(value = "质检图片的逗号分隔")
     private String partQcPicture;
-
-    /**
-     * 质检结果
-     */
-    @TableField(value = "qc_result")
-    @ApiModelProperty(value = "质检结果")
-    private String qcResult;
 
     /**
      * 乐观锁
@@ -179,8 +173,6 @@ public class OpePurchasQcTrace implements Serializable {
     public static final String COL_PURCHAS_B_QC_ITEM_ID = "purchas_b_qc_item_id";
 
     public static final String COL_PART_QC_PICTURE = "part_qc_picture";
-
-    public static final String COL_QC_RESULT = "qc_result";
 
     public static final String COL_REVISION = "revision";
 

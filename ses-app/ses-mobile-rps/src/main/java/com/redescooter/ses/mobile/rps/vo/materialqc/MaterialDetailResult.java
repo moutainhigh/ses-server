@@ -27,9 +27,6 @@ public class MaterialDetailResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "采购单Id")
-    private Long purchasId;
-
     @ApiModelProperty(value = "部件id")
     private Long partId;
 

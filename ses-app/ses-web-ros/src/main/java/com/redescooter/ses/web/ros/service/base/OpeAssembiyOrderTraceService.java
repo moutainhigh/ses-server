@@ -1,10 +1,9 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface OpeAssembiyOrderTraceService extends IService<OpeAssembiyOrderTrace> {
@@ -19,7 +18,5 @@ public interface OpeAssembiyOrderTraceService extends IService<OpeAssembiyOrderT
     int insertOrUpdateSelective(OpeAssembiyOrderTrace record);
 
 }
-
-
 
 

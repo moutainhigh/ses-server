@@ -1,8 +1,6 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.fasterxml.jackson.databind.ser.std.SerializableSerializer;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,20 +9,22 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+import io.swagger.annotations.*;
+
 /**
- * @ClassName:PartDetailDao
- * @description: PartDetailDao
+ * @ClassName:PartDetailDto
+ * @description: PartDetailDto
  * @author: Alex
  * @Version：1.3
- * @create: 2020/03/24 15:04
+ * @create: 2020/04/15 16:11
  */
-@ApiModel(value = "部件价格信息", description = "部件价格信息")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@ApiModel(value = "部件基本信息", description = "部件基本信息")
+@Data //生成getter,setter等函数
+@AllArgsConstructor //生成全参数构造函数
+@NoArgsConstructor//生成无参构造函数
+@EqualsAndHashCode(callSuper = false)
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class PartDetailDto extends SerializableSerializer {
+public class PartDetailDto extends GeneralEnter {
 
     @ApiModelProperty(value = "部件Id")
     private Long partId;

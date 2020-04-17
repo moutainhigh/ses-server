@@ -18,13 +18,13 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy">
     <!--@mbg.generated-->
-      insert into ope_sys_role_sales_cidy
-      (role_id, city_id)
-      values
-      (#{roleId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT})
-      on duplicate key update
-      role_id = #{roleId,jdbcType=BIGINT},
-      city_id = #{cityId,jdbcType=BIGINT}
+    insert into ope_sys_role_sales_cidy
+    (role_id, city_id)
+    values
+    (#{roleId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT})
+    on duplicate key update 
+    role_id = #{roleId,jdbcType=BIGINT}, 
+    city_id = #{cityId,jdbcType=BIGINT}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy">
     <!--@mbg.generated-->
@@ -46,8 +46,8 @@
         #{cityId,jdbcType=BIGINT},
       </if>
     </trim>
-      on duplicate key update
-      <trim suffixOverrides=",">
+    on duplicate key update 
+    <trim suffixOverrides=",">
       <if test="roleId != null">
         role_id = #{roleId,jdbcType=BIGINT},
       </if>

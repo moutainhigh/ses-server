@@ -47,21 +47,18 @@ public class PrepareMaterialController {
     @Autowired
     private PrepareMaterialService prepareMaterialService;
 
-    @IgnoreLoginCheck
     @PostMapping(value = "/list")
     @ApiOperation(value = "列表", response = PrepareMaterialListResult.class)
     public Response<PageResult<PrepareMaterialListResult>> list(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response<>(prepareMaterialService.list(enter));
     }
 
-    @IgnoreLoginCheck
     @PostMapping(value = "/detail")
     @ApiOperation(value = "详情", response = PrepareMaterialDetailResult.class)
     public Response<PageResult<PrepareMaterialDetailResult>> detail(@ModelAttribute @ApiParam("请求参数") PrepareMaterialDetailEnter enter) {
         return new Response<>(prepareMaterialService.detail(enter));
     }
 
-    @IgnoreLoginCheck
     @PostMapping(value = "/save")
     @ApiOperation(value = "备料数据保存", response = GeneralResult.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SavePrepareMaterialEnter enter) {

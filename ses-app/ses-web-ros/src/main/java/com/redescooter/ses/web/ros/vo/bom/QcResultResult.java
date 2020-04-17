@@ -24,6 +24,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class QcResultResult extends GeneralResult {
 
+    @ApiModelProperty(value = "通过表示")
+    private Boolean passFlag;
+
     @ApiModelProperty(value = "结果")
     private String result;
 

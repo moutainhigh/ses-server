@@ -1,16 +1,12 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.List;
-
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
-
 import java.util.List;
-
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 
 @Service
@@ -36,6 +32,7 @@ public class OpeCustomerInquiryServiceImpl extends ServiceImpl<OpeCustomerInquir
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
 
 
 

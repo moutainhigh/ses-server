@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,8 +59,9 @@ public enum ExceptionCodeEnums {
 
     STATUS_IS_ILLEGAL(10020, "状态非法"),
 
-    ILLEGAL_DATA(10021,"数据非法"),
+    ILLEGAL_DATA(10021, "数据非法"),
 
+    INSUFFICIENT_PERMISSIONS(10022, "用户暂无权限"),
     STATUS_ILLEGAL(10023, "状态非法"),
 
     PURCHAS_IS_NOT_EXIST(10030, "采购单不存在"),
@@ -68,11 +70,24 @@ public enum ExceptionCodeEnums {
 
     PART_IS_NOT_EXIST(10032, "部件不存在"),
 
-    PART_QC_QTY_IS_EMPTY(10033,"部件质检数量为空"),
+    PART_QC_QTY_IS_EMPTY(10033, "部件质检数量为空"),
 
     PART_TEMPLATE_IS_NOT_EXIST(10034,"部件模板不存在"),
-    WAREHOUSE_IS_NOT_EXIST(10035, "仓库不存在"),
-    STOCK_STATUS(10036, "可用"),
+
+    PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE(10035, "部件质检项不完整"),
+
+    ALLOCATE_ORDER_IS_NOT_EXIST(10036, "调拨单不存在"),
+
+    PREPARE_MATERIAL_QTY_IS_WRONG(10037, "备料数量不匹配"),
+
+    ASSEMNLY_ORDER_IS_EXIST(10038, "组装单不存在"),
+
+    PRODUCT_IS_NOT_HAVE_FORMULA(10039, "商品暂无配方"),
+
+    WAREHOUSE_IS_NOT_EXIST(10040, "仓库不存在"),
+
+    STOCK_STATUS(10041, "可用"),
+
     ;
 
     private int code;

@@ -20,7 +20,3 @@ public interface OpePurchasBQcService extends IService<OpePurchasBQc> {
 }
 
 
-
-
-
-

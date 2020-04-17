@@ -1,18 +1,18 @@
 package com.redescooter.ses.web.ros.dm;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePurchasB")
 @Data
@@ -21,6 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "ope_purchas_b")
 public class OpePurchasB implements Serializable {
+    public static final String COL_TOTAL_INVENTORY = "total_inventory";
     /**
      * 主键
      */
@@ -32,7 +33,6 @@ public class OpePurchasB implements Serializable {
      * 逻辑删除表示
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除表示")
     private Integer dr;
 
@@ -63,6 +63,13 @@ public class OpePurchasB implements Serializable {
     @TableField(value = "part_id")
     @ApiModelProperty(value = "部品Id")
     private Long partId;
+
+    /**
+     * 质检方式
+     */
+    @TableField(value = "id_class")
+    @ApiModelProperty(value = "质检方式")
+    private String idClass;
 
     /**
      * 供应商Id
@@ -105,6 +112,20 @@ public class OpePurchasB implements Serializable {
     @TableField(value = "total_price")
     @ApiModelProperty(value = "总价格")
     private BigDecimal totalPrice;
+
+    /**
+     * 待质检数
+     */
+    @TableField(value = "lave_wait_qc_qty")
+    @ApiModelProperty(value = "待质检数")
+    private Integer laveWaitQcQty;
+
+    /**
+     * 待入库数量
+     */
+    @TableField(value = "in_wait_wh_qty")
+    @ApiModelProperty(value = "待入库数量")
+    private Integer inWaitWhQty;
 
     /**
      * 创建人
@@ -183,6 +204,8 @@ public class OpePurchasB implements Serializable {
 
     public static final String COL_PART_ID = "part_id";
 
+    public static final String COL_ID_CLASS = "id_class";
+
     public static final String COL_SUPPLIER_ID = "supplier_id";
 
     public static final String COL_SUPPLIER_ANNEX = "supplier_annex";
@@ -194,6 +217,10 @@ public class OpePurchasB implements Serializable {
     public static final String COL_TOTAL_COUNT = "total_count";
 
     public static final String COL_TOTAL_PRICE = "total_price";
+
+    public static final String COL_LAVE_WAIT_QC_QTY = "lave_wait_qc_qty";
+
+    public static final String COL_IN_WAIT_WH_QTY = "in_wait_wh_qty";
 
     public static final String COL_CREATED_BY = "created_by";
 
@@ -212,4 +239,8 @@ public class OpePurchasB implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpePurchasBBuilder builder() {
+        return new OpePurchasBBuilder();
+    }
 }

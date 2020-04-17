@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeAllocateB">
     <!--@mbg.generated-->
     <!--@Table ope_allocate_b-->
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -37,103 +37,103 @@
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.dr,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="user_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.userId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="tenant_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.tenantId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="allocate_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.allocateId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.allocateId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="part_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.partId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="materiel_product_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.materielProductId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.materielProductId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="materiel_product_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.materielProductType,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.materielProductType,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="total = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.total,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.total,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="preparation_wait_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.preparationWaitQty,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.preparationWaitQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="revision = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.revision,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.createdBy,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="created_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.createdTime,jdbcType=TIMESTAMP}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.updatedBy,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="def1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.def1,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.def2,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def3 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.def3,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def5 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.def5,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def6 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=INTEGER} then #{item.def6,jdbcType=DOUBLE}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
         </foreach>
       </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id,jdbcType=INTEGER}
+      #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
   <insert id="batchInsert" parameterType="map">
@@ -144,7 +144,7 @@
       def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.userId,jdbcType=BIGINT}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.userId,jdbcType=BIGINT}, 
         #{item.tenantId,jdbcType=BIGINT}, #{item.allocateId,jdbcType=BIGINT}, #{item.partId,jdbcType=BIGINT}, 
         #{item.materielProductId,jdbcType=BIGINT}, #{item.materielProductType,jdbcType=VARCHAR}, 
         #{item.total,jdbcType=INTEGER}, #{item.preparationWaitQty,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, 
@@ -161,7 +161,7 @@
       total, preparation_wait_qty, revision, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, 
       #{allocateId,jdbcType=BIGINT}, #{partId,jdbcType=BIGINT}, #{materielProductId,jdbcType=BIGINT}, 
       #{materielProductType,jdbcType=VARCHAR}, #{total,jdbcType=INTEGER}, #{preparationWaitQty,jdbcType=INTEGER}, 
       #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
@@ -169,7 +169,7 @@
       #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
       )
     on duplicate key update 
-    id = #{id,jdbcType=INTEGER}, 
+    id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
     user_id = #{userId,jdbcType=BIGINT}, 
     tenant_id = #{tenantId,jdbcType=BIGINT}, 
@@ -258,7 +258,7 @@
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
@@ -321,7 +321,7 @@
     on duplicate key update 
     <trim suffixOverrides=",">
       <if test="id != null">
-        id = #{id,jdbcType=INTEGER},
+        id = #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},

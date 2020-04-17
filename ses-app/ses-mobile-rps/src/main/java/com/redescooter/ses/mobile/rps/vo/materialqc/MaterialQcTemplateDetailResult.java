@@ -26,11 +26,11 @@ import io.swagger.annotations.*;
 @Builder
 public class MaterialQcTemplateDetailResult extends GeneralResult {
 
-    @ApiModelProperty(value = "部件Id")
+    @ApiModelProperty(value = "采购单子表Id")
     private Long id;
 
-    @ApiModelProperty(value = "采购单子表Id")
-    private Long purchasBId;
+    @ApiModelProperty(value = "部件Id")
+    private Long partId;
 
     @ApiModelProperty(value = "部件名称")
     private String partCnName;

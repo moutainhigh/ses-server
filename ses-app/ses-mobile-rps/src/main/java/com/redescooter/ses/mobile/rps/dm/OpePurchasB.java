@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "ope_purchas_b")
 public class OpePurchasB implements Serializable {
-    public static final String COL_TOTAL_INVENTORY = "total_inventory";
     /**
      * 主键
      */
@@ -146,7 +145,7 @@ public class OpePurchasB implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Long updatedBy;
+    private Integer updatedBy;
 
     /**
      * 更新时间
