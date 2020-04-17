@@ -145,7 +145,7 @@ public class OpePurchasB implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Integer updatedBy;
+    private Long updatedBy;
 
     /**
      * 更新时间
