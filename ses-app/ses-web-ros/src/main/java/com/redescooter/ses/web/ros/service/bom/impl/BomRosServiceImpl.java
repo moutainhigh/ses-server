@@ -854,7 +854,9 @@ public class BomRosServiceImpl implements BomRosService {
 
         }
         //质检项结果集数据保存
-        opeProductQcTemplateBService.saveOrUpdateBatch(saveOpeProductQcTemplateBList);
+        if (CollectionUtils.isEmpty(saveOpeProductQcTemplateBList)){
+            opeProductQcTemplateBService.saveOrUpdateBatch(saveOpeProductQcTemplateBList);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
