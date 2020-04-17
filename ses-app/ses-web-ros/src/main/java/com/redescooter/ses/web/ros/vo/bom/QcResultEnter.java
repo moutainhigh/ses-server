@@ -25,7 +25,7 @@ import io.swagger.annotations.*;
 public class QcResultEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "通过标签")
-    private Boolean passFlag;
+    private Boolean passFlag=false;
 
     @ApiModelProperty(value = "结果")
     private String result;

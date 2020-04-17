@@ -27,6 +27,9 @@ public class SaveFormulaDateEnter extends GeneralEnter {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "条码打印结果")
+    private Boolean printCodeResult;
+
     @ApiModelProperty(value = "部件列表 格式：[\n" +
             "    {\n" +
             "        \"id\":123,\n" +
