@@ -60,6 +60,7 @@ public enum ExceptionCodeEnums {
 
     ILLEGAL_DATA(10021,"数据非法"),
 
+    STATUS_ILLEGAL(10023, "状态非法"),
 
     PURCHAS_IS_NOT_EXIST(10030, "采购单不存在"),
 
@@ -70,7 +71,8 @@ public enum ExceptionCodeEnums {
     PART_QC_QTY_IS_EMPTY(10033,"部件质检数量为空"),
 
     PART_TEMPLATE_IS_NOT_EXIST(10034,"部件模板不存在"),
-
+    WAREHOUSE_IS_NOT_EXIST(10035, "仓库不存在"),
+    STOCK_STATUS(10036, "可用"),
     ;
 
     private int code;

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_purchas_b_qc_item")
-public class OpePurchasBQcItem {
+public class OpePurchasBQcItem implements Serializable {
     /**
      * 主键
      */
@@ -46,6 +47,13 @@ public class OpePurchasBQcItem {
     @TableField(value = "part_id")
     @ApiModelProperty(value = "部品Id")
     private Long partId;
+
+    /**
+     * 质检结果Id
+     */
+    @TableField(value = "purchas_b_qc_id")
+    @ApiModelProperty(value = "质检结果Id")
+    private Long purchasBQcId;
 
     /**
      * 部品序列号
@@ -131,6 +139,8 @@ public class OpePurchasBQcItem {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -138,6 +148,8 @@ public class OpePurchasBQcItem {
     public static final String COL_PURCHAS_B_ID = "purchas_b_id";
 
     public static final String COL_PART_ID = "part_id";
+
+    public static final String COL_PURCHAS_B_QC_ID = "purchas_b_qc_id";
 
     public static final String COL_SERIAL_NUM = "serial_num";
 
