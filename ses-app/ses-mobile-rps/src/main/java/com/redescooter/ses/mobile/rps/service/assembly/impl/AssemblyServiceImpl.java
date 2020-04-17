@@ -12,6 +12,8 @@ import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.assembly.AssemblyServiceMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBOrder;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
+import com.redescooter.ses.mobile.rps.dm.OpePartsProduct;
+import com.redescooter.ses.mobile.rps.dm.OpePartsProductB;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.dm.OpeProductAssembly;
 import com.redescooter.ses.mobile.rps.dm.OpeProductAssemblyB;
@@ -32,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springfox.documentation.spring.web.json.Json;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
