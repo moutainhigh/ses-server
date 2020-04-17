@@ -31,5 +31,7 @@ public class OpePartsServiceImpl extends ServiceImpl<OpePartsMapper, OpeParts> i
     public int insertOrUpdateSelective(OpeParts record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
 }
+
 

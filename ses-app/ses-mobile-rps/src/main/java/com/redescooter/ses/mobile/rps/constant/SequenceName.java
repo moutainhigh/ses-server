@@ -17,6 +17,10 @@ public interface SequenceName {
 
     String OPE_PURCHAS_TRACE = "OPE_PURCHAS_TRACE";
 
+    String OPE_STOCK = "OPE_STOCK";
+
+    String OPE_STOCK_BILL = "OPE_STOCK_BILL";
+
     String OPE_PRODUCT_ASSEMBLY = "OPE_PRODUCT_ASSEMBLY";
 
     String OPE_PRODUCT_ASSEMBLY_B = "OPE_PRODUCT_ASSEMBLY_B";

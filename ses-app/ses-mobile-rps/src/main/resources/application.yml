@@ -33,15 +33,6 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
-  #编码格式
-  http:
-    encoding:
-      force: true
-      charset: UTF-8
-      enabled: true
-  freemarker:
-    check-template-location: false
-
   #REDIS集群配置
   redis:
     cluster:
@@ -54,7 +45,14 @@ spring:
         max-idle: 200      # 连接池中的最大空闲连接
         min-idle: 50       # 连接池中的最小空闲连接
 
-# Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
+  http:                                                                                                                 #编码格式
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+  freemarker:
+    check-template-location: false
+    #Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
 management:
   server:
     port: 48188
@@ -70,8 +68,7 @@ management:
     shutdown:                                                                                                           #设置单个端点（/shutdown）可用
       enabled: true
 
-# DUBBO 配置
-dubbo:
+dubbo:                                                                                                                  #DUBBO 配置
   application:
     id: @project.artifactId@
     name: @project.artifactId@
@@ -80,7 +77,7 @@ dubbo:
     logger: log4j
   registry:
     check: false                                                                                                        #注册中心不存在时，是否报错
-    protocol: zookeeper                                                                                                 #注册中心地址协议
+    group: ses
   scan:
     base-packages: com.redescooter.ses                                                                                  #服务暴露与发现消费所在的package
   provider:                                                                                                             #服务提供者缺省值配置
@@ -95,11 +92,11 @@ dubbo:
     threads: 300
     name: dubbo
 
-#MYBATIS配置
-mybatis:
+mybatis:                                                                                                                #MYBATIS配置
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl                                                               #打印sql
+
 mybatis-plus:                                                                                                           #mybaits-plus配置，此配置 不影响原始的mybatis
   mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml
   typeAliasesPackage: com.redescooter.ses.mobile.rps.vo,com.redescooter.ses.mobile.rps.dm
@@ -110,16 +107,15 @@ mybatis-plus:                                                                   
     logic-delete-value: 1                                                                                               #配置逻辑删除字段为0是未删除
     logic-not-delete-value: 0                                                                                           #刷新mapper 调试神器
     refresh-mapper: true                                                                                                #数据库大写下划线转换
-    #capital-mode: true
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
 
-# 阿里oss上传
-oss:
+oss:                                                                                                                    #阿里oss上传
   internalEndpoint: oss-cn-shanghai.aliyuncs.com
   accessKeyId: LTAIDUpZRjkFVCze
   secretAccesskey: lVM6XOqSdrdgJ3brHRcdSUOAVdxcS5
   defaultBucketName: rede
   publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
-  maxFileSize: 5242880
+  maxFileSize: 10485760
+

@@ -41,7 +41,6 @@ public interface Constant {
      */
     long AREA_TREE_ROOT_ID = 0;
 
-
     /**
      * 超级管理员用户名,原始adminRedE
      */
@@ -60,4 +59,6 @@ public interface Constant {
     Long ADMINUSERID = 1000000L;
 
     int AMOUNTP_ROPORTION = 100;
+
+
 }

@@ -63,7 +63,6 @@ public enum ExceptionCodeEnums {
 
     INSUFFICIENT_PERMISSIONS(10022, "用户暂无权限"),
 
-
     PURCHAS_IS_NOT_EXIST(10030, "采购单不存在"),
 
     PART_IS_NOT_HAVE_QC_TEMPLATE(10031, "部件暂无质检模板"),
@@ -71,6 +70,8 @@ public enum ExceptionCodeEnums {
     PART_IS_NOT_EXIST(10032, "部件不存在"),
 
     PART_QC_QTY_IS_EMPTY(10033, "部件质检数量为空"),
+
+    PART_TEMPLATE_IS_NOT_EXIST(10034,"部件模板不存在"),
 
     PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE(10035, "部件质检项不完整"),
 
@@ -95,6 +96,10 @@ public enum ExceptionCodeEnums {
     PRODUCT_IS_NOT_EXIST(10045, "商品不存在"),
 
     THE_PRODUCT_HAS_BEEN_ASSEMBLED(10046, "该商品已经组装完成"),
+
+    WAREHOUSE_IS_NOT_EXIST(10047, "仓库不存在"),
+
+    STOCK_STATUS(10048, "可用"),
     ;
 
     private int code;
