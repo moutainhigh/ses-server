@@ -40,7 +40,7 @@ public interface PurchasPutStroageService {
      * @return
      */
 
-    GeneralResult haveIdPartsResult(PurchasDetailsEnter enter);
+    HaveIdPartsResult haveIdPartsResult(PurchasDetailsEnter enter);
 
 
     /**

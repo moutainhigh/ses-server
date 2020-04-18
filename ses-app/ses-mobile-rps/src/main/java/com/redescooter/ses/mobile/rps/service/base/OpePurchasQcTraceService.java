@@ -20,3 +20,15 @@ public interface OpePurchasQcTraceService extends IService<OpePurchasQcTrace> {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+

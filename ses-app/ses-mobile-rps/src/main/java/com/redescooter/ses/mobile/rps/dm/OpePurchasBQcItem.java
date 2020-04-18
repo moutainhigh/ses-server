@@ -70,6 +70,13 @@ public class OpePurchasBQcItem implements Serializable {
     private Integer qcBatchTotal;
 
     /**
+     * 质检结果
+     */
+    @TableField(value = "qc_result")
+    @ApiModelProperty(value = "质检结果")
+    private String qcResult;
+
+    /**
      * 乐观锁
      */
     @TableField(value = "revision")
@@ -154,6 +161,8 @@ public class OpePurchasBQcItem implements Serializable {
     public static final String COL_SERIAL_NUM = "serial_num";
 
     public static final String COL_QC_BATCH_TOTAL = "qc_batch_total";
+
+    public static final String COL_QC_RESULT = "qc_result";
 
     public static final String COL_REVISION = "revision";
 

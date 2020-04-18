@@ -10,7 +10,7 @@
 						in_wait_wh_total AS inWaitWhTotal,
 						id as id
 					FROM
-						ope_purchas where  in_wait_wh_total >0 and dr=0
+						ope_purchas where  in_wait_wh_total >0 and dr=0 and status in (4,5)
 						     group by id,created_time,contract_no,in_wait_wh_total
 						     LIMIT #{startRow},#{pageSize}
     </select>
@@ -49,7 +49,7 @@
 				INNER JOIN ope_parts parts ON (purb.part_id = parts.id) and  parts.dr=0
 				WHERE
 					purb.purchas_id = #{id} and  purb.dr=0
-		</select>
+	</select>
     <select id="notIDPartsListResult"
             resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdPartsResult">
 			SELECT
