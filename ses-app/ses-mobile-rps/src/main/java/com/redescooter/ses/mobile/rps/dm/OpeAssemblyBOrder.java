@@ -47,14 +47,14 @@ public class OpeAssemblyBOrder implements Serializable {
      */
     @TableField(value = "user_id")
     @ApiModelProperty(value = "用户id")
-    private Long userId;
+    private Integer userId;
 
     /**
      * 租户id
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户id")
-    private Long tenantId;
+    private Integer tenantId;
 
     /**
      * 组装单id
@@ -110,7 +110,7 @@ public class OpeAssemblyBOrder implements Serializable {
      */
     @TableField(value = "in_wait_wh_qty")
     @ApiModelProperty(value = "待入库数")
-    private String inWaitWhQty;
+    private Integer inWaitWhQty;
 
     /**
      * 待质检数

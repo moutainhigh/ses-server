@@ -16,7 +16,7 @@
     <result column="en_name" jdbcType="VARCHAR" property="enName" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="wait_assembly_qty" jdbcType="INTEGER" property="waitAssemblyQty" />
-    <result column="in_wait_wh_qty" jdbcType="VARCHAR" property="inWaitWhQty" />
+    <result column="in_wait_wh_qty" jdbcType="INTEGER" property="inWaitWhQty" />
     <result column="lave_wait_qc_qty" jdbcType="INTEGER" property="laveWaitQcQty" />
     <result column="assembly_qty" jdbcType="INTEGER" property="assemblyQty" />
     <result column="complete_qty" jdbcType="INTEGER" property="completeQty" />
@@ -99,7 +99,7 @@
       </trim>
       <trim prefix="in_wait_wh_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.inWaitWhQty,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.inWaitWhQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="lave_wait_qc_qty = case" suffix="end,">
@@ -173,191 +173,6 @@
       #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
-  <update id="updateBatchSelective" parameterType="java.util.List">
-    <!--@mbg.generated-->
-    update ope_assembly_b_order
-    <trim prefix="set" suffixOverrides=",">
-      <trim prefix="dr = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.dr != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="`status` = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.status != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="user_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.userId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="tenant_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.tenantId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="assembly_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.assemblyId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="product_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.productId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="assemblyb_number = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.assemblybNumber != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.assemblybNumber,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="product_number = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.productNumber != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.productNumber,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="en_name = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.enName != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.enName,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="price = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.price != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.price,jdbcType=DECIMAL}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="wait_assembly_qty = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.waitAssemblyQty != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.waitAssemblyQty,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="in_wait_wh_qty = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.inWaitWhQty != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.inWaitWhQty,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="lave_wait_qc_qty = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.laveWaitQcQty != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.laveWaitQcQty,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="assembly_qty = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.assemblyQty != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyQty,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="complete_qty = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.completeQty != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.completeQty,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="revision = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.revision != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="created_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.createdBy != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="created_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.createdTime != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="updated_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.updatedBy != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="updated_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.updatedTime != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def1 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def1 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def2 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def2 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def3 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def3 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def5 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def5 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def6 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def6 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
-          </if>
-        </foreach>
-      </trim>
-    </trim>
-    where id in
-    <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id,jdbcType=BIGINT}
-    </foreach>
-  </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_assembly_b_order
@@ -371,7 +186,7 @@
         #{item.userId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT}, #{item.assemblyId,jdbcType=BIGINT}, 
         #{item.productId,jdbcType=BIGINT}, #{item.assemblybNumber,jdbcType=VARCHAR}, #{item.productNumber,jdbcType=VARCHAR}, 
         #{item.enName,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL}, #{item.waitAssemblyQty,jdbcType=INTEGER}, 
-        #{item.inWaitWhQty,jdbcType=VARCHAR}, #{item.laveWaitQcQty,jdbcType=INTEGER}, #{item.assemblyQty,jdbcType=INTEGER}, 
+        #{item.inWaitWhQty,jdbcType=INTEGER}, #{item.laveWaitQcQty,jdbcType=INTEGER}, #{item.assemblyQty,jdbcType=INTEGER}, 
         #{item.completeQty,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
@@ -389,7 +204,7 @@
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
       #{tenantId,jdbcType=BIGINT}, #{assemblyId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, 
       #{assemblybNumber,jdbcType=VARCHAR}, #{productNumber,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, 
-      #{price,jdbcType=DECIMAL}, #{waitAssemblyQty,jdbcType=INTEGER}, #{inWaitWhQty,jdbcType=VARCHAR}, 
+      #{price,jdbcType=DECIMAL}, #{waitAssemblyQty,jdbcType=INTEGER}, #{inWaitWhQty,jdbcType=INTEGER}, 
       #{laveWaitQcQty,jdbcType=INTEGER}, #{assemblyQty,jdbcType=INTEGER}, #{completeQty,jdbcType=INTEGER}, 
       #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
@@ -408,7 +223,7 @@
     en_name = #{enName,jdbcType=VARCHAR}, 
     price = #{price,jdbcType=DECIMAL}, 
     wait_assembly_qty = #{waitAssemblyQty,jdbcType=INTEGER}, 
-    in_wait_wh_qty = #{inWaitWhQty,jdbcType=VARCHAR}, 
+    in_wait_wh_qty = #{inWaitWhQty,jdbcType=INTEGER}, 
     lave_wait_qc_qty = #{laveWaitQcQty,jdbcType=INTEGER}, 
     assembly_qty = #{assemblyQty,jdbcType=INTEGER}, 
     complete_qty = #{completeQty,jdbcType=INTEGER}, 
@@ -545,7 +360,7 @@
         #{waitAssemblyQty,jdbcType=INTEGER},
       </if>
       <if test="inWaitWhQty != null">
-        #{inWaitWhQty,jdbcType=VARCHAR},
+        #{inWaitWhQty,jdbcType=INTEGER},
       </if>
       <if test="laveWaitQcQty != null">
         #{laveWaitQcQty,jdbcType=INTEGER},
@@ -626,7 +441,7 @@
         wait_assembly_qty = #{waitAssemblyQty,jdbcType=INTEGER},
       </if>
       <if test="inWaitWhQty != null">
-        in_wait_wh_qty = #{inWaitWhQty,jdbcType=VARCHAR},
+        in_wait_wh_qty = #{inWaitWhQty,jdbcType=INTEGER},
       </if>
       <if test="laveWaitQcQty != null">
         lave_wait_qc_qty = #{laveWaitQcQty,jdbcType=INTEGER},
