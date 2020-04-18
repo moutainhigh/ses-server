@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class WhetherIDResult extends GeneralResult {
+public class WhetherIdResult extends GeneralResult {
     @ApiModelProperty(value = "是否有ID")
-    private String idClass;
+    private Boolean idClass;
 }

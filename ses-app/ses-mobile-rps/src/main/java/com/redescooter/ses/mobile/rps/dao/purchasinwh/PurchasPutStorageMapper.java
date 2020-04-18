@@ -46,7 +46,7 @@ public interface PurchasPutStorageMapper {
       * @param
       * @return
       */
-     WhetherIDResult WhetherID(@Param("enter") PurchasDetailsEnter enter);
+     WhetherIdResult whetherId(@Param("enter") PurchasDetailsEnter enter);
      /**
       * 无ID入库信息
       *

@@ -29,7 +29,7 @@ public interface PurchasPutStroageService {
      * @param
      * @return
      */
-    WhetherIDResult whetherID(PurchasDetailsEnter enter);
+    WhetherIdResult whetherId(PurchasDetailsEnter enter);
     /*
      */
 

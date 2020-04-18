@@ -17,6 +17,7 @@ import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.base.*;
+import com.redescooter.ses.mobile.rps.service.base.impl.OpePurchasTraceService;
 import com.redescooter.ses.mobile.rps.service.purchasinwh.PurchasPutStroageService;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -33,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 @Slf4j
 @Service
@@ -53,7 +53,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
     private OpePartsService opePartsService;
 
     @Autowired
-   private OpePurchasTraceService opePurchasTraceService;
+    private OpePurchasTraceService opePurchasTraceService;
 
     @Autowired
     private OpeWhseService opeWhseService;
@@ -86,17 +86,10 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
     public PageResult<PurchasDetailsListResult> storageDetailsList(PurchasDetailsEnter enter) {
         int count = purchasPutStorageMapper.purchasDetailListCount(enter);
         if (count == 0) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
-        //入库单数据保存
-        List<OpeStockBill> saveOpeStockBillList = Lists.newArrayList();
-        if (count == 0) {
             return PageResult.createZeroRowResult(enter);
-
         }
-
         List<PurchasDetailsListResult> purchasDetailsListResults = purchasPutStorageMapper.storageDetailsResult(enter);
-        if (purchasDetailsListResults.size()<=0){
+        if (purchasDetailsListResults.size() <= 0) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         return PageResult.create(enter, count, purchasDetailsListResults);
@@ -104,8 +97,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
     @Transactional
     @Override
-    public WhetherIDResult whetherID(PurchasDetailsEnter enter) {
-        WhetherIDResult idResult = purchasPutStorageMapper.WhetherID(enter);
+    public WhetherIdResult whetherId(PurchasDetailsEnter enter) {
+        WhetherIdResult idResult = purchasPutStorageMapper.whetherId(enter);
         if (idResult == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
@@ -226,7 +219,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         saveNodeEnter.setMemo(null);
         this.savePurchasingNode(saveNodeEnter);
         HaveIdPartsResult haveIdPartsResult = purchasPutStorageMapper.haveIDPartsResult(enter);
-        if (haveIdPartsResult==null){
+        if (haveIdPartsResult == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         return haveIdPartsResult;
@@ -237,24 +230,23 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
     public NotIdPartsSucceedResult notIdPartsSucceedResult(NotIdEnter enter) {
 
         OpePurchasB opePurchasB = opePurchasBService.getById(enter.getId());
+        if (opePurchasB == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
         OpePurchas opePurchas = opePurchasService.getById(opePurchasB.getPurchasId());
+        if (opePurchas == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        //采购单状态更新
+        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.QC_COMPLETED.getValue()) && !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.RETURN.getValue())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        }
         //库存数据更新
         List<OpeStock> saveStockList = Lists.newArrayList();
         //入库单数据保存
         List<OpeStockBill> saveOpeStockBillList = Lists.newArrayList();
 
-        if (opePurchasB == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
-        //采购单状态更新
-
-        if (opePurchas == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
-        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.QC_COMPLETED.getValue()) && !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.RETURN.getValue())) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
-        }
-        // 封装 库存、入库单数据
+        //生成入库单、库存数据更新
         saveStockBill(enter, saveStockList, saveOpeStockBillList, opePurchas);
 
         //库存更新
@@ -298,7 +290,9 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         //拿取部件信息
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
         //查询批次号
-        OpePurchasBQcItem opePurchasBQcItem = opePurchasBQcItemService.getOne(new LambdaQueryWrapper<OpePurchasBQcItem>().eq(OpePurchasBQcItem::getPurchasBId, opePurchasB.getId()).eq(OpePurchasBQcItem::getPartId, opePurchasB.getPartId()));
+        OpePurchasBQcItem opePurchasBQcItem =
+                opePurchasBQcItemService.getOne(new LambdaQueryWrapper<OpePurchasBQcItem>().eq(OpePurchasBQcItem::getPurchasBId, opePurchasB.getId()).eq(OpePurchasBQcItem::getPartId,
+                        opePurchasB.getPartId()));
         if (opePurchasBQcItem == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
@@ -348,7 +342,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
     @Override
     public NotIdPartsResult notIdPartsResult(PurchasDetailsEnter enter) {
         NotIdPartsResult notIdPartsResult = purchasPutStorageMapper.notIDPartsListResult(enter);
-        if (notIdPartsResult==null){
+        if (notIdPartsResult == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }

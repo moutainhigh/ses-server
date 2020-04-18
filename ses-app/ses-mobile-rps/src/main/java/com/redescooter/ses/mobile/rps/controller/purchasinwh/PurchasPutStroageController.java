@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.rps.controller.purchasinwh;
 
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -25,12 +24,10 @@ public class PurchasPutStroageController{
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "采购仓库待入库列表", response = PutStorageResult.class)
-    @IgnoreLoginCheck
     public Response<PageResult<PutStorageResult>> purchasPutStroageList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response<>(purchasPutStroageService.purchasPutStroageList(enter));
     }
 
-    @IgnoreLoginCheck
     @PostMapping(value = "/detailsList")
     @ApiOperation(value = "采购仓库待入库部件列表", response = PurchasDetailsListResult.class)
     public Response<PageResult<PurchasDetailsListResult>> storageDetailsList(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
@@ -38,25 +35,24 @@ public class PurchasPutStroageController{
     }
 
 
-    @IgnoreLoginCheck
     @PostMapping(value = "/whetherId")
     @ApiOperation(value = "判断有无ID值", response = HaveIdPartsResult.class)
-    public Response<WhetherIDResult> whetherID(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
-        return new Response<>(purchasPutStroageService.whetherID(enter));
+    public Response<WhetherIdResult> whetherID(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
+        return new Response<>(purchasPutStroageService.whetherId(enter));
     }
-    @IgnoreLoginCheck
+
     @PostMapping(value = "/haveSucceed")
     @ApiOperation(value = "有ID入库成功接口", response = HaveIdPartsResult.class)
     public Response<HaveIdPartsResult> HaveIDPartsResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.haveIdPartsResult(enter));
     }
-    @IgnoreLoginCheck
+
     @PostMapping(value = "/notId")
     @ApiOperation(value = "无ID入库界面", response = NotIdPartsResult.class)
     public Response<NotIdPartsResult> NotIDPartsResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.notIdPartsResult(enter));
     }
-    @IgnoreLoginCheck
+
     @PostMapping(value = "/notIdSucceed")
     @ApiOperation(value = "无ID入库成功接口", response = PurchasDetailsListResult.class)
     public Response<NotIdPartsSucceedResult> NotIDPartsSucceedResult(@ModelAttribute @ApiParam("请求参数") NotIdEnter enter) {
