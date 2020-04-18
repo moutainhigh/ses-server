@@ -29,7 +29,7 @@ import com.redescooter.ses.mobile.rps.dm.OpePurchasBQcItem;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasPayment;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasQcTrace;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasTrace;
-import com.redescooter.ses.mobile.rps.dm.PartDetailDto;
+import com.redescooter.ses.mobile.rps.dm.RpsPartDetailDto;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
@@ -228,7 +228,7 @@ public class MaterialServiceImpl implements MaterialService {
             }
         }
         //查询退货部件价格
-        List<PartDetailDto> partDetailDtoList = materialServiceMapper.partDetailById(new ArrayList<>(partMap.keySet()));
+        List<RpsPartDetailDto> partDetailDtoList = materialServiceMapper.partDetailById(new ArrayList<>(partMap.keySet()));
         if (CollectionUtils.isEmpty(partDetailDtoList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
@@ -680,7 +680,7 @@ public class MaterialServiceImpl implements MaterialService {
                 .id(idAppService.getId(SequenceName.OPE_PURCHAS_B_QC_ITEM))
                 .dr(0)
                 .partId(opeParts.getId())
-                .purchasBId(purchasBQc.getId())
+                .purchasBId(enter.getId())
                 .purchasBQcId(purchasBQc.getId())
                 .qcBatchTotal(opeParts.getIdClass() == true ? 1 : enter.getQty())
                 .serialNum(opeParts.getIdClass() == true ? "REDE" + RandomUtil.BASE_CHAR_NUMBER : null)

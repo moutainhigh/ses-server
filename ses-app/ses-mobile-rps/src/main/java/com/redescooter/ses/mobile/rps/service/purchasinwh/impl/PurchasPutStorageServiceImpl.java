@@ -232,7 +232,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-        if (! partsData.getIdClass()){
+        if ( partsData.getIdClass()!=false){
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
@@ -277,14 +277,11 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         opeStockPurchasQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhsegetid.getId());
         OpeStock opeStockData = opeStockService.getOne(opeStockPurchasQueryWrapper);
         //查询批次号
-        OpePurchasBQcItem opePurchasBQcItem =
-                opePurchasBQcItemService.getOne(new LambdaQueryWrapper<OpePurchasBQcItem>().eq(OpePurchasBQcItem::getPurchasBId, opePurchasB.getId()).eq(OpePurchasBQcItem::getPartId,
-                        opePurchasB.getPartId()));
-        if (opePurchasBQcItem == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-
-        }
-
+        OpePurchasBQcItem opePurchasBQcItem = opePurchasBQcItemService.getOne(new LambdaQueryWrapper<OpePurchasBQcItem>()
+                .eq(OpePurchasBQcItem::getPurchasBId, opePurchasB.getId())
+                .eq(OpePurchasBQcItem::getPartId, opePurchasB.getPartId())
+                .eq(OpePurchasBQcItem::getQcResult, QcStatusEnums.PASS.getValue())
+        );
         OpePurchasBQc opePurchasBQc = opePurchasBQcService.getById(opePurchasBQcItem.getPurchasBQcId());
         if (opePurchasBQc == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
@@ -318,11 +315,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         saveNodeEnter.setEvent(PurchasingEventEnums.IN_PURCHASING_WH.getValue());
         saveNodeEnter.setMemo(null);
         this.savePurchasingNode(saveNodeEnter);
-        NotIdPartsSucceedResult notIdPartsSucceedResult = purchasPutStorageMapper.notIDPartsSucceedListResult(enter);
-        if (notIdPartsSucceedResult == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
-        return notIdPartsSucceedResult;
+
+        return purchasPutStorageMapper.notIDPartsSucceedListResult(enter);
     }
 
     @Transactional

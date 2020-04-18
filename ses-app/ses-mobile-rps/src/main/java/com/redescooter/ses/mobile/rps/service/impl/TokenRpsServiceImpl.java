@@ -42,7 +42,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class TokenServiceImpl implements TokenRpsService {
+public class TokenRpsServiceImpl implements TokenRpsService {
     @Autowired
     private JedisCluster jedisCluster;
     @Autowired

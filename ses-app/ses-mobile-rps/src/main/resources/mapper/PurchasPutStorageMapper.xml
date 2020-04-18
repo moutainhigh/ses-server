@@ -30,7 +30,7 @@
 					purb.id AS id,
 					parts.cn_Name AS cnName,
 					parts.parts_Number AS partsNumber,
-	                parts.class_id as classId
+	                parts.id_class as idClass,
 					purb.in_wait_wh_qty AS inWaitWhQty,
 					pur.contract_no AS contractNo
 				FROM

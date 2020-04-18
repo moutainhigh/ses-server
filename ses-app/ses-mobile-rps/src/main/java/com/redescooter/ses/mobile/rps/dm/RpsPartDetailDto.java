@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class PartDetailDto extends GeneralEnter {
+public class RpsPartDetailDto extends GeneralEnter {
 
     @ApiModelProperty(value = "部件Id")
     private Long partId;
