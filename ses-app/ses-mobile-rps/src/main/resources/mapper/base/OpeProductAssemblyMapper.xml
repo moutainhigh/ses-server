@@ -8,7 +8,7 @@
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="product_id" jdbcType="BIGINT" property="productId" />
     <result column="assembly_b_id" jdbcType="BIGINT" property="assemblyBId" />
-    <result column="assembly_id" jdbcType="INTEGER" property="assemblyId" />
+    <result column="assembly_id" jdbcType="BIGINT" property="assemblyId" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="product_serial_num" jdbcType="VARCHAR" property="productSerialNum" />
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
@@ -53,7 +53,7 @@
       </trim>
       <trim prefix="assembly_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyId,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="product_name = case" suffix="end,">
@@ -151,7 +151,7 @@
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.productId,jdbcType=BIGINT}, 
-        #{item.assemblyBId,jdbcType=BIGINT}, #{item.assemblyId,jdbcType=INTEGER}, #{item.productName,jdbcType=VARCHAR}, 
+        #{item.assemblyBId,jdbcType=BIGINT}, #{item.assemblyId,jdbcType=BIGINT}, #{item.productName,jdbcType=VARCHAR}, 
         #{item.productSerialNum,jdbcType=VARCHAR}, #{item.productType,jdbcType=VARCHAR}, 
         #{item.productCode,jdbcType=VARCHAR}, #{item.productionDate,jdbcType=TIMESTAMP}, 
         #{item.printFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
@@ -168,7 +168,7 @@
       created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{productId,jdbcType=BIGINT}, #{assemblyBId,jdbcType=BIGINT}, 
-      #{assemblyId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, #{productSerialNum,jdbcType=VARCHAR}, 
+      #{assemblyId,jdbcType=BIGINT}, #{productName,jdbcType=VARCHAR}, #{productSerialNum,jdbcType=VARCHAR}, 
       #{productType,jdbcType=VARCHAR}, #{productCode,jdbcType=VARCHAR}, #{productionDate,jdbcType=TIMESTAMP}, 
       #{printFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
@@ -179,7 +179,7 @@
     dr = #{dr,jdbcType=INTEGER}, 
     product_id = #{productId,jdbcType=BIGINT}, 
     assembly_b_id = #{assemblyBId,jdbcType=BIGINT}, 
-    assembly_id = #{assemblyId,jdbcType=INTEGER}, 
+    assembly_id = #{assemblyId,jdbcType=BIGINT}, 
     product_name = #{productName,jdbcType=VARCHAR}, 
     product_serial_num = #{productSerialNum,jdbcType=VARCHAR}, 
     product_type = #{productType,jdbcType=VARCHAR}, 
@@ -280,7 +280,7 @@
         #{assemblyBId,jdbcType=BIGINT},
       </if>
       <if test="assemblyId != null">
-        #{assemblyId,jdbcType=INTEGER},
+        #{assemblyId,jdbcType=BIGINT},
       </if>
       <if test="productName != null">
         #{productName,jdbcType=VARCHAR},
@@ -346,7 +346,7 @@
         assembly_b_id = #{assemblyBId,jdbcType=BIGINT},
       </if>
       <if test="assemblyId != null">
-        assembly_id = #{assemblyId,jdbcType=INTEGER},
+        assembly_id = #{assemblyId,jdbcType=BIGINT},
       </if>
       <if test="productName != null">
         product_name = #{productName,jdbcType=VARCHAR},

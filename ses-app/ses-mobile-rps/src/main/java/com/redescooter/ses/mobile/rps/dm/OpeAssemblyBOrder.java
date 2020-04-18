@@ -3,10 +3,10 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -20,20 +20,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_assembly_b_order")
-public class OpeAssemblyBOrder {
+public class OpeAssemblyBOrder implements Serializable {
     /**
      * 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键")
-    private Integer id;
+    private Long id;
 
     /**
      * 删除标识
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -70,6 +69,13 @@ public class OpeAssemblyBOrder {
     @TableField(value = "product_id")
     @ApiModelProperty(value = "产品id")
     private Long productId;
+
+    /**
+     * 子表编号
+     */
+    @TableField(value = "assemblyb_number")
+    @ApiModelProperty(value = "子表编号")
+    private String assemblybNumber;
 
     /**
      * 产品编码
@@ -112,6 +118,20 @@ public class OpeAssemblyBOrder {
     @TableField(value = "lave_wait_qc_qty")
     @ApiModelProperty(value = "待质检数")
     private Integer laveWaitQcQty;
+
+    /**
+     * 组装总数量
+     */
+    @TableField(value = "assembly_qty")
+    @ApiModelProperty(value = "组装总数量")
+    private Integer assemblyQty;
+
+    /**
+     * 完成组装数
+     */
+    @TableField(value = "complete_qty")
+    @ApiModelProperty(value = "完成组装数")
+    private Integer completeQty;
 
     /**
      * 乐观锁
@@ -183,6 +203,8 @@ public class OpeAssemblyBOrder {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -197,6 +219,8 @@ public class OpeAssemblyBOrder {
 
     public static final String COL_PRODUCT_ID = "product_id";
 
+    public static final String COL_ASSEMBLYB_NUMBER = "assemblyb_number";
+
     public static final String COL_PRODUCT_NUMBER = "product_number";
 
     public static final String COL_EN_NAME = "en_name";
@@ -208,6 +232,10 @@ public class OpeAssemblyBOrder {
     public static final String COL_IN_WAIT_WH_QTY = "in_wait_wh_qty";
 
     public static final String COL_LAVE_WAIT_QC_QTY = "lave_wait_qc_qty";
+
+    public static final String COL_ASSEMBLY_QTY = "assembly_qty";
+
+    public static final String COL_COMPLETE_QTY = "complete_qty";
 
     public static final String COL_REVISION = "revision";
 

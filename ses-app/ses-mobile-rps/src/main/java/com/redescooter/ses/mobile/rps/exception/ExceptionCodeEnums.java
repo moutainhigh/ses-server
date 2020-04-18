@@ -62,7 +62,6 @@ public enum ExceptionCodeEnums {
     ILLEGAL_DATA(10021, "数据非法"),
 
     INSUFFICIENT_PERMISSIONS(10022, "用户暂无权限"),
-    STATUS_ILLEGAL(10023, "状态非法"),
 
     PURCHAS_IS_NOT_EXIST(10030, "采购单不存在"),
 
@@ -84,10 +83,23 @@ public enum ExceptionCodeEnums {
 
     PRODUCT_IS_NOT_HAVE_FORMULA(10039, "商品暂无配方"),
 
-    WAREHOUSE_IS_NOT_EXIST(10040, "仓库不存在"),
+    PRODUCT_ASSEMBLY_TRACE_IS_NOT_EXIST(10040, "商品组装记录不存在"),
 
-    STOCK_STATUS(10041, "可用"),
+    PRODUCT_SERIAL_NUMBER_NON_REPEATABLE_PRINTING(10041, "序列号不可重复打印"),
 
+    PRINT_SERIAL_NUMBER_FAILURE(10042, "条码打印失败"),
+
+    PART_INFORMATION_IS_NOT_COMPLETE(10043, "部件信息不完整"),
+
+    PART_QTY_IS_WRONG(10044, "部件数量不正确"),
+
+    PRODUCT_IS_NOT_EXIST(10045, "商品不存在"),
+
+    THE_PRODUCT_HAS_BEEN_ASSEMBLED(10046, "该商品已经组装完成"),
+
+    WAREHOUSE_IS_NOT_EXIST(10047, "仓库不存在"),
+
+    STOCK_STATUS(10048, "可用"),
     ;
 
     private int code;

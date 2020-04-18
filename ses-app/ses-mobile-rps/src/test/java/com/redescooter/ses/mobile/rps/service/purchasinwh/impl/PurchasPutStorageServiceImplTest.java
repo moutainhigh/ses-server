@@ -2,7 +2,6 @@ package com.redescooter.ses.mobile.rps.service.purchasinwh.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.mobile.rps.SesMobileRpsApplicationTests;
 import com.redescooter.ses.mobile.rps.service.purchasinwh.PurchasPutStroageService;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdEnter;
 import lombok.extern.slf4j.Slf4j;

@@ -854,7 +854,9 @@ public class BomRosServiceImpl implements BomRosService {
 
         }
         //质检项结果集数据保存
-        opeProductQcTemplateBService.saveOrUpdateBatch(saveOpeProductQcTemplateBList);
+        if (CollectionUtils.isEmpty(saveOpeProductQcTemplateBList)){
+            opeProductQcTemplateBService.saveOrUpdateBatch(saveOpeProductQcTemplateBList);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -1191,8 +1193,13 @@ public class BomRosServiceImpl implements BomRosService {
                                              List<QcResultEnter>> qcResultEnterMap, List<OpePartDraftQcTemplate> partQcTemplateList) {
 
         for (QcItemTemplateEnter qcItemTemplateEnter : qcResultEnterMap.keySet()) {
-            int passResult = (int) qcResultEnterMap.get(qcItemTemplateEnter).stream().filter(QcResultEnter::getPassFlag).count();
-            if (passResult!=1){
+            Integer count = 0;
+            for (QcResultEnter qcResultEnter : qcResultEnterMap.get(qcItemTemplateEnter)) {
+                if (qcResultEnter.getPassFlag()) {
+                    count++;
+                }
+            }
+            if (count!=1){
                 throw new SesWebRosException(ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getCode(),ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
             }
         }
