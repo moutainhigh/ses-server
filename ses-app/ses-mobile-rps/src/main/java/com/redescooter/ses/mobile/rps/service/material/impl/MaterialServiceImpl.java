@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.QcTypeEnums;
@@ -24,8 +26,10 @@ import com.redescooter.ses.mobile.rps.dm.OpePurchas;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasBQc;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasBQcItem;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasPayment;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasQcTrace;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasTrace;
+import com.redescooter.ses.mobile.rps.dm.PartDetailDto;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
@@ -52,6 +56,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -101,6 +106,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     private OpePurchasQcTraceService opePurchasQcTraceService;
+
+    @Autowired
+    private OpePurchasPaymentService opePurchasPaymentService;
 
     @Reference
     private IdAppService idAppService;
@@ -165,7 +173,149 @@ public class MaterialServiceImpl implements MaterialService {
      */
     @Override
     public GeneralResult returnedCompleted(ReturnedCompletedEnter enter) {
-        return null;
+        OpePurchasB opePurchasB = opePurchasBService.getById(enter.getId());
+        if (opePurchasB == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        OpePurchas opePurchas = opePurchasService.getById(opePurchasB.getId());
+        if (opePurchas == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        }
+        //采购单原始总价
+        BigDecimal originalPrice = opePurchas.getTotalPrice();
+
+        //查询采购条目
+        QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
+        opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, enter.getId());
+        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
+        List<OpePurchasB> opePurchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
+
+        List<Long> opePurchasBIds = Lists.newArrayList();
+        opePurchasBList.forEach(item -> {
+            opePurchasBIds.add(item.getId());
+        });
+
+        //查询qc 信息
+        QueryWrapper<OpePurchasBQc> opePurchasBQcQueryWrapper = new QueryWrapper<>();
+        opePurchasBQcQueryWrapper.in(OpePurchasBQc.COL_PURCHAS_B_ID, opePurchasBIds);
+        opePurchasBQcQueryWrapper.eq(OpePurchasBQc.COL_DR, 0);
+        opePurchasBQcQueryWrapper.ne(OpePurchasBQc.COL_FAIL_COUNT, 0);
+        List<OpePurchasBQc> purchasBQcList = opePurchasBQcService.list(opePurchasBQcQueryWrapper);
+
+        if (CollectionUtils.isEmpty(purchasBQcList)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getCode(),
+                    ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getMessage());
+        }
+
+        purchasBQcList.forEach(item -> {
+            if (item.getFailCount() == 0) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.QC_PASS_WITHOUT_RETURN.getCode(), ExceptionCodeEnums.QC_PASS_WITHOUT_RETURN.getMessage());
+            }
+        });
+
+        int returnTotal = 0;
+        Map<Long, Integer> partMap = Maps.newHashMap();
+        for (OpePurchasBQc item : purchasBQcList) {
+            for (OpePurchasB purchasB : opePurchasBList) {
+                if (item.getPurchasBId().equals(purchasB.getId()) && item.getFailCount() != 0) {
+                    returnTotal += item.getFailCount();
+                    partMap.put(item.getPartsId(), item.getFailCount());
+                    item.setTotalQualityInspected(item.getTotalQualityInspected() - item.getFailCount());
+                }
+            }
+        }
+        //查询退货部件价格
+        List<PartDetailDto> partDetailDtoList = materialServiceMapper.partDetailById(new ArrayList<>(partMap.keySet()));
+        if (CollectionUtils.isEmpty(partDetailDtoList)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
+        Map<Long, BigDecimal> priceMap = Maps.newHashMap();
+        partDetailDtoList.forEach(part -> {
+            partMap.forEach((key, value) -> {
+                if (key.equals(part.getPartId())) {
+                    priceMap.put(key, new BigDecimal(value).multiply(part.getPrice()));
+                }
+            });
+        });
+
+        //对采购子订单 价格、数量 处理
+        BigDecimal retureTotalPrice = BigDecimal.ZERO;
+        for (OpePurchasB item : opePurchasBList) {//数量处理
+            for (Map.Entry<Long, Integer> e : partMap.entrySet()) {
+                Long key = e.getKey();
+                Integer value = e.getValue();
+                if (item.getPartId().equals(key)) {
+                    item.setTotalCount(item.getTotalCount() - value);
+                    item.setLaveWaitQcQty(item.getLaveWaitQcQty() - value);
+                }
+            }
+
+            //价格处理
+            for (Map.Entry<Long, BigDecimal> entry : priceMap.entrySet()) {
+                Long priceKey = entry.getKey();
+                BigDecimal priceValue = entry.getValue();
+                if (item.getPartId().equals(priceKey)) {
+                    item.setTotalPrice(item.getTotalPrice().subtract(priceValue));
+                    retureTotalPrice = retureTotalPrice.add(priceValue);
+                }
+            }
+
+            item.setQcStatus(QcStatusEnums.PASS.getValue());
+            item.setUpdatedBy(enter.getUserId());
+            item.setUpdatedTime(new Date());
+        }
+
+        //QC子表更新
+        purchasBQcList.forEach(item -> {
+            item.setFailCount(0);
+            item.setTotalQualityInspected(item.getPassCount());
+            item.setStatus(QcStatusEnums.PASS.getValue());
+            item.setUpdatedBy(enter.getUserId());
+            item.setUpdatedTime(new Date());
+        });
+
+        //查询支付信息
+        QueryWrapper<OpePurchasPayment> opePurchasPaymentQueryWrapper = new QueryWrapper<>();
+        opePurchasPaymentQueryWrapper.eq(OpePurchasPayment.COL_PURCHAS_ID, opePurchas.getId());
+        opePurchasPaymentQueryWrapper.eq(OpePurchasPayment.COL_DR, 0);
+        OpePurchasPayment purchasPayment = opePurchasPaymentService.getOne(opePurchasPaymentQueryWrapper);
+        if (purchasPayment == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
+        }
+        purchasPayment.setAmount(purchasPayment.getAmount().subtract(retureTotalPrice));
+        //更新付款价格
+        opePurchasPaymentService.updateById(purchasPayment);
+
+        //总订单 数据进行更新
+        opePurchas.setTotalQty(opePurchas.getTotalQty() - returnTotal);
+        opePurchas.setLaveWaitQcTotal(opePurchas.getLaveWaitQcTotal() - returnTotal);
+        opePurchas.setTotalPrice(opePurchas.getTotalPrice().subtract(retureTotalPrice));
+        opePurchas.setStatus(PurchasingStatusEnums.RETURN.getValue());
+        opePurchas.setUpdatedBy(enter.getUserId());
+        opePurchas.setUpdatedTime(new Date());
+        //采购单更新
+        opePurchasService.updateById(opePurchas);
+
+        //子表数据更新
+        opePurchasBService.updateBatchById(opePurchasBList);
+        //Qc 质检通过
+        opePurchasBQcService.updateBatchById(purchasBQcList);
+
+        String memo = new StringBuffer(originalPrice.toString() + CurrencyUnitEnums.FR.getName()).append(",").append(retureTotalPrice.toString() + CurrencyUnitEnums.FR.getName()).toString();
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opePurchas.getId());
+        saveNodeEnter.setStatus(PurchasingStatusEnums.RETURN.getValue());
+        saveNodeEnter.setEvent(PurchasingEventEnums.RETURN.getValue());
+        saveNodeEnter.setMemo(memo);
+        this.saveNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**

@@ -2,10 +2,12 @@ package com.redescooter.ses.mobile.rps.dao.material;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.mobile.rps.dm.PartDetailDto;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcListResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,9 +65,16 @@ public interface MaterialServiceMapper {
     List<MaterialDetailResult> qcFailDetail(MaterialQcDetailEnter enter);
 
     /**
-     *
      * @param enter
      * @return
      */
     Integer qcFailType(GeneralEnter enter);
+
+    /**
+     * 查询产品价格
+     *
+     * @param longs
+     * @return
+     */
+    List<PartDetailDto> partDetailById(ArrayList<Long> longs);
 }
