@@ -168,6 +168,11 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         QueryWrapper<OpeWhse> opeWhse = new QueryWrapper<>();
         opeWhse.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
         OpeWhse opeWhsegetid = opeWhseService.getOne(opeWhse);
+        if (opeWhsegetid == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+
+        }
+
         QueryWrapper<OpeStock> opeStockPurchasQueryWrapper = new QueryWrapper<>();
         opeStockPurchasQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opePurchasB.getPartId());
         opeStockPurchasQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhsegetid.getId());
