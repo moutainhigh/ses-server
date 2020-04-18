@@ -34,13 +34,6 @@ public class PurchasPutStroageController{
         return new Response<>(purchasPutStroageService.storageDetailsList(enter));
     }
 
-
-    @PostMapping(value = "/whetherId")
-    @ApiOperation(value = "判断有无ID值", response = HaveIdPartsResult.class)
-    public Response<WhetherIdResult> whetherID(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
-        return new Response<>(purchasPutStroageService.whetherId(enter));
-    }
-
     @PostMapping(value = "/haveSucceed")
     @ApiOperation(value = "有ID入库成功接口", response = HaveIdPartsResult.class)
     public Response<HaveIdPartsResult> HaveIDPartsResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {

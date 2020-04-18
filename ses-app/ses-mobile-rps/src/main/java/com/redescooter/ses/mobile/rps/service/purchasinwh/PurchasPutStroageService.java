@@ -23,15 +23,7 @@ public interface PurchasPutStroageService {
      */
     PageResult<PurchasDetailsListResult> storageDetailsList(PurchasDetailsEnter enter);
 
-    /**
-     * 有无ID
-     *
-     * @param
-     * @return
-     */
-    WhetherIdResult whetherId(PurchasDetailsEnter enter);
-    /*
-     */
+
 
     /**
      * 有ID入库成功信息

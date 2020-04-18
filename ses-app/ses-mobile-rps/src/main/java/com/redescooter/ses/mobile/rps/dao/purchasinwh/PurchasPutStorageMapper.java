@@ -41,13 +41,6 @@ public interface PurchasPutStorageMapper {
       */
      int purchasDetailListCount(PurchasDetailsEnter enter);
      /**
-      *有无ID
-      *
-      * @param
-      * @return
-      */
-     WhetherIdResult whetherId(@Param("enter") PurchasDetailsEnter enter);
-     /**
       * 无ID入库信息
       *
       * @param
