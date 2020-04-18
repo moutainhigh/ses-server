@@ -131,7 +131,7 @@ public class OpePurchasB implements Serializable {
      */
     @TableField(value = "created_by")
     @ApiModelProperty(value = "创建人")
-    private Long createdBy;
+    private Integer createdBy;
 
     /**
      * 创建时间

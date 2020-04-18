@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.preparematerial;
 
+import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -37,4 +38,11 @@ public interface PrepareMaterialService {
      * @return
      */
     GeneralResult save(SavePrepareMaterialEnter enter);
+
+    /**
+     * 保存节点
+     *
+     * @return
+     */
+    GeneralResult saveAllocateNode(SaveNodeEnter enter);
 }

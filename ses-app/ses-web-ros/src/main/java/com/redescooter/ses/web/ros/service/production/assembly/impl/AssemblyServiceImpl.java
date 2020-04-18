@@ -1445,6 +1445,9 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .status(AssemblyStatusEnums.PENDING.getValue())
                 .assemblyNumber("REDE" + RandomUtil.randomNumbers(7))
                 .totalQty(productTotal)
+                .waitAssemblyTotal(productTotal)
+                .laveWaitQcTotal(productTotal)
+                .laveWaitQcTotal(productTotal)
                 .totalPrice(null)
                 .processingFee(null)
                 .processingFeeRatio(null)
@@ -1583,6 +1586,9 @@ public class AssemblyServiceImpl implements AssemblyService {
             for (ProductionPartsEnter product : productList) {
                 if (item.getProductId().equals(product.getId())) {
                     item.setAssemblyQty(product.getQty());
+                    item.setWaitAssemblyQty(product.getQty());
+                    item.setLaveWaitQcQty(product.getQty());
+                    item.setInWaitWhQty(product.getQty());
                 }
             }
         }

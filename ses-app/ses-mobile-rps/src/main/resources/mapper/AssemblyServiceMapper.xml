@@ -8,7 +8,7 @@
                asso.wait_assembly_total as waitAssemblyTotal
         from ope_assembly_order asso
         where asso.dr=0
-        and asso.waitAssemblyTotal!=0
+        and asso.wait_assembly_total!=0
         and asso.status=3
         order by  asso.created_time asc
         limit #{startRow},#{pageSize}
@@ -35,7 +35,8 @@
                productb.parts_qty as qty
         from ope_parts_product_b productb
                  inner join ope_parts parts on productb.parts_id = parts.id and productb.dr = 0
+                 left join ope_assembly_b_order assb on assb.product_id = productb.parts_product_id and assb.dr = 0
         where productb.dr = 0
-          and productb.parts_product_id =#{id}
+          and assb.id = #{id}
     </select>
 </mapper>

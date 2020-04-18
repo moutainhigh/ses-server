@@ -7,8 +7,8 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="user_id" jdbcType="BIGINT" property="userId" />
-    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="tenant_id" jdbcType="INTEGER" property="tenantId" />
     <result column="assembly_id" jdbcType="BIGINT" property="assemblyId" />
     <result column="product_id" jdbcType="BIGINT" property="productId" />
     <result column="assemblyb_number" jdbcType="VARCHAR" property="assemblybNumber" />
@@ -16,7 +16,7 @@
     <result column="en_name" jdbcType="VARCHAR" property="enName" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="wait_assembly_qty" jdbcType="INTEGER" property="waitAssemblyQty" />
-    <result column="in_wait_wh_qty" jdbcType="VARCHAR" property="inWaitWhQty" />
+    <result column="in_wait_wh_qty" jdbcType="INTEGER" property="inWaitWhQty" />
     <result column="lave_wait_qc_qty" jdbcType="INTEGER" property="laveWaitQcQty" />
     <result column="assembly_qty" jdbcType="INTEGER" property="assemblyQty" />
     <result column="complete_qty" jdbcType="INTEGER" property="completeQty" />
@@ -54,12 +54,12 @@
       </trim>
       <trim prefix="user_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="tenant_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="assembly_id = case" suffix="end,">
@@ -99,7 +99,7 @@
       </trim>
       <trim prefix="in_wait_wh_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.inWaitWhQty,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.inWaitWhQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="lave_wait_qc_qty = case" suffix="end,">
@@ -183,10 +183,10 @@
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.userId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT}, #{item.assemblyId,jdbcType=BIGINT}, 
+        #{item.userId,jdbcType=INTEGER}, #{item.tenantId,jdbcType=INTEGER}, #{item.assemblyId,jdbcType=BIGINT}, 
         #{item.productId,jdbcType=BIGINT}, #{item.assemblybNumber,jdbcType=VARCHAR}, #{item.productNumber,jdbcType=VARCHAR}, 
         #{item.enName,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL}, #{item.waitAssemblyQty,jdbcType=INTEGER}, 
-        #{item.inWaitWhQty,jdbcType=VARCHAR}, #{item.laveWaitQcQty,jdbcType=INTEGER}, #{item.assemblyQty,jdbcType=INTEGER}, 
+        #{item.inWaitWhQty,jdbcType=INTEGER}, #{item.laveWaitQcQty,jdbcType=INTEGER}, #{item.assemblyQty,jdbcType=INTEGER}, 
         #{item.completeQty,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
@@ -201,10 +201,10 @@
       assembly_qty, complete_qty, revision, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
-      #{tenantId,jdbcType=BIGINT}, #{assemblyId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
+      #{tenantId,jdbcType=INTEGER}, #{assemblyId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, 
       #{assemblybNumber,jdbcType=VARCHAR}, #{productNumber,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, 
-      #{price,jdbcType=DECIMAL}, #{waitAssemblyQty,jdbcType=INTEGER}, #{inWaitWhQty,jdbcType=VARCHAR}, 
+      #{price,jdbcType=DECIMAL}, #{waitAssemblyQty,jdbcType=INTEGER}, #{inWaitWhQty,jdbcType=INTEGER}, 
       #{laveWaitQcQty,jdbcType=INTEGER}, #{assemblyQty,jdbcType=INTEGER}, #{completeQty,jdbcType=INTEGER}, 
       #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
@@ -214,8 +214,8 @@
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
     `status` = #{status,jdbcType=VARCHAR}, 
-    user_id = #{userId,jdbcType=BIGINT}, 
-    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    user_id = #{userId,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=INTEGER}, 
     assembly_id = #{assemblyId,jdbcType=BIGINT}, 
     product_id = #{productId,jdbcType=BIGINT}, 
     assemblyb_number = #{assemblybNumber,jdbcType=VARCHAR}, 
@@ -223,7 +223,7 @@
     en_name = #{enName,jdbcType=VARCHAR}, 
     price = #{price,jdbcType=DECIMAL}, 
     wait_assembly_qty = #{waitAssemblyQty,jdbcType=INTEGER}, 
-    in_wait_wh_qty = #{inWaitWhQty,jdbcType=VARCHAR}, 
+    in_wait_wh_qty = #{inWaitWhQty,jdbcType=INTEGER}, 
     lave_wait_qc_qty = #{laveWaitQcQty,jdbcType=INTEGER}, 
     assembly_qty = #{assemblyQty,jdbcType=INTEGER}, 
     complete_qty = #{completeQty,jdbcType=INTEGER}, 
@@ -333,10 +333,10 @@
         #{status,jdbcType=VARCHAR},
       </if>
       <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
+        #{userId,jdbcType=INTEGER},
       </if>
       <if test="tenantId != null">
-        #{tenantId,jdbcType=BIGINT},
+        #{tenantId,jdbcType=INTEGER},
       </if>
       <if test="assemblyId != null">
         #{assemblyId,jdbcType=BIGINT},
@@ -360,7 +360,7 @@
         #{waitAssemblyQty,jdbcType=INTEGER},
       </if>
       <if test="inWaitWhQty != null">
-        #{inWaitWhQty,jdbcType=VARCHAR},
+        #{inWaitWhQty,jdbcType=INTEGER},
       </if>
       <if test="laveWaitQcQty != null">
         #{laveWaitQcQty,jdbcType=INTEGER},
@@ -414,10 +414,10 @@
         `status` = #{status,jdbcType=VARCHAR},
       </if>
       <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
+        user_id = #{userId,jdbcType=INTEGER},
       </if>
       <if test="tenantId != null">
-        tenant_id = #{tenantId,jdbcType=BIGINT},
+        tenant_id = #{tenantId,jdbcType=INTEGER},
       </if>
       <if test="assemblyId != null">
         assembly_id = #{assemblyId,jdbcType=BIGINT},
@@ -441,7 +441,7 @@
         wait_assembly_qty = #{waitAssemblyQty,jdbcType=INTEGER},
       </if>
       <if test="inWaitWhQty != null">
-        in_wait_wh_qty = #{inWaitWhQty,jdbcType=VARCHAR},
+        in_wait_wh_qty = #{inWaitWhQty,jdbcType=INTEGER},
       </if>
       <if test="laveWaitQcQty != null">
         lave_wait_qc_qty = #{laveWaitQcQty,jdbcType=INTEGER},

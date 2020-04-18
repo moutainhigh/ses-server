@@ -83,13 +83,6 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public PageResult<WaitAssemblyListResult> list(PageEnter enter) {
-//        return PageResult.create(enter,1, Lists.newArrayList(WaitAssemblyListResult.builder()
-//                .id(2312312L)
-//                .assemblyN("eqwewqeqw")
-//                .createdTime(new Date())
-//                .waitAssemblyTotal(0)
-//                .build()));
-
         int count = opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>().ne(OpeAssemblyOrder::getWaitAssemblyTotal, 0).eq(OpeAssemblyOrder::getStatus,
                 AssemblyStatusEnums.ASSEMBLING.getValue()));
         if (count == 0) {
@@ -106,8 +99,8 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public PageResult<WaitAssemblyDetailResult> detail(AssemblyDetailEnter enter) {
-        OpeAssemblyBOrder opeAssemblyBOrder = opeAssemblyBOrderService.getById(enter.getId());
-        if (opeAssemblyBOrder == null) {
+        OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(enter.getId());
+        if (opeAssemblyOrder == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
         }
 
@@ -115,14 +108,6 @@ public class AssemblyServiceImpl implements AssemblyService {
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-
-//        return PageResult.create(enter, 1, Lists.newArrayList(WaitAssemblyDetailResult.builder()
-//                .id(2312312L)
-//                .assemblyId(43432L)
-//                .productCnName("电机")
-//                .productN("dasdasdad")
-//                .waitAssemblyQty(0)
-//                .build()));
         return PageResult.create(enter, count, assemblyServiceMapper.detailList(enter));
     }
 
@@ -138,13 +123,6 @@ public class AssemblyServiceImpl implements AssemblyService {
         if (opeAssemblyBOrder == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
         }
-//        return Lists.newArrayList(ProductFormulaResult.builder()
-//                .id(321312L)
-//                .partCnName("轮胎")
-//                .partId(423432L)
-//                .partN("dadad")
-//                .qty(0)
-//                .build());
         return assemblyServiceMapper.formulaByAssemblyBId(enter.getId());
     }
 
@@ -159,7 +137,6 @@ public class AssemblyServiceImpl implements AssemblyService {
     public SaveFormulaDateResult save(SaveFormulaDateEnter enter) {
         //商品组装部件
         List<OpeProductAssemblyB> saveProductAssemblyBList = new ArrayList<>();
-
 
         List<SaveFormulaPartListEnter> saveFormulaPartListEnterList = new ArrayList<>();
         //入参解析
@@ -198,10 +175,10 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //入参部件验证
         partsProductBList.forEach(item -> {
-            if (!partListMap.keySet().contains(item.getId())) {
+            if (!partListMap.keySet().contains(item.getPartsId())) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_INFORMATION_IS_NOT_COMPLETE.getCode(), ExceptionCodeEnums.PART_INFORMATION_IS_NOT_COMPLETE.getMessage());
             }
-            if (partListMap.get(item.getId()).equals(item.getPartsQty())) {
+            if (!partListMap.get(item.getPartsId()).equals(item.getPartsQty())) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
             }
         });
@@ -244,6 +221,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .productId(opeAssemblyBOrder.getProductId())
                 .assemblyBId(opeAssemblyBOrder.getId())
                 .assemblyId(opeAssemblyBOrder.getAssemblyId())
+                .productSerialNum(RandomUtil.BASE_CHAR_NUMBER)
                 .productName(partsProduct.getCnName())
                 .productSerialNum(RandomUtil.BASE_CHAR)
                 .productType(partsProduct.getProductType().toString())
@@ -293,14 +271,6 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .productName(partsProduct.getCnName())
                 .serialNum(opeProductAssembly.getProductSerialNum())
                 .build();
-
-//        return SaveFormulaDateResult.builder()
-//                .id(3432L)
-//                .productN("dasasda")
-//                .createdTime(new Date())
-//                .productName("REDE——2W")
-//                .serialNum("dasasdada")
-//                .build();
     }
 
     /**

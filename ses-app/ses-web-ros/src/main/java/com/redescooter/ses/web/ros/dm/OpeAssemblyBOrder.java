@@ -110,7 +110,7 @@ public class OpeAssemblyBOrder implements Serializable {
      */
     @TableField(value = "in_wait_wh_qty")
     @ApiModelProperty(value = "待入库数")
-    private String inWaitWhQty;
+    private Integer inWaitWhQty;
 
     /**
      * 待质检数

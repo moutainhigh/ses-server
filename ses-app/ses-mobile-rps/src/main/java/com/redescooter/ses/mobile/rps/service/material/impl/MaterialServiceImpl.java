@@ -30,7 +30,7 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.base.*;
-
+import com.redescooter.ses.mobile.rps.service.base.impl.OpePurchasTraceService;
 import com.redescooter.ses.mobile.rps.service.material.MaterialService;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
@@ -43,7 +43,6 @@ import com.redescooter.ses.mobile.rps.vo.materialqc.ReturnedCompletedEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -428,7 +427,7 @@ public class MaterialServiceImpl implements MaterialService {
         OpePurchasBQc purchasBQc = buildOpePurchasBQc(enter, opeParts, opePurchasB, qcResult);
         opePurchasBQcService.saveOrUpdate(purchasBQc);
         //保存质检条目
-        OpePurchasBQcItem purchasBQcItem = BuildOpePurchasBQcItem(enter, opeParts, purchasBQc);
+        OpePurchasBQcItem purchasBQcItem = buildOpePurchasBQcItem(enter, opeParts, purchasBQc, qcResult);
         opePurchasBQcItemService.save(purchasBQcItem);
 
         //保存质检项记录
@@ -526,7 +525,7 @@ public class MaterialServiceImpl implements MaterialService {
         return purchasBQc;
     }
 
-    private OpePurchasBQcItem BuildOpePurchasBQcItem(SaveMaterialQcEnter enter, OpeParts opeParts, OpePurchasBQc purchasBQc) {
+    private OpePurchasBQcItem buildOpePurchasBQcItem(SaveMaterialQcEnter enter, OpeParts opeParts, OpePurchasBQc purchasBQc, Boolean qcResult) {
         return OpePurchasBQcItem.builder()
                 .id(idAppService.getId(SequenceName.OPE_PURCHAS_B_QC_ITEM))
                 .dr(0)
@@ -535,6 +534,7 @@ public class MaterialServiceImpl implements MaterialService {
                 .purchasBQcId(purchasBQc.getId())
                 .qcBatchTotal(opeParts.getIdClass() == true ? 1 : enter.getQty())
                 .serialNum(opeParts.getIdClass() == true ? "REDE" + RandomUtil.BASE_CHAR_NUMBER : null)
+                .qcResult(qcResult == true ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue())
                 .revision(0)
                 .createdBy(enter.getUserId())
                 .createdTime(new Date())
