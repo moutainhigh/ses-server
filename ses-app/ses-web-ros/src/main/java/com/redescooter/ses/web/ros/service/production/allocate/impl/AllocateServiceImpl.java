@@ -627,6 +627,7 @@ public class AllocateServiceImpl implements AllocateService {
                 .tenantId(0L)
                 .allocateId(allocateId)
                 .partId(item.getMaterielProductId())
+                .materielProductType(BomCommonTypeEnums.PARTS.getValue())
                 .materielProductId(0L)
                 .materielProductType(null)
                 .total(part.getQty())

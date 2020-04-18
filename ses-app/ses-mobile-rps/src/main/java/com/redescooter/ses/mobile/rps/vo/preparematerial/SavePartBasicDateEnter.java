@@ -27,6 +27,9 @@ public class SavePartBasicDateEnter extends GeneralEnter {
     @ApiModelProperty(value = "部件Id")
     private Long partId;
 
+    @ApiModelProperty(value = "部件数量默认传1，根据idclass 判断")
+    private Integer qty;
+
     @ApiModelProperty(value = "序列号")
     private String serialN;
 }

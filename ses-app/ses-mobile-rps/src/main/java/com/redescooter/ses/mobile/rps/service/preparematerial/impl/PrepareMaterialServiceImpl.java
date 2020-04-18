@@ -7,6 +7,9 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.enums.production.ProductContractEnums;
+import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderEventEnums;
+import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
+import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -15,6 +18,7 @@ import com.redescooter.ses.mobile.rps.dao.preparematerial.PrepareMaterialService
 import com.redescooter.ses.mobile.rps.dm.OpeAllocate;
 import com.redescooter.ses.mobile.rps.dm.OpeAllocateB;
 import com.redescooter.ses.mobile.rps.dm.OpeAllocateBTrace;
+import com.redescooter.ses.mobile.rps.dm.OpeAllocateTrace;
 import com.redescooter.ses.mobile.rps.dm.OpeParts;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
@@ -22,6 +26,7 @@ import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateService;
 import com.redescooter.ses.mobile.rps.service.base.OpePartsService;
+import com.redescooter.ses.mobile.rps.service.base.impl.OpeAllocateTraceService;
 import com.redescooter.ses.mobile.rps.service.preparematerial.PrepareMaterialService;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult;
@@ -30,10 +35,13 @@ import com.redescooter.ses.mobile.rps.vo.preparematerial.SavePartBasicDateEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.SavePrepareMaterialEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.SavePrepareMaterialPartListEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import jdk.nashorn.internal.ir.annotations.Reference;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -60,6 +68,9 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
     private OpeAllocateService opeAllocateService;
 
     @Autowired
+    private OpeAllocateTraceService opeAllocateTraceService;
+
+    @Autowired
     private OpePartsService opePartsService;
 
     @Autowired
@@ -76,12 +87,6 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      */
     @Override
     public PageResult<PrepareMaterialListResult> list(PageEnter enter) {
-//        return PageResult.create(enter,1, Lists.newArrayList(PrepareMaterialListResult.builder()
-//                .id(1312321L)
-//                .allocatN("dasdasda")
-//                .createdTime(new Date())
-//                .preparationWaitTotal(0)
-//                .build()));
         int count = prepareMaterialServiceMapper.listCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -97,13 +102,6 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      */
     @Override
     public PageResult<PrepareMaterialDetailResult> detail(PrepareMaterialDetailEnter enter) {
-//        return PageResult.create(enter, 1, Lists.newArrayList(PrepareMaterialDetailResult.builder()
-//                .id(423432L)
-//                .partId(443432L)
-//                .partCnName("轮胎")
-//                .preparationWaitQty(0)
-//                .build()));
-
         int count = prepareMaterialServiceMapper.detailListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -162,28 +160,28 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
 
-        //备料批次号
+        //todo 备料批次号 需修改
         String batchNo = ProductContractEnums.REDE.getCode() + RandomUtil.randomNumbers(8);
+
+        //部件总数列表
+        int totalPart = 0;
         //子表数据更新
-        opeAllocateBList.forEach(item -> {
-            if (item.getPreparationWaitQty() != savePartBasicDateMap.get(item.getId()).size()) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getMessage());
-            }
+        for (OpeAllocateB opeAllocateB : opeAllocateBList) {
             int partQty = 0;
             //便利部件基本数据
-            for (SavePartBasicDateEnter partMap : savePartBasicDateMap.get(item.getId())) {
-                opePartsList.forEach(part -> {
-                    if (item.getPartId().equals(part.getId())) {
+            for (SavePartBasicDateEnter partMap : savePartBasicDateMap.get(opeAllocateB.getId())) {
+                for (OpeParts part : opePartsList) {
+                    if (opeAllocateB.getPartId().equals(part.getId())) {
                         //设置备料记录
                         opeAllocateBTraceList.add(
                                 OpeAllocateBTrace.builder()
                                         .id(idAppService.getId(SequenceName.OPE_ALLOCATE_B_TRACE))
                                         .dr(0)
-                                        .allocateId(item.getAllocateId())
-                                        .allocateBId(item.getId())
-                                        .partId(item.getPartId())
+                                        .allocateId(opeAllocateB.getAllocateId())
+                                        .allocateBId(opeAllocateB.getId())
+                                        .partId(opeAllocateB.getPartId())
                                         .batchNo(batchNo)
-                                        .qty(item.getPreparationWaitQty())
+                                        .qty(partMap.getQty())
                                         .serialNum(partMap.getSerialN())
                                         .revision(0)
                                         .createdBy(enter.getUserId())
@@ -193,17 +191,41 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                                         .build()
                         );
                     }
-
-                });
-                partQty += savePartBasicDateMap.get(item.getId()).size();
+                    partQty += partMap.getQty();
+                    totalPart += partMap.getQty();
+                }
+                if (!opeAllocateB.getPreparationWaitQty().equals(partMap.getQty())) {
+                    throw new SesMobileRpsException(ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getMessage());
+                }
             }
             //待备料数量减掉
-            item.setPreparationWaitQty(item.getPreparationWaitQty() - partQty);
-            item.setUpdatedBy(enter.getUserId());
-            item.setUpdatedTime(new Date());
-        });
+            opeAllocateB.setPreparationWaitQty(opeAllocateB.getPreparationWaitQty() - partQty);
+            opeAllocateB.setUpdatedBy(enter.getUserId());
+            opeAllocateB.setUpdatedTime(new Date());
+        }
 
-        opeAllocate.setPreparationWaitTotal(0);
+        Boolean updateOpeAllocateStatus = Boolean.TRUE;
+        for (OpeAllocateB item : opeAllocateBList) {
+            if (item.getPreparationWaitQty() != 0) {
+                updateOpeAllocateStatus = Boolean.FALSE;
+            }
+        }
+
+        if (updateOpeAllocateStatus) {
+            opeAllocate.setPreparationWaitTotal(0);
+            opeAllocate.setStatus(AllocateOrderStatusEnums.PREPARE.getValue());
+
+            //更新节点
+            SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+            BeanUtils.copyProperties(enter, saveNodeEnter);
+            saveNodeEnter.setId(opeAllocate.getId());
+            saveNodeEnter.setStatus(AllocateOrderStatusEnums.PREPARE.getValue());
+            saveNodeEnter.setEvent(AllocateOrderEventEnums.INPROGRESS.getValue());
+            saveNodeEnter.setMemo(null);
+            this.saveAllocateNode(saveNodeEnter);
+        } else {
+            opeAllocate.setPreparationWaitTotal(opeAllocate.getPreparationWaitTotal() - totalPart);
+        }
         opeAllocate.setUpdatedBy(enter.getUserId());
         opeAllocate.setUpdatedTime(new Date());
         //主表记录更新
@@ -213,6 +235,32 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
         //备料记录更新
         opeAllocateBTraceService.saveBatch(opeAllocateBTraceList);
 
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 保存节点
+     *
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult saveAllocateNode(SaveNodeEnter enter) {
+        opeAllocateTraceService.save(OpeAllocateTrace.builder()
+                .id(idAppService.getId(SequenceName.OPE_PURCHAS_TRACE))
+                .dr(0)
+                .tenantId(0L)
+                .userId(enter.getUserId())
+                .allocateId(enter.getId())
+                .status(enter.getStatus())
+                .event(enter.getEvent())
+                .eventTime(new Date())
+                .memo(StringUtils.isBlank(enter.getMemo()) == true ? null : enter.getMemo())
+                .createBy(enter.getUserId())
+                .createTime(new Date())
+                .updateBy(enter.getUserId())
+                .updateTime(new Date())
+                .build());
         return new GeneralResult(enter.getRequestId());
     }
 }
