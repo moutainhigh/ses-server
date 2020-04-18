@@ -10,7 +10,6 @@
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="purchas_id" jdbcType="BIGINT" property="purchasId" />
     <result column="part_id" jdbcType="BIGINT" property="partId" />
-    <result column="id_class" jdbcType="VARCHAR" property="idClass" />
     <result column="supplier_id" jdbcType="BIGINT" property="supplierId" />
     <result column="supplier_annex" jdbcType="VARCHAR" property="supplierAnnex" />
     <result column="qc_status" jdbcType="VARCHAR" property="qcStatus" />
@@ -32,37 +31,36 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_purchas_b
-    (id, dr, tenant_id, user_id, purchas_id, part_id, id_class, supplier_id, supplier_annex, 
-      qc_status, price, total_count, total_price, lave_wait_qc_qty, in_wait_wh_qty, created_by, 
+    (id, dr, tenant_id, user_id, purchas_id, part_id, supplier_id, supplier_annex, qc_status, 
+      price, total_count, total_price, lave_wait_qc_qty, in_wait_wh_qty, created_by, 
       created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
         #{item.userId,jdbcType=BIGINT}, #{item.purchasId,jdbcType=BIGINT}, #{item.partId,jdbcType=BIGINT}, 
-        #{item.idClass,jdbcType=VARCHAR}, #{item.supplierId,jdbcType=BIGINT}, #{item.supplierAnnex,jdbcType=VARCHAR}, 
-        #{item.qcStatus,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL}, #{item.totalCount,jdbcType=INTEGER}, 
-        #{item.totalPrice,jdbcType=DECIMAL}, #{item.laveWaitQcQty,jdbcType=INTEGER}, #{item.inWaitWhQty,jdbcType=INTEGER}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
-        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
-        )
+        #{item.supplierId,jdbcType=BIGINT}, #{item.supplierAnnex,jdbcType=VARCHAR}, #{item.qcStatus,jdbcType=VARCHAR}, 
+        #{item.price,jdbcType=DECIMAL}, #{item.totalCount,jdbcType=INTEGER}, #{item.totalPrice,jdbcType=DECIMAL}, 
+        #{item.laveWaitQcQty,jdbcType=INTEGER}, #{item.inWaitWhQty,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpePurchasB">
     <!--@mbg.generated-->
     insert into ope_purchas_b
-    (id, dr, tenant_id, user_id, purchas_id, part_id, id_class, supplier_id, supplier_annex, 
-      qc_status, price, total_count, total_price, lave_wait_qc_qty, in_wait_wh_qty, created_by, 
+    (id, dr, tenant_id, user_id, purchas_id, part_id, supplier_id, supplier_annex, qc_status, 
+      price, total_count, total_price, lave_wait_qc_qty, in_wait_wh_qty, created_by, 
       created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
-      #{purchasId,jdbcType=BIGINT}, #{partId,jdbcType=BIGINT}, #{idClass,jdbcType=VARCHAR}, 
-      #{supplierId,jdbcType=BIGINT}, #{supplierAnnex,jdbcType=VARCHAR}, #{qcStatus,jdbcType=VARCHAR}, 
-      #{price,jdbcType=DECIMAL}, #{totalCount,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}, 
-      #{laveWaitQcQty,jdbcType=INTEGER}, #{inWaitWhQty,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
-      #{def6,jdbcType=DOUBLE})
+      #{purchasId,jdbcType=BIGINT}, #{partId,jdbcType=BIGINT}, #{supplierId,jdbcType=BIGINT}, 
+      #{supplierAnnex,jdbcType=VARCHAR}, #{qcStatus,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
+      #{totalCount,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}, #{laveWaitQcQty,jdbcType=INTEGER}, 
+      #{inWaitWhQty,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -70,7 +68,6 @@
     user_id = #{userId,jdbcType=BIGINT}, 
     purchas_id = #{purchasId,jdbcType=BIGINT}, 
     part_id = #{partId,jdbcType=BIGINT}, 
-    id_class = #{idClass,jdbcType=VARCHAR}, 
     supplier_id = #{supplierId,jdbcType=BIGINT}, 
     supplier_annex = #{supplierAnnex,jdbcType=VARCHAR}, 
     qc_status = #{qcStatus,jdbcType=VARCHAR}, 
@@ -110,9 +107,6 @@
       </if>
       <if test="partId != null">
         part_id,
-      </if>
-      <if test="idClass != null">
-        id_class,
       </if>
       <if test="supplierId != null">
         supplier_id,
@@ -186,9 +180,6 @@
       <if test="partId != null">
         #{partId,jdbcType=BIGINT},
       </if>
-      <if test="idClass != null">
-        #{idClass,jdbcType=VARCHAR},
-      </if>
       <if test="supplierId != null">
         #{supplierId,jdbcType=BIGINT},
       </if>
@@ -260,9 +251,6 @@
       </if>
       <if test="partId != null">
         part_id = #{partId,jdbcType=BIGINT},
-      </if>
-      <if test="idClass != null">
-        id_class = #{idClass,jdbcType=VARCHAR},
       </if>
       <if test="supplierId != null">
         supplier_id = #{supplierId,jdbcType=BIGINT},

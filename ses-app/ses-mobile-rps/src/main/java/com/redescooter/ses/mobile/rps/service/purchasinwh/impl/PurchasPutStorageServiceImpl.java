@@ -277,7 +277,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             opePurchasService.updateById(purchas);
         }
 
-
         OpePurchasB storageData = opePurchasBService.getById(enter.getId());
         //查询仓库id
         QueryWrapper<OpeWhse> opeWhse = new QueryWrapper<>();

@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @TableName(value = "ope_purchas_b")
 public class OpePurchasB implements Serializable {
     public static final String COL_TOTAL_INVENTORY = "total_inventory";
+    public static final String COL_ID_CLASS = "id_class";
     /**
      * 主键
      */
@@ -63,13 +64,6 @@ public class OpePurchasB implements Serializable {
     @TableField(value = "part_id")
     @ApiModelProperty(value = "部品Id")
     private Long partId;
-
-    /**
-     * 质检方式
-     */
-    @TableField(value = "id_class")
-    @ApiModelProperty(value = "质检方式")
-    private String idClass;
 
     /**
      * 供应商Id
@@ -203,8 +197,6 @@ public class OpePurchasB implements Serializable {
     public static final String COL_PURCHAS_ID = "purchas_id";
 
     public static final String COL_PART_ID = "part_id";
-
-    public static final String COL_ID_CLASS = "id_class";
 
     public static final String COL_SUPPLIER_ID = "supplier_id";
 

@@ -77,4 +77,19 @@
                  inner join ope_purchas_b_qc purchasbqc on purchasb.id = purchasbqc.purchas_b_id
         where purchasbqc.fail_count != 0
     </select>
-</mapper>
+    <select id="partDetailById" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">
+        select parts.id as partId,
+        ifnull(sheet.price,0) as price,
+        sheet.currency_unit as unit,
+        supplier_id as supplierId
+        from ope_parts parts
+        inner join ope_supplier supplier on parts.supplier_id = supplier.id and supplier.dr = 0
+        left join ope_price_sheet sheet on parts.id = sheet.parts_id and sheet.currency_unit = 1 and sheet.dr = 0
+        where parts.dr=0
+        <if test="collection != null and collection.size() != 0">
+            and parts.id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select></mapper>
