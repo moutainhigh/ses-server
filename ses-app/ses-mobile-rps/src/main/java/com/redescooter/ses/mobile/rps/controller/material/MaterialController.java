@@ -69,6 +69,13 @@ public class MaterialController {
         return new Response<>(materialService.returnedCompleted(enter));
     }
 
+    @PostMapping(value = "/continueQc")
+    @ApiOperation(value = "继续质检", response = GeneralResult.class)
+    public Response<GeneralResult> continueQc(@ModelAttribute @ApiParam("请求参数") ReturnedCompletedEnter enter) {
+        return new Response<>(materialService.continueQc(enter));
+    }
+
+
     @PostMapping(value = "/detail")
     @ApiOperation(value = "详情", response = MaterialDetailResult.class)
     public Response<PageResult<MaterialDetailResult>> materialQcDetail(@ModelAttribute @ApiParam("请求参数") MaterialQcDetailEnter enter) {

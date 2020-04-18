@@ -1,11 +1,14 @@
 package com.redescooter.ses.mobile.rps.dao.material;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.mobile.rps.dm.PartDetailDto;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasBQc;
+import com.redescooter.ses.mobile.rps.dm.RpsPartDetailDto;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcListResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,5 +79,21 @@ public interface MaterialServiceMapper {
      * @param longs
      * @return
      */
-    List<PartDetailDto> partDetailById(ArrayList<Long> longs);
+    List<RpsPartDetailDto> partDetailById(ArrayList<Long> longs);
+
+    /**
+     * 再次质检QC 记录获取
+     *
+     * @param enter
+     * @return
+     */
+    List<OpePurchasBQc> opePurchasBQcListByPurductId(IdEnter enter);
+
+    /**
+     * 更新子表质检记录
+     *
+     * @param id
+     * @param status
+     */
+    void updatePurchasBQcStatus(@Param("id") Long id, @Param("status") String status);
 }

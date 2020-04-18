@@ -29,7 +29,7 @@ import com.redescooter.ses.mobile.rps.dm.OpePurchasBQcItem;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasPayment;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasQcTrace;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasTrace;
-import com.redescooter.ses.mobile.rps.dm.PartDetailDto;
+import com.redescooter.ses.mobile.rps.dm.RpsPartDetailDto;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
@@ -228,7 +228,7 @@ public class MaterialServiceImpl implements MaterialService {
             }
         }
         //查询退货部件价格
-        List<PartDetailDto> partDetailDtoList = materialServiceMapper.partDetailById(new ArrayList<>(partMap.keySet()));
+        List<RpsPartDetailDto> partDetailDtoList = materialServiceMapper.partDetailById(new ArrayList<>(partMap.keySet()));
         if (CollectionUtils.isEmpty(partDetailDtoList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
@@ -326,7 +326,65 @@ public class MaterialServiceImpl implements MaterialService {
      */
     @Override
     public GeneralResult againQc(IdEnter enter) {
-        return null;
+        OpePurchasB opePurchasB = opePurchasBService.getById(enter.getId());
+        if (opePurchasB == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        OpePurchas opePurchas = opePurchasService.getById(opePurchasB.getId());
+        if (opePurchas == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        }
+        //1.验证是否有质检失败的部品
+        //2.质检表数据获取
+        List<OpePurchasBQc> opePurchasBQcList = materialServiceMapper.opePurchasBQcListByPurductId(enter);
+
+        int conut = 0;
+        if (CollectionUtils.isEmpty(opePurchasBQcList)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PLEASE_SCAN_THE_CODE_FIRST.getCode(), ExceptionCodeEnums.PLEASE_SCAN_THE_CODE_FIRST.getMessage());
+        }
+        for (OpePurchasBQc item : opePurchasBQcList) {
+            if (item.getFailCount() == 0) {
+                conut++;
+            }
+            item.setFailCount(0);
+            item.setUpdatedBy(enter.getUserId());
+            item.setStatus(QcStatusEnums.PASS.getValue());
+            item.setUpdatedTime(new Date());
+
+//            if (opePurchasB.getId().equals(item.getPurchasBId()) && item.getPartsId().equals(opePurchasB.getPartId())){
+//
+//            }
+
+        }
+        if (conut == opePurchasBQcList.size()) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(), ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
+        }
+
+        if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
+            opePurchasBQcService.updateBatchById(opePurchasBQcList);
+        }
+
+        //判断是否全部QC 通过 通过的话修改子表状态
+        opePurchasBQcList.removeIf(item -> StringUtils.equals(item.getStatus(), QcStatusEnums.PASS.getValue()));
+        if (opePurchasBQcList.size() == 0) {
+            materialServiceMapper.updatePurchasBQcStatus(enter.getId(), QcStatusEnums.PASS.getValue());
+        }
+
+        //更新 opePurchasB 数据
+
+
+        //节点
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opePurchas.getId());
+        saveNodeEnter.setStatus(PurchasingStatusEnums.QC_AGAIN.getValue());
+        saveNodeEnter.setEvent(PurchasingEventEnums.QC_AGAIN.getValue());
+        saveNodeEnter.setMemo(null);
+        this.saveNode(saveNodeEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -810,4 +868,5 @@ public class MaterialServiceImpl implements MaterialService {
                 .build());
         return new GeneralResult(enter.getRequestId());
     }
+
 }
