@@ -44,12 +44,12 @@ public class PurchasPutStroageController{
     public Response<WhetherIDResult> whetherID(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.whetherID(enter));
     }
- /*   @IgnoreLoginCheck
+    @IgnoreLoginCheck
     @PostMapping(value = "/haveSucceed")
     @ApiOperation(value = "有ID入库成功接口", response = HaveIdPartsResult.class)
     public Response<HaveIdPartsResult> HaveIDPartsResult(@ModelAttribute @ApiParam("请求参数") PurchasDetailsEnter enter) {
         return new Response<>(purchasPutStroageService.haveIdPartsResult(enter));
-    }*/
+    }
     @IgnoreLoginCheck
     @PostMapping(value = "/notId")
     @ApiOperation(value = "无ID入库界面", response = NotIdPartsResult.class)

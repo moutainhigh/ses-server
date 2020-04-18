@@ -10,7 +10,7 @@
 						in_wait_wh_total AS inWaitWhTotal,
 						id as id
 					FROM
-						ope_purchas where  in_wait_wh_total >0 and dr=0
+						ope_purchas where  in_wait_wh_total >0 and dr=0 and status in (4,5)
 						     group by id,created_time,contract_no,in_wait_wh_total
 						     LIMIT #{startRow},#{pageSize}
     </select>
@@ -37,7 +37,7 @@
 				INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and  parts.dr=0
 				LEFT  JOIN ope_purchas pur ON (pur.id = purb.purchas_id) and  pur.dr=0
 				WHERE
-					purb.purchas_id =#{enter.id} and purb.dr=0 and  in_wait_wh_total >0
+					purb.purchas_id =#{enter.id} and purb.dr=0 and  purb.in_wait_wh_qty >0
 					order by  cnName,partsNumber,inWaitWhQty,contractNo  LIMIT #{enter.startRow},#{enter.pageSize}
     </select>
 
@@ -46,10 +46,10 @@
 					count(*)
 				FROM
 					ope_purchas_b purb
-				INNER JOIN ope_parts parts ON (purb.part_id = parts.id) and  parts.dr=0
-				WHERE
+				INNER JOIN ope_parts parts ON (purb.part_id = parts.id) and  parts.dr=0 and purb.in_wait_wh_qty >0
+		WHERE
 					purb.purchas_id = #{id} and  purb.dr=0
-		</select>
+	</select>
     <select id="notIDPartsListResult"
             resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdPartsResult">
 			SELECT
@@ -63,7 +63,7 @@
 			INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and  parts.dr=0
 			INNER  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
 			WHERE
-				purb.id = #{enter.id} and  purb.dr=0
+				purb.id = #{enter.id} and  purb.dr=0 and purb.in_wait_wh_qty >0
     </select>
     <select id="notIDPartsSucceedListResult"
             resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdPartsSucceedResult">
@@ -78,7 +78,7 @@
 		INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and  parts.dr=0
 		LEFT  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
 		WHERE
-			purb.id = #{enter.id} and  purb.dr=0
+			purb.id = #{enter.id} and  purb.dr=0 and purb.in_wait_wh_qty >0
     </select>
     <select id="haveIDPartsResult"
             resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdPartsResult">
@@ -96,7 +96,7 @@
 					LEFT  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
 					LEFT  JOIN ope_purchas_b_qc_item item ON (item.purchas_b_id = purb.id)and  item.dr=0
 					WHERE
-						purb.id=#{enter.id} and  purb.dr=0
+						purb.id=#{enter.id} and  purb.dr=0 and purb.in_wait_wh_qty >0
     </select>
 	<select id="WhetherID" resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.WhetherIDResult">
 			SELECT
@@ -106,7 +106,7 @@
 			INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and  parts.dr=0
 			INNER  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
 			WHERE
-				purb.id = #{enter.id} and  purb.dr=0
+				purb.id = #{enter.id} and  purb.dr=0 and purb.in_wait_wh_qty >0
 	</select>
 
 
