@@ -29,15 +29,8 @@ import com.redescooter.ses.mobile.rps.dm.OpePurchasTrace;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
-import com.redescooter.ses.mobile.rps.service.base.OpePartQcTemplateBService;
-import com.redescooter.ses.mobile.rps.service.base.OpePartQcTemplateService;
-import com.redescooter.ses.mobile.rps.service.base.OpePartsService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcItemService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasBService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasQcTraceService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasService;
-import com.redescooter.ses.mobile.rps.service.base.impl.OpePurchasTraceService;
+import com.redescooter.ses.mobile.rps.service.base.*;
+
 import com.redescooter.ses.mobile.rps.service.material.MaterialService;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
