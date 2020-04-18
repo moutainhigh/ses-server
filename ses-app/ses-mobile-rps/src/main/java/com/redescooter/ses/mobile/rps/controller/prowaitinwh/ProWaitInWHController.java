@@ -2,7 +2,6 @@ package com.redescooter.ses.mobile.rps.controller.prowaitinwh;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.mobile.rps.dao.prowaitinwh.ProWaitInWHMapper;
 import com.redescooter.ses.mobile.rps.service.prowaitinwh.ProWaitInWHService;
 import com.redescooter.ses.mobile.rps.vo.prowaitinwh.*;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemResult;

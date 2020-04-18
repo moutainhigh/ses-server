@@ -2,20 +2,18 @@ package com.redescooter.ses.mobile.rps.service.prowaitinwh.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.mobile.rps.dao.prowaitinwh.ProWaitInWHMapper;
+import com.redescooter.ses.mobile.rps.dao.prowaitinwh.ProWaitInWHServiceMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBOrder;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyBOrderService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.mobile.rps.service.prowaitinwh.ProWaitInWHService;
 import com.redescooter.ses.mobile.rps.vo.prowaitinwh.*;
-import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcPartResult;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +29,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
 
 
     @Autowired
-    private ProWaitInWHMapper proWaitInWHMapper;
+    private ProWaitInWHServiceMapper proWaitInWHServiceMapper;
 
     @Autowired
     private OpeAssemblyOrderService opeAssemblyOrderService;
@@ -53,7 +51,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
     public PageResult<ProWaitInWHLOneResult> proWaitInWHList(PageEnter enter) {
 
 
-        int count = proWaitInWHMapper.proWaitInWHListCount();
+        int count = proWaitInWHServiceMapper.proWaitInWHListCount();
         List<ProWaitInWHLOneResult> proWaitInWHLOneResults = new ArrayList<>();
         ProWaitInWHLOneResult proWaitInWHLOneResult = null;
         //opeAssemblyOrderService对应的数据库表为空的时候直接返回
@@ -91,7 +89,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      */
     @Override
     public PageResult<ProWaitInWHItemResult> proWaitWHItemList(ProWaitInWHIdEnter enter) {
-        int count = proWaitInWHMapper.proWaitWHItemListCount();
+        int count = proWaitInWHServiceMapper.proWaitWHItemListCount();
         ProWaitInWHItemResult proWaitInWHItemResult = null;
         List<ProWaitInWHItemResult> proWaitWHItemListResult = new ArrayList<>();
         if (count == 0) {

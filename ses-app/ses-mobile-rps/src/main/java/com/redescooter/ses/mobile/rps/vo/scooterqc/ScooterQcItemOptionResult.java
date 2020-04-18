@@ -30,16 +30,5 @@ public class ScooterQcItemOptionResult extends GeneralResult {
 
     @ApiModelProperty(value = "部件id")
     private Long partId;
-//
-//    @ApiModelProperty(value = "用户上传图片URL")
-//    private String imageUrl;
-//
-//    @ApiModelProperty(value = "是否能上传图片")
-//    private Boolean uploadFlag;
-
-
-//    @ApiModelProperty(value = "质检状态(1、质检通过 2、维修 3、更换<是否允许用户上传图片>)")
-//    private String qcStatus;
-
 
 }

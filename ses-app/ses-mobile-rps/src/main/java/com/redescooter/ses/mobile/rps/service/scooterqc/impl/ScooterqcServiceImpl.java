@@ -6,14 +6,13 @@ import java.util.*;
 
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.dao.base.OpeProductQcTemplateBMapper;
 import com.redescooter.ses.mobile.rps.dao.base.OpeProductQcTemplateMapper;
-import com.redescooter.ses.mobile.rps.dao.scooterqc.ScooterQcMapper;
+import com.redescooter.ses.mobile.rps.dao.scooterqc.ScooterQcServiceMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
@@ -53,7 +52,7 @@ public class ScooterqcServiceImpl implements ScooterqcService {
     private OpeProductQcTemplateMapper opeProductQcTemplateMapper;
 
     @Autowired
-    private ScooterQcMapper scooterQcMapper;
+    private ScooterQcServiceMapper scooterQcServiceMapper;
 
 
     /**
@@ -64,7 +63,7 @@ public class ScooterqcServiceImpl implements ScooterqcService {
      **/
     @Override
     public PageResult<ScooterQcOneResult> scooterQcList(PageEnter enter) {
-        int count = scooterQcMapper.scooterQcListCount();
+        int count = scooterQcServiceMapper.scooterQcListCount();
         ScooterQcOneResult scooterQcOneResult = null;
         List<ScooterQcOneResult> scooterQcOneResultList = new ArrayList<>();
         //opeAssemblyOrderService对应的数据库表为空的时候直接返回
@@ -102,7 +101,7 @@ public class ScooterqcServiceImpl implements ScooterqcService {
     @Override
     public PageResult<ScooterQcPartResult> partListById(ScooterQcIdEnter enter) {
 
-        int count = scooterQcMapper.partListByIdCount();
+        int count = scooterQcServiceMapper.partListByIdCount();
         ScooterQcPartResult scooterQcPartResult = null;
         List<ScooterQcPartResult> scooterQcPartResultList = new ArrayList<>();
         //opeAssemblyBOrderService对应的数据库表为空的时候直接返回
@@ -153,7 +152,7 @@ public class ScooterqcServiceImpl implements ScooterqcService {
         }
 
         //判断组装单是否存在对应的组装单子表
-        int count = scooterQcMapper.scooterQcItemCount();
+        int count = scooterQcServiceMapper.scooterQcItemCount();
         ScooterQcItemOptionResult scooterQcItemOptionResult = null;
         ScooterQcItemResult scooterQcItemResult = null;
         List<ScooterQcItemResult> scooterQcItemResultList = new ArrayList<>();
@@ -187,8 +186,6 @@ public class ScooterqcServiceImpl implements ScooterqcService {
                                 .partId(enter.getPartId())
                                 .qcId(templateB.getProductQcTemplateId())
                                 .qcName(opeProductQcTemplate.getQcItemName())
-                                //.qcStatus(templateB.getQcResult())
-                                //.uploadFlag(templateB.getUploadFlag()?Boolean.TRUE:Boolean.FALSE)
                                 .optionNum(templateB.getResultsSequence())
                                 .build());
                     }
