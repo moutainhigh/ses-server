@@ -69,7 +69,7 @@ public class OpePurchasB implements Serializable {
      */
     @TableField(value = "supplier_id")
     @ApiModelProperty(value = "供应商Id")
-    private Integer supplierId;
+    private Long supplierId;
 
     /**
      * 供应商附件
