@@ -7,7 +7,7 @@ import com.redescooter.ses.api.common.enums.production.*;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
-import com.redescooter.ses.api.common.enums.rps.StockStatusEnums;
+import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -184,7 +184,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
                 .dr(0)
-                .status(StockStatusEnums.Available.getValue())
+                .status(StockProductPartStatusEnums.AVAILABLE.getValue())
                 .stockId(opeStockData.getId())
                 .partId(partsData.getId())
                 .lot(opePurchasBQc.getBatchNo())
@@ -288,7 +288,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
                 .dr(0)
-                .status(StockStatusEnums.Available.getValue())
+                .status(StockProductPartStatusEnums.AVAILABLE.getValue())
                 .stockId(opeStockData.getId())
                 .partId(partsData.getId())
                 .lot(opePurchasBQc.getBatchNo())
@@ -347,6 +347,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .build());
         return new GeneralResult(enter.getRequestId());
     }
+
 
     private void saveStockBillSingle(PurchasDetailsEnter enter, List<OpeStock> saveStockList, List<OpeStockBill> saveOpeStockBillList, OpePurchas opePurchas) {
         //采购条目
@@ -565,6 +566,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .updatedTime(new Date())
                 .build();
     }
+
 
 
 }
