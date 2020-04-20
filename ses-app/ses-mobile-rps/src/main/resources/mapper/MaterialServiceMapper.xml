@@ -13,7 +13,15 @@
         limit #{startRow},#{pageSize}
     </select>
 
-    <select id="detail" resultType="com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult">
+    <select id="materialQcDetailListCount" resultType="java.lang.Integer">
+         select count(*)
+                from ope_purchas_b purchasb
+                         inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr=0
+                         inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status = 3
+                where purchasb.dr=0
+    </select>
+
+    <select id="detailList" resultType="com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult">
         select purchasb.id               as id,
                purchasb.part_id          as partId,
                parts.cn_name             as partCnName,
@@ -22,6 +30,7 @@
                purchasb.lave_wait_qc_qty as laveWaitQcQty
         from ope_purchas_b purchasb
                  inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr=0
+                 inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status = 3
         where purchasb.dr=0
     </select>
     <select id="failListCount" resultType="int">

@@ -37,5 +37,5 @@ public class SaveMaterialQcResult extends GeneralResult {
     private int laveWaitQcQty;
 
     @ApiModelProperty(value = "质检结果标识")
-    private String qcResult;
+    private Boolean qcResult;
 }

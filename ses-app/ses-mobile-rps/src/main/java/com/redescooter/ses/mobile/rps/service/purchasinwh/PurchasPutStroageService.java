@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.*;
+import org.apache.jute.compiler.JString;
 
 public interface PurchasPutStroageService {
     /**

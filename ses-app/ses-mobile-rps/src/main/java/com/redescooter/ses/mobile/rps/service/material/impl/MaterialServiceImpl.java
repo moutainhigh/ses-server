@@ -317,13 +317,14 @@ public class MaterialServiceImpl implements MaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         //主订单状态过滤
-        opePurchasList.forEach(item->{
+        opePurchasList.forEach(item -> {
             if (!StringUtils.equals(item.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue())) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
             }
         });
         //1.验证是否有质检失败的部品
-        List<OpePurchasB> checkPurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().in(OpePurchasB::getPurchasId, opePurchasList.stream().map(OpePurchas::getId).collect(Collectors.toList())));
+        List<OpePurchasB> checkPurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().in(OpePurchasB::getPurchasId,
+                opePurchasList.stream().map(OpePurchas::getId).collect(Collectors.toList())));
         if (CollectionUtils.isEmpty(checkPurchasBList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
@@ -371,7 +372,7 @@ public class MaterialServiceImpl implements MaterialService {
 
         //判断是否全部QC 通过 通过的话修改子表状态
         opePurchasBQcList.removeIf(item -> StringUtils.equals(item.getStatus(), QcStatusEnums.PASS.getValue()));
-        opePurchasBQcList.forEach(item->{
+        opePurchasBQcList.forEach(item -> {
             item.setStatus(QcStatusEnums.PASS.getValue());
             item.setUpdatedBy(enter.getUserId());
             item.setUpdatedTime(new Date());
@@ -381,7 +382,7 @@ public class MaterialServiceImpl implements MaterialService {
         }
 
         //订单节点 更新
-        opePurchasList.forEach(item->{
+        opePurchasList.forEach(item -> {
             SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
             BeanUtils.copyProperties(enter, saveNodeEnter);
             saveNodeEnter.setId(item.getId());
@@ -410,14 +411,11 @@ public class MaterialServiceImpl implements MaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
 
-        QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
-        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
-        opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, enter.getId());
-        int count = opePurchasBService.count(opePurchasBQueryWrapper);
+        int count = materialServiceMapper.materialQcDetailListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, count, materialServiceMapper.detail(enter));
+        return PageResult.create(enter, count, materialServiceMapper.detailList(enter));
     }
 
     /**
@@ -538,6 +536,14 @@ public class MaterialServiceImpl implements MaterialService {
         //对入参数据做校验
         OpePurchasB opePurchasB = checkSaveMaterialEnter(enter, partQcResultList, templateMap, passTemplateMap);
 
+        // 有IdClas校验是否已经 通过质检
+        List<OpePurchasBQcItem> checkPurchasBQcItemList = opePurchasBQcItemService.list(
+                new LambdaQueryWrapper<OpePurchasBQcItem>().eq(OpePurchasBQcItem::getSerialNum, enter.getSerialNum())
+                        .ne(OpePurchasBQcItem::getQcResult, QcStatusEnums.PASS.getValue()));
+        if (CollectionUtils.isNotEmpty(checkPurchasBQcItemList)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_PASSED_THE_QUALITY_INSPECTION.getCode(), ExceptionCodeEnums.PART_PASSED_THE_QUALITY_INSPECTION.getMessage());
+        }
+
         OpeParts opeParts = opePartsService.getById(opePurchasB.getPartId());
         if (opeParts == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
@@ -546,6 +552,9 @@ public class MaterialServiceImpl implements MaterialService {
         if (opeParts.getIdClass().equals(Boolean.TRUE)) {
             if (enter.getQty() == null || enter.getQty() == 0) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getCode(), ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getMessage());
+            }
+            if (enter.getQty() > opePurchasB.getLaveWaitQcQty()) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
             }
         }
 
@@ -655,7 +664,7 @@ public class MaterialServiceImpl implements MaterialService {
                 .laveWaitQcQty(opePurchasB.getLaveWaitQcQty())
                 .batchN(purchasBQc.getBatchNo())
                 .partN(opeParts.getPartsNumber())
-                .qcResult(qcResult == true ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue())
+                .qcResult(qcResult)
                 .build();
     }
 
