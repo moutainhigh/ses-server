@@ -13,6 +13,24 @@
 	<name>ses-service-scooter</name>
 	<description>Base Scooter Application Service</description>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.redescooter.ses</groupId>
+			<artifactId>ses-iot-admin</artifactId>
+			<version>1.0.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>guava</artifactId>
+					<groupId>com.google.guava</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>okio</artifactId>
+					<groupId>com.squareup.okio</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
 	<!--环境配置-->
 	<profiles>
 		<profile>
