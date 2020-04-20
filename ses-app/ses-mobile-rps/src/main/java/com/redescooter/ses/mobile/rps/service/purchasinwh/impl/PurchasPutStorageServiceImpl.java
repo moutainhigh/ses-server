@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.enums.production.*;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
+import com.redescooter.ses.api.common.enums.rps.StockStatusEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -183,7 +184,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
                 .dr(0)
-                .status(ExceptionCodeEnums.STOCK_STATUS.getMessage())
+                .status(StockStatusEnums.Available.getValue())
                 .stockId(opeStockData.getId())
                 .partId(partsData.getId())
                 .lot(opePurchasBQc.getBatchNo())
@@ -287,7 +288,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
                 .dr(0)
-                .status(ExceptionCodeEnums.STOCK_STATUS.getMessage())
+                .status(StockStatusEnums.Available.getValue())
                 .stockId(opeStockData.getId())
                 .partId(partsData.getId())
                 .lot(opePurchasBQc.getBatchNo())
@@ -530,7 +531,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .stockId(stock.getId())
                 .direction(InOutWhEnums.IN.getValue())
                 .status(StockBillStatusEnums.NORMAL.getValue())
-                .sourceId(enter.getId())
+                .sourceId(item.getPurchasId())
                 .total(item.getTotalCount())
                 .sourceType(SourceTypeEnums.PURCHAS.getValue())
                 .principalId(enter.getUserId())
