@@ -10,7 +10,7 @@ import com.redescooter.ses.iot.enums.Lock;
  * @Version：1.3
  * @create: 2019/08/27 10:19
  */
-public interface IotAdminService {
+public interface    IotAdminService {
     /**
      * 主锁 上锁
      *

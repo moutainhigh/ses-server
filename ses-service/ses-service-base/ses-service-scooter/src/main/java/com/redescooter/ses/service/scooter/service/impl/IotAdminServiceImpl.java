@@ -4,6 +4,7 @@ import com.redescooter.ses.admin.client.TerminalServiceFactory;
 import com.redescooter.ses.api.scooter.service.IotAdminService;
 import com.redescooter.ses.iot.enums.InvokeResult;
 import com.redescooter.ses.iot.enums.Lock;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Version：1.3
  * @create: 2020/04/20 18:17
  */
+@Service
 public class IotAdminServiceImpl implements IotAdminService {
 
     /**
