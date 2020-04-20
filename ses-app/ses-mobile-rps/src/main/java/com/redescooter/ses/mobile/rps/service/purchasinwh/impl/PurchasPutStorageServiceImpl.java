@@ -70,7 +70,12 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
     @Autowired
     private OpePurchasBQcService opePurchasBQcService;
-
+    /**
+     * 采购仓库待入库信息
+     *
+     * @param
+     * @return
+     */
     @Transactional
     @Override
     public PageResult<PutStorageResult> purchasPutStroageList(PageEnter enter) {
@@ -81,7 +86,12 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         }
         return PageResult.create(enter, count, purchasPutStorageMapper.putStorageResult(enter));
     }
-
+    /**
+     * 采购仓库待入库详情信息
+     *
+     * @param
+     * @return
+     */
     @Transactional
     @Override
     public PageResult<PurchasDetailsListResult> storageDetailsList(PurchasDetailsEnter enter) {
@@ -211,7 +221,12 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         this.savePurchasingNode(saveNodeEnter);
         return purchasPutStorageMapper.haveIdPartsResult(enter);
     }
-
+    /**
+     * 无Id 入库
+     *
+     * @param enter
+     * @return
+     */
     @Transactional
     @Override
     public NotIdPartsSucceedResult notIdInWh(NotIdEnter enter) {
@@ -315,6 +330,12 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
         return purchasPutStorageMapper.notIdPartsSucceedListResult(enter);
     }
+    /**
+     * 入库信息展示
+     *
+     * @param
+     * @return
+     */
 
     @Transactional
     @Override
@@ -326,6 +347,12 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         }
         return notIdPartsResult;
     }
+    /**
+     * 保存采购单节点
+     *
+     * @param enter
+     * @return
+     */
 
     @Transactional
     @Override
