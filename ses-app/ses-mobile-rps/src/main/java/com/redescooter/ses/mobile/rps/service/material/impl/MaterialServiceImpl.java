@@ -438,14 +438,11 @@ public class MaterialServiceImpl implements MaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
 
-        QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
-        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
-        opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, enter.getId());
-        int count = opePurchasBService.count(opePurchasBQueryWrapper);
+        int count = materialServiceMapper.materialQcDetailListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, count, materialServiceMapper.detail(enter));
+        return PageResult.create(enter, count, materialServiceMapper.detailList(enter));
     }
 
     /**
@@ -565,6 +562,14 @@ public class MaterialServiceImpl implements MaterialService {
 
         //对入参数据做校验
         OpePurchasB opePurchasB = checkSaveMaterialEnter(enter, partQcResultList, templateMap, passTemplateMap);
+
+        // 有IdClas校验是否已经 通过质检
+        List<OpePurchasBQcItem> checkPurchasBQcItemList = opePurchasBQcItemService.list(
+                new LambdaQueryWrapper<OpePurchasBQcItem>().eq(OpePurchasBQcItem::getSerialNum, enter.getSerialNum())
+                        .ne(OpePurchasBQcItem::getQcResult, QcStatusEnums.PASS.getValue()));
+        if (CollectionUtils.isNotEmpty(checkPurchasBQcItemList)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_PASSED_THE_QUALITY_INSPECTION.getCode(), ExceptionCodeEnums.PART_PASSED_THE_QUALITY_INSPECTION.getMessage());
+        }
 
         OpeParts opeParts = opePartsService.getById(opePurchasB.getPartId());
         if (opeParts == null) {

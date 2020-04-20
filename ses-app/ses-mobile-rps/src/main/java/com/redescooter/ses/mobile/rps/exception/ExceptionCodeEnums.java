@@ -111,8 +111,10 @@ public enum ExceptionCodeEnums {
 
     PLEASE_SCAN_THE_CODE_FIRST(10052, "请先进行质检"),
 
+    PART_PASSED_THE_QUALITY_INSPECTION(10053,"部件已经通过质检"),
 
-    ;
+
+   ;
 
     private int code;
 
