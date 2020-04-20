@@ -63,6 +63,8 @@ public enum ExceptionCodeEnums {
 
     INSUFFICIENT_PERMISSIONS(10022, "用户暂无权限"),
 
+    //自定义业务异常
+
     PURCHAS_IS_NOT_EXIST(10030, "采购单不存在"),
 
     PART_IS_NOT_HAVE_QC_TEMPLATE(10031, "部件暂无质检模板"),
@@ -71,7 +73,7 @@ public enum ExceptionCodeEnums {
 
     PART_QC_QTY_IS_EMPTY(10033, "部件质检数量为空"),
 
-    PART_TEMPLATE_IS_NOT_EXIST(10034,"部件模板不存在"),
+    PART_TEMPLATE_IS_NOT_EXIST(10034, "部件模板不存在"),
 
     PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE(10035, "部件质检项不完整"),
 
@@ -99,15 +101,15 @@ public enum ExceptionCodeEnums {
 
     WAREHOUSE_IS_NOT_EXIST(10047, "仓库不存在"),
 
-    NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION(10048, "未进行质检请先进行质检"),
+    NO_NEED_TO_CHECK_AGAIN(10048, "无需再次质检"),
 
-    QC_PASS_WITHOUT_RETURN(10049, "Qc通过无需退货"),
+    NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION(10049, "未进行质检请先进行质检"),
 
-    PAYMENT_INFO_IS_NOT_EXIST(10050, "付款信息不存在"),
+    QC_PASS_WITHOUT_RETURN(10050, "Qc通过无需退货"),
+
+    PAYMENT_INFO_IS_NOT_EXIST(10051, "付款信息不存在"),
 
     PLEASE_SCAN_THE_CODE_FIRST(10052, "请先进行质检"),
-
-    NO_NEED_TO_CHECK_AGAIN(10098, "无需再次质检"),
 
 
     ;
