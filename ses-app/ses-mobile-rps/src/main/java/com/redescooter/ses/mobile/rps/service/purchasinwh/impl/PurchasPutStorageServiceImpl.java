@@ -214,7 +214,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
     @Transactional
     @Override
-    public NotIdPartsSucceedResult notIdPartsSucceedResult(NotIdEnter enter) {
+    public NotIdPartsSucceedResult notIdInWh(NotIdEnter enter) {
 
         OpePurchasB opePurchasB = opePurchasBService.getById(enter.getId());
         if (opePurchasB == null) {

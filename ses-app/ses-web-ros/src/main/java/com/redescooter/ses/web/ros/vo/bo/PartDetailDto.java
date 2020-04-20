@@ -1,8 +1,6 @@
-package com.redescooter.ses.mobile.rps.dm;
+package com.redescooter.ses.web.ros.vo.bo;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+
+import io.swagger.annotations.*;
 
 /**
  * @ClassName:PartDetailDto
@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class RpsPartDetailDto extends GeneralEnter {
+public class PartDetailDto extends GeneralEnter {
 
     @ApiModelProperty(value = "部件Id")
     private Long partId;

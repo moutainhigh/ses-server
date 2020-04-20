@@ -164,7 +164,7 @@
         and trace.ope_assembiy_order_id =#{id}
         order by trace.created_time asc
     </select>
-    <select id="partDetailListByPartIds" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">
+    <select id="partDetailListByPartIds" resultType="com.redescooter.ses.web.ros.vo.bo.PartDetailDto">
         select parts.id as partId,
         ifnull(sheet.price,0) as price,
         sheet.currency_unit as unit,

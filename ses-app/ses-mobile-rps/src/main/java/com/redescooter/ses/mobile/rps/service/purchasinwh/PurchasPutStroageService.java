@@ -23,8 +23,6 @@ public interface PurchasPutStroageService {
      */
     PageResult<PurchasDetailsListResult> storageDetailsList(PurchasDetailsEnter enter);
 
-
-
     /**
      * 有ID入库成功信息
      *
@@ -36,15 +34,27 @@ public interface PurchasPutStroageService {
 
 
     /**
-     * 无ID入库信息
+     * 入库信息展示
      *
      * @param
      * @return
      */
     NotIdPartsResult notIdPartsResult(PurchasDetailsEnter enter);
 
-    NotIdPartsSucceedResult notIdPartsSucceedResult(NotIdEnter enter);
+    /**
+     * 无Id 入库
+     *
+     * @param enter
+     * @return
+     */
+    NotIdPartsSucceedResult notIdInWh(NotIdEnter enter);
 
+    /**
+     * 保存采购单节点
+     *
+     * @param enter
+     * @return
+     */
     GeneralResult savePurchasingNode(SaveNodeEnter enter);
 }
 

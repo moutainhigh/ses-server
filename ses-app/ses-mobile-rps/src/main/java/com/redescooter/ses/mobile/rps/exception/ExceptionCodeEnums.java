@@ -105,6 +105,11 @@ public enum ExceptionCodeEnums {
 
     PAYMENT_INFO_IS_NOT_EXIST(10050, "付款信息不存在"),
 
+    PLEASE_SCAN_THE_CODE_FIRST(10052, "请先进行质检"),
+
+    NO_NEED_TO_CHECK_AGAIN(10098, "无需再次质检"),
+
+
     ;
 
     private int code;

@@ -245,7 +245,7 @@
         </if>
     </select>
 
-    <select id="partDetailById" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">
+    <select id="partDetailById" resultType="com.redescooter.ses.web.ros.vo.bo.PartDetailDto">
         select parts.id as partId,
         ifnull(sheet.price,0) as price,
         sheet.currency_unit as unit,
