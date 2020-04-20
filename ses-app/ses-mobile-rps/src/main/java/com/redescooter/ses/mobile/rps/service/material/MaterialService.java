@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.rps.service.material;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.vo.materialqc.*;
+import org.thymeleaf.expression.Ids;
 
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public interface MaterialService {
      * @param enter
      * @return
      */
-    GeneralResult returnedCompleted(ReturnedCompletedEnter enter);
+    GeneralResult returnedCompleted(IdsEnter enter);
 
     /**
      * 继续质检
@@ -53,7 +54,7 @@ public interface MaterialService {
      * @param enter
      * @return
      */
-    GeneralResult againQc(IdEnter enter);
+    GeneralResult againQc(IdsEnter enter);
 
     /**
      * 来料质检详情

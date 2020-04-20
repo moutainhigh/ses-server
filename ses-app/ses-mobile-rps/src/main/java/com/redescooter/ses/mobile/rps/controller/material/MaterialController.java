@@ -1,9 +1,9 @@
 package com.redescooter.ses.mobile.rps.controller.material;
 
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -12,7 +12,6 @@ import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcListResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcTemplateDetailResult;
-import com.redescooter.ses.mobile.rps.vo.materialqc.ReturnedCompletedEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcResult;
 import io.swagger.annotations.Api;
@@ -65,14 +64,14 @@ public class MaterialController {
 
     @PostMapping(value = "/returnedCompleted")
     @ApiOperation(value = "退货并完成", response = GeneralResult.class)
-    public Response<GeneralResult> returnedCompleted(@ModelAttribute @ApiParam("请求参数") ReturnedCompletedEnter enter) {
+    public Response<GeneralResult> returnedCompleted(@ModelAttribute @ApiParam("请求参数") IdsEnter enter) {
         return new Response<>(materialService.returnedCompleted(enter));
     }
 
     @PostMapping(value = "/continueQc")
     @ApiOperation(value = "继续质检", response = GeneralResult.class)
-    public Response<GeneralResult> continueQc(@ModelAttribute @ApiParam("请求参数") ReturnedCompletedEnter enter) {
-        return new Response<>(materialService.continueQc(enter));
+    public Response<GeneralResult> continueQc(@ModelAttribute @ApiParam("请求参数") IdsEnter enter) {
+        return new Response<>(materialService.againQc(enter));
     }
 
 

@@ -77,7 +77,7 @@
                  inner join ope_purchas_b_qc purchasbqc on purchasb.id = purchasbqc.purchas_b_id
         where purchasbqc.fail_count != 0
     </select>
-    <select id="partDetailById" resultType="com.redescooter.ses.mobile.rps.dm.RpsPartDetailDto">
+    <select id="partDetailById" resultType="com.redescooter.ses.mobile.rps.vo.bo.RpsPartDetailDto">
         select parts.id as partId,
         ifnull(sheet.price,0) as price,
         sheet.currency_unit as unit,
@@ -93,17 +93,4 @@
             </foreach>
         </if>
     </select>
-
-    <select id="opePurchasBQcListByPurductId" resultType="com.redescooter.ses.web.ros.dm.OpePurchasBQc">
-        select qc.*
-        from ope_purchas_b_qc qc
-        left join ope_purchas_b purchasb on qc.purchas_b_id = purchasb.id and purchasb.dr = 0
-        left join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.dr = 0
-        where purchas.id =#{id}
-    </select>
-
-    <update id="updatePurchasBQcStatus">
-        update ope_purchas_b set qc_status=#{status} where ope_purchas_b.dr=0 and ope_purchas_b.purchas_id=#{id}
-    </update>
-
 </mapper>
