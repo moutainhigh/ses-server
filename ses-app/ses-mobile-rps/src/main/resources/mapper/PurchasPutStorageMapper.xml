@@ -30,7 +30,6 @@
         purb.id AS id,
         parts.cn_Name AS cnName,
         parts.parts_Number AS partsNumber,
-        .merge_file_a11432
         parts.id_class as idClass,
         purb.in_wait_wh_qty AS inWaitWhQty,
         pur.contract_no AS contractNo

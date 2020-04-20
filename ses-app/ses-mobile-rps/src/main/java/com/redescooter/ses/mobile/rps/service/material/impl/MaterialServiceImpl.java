@@ -344,13 +344,14 @@ public class MaterialServiceImpl implements MaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         //主订单状态过滤
-        opePurchasList.forEach(item->{
+        opePurchasList.forEach(item -> {
             if (!StringUtils.equals(item.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue())) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
             }
         });
         //1.验证是否有质检失败的部品
-        List<OpePurchasB> checkPurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().in(OpePurchasB::getPurchasId, opePurchasList.stream().map(OpePurchas::getId).collect(Collectors.toList())));
+        List<OpePurchasB> checkPurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().in(OpePurchasB::getPurchasId,
+                opePurchasList.stream().map(OpePurchas::getId).collect(Collectors.toList())));
         if (CollectionUtils.isEmpty(checkPurchasBList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
@@ -398,7 +399,7 @@ public class MaterialServiceImpl implements MaterialService {
 
         //判断是否全部QC 通过 通过的话修改子表状态
         opePurchasBQcList.removeIf(item -> StringUtils.equals(item.getStatus(), QcStatusEnums.PASS.getValue()));
-        opePurchasBQcList.forEach(item->{
+        opePurchasBQcList.forEach(item -> {
             item.setStatus(QcStatusEnums.PASS.getValue());
             item.setUpdatedBy(enter.getUserId());
             item.setUpdatedTime(new Date());
@@ -408,7 +409,7 @@ public class MaterialServiceImpl implements MaterialService {
         }
 
         //订单节点 更新
-        opePurchasList.forEach(item->{
+        opePurchasList.forEach(item -> {
             SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
             BeanUtils.copyProperties(enter, saveNodeEnter);
             saveNodeEnter.setId(item.getId());
@@ -574,6 +575,9 @@ public class MaterialServiceImpl implements MaterialService {
             if (enter.getQty() == null || enter.getQty() == 0) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getCode(), ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getMessage());
             }
+            if (enter.getQty() > opePurchasB.getLaveWaitQcQty()) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
+            }
         }
 
         //质检结果
@@ -682,7 +686,7 @@ public class MaterialServiceImpl implements MaterialService {
                 .laveWaitQcQty(opePurchasB.getLaveWaitQcQty())
                 .batchN(purchasBQc.getBatchNo())
                 .partN(opeParts.getPartsNumber())
-                .qcResult(qcResult == true ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue())
+                .qcResult(qcResult)
                 .build();
     }
 
