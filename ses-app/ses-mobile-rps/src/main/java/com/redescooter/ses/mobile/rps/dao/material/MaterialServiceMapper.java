@@ -6,7 +6,6 @@ import com.redescooter.ses.mobile.rps.vo.bo.RpsPartDetailDto;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcListResult;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +27,20 @@ public interface MaterialServiceMapper {
     List<MaterialQcListResult> list(PageEnter enter);
 
     /**
+     * 详情列表
+     *
+     * @param enter
+     * @return
+     */
+    int materialQcDetailListCount(MaterialQcDetailEnter enter);
+
+    /**
      * 来料质检详情
      *
      * @param enter
      * @return
      */
-    List<MaterialDetailResult> detail(MaterialQcDetailEnter enter);
+    List<MaterialDetailResult> detailList(MaterialQcDetailEnter enter);
 
     /**
      * 质检失败列表

@@ -77,7 +77,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         int count = purchasPutStorageMapper.purchasListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
-
         }
         return PageResult.create(enter, count, purchasPutStorageMapper.putStorageResult(enter));
     }
@@ -95,8 +94,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         }
         return PageResult.create(enter, count, purchasDetailsListResults);
     }
-
-
 
     @Transactional
     @Override
@@ -264,11 +261,11 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             opePurchasService.updateById(opePurchas);
         }
 
-
         //查询仓库id
         QueryWrapper<OpeWhse> opeWhse = new QueryWrapper<>();
         opeWhse.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
         OpeWhse opeWhsegetid = opeWhseService.getOne(opeWhse);
+        //库存查询
         QueryWrapper<OpeStock> opeStockPurchasQueryWrapper = new QueryWrapper<>();
         opeStockPurchasQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opePurchasB.getPartId());
         opeStockPurchasQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhsegetid.getId());
