@@ -79,7 +79,7 @@
 		INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and  parts.dr=0
 		LEFT  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
 		WHERE
-			purb.id = #{enter.id} and  purb.dr=0 and purb.in_wait_wh_qty >0 and purb.qc_status=1
+			purb.id = #{enter.id} and  purb.dr=0 and purb.qc_status=1
     </select>
     <select id="haveIdPartsResult"
             resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdPartsResult">
@@ -96,6 +96,6 @@
 					LEFT  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
 					LEFT  JOIN ope_purchas_b_qc_item item ON (item.purchas_b_id = purb.id)and  item.dr=0
 					WHERE
-						purb.id=#{enter.id} and  purb.dr=0 and purb.in_wait_wh_qty >0 and purb.qc_status=1
+						purb.id=#{enter.id} and  purb.dr=0  and purb.qc_status=1
     </select>
 </mapper>
