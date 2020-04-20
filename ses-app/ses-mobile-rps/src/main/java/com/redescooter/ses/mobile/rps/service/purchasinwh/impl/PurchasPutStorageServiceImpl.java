@@ -120,7 +120,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         }
         //拿取部件信息
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-        if (partsData.getIdClass()){
+        if (partsData.getIdClass()!=true){
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
@@ -228,7 +228,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-        if ( partsData.getIdClass()==false){
+        if ( partsData.getIdClass()!=false){
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
