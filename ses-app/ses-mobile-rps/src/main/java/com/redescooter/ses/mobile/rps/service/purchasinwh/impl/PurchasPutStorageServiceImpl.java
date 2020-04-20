@@ -208,11 +208,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         saveNodeEnter.setEvent(PurchasingEventEnums.IN_PURCHASING_WH.getValue());
         saveNodeEnter.setMemo(null);
         this.savePurchasingNode(saveNodeEnter);
-        HaveIdPartsResult haveIdPartsResult = purchasPutStorageMapper.haveIDPartsResult(enter);
-        if (haveIdPartsResult == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
-        return haveIdPartsResult;
+        return purchasPutStorageMapper.haveIDPartsResult(enter);
     }
 
     @Transactional
@@ -232,7 +228,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-        if ( partsData.getIdClass()!=false){
+        if ( partsData.getIdClass()==false){
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
