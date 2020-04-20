@@ -771,7 +771,7 @@ public class MaterialServiceImpl implements MaterialService {
                 .id(idAppService.getId(SequenceName.OPE_PURCHAS_B_QC_ITEM))
                 .dr(0)
                 .partId(opeParts.getId())
-                .purchasBId(purchasBQc.getId())
+                .purchasBId(enter.getId())
                 .purchasBQcId(purchasBQc.getId())
                 .qcBatchTotal(opeParts.getIdClass() == true ? 1 : enter.getQty())
                 .serialNum(opeParts.getIdClass() == true ? "REDE" + RandomUtil.BASE_CHAR_NUMBER : null)
@@ -901,5 +901,4 @@ public class MaterialServiceImpl implements MaterialService {
                 .build());
         return new GeneralResult(enter.getRequestId());
     }
-
 }

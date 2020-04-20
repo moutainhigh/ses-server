@@ -23,4 +23,6 @@ public class PurchasDetailsListResult extends GeneralResult {
     private String partsNumber;
     @ApiModelProperty(value = "零配件中文名称")
     private String cnName;
+    @ApiModelProperty(value = "是否有ID")
+    private Boolean idClass;
 }
