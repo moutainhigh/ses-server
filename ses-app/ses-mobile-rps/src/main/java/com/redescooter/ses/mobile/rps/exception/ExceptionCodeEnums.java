@@ -99,13 +99,11 @@ public enum ExceptionCodeEnums {
 
     WAREHOUSE_IS_NOT_EXIST(10047, "仓库不存在"),
 
-    STOCK_STATUS(10048, "可用"),
+    NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION(10048, "未进行质检请先进行质检"),
 
-    NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION(10049, "未进行质检请先进行质检"),
+    QC_PASS_WITHOUT_RETURN(10049, "Qc通过无需退货"),
 
-    QC_PASS_WITHOUT_RETURN(10050, "Qc通过无需退货"),
-
-    PAYMENT_INFO_IS_NOT_EXIST(10051, "付款信息不存在"),
+    PAYMENT_INFO_IS_NOT_EXIST(10050, "付款信息不存在"),
 
     ;
 
