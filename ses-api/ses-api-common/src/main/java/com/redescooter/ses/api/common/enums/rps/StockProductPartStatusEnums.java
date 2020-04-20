@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum StockStatusEnums {
-    Available("WAIT","可用","1"),
-    Broken("FAIL","破损","2");
+public enum StockProductPartStatusEnums {
+    AVAILABLE("AVAILABLE","可用","1"),
+    BROKEN("BROKEN","破损","2");
 
     private String code;
 
