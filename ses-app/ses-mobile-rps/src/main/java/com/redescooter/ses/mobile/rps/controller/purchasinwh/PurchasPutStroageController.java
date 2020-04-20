@@ -49,6 +49,6 @@ public class PurchasPutStroageController{
     @PostMapping(value = "/notIdSucceed")
     @ApiOperation(value = "无ID入库成功接口", response = PurchasDetailsListResult.class)
     public Response<NotIdPartsSucceedResult> NotIDPartsSucceedResult(@ModelAttribute @ApiParam("请求参数") NotIdEnter enter) {
-        return new Response<>(purchasPutStroageService.notIdPartsSucceedResult(enter));
+        return new Response<>(purchasPutStroageService.notIdInWh(enter));
     }
 }

@@ -27,7 +27,7 @@ public class PurchasPutStorageServiceImplTest {
         enter.setInWaitWhQty(12);
 
 
-        GeneralResult result = purchasPutStroageService.notIdPartsSucceedResult(enter);
+        GeneralResult result = purchasPutStroageService.notIdInWh(enter);
 
         log.info(JSON.toJSONString(result));
 
