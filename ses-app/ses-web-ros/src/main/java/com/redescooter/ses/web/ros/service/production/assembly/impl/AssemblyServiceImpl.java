@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.service.production.assembly.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -41,7 +40,7 @@ import com.redescooter.ses.web.ros.dm.OpeStock;
 import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
-import com.redescooter.ses.web.ros.dm.PartDetailDto;
+import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeAssembiyOrderTraceService;
@@ -83,10 +82,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName:AssemblyServiceImpl
@@ -238,8 +234,10 @@ public class AssemblyServiceImpl implements AssemblyService {
                 }
                 for (OpePartsProductB item : productMap.get(product.getId())) {
                     opeStockList.forEach(stock -> {
+                        Integer qty = product.getQty() == null ? 0 : product.getQty();
+
                         if (stock.getMaterielProductId().equals(item.getPartsId())) {
-                            stock.setAvailableTotal(stock.getAvailableTotal() - item.getPartsQty() * product.getQty());
+                            stock.setAvailableTotal(stock.getAvailableTotal() - item.getPartsQty() * qty);
                             if (stock.getAvailableTotal() < 0) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
@@ -342,7 +340,7 @@ public class AssemblyServiceImpl implements AssemblyService {
             if (CollectionUtils.isNotEmpty(productList)) {
                 for (ProductionPartsEnter product : productList) {
                     if (item.getId().equals(product.getId())) {
-                        item.setSelectedQty(product.getQty());
+                        item.setSelectedQty(product.getQty() == null ? 0 : product.getQty());
                         break;
                     }
                 }
@@ -1446,6 +1444,9 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .status(AssemblyStatusEnums.PENDING.getValue())
                 .assemblyNumber("REDE" + RandomUtil.randomNumbers(7))
                 .totalQty(productTotal)
+                .waitAssemblyTotal(productTotal)
+                .laveWaitQcTotal(productTotal)
+                .laveWaitQcTotal(productTotal)
                 .totalPrice(null)
                 .processingFee(null)
                 .processingFeeRatio(null)
@@ -1564,7 +1565,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                             .tenantId(0L)
                             .assemblyId(assemblyId)
                             .productId(item.getId())
-                            .assemblyBNumber("REDE" + RandomUtil.randomNumbers(6))
+                            .assemblybNumber("REDE" + RandomUtil.randomNumbers(6))
                             .productNumber(item.getProductNumber())
                             .enName(item.getEnName())
                             .price(null)
@@ -1584,11 +1585,15 @@ public class AssemblyServiceImpl implements AssemblyService {
             for (ProductionPartsEnter product : productList) {
                 if (item.getProductId().equals(product.getId())) {
                     item.setAssemblyQty(product.getQty());
+                    item.setWaitAssemblyQty(product.getQty());
+                    item.setLaveWaitQcQty(product.getQty());
+                    item.setInWaitWhQty(product.getQty());
                 }
             }
         }
         saveOpeAssemblyBOrderList.forEach(item -> {
             if (productUnitPrice.containsKey(item.getProductId())) {
+                item.setAssemblybNumber(item.getAssemblybNumber() + new Random().nextInt(100));
                 item.setPrice(productUnitPrice.get(item.getProductId()));
             }
         });

@@ -765,6 +765,7 @@ public class BomRosServiceImpl implements BomRosService {
                     if (item.getId().equals(templateb.getPartDraftQcTemplateId())) {
                         resultTemplateBList.add(
                                 QcResultResult.builder()
+                                        .passFlag(templateb.getPassFlag())
                                         .result(templateb.getQcResult())
                                         .resultSequence(templateb.getResultsSequence())
                                         .uploadPictureFalg(templateb.getUploadFlag())
@@ -853,7 +854,9 @@ public class BomRosServiceImpl implements BomRosService {
 
         }
         //质检项结果集数据保存
-        opeProductQcTemplateBService.saveOrUpdateBatch(saveOpeProductQcTemplateBList);
+        if (CollectionUtils.isEmpty(saveOpeProductQcTemplateBList)){
+            opeProductQcTemplateBService.saveOrUpdateBatch(saveOpeProductQcTemplateBList);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -924,6 +927,7 @@ public class BomRosServiceImpl implements BomRosService {
                     if (item.getId().equals(templateb.getProductQcTemplateId())) {
                         resultTemplateBList.add(
                                 QcResultResult.builder()
+                                        .passFlag(templateb.getPassFlag())
                                         .result(templateb.getQcResult())
                                         .resultSequence(templateb.getResultsSequence())
                                         .uploadPictureFalg(templateb.getUploadFlag())
@@ -954,6 +958,15 @@ public class BomRosServiceImpl implements BomRosService {
      */
     private void buildProductTemplate(SaveQcTemplateEnter enter, List<OpeProductQcTemplate> saveOpeProductQcTemplateList, List<OpeProductQcTemplateB> saveOpeProductQcTemplateBList,
                                       Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap, List<OpeProductQcTemplate> opeProductQcTemplateList) {
+        //质检项 结果集数量校验
+        for (QcItemTemplateEnter qcItemTemplateEnter : qcResultEnterMap.keySet()) {
+            int passResult = (int) qcResultEnterMap.get(qcItemTemplateEnter).stream().filter(QcResultEnter::getPassFlag).count();
+            if (passResult!=1){
+                throw new SesWebRosException(ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getCode(),ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
+            }
+        }
+
+
         if (CollectionUtils.isNotEmpty(opeProductQcTemplateList)) {
             qcResultEnterMap.forEach((key, value) -> {
                 Long templateId = idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE);
@@ -1003,6 +1016,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .dr(0)
                 .productQcTemplateId(templateId)
                 .qcResult(item.getResult())
+                .passFlag(item.getPassFlag())
                 .uploadFlag(item.getUploadPictureFalg())
                 .resultsSequence(item.getResultSequence())
                 .revision(0)
@@ -1177,6 +1191,19 @@ public class BomRosServiceImpl implements BomRosService {
     private void buildPartQcTemplate(SaveQcTemplateEnter enter, List<OpePartDraftQcTemplate> saveOpePartQcTemplateList, List<OpePartDraftQcTemplateB> saveOpePartQcTemplateBList,
                                      Map<QcItemTemplateEnter,
                                              List<QcResultEnter>> qcResultEnterMap, List<OpePartDraftQcTemplate> partQcTemplateList) {
+
+        for (QcItemTemplateEnter qcItemTemplateEnter : qcResultEnterMap.keySet()) {
+            Integer count = 0;
+            for (QcResultEnter qcResultEnter : qcResultEnterMap.get(qcItemTemplateEnter)) {
+                if (qcResultEnter.getPassFlag()) {
+                    count++;
+                }
+            }
+            if (count!=1){
+                throw new SesWebRosException(ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getCode(),ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
+            }
+        }
+
         if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
             for (Map.Entry<QcItemTemplateEnter, List<QcResultEnter>> entry : qcResultEnterMap.entrySet()) {
                 QcItemTemplateEnter key = entry.getKey();
@@ -1228,6 +1255,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .dr(0)
                 .partDraftQcTemplateId(templateId)
                 .qcResult(item.getResult())
+                .passFlag(item.getPassFlag())
                 .uploadFlag(item.getUploadPictureFalg())
                 .resultsSequence(item.getResultSequence())
                 .revision(0)

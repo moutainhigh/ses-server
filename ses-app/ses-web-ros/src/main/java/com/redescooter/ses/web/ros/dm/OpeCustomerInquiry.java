@@ -3,17 +3,14 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeCustomerInquiry")
 @Data
@@ -21,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_customer_inquiry")
-public class OpeCustomerInquiry implements Serializable {
+public class OpeCustomerInquiry {
     /**
      * id
      */
@@ -33,7 +30,6 @@ public class OpeCustomerInquiry implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -247,8 +243,6 @@ public class OpeCustomerInquiry implements Serializable {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
-
-    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 

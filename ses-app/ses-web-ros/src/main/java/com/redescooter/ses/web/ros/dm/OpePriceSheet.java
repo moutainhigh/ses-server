@@ -3,189 +3,183 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePriceSheet")
+@ApiModel(value="com-redescooter-ses-web-ros-dm-OpePriceSheet")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_price_sheet")
-public class OpePriceSheet implements Serializable {
+public class OpePriceSheet {
     /**
      * 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value="主键")
     private Long id;
 
     /**
      * 逻辑删除
      */
     @TableField(value = "dr")
-    @TableLogic
-    @ApiModelProperty(value = "逻辑删除")
+    @ApiModelProperty(value="逻辑删除")
     private Integer dr;
 
     /**
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "租户ID")
+    @ApiModelProperty(value="租户ID")
     private Long tenantId;
 
     /**
      * 用户ID
      */
     @TableField(value = "user_id")
-    @ApiModelProperty(value = "用户ID")
+    @ApiModelProperty(value="用户ID")
     private Long userId;
 
     /**
      * 状态 Invalid失效，Effective有效，Cancel取消
      */
     @TableField(value = "status")
-    @ApiModelProperty(value = "状态 Invalid失效，Effective有效，Cancel取消")
+    @ApiModelProperty(value="状态 Invalid失效，Effective有效，Cancel取消")
     private String status;
 
     /**
      * 价格 浮点型价格
      */
     @TableField(value = "price")
-    @ApiModelProperty(value = "价格 浮点型价格")
+    @ApiModelProperty(value="价格 浮点型价格")
     private BigDecimal price;
 
     /**
      * 货币类型 如英镑，美元，人民币
      */
     @TableField(value = "currency_type")
-    @ApiModelProperty(value = "货币类型 如英镑，美元，人民币")
+    @ApiModelProperty(value="货币类型 如英镑，美元，人民币")
     private String currencyType;
 
     /**
      * 货币单位 如¥，$，€，	￡
      */
     @TableField(value = "currency_unit")
-    @ApiModelProperty(value = "货币单位 如¥，$，€，	￡")
+    @ApiModelProperty(value="货币单位 如¥，$，€，	￡")
     private String currencyUnit;
 
     /**
      * 标准货币 用户货币转换
      */
     @TableField(value = "standard_currency")
-    @ApiModelProperty(value = "标准货币 用户货币转换")
+    @ApiModelProperty(value="标准货币 用户货币转换")
     private String standardCurrency;
 
     /**
      * 汇率 用于汇率转换
      */
     @TableField(value = "exchange_rate")
-    @ApiModelProperty(value = "汇率 用于汇率转换")
+    @ApiModelProperty(value="汇率 用于汇率转换")
     private String exchangeRate;
 
     /**
      * 部品主键 用于关联部品
      */
     @TableField(value = "parts_id")
-    @ApiModelProperty(value = "部品主键 用于关联部品")
+    @ApiModelProperty(value="部品主键 用于关联部品")
     private Long partsId;
 
     /**
      * 开始日期
      */
     @TableField(value = "begin_date")
-    @ApiModelProperty(value = "开始日期")
+    @ApiModelProperty(value="开始日期")
     private Date beginDate;
 
     /**
      * 结束日期
      */
     @TableField(value = "end_date")
-    @ApiModelProperty(value = "结束日期")
+    @ApiModelProperty(value="结束日期")
     private Date endDate;
 
     /**
      * 乐观锁
      */
     @TableField(value = "revision")
-    @ApiModelProperty(value = "乐观锁")
+    @ApiModelProperty(value="乐观锁")
     private Integer revision;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value = "创建人")
+    @ApiModelProperty(value="创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value="创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value = "更新人")
+    @ApiModelProperty(value="更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value="更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value="冗余字段")
     private BigDecimal def6;
-
-    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 
@@ -232,8 +226,4 @@ public class OpePriceSheet implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpePriceSheetBuilder builder() {
-        return new OpePriceSheetBuilder();
-    }
 }

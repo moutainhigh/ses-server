@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.purchasinwh.PurchasPutStorageMapper">
+
+
+    <select id="putStorageResult" resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.PutStorageResult">
+        SELECT
+        created_time AS createTime,
+        contract_no AS contractNo,
+        in_wait_wh_total AS inWaitWhTotal,
+        id as id
+        FROM
+        ope_purchas where in_wait_wh_total >0 and dr=0 and status in (4,5)
+        group by id,created_time,contract_no,in_wait_wh_total
+        LIMIT #{startRow},#{pageSize}
+    </select>
+
+
+    <select id="purchasListCount" resultType="java.lang.Integer">
+					 select
+					  count(*)
+					from
+					  ope_purchas where dr=0
+    </select>
+
+
+    <select id="storageDetailsResult"
+            resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.PurchasDetailsListResult">
+        SELECT
+        purb.id AS id,
+        parts.cn_Name AS cnName,
+        parts.parts_Number AS partsNumber,
+        .merge_file_a11432
+        parts.id_class as idClass,
+        purb.in_wait_wh_qty AS inWaitWhQty,
+        pur.contract_no AS contractNo
+        FROM
+        ope_purchas_b purb
+        INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and parts.dr=0
+        LEFT JOIN ope_purchas pur ON (pur.id = purb.purchas_id) and pur.dr=0
+        WHERE
+        purb.purchas_id =#{enter.id} and purb.dr=0 and purb.in_wait_wh_qty >0
+        order by cnName,partsNumber,inWaitWhQty,contractNo LIMIT #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <select id="purchasDetailListCount" resultType="int">
+				SELECT
+					count(*)
+				FROM
+					ope_purchas_b purb
+				INNER JOIN ope_parts parts ON (purb.part_id = parts.id) and  parts.dr=0 and purb.in_wait_wh_qty >0
+				WHERE
+					purb.purchas_id = #{id} and  purb.dr=0
+	</select>
+    <select id="notIdpartslistresult"
+            resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdPartsResult">
+			SELECT
+				purb.id AS id,
+				parts.cn_Name AS cnName,
+				parts.parts_Number AS partsNumber,
+				purb.in_wait_wh_qty AS inWaitWhQty,
+				qc.batch_no AS batchNo
+			FROM
+				ope_purchas_b purb
+			INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and  parts.dr=0
+			INNER  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
+			WHERE
+				purb.id = #{enter.id} and  purb.dr=0 and purb.in_wait_wh_qty >0
+    </select>
+    <select id="notIdPartsSucceedListResult"
+            resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdPartsSucceedResult">
+		 SELECT
+			purb.id AS id,
+			parts.cn_Name AS cnName,
+			parts.parts_Number AS partsNumber,
+			purb.in_wait_wh_qty AS inWaitWhQty,
+			qc.batch_no AS batchNo
+		FROM
+			ope_purchas_b purb
+		INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and  parts.dr=0
+		LEFT  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
+		WHERE
+			purb.id = #{enter.id} and  purb.dr=0 and purb.in_wait_wh_qty >0
+    </select>
+    <select id="haveIdPartsResult"
+            resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdPartsResult">
+					 SELECT
+				        purb.id AS id,
+						parts.cn_Name AS cnName,
+						parts.parts_Number AS partsNumber,
+						purb.in_wait_wh_qty AS inWaitWhQty,
+						qc.batch_no AS batchNo,
+						item.serial_num AS serialNum
+					FROM
+						ope_purchas_b purb
+					INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and  parts.dr=0
+					LEFT  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
+					LEFT  JOIN ope_purchas_b_qc_item item ON (item.purchas_b_id = purb.id)and  item.dr=0
+					WHERE
+						purb.id=#{enter.id} and  purb.dr=0 and purb.in_wait_wh_qty >0
+    </select>
+</mapper>

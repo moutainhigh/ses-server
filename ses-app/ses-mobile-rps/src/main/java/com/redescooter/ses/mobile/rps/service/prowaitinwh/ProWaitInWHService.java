@@ -1,8 +1,13 @@
 package com.redescooter.ses.mobile.rps.service.prowaitinwh;
 
-import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.*;
-import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHIdEnter;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHInfoResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHItemResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHLOneResult;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassNameProWaitInWHService
@@ -11,6 +16,8 @@ import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemResult;
  * @Date2020/4/14 17:46
  * @Version V1.0
  **/
+
+@Transactional
 public interface ProWaitInWHService {
     /**
      * @Author kyle
@@ -48,5 +55,5 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    ProWaitInWHInfoResult proWaitInWHInfoIn(ProWaitInWHInfoEnter enter);
+    ProWaitInWHInfoResult proWaitInWHInfoIn(ProWaitInWHIdEnter enter);
 }

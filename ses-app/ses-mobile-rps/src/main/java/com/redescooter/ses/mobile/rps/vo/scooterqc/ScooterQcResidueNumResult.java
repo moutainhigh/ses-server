@@ -15,7 +15,7 @@ import io.swagger.annotations.*;
 public class ScooterQcResidueNumResult extends GeneralResult {
 
     @ApiModelProperty(value = "质检成功/失败")
-    private String result;
+    private Boolean result;
 
     @ApiModelProperty(value = "整车质检剩余产品数量")
     private Integer residueNum;

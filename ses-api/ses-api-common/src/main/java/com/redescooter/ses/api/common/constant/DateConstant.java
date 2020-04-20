@@ -32,6 +32,10 @@ public interface DateConstant {
      * 字符串时间
      */
     String YMDHMS = "yyyyMMddHHmmss";
+    /**
+     * 字符串日期
+     */
+    String YMD="yyyyMMdd";
 
     /**
      * 默认标准时区

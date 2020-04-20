@@ -1,12 +1,13 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
+import org.springframework.stereotype.Service;
+import javax.annotation.Resource;
+import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.web.ros.dao.base.OpeStockBillMapper;
+import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class OpeStockBillServiceImpl extends ServiceImpl<OpeStockBillMapper, OpeStockBill> implements OpeStockBillService {
@@ -31,6 +32,4 @@ public class OpeStockBillServiceImpl extends ServiceImpl<OpeStockBillMapper, Ope
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
-
-
 

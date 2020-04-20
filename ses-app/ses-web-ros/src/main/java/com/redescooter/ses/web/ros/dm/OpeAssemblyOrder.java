@@ -6,14 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAssemblyOrder")
 @Data
@@ -21,8 +19,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_assembly_order")
-public class OpeAssemblyOrder implements Serializable {
-    public static final String COL_PAYMENT_RATIO = "payment_ratio";
+public class OpeAssemblyOrder {
     /**
      * 主键
      */
@@ -129,6 +126,27 @@ public class OpeAssemblyOrder implements Serializable {
     private Long consigneeId;
 
     /**
+     * 待组装总数量
+     */
+    @TableField(value = "wait_assembly_total")
+    @ApiModelProperty(value = "待组装总数量")
+    private Integer waitAssemblyTotal;
+
+    /**
+     * 待入库总数
+     */
+    @TableField(value = "in_wait_wh_total")
+    @ApiModelProperty(value = "待入库总数")
+    private String inWaitWhTotal;
+
+    /**
+     * 待质检总数
+     */
+    @TableField(value = "lave_wait_qc_total")
+    @ApiModelProperty(value = "待质检总数")
+    private Integer laveWaitQcTotal;
+
+    /**
      * 乐观锁
      */
     @TableField(value = "revision")
@@ -198,8 +216,6 @@ public class OpeAssemblyOrder implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -229,6 +245,12 @@ public class OpeAssemblyOrder implements Serializable {
     public static final String COL_FACTORY_ANNEX = "factory_annex";
 
     public static final String COL_CONSIGNEE_ID = "consignee_id";
+
+    public static final String COL_WAIT_ASSEMBLY_TOTAL = "wait_assembly_total";
+
+    public static final String COL_IN_WAIT_WH_TOTAL = "in_wait_wh_total";
+
+    public static final String COL_LAVE_WAIT_QC_TOTAL = "lave_wait_qc_total";
 
     public static final String COL_REVISION = "revision";
 

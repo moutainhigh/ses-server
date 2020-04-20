@@ -1,11 +1,15 @@
 package com.redescooter.ses.web.ros.collectionUtilsTest;
 
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 /**
@@ -15,14 +19,17 @@ import java.util.stream.IntStream;
  * @ClassName: RedisOne
  * @Function: TODO
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
 public class CollectionUtilTest {
 
     @Test
     public void disjunction() {
-        String checkESC = ESCUtils.checkESC("90");
-        System.out.println(checkESC);
+
+
+        System.out.println("Method one:" + Math.random() * 100);
+
+        Random random = new Random();
+        System.out.println("Method two:" + new Random().nextInt(100));
+
     }
 
     @Test

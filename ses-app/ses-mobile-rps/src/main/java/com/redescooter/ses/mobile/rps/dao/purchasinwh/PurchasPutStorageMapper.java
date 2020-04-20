@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.dao.purchasinwh;
 
 
+import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,16 +12,18 @@ public interface PurchasPutStorageMapper {
       *  采购仓库待入库信息
       *
       * @param
+      * @param enter
       * @return
       */
-     List<PutStorageResult> putStorageResult();
+     List<PutStorageResult> putStorageResult(PageEnter enter);
      /**
       * 采购总行数
       *
       * @param
+      * @param enter
       * @return
       */
-     int purchasListCount();
+     int purchasListCount(PageEnter enter);
      /**
       * 采购仓库待入库详情信息
       *
@@ -33,16 +36,17 @@ public interface PurchasPutStorageMapper {
       * 采购部件总行数
       *
       * @param
+      * @param enter
       * @return
       */
-     int purchasDetailListCount();
+     int purchasDetailListCount(PurchasDetailsEnter enter);
      /**
       * 无ID入库信息
       *
       * @param
       * @return
       */
-     NotIDPartsResult notIDPartsListResult(@Param("enter") PurchasDetailsEnter enter);
+     NotIdPartsResult notIdpartslistresult(@Param("enter") PurchasDetailsEnter enter);
 
      /**
       * 无ID入库成功信息
@@ -50,7 +54,7 @@ public interface PurchasPutStorageMapper {
       * @param
       * @return
       */
-     NotIDPartsSucceedResult notIDPartsSucceedListResultn(@Param("enter") PurchasDetailsEnter enter);
+     NotIdPartsSucceedResult notIdPartsSucceedListResult(@Param("enter") NotIdEnter enter);
 
      /**
       * 有ID入库成功信息
@@ -58,5 +62,5 @@ public interface PurchasPutStorageMapper {
       * @param
       * @return
       */
-     HaveIDPartsResult haveIDPartsResult(@Param("enter") PurchasDetailsEnter enter);
+     HaveIdPartsResult haveIdPartsResult(@Param("enter") PurchasDetailsEnter enter);
 }

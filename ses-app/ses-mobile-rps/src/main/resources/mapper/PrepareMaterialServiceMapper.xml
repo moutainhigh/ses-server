@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.preparematerial.PrepareMaterialServiceMapper">
+
+    <select id="listCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_allocate allocate
+        where allocate.dr=0
+        and allocate.status=1
+    </select>
+    <select id="list" resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult">
+        select allocate.id                     as id,
+               allocate.created_time           as createdTime,
+               allocate.allocate_num           as allocatN,
+               allocate.preparation_wait_total as preparationWaitTotal
+        from ope_allocate allocate
+        where allocate.dr = 0
+          and allocate.status = 1
+        order by allocate.created_time asc
+
+    </select>
+    <select id="detailListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_allocate_b allocateb
+                 inner join ope_parts parts on parts.id = allocateb.part_id
+        where allocateb.dr = 0
+    </select>
+
+    <select id="detailList"
+            resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult">
+        select allocateb.id                   as id,
+               allocateb.part_id              as partId,
+               parts.parts_number             as partN,
+               parts.cn_name                  as partCnName,
+               allocateb.preparation_wait_qty as preparationWaitQty
+        from ope_allocate_b allocateb
+                 inner join ope_parts parts on parts.id = allocateb.part_id
+        where allocateb.dr = 0
+        order by allocateb.created_time asc
+    </select>
+</mapper>

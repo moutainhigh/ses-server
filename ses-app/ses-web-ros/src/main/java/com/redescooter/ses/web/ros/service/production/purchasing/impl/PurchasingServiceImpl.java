@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.production.purchasing.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
@@ -46,7 +45,7 @@ import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
-import com.redescooter.ses.web.ros.dm.PartDetailDto;
+import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
@@ -98,14 +97,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * @ClassName:PurchasingServiceImpl
@@ -584,18 +576,19 @@ public class PurchasingServiceImpl implements PurchasingService {
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
         List<String> productTypeList = new ArrayList<String>();
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
+            if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
                 productTypeList.add(item.getValue());
             }
         }
-        //商品查询
+        //整车产品查询列表
         List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter, Lists.newArrayList(BomCommonTypeEnums.SCOOTER.getValue()));
-        //查询商品所有部品
+        //查询产品中包含的所有的部件
         if (CollectionUtils.isNotEmpty(scooterProductList)) {
             List<Long> productIds = Lists.newArrayList();
             scooterProductList.forEach(item -> {
                 productIds.add(item.getId());
             });
+            //查询产品所有部件
             List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
             if (CollectionUtils.isNotEmpty(partList)) {
 
@@ -614,11 +607,10 @@ public class PurchasingServiceImpl implements PurchasingService {
                 }
             }
         }
-        List<Long> productIds = scooterProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList());
+
+        //除整车外的所有产品列表
         List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
         scooterProductList.addAll(partProductList);
-
-        scooterProductList.removeIf(item -> StringUtils.equals(item.getProductType(), BomCommonTypeEnums.COMBINATION.getValue()));
 
         if (CollectionUtils.isEmpty(scooterProductList)) {
             return new ArrayList<>();
@@ -1419,6 +1411,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                             .price(item.getPrice())
                             .totalPrice(item.getPrice().equals(BigDecimal.ZERO) ? BigDecimal.ZERO : item.getPrice().multiply(new BigDecimal(v)))
                             .totalCount(v)
+                            .laveWaitQcQty(v)
+                            .inWaitWhQty(v)
                             .createdBy(enter.getUserId())
                             .createdTime(new Date())
                             .updatedTime(new Date())
@@ -1437,12 +1431,14 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .userId(enter.getUserId())
                 .tenantId(0L)
                 .consigneeId(enter.getConsigneeId())
-                .contractNo("REDE" + RandomUtil.getRandom())
+                .contractNo("REDE" + new Random().nextInt(10000))
                 .status(PurchasingStatusEnums.PENDING.getValue())
                 .paymentType(enter.getPaymentType())
                 .factoryId(enter.getFactoryId())
                 .totalPrice(totalPrice)
                 .totalQty(totalCount)
+                .laveWaitQcTotal(totalCount)
+                .inWaitWhTotal(totalCount)
                 .revision(0)
                 .createdBy(enter.getUserId())
                 .createdTime(new Date())

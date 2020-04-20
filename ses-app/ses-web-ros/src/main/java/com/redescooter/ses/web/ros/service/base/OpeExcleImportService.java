@@ -1,0 +1,21 @@
+package com.redescooter.ses.web.ros.service.base;
+
+import java.util.List;
+import com.redescooter.ses.web.ros.dm.OpeExcleImport;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
+
+@Transactional
+
+public interface OpeExcleImportService extends IService<OpeExcleImport>{
+
+
+    int updateBatch(List<OpeExcleImport> list);
+
+    int batchInsert(List<OpeExcleImport> list);
+
+    int insertOrUpdate(OpeExcleImport record);
+
+    int insertOrUpdateSelective(OpeExcleImport record);
+
+}

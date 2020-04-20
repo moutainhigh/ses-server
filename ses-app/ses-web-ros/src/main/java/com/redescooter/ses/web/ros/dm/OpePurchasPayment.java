@@ -6,14 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePurchasPayment")
 @Data
@@ -21,7 +19,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_purchas_payment")
-public class OpePurchasPayment implements Serializable {
+public class OpePurchasPayment {
     /**
      * ID
      */
@@ -203,8 +201,6 @@ public class OpePurchasPayment implements Serializable {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
-
-    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 

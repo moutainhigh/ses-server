@@ -24,9 +24,6 @@ import io.swagger.annotations.*;
 @Builder
 public class SaveMaterialQcResult extends GeneralResult {
 
-    @ApiModelProperty(value = "id")
-    private Long id;
-
     @ApiModelProperty(value = "部件名称")
     private String partCnName;
 

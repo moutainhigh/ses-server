@@ -3,17 +3,14 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAllocate")
 @Data
@@ -21,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_allocate")
-public class OpeAllocate implements Serializable {
+public class OpeAllocate {
     /**
      * 主键
      */
@@ -34,7 +31,6 @@ public class OpeAllocate implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -78,6 +74,13 @@ public class OpeAllocate implements Serializable {
     @TableField(value = "consignee_id")
     @ApiModelProperty(value = "收获人Id")
     private Long consigneeId;
+
+    /**
+     * 待备料总数
+     */
+    @TableField(value = "preparation_wait_total")
+    @ApiModelProperty(value = "待备料总数")
+    private Integer preparationWaitTotal;
 
     /**
      * 乐观锁
@@ -149,8 +152,6 @@ public class OpeAllocate implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -166,6 +167,8 @@ public class OpeAllocate implements Serializable {
     public static final String COL_COUNT = "count";
 
     public static final String COL_CONSIGNEE_ID = "consignee_id";
+
+    public static final String COL_PREPARATION_WAIT_TOTAL = "preparation_wait_total";
 
     public static final String COL_REVISION = "revision";
 
@@ -186,4 +189,8 @@ public class OpeAllocate implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeAllocateBuilder builder() {
+        return new OpeAllocateBuilder();
+    }
 }

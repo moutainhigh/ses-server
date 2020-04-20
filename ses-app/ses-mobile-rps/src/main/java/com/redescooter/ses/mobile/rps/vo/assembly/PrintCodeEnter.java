@@ -24,7 +24,7 @@ import io.swagger.annotations.*;
 @Builder
 public class PrintCodeEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "商品组装单Id")
     private Long id;
 
     @ApiModelProperty(value = "打印结果")

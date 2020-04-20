@@ -222,7 +222,7 @@ public enum ExceptionCodeEnums {
 
     DO_NOT_SET_THE_PRICE_REPEATEDLY(10104, "请不要重复设置价格"),
 
-    PLEASE_SCAN_THE_CODE_FIRST(10105, "请先扫码质检"),
+    PLEASE_SCAN_THE_CODE_FIRST(10105, "请先进行质检"),
 
     TEMPLATE_QC_RESULT_IS_EMPTY(10106, "模板质检结果为空"),
 
@@ -235,7 +235,11 @@ public enum ExceptionCodeEnums {
     PART_IS_NOT_BIND_PRODUCT(10110, "部件未绑定产品"),
 
     PART_IS_BIND_PRODUCT(10111, "部件绑定产品,请先解绑"),
-    ;
+
+    QC_TEMPLATE_IS_NOT_EXIT(10112,"质检模板不存在"),
+
+    QC_PASS_RESULT_ONLY_ONE(10113,"质检项通过结果只能有一个"),
+  ;
 
 
     private int code;

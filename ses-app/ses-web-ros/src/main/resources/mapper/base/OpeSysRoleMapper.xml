@@ -17,8 +17,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-      id, dr, tenant_id, role_name, role_code, role_desc, created_by, create_time, updated_by,
-      update_time
+    id, dr, tenant_id, role_name, role_code, role_desc, created_by, create_time, updated_by, 
+    update_time
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -77,17 +77,16 @@
   </update>
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
-      insert into ope_sys_role
-      (dr, tenant_id, role_name, role_code, role_desc, created_by, create_time, updated_by,
+    insert into ope_sys_role
+    (dr, tenant_id, role_name, role_code, role_desc, created_by, create_time, updated_by, 
       update_time)
-      values
-      <foreach collection="list" item="item" separator=",">
-          (#{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, #{item.roleName,jdbcType=VARCHAR},
-          #{item.roleCode,jdbcType=VARCHAR}, #{item.roleDesc,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
-          #{item.createTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-          #{item.updateTime,jdbcType=TIMESTAMP}
-          )
-      </foreach>
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, #{item.roleName,jdbcType=VARCHAR}, 
+        #{item.roleCode,jdbcType=VARCHAR}, #{item.roleDesc,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updateTime,jdbcType=TIMESTAMP}
+        )
+    </foreach>
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRole" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -121,8 +120,8 @@
       #{updatedBy,jdbcType=BIGINT},
       #{updateTime,jdbcType=TIMESTAMP},
     </trim>
-      on duplicate key update
-      <trim suffixOverrides=",">
+    on duplicate key update 
+    <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
       </if>
@@ -205,8 +204,8 @@
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
-      on duplicate key update
-      <trim suffixOverrides=",">
+    on duplicate key update 
+    <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
       </if>

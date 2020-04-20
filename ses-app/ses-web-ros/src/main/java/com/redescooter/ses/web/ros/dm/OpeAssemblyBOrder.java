@@ -6,14 +6,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAssemblyBOrder")
 @Data
@@ -72,11 +71,11 @@ public class OpeAssemblyBOrder implements Serializable {
     private Long productId;
 
     /**
-     * 组装单子单号
+     * 子表编号
      */
-    @TableField(value = "assembly_b_number")
-    @ApiModelProperty(value = "组装单子单号")
-    private String assemblyBNumber;
+    @TableField(value = "assemblyb_number")
+    @ApiModelProperty(value = "子表编号")
+    private String assemblybNumber;
 
     /**
      * 产品编码
@@ -100,11 +99,25 @@ public class OpeAssemblyBOrder implements Serializable {
     private BigDecimal price;
 
     /**
-     * 已完成数
+     * 待组装数量
      */
-    @TableField(value = "complete_qty")
-    @ApiModelProperty(value = "已完成数")
-    private Integer completeQty;
+    @TableField(value = "wait_assembly_qty")
+    @ApiModelProperty(value = "待组装数量")
+    private Integer waitAssemblyQty;
+
+    /**
+     * 待入库数
+     */
+    @TableField(value = "in_wait_wh_qty")
+    @ApiModelProperty(value = "待入库数")
+    private Integer inWaitWhQty;
+
+    /**
+     * 待质检数
+     */
+    @TableField(value = "lave_wait_qc_qty")
+    @ApiModelProperty(value = "待质检数")
+    private Integer laveWaitQcQty;
 
     /**
      * 组装总数量
@@ -112,6 +125,13 @@ public class OpeAssemblyBOrder implements Serializable {
     @TableField(value = "assembly_qty")
     @ApiModelProperty(value = "组装总数量")
     private Integer assemblyQty;
+
+    /**
+     * 完成组装数
+     */
+    @TableField(value = "complete_qty")
+    @ApiModelProperty(value = "完成组装数")
+    private Integer completeQty;
 
     /**
      * 乐观锁
@@ -199,7 +219,7 @@ public class OpeAssemblyBOrder implements Serializable {
 
     public static final String COL_PRODUCT_ID = "product_id";
 
-    public static final String COL_ASSEMBLY_B_NUMBER = "assembly_b_number";
+    public static final String COL_ASSEMBLYB_NUMBER = "assemblyb_number";
 
     public static final String COL_PRODUCT_NUMBER = "product_number";
 
@@ -207,9 +227,15 @@ public class OpeAssemblyBOrder implements Serializable {
 
     public static final String COL_PRICE = "price";
 
-    public static final String COL_COMPLETE_QTY = "complete_qty";
+    public static final String COL_WAIT_ASSEMBLY_QTY = "wait_assembly_qty";
+
+    public static final String COL_IN_WAIT_WH_QTY = "in_wait_wh_qty";
+
+    public static final String COL_LAVE_WAIT_QC_QTY = "lave_wait_qc_qty";
 
     public static final String COL_ASSEMBLY_QTY = "assembly_qty";
+
+    public static final String COL_COMPLETE_QTY = "complete_qty";
 
     public static final String COL_REVISION = "revision";
 
@@ -230,4 +256,8 @@ public class OpeAssemblyBOrder implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeAssemblyBOrderBuilder builder() {
+        return new OpeAssemblyBOrderBuilder();
+    }
 }

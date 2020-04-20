@@ -11,7 +11,9 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class NotIDPartsSucceedResult extends GeneralResult {
+public class NotIdPartsSucceedResult extends GeneralResult {
+    @ApiModelProperty(value = "id")
+    private Long id;
     @ApiModelProperty(value = "部品号")
     private String partsNumber;
     @ApiModelProperty(value = "质检批次号")
@@ -19,6 +21,6 @@ public class NotIDPartsSucceedResult extends GeneralResult {
     @ApiModelProperty(value = "零配件中文名称")
     private String cnName;
     @ApiModelProperty(value = "待入库数量")
-    private String inWaitWhQty;
+    private int inWaitWhQty;
 
 }

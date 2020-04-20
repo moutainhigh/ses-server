@@ -1,14 +1,12 @@
 package com.redescooter.ses.mobile.rps.service.scooterqc;
 
 
-import com.alibaba.fastjson.JSONObject;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.*;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.transaction.annotation.Transactional;
 
-
+@Transactional
 public interface ScooterqcService {
     /**
      * @Author kyle

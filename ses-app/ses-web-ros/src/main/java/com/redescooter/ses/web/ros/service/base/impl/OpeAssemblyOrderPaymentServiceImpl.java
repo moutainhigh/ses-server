@@ -1,12 +1,13 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
+import org.springframework.stereotype.Service;
+import javax.annotation.Resource;
+import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.util.List;
 import com.redescooter.ses.web.ros.dao.base.OpeAssemblyOrderPaymentMapper;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment;
 import com.redescooter.ses.web.ros.service.base.OpeAssemblyOrderPaymentService;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class OpeAssemblyOrderPaymentServiceImpl extends ServiceImpl<OpeAssemblyOrderPaymentMapper, OpeAssemblyOrderPayment> implements OpeAssemblyOrderPaymentService {
@@ -31,6 +32,4 @@ public class OpeAssemblyOrderPaymentServiceImpl extends ServiceImpl<OpeAssemblyO
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
-
-
 

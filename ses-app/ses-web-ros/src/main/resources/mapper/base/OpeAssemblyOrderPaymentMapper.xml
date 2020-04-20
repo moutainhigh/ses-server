@@ -1,493 +1,488 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeAssemblyOrderPaymentMapper">
-    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment">
-        <!--@mbg.generated-->
-        <!--@Table ope_assembly_order_payment-->
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="dr" jdbcType="INTEGER" property="dr"/>
-        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
-        <result column="user_id" jdbcType="BIGINT" property="userId"/>
-        <result column="ope_assembly_order_id" jdbcType="BIGINT" property="opeAssemblyOrderId"/>
-        <result column="payment_type" jdbcType="VARCHAR" property="paymentType"/>
-        <result column="planned_payment_time" jdbcType="TIMESTAMP" property="plannedPaymentTime"/>
-        <result column="payment_day" jdbcType="INTEGER" property="paymentDay"/>
-        <result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime"/>
-        <result column="payment_status" jdbcType="VARCHAR" property="paymentStatus"/>
-        <result column="payment_priority" jdbcType="INTEGER" property="paymentPriority"/>
-        <result column="description" jdbcType="VARCHAR" property="description"/>
-        <result column="amount" jdbcType="DECIMAL" property="amount"/>
-        <result column="amount_proportion" jdbcType="INTEGER" property="amountProportion"/>
-        <result column="invoice_num" jdbcType="VARCHAR" property="invoiceNum"/>
-        <result column="invoice_picture" jdbcType="VARCHAR" property="invoicePicture"/>
-        <result column="revision" jdbcType="INTEGER" property="revision"/>
-        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
-        <result column="def1" jdbcType="VARCHAR" property="def1"/>
-        <result column="def2" jdbcType="VARCHAR" property="def2"/>
-        <result column="def3" jdbcType="VARCHAR" property="def3"/>
-        <result column="def5" jdbcType="VARCHAR" property="def5"/>
-        <result column="def6" jdbcType="DOUBLE" property="def6"/>
-    </resultMap>
-    <sql id="Base_Column_List">
-        <!--@mbg.generated-->
-        id, dr, tenant_id, user_id, ope_assembly_order_id, payment_type, planned_payment_time,
-        payment_day, payment_time, payment_status, payment_priority, description, amount,
-        amount_proportion, invoice_num, invoice_picture, revision, created_by, created_time,
-        updated_by, updated_time, def1, def2, def3, def5, def6
-    </sql>
-    <update id="updateBatch" parameterType="java.util.List">
-        <!--@mbg.generated-->
-        update ope_assembly_order_payment
-        <trim prefix="set" suffixOverrides=",">
-            <trim prefix="dr = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-                </foreach>
-            </trim>
-            <trim prefix="tenant_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="user_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="ope_assembly_order_id = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.opeAssemblyOrderId,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="payment_type = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.paymentType,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="planned_payment_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.plannedPaymentTime,jdbcType=TIMESTAMP}
-                </foreach>
-            </trim>
-            <trim prefix="payment_day = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.paymentDay,jdbcType=INTEGER}
-                </foreach>
-            </trim>
-            <trim prefix="payment_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.paymentTime,jdbcType=TIMESTAMP}
-                </foreach>
-            </trim>
-            <trim prefix="payment_status = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.paymentStatus,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="payment_priority = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.paymentPriority,jdbcType=INTEGER}
-                </foreach>
-            </trim>
-            <trim prefix="description = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.description,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="amount = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.amount,jdbcType=DECIMAL}
-                </foreach>
-            </trim>
-            <trim prefix="amount_proportion = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.amountProportion,jdbcType=INTEGER}
-                </foreach>
-            </trim>
-            <trim prefix="invoice_num = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.invoiceNum,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="invoice_picture = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.invoicePicture,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="revision = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
-                </foreach>
-            </trim>
-            <trim prefix="created_by = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="created_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
-                </foreach>
-            </trim>
-            <trim prefix="updated_by = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
-                </foreach>
-            </trim>
-            <trim prefix="updated_time = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
-                </foreach>
-            </trim>
-            <trim prefix="def1 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="def2 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="def3 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="def5 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
-                </foreach>
-            </trim>
-            <trim prefix="def6 = case" suffix="end,">
-                <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
-                </foreach>
-            </trim>
-        </trim>
-        where id in
-        <foreach close=")" collection="list" item="item" open="(" separator=", ">
-            #{item.id,jdbcType=BIGINT}
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment">
+    <!--@mbg.generated-->
+    <!--@Table ope_assembly_order_payment-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="ope_assembly_order_id" jdbcType="BIGINT" property="opeAssemblyOrderId" />
+    <result column="payment_type" jdbcType="VARCHAR" property="paymentType" />
+    <result column="planned_payment_time" jdbcType="TIMESTAMP" property="plannedPaymentTime" />
+    <result column="payment_day" jdbcType="INTEGER" property="paymentDay" />
+    <result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime" />
+    <result column="payment_status" jdbcType="VARCHAR" property="paymentStatus" />
+    <result column="payment_priority" jdbcType="INTEGER" property="paymentPriority" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="amount_proportion" jdbcType="INTEGER" property="amountProportion" />
+    <result column="invoice_num" jdbcType="VARCHAR" property="invoiceNum" />
+    <result column="invoice_picture" jdbcType="VARCHAR" property="invoicePicture" />
+    <result column="revision" jdbcType="INTEGER" property="revision" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DOUBLE" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, user_id, ope_assembly_order_id, payment_type, planned_payment_time, 
+    payment_day, payment_time, payment_status, payment_priority, description, amount, 
+    amount_proportion, invoice_num, invoice_picture, revision, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_assembly_order_payment
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
         </foreach>
-    </update>
-    <insert id="batchInsert" parameterType="map">
-        <!--@mbg.generated-->
-        insert into ope_assembly_order_payment
-        (id, dr, tenant_id, user_id, ope_assembly_order_id, payment_type, planned_payment_time,
-        payment_day, payment_time, payment_status, payment_priority, description, amount,
-        amount_proportion, invoice_num, invoice_picture, revision, created_by, created_time,
-        updated_by, updated_time, def1, def2, def3, def5, def6)
-        values
-        <foreach collection="list" item="item" separator=",">
-            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
-            #{item.userId,jdbcType=BIGINT}, #{item.opeAssemblyOrderId,jdbcType=BIGINT},
-            #{item.paymentType,jdbcType=VARCHAR},
-            #{item.plannedPaymentTime,jdbcType=TIMESTAMP}, #{item.paymentDay,jdbcType=INTEGER},
-            #{item.paymentTime,jdbcType=TIMESTAMP}, #{item.paymentStatus,jdbcType=VARCHAR},
-            #{item.paymentPriority,jdbcType=INTEGER}, #{item.description,jdbcType=VARCHAR},
-            #{item.amount,jdbcType=DECIMAL}, #{item.amountProportion,jdbcType=INTEGER},
-            #{item.invoiceNum,jdbcType=VARCHAR},
-            #{item.invoicePicture,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER},
-            #{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-            #{item.updatedTime,jdbcType=TIMESTAMP},
-            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
-            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
         </foreach>
-    </insert>
-    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment">
-        <!--@mbg.generated-->
-        insert into ope_assembly_order_payment
-        (id, dr, tenant_id, user_id, ope_assembly_order_id, payment_type, planned_payment_time,
-        payment_day, payment_time, payment_status, payment_priority, description, amount,
-        amount_proportion, invoice_num, invoice_picture, revision, created_by, created_time,
-        updated_by, updated_time, def1, def2, def3, def5, def6)
-        values
-        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
-        #{opeAssemblyOrderId,jdbcType=BIGINT}, #{paymentType,jdbcType=VARCHAR},
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="ope_assembly_order_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.opeAssemblyOrderId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="payment_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.paymentType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="planned_payment_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.plannedPaymentTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="payment_day = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.paymentDay,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="payment_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.paymentTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="payment_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.paymentStatus,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="payment_priority = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.paymentPriority,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="description = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.description,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="amount = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.amount,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="amount_proportion = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.amountProportion,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="invoice_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.invoiceNum,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="invoice_picture = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.invoicePicture,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_assembly_order_payment
+    (id, dr, tenant_id, user_id, ope_assembly_order_id, payment_type, planned_payment_time, 
+      payment_day, payment_time, payment_status, payment_priority, description, amount, 
+      amount_proportion, invoice_num, invoice_picture, revision, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.userId,jdbcType=BIGINT}, #{item.opeAssemblyOrderId,jdbcType=BIGINT}, #{item.paymentType,jdbcType=VARCHAR}, 
+        #{item.plannedPaymentTime,jdbcType=TIMESTAMP}, #{item.paymentDay,jdbcType=INTEGER}, 
+        #{item.paymentTime,jdbcType=TIMESTAMP}, #{item.paymentStatus,jdbcType=VARCHAR}, 
+        #{item.paymentPriority,jdbcType=INTEGER}, #{item.description,jdbcType=VARCHAR}, 
+        #{item.amount,jdbcType=DECIMAL}, #{item.amountProportion,jdbcType=INTEGER}, #{item.invoiceNum,jdbcType=VARCHAR}, 
+        #{item.invoicePicture,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment">
+    <!--@mbg.generated-->
+    insert into ope_assembly_order_payment
+    (id, dr, tenant_id, user_id, ope_assembly_order_id, payment_type, planned_payment_time, 
+      payment_day, payment_time, payment_status, payment_priority, description, amount, 
+      amount_proportion, invoice_num, invoice_picture, revision, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{opeAssemblyOrderId,jdbcType=BIGINT}, #{paymentType,jdbcType=VARCHAR}, #{plannedPaymentTime,jdbcType=TIMESTAMP}, 
+      #{paymentDay,jdbcType=INTEGER}, #{paymentTime,jdbcType=TIMESTAMP}, #{paymentStatus,jdbcType=VARCHAR}, 
+      #{paymentPriority,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, 
+      #{amountProportion,jdbcType=INTEGER}, #{invoiceNum,jdbcType=VARCHAR}, #{invoicePicture,jdbcType=VARCHAR}, 
+      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    user_id = #{userId,jdbcType=BIGINT}, 
+    ope_assembly_order_id = #{opeAssemblyOrderId,jdbcType=BIGINT}, 
+    payment_type = #{paymentType,jdbcType=VARCHAR}, 
+    planned_payment_time = #{plannedPaymentTime,jdbcType=TIMESTAMP}, 
+    payment_day = #{paymentDay,jdbcType=INTEGER}, 
+    payment_time = #{paymentTime,jdbcType=TIMESTAMP}, 
+    payment_status = #{paymentStatus,jdbcType=VARCHAR}, 
+    payment_priority = #{paymentPriority,jdbcType=INTEGER}, 
+    description = #{description,jdbcType=VARCHAR}, 
+    amount = #{amount,jdbcType=DECIMAL}, 
+    amount_proportion = #{amountProportion,jdbcType=INTEGER}, 
+    invoice_num = #{invoiceNum,jdbcType=VARCHAR}, 
+    invoice_picture = #{invoicePicture,jdbcType=VARCHAR}, 
+    revision = #{revision,jdbcType=INTEGER}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
+    def6 = #{def6,jdbcType=DOUBLE}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment">
+    <!--@mbg.generated-->
+    insert into ope_assembly_order_payment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="opeAssemblyOrderId != null">
+        ope_assembly_order_id,
+      </if>
+      <if test="paymentType != null">
+        payment_type,
+      </if>
+      <if test="plannedPaymentTime != null">
+        planned_payment_time,
+      </if>
+      <if test="paymentDay != null">
+        payment_day,
+      </if>
+      <if test="paymentTime != null">
+        payment_time,
+      </if>
+      <if test="paymentStatus != null">
+        payment_status,
+      </if>
+      <if test="paymentPriority != null">
+        payment_priority,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="amountProportion != null">
+        amount_proportion,
+      </if>
+      <if test="invoiceNum != null">
+        invoice_num,
+      </if>
+      <if test="invoicePicture != null">
+        invoice_picture,
+      </if>
+      <if test="revision != null">
+        revision,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="opeAssemblyOrderId != null">
+        #{opeAssemblyOrderId,jdbcType=BIGINT},
+      </if>
+      <if test="paymentType != null">
+        #{paymentType,jdbcType=VARCHAR},
+      </if>
+      <if test="plannedPaymentTime != null">
         #{plannedPaymentTime,jdbcType=TIMESTAMP},
-        #{paymentDay,jdbcType=INTEGER}, #{paymentTime,jdbcType=TIMESTAMP}, #{paymentStatus,jdbcType=VARCHAR},
-        #{paymentPriority,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL},
-        #{amountProportion,jdbcType=INTEGER}, #{invoiceNum,jdbcType=VARCHAR}, #{invoicePicture,jdbcType=VARCHAR},
-        #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
-        #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
-        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
-        )
-        on duplicate key update
+      </if>
+      <if test="paymentDay != null">
+        #{paymentDay,jdbcType=INTEGER},
+      </if>
+      <if test="paymentTime != null">
+        #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentStatus != null">
+        #{paymentStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentPriority != null">
+        #{paymentPriority,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="amountProportion != null">
+        #{amountProportion,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceNum != null">
+        #{invoiceNum,jdbcType=VARCHAR},
+      </if>
+      <if test="invoicePicture != null">
+        #{invoicePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="revision != null">
+        #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
         id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
         tenant_id = #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
         user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="opeAssemblyOrderId != null">
         ope_assembly_order_id = #{opeAssemblyOrderId,jdbcType=BIGINT},
+      </if>
+      <if test="paymentType != null">
         payment_type = #{paymentType,jdbcType=VARCHAR},
+      </if>
+      <if test="plannedPaymentTime != null">
         planned_payment_time = #{plannedPaymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentDay != null">
         payment_day = #{paymentDay,jdbcType=INTEGER},
+      </if>
+      <if test="paymentTime != null">
         payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentStatus != null">
         payment_status = #{paymentStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentPriority != null">
         payment_priority = #{paymentPriority,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
         amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="amountProportion != null">
         amount_proportion = #{amountProportion,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceNum != null">
         invoice_num = #{invoiceNum,jdbcType=VARCHAR},
+      </if>
+      <if test="invoicePicture != null">
         invoice_picture = #{invoicePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="revision != null">
         revision = #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
         created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
         updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
         def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
         def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
         def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
         def5 = #{def5,jdbcType=VARCHAR},
-        def6 = #{def6,jdbcType=DOUBLE}
-    </insert>
-    <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment">
-        <!--@mbg.generated-->
-        insert into ope_assembly_order_payment
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="dr != null">
-                dr,
-            </if>
-            <if test="tenantId != null">
-                tenant_id,
-            </if>
-            <if test="userId != null">
-                user_id,
-            </if>
-            <if test="opeAssemblyOrderId != null">
-                ope_assembly_order_id,
-            </if>
-            <if test="paymentType != null">
-                payment_type,
-            </if>
-            <if test="plannedPaymentTime != null">
-                planned_payment_time,
-            </if>
-            <if test="paymentDay != null">
-                payment_day,
-            </if>
-            <if test="paymentTime != null">
-                payment_time,
-            </if>
-            <if test="paymentStatus != null">
-                payment_status,
-            </if>
-            <if test="paymentPriority != null">
-                payment_priority,
-            </if>
-            <if test="description != null">
-                description,
-            </if>
-            <if test="amount != null">
-                amount,
-            </if>
-            <if test="amountProportion != null">
-                amount_proportion,
-            </if>
-            <if test="invoiceNum != null">
-                invoice_num,
-            </if>
-            <if test="invoicePicture != null">
-                invoice_picture,
-            </if>
-            <if test="revision != null">
-                revision,
-            </if>
-            <if test="createdBy != null">
-                created_by,
-            </if>
-            <if test="createdTime != null">
-                created_time,
-            </if>
-            <if test="updatedBy != null">
-                updated_by,
-            </if>
-            <if test="updatedTime != null">
-                updated_time,
-            </if>
-            <if test="def1 != null">
-                def1,
-            </if>
-            <if test="def2 != null">
-                def2,
-            </if>
-            <if test="def3 != null">
-                def3,
-            </if>
-            <if test="def5 != null">
-                def5,
-            </if>
-            <if test="def6 != null">
-                def6,
-            </if>
-        </trim>
-        values
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=BIGINT},
-            </if>
-            <if test="dr != null">
-                #{dr,jdbcType=INTEGER},
-            </if>
-            <if test="tenantId != null">
-                #{tenantId,jdbcType=BIGINT},
-            </if>
-            <if test="userId != null">
-                #{userId,jdbcType=BIGINT},
-            </if>
-            <if test="opeAssemblyOrderId != null">
-                #{opeAssemblyOrderId,jdbcType=BIGINT},
-            </if>
-            <if test="paymentType != null">
-                #{paymentType,jdbcType=VARCHAR},
-            </if>
-            <if test="plannedPaymentTime != null">
-                #{plannedPaymentTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="paymentDay != null">
-                #{paymentDay,jdbcType=INTEGER},
-            </if>
-            <if test="paymentTime != null">
-                #{paymentTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="paymentStatus != null">
-                #{paymentStatus,jdbcType=VARCHAR},
-            </if>
-            <if test="paymentPriority != null">
-                #{paymentPriority,jdbcType=INTEGER},
-            </if>
-            <if test="description != null">
-                #{description,jdbcType=VARCHAR},
-            </if>
-            <if test="amount != null">
-                #{amount,jdbcType=DECIMAL},
-            </if>
-            <if test="amountProportion != null">
-                #{amountProportion,jdbcType=INTEGER},
-            </if>
-            <if test="invoiceNum != null">
-                #{invoiceNum,jdbcType=VARCHAR},
-            </if>
-            <if test="invoicePicture != null">
-                #{invoicePicture,jdbcType=VARCHAR},
-            </if>
-            <if test="revision != null">
-                #{revision,jdbcType=INTEGER},
-            </if>
-            <if test="createdBy != null">
-                #{createdBy,jdbcType=BIGINT},
-            </if>
-            <if test="createdTime != null">
-                #{createdTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updatedBy != null">
-                #{updatedBy,jdbcType=BIGINT},
-            </if>
-            <if test="updatedTime != null">
-                #{updatedTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="def1 != null">
-                #{def1,jdbcType=VARCHAR},
-            </if>
-            <if test="def2 != null">
-                #{def2,jdbcType=VARCHAR},
-            </if>
-            <if test="def3 != null">
-                #{def3,jdbcType=VARCHAR},
-            </if>
-            <if test="def5 != null">
-                #{def5,jdbcType=VARCHAR},
-            </if>
-            <if test="def6 != null">
-                #{def6,jdbcType=DOUBLE},
-            </if>
-        </trim>
-        on duplicate key update
-        <trim suffixOverrides=",">
-            <if test="id != null">
-                id = #{id,jdbcType=BIGINT},
-            </if>
-            <if test="dr != null">
-                dr = #{dr,jdbcType=INTEGER},
-            </if>
-            <if test="tenantId != null">
-                tenant_id = #{tenantId,jdbcType=BIGINT},
-            </if>
-            <if test="userId != null">
-                user_id = #{userId,jdbcType=BIGINT},
-            </if>
-            <if test="opeAssemblyOrderId != null">
-                ope_assembly_order_id = #{opeAssemblyOrderId,jdbcType=BIGINT},
-            </if>
-            <if test="paymentType != null">
-                payment_type = #{paymentType,jdbcType=VARCHAR},
-            </if>
-            <if test="plannedPaymentTime != null">
-                planned_payment_time = #{plannedPaymentTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="paymentDay != null">
-                payment_day = #{paymentDay,jdbcType=INTEGER},
-            </if>
-            <if test="paymentTime != null">
-                payment_time = #{paymentTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="paymentStatus != null">
-                payment_status = #{paymentStatus,jdbcType=VARCHAR},
-            </if>
-            <if test="paymentPriority != null">
-                payment_priority = #{paymentPriority,jdbcType=INTEGER},
-            </if>
-            <if test="description != null">
-                description = #{description,jdbcType=VARCHAR},
-            </if>
-            <if test="amount != null">
-                amount = #{amount,jdbcType=DECIMAL},
-            </if>
-            <if test="amountProportion != null">
-                amount_proportion = #{amountProportion,jdbcType=INTEGER},
-            </if>
-            <if test="invoiceNum != null">
-                invoice_num = #{invoiceNum,jdbcType=VARCHAR},
-            </if>
-            <if test="invoicePicture != null">
-                invoice_picture = #{invoicePicture,jdbcType=VARCHAR},
-            </if>
-            <if test="revision != null">
-                revision = #{revision,jdbcType=INTEGER},
-            </if>
-            <if test="createdBy != null">
-                created_by = #{createdBy,jdbcType=BIGINT},
-            </if>
-            <if test="createdTime != null">
-                created_time = #{createdTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updatedBy != null">
-                updated_by = #{updatedBy,jdbcType=BIGINT},
-            </if>
-            <if test="updatedTime != null">
-                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="def1 != null">
-                def1 = #{def1,jdbcType=VARCHAR},
-            </if>
-            <if test="def2 != null">
-                def2 = #{def2,jdbcType=VARCHAR},
-            </if>
-            <if test="def3 != null">
-                def3 = #{def3,jdbcType=VARCHAR},
-            </if>
-            <if test="def5 != null">
-                def5 = #{def5,jdbcType=VARCHAR},
-            </if>
-            <if test="def6 != null">
-                def6 = #{def6,jdbcType=DOUBLE},
-            </if>
-        </trim>
-    </insert>
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
 </mapper>

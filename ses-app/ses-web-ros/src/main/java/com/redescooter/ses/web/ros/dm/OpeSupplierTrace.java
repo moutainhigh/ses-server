@@ -3,17 +3,14 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSupplierTrace")
 @Data
@@ -21,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_supplier_trace")
-public class OpeSupplierTrace implements Serializable {
+public class OpeSupplierTrace {
     /**
      * ID
      */
@@ -33,7 +30,6 @@ public class OpeSupplierTrace implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -149,8 +145,6 @@ public class OpeSupplierTrace implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -187,7 +181,7 @@ public class OpeSupplierTrace implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static com.redescooter.ses.web.ros.dm.OpeSupplierTrace.OpeSupplierTraceBuilder builder() {
-        return new com.redescooter.ses.web.ros.dm.OpeSupplierTrace.OpeSupplierTraceBuilder();
+    public static OpeSupplierTraceBuilder builder() {
+        return new OpeSupplierTraceBuilder();
     }
 }
