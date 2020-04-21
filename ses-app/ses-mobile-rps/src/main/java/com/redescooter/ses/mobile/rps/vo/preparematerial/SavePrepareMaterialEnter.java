@@ -24,6 +24,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SavePrepareMaterialEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "备料部件列表")
-    private String partListJson;
+    @ApiModelProperty(value = "备料部件列表 格式：[{\"id\":1014631,\"partListJson\":[{\"partId\":1026387,\"qty\":1,\"serialN\":\"dasdasdasdas\"}]}]")
+    private String partJson;
 }

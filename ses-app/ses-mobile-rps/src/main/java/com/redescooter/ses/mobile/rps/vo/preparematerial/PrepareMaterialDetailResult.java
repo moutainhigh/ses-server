@@ -37,6 +37,9 @@ public class PrepareMaterialDetailResult extends GeneralResult {
     @ApiModelProperty(value = "部件名称")
     private String partCnName;
 
+    @ApiModelProperty(value = "有无Id")
+    private Boolean idClass;
+
     @ApiModelProperty(value = "待备料数量")
     private int preparationWaitQty;
 }

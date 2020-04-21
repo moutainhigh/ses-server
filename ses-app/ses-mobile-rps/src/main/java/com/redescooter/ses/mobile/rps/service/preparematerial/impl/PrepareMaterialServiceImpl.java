@@ -113,7 +113,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
 
         //对入参参数进行解析
         try {
-            savePrepareMaterialListEnterList.addAll(JSON.parseArray(enter.getPartListJson(), SavePrepareMaterialPartListEnter.class));
+            savePrepareMaterialListEnterList.addAll(JSON.parseArray(enter.getPartJson(), SavePrepareMaterialPartListEnter.class));
             if (CollectionUtils.isEmpty(savePrepareMaterialListEnterList)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(), ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
             }

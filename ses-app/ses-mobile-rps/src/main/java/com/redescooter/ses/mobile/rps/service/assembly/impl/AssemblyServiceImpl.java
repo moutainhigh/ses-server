@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
+import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -15,10 +16,13 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.assembly.AssemblyService;
 import com.redescooter.ses.mobile.rps.service.base.*;
+import com.redescooter.ses.mobile.rps.service.base.impl.OpeAssembiyOrderTraceService;
 import com.redescooter.ses.mobile.rps.vo.assembly.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +60,9 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Autowired
     private OpeProductAssemblyBService opeProductAssemblyBService;
 
+    @Autowired
+    private OpeAssembiyOrderTraceService opeAssembiyOrderTraceService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -68,7 +75,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public PageResult<WaitAssemblyListResult> list(PageEnter enter) {
         int count = opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>().ne(OpeAssemblyOrder::getWaitAssemblyTotal, 0).eq(OpeAssemblyOrder::getStatus,
-                AssemblyStatusEnums.ASSEMBLING.getValue()));
+                AssemblyStatusEnums.PREPARE_MATERIAL.getValue()));
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
@@ -196,6 +203,14 @@ public class AssemblyServiceImpl implements AssemblyService {
             opeAssemblyOrder.setUpdatedBy(enter.getUserId());
             opeAssemblyOrder.setUpdatedTime(new Date());
             opeAssemblyOrderService.updateById(opeAssemblyOrder);
+            //日志记录
+            SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+            BeanUtils.copyProperties(enter, saveNodeEnter);
+            saveNodeEnter.setId(opeAssemblyOrder.getId());
+            saveNodeEnter.setStatus(AssemblyStatusEnums.QC.getValue());
+            saveNodeEnter.setEvent(AssemblyStatusEnums.QC.getValue());
+            saveNodeEnter.setMemo(null);
+            this.saveNode(saveNodeEnter);
         }
 
         //整车组装记录
@@ -301,5 +316,31 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .id(opeProductAssembly.getId())
                 .printCodeResult(opeProductAssembly.getPrintFlag())
                 .build();
+    }
+
+    /**
+     * 保存节点
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult saveNode(SaveNodeEnter enter) {
+        opeAssembiyOrderTraceService.save(OpeAssembiyOrderTrace.builder()
+                .id(idAppService.getId(SequenceName.OPE_PURCHAS_TRACE))
+                .dr(0)
+                .userId(enter.getUserId())
+                .opeAssembiyOrderId(enter.getId())
+                .status(enter.getStatus())
+                .event(enter.getEvent())
+                .eventTime(new Date())
+                .memo(StringUtils.isBlank(enter.getMemo()) == true ? null : enter.getMemo())
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build());
+        return new GeneralResult(enter.getRequestId());
     }
 }
