@@ -20,7 +20,7 @@
     <result column="factory_annex" jdbcType="VARCHAR" property="factoryAnnex" />
     <result column="consignee_id" jdbcType="BIGINT" property="consigneeId" />
     <result column="wait_assembly_total" jdbcType="INTEGER" property="waitAssemblyTotal" />
-    <result column="in_wait_wh_total" jdbcType="VARCHAR" property="inWaitWhTotal" />
+    <result column="in_wait_wh_total" jdbcType="INTEGER" property="inWaitWhTotal" />
     <result column="lave_wait_qc_total" jdbcType="INTEGER" property="laveWaitQcTotal" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
@@ -121,7 +121,7 @@
       </trim>
       <trim prefix="in_wait_wh_total = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.inWaitWhTotal,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.inWaitWhTotal,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="lave_wait_qc_total = case" suffix="end,">
@@ -199,7 +199,7 @@
         #{item.totalQty,jdbcType=INTEGER}, #{item.totalPrice,jdbcType=DECIMAL}, #{item.processingFeeRatio,jdbcType=DECIMAL}, 
         #{item.processingFee,jdbcType=DECIMAL}, #{item.paymentType,jdbcType=VARCHAR}, #{item.productPrice,jdbcType=DECIMAL}, 
         #{item.factoryId,jdbcType=BIGINT}, #{item.factoryAnnex,jdbcType=VARCHAR}, #{item.consigneeId,jdbcType=BIGINT}, 
-        #{item.waitAssemblyTotal,jdbcType=INTEGER}, #{item.inWaitWhTotal,jdbcType=VARCHAR}, 
+        #{item.waitAssemblyTotal,jdbcType=INTEGER}, #{item.inWaitWhTotal,jdbcType=INTEGER}, 
         #{item.laveWaitQcTotal,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
@@ -219,7 +219,7 @@
       #{totalPrice,jdbcType=DECIMAL}, #{processingFeeRatio,jdbcType=DECIMAL}, #{processingFee,jdbcType=DECIMAL}, 
       #{paymentType,jdbcType=VARCHAR}, #{productPrice,jdbcType=DECIMAL}, #{factoryId,jdbcType=BIGINT}, 
       #{factoryAnnex,jdbcType=VARCHAR}, #{consigneeId,jdbcType=BIGINT}, #{waitAssemblyTotal,jdbcType=INTEGER}, 
-      #{inWaitWhTotal,jdbcType=VARCHAR}, #{laveWaitQcTotal,jdbcType=INTEGER}, #{revision,jdbcType=INTEGER}, 
+      #{inWaitWhTotal,jdbcType=INTEGER}, #{laveWaitQcTotal,jdbcType=INTEGER}, #{revision,jdbcType=INTEGER}, 
       #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
       #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
       #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
@@ -240,7 +240,7 @@
     factory_annex = #{factoryAnnex,jdbcType=VARCHAR}, 
     consignee_id = #{consigneeId,jdbcType=BIGINT}, 
     wait_assembly_total = #{waitAssemblyTotal,jdbcType=INTEGER}, 
-    in_wait_wh_total = #{inWaitWhTotal,jdbcType=VARCHAR}, 
+    in_wait_wh_total = #{inWaitWhTotal,jdbcType=INTEGER}, 
     lave_wait_qc_total = #{laveWaitQcTotal,jdbcType=INTEGER}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
@@ -393,7 +393,7 @@
         #{waitAssemblyTotal,jdbcType=INTEGER},
       </if>
       <if test="inWaitWhTotal != null">
-        #{inWaitWhTotal,jdbcType=VARCHAR},
+        #{inWaitWhTotal,jdbcType=INTEGER},
       </if>
       <if test="laveWaitQcTotal != null">
         #{laveWaitQcTotal,jdbcType=INTEGER},
@@ -480,7 +480,7 @@
         wait_assembly_total = #{waitAssemblyTotal,jdbcType=INTEGER},
       </if>
       <if test="inWaitWhTotal != null">
-        in_wait_wh_total = #{inWaitWhTotal,jdbcType=VARCHAR},
+        in_wait_wh_total = #{inWaitWhTotal,jdbcType=INTEGER},
       </if>
       <if test="laveWaitQcTotal != null">
         lave_wait_qc_total = #{laveWaitQcTotal,jdbcType=INTEGER},

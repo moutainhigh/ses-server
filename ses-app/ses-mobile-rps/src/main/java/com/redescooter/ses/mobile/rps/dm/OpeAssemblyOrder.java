@@ -3,10 +3,10 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -14,13 +14,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 组装单
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAssemblyOrder")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_assembly_order")
-public class OpeAssemblyOrder {
+public class OpeAssemblyOrder implements Serializable {
     /**
      * 主键
      */
@@ -33,7 +36,6 @@ public class OpeAssemblyOrder {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -139,7 +141,7 @@ public class OpeAssemblyOrder {
      */
     @TableField(value = "in_wait_wh_total")
     @ApiModelProperty(value = "待入库总数")
-    private String inWaitWhTotal;
+    private Integer inWaitWhTotal;
 
     /**
      * 待质检总数
@@ -217,6 +219,8 @@ public class OpeAssemblyOrder {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
+
+    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 

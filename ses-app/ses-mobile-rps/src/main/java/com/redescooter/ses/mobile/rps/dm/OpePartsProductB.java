@@ -11,6 +11,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 部件产品表条目
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpePartsProductB")
 @Data
 @Builder
@@ -66,7 +69,7 @@ public class OpePartsProductB implements Serializable {
      */
     @TableField(value = "parts_product_id")
     @ApiModelProperty(value = "部品组装表主键 部品组装表主键")
-    private Integer partsProductId;
+    private Long partsProductId;
 
     /**
      * 部品数量 数量

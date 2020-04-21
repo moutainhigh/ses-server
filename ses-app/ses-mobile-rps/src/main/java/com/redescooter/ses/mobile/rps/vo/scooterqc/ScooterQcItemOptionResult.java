@@ -16,21 +16,19 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ScooterQcItemOptionResult extends GeneralResult {
 
-
-    @ApiModelProperty(value = "主键",required = true)
-    private Long id;
-
     @ApiModelProperty(value = "质检项id")
     private Long qcId;
 
-    @ApiModelProperty(value = "组装单id")
-    private Long scooterId;
+    @ApiModelProperty(value = "质检项名称")
+    private String qcName;
+
+    @ApiModelProperty(value = "选项排序")
+    private Integer optionNum;
+
+    @ApiModelProperty(value = "组装单子表id")
+    private Long scooterBId;
 
     @ApiModelProperty(value = "部件id")
     private Long partId;
-
-    @ApiModelProperty(value = "质检状态(1、质检通过/2、维修/3、更换)")
-    private Integer qcStatus;
-
 
 }

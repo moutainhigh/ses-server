@@ -11,6 +11,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 部件质检模板结果项
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpePartQcTemplateB")
 @Data
 @Builder

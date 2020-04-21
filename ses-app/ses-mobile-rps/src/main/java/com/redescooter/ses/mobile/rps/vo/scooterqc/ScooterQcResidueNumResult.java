@@ -14,8 +14,8 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = true)
 public class ScooterQcResidueNumResult extends GeneralResult {
 
-    @ApiModelProperty(value = "主键",required = true)
-    private Long id;
+    @ApiModelProperty(value = "质检成功/失败")
+    private Boolean result;
 
     @ApiModelProperty(value = "整车质检剩余产品数量")
     private Integer residueNum;

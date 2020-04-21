@@ -28,6 +28,12 @@
     <result column="def5" jdbcType="VARCHAR" property="def5" />
     <result column="def6" jdbcType="DOUBLE" property="def6" />
   </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, user_id, purchas_id, part_id, supplier_id, supplier_annex, qc_status, 
+    price, total_count, total_price, lave_wait_qc_qty, in_wait_wh_qty, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def5, def6
+  </sql>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_purchas_b

@@ -10,7 +10,7 @@
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="parts_id" jdbcType="BIGINT" property="partsId" />
-    <result column="parts_product_id" jdbcType="INTEGER" property="partsProductId" />
+    <result column="parts_product_id" jdbcType="BIGINT" property="partsProductId" />
     <result column="parts_qty" jdbcType="INTEGER" property="partsQty" />
     <result column="note" jdbcType="VARCHAR" property="note" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
@@ -61,7 +61,7 @@
       </trim>
       <trim prefix="parts_product_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.partsProductId,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsProductId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="parts_qty = case" suffix="end,">
@@ -140,7 +140,7 @@
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
         #{item.userId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, #{item.partsId,jdbcType=BIGINT}, 
-        #{item.partsProductId,jdbcType=INTEGER}, #{item.partsQty,jdbcType=INTEGER}, #{item.note,jdbcType=VARCHAR}, 
+        #{item.partsProductId,jdbcType=BIGINT}, #{item.partsQty,jdbcType=INTEGER}, #{item.note,jdbcType=VARCHAR}, 
         #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
         #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
         #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
@@ -155,7 +155,7 @@
       def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
-      #{status,jdbcType=VARCHAR}, #{partsId,jdbcType=BIGINT}, #{partsProductId,jdbcType=INTEGER}, 
+      #{status,jdbcType=VARCHAR}, #{partsId,jdbcType=BIGINT}, #{partsProductId,jdbcType=BIGINT}, 
       #{partsQty,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, 
       #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
       #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
@@ -167,7 +167,7 @@
     user_id = #{userId,jdbcType=BIGINT}, 
     `status` = #{status,jdbcType=VARCHAR}, 
     parts_id = #{partsId,jdbcType=BIGINT}, 
-    parts_product_id = #{partsProductId,jdbcType=INTEGER}, 
+    parts_product_id = #{partsProductId,jdbcType=BIGINT}, 
     parts_qty = #{partsQty,jdbcType=INTEGER}, 
     note = #{note,jdbcType=VARCHAR}, 
     revision = #{revision,jdbcType=INTEGER}, 
@@ -264,7 +264,7 @@
         #{partsId,jdbcType=BIGINT},
       </if>
       <if test="partsProductId != null">
-        #{partsProductId,jdbcType=INTEGER},
+        #{partsProductId,jdbcType=BIGINT},
       </if>
       <if test="partsQty != null">
         #{partsQty,jdbcType=INTEGER},
@@ -324,7 +324,7 @@
         parts_id = #{partsId,jdbcType=BIGINT},
       </if>
       <if test="partsProductId != null">
-        parts_product_id = #{partsProductId,jdbcType=INTEGER},
+        parts_product_id = #{partsProductId,jdbcType=BIGINT},
       </if>
       <if test="partsQty != null">
         parts_qty = #{partsQty,jdbcType=INTEGER},

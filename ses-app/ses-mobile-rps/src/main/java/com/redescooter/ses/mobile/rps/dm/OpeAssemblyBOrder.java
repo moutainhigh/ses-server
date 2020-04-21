@@ -11,6 +11,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 组装单产品明细表
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAssemblyBOrder")
 @Data
 @Builder
@@ -45,14 +48,14 @@ public class OpeAssemblyBOrder implements Serializable {
      */
     @TableField(value = "user_id")
     @ApiModelProperty(value = "用户id")
-    private Integer userId;
+    private Long userId;
 
     /**
      * 租户id
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户id")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 组装单id

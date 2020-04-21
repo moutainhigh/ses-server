@@ -10,6 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 调拨单节点表
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAllocateTrace")
 @Data
 @Builder

@@ -3,23 +3,26 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 组装单质检记录
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAssemblyQcTrace")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_assembly_qc_trace")
-public class OpeAssemblyQcTrace {
+public class OpeAssemblyQcTrace implements Serializable {
     /**
      * 主键
      */
@@ -32,7 +35,6 @@ public class OpeAssemblyQcTrace {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -43,18 +45,25 @@ public class OpeAssemblyQcTrace {
     private Long opeAssemblyBId;
 
     /**
-     * 质检项Id
+     * 质检项结果Id
      */
     @TableField(value = "product_qc_template_b_id")
-    @ApiModelProperty(value = "质检项Id")
+    @ApiModelProperty(value = "质检项结果Id")
     private Long productQcTemplateBId;
 
     /**
-     * 质检结果
+     * 质检项Id
      */
-    @TableField(value = "qc_result")
-    @ApiModelProperty(value = "质检结果")
-    private String qcResult;
+    @TableField(value = "product_qc_template_id")
+    @ApiModelProperty(value = "质检项Id")
+    private Long productQcTemplateId;
+
+    /**
+     * 商品质检条目
+     */
+    @TableField(value = "assembly_qc_item_id")
+    @ApiModelProperty(value = "商品质检条目")
+    private Long assemblyQcItemId;
 
     /**
      * 质检图片（多个图片逗号分隔）
@@ -133,6 +142,8 @@ public class OpeAssemblyQcTrace {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -141,7 +152,9 @@ public class OpeAssemblyQcTrace {
 
     public static final String COL_PRODUCT_QC_TEMPLATE_B_ID = "product_qc_template_b_id";
 
-    public static final String COL_QC_RESULT = "qc_result";
+    public static final String COL_PRODUCT_QC_TEMPLATE_ID = "product_qc_template_id";
+
+    public static final String COL_ASSEMBLY_QC_ITEM_ID = "assembly_qc_item_id";
 
     public static final String COL_PICTURE = "picture";
 

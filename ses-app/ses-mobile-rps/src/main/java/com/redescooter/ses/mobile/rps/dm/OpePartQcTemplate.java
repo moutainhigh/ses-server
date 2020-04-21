@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -10,13 +11,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 部件质检模板
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpePartQcTemplate")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_part_qc_template")
-public class OpePartQcTemplate {
+public class OpePartQcTemplate implements Serializable {
     /**
      * 主键
      */
@@ -129,6 +133,8 @@ public class OpePartQcTemplate {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def6;
+
+    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 

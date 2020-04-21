@@ -3,23 +3,26 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 组装单质检条目
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAssemblyQcItem")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_assembly_qc_item")
-public class OpeAssemblyQcItem {
+public class OpeAssemblyQcItem implements Serializable {
     /**
      * 主键
      */
@@ -32,7 +35,6 @@ public class OpeAssemblyQcItem {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -47,14 +49,21 @@ public class OpeAssemblyQcItem {
      */
     @TableField(value = "assembly_b_id")
     @ApiModelProperty(value = "组装单子表Id")
-    private Integer assemblyBId;
+    private Long assemblyBId;
+
+    /**
+     * 质检结果表
+     */
+    @TableField(value = "assembly_b_qc_id")
+    @ApiModelProperty(value = "质检结果表")
+    private Long assemblyBQcId;
 
     /**
      * 产品Id
      */
     @TableField(value = "product_id")
     @ApiModelProperty(value = "产品Id")
-    private Integer productId;
+    private Long productId;
 
     /**
      * 序列号
@@ -82,7 +91,7 @@ public class OpeAssemblyQcItem {
      */
     @TableField(value = "created_by")
     @ApiModelProperty(value = "创建表")
-    private Integer createdBy;
+    private Long createdBy;
 
     /**
      * 创建时间
@@ -140,6 +149,8 @@ public class OpeAssemblyQcItem {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -147,6 +158,8 @@ public class OpeAssemblyQcItem {
     public static final String COL_ASSEMBLY_ID = "assembly_id";
 
     public static final String COL_ASSEMBLY_B_ID = "assembly_b_id";
+
+    public static final String COL_ASSEMBLY_B_QC_ID = "assembly_b_qc_id";
 
     public static final String COL_PRODUCT_ID = "product_id";
 

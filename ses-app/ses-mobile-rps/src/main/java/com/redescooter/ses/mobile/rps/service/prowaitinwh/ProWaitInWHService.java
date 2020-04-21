@@ -1,11 +1,13 @@
 package com.redescooter.ses.mobile.rps.service.prowaitinwh;
 
-import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHInfoEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHIdEnter;
 import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHInfoResult;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHListResult;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitWHItemListResult;
-import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHItemResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHLOneResult;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassNameProWaitInWHService
@@ -14,6 +16,8 @@ import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemResult;
  * @Date2020/4/14 17:46
  * @Version V1.0
  **/
+
+@Transactional
 public interface ProWaitInWHService {
     /**
      * @Author kyle
@@ -22,16 +26,16 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    PageResult<ProWaitInWHListResult> proWaitInWHList(PageEnter enter);
+    PageResult<ProWaitInWHLOneResult> proWaitInWHList(PageEnter enter);
 
     /**
      * @Author kyle
-     * @Description //1、根据组装单id查询对应的部件详情列表
+     * @Description //1、根据组装单id查询对应的待入库商品详情列表
      * @Date  2020/4/14 17:49
      * @Param [enter]
      * @return
      **/
-    ProWaitWHItemListResult proWaitWHItemList(IdEnter enter);
+    PageResult<ProWaitInWHItemResult> proWaitWHItemList(ProWaitInWHIdEnter enter);
 
 
     /**
@@ -51,5 +55,5 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    ProWaitInWHInfoResult proWaitInWHInfoIn(ProWaitInWHInfoEnter enter);
+    ProWaitInWHInfoResult proWaitInWHInfoIn(ProWaitInWHIdEnter enter);
 }

@@ -3,10 +3,7 @@ package com.redescooter.ses.mobile.rps.service.base;
 import java.util.List;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyQcTrace;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
-
-@Transactional
-public interface OpeAssemblyQcTraceService extends IService<OpeAssemblyQcTrace> {
+public interface OpeAssemblyQcTraceService extends IService<OpeAssemblyQcTrace>{
 
 
     int updateBatch(List<OpeAssemblyQcTrace> list);
@@ -18,4 +15,3 @@ public interface OpeAssemblyQcTraceService extends IService<OpeAssemblyQcTrace> 
     int insertOrUpdateSelective(OpeAssemblyQcTrace record);
 
 }
-

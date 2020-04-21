@@ -10,22 +10,11 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.assembly.AssemblyServiceMapper;
-import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBOrder;
-import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
-import com.redescooter.ses.mobile.rps.dm.OpePartsProduct;
-import com.redescooter.ses.mobile.rps.dm.OpePartsProductB;
+import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
-import com.redescooter.ses.mobile.rps.dm.OpeProductAssembly;
-import com.redescooter.ses.mobile.rps.dm.OpeProductAssemblyB;
-import com.redescooter.ses.mobile.rps.exception.ExceptionCode;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.assembly.AssemblyService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyBOrderService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
-import com.redescooter.ses.mobile.rps.service.base.OpePartsProductBService;
-import com.redescooter.ses.mobile.rps.service.base.OpePartsProductService;
-import com.redescooter.ses.mobile.rps.service.base.OpeProductAssemblyBService;
-import com.redescooter.ses.mobile.rps.service.base.OpeProductAssemblyService;
+import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.vo.assembly.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
@@ -33,13 +22,8 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import springfox.documentation.spring.web.json.Json;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName:AssemblyServiceImpl

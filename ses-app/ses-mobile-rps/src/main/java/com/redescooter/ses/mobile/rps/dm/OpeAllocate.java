@@ -3,19 +3,23 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 调拨单
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAllocate")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_allocate")
-public class OpeAllocate {
+public class OpeAllocate implements Serializable {
     /**
      * 主键
      */
@@ -149,6 +153,8 @@ public class OpeAllocate {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
+
+    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 

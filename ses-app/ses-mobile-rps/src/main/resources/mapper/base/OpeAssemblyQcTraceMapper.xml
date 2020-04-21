@@ -8,7 +8,8 @@
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="ope_assembly_b_id" jdbcType="BIGINT" property="opeAssemblyBId" />
     <result column="product_qc_template_b_id" jdbcType="BIGINT" property="productQcTemplateBId" />
-    <result column="qc_result" jdbcType="VARCHAR" property="qcResult" />
+    <result column="product_qc_template_id" jdbcType="BIGINT" property="productQcTemplateId" />
+    <result column="assembly_qc_item_id" jdbcType="BIGINT" property="assemblyQcItemId" />
     <result column="picture" jdbcType="VARCHAR" property="picture" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
@@ -23,8 +24,9 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, ope_assembly_b_id, product_qc_template_b_id, qc_result, picture, revision, 
-    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    id, dr, ope_assembly_b_id, product_qc_template_b_id, product_qc_template_id, assembly_qc_item_id, 
+    picture, revision, created_by, created_time, updated_by, updated_time, def1, def2, 
+    def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -45,9 +47,14 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.productQcTemplateBId,jdbcType=BIGINT}
         </foreach>
       </trim>
-      <trim prefix="qc_result = case" suffix="end,">
+      <trim prefix="product_qc_template_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.qcResult,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productQcTemplateId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="assembly_qc_item_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyQcItemId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="picture = case" suffix="end,">
@@ -114,38 +121,40 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_assembly_qc_trace
-    (id, dr, ope_assembly_b_id, product_qc_template_b_id, qc_result, picture, revision, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-      )
+    (id, dr, ope_assembly_b_id, product_qc_template_b_id, product_qc_template_id, assembly_qc_item_id, 
+      picture, revision, created_by, created_time, updated_by, updated_time, def1, def2, 
+      def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.opeAssemblyBId,jdbcType=BIGINT}, 
-        #{item.productQcTemplateBId,jdbcType=BIGINT}, #{item.qcResult,jdbcType=VARCHAR}, 
-        #{item.picture,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+        #{item.productQcTemplateBId,jdbcType=BIGINT}, #{item.productQcTemplateId,jdbcType=BIGINT}, 
+        #{item.assemblyQcItemId,jdbcType=BIGINT}, #{item.picture,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+        )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeAssemblyQcTrace">
     <!--@mbg.generated-->
     insert into ope_assembly_qc_trace
-    (id, dr, ope_assembly_b_id, product_qc_template_b_id, qc_result, picture, revision, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-      )
+    (id, dr, ope_assembly_b_id, product_qc_template_b_id, product_qc_template_id, assembly_qc_item_id, 
+      picture, revision, created_by, created_time, updated_by, updated_time, def1, def2, 
+      def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{opeAssemblyBId,jdbcType=BIGINT}, 
-      #{productQcTemplateBId,jdbcType=BIGINT}, #{qcResult,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, 
-      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
-      )
+      #{productQcTemplateBId,jdbcType=BIGINT}, #{productQcTemplateId,jdbcType=BIGINT}, 
+      #{assemblyQcItemId,jdbcType=BIGINT}, #{picture,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
     ope_assembly_b_id = #{opeAssemblyBId,jdbcType=BIGINT}, 
     product_qc_template_b_id = #{productQcTemplateBId,jdbcType=BIGINT}, 
-    qc_result = #{qcResult,jdbcType=VARCHAR}, 
+    product_qc_template_id = #{productQcTemplateId,jdbcType=BIGINT}, 
+    assembly_qc_item_id = #{assemblyQcItemId,jdbcType=BIGINT}, 
     picture = #{picture,jdbcType=VARCHAR}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
@@ -174,8 +183,11 @@
       <if test="productQcTemplateBId != null">
         product_qc_template_b_id,
       </if>
-      <if test="qcResult != null">
-        qc_result,
+      <if test="productQcTemplateId != null">
+        product_qc_template_id,
+      </if>
+      <if test="assemblyQcItemId != null">
+        assembly_qc_item_id,
       </if>
       <if test="picture != null">
         picture,
@@ -225,8 +237,11 @@
       <if test="productQcTemplateBId != null">
         #{productQcTemplateBId,jdbcType=BIGINT},
       </if>
-      <if test="qcResult != null">
-        #{qcResult,jdbcType=VARCHAR},
+      <if test="productQcTemplateId != null">
+        #{productQcTemplateId,jdbcType=BIGINT},
+      </if>
+      <if test="assemblyQcItemId != null">
+        #{assemblyQcItemId,jdbcType=BIGINT},
       </if>
       <if test="picture != null">
         #{picture,jdbcType=VARCHAR},
@@ -276,8 +291,11 @@
       <if test="productQcTemplateBId != null">
         product_qc_template_b_id = #{productQcTemplateBId,jdbcType=BIGINT},
       </if>
-      <if test="qcResult != null">
-        qc_result = #{qcResult,jdbcType=VARCHAR},
+      <if test="productQcTemplateId != null">
+        product_qc_template_id = #{productQcTemplateId,jdbcType=BIGINT},
+      </if>
+      <if test="assemblyQcItemId != null">
+        assembly_qc_item_id = #{assemblyQcItemId,jdbcType=BIGINT},
       </if>
       <if test="picture != null">
         picture = #{picture,jdbcType=VARCHAR},

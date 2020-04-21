@@ -1,13 +1,32 @@
 package com.redescooter.ses.mobile.rps.service.prowaitinwh.impl;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
+import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.mobile.rps.constant.SequenceName;
+import com.redescooter.ses.mobile.rps.dao.prowaitinwh.ProWaitInWHServiceMapper;
+import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
+import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.prowaitinwh.ProWaitInWHService;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.*;
-import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHIdEnter;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHInfoResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHItemResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHLOneResult;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassNameProWaitInWHServiceImpl
@@ -20,6 +39,34 @@ import java.util.Date;
 public class ProWaitInWHServiceImpl implements ProWaitInWHService {
 
 
+    @Autowired
+    private ProWaitInWHServiceMapper proWaitInWHServiceMapper;
+
+    @Autowired
+    private OpeAssemblyOrderService opeAssemblyOrderService;
+
+    @Autowired
+    private OpeAssemblyBOrderService opeAssemblyBOrderService;
+
+    @Autowired
+    private OpeAssemblyQcItemService opeAssemblyQcItemService;
+
+    @Autowired
+    private OpeAssemblyBQcService opeAssemblyBQcService;
+
+    @Autowired
+    private OpeStockBillService opeStockBillService;
+
+    @Autowired
+    private OpeStockService opeStockService;
+
+    @Autowired
+    private OpeWhseService opeWhseService;
+
+    @Reference
+    private IdAppService idAppService;
+
+
     /**
      * @param enter
      * @return
@@ -29,50 +76,79 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      * @Param [enter]
      */
     @Override
-    public PageResult<ProWaitInWHListResult> proWaitInWHList(PageEnter enter) {
-        ProWaitInWHLOneResult proWaitInWHLOneResult = ProWaitInWHLOneResult.builder()
-                .id(1L)
-                .waitInWHStr("REDE_INWH_01")
-                .waitInWHNum(520)
-                .scooterId(1L)
-                .inWHTListTime(new Date())
-                .scooterId(1L)
-                .build();
+    public PageResult<ProWaitInWHLOneResult> proWaitInWHList(PageEnter enter) {
 
-        ProWaitInWHListResult proWaitInWHListResult = ProWaitInWHListResult.builder()
-                .id(1L)
-                .scooterId(1L)
-                .proWaitInWHLOneResultList(Arrays.asList(proWaitInWHLOneResult))
-                .build();
 
-        return PageResult.create(enter,10,Arrays.asList(proWaitInWHListResult));
+        int count = proWaitInWHServiceMapper.proWaitInWHListCount();
+        List<ProWaitInWHLOneResult> proWaitInWHLOneResults = new ArrayList<>();
+        ProWaitInWHLOneResult proWaitInWHLOneResult = null;
+        //opeAssemblyOrderService对应的数据库表为空的时候直接返回
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        } else {
+            QueryWrapper<OpeAssemblyOrder> opeAssemblyOrderQueryWrapper = new QueryWrapper<>();
+            //待入库数量大于0
+            opeAssemblyOrderQueryWrapper.ge(OpeAssemblyOrder.COL_IN_WAIT_WH_TOTAL, 0);
+            opeAssemblyOrderQueryWrapper.eq(OpeAssemblyOrder.COL_STATUS, AssemblyStatusEnums.IN_PRODUCTION_WH.getMessage());
+            List<OpeAssemblyOrder> opeAssemblyOrderList = opeAssemblyOrderService.list(opeAssemblyOrderQueryWrapper);
+            if (!CollectionUtils.isEmpty(opeAssemblyOrderList)) {
+                for (OpeAssemblyOrder opeAssemblyOrder : opeAssemblyOrderList) {
+                    proWaitInWHLOneResults.add(
+                            proWaitInWHLOneResult = ProWaitInWHLOneResult.builder()
+                                    .scooterId(opeAssemblyOrder.getId())
+                                    .waitInWHNum(opeAssemblyOrder.getInWaitWhTotal())
+                                    .waitInWHStr(opeAssemblyOrder.getAssemblyNumber())
+                                    .inWHTListTime(new Date())
+                                    .build());
+                }
+            } else {
+                return PageResult.createZeroRowResult(enter);
+            }
+        }
+        return PageResult.create(enter, count, proWaitInWHLOneResults);
     }
 
     /**
      * @param enter
      * @return
      * @Author kyle
-     * @Description //1、根据组装单id查询对应的部件详情列表
+     * @Description //1、根据组装单id查询对应的待入库商品部件详情列表
      * @Date 2020/4/14 17:49
      * @Param [enter]
      */
     @Override
-    public ProWaitWHItemListResult proWaitWHItemList(IdEnter enter) {
-        ProWaitInWHItemResult proWaitInWHItemResult = ProWaitInWHItemResult.builder()
-                .id(1L)
-                .scooterId(1L)
-                .scooterNum("#REDE_SCOOTERQC_01")
-                .waitInWHNum(2000)
-                .partId(1L)
-                .partName("轮胎")
-                .partType("120/70-14")
-                .build();
+    public PageResult<ProWaitInWHItemResult> proWaitWHItemList(ProWaitInWHIdEnter enter) {
+        int count = proWaitInWHServiceMapper.proWaitWHItemListCount();
+        ProWaitInWHItemResult proWaitInWHItemResult = null;
+        List<ProWaitInWHItemResult> proWaitWHItemListResult = new ArrayList<>();
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        } else {
+            QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
+            opeAssemblyBOrderQueryWrapper.ge(OpeAssemblyBOrder.COL_IN_WAIT_WH_QTY, 0);
+            opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_PRODUCT_ID, enter.getPartId());
+            //通过组装单子表id查找
+            opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ID, enter.getScooterBId());
+            List<OpeAssemblyBOrder> opeAssemblyBOrderList = opeAssemblyBOrderService.list(opeAssemblyBOrderQueryWrapper);
+            if (!CollectionUtils.isEmpty(opeAssemblyBOrderList)) {
+                for (OpeAssemblyBOrder opeAssemblyBOrder : opeAssemblyBOrderList) {
+                    proWaitWHItemListResult.add(
+                            proWaitInWHItemResult = ProWaitInWHItemResult.builder()
+                                    .id(opeAssemblyBOrder.getId())
+                                    .scooterBId(opeAssemblyBOrder.getAssemblyId())
+                                    .partId(opeAssemblyBOrder.getProductId())
+                                    .partNum(opeAssemblyBOrder.getLaveWaitQcQty())
+                                    .partStr(opeAssemblyBOrder.getProductNumber())
+                                    .partName(opeAssemblyBOrder.getEnName())
+                                    .build());
+                }
+                ;
+            } else {
+                return PageResult.createZeroRowResult(enter);
+            }
+        }
 
-        ProWaitWHItemListResult proWaitWHItemListResult = ProWaitWHItemListResult.builder()
-                .id(1L)
-                .proWaitInWHItemResultList(Arrays.asList(proWaitInWHItemResult))
-                .build();
-        return proWaitWHItemListResult;
+        return PageResult.create(enter, 1, proWaitWHItemListResult);
     }
 
     /**
@@ -85,20 +161,22 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      */
     @Override
     public ProWaitInWHInfoResult proWaitInWHInfoOut(IdEnter enter) {
-        ProWaitInWHInfoResult proWaitInWHInfoResult = ProWaitInWHInfoResult.builder()
-                .id(1L)
-                .partNum("REDE_PART_01")
-                .partName("轮胎")
-                .scooterId(1L)
-                .partId(1L)
-                .batchNum("REDE_BATCH_01")
-                .shouldInWHNum(100)
-                .inWHNum(0)
-                .residueNum(100)
-                .build();
+//        ProWaitInWHInfoResult proWaitInWHInfoResult = ProWaitInWHInfoResult.builder()
+//                .id(1L)
+//                .partNum("REDE_PART_01")
+//                .partName("轮胎")
+//                .scooterId(1L)
+//                .partId(1L)
+//                .batchNum("REDE_BATCH_01")
+//                .shouldInWHNum(100)
+//                .inWHNum(0)
+//                .residueNum(100)
+//                .build();
+
+     //   int count = proWaitInWHServiceMapper.proWaitInWHInfoOutCount();
 
 
-        return proWaitInWHInfoResult;
+        return null;
     }
 
     /**
@@ -110,19 +188,139 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      * @Param [enter]
      */
     @Override
-    public ProWaitInWHInfoResult proWaitInWHInfoIn(ProWaitInWHInfoEnter enter) {
+    public ProWaitInWHInfoResult proWaitInWHInfoIn(ProWaitInWHIdEnter enter) {
+        //返回结果集
+        ProWaitInWHInfoResult proWaitInWHInfoResult = null;
 
-        ProWaitInWHInfoResult proWaitInWHInfoResult = ProWaitInWHInfoResult.builder()
-                .id(1L)
-                .partNum("REDE_PART_01")
-                .partName("轮胎")
-                .scooterId(1L)
-                .partId(1L)
-                .batchNum("REDE_BATCH_01")
-                .shouldInWHNum(100)
-                .inWHNum(70)
-                .residueNum(30)
-                .proTime(new Date())
+        OpeAssemblyQcItem opeAssemblyQcItem = null;
+
+        //查询对应的质检记录
+        QueryWrapper<OpeAssemblyBQc> opeAssemblyBQcQueryWrapper = new QueryWrapper<>();
+        opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_PRODUCT_ID, enter.getPartId());
+        opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_ASSEMBLY_B_ID, enter.getScooterBId());
+        opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_STATUS, AssemblyStatusEnums.QC_PASSED.getMessage());
+        OpeAssemblyBQc opeAssemblyBQc = opeAssemblyBQcService.getOne(opeAssemblyBQcQueryWrapper);
+
+        //抛质检记录为空异常
+        if (StringUtils.isEmpty(opeAssemblyBQc)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.QC_INFO_IS_EMPTY.getCode(), ExceptionCodeEnums.QC_INFO_IS_EMPTY.getMessage());
+        } else {
+            //通过质检项查询质检结果id
+            QueryWrapper<OpeAssemblyQcItem> opeAssemblyQcItemQueryWrapper = new QueryWrapper<>();
+            opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_PRODUCT_ID, enter.getPartId());
+            opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_ASSEMBLY_B_ID, enter.getScooterBId());
+            opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_ASSEMBLY_B_QC_ID, opeAssemblyBQc.getId());
+            opeAssemblyQcItem = opeAssemblyQcItemService.getOne(opeAssemblyQcItemQueryWrapper);
+        }
+
+
+        //获取组装单子单
+        QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
+        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ID, enter.getScooterBId());
+        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_PRODUCT_ID, enter.getPartId());
+        opeAssemblyBOrderQueryWrapper.gt(OpeAssemblyBOrder.COL_IN_WAIT_WH_QTY, 0);
+        OpeAssemblyBOrder opeAssemblyBOrder = opeAssemblyBOrderService.getOne(opeAssemblyBOrderQueryWrapper);
+
+        //抛组装子单为空异常
+        if (StringUtils.isEmpty(opeAssemblyBOrder)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.OPE_B_ORDER_IS_EMPTY.getCode(), ExceptionCodeEnums.OPE_B_ORDER_IS_EMPTY.getMessage());
+        }
+
+        //如果待入库产品的数量为0，抛异常
+        if (StringUtils.isEmpty(opeAssemblyBOrder.getInWaitWhQty())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_IN_WH_NUM_IS_EMPTY.getCode(), ExceptionCodeEnums.WAIT_IN_WH_NUM_IS_EMPTY.getMessage());
+        }
+
+        //获取组装单
+        QueryWrapper<OpeAssemblyOrder> opeAssemblyOrderQueryWrapper = new QueryWrapper<>();
+        opeAssemblyOrderQueryWrapper.eq(OpeAssemblyOrder.COL_ID, opeAssemblyBOrder.getAssemblyId());
+        //部件待入库数不能为空
+        opeAssemblyOrderQueryWrapper.gt(OpeAssemblyOrder.COL_IN_WAIT_WH_TOTAL, 0);
+        OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getOne(opeAssemblyOrderQueryWrapper);
+
+        //组装单不存在
+        if (StringUtils.isEmpty(opeAssemblyOrder)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.OPE_ORDER_IS_EMPTY.getCode(), ExceptionCodeEnums.OPE_ORDER_IS_EMPTY.getMessage());
+        }
+
+        QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
+        //查找仓库类型
+        opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ASSEMBLY.getValue());
+        OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
+
+        //根据仓库id查询库存表
+        QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
+        opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
+        opeStockQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, enter.getPartId());
+        OpeStock opeStock = opeStockService.getOne(opeStockQueryWrapper);
+
+        //查询仓库中是否有该产品，有就数量叠加，没有就新增
+        if (!StringUtils.isEmpty(opeStock)) {
+            //入库总数+1
+            opeStock.setIntTotal(opeStock.getIntTotal() + 1);
+            //剩余库存数+1
+            opeStock.setIntTotal(opeStock.getAvailableTotal() + 1);
+            opeStockService.updateById(opeStock);
+        } else {
+            opeStock = OpeStock.builder()
+                    .id(idAppService.getId(SequenceName.OPE_STOCK))
+                    .dr(0)
+                    .intTotal(1)
+                    .whseId(opeWhse.getId())
+                    .intTotal(1)
+                    .revision(1)
+                    .materielProductName(opeAssemblyBOrder.getEnName())
+                    .materielProductId(enter.getPartId())
+                    .availableTotal(1)
+                    .createdTime(new Date())
+                    .createdBy(enter.getUserId())
+                    .build();
+            opeStockService.save(opeStock);
+        }
+
+        //新建入库信息单
+//        QueryWrapper<OpeStockBill> opeStockBillQueryWrapper = new QueryWrapper<>();
+//        opeStockBillQueryWrapper.eq(OpeStockBill.COL_STOCK_ID,opeStock.getId());
+//        OpeStockBill opeStockBill = opeStockBillService.getOne(opeStockBillQueryWrapper);
+        OpeStockBill opeStockBill = null;
+
+        //更新一条生产入库信息
+        opeStockBill = OpeStockBill.builder()
+                .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
+                .dr(0)
+                .stockId(opeStock.getId())
+                .direction("In")
+                .status("0")
+                .total(1)
+                .sourceType(WhseTypeEnums.ASSEMBLY.getMessage())
+                .operatineTime(new Date())
+                .revision(1)
+                .updatedTime(new Date())
+                .createdTime(new Date())
+                .operatineTime(new Date())
+                .build();
+
+        opeStockBillService.save(opeStockBill);
+
+        opeAssemblyBOrder.setInWaitWhQty(opeAssemblyBOrder.getInWaitWhQty() - 1);
+        opeAssemblyOrder.setInWaitWhTotal(opeAssemblyOrder.getInWaitWhTotal() - 1);
+        if (opeAssemblyOrder.getInWaitWhTotal() == 0) {
+            //组装单入库完成
+            opeAssemblyOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getMessage());
+        }
+        if (opeAssemblyBOrder.getInWaitWhQty() == 0) {
+            //组装单入库完成
+            opeAssemblyBOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getMessage());
+        }
+        opeAssemblyBOrderService.updateById(opeAssemblyBOrder);
+        opeAssemblyOrderService.updateById(opeAssemblyOrder);
+        proWaitInWHInfoResult = ProWaitInWHInfoResult.builder()
+                .partNum(opeAssemblyBOrder.getProductNumber())
+                .batchNum(opeAssemblyBQc.getBatchNo())
+                .proTime(opeAssemblyOrder.getCreatedTime())
+                .partName(opeAssemblyBOrder.getEnName())
+                .residueNum(opeAssemblyBOrder.getInWaitWhQty())
+                .Num(opeAssemblyBOrder.getProductNumber())
                 .build();
 
         return proWaitInWHInfoResult;

@@ -21,7 +21,7 @@ import com.redescooter.ses.mobile.rps.dm.OpeSysUserRole;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.TokenRpsService;
-import com.redescooter.ses.mobile.rps.service.base.impl.OpeSysUserRoleService;
+import com.redescooter.ses.mobile.rps.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import lombok.extern.slf4j.Slf4j;

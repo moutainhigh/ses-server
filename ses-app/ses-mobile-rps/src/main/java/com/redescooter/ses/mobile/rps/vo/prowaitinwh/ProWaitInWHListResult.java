@@ -16,21 +16,21 @@ import java.util.List;
  * @Version V1.0
  **/
 
-@ApiModel(value = "生产待入库列表出参", description = "生产待入库列表出参")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@EqualsAndHashCode(callSuper = true)
-public class ProWaitInWHListResult extends GeneralResult {
-
-    @ApiModelProperty(value = "主键", required = true)
-    private Long id;
-
-    @ApiModelProperty(value = "组装单id")
-    private Long scooterId;
-
-    @ApiModelProperty(value = "生产待入库单集合")
-    private List<ProWaitInWHLOneResult> proWaitInWHLOneResultList;
-
-}
+//@ApiModel(value = "生产待入库列表出参", description = "生产待入库列表出参")
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@Builder
+//@EqualsAndHashCode(callSuper = true)
+//public class ProWaitInWHListResult extends GeneralResult {
+//
+////    @ApiModelProperty(value = "主键", required = true)
+////    private Long id;
+////
+////    @ApiModelProperty(value = "组装单子表id")
+////    private Long scooterBId;
+////
+////    @ApiModelProperty(value = "生产待入库单集合")
+////    private List<ProWaitInWHLOneResult> proWaitInWHLOneResultList;
+//
+//}

@@ -10,6 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 产品组装表
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeProductAssembly")
 @Data
 @Builder

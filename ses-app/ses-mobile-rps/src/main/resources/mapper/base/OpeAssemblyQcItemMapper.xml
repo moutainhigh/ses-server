@@ -7,12 +7,13 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="assembly_id" jdbcType="BIGINT" property="assemblyId" />
-    <result column="assembly_b_id" jdbcType="INTEGER" property="assemblyBId" />
-    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="assembly_b_id" jdbcType="BIGINT" property="assemblyBId" />
+    <result column="assembly_b_qc_id" jdbcType="BIGINT" property="assemblyBQcId" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
     <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
     <result column="qc_result" jdbcType="VARCHAR" property="qcResult" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
-    <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
@@ -24,8 +25,9 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, assembly_id, assembly_b_id, product_id, serial_num, qc_result, revision, 
-    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    id, dr, assembly_id, assembly_b_id, assembly_b_qc_id, product_id, serial_num, qc_result, 
+    revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
+    def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -43,12 +45,17 @@
       </trim>
       <trim prefix="assembly_b_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyBId,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyBId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="assembly_b_qc_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyBQcId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="product_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="serial_num = case" suffix="end,">
@@ -68,7 +75,7 @@
       </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="created_time = case" suffix="end,">
@@ -120,42 +127,44 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_assembly_qc_item
-    (id, dr, assembly_id, assembly_b_id, product_id, serial_num, qc_result, revision, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-      )
+    (id, dr, assembly_id, assembly_b_id, assembly_b_qc_id, product_id, serial_num, qc_result, 
+      revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.assemblyId,jdbcType=BIGINT}, 
-        #{item.assemblyBId,jdbcType=INTEGER}, #{item.productId,jdbcType=INTEGER}, #{item.serialNum,jdbcType=VARCHAR}, 
-        #{item.qcResult,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=INTEGER}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+        #{item.assemblyBId,jdbcType=BIGINT}, #{item.assemblyBQcId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, 
+        #{item.serialNum,jdbcType=VARCHAR}, #{item.qcResult,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+        )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeAssemblyQcItem">
     <!--@mbg.generated-->
     insert into ope_assembly_qc_item
-    (id, dr, assembly_id, assembly_b_id, product_id, serial_num, qc_result, revision, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-      )
+    (id, dr, assembly_id, assembly_b_id, assembly_b_qc_id, product_id, serial_num, qc_result, 
+      revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{assemblyId,jdbcType=BIGINT}, #{assemblyBId,jdbcType=INTEGER}, 
-      #{productId,jdbcType=INTEGER}, #{serialNum,jdbcType=VARCHAR}, #{qcResult,jdbcType=VARCHAR}, 
-      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
-      )
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{assemblyId,jdbcType=BIGINT}, #{assemblyBId,jdbcType=BIGINT}, 
+      #{assemblyBQcId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{serialNum,jdbcType=VARCHAR}, 
+      #{qcResult,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
     assembly_id = #{assemblyId,jdbcType=BIGINT}, 
-    assembly_b_id = #{assemblyBId,jdbcType=INTEGER}, 
-    product_id = #{productId,jdbcType=INTEGER}, 
+    assembly_b_id = #{assemblyBId,jdbcType=BIGINT}, 
+    assembly_b_qc_id = #{assemblyBQcId,jdbcType=BIGINT}, 
+    product_id = #{productId,jdbcType=BIGINT}, 
     serial_num = #{serialNum,jdbcType=VARCHAR}, 
     qc_result = #{qcResult,jdbcType=VARCHAR}, 
     revision = #{revision,jdbcType=INTEGER}, 
-    created_by = #{createdBy,jdbcType=INTEGER}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
     updated_by = #{updatedBy,jdbcType=BIGINT}, 
     updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
@@ -180,6 +189,9 @@
       </if>
       <if test="assemblyBId != null">
         assembly_b_id,
+      </if>
+      <if test="assemblyBQcId != null">
+        assembly_b_qc_id,
       </if>
       <if test="productId != null">
         product_id,
@@ -233,10 +245,13 @@
         #{assemblyId,jdbcType=BIGINT},
       </if>
       <if test="assemblyBId != null">
-        #{assemblyBId,jdbcType=INTEGER},
+        #{assemblyBId,jdbcType=BIGINT},
+      </if>
+      <if test="assemblyBQcId != null">
+        #{assemblyBQcId,jdbcType=BIGINT},
       </if>
       <if test="productId != null">
-        #{productId,jdbcType=INTEGER},
+        #{productId,jdbcType=BIGINT},
       </if>
       <if test="serialNum != null">
         #{serialNum,jdbcType=VARCHAR},
@@ -248,7 +263,7 @@
         #{revision,jdbcType=INTEGER},
       </if>
       <if test="createdBy != null">
-        #{createdBy,jdbcType=INTEGER},
+        #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="createdTime != null">
         #{createdTime,jdbcType=TIMESTAMP},
@@ -287,10 +302,13 @@
         assembly_id = #{assemblyId,jdbcType=BIGINT},
       </if>
       <if test="assemblyBId != null">
-        assembly_b_id = #{assemblyBId,jdbcType=INTEGER},
+        assembly_b_id = #{assemblyBId,jdbcType=BIGINT},
+      </if>
+      <if test="assemblyBQcId != null">
+        assembly_b_qc_id = #{assemblyBQcId,jdbcType=BIGINT},
       </if>
       <if test="productId != null">
-        product_id = #{productId,jdbcType=INTEGER},
+        product_id = #{productId,jdbcType=BIGINT},
       </if>
       <if test="serialNum != null">
         serial_num = #{serialNum,jdbcType=VARCHAR},
@@ -302,7 +320,7 @@
         revision = #{revision,jdbcType=INTEGER},
       </if>
       <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=INTEGER},
+        created_by = #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="createdTime != null">
         created_time = #{createdTime,jdbcType=TIMESTAMP},

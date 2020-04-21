@@ -7,7 +7,7 @@ import com.redescooter.ses.api.common.enums.production.*;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
-import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
+//import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -18,7 +18,8 @@ import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.base.*;
-import com.redescooter.ses.mobile.rps.service.base.impl.OpePurchasTraceService;
+
+//import com.redescooter.ses.mobile.rps.service.base.impl.OpePurchasTraceService;
 import com.redescooter.ses.mobile.rps.service.purchasinwh.PurchasPutStroageService;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -191,7 +192,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
                 .dr(0)
-                .status(StockProductPartStatusEnums.AVAILABLE.getValue())
+                //.status(StockProductPartStatusEnums.AVAILABLE.getValue())
                 .stockId(opeStockData.getId())
                 .partId(partsData.getId())
                 .lot(opePurchasBQc.getBatchNo())
@@ -300,7 +301,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
                 .dr(0)
-                .status(StockProductPartStatusEnums.AVAILABLE.getValue())
+                //.status(StockProductPartStatusEnums.AVAILABLE.getValue())
                 .stockId(opeStockData.getId())
                 .partId(partsData.getId())
                 .lot(opePurchasBQc.getBatchNo())

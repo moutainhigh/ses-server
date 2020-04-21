@@ -25,6 +25,12 @@
     <result column="def5" jdbcType="VARCHAR" property="def5" />
     <result column="def6" jdbcType="DOUBLE" property="def6" />
   </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, `name`, code, product_range, `type`, remark, country_id, city_id, area_id, 
+    revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
+    def6
+  </sql>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_whse

@@ -1,10 +1,9 @@
-package com.redescooter.ses.mobile.rps.service.base.impl;
+package com.redescooter.ses.mobile.rps.service.base;
 
 import java.util.List;
 import com.redescooter.ses.mobile.rps.dm.OpeProductQcTemplateB;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-public interface OpeProductQcTemplateBService extends IService<OpeProductQcTemplateB> {
+public interface OpeProductQcTemplateBService extends IService<OpeProductQcTemplateB>{
 
 
     int updateBatch(List<OpeProductQcTemplateB> list);
@@ -16,4 +15,3 @@ public interface OpeProductQcTemplateBService extends IService<OpeProductQcTempl
     int insertOrUpdateSelective(OpeProductQcTemplateB record);
 
 }
-

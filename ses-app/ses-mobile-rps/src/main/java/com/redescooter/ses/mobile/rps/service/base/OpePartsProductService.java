@@ -3,10 +3,7 @@ package com.redescooter.ses.mobile.rps.service.base;
 import com.redescooter.ses.mobile.rps.dm.OpePartsProduct;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
-
-@Transactional
-public interface OpePartsProductService extends IService<OpePartsProduct> {
+public interface OpePartsProductService extends IService<OpePartsProduct>{
 
 
     int updateBatch(List<OpePartsProduct> list);
@@ -18,4 +15,3 @@ public interface OpePartsProductService extends IService<OpePartsProduct> {
     int insertOrUpdateSelective(OpePartsProduct record);
 
 }
-
