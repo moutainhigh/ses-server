@@ -18,7 +18,7 @@ public class NotIdEnter extends PageEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
     private Long id;
     @ApiModelProperty(value = "入库数量",required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "入库数量不能为空")
+    @NotNull(code = ValidationExceptionCode.IN_WAIT_WH_QTY, message = "入库数量不能为空")
     private int inWaitWhQty;
 
 }
