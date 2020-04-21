@@ -24,18 +24,21 @@
         from ope_allocate_b allocateb
                  inner join ope_parts parts on parts.id = allocateb.part_id
         where allocateb.dr = 0
+          and allocateb.allocate_id=#{id}
     </select>
 
     <select id="detailList"
             resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult">
         select allocateb.id                   as id,
-               allocateb.part_id              as partId,
-               parts.parts_number             as partN,
-               parts.cn_name                  as partCnName,
-               allocateb.preparation_wait_qty as preparationWaitQty
+        allocateb.part_id              as partId,
+        parts.id_class                 as idClass,
+        parts.parts_number             as partN,
+        parts.cn_name                  as partCnName,
+        allocateb.preparation_wait_qty as preparationWaitQty
         from ope_allocate_b allocateb
-                 inner join ope_parts parts on parts.id = allocateb.part_id
+        inner join ope_parts parts on parts.id = allocateb.part_id
         where allocateb.dr = 0
+        and allocateb.allocate_id=#{id}
         order by allocateb.created_time asc
     </select>
 </mapper>
