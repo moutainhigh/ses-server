@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
@@ -28,6 +25,7 @@ public class OpeSysDept {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**
