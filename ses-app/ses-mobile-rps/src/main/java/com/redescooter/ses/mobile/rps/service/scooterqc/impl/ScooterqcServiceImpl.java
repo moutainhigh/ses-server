@@ -80,6 +80,7 @@ public class ScooterqcServiceImpl implements ScooterqcService {
             return PageResult.createZeroRowResult(enter);
         } else {
             QueryWrapper<OpeAssemblyOrder> opeAssemblyOrderQueryWrapper = new QueryWrapper<>();
+            opeAssemblyOrderQueryWrapper.eq(OpeAssemblyOrder.COL_STATUS, AssemblyStatusEnums.QC.getMessage());
             opeAssemblyOrderQueryWrapper.isNotNull(OpeAssemblyOrder.COL_ID);
             //待质检项不为0
             opeAssemblyOrderQueryWrapper.ne(OpeAssemblyOrder.COL_LAVE_WAIT_QC_TOTAL, 0);
@@ -118,16 +119,16 @@ public class ScooterqcServiceImpl implements ScooterqcService {
             return PageResult.createZeroRowResult(enter);
         } else {
             QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
-            opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_PRODUCT_ID, enter.getPartId());
+           // opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_PRODUCT_ID, enter.getPartId());
             //通过组装单子表id查找
-            opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ID, enter.getScooterBId());
+            opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ASSEMBLY_ID, enter.getScooterId());
             List<OpeAssemblyBOrder> opeAssemblyBOrderList = opeAssemblyBOrderService.list(opeAssemblyBOrderQueryWrapper);
             if (!CollectionUtils.isEmpty(opeAssemblyBOrderList)) {
                 for (OpeAssemblyBOrder opeAssemblyBOrder : opeAssemblyBOrderList) {
                     scooterQcPartResultList.add(
                             scooterQcPartResult = ScooterQcPartResult.builder()
                                     .id(opeAssemblyBOrder.getId())
-                                    .scooterBId(opeAssemblyBOrder.getAssemblyId())
+                                    .scooterBId(opeAssemblyBOrder.getId())
                                     .partId(opeAssemblyBOrder.getProductId())
                                     .partNum(opeAssemblyBOrder.getLaveWaitQcQty())
                                     .partStr(opeAssemblyBOrder.getProductNumber())
@@ -149,7 +150,7 @@ public class ScooterqcServiceImpl implements ScooterqcService {
      * @Param [enter]
      **/
     @Override
-    public PageResult<ScooterQcItemResult> scooterQcItem(ScooterQcIdEnter enter) {
+    public PageResult<ScooterQcItemResult> scooterQcItem(ScooterQcIdItemEnter enter) {
         //先查询组组装单是否存在
         QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
         opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ID, enter.getScooterBId());
@@ -178,11 +179,19 @@ public class ScooterqcServiceImpl implements ScooterqcService {
             //根据产品id查询到对应的质检模板
             opeProductQcTemplateQueryWrapper.eq(OpeProductQcTemplate.COL_PRODUCT_ID, enter.getPartId());
             OpeProductQcTemplate opeProductQcTemplate = opeProductQcTemplateService.getOne(opeProductQcTemplateQueryWrapper);
+            //判断详细质检模板是否为空
+            if(StringUtils.isEmpty(opeProductQcTemplate)){
+                throw new SesMobileRpsException(ExceptionCodeEnums.OPE_TEMPLATE_IS_EMPTY.getCode(),ExceptionCodeEnums.OPE_TEMPLATE_IS_EMPTY.getMessage());
+            }
             //质检模板子表
             QueryWrapper<OpeProductQcTemplateB> opeProductQcTemplateBQueryWrapper = new QueryWrapper<>();
             //获取到对应的质检子模板
             opeProductQcTemplateBQueryWrapper.eq(OpeProductQcTemplateB.COL_PRODUCT_QC_TEMPLATE_ID, opeProductQcTemplate.getId());
             OpeProductQcTemplateB opeProductQcTemplateB = opeProductQcTemplateBService.getOne(opeProductQcTemplateBQueryWrapper);
+            //判断详细质检信息是否为空
+            if(StringUtils.isEmpty(opeProductQcTemplateB)){
+                throw new SesMobileRpsException(ExceptionCodeEnums.OPE_TEMPLATE_B_IS_EMPTY.getCode(),ExceptionCodeEnums.OPE_TEMPLATE_B_IS_EMPTY.getMessage());
+            }
 
             if (!StringUtils.isEmpty(opeProductQcTemplate)) {
                 //获取模板数据库中的质检项集合
@@ -382,6 +391,26 @@ public class ScooterqcServiceImpl implements ScooterqcService {
 
 
             opeAssemblyQcItemService.saveBatch(opeAssemblyQcItemList);
+
+            //把质检成功的产品对应的组装单和组装单子单的待质检数量进行修改
+            if ((opeAssemblyOrder.getLaveWaitQcTotal() - enter.getPartNum()) == 0) {
+                //修改组装单子表待质检数为0
+                opeAssemblyBOrder.setLaveWaitQcQty(0);
+
+                return scooterQcItemOptionResult = ScooterQcResidueNumResult.builder()
+                        .result(Boolean.TRUE)
+                        .residueNum(opeAssemblyOrder.getLaveWaitQcTotal() - enter.getPartNum())
+                        .build();
+            }else {
+                //修改组装单子单的待质检数
+                opeAssemblyBOrder.setLaveWaitQcQty((opeAssemblyBOrder.getLaveWaitQcQty() - enter.getPartNum()));
+                scooterQcItemOptionResult = ScooterQcResidueNumResult.builder()
+                        .result(Boolean.TRUE)
+                        .residueNum(opeAssemblyOrder.getLaveWaitQcTotal() - enter.getPartNum())
+                        .build();
+            }
+            //修改组装单的总待质检数量
+            opeAssemblyOrder.setLaveWaitQcTotal(opeAssemblyOrder.getLaveWaitQcTotal() - enter.getPartNum());
             //修改组装单状态
             if (opeAssemblyOrder.getLaveWaitQcTotal() == 0) {
                 opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC_PASSED.getMessage());
@@ -394,26 +423,6 @@ public class ScooterqcServiceImpl implements ScooterqcService {
             } else {
                 opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC.getMessage());
             }
-            //把质检成功的产品对应的组装单和组装单子单的待质检数量进行修改
-            if ((opeAssemblyOrder.getLaveWaitQcTotal() - enter.getPartNum()) == 0) {
-                //修改组装单子表待质检数为0
-                opeAssemblyBOrder.setLaveWaitQcQty(0);
-
-                return scooterQcItemOptionResult = ScooterQcResidueNumResult.builder()
-                        .result(Boolean.TRUE)
-                        .residueNum(opeAssemblyOrder.getLaveWaitQcTotal() - enter.getPartNum())
-                        .build();
-            }else {
-
-                //修改组装单子单的待质检数
-                opeAssemblyBOrder.setLaveWaitQcQty((opeAssemblyBOrder.getLaveWaitQcQty() - enter.getPartNum()));
-                scooterQcItemOptionResult = ScooterQcResidueNumResult.builder()
-                        .result(Boolean.TRUE)
-                        .residueNum(opeAssemblyOrder.getLaveWaitQcTotal() - enter.getPartNum())
-                        .build();
-            }
-            //修改组装单的总待质检数量
-            opeAssemblyOrder.setLaveWaitQcTotal(opeAssemblyOrder.getLaveWaitQcTotal() - enter.getPartNum());
             //修改组装单子单的状态
             opeAssemblyBOrderService.updateById(opeAssemblyBOrder);
             //保存质检批次记录

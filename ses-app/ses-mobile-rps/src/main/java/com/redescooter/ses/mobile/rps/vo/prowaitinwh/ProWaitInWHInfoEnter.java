@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.Date;
+
 /**
  * @ClassNameProWaitInWHInfoEnter
  * @Description
@@ -20,15 +22,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class ProWaitInWHInfoEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "主键",required = true)
-    private Long id;
-
-    @ApiModelProperty(value = "组装单id")
-    private Long scooterId;
-
-    @ApiModelProperty(value = "部品id")
-    private Long partId;
-
     @ApiModelProperty(value = "部品名称")
     private String partName;
 
@@ -38,13 +31,13 @@ public class ProWaitInWHInfoEnter extends GeneralEnter {
     @ApiModelProperty(value = "批次号")
     private String batchNum;
 
-    @ApiModelProperty(value = "应入库数量")
-    private Integer shouldInWHNum;
-
-    @ApiModelProperty(value = "入库数量")
-    private Integer inWHNum;
-
     @ApiModelProperty(value = "剩余数量")
     private Integer residueNum;
+
+    @ApiModelProperty(value = "生产日期")
+    private Date proTime;
+
+    @ApiModelProperty(value = "序列号")
+    private String Num;
 
 }

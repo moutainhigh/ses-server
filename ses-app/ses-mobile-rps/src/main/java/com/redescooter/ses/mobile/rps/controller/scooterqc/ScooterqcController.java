@@ -1,8 +1,9 @@
 package com.redescooter.ses.mobile.rps.controller.scooterqc;
 
-import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.mobile.rps.service.scooterqc.ScooterqcService;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.*;
 import io.swagger.annotations.Api;
@@ -11,8 +12,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @Log4j2
@@ -44,7 +43,7 @@ public class ScooterqcController {
     @IgnoreLoginCheck
     @PostMapping(value = "/scooterQcItem")
     @ApiOperation(value = "整车质检具体选项处理", response = ScooterQcItemResult.class)
-    public Response<PageResult<ScooterQcItemResult>> scooterQcItem(@ModelAttribute @ApiParam("请求参数") ScooterQcIdEnter enter) {
+    public Response<PageResult<ScooterQcItemResult>> scooterQcItem(@ModelAttribute @ApiParam("请求参数") ScooterQcIdItemEnter enter) {
         return new Response(scooterService.scooterQcItem(enter));
     }
 

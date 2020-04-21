@@ -30,7 +30,7 @@ public interface ScooterqcService {
      * @Date 2020/4/14 14:36
      * @Param [enter]
      **/
-    PageResult<ScooterQcItemResult> scooterQcItem(ScooterQcIdEnter enter);
+    PageResult<ScooterQcItemResult> scooterQcItem(ScooterQcIdItemEnter enter);
 
     /**
      * @Author kyle
