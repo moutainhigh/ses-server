@@ -8,7 +8,7 @@
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="part_qc_template_id" jdbcType="BIGINT" property="partQcTemplateId" />
     <result column="qc_result" jdbcType="VARCHAR" property="qcResult" />
-    <result column="pass_flag" jdbcType="TINYINT" property="passFlag" />
+    <result column="pass_flag" jdbcType="BOOLEAN" property="passFlag" />
     <result column="upload_flag" jdbcType="BOOLEAN" property="uploadFlag" />
     <result column="results_sequence" jdbcType="INTEGER" property="resultsSequence" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
@@ -49,7 +49,7 @@
       </trim>
       <trim prefix="pass_flag = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.passFlag,jdbcType=TINYINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.passFlag,jdbcType=BOOLEAN}
         </foreach>
       </trim>
       <trim prefix="upload_flag = case" suffix="end,">
@@ -127,7 +127,7 @@
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.partQcTemplateId,jdbcType=BIGINT}, 
-        #{item.qcResult,jdbcType=VARCHAR}, #{item.passFlag,jdbcType=TINYINT}, #{item.uploadFlag,jdbcType=BOOLEAN}, 
+        #{item.qcResult,jdbcType=VARCHAR}, #{item.passFlag,jdbcType=BOOLEAN}, #{item.uploadFlag,jdbcType=BOOLEAN}, 
         #{item.resultsSequence,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
@@ -142,7 +142,7 @@
       def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{partQcTemplateId,jdbcType=BIGINT}, 
-      #{qcResult,jdbcType=VARCHAR}, #{passFlag,jdbcType=TINYINT}, #{uploadFlag,jdbcType=BOOLEAN}, 
+      #{qcResult,jdbcType=VARCHAR}, #{passFlag,jdbcType=BOOLEAN}, #{uploadFlag,jdbcType=BOOLEAN}, 
       #{resultsSequence,jdbcType=INTEGER}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
       #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
@@ -152,7 +152,7 @@
     dr = #{dr,jdbcType=INTEGER}, 
     part_qc_template_id = #{partQcTemplateId,jdbcType=BIGINT}, 
     qc_result = #{qcResult,jdbcType=VARCHAR}, 
-    pass_flag = #{passFlag,jdbcType=TINYINT}, 
+    pass_flag = #{passFlag,jdbcType=BOOLEAN}, 
     upload_flag = #{uploadFlag,jdbcType=BOOLEAN}, 
     results_sequence = #{resultsSequence,jdbcType=INTEGER}, 
     revision = #{revision,jdbcType=INTEGER}, 
@@ -237,7 +237,7 @@
         #{qcResult,jdbcType=VARCHAR},
       </if>
       <if test="passFlag != null">
-        #{passFlag,jdbcType=TINYINT},
+        #{passFlag,jdbcType=BOOLEAN},
       </if>
       <if test="uploadFlag != null">
         #{uploadFlag,jdbcType=BOOLEAN},
@@ -291,7 +291,7 @@
         qc_result = #{qcResult,jdbcType=VARCHAR},
       </if>
       <if test="passFlag != null">
-        pass_flag = #{passFlag,jdbcType=TINYINT},
+        pass_flag = #{passFlag,jdbcType=BOOLEAN},
       </if>
       <if test="uploadFlag != null">
         upload_flag = #{uploadFlag,jdbcType=BOOLEAN},

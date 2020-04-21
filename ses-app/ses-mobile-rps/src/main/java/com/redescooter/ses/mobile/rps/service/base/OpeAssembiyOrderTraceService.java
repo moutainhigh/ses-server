@@ -1,10 +1,9 @@
-package com.redescooter.ses.mobile.rps.service.base.impl;
+package com.redescooter.ses.mobile.rps.service.base;
 
 import java.util.List;
 import com.redescooter.ses.mobile.rps.dm.OpeAssembiyOrderTrace;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-public interface OpeAssembiyOrderTraceService extends IService<OpeAssembiyOrderTrace> {
+public interface OpeAssembiyOrderTraceService extends IService<OpeAssembiyOrderTrace>{
 
 
     int updateBatch(List<OpeAssembiyOrderTrace> list);
@@ -16,4 +15,3 @@ public interface OpeAssembiyOrderTraceService extends IService<OpeAssembiyOrderT
     int insertOrUpdateSelective(OpeAssembiyOrderTrace record);
 
 }
-

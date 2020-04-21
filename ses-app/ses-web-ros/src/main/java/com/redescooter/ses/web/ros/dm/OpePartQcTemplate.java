@@ -14,6 +14,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 部件质检模板
+ */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartQcTemplate")
 @Data
 @Builder
@@ -89,7 +92,7 @@ public class OpePartQcTemplate implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Integer updatedBy;
+    private Long updatedBy;
 
     /**
      * 更新时间

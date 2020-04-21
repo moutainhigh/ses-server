@@ -1034,7 +1034,7 @@ public class PartsRosServiceImpl implements PartsRosService {
     private void checkParts(EditSavePartsEnter enter) {
 
         String partsNumber = enter.getPartsNumber();
-        String snClassFlag = BomSnClassEnums.checkCode(enter.getSnClassFlag());
+        String snClassFlag = BomSnClassEnums.checkValue(enter.getSnClassFlag());
         String partsType = BomCommonTypeEnums.checkCode(enter.getPartsType());
         String sec = ESCUtils.checkESC(enter.getSec());
         if (StringUtils.isAnyBlank(partsNumber, snClassFlag, partsType, sec)) {

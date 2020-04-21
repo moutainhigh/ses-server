@@ -28,7 +28,7 @@
     </select>
     <select id="formulaByAssemblyBId"
             resultType="com.redescooter.ses.mobile.rps.vo.assembly.ProductFormulaResult">
-        select productb.id        as id,
+        select assb.id        as id,
                parts.id           as partId,
                parts.cn_name      as partCnName,
                parts.parts_number as partN,

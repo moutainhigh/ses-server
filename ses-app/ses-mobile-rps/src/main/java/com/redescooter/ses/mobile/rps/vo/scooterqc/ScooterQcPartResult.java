@@ -15,9 +15,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class ScooterQcPartResult extends GeneralResult {
 
-    @ApiModelProperty(value = "主键", required = true)
-    private Long id;
-
     @ApiModelProperty(value = "部件名称")
     private String partName;
 

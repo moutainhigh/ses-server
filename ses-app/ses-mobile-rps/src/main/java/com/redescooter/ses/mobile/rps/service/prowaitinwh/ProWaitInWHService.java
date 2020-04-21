@@ -7,7 +7,6 @@ import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHIdEnter;
 import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHInfoResult;
 import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHItemResult;
 import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHLOneResult;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassNameProWaitInWHService
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Version V1.0
  **/
 
-@Transactional
+
 public interface ProWaitInWHService {
     /**
      * @Author kyle

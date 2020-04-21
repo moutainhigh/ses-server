@@ -14,6 +14,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 部件质检模板结果项
+ */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePartQcTemplateB")
 @Data
 @Builder
@@ -54,7 +57,7 @@ public class OpePartQcTemplateB implements Serializable {
      */
     @TableField(value = "pass_flag")
     @ApiModelProperty(value = "通过标记")
-    private Byte passFlag;
+    private Boolean passFlag;
 
     /**
      * 是否允许上传图片

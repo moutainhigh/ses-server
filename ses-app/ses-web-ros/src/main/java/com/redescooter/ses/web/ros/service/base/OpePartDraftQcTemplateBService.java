@@ -19,3 +19,4 @@ public interface OpePartDraftQcTemplateBService extends IService<OpePartDraftQcT
 
 }
 
+
