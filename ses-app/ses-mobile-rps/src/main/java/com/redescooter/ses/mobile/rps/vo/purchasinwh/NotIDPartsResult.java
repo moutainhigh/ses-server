@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NotIdPartsResult extends GeneralResult {
+class NotIdPartsResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
     @ApiModelProperty(value = "部品号")

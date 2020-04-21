@@ -6,12 +6,12 @@ import lombok.*;
 import io.swagger.annotations.*;
 
 @ApiModel(value = "有ID采购待入库", description = "有ID采购待入库")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Data //生成getter,setter等函数
+@AllArgsConstructor //生成全参数构造函数
+@NoArgsConstructor//生成无参构造函数
+@EqualsAndHashCode(callSuper = false)
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class HaveIdPartsResult extends GeneralResult {
+class HaveIdPartsResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
     @ApiModelProperty(value = "部品号")
