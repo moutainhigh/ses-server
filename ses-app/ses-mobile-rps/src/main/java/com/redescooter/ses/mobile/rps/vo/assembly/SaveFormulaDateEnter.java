@@ -1,5 +1,8 @@
 package com.redescooter.ses.mobile.rps.vo.assembly;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationException;
+import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,9 +28,11 @@ import io.swagger.annotations.*;
 public class SaveFormulaDateEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id")
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 不能为空")
     private Long id;
 
     @ApiModelProperty(value = "条码打印结果")
+    @NotNull(code = com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode.PRINT_CODE_RESULT,message = "条码打印结果不能为空")
     private Boolean printCodeResult;
 
     @ApiModelProperty(value = "部件列表 格式：[\n" +
@@ -37,5 +42,6 @@ public class SaveFormulaDateEnter extends GeneralEnter {
             "        \"serialN\":\"2312321312\"\n" +
             "    }\n" +
             "]")
+    @NotNull(code = com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode.PART_LIST_JSON,message = "部件列表不能为空")
     private String partListJson;
 }

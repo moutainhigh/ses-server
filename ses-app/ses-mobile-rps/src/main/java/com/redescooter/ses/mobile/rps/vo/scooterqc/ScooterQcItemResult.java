@@ -17,7 +17,7 @@ public class ScooterQcItemResult extends GeneralResult {
 
     //调整
     @ApiModelProperty(value = "组装单子表id")
-    private Long scooterBId;
+    private Long id;
 
     @ApiModelProperty(value = "质检模板id")
     private Long qcTemplateId;

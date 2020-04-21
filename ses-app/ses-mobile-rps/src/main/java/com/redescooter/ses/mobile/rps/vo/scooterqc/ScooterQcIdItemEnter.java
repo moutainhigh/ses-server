@@ -21,7 +21,7 @@ import lombok.*;
 public class ScooterQcIdItemEnter extends PageEnter {
 
     @ApiModelProperty(value = "组装单子单id")
-    private Long scooterBId;
+    private Long id;
 
     @ApiModelProperty(value = "产品id")
     private Long partId;

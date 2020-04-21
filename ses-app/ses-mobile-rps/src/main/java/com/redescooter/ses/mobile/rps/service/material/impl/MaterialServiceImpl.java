@@ -162,6 +162,8 @@ public class MaterialServiceImpl implements MaterialService {
                 throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
             }
         });
+        //查询所有主订单相关联的子表数据
+        Collection<OpePurchasB> checkOpePurchasBList = opePurchasBService.listByIds(opePurchasList.stream().map(OpePurchas::getId).collect(Collectors.toList()));
 
         //查询qc 信息
         QueryWrapper<OpePurchasBQc> opePurchasBQcQueryWrapper = new QueryWrapper<>();
@@ -230,9 +232,8 @@ public class MaterialServiceImpl implements MaterialService {
                         if (item.getPartId().equals(key.getPartId()) && item.getId().equals(key.getId())) {
 
                             item.setTotalCount(item.getTotalCount() - value);
+                            item.setInWaitWhQty(item.getInWaitWhQty() - value);
                             item.setLaveWaitQcQty(item.getLaveWaitQcQty() - value);
-                            //主表数量维护
-                            opePurchas.setLaveWaitQcTotal(opePurchas.getLaveWaitQcTotal() - value);
                             returnTotal += value;
                         }
                     }
@@ -263,16 +264,31 @@ public class MaterialServiceImpl implements MaterialService {
                 }
             }
 
-            String memo = new StringBuffer(originalAmount.toString() + CurrencyUnitEnums.FR.getName()).append(",").append(retureTotalPrice.toString() + CurrencyUnitEnums.FR.getName()).toString();
+            //主表数量、数量维护
+            Boolean updatePurchasStatus = Boolean.TRUE;
+            for (OpePurchasB checkOpePurchasB : checkOpePurchasBList) {
+                if (checkOpePurchasB.getPurchasId().equals(opePurchas.getId()) && checkOpePurchasB.getLaveWaitQcQty() != 0) {
+                    updatePurchasStatus = Boolean.FALSE;
+                }
+            }
+            if (updatePurchasStatus) {
+                opePurchas.setStatus(PurchasingStatusEnums.RETURN.getValue());
 
-            //节点
-            SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
-            BeanUtils.copyProperties(enter, saveNodeEnter);
-            saveNodeEnter.setId(opePurchas.getId());
-            saveNodeEnter.setStatus(PurchasingStatusEnums.RETURN.getValue());
-            saveNodeEnter.setEvent(PurchasingEventEnums.RETURN.getValue());
-            saveNodeEnter.setMemo(memo);
-            this.saveNode(saveNodeEnter);
+                //节点
+                String memo = new StringBuffer(originalAmount.toString() + CurrencyUnitEnums.FR.getName()).append(",").append(retureTotalPrice.toString() + CurrencyUnitEnums.FR.getName()).toString();
+                SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+                BeanUtils.copyProperties(enter, saveNodeEnter);
+                saveNodeEnter.setId(opePurchas.getId());
+                saveNodeEnter.setStatus(PurchasingStatusEnums.RETURN.getValue());
+                saveNodeEnter.setEvent(PurchasingEventEnums.RETURN.getValue());
+                saveNodeEnter.setMemo(memo);
+                this.saveNode(saveNodeEnter);
+            }
+            opePurchas.setLaveWaitQcTotal(opePurchas.getLaveWaitQcTotal() - returnTotal);
+            opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - returnTotal);
+            opePurchas.setTotalQty(opePurchas.getTotalQty() - returnTotal);
+            opePurchas.setUpdatedBy(enter.getUserId());
+            opePurchas.setUpdatedTime(new Date());
         }
 
         //QC子表更新

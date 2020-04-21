@@ -4,9 +4,7 @@ package com.redescooter.ses.mobile.rps.service.scooterqc;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.*;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 public interface ScooterqcService {
     /**
      * @Author kyle

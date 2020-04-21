@@ -15,10 +15,11 @@
 
     <select id="materialQcDetailListCount" resultType="java.lang.Integer">
          select count(*)
-                from ope_purchas_b purchasb
-                         inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr=0
-                         inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status = 3
-                where purchasb.dr=0
+            from ope_purchas_b purchasb
+                     inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr = 0
+                     inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status = 3
+            where purchasb.dr = 0
+              and purchasb.purchas_id=#{id}
     </select>
 
     <select id="detailList" resultType="com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult">
@@ -32,6 +33,7 @@
                  inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr=0
                  inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status = 3
         where purchasb.dr=0
+        and purchasb.purchas_id=#{id}
     </select>
     <select id="failListCount" resultType="int">
         select count(*)

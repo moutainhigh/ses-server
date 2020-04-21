@@ -15,12 +15,16 @@ import io.swagger.annotations.*;
 public class ScooterQcItemEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "组装单子单id")//调整
-    private Long scooterBId;
+    private Long id;
 
     @ApiModelProperty(value = "产品id")//调整
     private Long partId;
 
-    @ApiModelProperty(value = "质检项信息集合")
+    @ApiModelProperty(value = "质检信息项集合 格式：[\n" +
+            "        \"质检项id\":123456,\n" +
+            "        \"用户上传图片URL\":http://www.baidu.com,\n" +
+            "        \"质检项结果id\":\"654321\"\n" +
+            "]")
     private String scooterQcItemOptionEnter;
 
     @ApiModelProperty(value = "待质检部品数量")

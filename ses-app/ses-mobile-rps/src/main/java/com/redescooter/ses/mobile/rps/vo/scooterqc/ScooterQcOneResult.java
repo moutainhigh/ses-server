@@ -19,7 +19,7 @@ import java.util.Date;
 public class ScooterQcOneResult extends GeneralResult {
 
     @ApiModelProperty(value = "组装单id")
-    private Long scooterId;
+    private Long id;
 
     @ApiModelProperty(value = "组装单号")
     private String scooterNum;

@@ -1,13 +1,12 @@
 package com.redescooter.ses.mobile.rps.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeAssembiyOrderTraceMapper;
-import java.util.List;
 import com.redescooter.ses.mobile.rps.dm.OpeAssembiyOrderTrace;
-import com.redescooter.ses.mobile.rps.service.base.impl.OpeAssembiyOrderTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssembiyOrderTraceService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class OpeAssembiyOrderTraceServiceImpl extends ServiceImpl<OpeAssembiyOrderTraceMapper, OpeAssembiyOrderTrace> implements OpeAssembiyOrderTraceService {
@@ -32,4 +31,5 @@ public class OpeAssembiyOrderTraceServiceImpl extends ServiceImpl<OpeAssembiyOrd
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
 

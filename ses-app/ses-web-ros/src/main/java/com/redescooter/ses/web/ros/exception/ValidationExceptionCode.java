@@ -16,8 +16,6 @@ public interface ValidationExceptionCode {
     int COUNTRY_CODE_IS_EMPTY = 100012;
     //URL不能为空
     int URL_IS_EMPTY = 10013;
-//    // id 为空
-//    int ID_IS_EMPTY = 10014;
 
     //###############################10030~100?? 业务入参异常#######################################
     // 地址信息为空

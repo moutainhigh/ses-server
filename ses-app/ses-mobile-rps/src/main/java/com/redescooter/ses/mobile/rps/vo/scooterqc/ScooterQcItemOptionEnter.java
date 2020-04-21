@@ -4,9 +4,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.apache.poi.ss.formula.functions.T;
-
-import java.io.Serializable;
 
 
 @ApiModel(value = "部件列表具体质检选项入参", description = "部件列表具体质检选项入参")
@@ -18,7 +15,7 @@ import java.io.Serializable;
 public class ScooterQcItemOptionEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "质检项id")
-    private Long qcId;
+    private Long id;
 
     @ApiModelProperty(value = "用户上传图片URL")
     private String imageUrl;
