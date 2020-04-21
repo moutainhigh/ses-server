@@ -730,7 +730,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             if (CollectionUtils.isNotEmpty(savePartQcTemplateBList)) {
                 opePartQcTemplateBService.saveBatch(savePartQcTemplateBList);
             }
-            if (CollectionUtils.isNotEmpty(savePartQcTemplateList)) {
+            if (CollectionUtils.isNotEmpty(saveProductQcTemplate)) {
                 opeProductQcTemplateService.saveBatch(saveProductQcTemplate);
             }
             if (CollectionUtils.isNotEmpty(saveProductQcTemplateB)) {
@@ -831,6 +831,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         //同步产品模板
         if (CollectionUtils.isNotEmpty(savePartQcTemplateList)) {
             opePartsProductList.forEach(item -> {
+
                 savePartQcTemplateList.forEach(template -> {
 
                     if (Long.valueOf(item.getDef1()).equals(template.getPartId())) {
@@ -840,18 +841,23 @@ public class PartsRosServiceImpl implements PartsRosService {
                         opeProductQcTemplate.setId(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE));
                         opeProductQcTemplate.setProductId(item.getId());
                         saveProductQcTemplate.add(opeProductQcTemplate);
+
+                        //保存质检项结果
+                        savePartQcTemplateBList.forEach(templateB -> {
+                            if (template.getId().equals(templateB.getPartQcTemplateId())) {
+                                OpeProductQcTemplateB opeProductQcTemplateB = new OpeProductQcTemplateB();
+                                BeanUtils.copyProperties(template, opeProductQcTemplateB);
+                                opeProductQcTemplateB.setId(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE_B));
+                                opeProductQcTemplateB.setProductQcTemplateId(template.getId());
+                                opeProductQcTemplateB.setQcResult(templateB.getQcResult());
+                                opeProductQcTemplateB.setPassFlag(templateB.getPassFlag());
+                                opeProductQcTemplateB.setUploadFlag(templateB.getUploadFlag());
+                                opeProductQcTemplateB.setResultsSequence(templateB.getResultsSequence());
+                                saveProductQcTemplateB.add(opeProductQcTemplateB);
+                            }
+                        });
                     }
 
-                    //保存质检项结果
-                    savePartQcTemplateBList.forEach(templateB -> {
-                        if (template.getId().equals(templateB.getPartQcTemplateId())) {
-                            OpeProductQcTemplateB opeProductQcTemplateB = new OpeProductQcTemplateB();
-                            BeanUtils.copyProperties(template, opeProductQcTemplateB);
-                            opeProductQcTemplateB.setId(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE_B));
-                            opeProductQcTemplateB.setProductQcTemplateId(template.getId());
-                            saveProductQcTemplateB.add(opeProductQcTemplateB);
-                        }
-                    });
                 });
             });
         }
