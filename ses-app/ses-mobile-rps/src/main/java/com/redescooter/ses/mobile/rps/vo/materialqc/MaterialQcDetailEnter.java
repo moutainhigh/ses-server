@@ -1,5 +1,7 @@
 package com.redescooter.ses.mobile.rps.vo.materialqc;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,5 +27,6 @@ import io.swagger.annotations.*;
 public class MaterialQcDetailEnter extends PageEnter {
 
     @ApiModelProperty(value = "id")
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id不能为空")
     private Long id;
 }

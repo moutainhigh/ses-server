@@ -1,5 +1,7 @@
 package com.redescooter.ses.mobile.rps.vo.assembly;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +26,6 @@ import io.swagger.annotations.*;
 @Builder
 public class AssemblyDetailEnter extends PageEnter {
     @ApiModelProperty(value = "id")
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 不为空")
     private Long id;
 }
