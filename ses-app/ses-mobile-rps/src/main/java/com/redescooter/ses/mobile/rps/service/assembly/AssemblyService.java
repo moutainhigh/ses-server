@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.assembly;
 
+import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -63,4 +64,12 @@ public interface AssemblyService {
      * @return
      */
     QueryProductCodeResult queryProductCode(IdEnter enter);
+
+    /**
+     * 保存节点
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult saveNode(SaveNodeEnter enter);
 }
