@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-class NotIdPartsSucceedResult extends GeneralResult {
+public class NotIdPartsSucceedResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
     @ApiModelProperty(value = "部品号")
