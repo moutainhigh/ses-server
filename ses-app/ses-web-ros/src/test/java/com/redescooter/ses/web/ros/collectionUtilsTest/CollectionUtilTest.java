@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.collectionUtilsTest;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +35,8 @@ public class CollectionUtilTest {
 
     @Test
     public void stream() {
-        IntStream.range(1, 10).forEach(System.out::println);
+
+        System.out.println(DigestUtils.md5Hex("RedeScooter@2020" + 12727));
     }
 
 
