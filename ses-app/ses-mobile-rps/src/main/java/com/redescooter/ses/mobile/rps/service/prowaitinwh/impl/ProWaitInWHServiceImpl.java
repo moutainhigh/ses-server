@@ -95,7 +95,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
             QueryWrapper<OpeAssemblyOrder> opeAssemblyOrderQueryWrapper = new QueryWrapper<>();
             //待入库数量大于0
             opeAssemblyOrderQueryWrapper.ge(OpeAssemblyOrder.COL_IN_WAIT_WH_TOTAL, 0);
-            opeAssemblyOrderQueryWrapper.eq(OpeAssemblyOrder.COL_STATUS, AssemblyStatusEnums.IN_PRODUCTION_WH.getMessage());
+            opeAssemblyOrderQueryWrapper.eq(OpeAssemblyOrder.COL_STATUS, AssemblyStatusEnums.QC_PASSED.getValue());
             List<OpeAssemblyOrder> opeAssemblyOrderList = opeAssemblyOrderService.list(opeAssemblyOrderQueryWrapper);
             if (!CollectionUtils.isEmpty(opeAssemblyOrderList)) {
                 for (OpeAssemblyOrder opeAssemblyOrder : opeAssemblyOrderList) {
@@ -144,7 +144,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                                     .id(opeAssemblyBOrder.getId())
                                     .scooterBId(opeAssemblyBOrder.getAssemblyId())
                                     .partId(opeAssemblyBOrder.getProductId())
-                                    .partNum(opeAssemblyBOrder.getLaveWaitQcQty())
+                                    .partNum(opeAssemblyBOrder.getInWaitWhQty())
                                     .partStr(opeAssemblyBOrder.getProductNumber())
                                     .partName(opeAssemblyBOrder.getEnName())
                                     .build());
@@ -153,7 +153,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 return PageResult.createZeroRowResult(enter);
             }
         }
-        return PageResult.create(enter, 1, proWaitWHItemListResult);
+        return PageResult.create(enter, count, proWaitWHItemListResult);
     }
 
     /**
@@ -190,7 +190,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         QueryWrapper<OpeAssemblyBQc> opeAssemblyBQcQueryWrapper = new QueryWrapper<>();
         opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_PRODUCT_ID, enter.getPartId());
         opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_ASSEMBLY_B_ID, enter.getScooterBId());
-        opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_STATUS, AssemblyStatusEnums.QC_PASSED.getMessage());
+        opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_STATUS, AssemblyStatusEnums.QC_PASSED.getValue());
         OpeAssemblyBQc opeAssemblyBQc = opeAssemblyBQcService.getOne(opeAssemblyBQcQueryWrapper);
 
         //抛质检记录为空异常
@@ -260,6 +260,8 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                     .whseId(opeWhse.getId())
                     .intTotal(1)
                     .revision(1)
+                    .userId(enter.getUserId())
+                    .tenantId(enter.getUserId())
                     .materielProductName(opeAssemblyBOrder.getEnName())
                     .materielProductId(enter.getPartId())
                     .availableTotal(1)
@@ -280,6 +282,9 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 .direction("In")
                 .status("0")
                 .total(1)
+                .userId(enter.getUserId())
+                .tenantId(enter.getUserId())
+                .sourceId(enter.getUserId())
                 .sourceType(WhseTypeEnums.ASSEMBLY.getMessage())
                 .operatineTime(new Date())
                 .revision(1)
@@ -294,19 +299,21 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         boolean flag = false;
         if (opeAssemblyOrder.getInWaitWhTotal() == 0) {
             //组装单入库完成
-            opeAssemblyOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getMessage());
+            opeAssemblyOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
             flag = !flag;
         }
         if (opeAssemblyBOrder.getInWaitWhQty() == 0) {
             //组装单入库完成
-            opeAssemblyBOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getMessage());
+            opeAssemblyBOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
         }
         opeAssembiyOrderTrace = OpeAssembiyOrderTrace.builder()
                 .id(idAppService.getId(SequenceName.OPE_ASSEMBIY_ORDER_TRACE))
                 .dr(0)
+                .userId(enter.getUserId())
                 .event(flag ? AssemblyEventEnums.IN_PRODUCTION_WH.getValue() : AssemblyEventEnums.QC_PASSED.getValue())
                 .status(flag ? AssemblyEventEnums.IN_PRODUCTION_WH.getValue() : AssemblyEventEnums.QC_PASSED.getValue())
                 .eventTime(new Date())
+                .userId(enter.getUserId())
                 .createdBy(enter.getUserId())
                 .updatedBy(enter.getUserId())
                 .createdTime(new Date())
