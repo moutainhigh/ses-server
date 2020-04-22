@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.production.AllocateServiceMapper">
+
+    <sql id="Field_Allocate_List">
+        allocate.id           as id,
+       allocate.allocate_num as allocateN,
+       allocate.status       as status,
+       allocate.count        as qty,
+       allocate.consignee_id as consigneeId,
+       profile.first_name    as consigneeFirstName,
+       profile.last_name     as consigneeLastName,
+       profile.full_name     as consigneeFullName,
+       profile.country_code  as consigneePhoneCountryCode,
+       profile.tel_number    as consigneePhone,
+       profile.email         as consigneeEmail,
+       allocate.created_time as createdTime,
+       cprofile.sys_user_id  as createdId,
+       cprofile.first_name   as createdFirstName,
+       cprofile.last_name    as createdLastName,
+       cprofile.full_name    as createdFullName
+    </sql>
+    <sql id="where_allocateList">
+        where allocate.dr=0
+        and allocate.status in
+        <foreach collection="statusList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+        <if test="enter.status != null and enter.status != ''">
+            and allocate.status =#{enter.status}
+        </if>
+        <if test="enter.createdStartTime != null and enter.createdEndTime != null">
+            and ( allocate.created_time between #{enter.createdStartTime} and #{enter.createdEndTime})
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and(
+            allocate.allocate_num like concat("%",#{enter.keyword},"%")
+            )
+        </if>
+        order by allocate.created_time desc
+    </sql>
+
+    <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+            select count(st.sta) as totalCount,
+                   st.sta        as status
+            from (select case
+                             when status = '4' then '2'
+                             when status = '5' then '2'
+                             else '1' end as sta
+                  from ope_allocate) st
+            group by status
+    </select>
+    <select id="allocateListCount" resultType="int">
+        select count(*)
+        from ope_allocate allocate
+        left join ope_sys_user_profile profile on profile.sys_user_id = allocate.consignee_id and profile.dr=0
+        left join ope_sys_user_profile cprofile on cprofile.sys_user_id = allocate.created_by and cprofile.dr = 0
+        <include refid="where_allocateList"/>
+    </select>
+    <select id="allocateList"
+            resultType="com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderResult">
+        select
+        <include refid="Field_Allocate_List"/>
+        from ope_allocate allocate
+        left join ope_sys_user_profile profile on profile.sys_user_id = allocate.consignee_id and profile.dr=0
+        left join ope_sys_user_profile cprofile on cprofile.sys_user_id = allocate.created_by and cprofile.dr = 0
+        <include refid="where_allocateList"/>
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderResult">
+        select
+        <include refid="Field_Allocate_List"/>
+        from ope_allocate allocate
+        left join ope_sys_user_profile profile on profile.sys_user_id = allocate.consignee_id and profile.dr=0
+        left join ope_sys_user_profile cprofile on cprofile.sys_user_id = allocate.created_by and cprofile.dr = 0
+        where allocate.dr=0
+        and allocate.id =#{id}
+    </select>
+
+    <select id="allocateOrderNodeList"
+            resultType="com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderNodeResult">
+        select trace.id as id,
+        trace.status as status,
+        trace.event as event,
+        trace.create_by as createdBy,
+        profile.first_name as createdByFirstName,
+        profile.last_name as createdByLastName,
+        profile.full_name as createdByFullName,
+        trace.create_time as createdTime
+        from ope_allocate_trace trace
+        left join ope_allocate allocate on trace.allocate_id = allocate.id and allocate.dr = 0
+        inner join ope_sys_user_profile profile on profile.sys_user_id = trace.create_by and profile.dr = 0
+        where trace.dr = 0
+        and trace.allocate_id =#{id}
+        order by trace.create_time asc
+    </select>
+    <select id="allocateOrderDetailPartsList"
+            resultType="com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderPartResult">
+        select allocateb.id as id,
+        parts.id as partId,
+        parts.parts_number as partsN,
+        parts_type as type,
+        parts.en_name as enName,
+        parts.cn_name as cnName,
+        allocateb.total as qty
+        from ope_allocate_b allocateb
+        left join ope_allocate allocate on allocate.id = allocateb.allocate_id and allocateb.dr = 0
+        inner join ope_parts parts on parts.id = allocateb.part_id and parts.dr = 0
+        where allocateb.dr=0
+        and allocate.id=#{id}
+    </select>
+
+    <select id="allocatePartsList" resultType="com.redescooter.ses.web.ros.vo.production.ProductPartsResult">
+        select stock.id as id,
+        parts.parts_number as partsN,
+        parts.en_name as enName,
+        parts.cn_name as cnName,
+        parts.parts_type as type,
+        parts.supplier_id as supplierId,
+        supplier.supplier_name as supplierName,
+        parts.production_cycle as leadTime,
+        stock.available_total as stocks
+        from ope_stock stock
+        inner join ope_parts parts
+        on parts.id = stock.materiel_product_id and parts.dr = 0
+        inner join ope_supplier supplier on supplier.id = parts.supplier_id and supplier.dr = 0
+        where stock.dr = 0
+        and stock.whse_id=#{whseId}
+        <if test="enter.productType != null and enter.productType != ''">
+            and parts.parts_type =#{enter.productType}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and(
+            parts.en_name like concat ("%",#{enter.keyword},"%") or
+            parts.cn_name like concat ("%",#{enter.keyword},"%") or
+            parts.parts_number like concat ("%",#{enter.keyword},"%")
+            )
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaMessageMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaMessage">
+    <!--@mbg.generated-->
+    <!--@Table pla_message-->
+    <id column="id" jdbcType="BIGINT" property="id"/>
+    <result column="dr" jdbcType="INTEGER" property="dr"/>
+    <result column="system_id" jdbcType="VARCHAR" property="systemId"/>
+    <result column="app_id" jdbcType="VARCHAR" property="appId"/>
+    <result column="tenant_id" jdbcType="INTEGER" property="tenantId"/>
+    <result column="user_id" jdbcType="BIGINT" property="userId"/>
+    <result column="message_type" jdbcType="VARCHAR" property="messageType"/>
+    <result column="biz_type" jdbcType="VARCHAR" property="bizType"/>
+    <result column="status" jdbcType="VARCHAR" property="status"/>
+    <result column="business_status" jdbcType="VARCHAR" property="businessStatus"/>
+    <result column="title" jdbcType="VARCHAR" property="title"/>
+    <result column="message_priority" jdbcType="VARCHAR" property="messagePriority"/>
+    <result column="content" jdbcType="VARCHAR" property="content"/>
+    <result column="memo" jdbcType="VARCHAR" property="memo"/>
+    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime"/>
+    <result column="read_time" jdbcType="TIMESTAMP" property="readTime"/>
+    <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+    <result column="updated_by" jdbcType="INTEGER" property="updatedBy"/>
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+    <result column="def2" jdbcType="VARCHAR" property="def2"/>
+    <result column="def3" jdbcType="VARCHAR" property="def3"/>
+    <result column="def5" jdbcType="VARCHAR" property="def5"/>
+    <result column="def6" jdbcType="DOUBLE" property="def6"/>
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.redescooter.ses.service.foundation.dm.base.PlaMessage">
+    <!--@mbg.generated-->
+    <!--@Table pla_message-->
+    <result column="biz_id" jdbcType="LONGVARCHAR" property="bizId"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, system_id, app_id, tenant_id, user_id, message_type, biz_type, `status`,
+    business_status, title, message_priority, content, memo, send_time, read_time, created_by,
+    created_time, updated_by, updated_time, def2, def3, def5, def6
+  </sql>
+  <sql id="Blob_Column_List">
+    <!--@mbg.generated-->
+    biz_id
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update pla_message
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="system_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.systemId,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="app_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.appId,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="message_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.messageType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="biz_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.bizType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="business_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.businessStatus,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="title = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.title,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="message_priority = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.messagePriority,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="content = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.content,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="memo = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.memo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="send_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.sendTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="read_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.readTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
+      <trim prefix="biz_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.bizId,jdbcType=LONGVARCHAR}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update pla_message
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="system_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.systemId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.systemId,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="app_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.appId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.appId,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.userId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="message_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.messageType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.messageType,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="biz_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.bizType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.bizType,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.status != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="business_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.businessStatus != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.businessStatus,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="title = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.title != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.title,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="message_priority = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.messagePriority != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.messagePriority,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="content = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.content != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.content,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="memo = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.memo != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.memo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="send_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.sendTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.sendTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="read_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.readTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.readTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="biz_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.bizId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.bizId,jdbcType=LONGVARCHAR}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into pla_message
+    (id, dr, system_id, app_id, tenant_id, user_id, message_type, biz_type, `status`,
+    business_status, title, message_priority, content, memo, send_time, read_time,
+    created_by, created_time, updated_by, updated_time, def2, def3, def5, def6, biz_id
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.systemId,jdbcType=VARCHAR},
+      #{item.appId,jdbcType=VARCHAR}, #{item.tenantId,jdbcType=INTEGER}, #{item.userId,jdbcType=BIGINT},
+      #{item.messageType,jdbcType=VARCHAR}, #{item.bizType,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR},
+      #{item.businessStatus,jdbcType=VARCHAR}, #{item.title,jdbcType=VARCHAR}, #{item.messagePriority,jdbcType=VARCHAR},
+      #{item.content,jdbcType=VARCHAR}, #{item.memo,jdbcType=VARCHAR}, #{item.sendTime,jdbcType=TIMESTAMP},
+      #{item.readTime,jdbcType=TIMESTAMP}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
+      #{item.updatedBy,jdbcType=INTEGER}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def2,jdbcType=VARCHAR},
+      #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE},
+      #{item.bizId,jdbcType=LONGVARCHAR})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMessage">
+    <!--@mbg.generated-->
+    insert into pla_message
+    (id, dr, system_id, app_id, tenant_id, user_id, message_type, biz_type, `status`,
+    business_status, title, message_priority, content, memo, send_time, read_time,
+    created_by, created_time, updated_by, updated_time, def2, def3, def5, def6)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{systemId,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
+    #{tenantId,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{messageType,jdbcType=VARCHAR},
+    #{bizType,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{businessStatus,jdbcType=VARCHAR},
+    #{title,jdbcType=VARCHAR}, #{messagePriority,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+    #{memo,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP}, #{readTime,jdbcType=TIMESTAMP},
+    #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=INTEGER},
+    #{updatedTime,jdbcType=TIMESTAMP}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR},
+    #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    system_id = #{systemId,jdbcType=VARCHAR},
+    app_id = #{appId,jdbcType=VARCHAR},
+    tenant_id = #{tenantId,jdbcType=INTEGER},
+    user_id = #{userId,jdbcType=BIGINT},
+    message_type = #{messageType,jdbcType=VARCHAR},
+    biz_type = #{bizType,jdbcType=VARCHAR},
+    `status` = #{status,jdbcType=VARCHAR},
+    business_status = #{businessStatus,jdbcType=VARCHAR},
+    title = #{title,jdbcType=VARCHAR},
+    message_priority = #{messagePriority,jdbcType=VARCHAR},
+    content = #{content,jdbcType=VARCHAR},
+    memo = #{memo,jdbcType=VARCHAR},
+    send_time = #{sendTime,jdbcType=TIMESTAMP},
+    read_time = #{readTime,jdbcType=TIMESTAMP},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=INTEGER},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def5 = #{def5,jdbcType=VARCHAR},
+    def6 = #{def6,jdbcType=DOUBLE}
+  </insert>
+  <insert id="insertOrUpdateWithBLOBs" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMessage">
+    <!--@mbg.generated-->
+    insert into pla_message
+    (id, dr, system_id, app_id, tenant_id, user_id, message_type, biz_type, `status`,
+    business_status, title, message_priority, content, memo, send_time, read_time,
+    created_by, created_time, updated_by, updated_time, def2, def3, def5, def6, biz_id
+    )
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{systemId,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
+    #{tenantId,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{messageType,jdbcType=VARCHAR},
+    #{bizType,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{businessStatus,jdbcType=VARCHAR},
+    #{title,jdbcType=VARCHAR}, #{messagePriority,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+    #{memo,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP}, #{readTime,jdbcType=TIMESTAMP},
+    #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=INTEGER},
+    #{updatedTime,jdbcType=TIMESTAMP}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR},
+    #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}, #{bizId,jdbcType=LONGVARCHAR}
+    )
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    system_id = #{systemId,jdbcType=VARCHAR},
+    app_id = #{appId,jdbcType=VARCHAR},
+    tenant_id = #{tenantId,jdbcType=INTEGER},
+    user_id = #{userId,jdbcType=BIGINT},
+    message_type = #{messageType,jdbcType=VARCHAR},
+    biz_type = #{bizType,jdbcType=VARCHAR},
+    `status` = #{status,jdbcType=VARCHAR},
+    business_status = #{businessStatus,jdbcType=VARCHAR},
+    title = #{title,jdbcType=VARCHAR},
+    message_priority = #{messagePriority,jdbcType=VARCHAR},
+    content = #{content,jdbcType=VARCHAR},
+    memo = #{memo,jdbcType=VARCHAR},
+    send_time = #{sendTime,jdbcType=TIMESTAMP},
+    read_time = #{readTime,jdbcType=TIMESTAMP},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=INTEGER},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def5 = #{def5,jdbcType=VARCHAR},
+    def6 = #{def6,jdbcType=DOUBLE},
+    biz_id = #{bizId,jdbcType=LONGVARCHAR}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMessage">
+    <!--@mbg.generated-->
+    insert into pla_message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="systemId != null">
+        system_id,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="messageType != null">
+        message_type,
+      </if>
+      <if test="bizType != null">
+        biz_type,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="businessStatus != null">
+        business_status,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="messagePriority != null">
+        message_priority,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="memo != null">
+        memo,
+      </if>
+      <if test="sendTime != null">
+        send_time,
+      </if>
+      <if test="readTime != null">
+        read_time,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+      <if test="bizId != null">
+        biz_id,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="systemId != null">
+        #{systemId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="messageType != null">
+        #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="bizType != null">
+        #{bizType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="businessStatus != null">
+        #{businessStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="messagePriority != null">
+        #{messagePriority,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTime != null">
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="readTime != null">
+        #{readTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=DOUBLE},
+      </if>
+      <if test="bizId != null">
+        #{bizId,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="messageType != null">
+        message_type = #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="bizType != null">
+        biz_type = #{bizType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="businessStatus != null">
+        business_status = #{businessStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="messagePriority != null">
+        message_priority = #{messagePriority,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        memo = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTime != null">
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="readTime != null">
+        read_time = #{readTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=DOUBLE},
+      </if>
+      <if test="bizId != null">
+        biz_id = #{bizId,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

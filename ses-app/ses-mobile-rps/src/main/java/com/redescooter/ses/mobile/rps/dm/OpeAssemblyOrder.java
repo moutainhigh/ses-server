@@ -3,18 +3,22 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 组装单
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAssemblyOrder")
 @Data
 @Builder
@@ -263,8 +267,6 @@ public class OpeAssemblyOrder implements Serializable {
     public static final String COL_IN_WAIT_WH_TOTAL = "in_wait_wh_total";
 
     public static final String COL_LAVE_WAIT_QC_TOTAL = "lave_wait_qc_total";
-
-    public static final String COL_WAIT_PREPARATION_TOTAL = "wait_preparation_total";
 
     public static final String COL_REVISION = "revision";
 

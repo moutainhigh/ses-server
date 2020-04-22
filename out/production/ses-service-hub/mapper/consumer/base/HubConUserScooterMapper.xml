@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.consumer.dao.HubConUserScooterMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter">
+    <!--@mbg.generated-->
+    <id column="ID" jdbcType="BIGINT" property="id"/>
+    <result column="dr" jdbcType="INTEGER" property="dr"/>
+    <result column="TENANT_ID" jdbcType="BIGINT" property="tenantId"/>
+    <result column="USER_ID" jdbcType="BIGINT" property="userId"/>
+    <result column="SCOOTER_ID" jdbcType="BIGINT" property="scooterId"/>
+    <result column="BEGIN_TIME" jdbcType="TIMESTAMP" property="beginTime"/>
+    <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime"/>
+    <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+    <result column="MILEAGE" jdbcType="DOUBLE" property="mileage"/>
+    <result column="CREATED_BY" jdbcType="BIGINT" property="createdBy"/>
+    <result column="CREATED_TIME" jdbcType="TIMESTAMP" property="createdTime"/>
+    <result column="UPDATED_BY" jdbcType="BIGINT" property="updatedBy"/>
+    <result column="UPDATED_TIME" jdbcType="TIMESTAMP" property="updatedTime"/>
+    <result column="def1" jdbcType="VARCHAR" property="def1"/>
+    <result column="def2" jdbcType="VARCHAR" property="def2"/>
+    <result column="def3" jdbcType="VARCHAR" property="def3"/>
+    <result column="def5" jdbcType="VARCHAR" property="def5"/>
+    <result column="def6" jdbcType="DOUBLE" property="def6"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, dr, TENANT_ID, USER_ID, SCOOTER_ID, BEGIN_TIME, END_TIME, `STATUS`, MILEAGE,
+    CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update con_user_scooter
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="TENANT_ID = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="USER_ID = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="SCOOTER_ID = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.scooterId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="BEGIN_TIME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.beginTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="END_TIME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.endTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="`STATUS` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="MILEAGE = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.mileage,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
+      <trim prefix="CREATED_BY = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="CREATED_TIME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="UPDATED_BY = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="UPDATED_TIME = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
+    </trim>
+    where ID in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into con_user_scooter
+    (ID, dr, TENANT_ID, USER_ID, SCOOTER_ID, BEGIN_TIME, END_TIME, `STATUS`, MILEAGE,
+    CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, def2, def3, def5, def6
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
+      #{item.userId,jdbcType=BIGINT}, #{item.scooterId,jdbcType=BIGINT}, #{item.beginTime,jdbcType=TIMESTAMP},
+      #{item.endTime,jdbcType=TIMESTAMP}, #{item.status,jdbcType=VARCHAR}, #{item.mileage,jdbcType=DOUBLE},
+      #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+      #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
+      #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+      )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter">
+    <!--@mbg.generated-->
+    insert into con_user_scooter
+    (ID, dr, TENANT_ID, USER_ID, SCOOTER_ID, BEGIN_TIME, END_TIME, `STATUS`, MILEAGE,
+    CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, def2, def3, def5, def6
+      )
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
+    #{scooterId,jdbcType=BIGINT}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+    #{status,jdbcType=VARCHAR}, #{mileage,jdbcType=DOUBLE}, #{createdBy,jdbcType=BIGINT},
+    #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
+    #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
+    #{def6,jdbcType=DOUBLE})
+    on duplicate key update
+    ID = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    TENANT_ID = #{tenantId,jdbcType=BIGINT},
+    USER_ID = #{userId,jdbcType=BIGINT},
+    SCOOTER_ID = #{scooterId,jdbcType=BIGINT},
+    BEGIN_TIME = #{beginTime,jdbcType=TIMESTAMP},
+    END_TIME = #{endTime,jdbcType=TIMESTAMP},
+    `STATUS` = #{status,jdbcType=VARCHAR},
+    MILEAGE = #{mileage,jdbcType=DOUBLE},
+    CREATED_BY = #{createdBy,jdbcType=BIGINT},
+    CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+    UPDATED_BY = #{updatedBy,jdbcType=BIGINT},
+    UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def5 = #{def5,jdbcType=VARCHAR},
+    def6 = #{def6,jdbcType=DOUBLE}
+  </insert>
+  <insert id="insertOrUpdateSelective"
+          parameterType="com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter">
+    <!--@mbg.generated-->
+    insert into con_user_scooter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        TENANT_ID,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="scooterId != null">
+        SCOOTER_ID,
+      </if>
+      <if test="beginTime != null">
+        BEGIN_TIME,
+      </if>
+      <if test="endTime != null">
+        END_TIME,
+      </if>
+      <if test="status != null">
+        `STATUS`,
+      </if>
+      <if test="mileage != null">
+        MILEAGE,
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY,
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME,
+      </if>
+      <if test="updatedBy != null">
+        UPDATED_BY,
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="scooterId != null">
+        #{scooterId,jdbcType=BIGINT},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="mileage != null">
+        #{mileage,jdbcType=DOUBLE},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        ID = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        TENANT_ID = #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="scooterId != null">
+        SCOOTER_ID = #{scooterId,jdbcType=BIGINT},
+      </if>
+      <if test="beginTime != null">
+        BEGIN_TIME = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        END_TIME = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        `STATUS` = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="mileage != null">
+        MILEAGE = #{mileage,jdbcType=DOUBLE},
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        UPDATED_BY = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+</mapper>

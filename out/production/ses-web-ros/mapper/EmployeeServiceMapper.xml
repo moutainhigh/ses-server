@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.sys.EmployeeServiceMapper">
+
+    <sql id="select_ EmployeeDeptResult">
+    </sql>
+
+    <sql id="select_EmployeeResult">
+                 staff.id                           as id,
+               profile.first_name                 as employeeFirstName,
+               profile.last_name                  as employeeLastName,
+               profile.country_code               as telCountryCode,
+               profile.tel_number                 as telephone,
+               profile.email                      as email,
+               dept.id                            as deptId,
+               dept.name                          as deptName,
+               role.id                            as positionId,
+               role.role_name                     as positionName,
+               profile.birthday                   as birthday,
+               profile.join_date                  as entryDate,
+               profile.address_country_code       as addressCountryCode,
+               profile.address                    as address,
+               profile.certificate_type           as certificateType,
+               profile.certificate_positive_annex as positivePicture,
+               profile.certificate_negative_annex as negativePicture,
+               profile.picture                    as avatar,
+               profile.address_bureau             as addressBureauId
+        from ope_sys_user user
+                 inner join ope_sys_staff staff on user.id = staff.sys_user_id
+                 left join ope_sys_user_profile profile on user.id = profile.sys_user_id and profile.dr = 0
+                 left join ope_sys_dept dept on user.dept_id = dept.id and dept.dr = 0
+                 left join ope_sys_user_role urole on urole.user_id = user.id
+                 left join ope_sys_role role on role.id = urole.role_id and role.dr = 0
+    </sql>
+
+    <sql id="where_EmployeeList">
+        where user.dr = 0
+        <if test="positionId != null">
+            and role.id = #{positionId}
+        </if>
+        <if test="addressBureauId != null">
+            and profile.address_bureau = #{addressBureauId}
+        </if>
+        <if test="deptId != null">
+            and dept.id = #{deptId}
+        </if>
+        <if test="entryStartDate != null and entryEndDate != null">
+            and profile.join_date between #{entryStartDate} and #{entryEndDate}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (profile.first_name like concat("%",#{keyword},"%")
+            or profile.last_name like concat("%",#{keyword},"%")
+            or profile.full_name like concat("%",#{keyword},"%")
+            or profile.tel_number like concat("%",#{keyword},"%")
+            or profile.email like concat("%",#{keyword},"%"))
+        </if>
+    </sql>
+
+    <select id="deptList" resultType="com.redescooter.ses.web.ros.vo.sys.employee.DeptEmployeeListResult">
+        select dept.id as deptId,
+        dept.name as deptName,
+        count(user.id) as totalCount
+        from ope_sys_dept dept
+        left join ope_sys_user user on dept.id = user.dept_id and user.dr = 0 and user.login_name !='sysAdmin'
+        where dept.dr = 0
+        and dept.level = 1
+        <if test="deptId != null">
+            and dept.id=#{deptId}
+        </if>
+        group by dept.id, deptName
+    </select>
+
+    <select id="employeeList" resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult">
+        select
+        <include refid="select_EmployeeResult"/>
+        <include refid="where_EmployeeList"/>
+    </select>
+
+    <select id="employeeDetail"
+            resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult">
+        select
+        <include refid="select_EmployeeResult"/>
+        where user.dr = 0
+        and staff.id=#{id}
+    </select>
+
+    <!--每次查询部门的子集-->
+    <select id="getEmployeeDeptChildList" resultType="java.lang.Long">
+        select rela.descendant
+        from ope_sys_dept_relation rela
+        where 1 = 1
+        and rela.ancestor =#{id}
+        and rela.descendant != #{id}
+    </select>
+
+    <select id="getEmployeeDeptFatherList" resultType="java.lang.Long">
+
+    </select>
+
+    <select id="getEmployeeDeptList"
+            resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult">
+        select
+        dept.id as id,
+        dept.name as name
+        from ope_sys_dept dept
+        where dept.dr = 0
+        and dept.level !=0
+        <if test="ids != null and ids.size() != 0">
+            and dept.id in
+            <foreach collection="ids" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        order by id asc
+    </select>
+
+    <select id="getEmployeePositionList"
+            resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult">
+        select role.id as id,
+        role.role_name as name
+        from ope_sys_role_dept roleDept
+        inner join ope_sys_role role on roleDept.role_id = role.id and role.dr = 0
+        where 1 = 1
+        <if test="ids != null and ids.size() != 0">
+            and roleDept.dept_id in
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getEmployeeOfficeareaList"
+            resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult">
+
+    </select>
+
+    <select id="getEmployeeCompanyList"
+            resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult">
+        select dept.id   as id,
+               dept.name as name
+        from ope_sys_dept dept
+        where dept.level = 0
+          and dept.p_id != -1
+          and dept.dr = 0
+          and dept.tenant_id = 0
+    </select>
+</mapper>

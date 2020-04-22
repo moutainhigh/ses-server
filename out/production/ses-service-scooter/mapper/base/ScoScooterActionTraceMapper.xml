@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.base.ScoScooterActionTraceMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace">
+    <!--@mbg.generated-->
+    <!--@Table sco_scooter_action_trace-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="user_id" property="userId" />
+    <result column="scooter_id" property="scooterId" />
+    <result column="user_longitule" property="userLongitule" />
+    <result column="user_latitude" property="userLatitude" />
+    <result column="user_location_geohash" property="userLocationGeohash" />
+    <result column="action_type" property="actionType" />
+    <result column="action_result" property="actionResult" />
+    <result column="action_time" property="actionTime" />
+    <result column="battery" property="battery" />
+    <result column="longitule" property="longitule" />
+    <result column="latitude" property="latitude" />
+    <result column="geohash" property="geohash" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, user_id, scooter_id, user_longitule, user_latitude, user_location_geohash, 
+    action_type, action_result, action_time, battery, longitule, latitude, geohash, created_by, 
+    created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update sco_scooter_action_trace
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.userId}
+        </foreach>
+      </trim>
+      <trim prefix="scooter_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.scooterId}
+        </foreach>
+      </trim>
+      <trim prefix="user_longitule = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.userLongitule}
+        </foreach>
+      </trim>
+      <trim prefix="user_latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.userLatitude}
+        </foreach>
+      </trim>
+      <trim prefix="user_location_geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.userLocationGeohash}
+        </foreach>
+      </trim>
+      <trim prefix="action_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.actionType}
+        </foreach>
+      </trim>
+      <trim prefix="action_result = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.actionResult}
+        </foreach>
+      </trim>
+      <trim prefix="action_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.actionTime}
+        </foreach>
+      </trim>
+      <trim prefix="battery = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.battery}
+        </foreach>
+      </trim>
+      <trim prefix="longitule = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.longitule}
+        </foreach>
+      </trim>
+      <trim prefix="latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.latitude}
+        </foreach>
+      </trim>
+      <trim prefix="geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.geohash}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into sco_scooter_action_trace
+    (id, dr, tenant_id, user_id, scooter_id, user_longitule, user_latitude, user_location_geohash, 
+      action_type, action_result, action_time, battery, longitule, latitude, geohash, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.userId}, #{item.scooterId}, #{item.userLongitule}, 
+        #{item.userLatitude}, #{item.userLocationGeohash}, #{item.actionType}, #{item.actionResult}, 
+        #{item.actionTime}, #{item.battery}, #{item.longitule}, #{item.latitude}, #{item.geohash}, 
+        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace">
+    <!--@mbg.generated-->
+    insert into sco_scooter_action_trace
+    (id, dr, tenant_id, user_id, scooter_id, user_longitule, user_latitude, user_location_geohash, 
+      action_type, action_result, action_time, battery, longitule, latitude, geohash, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
+    values
+    (#{id}, #{dr}, #{tenantId}, #{userId}, #{scooterId}, #{userLongitule}, #{userLatitude}, 
+      #{userLocationGeohash}, #{actionType}, #{actionResult}, #{actionTime}, #{battery}, 
+      #{longitule}, #{latitude}, #{geohash}, #{createdBy}, #{createdTime}, #{updatedBy}, 
+      #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    tenant_id = #{tenantId}, 
+    user_id = #{userId}, 
+    scooter_id = #{scooterId}, 
+    user_longitule = #{userLongitule}, 
+    user_latitude = #{userLatitude}, 
+    user_location_geohash = #{userLocationGeohash}, 
+    action_type = #{actionType}, 
+    action_result = #{actionResult}, 
+    action_time = #{actionTime}, 
+    battery = #{battery}, 
+    longitule = #{longitule}, 
+    latitude = #{latitude}, 
+    geohash = #{geohash}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace">
+    <!--@mbg.generated-->
+    insert into sco_scooter_action_trace
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="scooterId != null">
+        scooter_id,
+      </if>
+      <if test="userLongitule != null">
+        user_longitule,
+      </if>
+      <if test="userLatitude != null">
+        user_latitude,
+      </if>
+      <if test="userLocationGeohash != null">
+        user_location_geohash,
+      </if>
+      <if test="actionType != null">
+        action_type,
+      </if>
+      <if test="actionResult != null">
+        action_result,
+      </if>
+      <if test="actionTime != null">
+        action_time,
+      </if>
+      <if test="battery != null">
+        battery,
+      </if>
+      <if test="longitule != null">
+        longitule,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="geohash != null">
+        geohash,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="userId != null">
+        #{userId},
+      </if>
+      <if test="scooterId != null">
+        #{scooterId},
+      </if>
+      <if test="userLongitule != null">
+        #{userLongitule},
+      </if>
+      <if test="userLatitude != null">
+        #{userLatitude},
+      </if>
+      <if test="userLocationGeohash != null">
+        #{userLocationGeohash},
+      </if>
+      <if test="actionType != null">
+        #{actionType},
+      </if>
+      <if test="actionResult != null">
+        #{actionResult},
+      </if>
+      <if test="actionTime != null">
+        #{actionTime},
+      </if>
+      <if test="battery != null">
+        #{battery},
+      </if>
+      <if test="longitule != null">
+        #{longitule},
+      </if>
+      <if test="latitude != null">
+        #{latitude},
+      </if>
+      <if test="geohash != null">
+        #{geohash},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId},
+      </if>
+      <if test="scooterId != null">
+        scooter_id = #{scooterId},
+      </if>
+      <if test="userLongitule != null">
+        user_longitule = #{userLongitule},
+      </if>
+      <if test="userLatitude != null">
+        user_latitude = #{userLatitude},
+      </if>
+      <if test="userLocationGeohash != null">
+        user_location_geohash = #{userLocationGeohash},
+      </if>
+      <if test="actionType != null">
+        action_type = #{actionType},
+      </if>
+      <if test="actionResult != null">
+        action_result = #{actionResult},
+      </if>
+      <if test="actionTime != null">
+        action_time = #{actionTime},
+      </if>
+      <if test="battery != null">
+        battery = #{battery},
+      </if>
+      <if test="longitule != null">
+        longitule = #{longitule},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude},
+      </if>
+      <if test="geohash != null">
+        geohash = #{geohash},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>
