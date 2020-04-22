@@ -30,10 +30,13 @@ public class PrepareMaterialListResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "调拨单号")
+    @ApiModelProperty(value = "单据来源类型 对应状态值文档")
+    private String sourceType;
+
+    @ApiModelProperty(value = "单号")
     private String allocatN;
 
-    @ApiModelProperty(value = "调拨单创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     @ApiModelProperty(value = "待备料数量")

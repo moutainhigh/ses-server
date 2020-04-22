@@ -25,6 +25,13 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class SavePrepareMaterialEnter extends GeneralEnter {
+    @ApiModelProperty(value = "Id")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "Id不为空")
+    private Long id;
+
+    @ApiModelProperty(value = "来源类型")
+    @NotNull(code = ValidationExceptionCode.SOURCE_TYPE_IS_EMPTY, message = "消息来源类型不为空")
+    private String sourceType;
 
     @ApiModelProperty(value = "备料部件列表 格式：[{\"id\":1014631,\"partListJson\":[{\"partId\":1026387,\"qty\":1,\"serialN\":\"dasdasdasdas\"}]}]")
     @NotNull(code = ValidationExceptionCode.PART_LIST_JSON, message = "部件结果列表为空")

@@ -30,4 +30,8 @@ public class PrepareMaterialDetailEnter extends PageEnter {
     @ApiModelProperty(value = "id")
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id为空")
     private Long id;
+
+    @ApiModelProperty(value = "单据来源类型")
+    @NotNull(code = com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode.SOURCE_TYPE_IS_EMPTY, message = "单据来源类型为空")
+    private String sourceType;
 }

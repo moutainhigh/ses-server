@@ -38,11 +38,4 @@ public interface PrepareMaterialService {
      * @return
      */
     GeneralResult save(SavePrepareMaterialEnter enter);
-
-    /**
-     * 保存节点
-     *
-     * @return
-     */
-    GeneralResult saveAllocateNode(SaveNodeEnter enter);
 }

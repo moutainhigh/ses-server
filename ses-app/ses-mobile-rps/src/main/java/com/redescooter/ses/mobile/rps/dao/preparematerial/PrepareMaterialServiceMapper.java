@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.dao.preparematerial;
 
 import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.mobile.rps.dm.OpeStockBill;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult;
@@ -20,21 +21,6 @@ import java.util.List;
  * @create: 2020/04/15 11:20
  */
 public interface PrepareMaterialServiceMapper {
-    /**
-     * 带备料列表统计
-     *
-     * @param enter
-     * @return
-     */
-    int listCount(PageEnter enter);
-
-    /**
-     * 列表统计
-     *
-     * @param enter
-     * @return
-     */
-    List<PrepareMaterialListResult> list(PageEnter enter);
 
     /**
      * 详情列表数据
@@ -42,7 +28,7 @@ public interface PrepareMaterialServiceMapper {
      * @param enter
      * @return
      */
-    int detailListCount(PrepareMaterialDetailEnter enter);
+    int allocateListCount(PrepareMaterialDetailEnter enter);
 
     /**
      * 详情列表数据
@@ -50,5 +36,29 @@ public interface PrepareMaterialServiceMapper {
      * @param enter
      * @return
      */
-    List<PrepareMaterialDetailResult> detailList(PrepareMaterialDetailEnter enter);
+    List<PrepareMaterialDetailResult> allocatelList(PrepareMaterialDetailEnter enter);
+
+    /**
+     * 查询采购出库单、组装出库单
+     *
+     * @param enter
+     * @return
+     */
+    List<OpeStockBill> stockBillList(PageEnter enter);
+
+    /**
+     * 组装单备料详情列表统计
+     *
+     * @param enter
+     * @return
+     */
+    int assemblyListCount(PrepareMaterialDetailEnter enter);
+
+    /**
+     * 组装单备料详情列表
+     *
+     * @param enter
+     * @return
+     */
+    List<PrepareMaterialDetailResult> assemblyList(PrepareMaterialDetailEnter enter);
 }

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SavePrepareMaterialPartListEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "子表Id")
     private Long id;
 
     @ApiModelProperty(value = "部件列表")
