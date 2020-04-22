@@ -2,6 +2,7 @@ package com.redescooter.ses.mobile.rps.service.preparematerial.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.enums.production.ProductContractEnums;
@@ -62,6 +63,9 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
     @Autowired
     private OpeAllocateBTraceService opeAllocateBTraceService;
 
+    @Autowired
+    private OpeStockBillService opeStockBillService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -73,6 +77,8 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      */
     @Override
     public PageResult<PrepareMaterialListResult> list(PageEnter enter) {
+        //查询出库单据
+        //opeStockBillService.list(new LambdaQueryWrapper<OpeStockBill>().eq(OpeStockBill::getSourceType));
         int count = prepareMaterialServiceMapper.listCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);

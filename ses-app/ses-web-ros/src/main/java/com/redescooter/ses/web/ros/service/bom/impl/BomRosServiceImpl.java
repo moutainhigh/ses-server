@@ -697,7 +697,7 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
-        checkParameterEnter(enter, qcResultEnterMap);
+        OpePartsDraft opePartsDraft = checkParameterEnter(enter, qcResultEnterMap);
 
         //查询是否存在质检项 若存在删除所有质检项
         List<OpePartDraftQcTemplate> partQcTemplateList = deleteOpePartQcTemplates(enter);
@@ -707,8 +707,12 @@ public class BomRosServiceImpl implements BomRosService {
         //质检模板数据保存
         if (CollectionUtils.isNotEmpty(saveOpePartDraftQcTemplateList)) {
             opePartDraftQcTemplateService.saveOrUpdateBatch(saveOpePartDraftQcTemplateList);
-
         }
+        //更新同步标识
+        opePartsDraft.setSynchronizeFlag(Boolean.FALSE);
+        opePartsDraft.setUpdatedBy(enter.getUserId());
+        opePartsDraft.setUpdatedTime(new Date());
+        opePartsDraftService.updateById(opePartsDraft);
         //质检项结果集数据保存
         opePartDraftQcTemplateBService.saveOrUpdateBatch(saveOpePartDraftQcTemplateBList);
 
@@ -1288,7 +1292,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @param enter
      * @param qcResultEnterMap
      */
-    private void checkParameterEnter(SaveQcTemplateEnter enter, Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap) {
+    private OpePartsDraft checkParameterEnter(SaveQcTemplateEnter enter, Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap) {
         if (qcResultEnterMap.containsKey(null) || qcResultEnterMap.containsValue(null)) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -1321,5 +1325,6 @@ public class BomRosServiceImpl implements BomRosService {
         if (opePartsDraft == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
+        return opePartsDraft;
     }
 }
