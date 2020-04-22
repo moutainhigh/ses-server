@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.delivery.dao.ExpressOrderServiceMapper">
+
+
+    <sql id="where_ExpressOrder_List">
+        where a.tenant_id=#{tenantId}
+        and a.dr=0
+        <if test="status != null and status != ''">
+            and a.status=#{status}
+        </if>
+        <if test="city != null and city != ''">
+            and a.recipient_city=#{city}
+        </if>
+        <if test="postalCode != null and postalCode != ''">
+            and a.recipient_postcode=#{postalCode}
+        </if>
+        <if test="creatStartTime != null and creatStartTime != '' and creatEndTime != null and creatEndTime != ''">
+            and a.created_time between #{creatStartTime} and #{creatEndTime}
+        </if>
+        <if test="deliveredStartTime != null and deliveredStartTime != '' and deliveredEndTime != null and deliveredEndTime != ''">
+            and a.delivered_time between #{deliveredStartTime} and #{deliveredEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and(a.order_no like concat('%',#{keyword},'%')
+            or a.recipient_name like concat('%',#{keyword},'%')
+            or a.recipient_mail like concat('%',#{keyword},'%')
+            or e.FULL_NAME like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <select id="countByStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select count(*) as totalCount, status
+        from cor_express_order
+        where tenant_id=#{tenantId}
+        group by status
+    </select>
+    <select id="listCount" resultType="int">
+        select count(*)
+        from cor_express_order a
+        left join cor_express_delivery_detail b on a.id = b.express_order_id and b.dr = 0
+        left join cor_express_delivery c on b.express_delivery_id = c.id and c.dr = 0
+        left join cor_driver d on c.driver_id = d.id and d.dr = 0
+        left join cor_express_order_trace trace
+        on a.id = trace.express_order_id and trace.status =4 and trace.dr = 0
+        left join cor_tenant_scooter scooter on trace.scooter_id = scooter.scooter_id and scooter.dr = 0
+        left join cor_user_profile e on e.user_id = d.user_id and e.dr = 0
+        <include refid="where_ExpressOrder_List"/>
+    </select>
+    <select id="list" resultType="com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult">
+        select
+        a.id as id,
+        a.batch_no as batchNo,
+        a.order_no as orderNo,
+        a.status as status,
+        a.recipient_postcode as recipientPostcode,
+        a.recipient_name as recipientName,
+        a.recipient_mail as recipientMail,
+        a.recipient_city as recipientCity,
+        a.recipient_address as recipientAddress,
+        IF(a.recipient_longitude = '0.0000000000', null, a.recipient_longitude) as recipientLongitude,
+        IF(a.recipient_latitude = '0.0000000000', null, a.recipient_latitude) as recipientLatitude,
+        a.sender_address as senderAddress,
+        IF(a.sender_latitude = '0.0000000000', null, a.sender_latitude) as senderLatitude,
+        IF(a.sender_longitude = '0.0000000000', null, a.sender_longitude) as senderLongitude,
+        a.created_time as createdTime,
+        a.delivered_time as deliveredTime,
+        e.first_name as driverFirstName,
+        e.last_name as driverLastName,
+        scooter.license_plate as licensePlate
+        from cor_express_order a
+        left join cor_express_delivery_detail b on a.id = b.express_order_id and b.dr = 0
+        left join cor_express_delivery c on b.express_delivery_id = c.id and c.dr = 0
+        left join cor_driver d on c.driver_id = d.id and d.dr = 0
+        left join cor_express_order_trace trace
+        on a.id = trace.express_order_id and trace.status =4 and trace.dr = 0
+        left join cor_tenant_scooter scooter on trace.scooter_id = scooter.scooter_id and scooter.dr = 0
+        left join cor_user_profile e on e.user_id = d.user_id and e.dr = 0
+        <include refid="where_ExpressOrder_List"/>
+        order by a.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="detail" resultType="com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult">
+        SELECT a.id,
+        a.tenant_id as tenantId,
+        a.batch_no as batchNo,
+        a.order_no as orderNo,
+        a.STATUS,
+        a.recipient_country as recipientCountry,
+        a.recipient_city as recipientCity,
+        a.recipient_province as recipientProvince,
+        a.recipient_postcode as recipientPostcode,
+        a.recipient_address as recipientAddress,
+        IF(a.recipient_longitude = '0.0000000000', null, a.recipient_longitude) as recipientLongitude,
+        IF(a.recipient_latitude = '0.0000000000', null, a.recipient_latitude) as recipientLatitude,
+        a.recipient_geohash as recipientGeohash,
+        a.recipient_name as recipientName,
+        a.recipient_company as recipientCompany,
+        a.recipient_phone as recipientPhone,
+        a.recipient_mail as recipientMail,
+        a.recipient_notes as recipientNotes,
+        a.sender_country as senderCountry,
+        a.sender_city as senderCity,
+        a.sender_province as senderProvince,
+        a.sender_postcode as senderPostcode,
+        a.sender_address as senderAddress,
+        IF(a.sender_latitude = '0.0000000000', null, a.sender_latitude) as senderLatitude,
+        IF(a.sender_longitude = '0.0000000000', null, a.sender_longitude) as senderLongitude,
+        a.sender_geohash as senderGeohash,
+        a.sender_company as senderCompany,
+        a.sender_name as senderName,
+        a.sender_phone as senderPhone,
+        a.sender_mail as senderMail,
+        a.sender_notes as senderNotes,
+        a.parcel_quantity as parcelQuantity,
+        a.assign_flag as assignFlag,
+        a.assign_time as assignTime,
+        a.vehicle_type as vehicleType,
+        a.expect_time_begin as expectTimeBegin,
+        a.expect_time_end as expectTimeEnd,
+        a.general_notes as generalNotes,
+        a.delivered_time as deliveredTime,
+        a.created_time as createdTime,
+        e.first_name as driverFirstName,
+        e.last_name as driverLastName,
+        e.email_1 as driverEmail,
+        e.nickname as driverNickname,
+        e.tel_number_1 as driverPhone,
+        case when e.email_1 is null then '2' ELSE '1' END driverLoginType,
+        a.denial_reason as reason,
+        d.id as driverId
+        FROM cor_express_order a
+        LEFT JOIN (SELECT *
+        FROM cor_express_delivery_detail
+        where express_order_id = #{id}
+        ORDER BY created_time DESC
+        LIMIT 1) b
+        ON a.id = b.express_order_id
+        LEFT JOIN cor_express_delivery c ON b.express_delivery_id = c.id AND c.dr = 0
+        LEFT JOIN cor_driver d ON c.driver_id = d.id AND d.dr = 0
+        left JOIN cor_user_profile e ON e.user_id = d.user_id AND e.dr = 0
+        WHERE a.tenant_id = #{tenantId}
+        AND a.dr = 0
+        AND a.id = #{id};
+    </select>
+    <select id="getOrderNode" resultType="com.redescooter.ses.web.delivery.vo.QueryExpressOrderTraceResult">
+        SELECT
+        a.id AS id,
+        a.express_delivery_id AS expressDeliveryId,
+        a.express_order_id AS expressOrderId,
+        a.STATUS AS STATUS,
+        a.EVENT AS EVENT,
+        a.reason AS reason,
+        a.event_time AS eventTime,
+        a.longitude AS longitude,
+        a.latitude AS latitude,
+        a.geohash AS geohash,
+        a.scooter_id AS scooterId,
+        a.scooter_latitude AS scooterLongitude,
+        a.scooter_longitude AS scooterLatitude,
+        a.scooter_geohash AS scooterGeohash,
+        b.FULL_NAME AS createdName,
+        a.created_time AS createdTime,
+        e.FULL_NAME AS driverName
+        FROM
+        cor_express_order_trace a
+        LEFT JOIN cor_user_profile b ON a.created_by = b.user_id
+        AND b.dr = 0
+        LEFT JOIN cor_express_delivery c ON a.express_delivery_id = c.id
+        AND c.dr = 0
+        LEFT JOIN cor_driver d ON d.id = c.driver_id
+        AND d.dr = 0
+        LEFT JOIN cor_user_profile e ON e.user_id = d.user_id
+        AND e.dr = 0
+        WHERE
+        a.dr = 0
+        and a.tenant_id = #{tenantId}
+        AND a.express_order_id = #{id}
+        ORDER BY
+        a.created_time ASC
+    </select>
+
+    <select id="scooterMap" resultType="com.redescooter.ses.web.delivery.vo.ScooterMapResult">
+        select scooter.scooter_id as id,
+        scooter.latitude as lat,
+        scooter.longitule as lng,
+        scooter.status as status,
+        scooter.license_plate as licensePlate,
+        driver.id as driverId,
+        profile.FIRST_NAME as driverFirstName,
+        profile.LAST_NAME as driverLastName,
+        profile.picture as avatar
+        from cor_tenant_scooter scooter
+        left join cor_driver_scooter cds on cds.scooter_id = scooter.scooter_id and cds.dr = 0
+        left join cor_driver driver on cds.driver_id = driver.id and driver.dr = 0 and driver.status in (1, 2)
+        left join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
+        where scooter.tenant_id = #{tenantId}
+    </select>
+    <select id="mapOrderList" resultType="com.redescooter.ses.web.delivery.dm.CorExpressOrder">
+        SELECT
+        a.id,
+        a.tenant_id as tenantId,
+        a.batch_no as batchNo,
+        a.order_no as orderNo,
+        a.STATUS,
+        a.recipient_country as recipientCountry,
+        a.recipient_city as recipientCity,
+        a.recipient_province as recipientProvince,
+        a.recipient_postcode as recipientPostcode,
+        a.recipient_address as recipientAddress,
+        IF(a.recipient_longitude = '0.0000000000', null, a.recipient_longitude) as recipientLongitude,
+        IF(a.recipient_latitude = '0.0000000000', null, a.recipient_latitude) as recipientLatitude,
+        a.recipient_geohash as recipientGeohash,
+        a.recipient_name as recipientName,
+        a.recipient_company as recipientCompany,
+        a.recipient_phone as recipientPhone,
+        a.recipient_mail as recipientMail,
+        a.recipient_notes as recipientNotes,
+        a.sender_country as senderCountry,
+        a.sender_city as senderCity,
+        a.sender_province as senderProvince,
+        a.sender_postcode as senderPostcode,
+        a.sender_address as senderAddress,
+        IF(a.sender_latitude = '0.0000000000', null, a.sender_latitude) as senderLatitude,
+        IF(a.sender_longitude = '0.0000000000', null, a.sender_longitude) as senderLongitude,
+        a.sender_geohash as senderGeohash,
+        a.sender_company as senderCompany,
+        a.sender_name as senderName,
+        a.sender_phone as senderPhone,
+        a.sender_mail as senderMail,
+        a.sender_notes as senderNotes,
+        a.parcel_quantity as parcelQuantity,
+        a.assign_flag as assignFlag,
+        a.assign_time as assignTime,
+        a.vehicle_type as vehicleType,
+        a.expect_time_begin as expectTimeBegin,
+        a.expect_time_end as expectTimeEnd,
+        a.general_notes as generalNotes,
+        a.delivered_time as deliveredTime,
+        a.created_time as createdTime,
+        e.first_name as driverFirstName,
+        e.last_name as driverLastName,
+        a.denial_reason as reason
+        FROM
+        cor_express_order a
+        LEFT JOIN (
+        SELECT
+        *
+        FROM
+        cor_express_delivery_detail
+        WHERE
+        dr = 0
+        ORDER BY
+        created_time DESC
+        LIMIT 1
+        ) b ON a.id = b.express_order_id
+        LEFT JOIN cor_express_delivery c ON b.express_delivery_id = c.id
+        AND c.dr = 0
+        LEFT JOIN cor_driver d ON c.driver_id = d.id
+        AND d.dr = 0
+        LEFT JOIN cor_user_profile e ON e.user_id = d.user_id
+        AND e.dr = 0
+        WHERE
+        a.tenant_id = #{tenantId}
+        AND a.dr = 0
+        <if test="statusList !=null and statusList.size() !=0">
+            and a.STATUS in
+            <foreach collection="statusList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by a.created_time desc
+    </select>
+    <select id="diverInfor" resultType="com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult">
+        select driver.id as id,
+        driver.user_id as userId,
+        profile.picture as avatar,
+        profile.first_name as driverFirstName,
+        profile.last_name as driverLastName,
+        cds.scooter_id as scooterId
+        from cor_driver driver
+        inner join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
+        left join cor_driver_scooter cds on driver.id = cds.driver_id and cds.dr = 0
+        where driver.status = 1
+        and driver.tenant_id = #{tenantId}
+        and driver.id=#{id}
+        and cds.status = 1
+    </select>
+
+    <select id="driverOrderList" resultType="com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult">
+        select exorder.*
+        from cor_express_order exorder
+        right join cor_express_delivery_detail cedd on exorder.id = cedd.express_order_id and cedd.dr=0
+        right join cor_express_delivery delivery on delivery.id = cedd.express_delivery_id and delivery.dr=0
+        left join cor_driver cd on cd.id = delivery.driver_id and cd.dr=0 and cd.status=1
+        where exorder.dr=0
+        and exorder.tenant_id=#{tenantId}
+        and cd.id=#{id}
+    </select>
+    <select id="refuseOrderDetail"
+            resultType="com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult">
+        select driver.id as driverId,
+        profile.first_name as driverFirstName,
+        profile.last_name as driverLastName,
+        ceot.reason as reason
+        from cor_express_order exorder
+        left join cor_express_order_trace ceot on exorder.id = ceot.express_order_id and exorder.status = ceot.status
+        and ceot.dr = 0
+        left join cor_driver driver on ceot.driver_id = driver.id and ceot.dr = 0
+        left join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
+        where exorder.id=#{id}
+        and ceot.tenant_id=#{tenantId}
+        and exorder.dr = 0
+        and driver.id is not null
+        order by ceot.created_time desc
+        limit 1
+    </select>
+    <select id="expressDeliveryShippingByDriverId"
+            resultType="com.redescooter.ses.web.delivery.dm.CorExpressDelivery">
+        select *
+        from cor_express_delivery delivery
+        where dr = 0
+          and driver_id = 1004162
+          and TO_DAYS(create_time) = TO_DAYS(NOW())
+    </select>
+    <select id="queryCorTenantScooterByDriverId"
+            resultType="com.redescooter.ses.web.delivery.dm.CorTenantScooter">
+        select tscooter.*
+        from cor_tenant_scooter tscooter
+        inner join (select scooter_id
+        from cor_driver_scooter_history histroy
+        where driver_id = #{driverId}
+        and dr = 0
+        order by created_time desc
+        limit 1) histroy
+        on tscooter.scooter_id = histroy.scooter_id;
+    </select>
+</mapper>

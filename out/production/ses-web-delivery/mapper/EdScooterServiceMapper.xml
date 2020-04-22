@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.delivery.dao.EdScooterServiceMapper">
+
+
+    <sql id="where_scooter_list">
+        where scooter.tenant_id = #{tenantId}
+        and scooter.dr = 0
+        <if test="status != null and status != ''">
+            and scooter.status=#{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            scooter.license_plate like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <sql id="where_assignEdScooterHistroy_List">
+        where histroy.status = 2
+        and histroy.scooter_id = #{id}
+        and histroy.tenant_id = #{tenantId}
+        <if
+                test="assignStartTime != null and assignStartTime != '' and  assignEndTime != null and assignEndTime != ''">
+            and histroy.begin_time between #{assignStartTime} and #{assignEndTime}
+        </if>
+        <if
+                test="removeStartTime != null and removeStartTime != '' and  removeEndTime != null and removeEndTime != ''">
+            and histroy.end_time between #{removeStartTime} and #{removeEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            profile.first_name like concat('%',#{keyword},'%') or
+            profile.last_name like concat('%',#{keyword},'%') or
+            profile.full_name like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <sql id="where_usingAssignEdScooterHistroy_List">
+        where scooter.status = 1
+        and histroy.scooter_id = #{id}
+        and histroy.tenant_id = #{tenantId}
+        <if
+                test="assignStartTime != null and assignStartTime != '' and  assignEndTime != null and assignEndTime != ''">
+            and histroy.begin_time between #{assignStartTime} and #{assignEndTime}
+        </if>
+        <if
+                test="removeStartTime != null and removeStartTime != '' and  removeEndTime != null and removeEndTime != ''">
+            and histroy.end_time between #{removeStartTime} and #{removeEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            profile.first_name like concat('%',#{keyword},'%') or
+            profile.last_name like concat('%',#{keyword},'%') or
+            profile.full_name like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <select id="countByStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select count(*) totalCount, scooter.status
+        from cor_tenant_scooter scooter
+        where scooter.tenant_id = #{tenantId}
+        and scooter.dr = 0
+        group by status
+    </select>
+    <select id="listCount" resultType="java.lang.Integer">
+        select count(*)
+        from cor_tenant_scooter scooter
+        <include refid="where_scooter_list"></include>
+    </select>
+    <select id="list" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
+        select scooter.scooter_id as id,
+        scooter.status as status,
+        scooter.license_plate as licensePlate
+        from cor_tenant_scooter scooter
+        <include refid="where_scooter_list"></include>
+        order by scooter.status desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detail" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
+        select scooter.scooter_id as id,
+        scooter.status as status,
+        scooter.model as model,
+        scooter.license_plate as licensePlate
+        from cor_tenant_scooter scooter
+        where scooter.scooter_id = #{id}
+        and scooter.tenant_id = #{tenantId}
+    </select>
+    <select id="assignEdScooterHistroyCount" resultType="java.lang.Integer">
+        select count(*)
+        from cor_driver_scooter_history histroy
+        inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
+        inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
+        <include refid="where_assignEdScooterHistroy_List"/>
+    </select>
+    <select id="usingAssignEdScooterHistroyCount" resultType="java.lang.Integer">
+        select count(*)
+        from cor_driver_scooter scooter
+        inner join cor_driver_scooter_history histroy
+        on scooter.scooter_id = histroy.scooter_id and scooter.begin_time = histroy.begin_time
+        inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
+        inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
+        <include refid="where_usingAssignEdScooterHistroy_List"/>
+    </select>
+    <select id="assignEdScooterHistroyList"
+            resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult">
+        select histroy.id as id,
+        histroy.scooter_id as scooterId,
+        histroy.begin_time as assignedTime,
+        histroy.end_time as removeTime,
+        histroy.driver_id as driverId,
+        profile.first_name as driverFirstName,
+        profile.last_name as driverLastName,
+        ifnull(histroy.mileage,0) as mileage
+        from cor_driver_scooter_history histroy
+        inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
+        inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
+        <include refid="where_assignEdScooterHistroy_List"/>
+        order by histroy.begin_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="usingAssignEdScooterHistroyList"
+            resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterHistroyResult">
+        select histroy.id as id,
+        histroy.scooter_id as scooterId,
+        histroy.begin_time as assignedTime,
+        histroy.end_time as removeTime,
+        histroy.driver_id as driverId,
+        profile.first_name as driverFirstName,
+        profile.last_name as driverLastName,
+        ifnull(histroy.mileage,0) as mileage
+        from cor_driver_scooter scooter
+        inner join cor_driver_scooter_history histroy
+        on scooter.scooter_id = histroy.scooter_id and scooter.begin_time = histroy.begin_time
+        inner join cor_driver driver on histroy.driver_id = driver.id and driver.dr = 0
+        inner join cor_user_profile profile on driver.user_id = profile.user_id and profile.dr = 0
+        <include refid="where_usingAssignEdScooterHistroy_List"/>
+        order by histroy.begin_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="scooterGreenData"
+            resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterGreenDataResult">
+        select scooter.scooter_id as id,
+        scooter.license_plate as licensePlate,
+        ifnull(csrs.co2_total, 0) as co2,
+        ifnull(csrs.saved_money, 0) as monty
+        from cor_tenant_scooter scooter
+        left join cor_scooter_ride_stat csrs on csrs.scooter_id = scooter.scooter_id and csrs.dr = 0
+        where scooter.scooter_id = #{id}
+        and scooter.tenant_id = #{tenantId}
+    </select>
+    <select id="driverUserProfile" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
+        select dscooter.scooter_id as id,
+        driver.id as driverId,
+        profile.FIRST_NAME as driverFirstName,
+        profile.LAST_NAME as driverLastName
+        from cor_driver_scooter dscooter
+        inner join cor_driver driver on driver.id = dscooter.driver_id and driver.dr = 0
+        inner join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
+        where dscooter.dr = 0
+        and driver.status=1
+        <if test="collection != null and collection.size() != 0">
+            and dscooter.scooter_id in
+            <foreach collection="list" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+</mapper>

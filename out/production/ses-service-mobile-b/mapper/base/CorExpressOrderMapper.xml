@@ -1,0 +1,1267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.base.CorExpressOrderMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrder">
+    <!--@mbg.generated-->
+    <!--@Table cor_express_order-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="batch_no" property="batchNo" />
+    <result column="order_no" property="orderNo" />
+    <result column="status" property="status" />
+    <result column="recipient_country" property="recipientCountry" />
+    <result column="recipient_province" property="recipientProvince" />
+    <result column="recipient_city" property="recipientCity" />
+    <result column="recipient_postcode" property="recipientPostcode" />
+    <result column="recipient_address" property="recipientAddress" />
+    <result column="recipient_latitude" property="recipientLatitude" />
+    <result column="recipient_longitude" property="recipientLongitude" />
+    <result column="recipient_geohash" property="recipientGeohash" />
+    <result column="customer_reference" property="customerReference" />
+    <result column="recipient_name" property="recipientName" />
+    <result column="recipient_company" property="recipientCompany" />
+    <result column="recipient_phone" property="recipientPhone" />
+    <result column="recipient_mail" property="recipientMail" />
+    <result column="recipient_notes" property="recipientNotes" />
+    <result column="sender_country" property="senderCountry" />
+    <result column="sender_city" property="senderCity" />
+    <result column="sender_province" property="senderProvince" />
+    <result column="sender_postcode" property="senderPostcode" />
+    <result column="sender_address" property="senderAddress" />
+    <result column="sender_latitude" property="senderLatitude" />
+    <result column="sender_longitude" property="senderLongitude" />
+    <result column="sender_geohash" property="senderGeohash" />
+    <result column="sender_company" property="senderCompany" />
+    <result column="sender_name" property="senderName" />
+    <result column="sender_phone" property="senderPhone" />
+    <result column="sender_mail" property="senderMail" />
+    <result column="sender_notes" property="senderNotes" />
+    <result column="parcel_quantity" property="parcelQuantity" />
+    <result column="assign_flag" property="assignFlag" />
+    <result column="assign_time" property="assignTime" />
+    <result column="vehicle_type" property="vehicleType" />
+    <result column="expect_time_begin" property="expectTimeBegin" />
+    <result column="expect_time_end" property="expectTimeEnd" />
+    <result column="general_notes" property="generalNotes" />
+    <result column="denial_reason" property="denialReason" />
+    <result column="delivered_time" property="deliveredTime" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, batch_no, order_no, `status`, recipient_country, recipient_province, 
+    recipient_city, recipient_postcode, recipient_address, recipient_latitude, recipient_longitude, 
+    recipient_geohash, customer_reference, recipient_name, recipient_company, recipient_phone, 
+    recipient_mail, recipient_notes, sender_country, sender_city, sender_province, sender_postcode, 
+    sender_address, sender_latitude, sender_longitude, sender_geohash, sender_company, 
+    sender_name, sender_phone, sender_mail, sender_notes, parcel_quantity, assign_flag, 
+    assign_time, vehicle_type, expect_time_begin, expect_time_end, general_notes, denial_reason, 
+    delivered_time, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+    def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update cor_express_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="batch_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.batchNo}
+        </foreach>
+      </trim>
+      <trim prefix="order_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.orderNo}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_country = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientCountry}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_province = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientProvince}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientCity}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_postcode = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientPostcode}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientAddress}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientLatitude}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientLongitude}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientGeohash}
+        </foreach>
+      </trim>
+      <trim prefix="customer_reference = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.customerReference}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientName}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_company = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientCompany}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_phone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientPhone}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_mail = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientMail}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_notes = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.recipientNotes}
+        </foreach>
+      </trim>
+      <trim prefix="sender_country = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderCountry}
+        </foreach>
+      </trim>
+      <trim prefix="sender_city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderCity}
+        </foreach>
+      </trim>
+      <trim prefix="sender_province = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderProvince}
+        </foreach>
+      </trim>
+      <trim prefix="sender_postcode = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderPostcode}
+        </foreach>
+      </trim>
+      <trim prefix="sender_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderAddress}
+        </foreach>
+      </trim>
+      <trim prefix="sender_latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderLatitude}
+        </foreach>
+      </trim>
+      <trim prefix="sender_longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderLongitude}
+        </foreach>
+      </trim>
+      <trim prefix="sender_geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderGeohash}
+        </foreach>
+      </trim>
+      <trim prefix="sender_company = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderCompany}
+        </foreach>
+      </trim>
+      <trim prefix="sender_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderName}
+        </foreach>
+      </trim>
+      <trim prefix="sender_phone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderPhone}
+        </foreach>
+      </trim>
+      <trim prefix="sender_mail = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderMail}
+        </foreach>
+      </trim>
+      <trim prefix="sender_notes = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.senderNotes}
+        </foreach>
+      </trim>
+      <trim prefix="parcel_quantity = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.parcelQuantity}
+        </foreach>
+      </trim>
+      <trim prefix="assign_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.assignFlag}
+        </foreach>
+      </trim>
+      <trim prefix="assign_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.assignTime}
+        </foreach>
+      </trim>
+      <trim prefix="vehicle_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.vehicleType}
+        </foreach>
+      </trim>
+      <trim prefix="expect_time_begin = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.expectTimeBegin}
+        </foreach>
+      </trim>
+      <trim prefix="expect_time_end = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.expectTimeEnd}
+        </foreach>
+      </trim>
+      <trim prefix="general_notes = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.generalNotes}
+        </foreach>
+      </trim>
+      <trim prefix="denial_reason = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.denialReason}
+        </foreach>
+      </trim>
+      <trim prefix="delivered_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.deliveredTime}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update cor_express_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id} then #{item.dr}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantId != null">
+            when id = #{item.id} then #{item.tenantId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="batch_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.batchNo != null">
+            when id = #{item.id} then #{item.batchNo}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="order_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.orderNo != null">
+            when id = #{item.id} then #{item.orderNo}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.status != null">
+            when id = #{item.id} then #{item.status}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_country = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientCountry != null">
+            when id = #{item.id} then #{item.recipientCountry}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_province = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientProvince != null">
+            when id = #{item.id} then #{item.recipientProvince}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientCity != null">
+            when id = #{item.id} then #{item.recipientCity}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_postcode = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientPostcode != null">
+            when id = #{item.id} then #{item.recipientPostcode}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientAddress != null">
+            when id = #{item.id} then #{item.recipientAddress}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientLatitude != null">
+            when id = #{item.id} then #{item.recipientLatitude}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientLongitude != null">
+            when id = #{item.id} then #{item.recipientLongitude}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientGeohash != null">
+            when id = #{item.id} then #{item.recipientGeohash}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="customer_reference = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.customerReference != null">
+            when id = #{item.id} then #{item.customerReference}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientName != null">
+            when id = #{item.id} then #{item.recipientName}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_company = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientCompany != null">
+            when id = #{item.id} then #{item.recipientCompany}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_phone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientPhone != null">
+            when id = #{item.id} then #{item.recipientPhone}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_mail = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientMail != null">
+            when id = #{item.id} then #{item.recipientMail}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_notes = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientNotes != null">
+            when id = #{item.id} then #{item.recipientNotes}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_country = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderCountry != null">
+            when id = #{item.id} then #{item.senderCountry}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderCity != null">
+            when id = #{item.id} then #{item.senderCity}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_province = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderProvince != null">
+            when id = #{item.id} then #{item.senderProvince}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_postcode = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderPostcode != null">
+            when id = #{item.id} then #{item.senderPostcode}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderAddress != null">
+            when id = #{item.id} then #{item.senderAddress}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderLatitude != null">
+            when id = #{item.id} then #{item.senderLatitude}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderLongitude != null">
+            when id = #{item.id} then #{item.senderLongitude}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderGeohash != null">
+            when id = #{item.id} then #{item.senderGeohash}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_company = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderCompany != null">
+            when id = #{item.id} then #{item.senderCompany}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderName != null">
+            when id = #{item.id} then #{item.senderName}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_phone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderPhone != null">
+            when id = #{item.id} then #{item.senderPhone}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_mail = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderMail != null">
+            when id = #{item.id} then #{item.senderMail}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_notes = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderNotes != null">
+            when id = #{item.id} then #{item.senderNotes}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="parcel_quantity = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.parcelQuantity != null">
+            when id = #{item.id} then #{item.parcelQuantity}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="assign_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.assignFlag != null">
+            when id = #{item.id} then #{item.assignFlag}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="assign_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.assignTime != null">
+            when id = #{item.id} then #{item.assignTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="vehicle_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.vehicleType != null">
+            when id = #{item.id} then #{item.vehicleType}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="expect_time_begin = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.expectTimeBegin != null">
+            when id = #{item.id} then #{item.expectTimeBegin}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="expect_time_end = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.expectTimeEnd != null">
+            when id = #{item.id} then #{item.expectTimeEnd}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="general_notes = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.generalNotes != null">
+            when id = #{item.id} then #{item.generalNotes}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="denial_reason = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.denialReason != null">
+            when id = #{item.id} then #{item.denialReason}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="delivered_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.deliveredTime != null">
+            when id = #{item.id} then #{item.deliveredTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id} then #{item.createdBy}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id} then #{item.createdTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id} then #{item.updatedBy}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id} then #{item.updatedTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id} then #{item.def1}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id} then #{item.def2}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id} then #{item.def3}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id} then #{item.def5}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id} then #{item.def6}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into cor_express_order
+    (id, dr, tenant_id, batch_no, order_no, `status`, recipient_country, recipient_province, 
+      recipient_city, recipient_postcode, recipient_address, recipient_latitude, recipient_longitude, 
+      recipient_geohash, customer_reference, recipient_name, recipient_company, recipient_phone, 
+      recipient_mail, recipient_notes, sender_country, sender_city, sender_province, 
+      sender_postcode, sender_address, sender_latitude, sender_longitude, sender_geohash, 
+      sender_company, sender_name, sender_phone, sender_mail, sender_notes, parcel_quantity, 
+      assign_flag, assign_time, vehicle_type, expect_time_begin, expect_time_end, general_notes, 
+      denial_reason, delivered_time, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.batchNo}, #{item.orderNo}, #{item.status}, 
+        #{item.recipientCountry}, #{item.recipientProvince}, #{item.recipientCity}, #{item.recipientPostcode}, 
+        #{item.recipientAddress}, #{item.recipientLatitude}, #{item.recipientLongitude}, 
+        #{item.recipientGeohash}, #{item.customerReference}, #{item.recipientName}, #{item.recipientCompany}, 
+        #{item.recipientPhone}, #{item.recipientMail}, #{item.recipientNotes}, #{item.senderCountry}, 
+        #{item.senderCity}, #{item.senderProvince}, #{item.senderPostcode}, #{item.senderAddress}, 
+        #{item.senderLatitude}, #{item.senderLongitude}, #{item.senderGeohash}, #{item.senderCompany}, 
+        #{item.senderName}, #{item.senderPhone}, #{item.senderMail}, #{item.senderNotes}, 
+        #{item.parcelQuantity}, #{item.assignFlag}, #{item.assignTime}, #{item.vehicleType}, 
+        #{item.expectTimeBegin}, #{item.expectTimeEnd}, #{item.generalNotes}, #{item.denialReason}, 
+        #{item.deliveredTime}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, 
+        #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrder">
+    <!--@mbg.generated-->
+    insert into cor_express_order
+    (id, dr, tenant_id, batch_no, order_no, `status`, recipient_country, recipient_province, 
+      recipient_city, recipient_postcode, recipient_address, recipient_latitude, recipient_longitude, 
+      recipient_geohash, customer_reference, recipient_name, recipient_company, recipient_phone, 
+      recipient_mail, recipient_notes, sender_country, sender_city, sender_province, 
+      sender_postcode, sender_address, sender_latitude, sender_longitude, sender_geohash, 
+      sender_company, sender_name, sender_phone, sender_mail, sender_notes, parcel_quantity, 
+      assign_flag, assign_time, vehicle_type, expect_time_begin, expect_time_end, general_notes, 
+      denial_reason, delivered_time, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
+    values
+    (#{id}, #{dr}, #{tenantId}, #{batchNo}, #{orderNo}, #{status}, #{recipientCountry}, 
+      #{recipientProvince}, #{recipientCity}, #{recipientPostcode}, #{recipientAddress}, 
+      #{recipientLatitude}, #{recipientLongitude}, #{recipientGeohash}, #{customerReference}, 
+      #{recipientName}, #{recipientCompany}, #{recipientPhone}, #{recipientMail}, #{recipientNotes}, 
+      #{senderCountry}, #{senderCity}, #{senderProvince}, #{senderPostcode}, #{senderAddress}, 
+      #{senderLatitude}, #{senderLongitude}, #{senderGeohash}, #{senderCompany}, #{senderName}, 
+      #{senderPhone}, #{senderMail}, #{senderNotes}, #{parcelQuantity}, #{assignFlag}, 
+      #{assignTime}, #{vehicleType}, #{expectTimeBegin}, #{expectTimeEnd}, #{generalNotes}, 
+      #{denialReason}, #{deliveredTime}, #{createdBy}, #{createdTime}, #{updatedBy}, 
+      #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    tenant_id = #{tenantId}, 
+    batch_no = #{batchNo}, 
+    order_no = #{orderNo}, 
+    `status` = #{status}, 
+    recipient_country = #{recipientCountry}, 
+    recipient_province = #{recipientProvince}, 
+    recipient_city = #{recipientCity}, 
+    recipient_postcode = #{recipientPostcode}, 
+    recipient_address = #{recipientAddress}, 
+    recipient_latitude = #{recipientLatitude}, 
+    recipient_longitude = #{recipientLongitude}, 
+    recipient_geohash = #{recipientGeohash}, 
+    customer_reference = #{customerReference}, 
+    recipient_name = #{recipientName}, 
+    recipient_company = #{recipientCompany}, 
+    recipient_phone = #{recipientPhone}, 
+    recipient_mail = #{recipientMail}, 
+    recipient_notes = #{recipientNotes}, 
+    sender_country = #{senderCountry}, 
+    sender_city = #{senderCity}, 
+    sender_province = #{senderProvince}, 
+    sender_postcode = #{senderPostcode}, 
+    sender_address = #{senderAddress}, 
+    sender_latitude = #{senderLatitude}, 
+    sender_longitude = #{senderLongitude}, 
+    sender_geohash = #{senderGeohash}, 
+    sender_company = #{senderCompany}, 
+    sender_name = #{senderName}, 
+    sender_phone = #{senderPhone}, 
+    sender_mail = #{senderMail}, 
+    sender_notes = #{senderNotes}, 
+    parcel_quantity = #{parcelQuantity}, 
+    assign_flag = #{assignFlag}, 
+    assign_time = #{assignTime}, 
+    vehicle_type = #{vehicleType}, 
+    expect_time_begin = #{expectTimeBegin}, 
+    expect_time_end = #{expectTimeEnd}, 
+    general_notes = #{generalNotes}, 
+    denial_reason = #{denialReason}, 
+    delivered_time = #{deliveredTime}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrder">
+    <!--@mbg.generated-->
+    insert into cor_express_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="batchNo != null">
+        batch_no,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="recipientCountry != null">
+        recipient_country,
+      </if>
+      <if test="recipientProvince != null">
+        recipient_province,
+      </if>
+      <if test="recipientCity != null">
+        recipient_city,
+      </if>
+      <if test="recipientPostcode != null">
+        recipient_postcode,
+      </if>
+      <if test="recipientAddress != null">
+        recipient_address,
+      </if>
+      <if test="recipientLatitude != null">
+        recipient_latitude,
+      </if>
+      <if test="recipientLongitude != null">
+        recipient_longitude,
+      </if>
+      <if test="recipientGeohash != null">
+        recipient_geohash,
+      </if>
+      <if test="customerReference != null">
+        customer_reference,
+      </if>
+      <if test="recipientName != null">
+        recipient_name,
+      </if>
+      <if test="recipientCompany != null">
+        recipient_company,
+      </if>
+      <if test="recipientPhone != null">
+        recipient_phone,
+      </if>
+      <if test="recipientMail != null">
+        recipient_mail,
+      </if>
+      <if test="recipientNotes != null">
+        recipient_notes,
+      </if>
+      <if test="senderCountry != null">
+        sender_country,
+      </if>
+      <if test="senderCity != null">
+        sender_city,
+      </if>
+      <if test="senderProvince != null">
+        sender_province,
+      </if>
+      <if test="senderPostcode != null">
+        sender_postcode,
+      </if>
+      <if test="senderAddress != null">
+        sender_address,
+      </if>
+      <if test="senderLatitude != null">
+        sender_latitude,
+      </if>
+      <if test="senderLongitude != null">
+        sender_longitude,
+      </if>
+      <if test="senderGeohash != null">
+        sender_geohash,
+      </if>
+      <if test="senderCompany != null">
+        sender_company,
+      </if>
+      <if test="senderName != null">
+        sender_name,
+      </if>
+      <if test="senderPhone != null">
+        sender_phone,
+      </if>
+      <if test="senderMail != null">
+        sender_mail,
+      </if>
+      <if test="senderNotes != null">
+        sender_notes,
+      </if>
+      <if test="parcelQuantity != null">
+        parcel_quantity,
+      </if>
+      <if test="assignFlag != null">
+        assign_flag,
+      </if>
+      <if test="assignTime != null">
+        assign_time,
+      </if>
+      <if test="vehicleType != null">
+        vehicle_type,
+      </if>
+      <if test="expectTimeBegin != null">
+        expect_time_begin,
+      </if>
+      <if test="expectTimeEnd != null">
+        expect_time_end,
+      </if>
+      <if test="generalNotes != null">
+        general_notes,
+      </if>
+      <if test="denialReason != null">
+        denial_reason,
+      </if>
+      <if test="deliveredTime != null">
+        delivered_time,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="batchNo != null">
+        #{batchNo},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="recipientCountry != null">
+        #{recipientCountry},
+      </if>
+      <if test="recipientProvince != null">
+        #{recipientProvince},
+      </if>
+      <if test="recipientCity != null">
+        #{recipientCity},
+      </if>
+      <if test="recipientPostcode != null">
+        #{recipientPostcode},
+      </if>
+      <if test="recipientAddress != null">
+        #{recipientAddress},
+      </if>
+      <if test="recipientLatitude != null">
+        #{recipientLatitude},
+      </if>
+      <if test="recipientLongitude != null">
+        #{recipientLongitude},
+      </if>
+      <if test="recipientGeohash != null">
+        #{recipientGeohash},
+      </if>
+      <if test="customerReference != null">
+        #{customerReference},
+      </if>
+      <if test="recipientName != null">
+        #{recipientName},
+      </if>
+      <if test="recipientCompany != null">
+        #{recipientCompany},
+      </if>
+      <if test="recipientPhone != null">
+        #{recipientPhone},
+      </if>
+      <if test="recipientMail != null">
+        #{recipientMail},
+      </if>
+      <if test="recipientNotes != null">
+        #{recipientNotes},
+      </if>
+      <if test="senderCountry != null">
+        #{senderCountry},
+      </if>
+      <if test="senderCity != null">
+        #{senderCity},
+      </if>
+      <if test="senderProvince != null">
+        #{senderProvince},
+      </if>
+      <if test="senderPostcode != null">
+        #{senderPostcode},
+      </if>
+      <if test="senderAddress != null">
+        #{senderAddress},
+      </if>
+      <if test="senderLatitude != null">
+        #{senderLatitude},
+      </if>
+      <if test="senderLongitude != null">
+        #{senderLongitude},
+      </if>
+      <if test="senderGeohash != null">
+        #{senderGeohash},
+      </if>
+      <if test="senderCompany != null">
+        #{senderCompany},
+      </if>
+      <if test="senderName != null">
+        #{senderName},
+      </if>
+      <if test="senderPhone != null">
+        #{senderPhone},
+      </if>
+      <if test="senderMail != null">
+        #{senderMail},
+      </if>
+      <if test="senderNotes != null">
+        #{senderNotes},
+      </if>
+      <if test="parcelQuantity != null">
+        #{parcelQuantity},
+      </if>
+      <if test="assignFlag != null">
+        #{assignFlag},
+      </if>
+      <if test="assignTime != null">
+        #{assignTime},
+      </if>
+      <if test="vehicleType != null">
+        #{vehicleType},
+      </if>
+      <if test="expectTimeBegin != null">
+        #{expectTimeBegin},
+      </if>
+      <if test="expectTimeEnd != null">
+        #{expectTimeEnd},
+      </if>
+      <if test="generalNotes != null">
+        #{generalNotes},
+      </if>
+      <if test="denialReason != null">
+        #{denialReason},
+      </if>
+      <if test="deliveredTime != null">
+        #{deliveredTime},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="batchNo != null">
+        batch_no = #{batchNo},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="recipientCountry != null">
+        recipient_country = #{recipientCountry},
+      </if>
+      <if test="recipientProvince != null">
+        recipient_province = #{recipientProvince},
+      </if>
+      <if test="recipientCity != null">
+        recipient_city = #{recipientCity},
+      </if>
+      <if test="recipientPostcode != null">
+        recipient_postcode = #{recipientPostcode},
+      </if>
+      <if test="recipientAddress != null">
+        recipient_address = #{recipientAddress},
+      </if>
+      <if test="recipientLatitude != null">
+        recipient_latitude = #{recipientLatitude},
+      </if>
+      <if test="recipientLongitude != null">
+        recipient_longitude = #{recipientLongitude},
+      </if>
+      <if test="recipientGeohash != null">
+        recipient_geohash = #{recipientGeohash},
+      </if>
+      <if test="customerReference != null">
+        customer_reference = #{customerReference},
+      </if>
+      <if test="recipientName != null">
+        recipient_name = #{recipientName},
+      </if>
+      <if test="recipientCompany != null">
+        recipient_company = #{recipientCompany},
+      </if>
+      <if test="recipientPhone != null">
+        recipient_phone = #{recipientPhone},
+      </if>
+      <if test="recipientMail != null">
+        recipient_mail = #{recipientMail},
+      </if>
+      <if test="recipientNotes != null">
+        recipient_notes = #{recipientNotes},
+      </if>
+      <if test="senderCountry != null">
+        sender_country = #{senderCountry},
+      </if>
+      <if test="senderCity != null">
+        sender_city = #{senderCity},
+      </if>
+      <if test="senderProvince != null">
+        sender_province = #{senderProvince},
+      </if>
+      <if test="senderPostcode != null">
+        sender_postcode = #{senderPostcode},
+      </if>
+      <if test="senderAddress != null">
+        sender_address = #{senderAddress},
+      </if>
+      <if test="senderLatitude != null">
+        sender_latitude = #{senderLatitude},
+      </if>
+      <if test="senderLongitude != null">
+        sender_longitude = #{senderLongitude},
+      </if>
+      <if test="senderGeohash != null">
+        sender_geohash = #{senderGeohash},
+      </if>
+      <if test="senderCompany != null">
+        sender_company = #{senderCompany},
+      </if>
+      <if test="senderName != null">
+        sender_name = #{senderName},
+      </if>
+      <if test="senderPhone != null">
+        sender_phone = #{senderPhone},
+      </if>
+      <if test="senderMail != null">
+        sender_mail = #{senderMail},
+      </if>
+      <if test="senderNotes != null">
+        sender_notes = #{senderNotes},
+      </if>
+      <if test="parcelQuantity != null">
+        parcel_quantity = #{parcelQuantity},
+      </if>
+      <if test="assignFlag != null">
+        assign_flag = #{assignFlag},
+      </if>
+      <if test="assignTime != null">
+        assign_time = #{assignTime},
+      </if>
+      <if test="vehicleType != null">
+        vehicle_type = #{vehicleType},
+      </if>
+      <if test="expectTimeBegin != null">
+        expect_time_begin = #{expectTimeBegin},
+      </if>
+      <if test="expectTimeEnd != null">
+        expect_time_end = #{expectTimeEnd},
+      </if>
+      <if test="generalNotes != null">
+        general_notes = #{generalNotes},
+      </if>
+      <if test="denialReason != null">
+        denial_reason = #{denialReason},
+      </if>
+      <if test="deliveredTime != null">
+        delivered_time = #{deliveredTime},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.operation.dao.base.OpeOrgStaffMapper">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.operation.dm.OpeOrgStaff">
+        <!--@mbg.generated-->
+        <id column="id" property="id"/>
+        <result column="dr" property="dr"/>
+        <result column="org_department_id" property="orgDepartmentId"/>
+        <result column="org_position_id" property="orgPositionId"/>
+        <result column="avatar" property="avatar"/>
+        <result column="first_name" property="firstName"/>
+        <result column="last_name" property="lastName"/>
+        <result column="status" property="status"/>
+    <result column="phone" property="phone" />
+    <result column="email" property="email" />
+    <result column="birthday" property="birthday" />
+    <result column="address" property="address" />
+    <result column="gender" property="gender" />
+    <result column="certificate_type" property="certificateType" />
+    <result column="certificate_number" property="certificateNumber" />
+    <result column="certificate_picture" property="certificatePicture" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, org_department_id, org_position_id, avatar, first_name, last_name, `status`, 
+    phone, email, birthday, address, gender, certificate_type, certificate_number, certificate_picture, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_org_staff
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="org_department_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.orgDepartmentId}
+        </foreach>
+      </trim>
+      <trim prefix="org_position_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.orgPositionId}
+        </foreach>
+      </trim>
+      <trim prefix="avatar = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.avatar}
+        </foreach>
+      </trim>
+      <trim prefix="first_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.firstName}
+        </foreach>
+      </trim>
+      <trim prefix="last_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.lastName}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="phone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.phone}
+        </foreach>
+      </trim>
+      <trim prefix="email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.email}
+        </foreach>
+      </trim>
+      <trim prefix="birthday = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.birthday}
+        </foreach>
+      </trim>
+      <trim prefix="address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.address}
+        </foreach>
+      </trim>
+      <trim prefix="gender = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.gender}
+        </foreach>
+      </trim>
+      <trim prefix="certificate_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.certificateType}
+        </foreach>
+      </trim>
+      <trim prefix="certificate_number = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.certificateNumber}
+        </foreach>
+      </trim>
+      <trim prefix="certificate_picture = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.certificatePicture}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_org_staff
+    (id, dr, org_department_id, org_position_id, avatar, first_name, last_name, `status`, 
+      phone, email, birthday, address, gender, certificate_type, certificate_number, 
+      certificate_picture, created_by, created_time, updated_by, updated_time, def1, 
+      def2, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.orgDepartmentId}, #{item.orgPositionId}, #{item.avatar}, 
+        #{item.firstName}, #{item.lastName}, #{item.status}, #{item.phone}, #{item.email}, 
+        #{item.birthday}, #{item.address}, #{item.gender}, #{item.certificateType}, #{item.certificateNumber}, 
+        #{item.certificatePicture}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, 
+        #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.hub.source.operation.dm.OpeOrgStaff">
+    <!--@mbg.generated-->
+    insert into ope_org_staff
+    (id, dr, org_department_id, org_position_id, avatar, first_name, last_name, `status`, 
+      phone, email, birthday, address, gender, certificate_type, certificate_number, 
+      certificate_picture, created_by, created_time, updated_by, updated_time, def1, 
+      def2, def3, def5, def6)
+    values
+    (#{id}, #{dr}, #{orgDepartmentId}, #{orgPositionId}, #{avatar}, #{firstName}, #{lastName}, 
+      #{status}, #{phone}, #{email}, #{birthday}, #{address}, #{gender}, #{certificateType}, 
+      #{certificateNumber}, #{certificatePicture}, #{createdBy}, #{createdTime}, #{updatedBy}, 
+      #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    org_department_id = #{orgDepartmentId}, 
+    org_position_id = #{orgPositionId}, 
+    avatar = #{avatar}, 
+    first_name = #{firstName}, 
+    last_name = #{lastName}, 
+    `status` = #{status}, 
+    phone = #{phone}, 
+    email = #{email}, 
+    birthday = #{birthday}, 
+    address = #{address}, 
+    gender = #{gender}, 
+    certificate_type = #{certificateType}, 
+    certificate_number = #{certificateNumber}, 
+    certificate_picture = #{certificatePicture}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.hub.source.operation.dm.OpeOrgStaff">
+    <!--@mbg.generated-->
+    insert into ope_org_staff
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="orgDepartmentId != null">
+        org_department_id,
+      </if>
+      <if test="orgPositionId != null">
+        org_position_id,
+      </if>
+      <if test="avatar != null">
+        avatar,
+      </if>
+      <if test="firstName != null">
+        first_name,
+      </if>
+      <if test="lastName != null">
+        last_name,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="certificateType != null">
+        certificate_type,
+      </if>
+      <if test="certificateNumber != null">
+        certificate_number,
+      </if>
+      <if test="certificatePicture != null">
+        certificate_picture,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="orgDepartmentId != null">
+        #{orgDepartmentId},
+      </if>
+      <if test="orgPositionId != null">
+        #{orgPositionId},
+      </if>
+      <if test="avatar != null">
+        #{avatar},
+      </if>
+      <if test="firstName != null">
+        #{firstName},
+      </if>
+      <if test="lastName != null">
+        #{lastName},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="phone != null">
+        #{phone},
+      </if>
+      <if test="email != null">
+        #{email},
+      </if>
+      <if test="birthday != null">
+        #{birthday},
+      </if>
+      <if test="address != null">
+        #{address},
+      </if>
+      <if test="gender != null">
+        #{gender},
+      </if>
+      <if test="certificateType != null">
+        #{certificateType},
+      </if>
+      <if test="certificateNumber != null">
+        #{certificateNumber},
+      </if>
+      <if test="certificatePicture != null">
+        #{certificatePicture},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="orgDepartmentId != null">
+        org_department_id = #{orgDepartmentId},
+      </if>
+      <if test="orgPositionId != null">
+        org_position_id = #{orgPositionId},
+      </if>
+      <if test="avatar != null">
+        avatar = #{avatar},
+      </if>
+      <if test="firstName != null">
+        first_name = #{firstName},
+      </if>
+      <if test="lastName != null">
+        last_name = #{lastName},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="phone != null">
+        phone = #{phone},
+      </if>
+      <if test="email != null">
+        email = #{email},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday},
+      </if>
+      <if test="address != null">
+        address = #{address},
+      </if>
+      <if test="gender != null">
+        gender = #{gender},
+      </if>
+      <if test="certificateType != null">
+        certificate_type = #{certificateType},
+      </if>
+      <if test="certificateNumber != null">
+        certificate_number = #{certificateNumber},
+      </if>
+      <if test="certificatePicture != null">
+        certificate_picture = #{certificatePicture},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>

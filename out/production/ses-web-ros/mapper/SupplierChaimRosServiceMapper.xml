@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.bom.SupplierChaimRosServiceMapper">
+
+    <sql id="where_SupplierChaimList">
+        where part.dr = 0
+        and part.user_id=#{userId}
+        <if test="partType != null and partType != ''">
+            and part.parts_type=#{partType}
+        </if>
+        <if test="refuseStartTime != null and  refuseEndTime != null">
+            and part.updated_time between #{refuseStartTime} and #{refuseEndTime}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and ( parts_number like concat('%',#{keyword},'%')
+            or part.cn_name like concat('%',#{keyword},'%')
+            or part.fr_name like concat('%',#{keyword},'%')
+            or part.en_name like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <select id="countByPartType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select part.parts_type as status,
+        count(*) as totalCount
+        from ope_parts part
+        where part.dr = 0
+        and part.user_id=#{userId}
+        group by part.parts_type
+    </select>
+
+    <select id="supplierChaimListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_parts part
+        left join ope_price_sheet sheet on part.id = sheet.parts_id and sheet.dr = 0
+        <include refid="where_SupplierChaimList"/>
+    </select>
+
+    <select id="supplierChaimList"
+            resultType="com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult">
+        select part.id as id,
+        part.parts_number as productN,
+        part.cn_name as productCnName,
+        part.en_name as productEnName,
+        part.fr_name as productFrName,
+        part.parts_type as type,
+        sheet.updated_time as refuseTime,
+        sheet.price as productPrice,
+        sheet.currency_unit as unit
+        from ope_parts part
+        left join ope_price_sheet sheet on part.id = sheet.parts_id and sheet.dr = 0
+        <include refid="where_SupplierChaimList"/>
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="scPriceHistroyCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_price_sheet_history histroy
+        where histroy.user_id=#{userId}
+        and histroy.dr=0
+        and histroy.parts_id=#{id}
+    </select>
+    <select id="scPriceHistroyList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
+        select histroy.id as id,
+        histroy.price as productFrPrice,
+        histroy.currency_unit as productFrUnit,
+        histroy.updated_time as refuseTime
+        from ope_price_sheet_history histroy
+        where histroy.dr=0
+        and histroy.user_id=#{userId}
+        and histroy.parts_id=#{id}
+        order by histroy.updated_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="productPriceHistroyChart"
+            resultType="com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult">
+        select ifnull(avg(histroy.price), 0) as avg,
+        ifnull(max(histroy.price), 0) as max
+        from ope_price_sheet_history histroy
+        where histroy.dr=0
+        and histroy.user_id=#{userId}
+        and histroy.parts_id=#{id}
+        order by histroy.updated_time desc
+    </select>
+    <select id="productPriceHistroyChartList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
+        select histroy.id as id,
+        histroy.price as productFrPrice,
+        histroy.currency_unit as productFrUnit,
+        histroy.updated_time as refuseTime
+        from ope_price_sheet_history histroy
+        where histroy.dr=0
+        and histroy.user_id=#{userId}
+        and histroy.parts_id=#{id}
+        order by histroy.created_time asc
+    </select>
+</mapper>

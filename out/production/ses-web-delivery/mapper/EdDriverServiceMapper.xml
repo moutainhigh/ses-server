@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.delivery.dao.EdDriverServiceMapper">
+
+    <select id="expressOrderHistroy" resultType="int">
+        select count(*)
+        from cor_express_delivery_detail detail
+                 left join cor_express_delivery ced on detail.express_delivery_id = ced.id and ced.dr = 0
+                 left join cor_express_order ceo on ceo.id = detail.express_order_id and ceo.dr = 0
+                 left join cor_driver driver on driver.id = ced.driver_id and driver.dr = 0
+        where detail.tenant_id =#{tenantId}
+          and detail.dr = 0
+          and ceo.tenant_id =#{tenantId}
+          and ced.driver_id =#{id}
+    </select>
+    <select id="expressOrderHistroyList"
+            resultType="com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult">
+        select ceo.id as id,
+        ceo.order_no as orderNo,
+        ceo.status as status,
+        ceo.recipient_name as recipient,
+        ceo.created_time as createdTime,
+        detail.ata as completeTime
+        from cor_express_delivery_detail detail
+        left join cor_express_delivery ced on detail.express_delivery_id = ced.id and ced.dr = 0
+        left join cor_express_order ceo on ceo.id = detail.express_order_id and ceo.dr = 0
+        left join cor_driver driver on driver.id = ced.driver_id and driver.dr = 0
+        where detail.tenant_id =#{tenantId}
+        and detail.dr = 0
+        and ceo.tenant_id =#{tenantId}
+        and ced.driver_id =#{id}
+        order by detail.ata desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="queryTodayDriverUncompletedOrder" resultType="int">
+        select count(*)
+        from cor_express_delivery delivery
+        left join cor_driver driver on delivery.driver_id = driver.id and driver.dr = 0
+        where driver.user_id = #{userId}
+        and driver.tenant_id = #{tenantId}
+        and to_days(delivery.delivery_date) = to_days(now())
+        and delivery.status in (1, 2)
+    </select>
+    <select id="queryScooterMileage" resultType="java.math.BigDecimal">
+        select delivery.driven_mileage
+        from cor_express_delivery delivery
+        left join cor_driver driver on delivery.driver_id = driver.id and driver.dr = 0
+        where driver.user_id = #{userId}
+        and driver.tenant_id = #{tenantId}
+        and to_days(delivery.delivery_date) = to_days(now())
+        and delivery.status in (1, 2)
+    </select>
+</mapper>

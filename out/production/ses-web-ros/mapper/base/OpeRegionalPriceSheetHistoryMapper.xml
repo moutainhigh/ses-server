@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeRegionalPriceSheetHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory">
+    <!--@mbg.generated-->
+    <!--@Table ope_regional_price_sheet_history-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="regional_price_sheet_id" jdbcType="BIGINT" property="regionalPriceSheetId" />
+    <result column="parts_product_id" jdbcType="BIGINT" property="partsProductId" />
+    <result column="price_type" jdbcType="VARCHAR" property="priceType" />
+    <result column="sales_price" jdbcType="DECIMAL" property="salesPrice" />
+    <result column="currency_type" jdbcType="VARCHAR" property="currencyType" />
+    <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit" />
+    <result column="standard_currency" jdbcType="VARCHAR" property="standardCurrency" />
+    <result column="exchange_rate" jdbcType="VARCHAR" property="exchangeRate" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+    <result column="country_city" jdbcType="VARCHAR" property="countryCity" />
+    <result column="country_language" jdbcType="VARCHAR" property="countryLanguage" />
+    <result column="revision" jdbcType="INTEGER" property="revision" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DECIMAL" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, user_id, regional_price_sheet_id, parts_product_id, price_type, 
+    sales_price, currency_type, currency_unit, standard_currency, exchange_rate, country_code, 
+    country_city, country_language, revision, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_regional_price_sheet_history
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="regional_price_sheet_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.regionalPriceSheetId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="parts_product_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsProductId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="price_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.priceType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="sales_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.salesPrice,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="currency_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.currencyType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="currency_unit = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.currencyUnit,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="standard_currency = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.standardCurrency,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="exchange_rate = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.exchangeRate,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country_city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCity,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country_language = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryLanguage,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_regional_price_sheet_history
+    (id, dr, tenant_id, user_id, regional_price_sheet_id, parts_product_id, price_type, 
+      sales_price, currency_type, currency_unit, standard_currency, exchange_rate, country_code, 
+      country_city, country_language, revision, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.userId,jdbcType=BIGINT}, #{item.regionalPriceSheetId,jdbcType=BIGINT}, #{item.partsProductId,jdbcType=BIGINT}, 
+        #{item.priceType,jdbcType=VARCHAR}, #{item.salesPrice,jdbcType=DECIMAL}, #{item.currencyType,jdbcType=VARCHAR}, 
+        #{item.currencyUnit,jdbcType=VARCHAR}, #{item.standardCurrency,jdbcType=VARCHAR}, 
+        #{item.exchangeRate,jdbcType=VARCHAR}, #{item.countryCode,jdbcType=VARCHAR}, #{item.countryCity,jdbcType=VARCHAR}, 
+        #{item.countryLanguage,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory">
+    <!--@mbg.generated-->
+    insert into ope_regional_price_sheet_history
+    (id, dr, tenant_id, user_id, regional_price_sheet_id, parts_product_id, price_type, 
+      sales_price, currency_type, currency_unit, standard_currency, exchange_rate, country_code, 
+      country_city, country_language, revision, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{regionalPriceSheetId,jdbcType=BIGINT}, #{partsProductId,jdbcType=BIGINT}, #{priceType,jdbcType=VARCHAR}, 
+      #{salesPrice,jdbcType=DECIMAL}, #{currencyType,jdbcType=VARCHAR}, #{currencyUnit,jdbcType=VARCHAR}, 
+      #{standardCurrency,jdbcType=VARCHAR}, #{exchangeRate,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR}, 
+      #{countryCity,jdbcType=VARCHAR}, #{countryLanguage,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL})
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    user_id = #{userId,jdbcType=BIGINT}, 
+    regional_price_sheet_id = #{regionalPriceSheetId,jdbcType=BIGINT}, 
+    parts_product_id = #{partsProductId,jdbcType=BIGINT}, 
+    price_type = #{priceType,jdbcType=VARCHAR}, 
+    sales_price = #{salesPrice,jdbcType=DECIMAL}, 
+    currency_type = #{currencyType,jdbcType=VARCHAR}, 
+    currency_unit = #{currencyUnit,jdbcType=VARCHAR}, 
+    standard_currency = #{standardCurrency,jdbcType=VARCHAR}, 
+    exchange_rate = #{exchangeRate,jdbcType=VARCHAR}, 
+    country_code = #{countryCode,jdbcType=VARCHAR}, 
+    country_city = #{countryCity,jdbcType=VARCHAR}, 
+    country_language = #{countryLanguage,jdbcType=VARCHAR}, 
+    revision = #{revision,jdbcType=INTEGER}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
+    def6 = #{def6,jdbcType=DECIMAL}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory">
+    <!--@mbg.generated-->
+    insert into ope_regional_price_sheet_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="regionalPriceSheetId != null">
+        regional_price_sheet_id,
+      </if>
+      <if test="partsProductId != null">
+        parts_product_id,
+      </if>
+      <if test="priceType != null">
+        price_type,
+      </if>
+      <if test="salesPrice != null">
+        sales_price,
+      </if>
+      <if test="currencyType != null">
+        currency_type,
+      </if>
+      <if test="currencyUnit != null">
+        currency_unit,
+      </if>
+      <if test="standardCurrency != null">
+        standard_currency,
+      </if>
+      <if test="exchangeRate != null">
+        exchange_rate,
+      </if>
+      <if test="countryCode != null">
+        country_code,
+      </if>
+      <if test="countryCity != null">
+        country_city,
+      </if>
+      <if test="countryLanguage != null">
+        country_language,
+      </if>
+      <if test="revision != null">
+        revision,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="regionalPriceSheetId != null">
+        #{regionalPriceSheetId,jdbcType=BIGINT},
+      </if>
+      <if test="partsProductId != null">
+        #{partsProductId,jdbcType=BIGINT},
+      </if>
+      <if test="priceType != null">
+        #{priceType,jdbcType=VARCHAR},
+      </if>
+      <if test="salesPrice != null">
+        #{salesPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="currencyType != null">
+        #{currencyType,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyUnit != null">
+        #{currencyUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="standardCurrency != null">
+        #{standardCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeRate != null">
+        #{exchangeRate,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null">
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCity != null">
+        #{countryCity,jdbcType=VARCHAR},
+      </if>
+      <if test="countryLanguage != null">
+        #{countryLanguage,jdbcType=VARCHAR},
+      </if>
+      <if test="revision != null">
+        #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=DECIMAL},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="regionalPriceSheetId != null">
+        regional_price_sheet_id = #{regionalPriceSheetId,jdbcType=BIGINT},
+      </if>
+      <if test="partsProductId != null">
+        parts_product_id = #{partsProductId,jdbcType=BIGINT},
+      </if>
+      <if test="priceType != null">
+        price_type = #{priceType,jdbcType=VARCHAR},
+      </if>
+      <if test="salesPrice != null">
+        sales_price = #{salesPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="currencyType != null">
+        currency_type = #{currencyType,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyUnit != null">
+        currency_unit = #{currencyUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="standardCurrency != null">
+        standard_currency = #{standardCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeRate != null">
+        exchange_rate = #{exchangeRate,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null">
+        country_code = #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCity != null">
+        country_city = #{countryCity,jdbcType=VARCHAR},
+      </if>
+      <if test="countryLanguage != null">
+        country_language = #{countryLanguage,jdbcType=VARCHAR},
+      </if>
+      <if test="revision != null">
+        revision = #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+</mapper>

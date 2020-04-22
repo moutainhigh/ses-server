@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper">
+
+    <sql id="field_partList">
+        opp.id as id,
+        opp.product_number as productN,
+        opp.en_name as productEnName,
+        opp.fr_name as productFrName,
+        opp.cn_name as productCnName,
+        opp.sum_parts_qty as qty,
+        opp.production_cycle as productionCycle
+    </sql>
+
+    <sql id="field_combinationList">
+       opp.id                                 as id,
+       opp.product_number                       as productN,
+       opp.fr_name                            as productFrName,
+       opp.en_name                            as productEnName,
+       opp.cn_name                            as productCnName,
+       ifnull(opp.sum_parts_qty, 0)           as qty,
+       if(opp.sum_parts_qty = 0, false, true) as partList
+    </sql>
+
+    <sql id="where_combinationList">
+        where opp.dr = 0
+        and opp.product_type = 5
+        and opp.user_id=#{userId}
+        <if test="keyword != null and keyword != ''">
+            and (opp.product_number like concat('%',#{keyword},'%')
+            or opp.en_name like concat('%',#{keyword},'%')
+            or opp.cn_name like concat('%',#{keyword},'%')
+            or opp.fr_name like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <sql id="where_ScooterList">
+        where opp.dr = 0
+        and opp.user_id=#{userId}
+        and opp.product_type=4
+        <if test="keyword != null and keyword != ''">
+            and (opp.cn_name like concat('%',#{keyword},'%')
+            or opp.fr_name like concat('%',#{keyword},'%')
+            or opp.en_name like concat('%',#{keyword},'%')
+            or opp.product_number like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <sql id="saveProduct_List">
+        <where>
+            and parts.dr = 0
+            and parts.user_id=#{userId}
+            <if test="sec != null and sec != ''">
+                and parts.sec =#{sec}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (parts.cn_name like concat("%",#{keyword},"%")
+                or parts.en_name like concat("%",#{keyword},"%")
+                or parts.fr_name like concat("%",#{keyword},"%")
+                or os.supplier_name like concat("%",#{keyword},"%")
+                or parts.parts_number LIKE CONCAT("%",#{keyword},"%")
+                )
+            </if>
+        </where>
+    </sql>
+
+    <select id="scooterListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_parts_product opp
+        <include refid="where_ScooterList"/>
+    </select>
+    <select id="scooterList" resultType="com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult">
+        select
+        <include refid="field_partList"/>
+        from ope_parts_product opp
+        <include refid="where_ScooterList"/>
+        order by opp.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="checkProductNums" resultType="java.lang.String">
+     select opd.parts_number as productN
+     from ope_parts_draft opd
+     where opd.dr = 0
+     group by productN
+    </select>
+    <select id="secList" resultType="com.redescooter.ses.web.ros.vo.bom.SecResult">
+        select sec.id   as id,
+               sec.name as name,
+               sec.code as code,
+               sec.note as description
+        from ope_parts_sec sec
+        where sec.dr = 0
+    </select>
+
+
+    <select id="combinationListCount" resultType="int">
+        select count(*)
+        from ope_parts_product opp
+        <include refid="where_combinationList"></include>
+    </select>
+
+    <select id="combinationList"
+            resultType="com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult">
+        select
+        <include refid="field_combinationList"/>
+        from ope_parts_product opp
+        <include refid="where_combinationList"/>
+        order by opp.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="productDeatilPartList" resultType="com.redescooter.ses.web.ros.vo.bom.QueryPartListResult">
+        select
+        oppb.id as id,
+        parts.id as pratsId,
+        parts.parts_number as partsNumber,
+        parts.sec as sec,
+        parts.en_name as enName,
+        parts.cn_name as cnName,
+        parts.fr_name as frName,
+        ifnull(parts.production_cycle, 0) as productionCycle,
+        oppb.parts_qty as qty
+        from ope_parts_product_b oppb
+        inner join ope_parts parts on oppb.parts_id = parts.id and parts.dr = 0
+        where oppb.dr = 0
+        and oppb.parts_product_id =#{id}
+        and oppb.user_id=#{userId}
+    </select>
+
+    <select id="countSupplierWithPriceByPartIds" resultType="java.lang.Integer">
+        select count(*)
+        from ope_parts parts
+        inner join ope_price_sheet sheet on parts.id = sheet.parts_id and sheet.dr = 0
+        where parts.dr = 0
+        and (parts.supplier_id != 0 or parts.supplier_id != null)
+        <if test="list != null and list.size() != 0">
+            and parts.id in
+            <foreach collection="list" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="opePartsProductBListByPartIDraftds"
+            resultType="com.redescooter.ses.web.ros.dm.OpePartsProductB">
+        select productB.*
+        from ope_parts_product_b productB
+        inner join ope_parts parts on parts.id = productB.parts_id and parts.dr = 0
+        inner join ope_parts_draft draft on parts.parts_draft_id = draft.id and draft.dr = 0
+        where productB.dr = 0
+        and draft.id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="saveProductPartListCount" resultType="int">
+        select count(*)
+        from ope_parts parts
+        left join ope_supplier os on parts.supplier_id = os.id and os.dr = 0
+        <include refid="saveProduct_List"/>
+    </select>
+
+    <select id="saveProductPartList" resultType="com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult">
+        select
+        parts.id,
+        parts.user_id,
+        parts.Import_lot,
+        parts.parts_type,
+        parts.sec,
+        parts.parts_number,
+        parts.cn_name,
+        parts.fr_name,
+        parts.en_name,
+        case when (parts.sn_class='1') then 'SC' else 'SSC' end as snClassFlag,
+        parts.parts_qty,
+        parts.production_cycle,
+        parts.supplier_id,
+        parts.dwg,
+        parts.note,
+        parts.revision,
+        parts.created_time,
+        os.supplier_name,
+        parts.synchronize_flag,
+        parts.id_class
+        from ope_parts parts
+        left join ope_supplier os on parts.supplier_id = os.id and os.dr = 0
+        <include refid="saveProduct_List"/>
+        <!--        group by-->
+        <!--        <include refid="group_by_parts_list"/>-->
+        order by parts.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+
+</mapper>

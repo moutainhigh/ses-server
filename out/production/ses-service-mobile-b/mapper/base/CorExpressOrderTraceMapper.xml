@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.base.CorExpressOrderTraceMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderTrace">
+    <!--@mbg.generated-->
+    <!--@Table cor_express_order_trace-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="express_delivery_id" property="expressDeliveryId" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="express_order_id" property="expressOrderId" />
+    <result column="driver_id" property="driverId" />
+    <result column="status" property="status" />
+    <result column="event" property="event" />
+    <result column="reason" property="reason" />
+    <result column="event_time" property="eventTime" />
+    <result column="longitude" property="longitude" />
+    <result column="latitude" property="latitude" />
+    <result column="geohash" property="geohash" />
+    <result column="scooter_id" property="scooterId" />
+    <result column="scooter_longitude" property="scooterLongitude" />
+    <result column="scooter_latitude" property="scooterLatitude" />
+    <result column="scooter_geohash" property="scooterGeohash" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, express_delivery_id, tenant_id, express_order_id, driver_id, `status`, event, 
+    reason, event_time, longitude, latitude, geohash, scooter_id, scooter_longitude, 
+    scooter_latitude, scooter_geohash, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update cor_express_order_trace
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="express_delivery_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.expressDeliveryId}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="express_order_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.expressOrderId}
+        </foreach>
+      </trim>
+      <trim prefix="driver_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.driverId}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="event = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.event}
+        </foreach>
+      </trim>
+      <trim prefix="reason = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.reason}
+        </foreach>
+      </trim>
+      <trim prefix="event_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.eventTime}
+        </foreach>
+      </trim>
+      <trim prefix="longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.longitude}
+        </foreach>
+      </trim>
+      <trim prefix="latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.latitude}
+        </foreach>
+      </trim>
+      <trim prefix="geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.geohash}
+        </foreach>
+      </trim>
+      <trim prefix="scooter_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.scooterId}
+        </foreach>
+      </trim>
+      <trim prefix="scooter_longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.scooterLongitude}
+        </foreach>
+      </trim>
+      <trim prefix="scooter_latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.scooterLatitude}
+        </foreach>
+      </trim>
+      <trim prefix="scooter_geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.scooterGeohash}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update cor_express_order_trace
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id} then #{item.dr}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="express_delivery_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.expressDeliveryId != null">
+            when id = #{item.id} then #{item.expressDeliveryId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantId != null">
+            when id = #{item.id} then #{item.tenantId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="express_order_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.expressOrderId != null">
+            when id = #{item.id} then #{item.expressOrderId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="driver_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.driverId != null">
+            when id = #{item.id} then #{item.driverId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.status != null">
+            when id = #{item.id} then #{item.status}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="event = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.event != null">
+            when id = #{item.id} then #{item.event}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="reason = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.reason != null">
+            when id = #{item.id} then #{item.reason}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="event_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.eventTime != null">
+            when id = #{item.id} then #{item.eventTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.longitude != null">
+            when id = #{item.id} then #{item.longitude}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.latitude != null">
+            when id = #{item.id} then #{item.latitude}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.geohash != null">
+            when id = #{item.id} then #{item.geohash}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="scooter_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.scooterId != null">
+            when id = #{item.id} then #{item.scooterId}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="scooter_longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.scooterLongitude != null">
+            when id = #{item.id} then #{item.scooterLongitude}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="scooter_latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.scooterLatitude != null">
+            when id = #{item.id} then #{item.scooterLatitude}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="scooter_geohash = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.scooterGeohash != null">
+            when id = #{item.id} then #{item.scooterGeohash}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id} then #{item.createdBy}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id} then #{item.createdTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id} then #{item.updatedBy}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id} then #{item.updatedTime}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id} then #{item.def1}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id} then #{item.def2}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id} then #{item.def3}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id} then #{item.def5}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id} then #{item.def6}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into cor_express_order_trace
+    (id, dr, express_delivery_id, tenant_id, express_order_id, driver_id, `status`, event, 
+      reason, event_time, longitude, latitude, geohash, scooter_id, scooter_longitude, 
+      scooter_latitude, scooter_geohash, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.expressDeliveryId}, #{item.tenantId}, #{item.expressOrderId}, 
+        #{item.driverId}, #{item.status}, #{item.event}, #{item.reason}, #{item.eventTime}, 
+        #{item.longitude}, #{item.latitude}, #{item.geohash}, #{item.scooterId}, #{item.scooterLongitude}, 
+        #{item.scooterLatitude}, #{item.scooterGeohash}, #{item.createdBy}, #{item.createdTime}, 
+        #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, 
+        #{item.def5}, #{item.def6})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderTrace">
+    <!--@mbg.generated-->
+    insert into cor_express_order_trace
+    (id, dr, express_delivery_id, tenant_id, express_order_id, driver_id, `status`, event, 
+      reason, event_time, longitude, latitude, geohash, scooter_id, scooter_longitude, 
+      scooter_latitude, scooter_geohash, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
+    values
+    (#{id}, #{dr}, #{expressDeliveryId}, #{tenantId}, #{expressOrderId}, #{driverId}, 
+      #{status}, #{event}, #{reason}, #{eventTime}, #{longitude}, #{latitude}, #{geohash}, 
+      #{scooterId}, #{scooterLongitude}, #{scooterLatitude}, #{scooterGeohash}, #{createdBy}, 
+      #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def5}, 
+      #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    express_delivery_id = #{expressDeliveryId}, 
+    tenant_id = #{tenantId}, 
+    express_order_id = #{expressOrderId}, 
+    driver_id = #{driverId}, 
+    `status` = #{status}, 
+    event = #{event}, 
+    reason = #{reason}, 
+    event_time = #{eventTime}, 
+    longitude = #{longitude}, 
+    latitude = #{latitude}, 
+    geohash = #{geohash}, 
+    scooter_id = #{scooterId}, 
+    scooter_longitude = #{scooterLongitude}, 
+    scooter_latitude = #{scooterLatitude}, 
+    scooter_geohash = #{scooterGeohash}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderTrace">
+    <!--@mbg.generated-->
+    insert into cor_express_order_trace
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="expressDeliveryId != null">
+        express_delivery_id,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="expressOrderId != null">
+        express_order_id,
+      </if>
+      <if test="driverId != null">
+        driver_id,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="event != null">
+        event,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="eventTime != null">
+        event_time,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="geohash != null">
+        geohash,
+      </if>
+      <if test="scooterId != null">
+        scooter_id,
+      </if>
+      <if test="scooterLongitude != null">
+        scooter_longitude,
+      </if>
+      <if test="scooterLatitude != null">
+        scooter_latitude,
+      </if>
+      <if test="scooterGeohash != null">
+        scooter_geohash,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="expressDeliveryId != null">
+        #{expressDeliveryId},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="expressOrderId != null">
+        #{expressOrderId},
+      </if>
+      <if test="driverId != null">
+        #{driverId},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="event != null">
+        #{event},
+      </if>
+      <if test="reason != null">
+        #{reason},
+      </if>
+      <if test="eventTime != null">
+        #{eventTime},
+      </if>
+      <if test="longitude != null">
+        #{longitude},
+      </if>
+      <if test="latitude != null">
+        #{latitude},
+      </if>
+      <if test="geohash != null">
+        #{geohash},
+      </if>
+      <if test="scooterId != null">
+        #{scooterId},
+      </if>
+      <if test="scooterLongitude != null">
+        #{scooterLongitude},
+      </if>
+      <if test="scooterLatitude != null">
+        #{scooterLatitude},
+      </if>
+      <if test="scooterGeohash != null">
+        #{scooterGeohash},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="expressDeliveryId != null">
+        express_delivery_id = #{expressDeliveryId},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="expressOrderId != null">
+        express_order_id = #{expressOrderId},
+      </if>
+      <if test="driverId != null">
+        driver_id = #{driverId},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="event != null">
+        event = #{event},
+      </if>
+      <if test="reason != null">
+        reason = #{reason},
+      </if>
+      <if test="eventTime != null">
+        event_time = #{eventTime},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude},
+      </if>
+      <if test="geohash != null">
+        geohash = #{geohash},
+      </if>
+      <if test="scooterId != null">
+        scooter_id = #{scooterId},
+      </if>
+      <if test="scooterLongitude != null">
+        scooter_longitude = #{scooterLongitude},
+      </if>
+      <if test="scooterLatitude != null">
+        scooter_latitude = #{scooterLatitude},
+      </if>
+      <if test="scooterGeohash != null">
+        scooter_geohash = #{scooterGeohash},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+    </trim>
+  </insert>
+</mapper>
