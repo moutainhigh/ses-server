@@ -2,6 +2,7 @@ package com.redescooter.ses.mobile.rps.service.base.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeAssemblyOrderMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
 import org.springframework.stereotype.Service;
 
