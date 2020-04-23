@@ -25,4 +25,12 @@ public interface ReceiptTraceService {
      * @return
      */
     GeneralResult saveAssemblyNode(SaveNodeEnter enter);
+
+    /**
+     * 保存采购单节点
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult savePurchasingNode(SaveNodeEnter enter);
 }
