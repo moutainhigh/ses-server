@@ -30,8 +30,16 @@ public class SesWebRosApplicationTests {
 
     @Test
     public void stream() {
-        System.out.println(jedisService.lock(JedisConstant.JEDIS_KEY, JedisConstant.DEFAULT_EXPIRE));
+        System.out.println(jedisService.lock("1234/56789", 10));
+
+
         log.info("---------------------------------------------------------");
-        System.out.println(jedisService.get(JedisConstant.JEDIS_KEY));
+        System.out.println(jedisService.get("1234/56789"));
+        test();
+    }
+
+    @Test
+    public  void test(){
+        jedisService.unlock("1234/56789");
     }
 }
