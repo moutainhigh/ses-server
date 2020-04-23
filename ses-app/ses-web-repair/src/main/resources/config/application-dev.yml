@@ -23,7 +23,7 @@ spring:
   datasource:
     url: jdbc:mysql://192.168.2.200:3306/consumer_test?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
     username: root
-    password: 1qaz2wsx
+    password: rede,1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
