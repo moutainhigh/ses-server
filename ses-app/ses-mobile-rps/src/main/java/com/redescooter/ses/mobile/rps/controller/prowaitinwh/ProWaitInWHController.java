@@ -30,31 +30,17 @@ public class ProWaitInWHController {
     @Autowired
     private ProWaitInWHService proWaitInWHService;
 
-
-
-    @IgnoreLoginCheck
     @PostMapping(value = "/proWaitInWHList")
     @ApiOperation(value = "生产仓库待入库商品列表", response = ProWaitInWHLOneResult.class)
     public Response<PageResult<ProWaitInWHLOneResult>> proWaitInWHList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response(proWaitInWHService.proWaitInWHList(enter));
     }
 
-
-    @IgnoreLoginCheck
     @PostMapping(value = "/proWaitWHItemList")
     @ApiOperation(value = "生产仓库待入库商品部件列表", response = ProWaitWHItemListResult.class)
     public Response<PageResult<ProWaitInWHItemResult>> proWaitWHItemList(@ModelAttribute @ApiParam("请求参数") ProWaitInWHIdEnter enter) {
         return new Response(proWaitInWHService.proWaitWHItemList(enter));
     }
-
-//
-//    @IgnoreLoginCheck
-//    @PostMapping(value = "/proWaitInWHInfoOut")
-//    @ApiOperation(value = "查询生产仓库商品部件待入库详情", response = ProWaitInWHInfoResult.class)
-//    public Response<ScooterQcItemResult> proWaitInWHInfoOut(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response(proWaitInWHService.proWaitInWHInfoOut(enter));
-//    }
-
 
     @IgnoreLoginCheck
     @PostMapping(value = "/proWaitInWHInfoIn")
@@ -62,6 +48,5 @@ public class ProWaitInWHController {
     public Response<ProWaitInWHInfoResult> proWaitInWHInfoIn(@ModelAttribute @ApiParam("请求参数") ProWaitInWHIdEnter enter) {
         return new Response(proWaitInWHService.proWaitInWHInfoIn(enter));
     }
-
 
 }

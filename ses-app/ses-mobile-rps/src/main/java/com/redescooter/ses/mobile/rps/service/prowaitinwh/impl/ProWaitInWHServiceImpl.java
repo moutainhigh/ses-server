@@ -71,9 +71,6 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
     private OpeWhseService opeWhseService;
 
     @Autowired
-    private OpeAssembiyOrderTraceService opeAssembiyOrderTraceService;
-
-    @Autowired
     private ReceiptTraceService receiptTraceService;
 
     @Reference
@@ -91,11 +88,10 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
     @Transactional
     @Override
     public PageResult<ProWaitInWHLOneResult> proWaitInWHList(PageEnter enter) {
-
-
         int count = proWaitInWHServiceMapper.proWaitInWHListCount();
         List<ProWaitInWHLOneResult> proWaitInWHLOneResults = new ArrayList<>();
         ProWaitInWHLOneResult proWaitInWHLOneResult = null;
+
         //opeAssemblyOrderService对应的数据库表为空的时候直接返回
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -136,6 +132,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         int count = proWaitInWHServiceMapper.proWaitWHItemListCount();
         ProWaitInWHItemResult proWaitInWHItemResult = null;
         List<ProWaitInWHItemResult> proWaitWHItemListResult = new ArrayList<>();
+
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         } else {
