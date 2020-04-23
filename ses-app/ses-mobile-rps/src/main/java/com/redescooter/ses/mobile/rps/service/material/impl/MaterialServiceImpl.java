@@ -19,6 +19,7 @@ import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
+import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.material.MaterialService;
 import com.redescooter.ses.mobile.rps.vo.bo.RpsPartDetailDto;
@@ -82,6 +83,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     private OpePurchasPaymentService opePurchasPaymentService;
+
+    @Autowired
+    private ReceiptTraceService receiptTraceService;
 
     @Reference
     private IdAppService idAppService;
@@ -282,7 +286,7 @@ public class MaterialServiceImpl implements MaterialService {
                 saveNodeEnter.setStatus(PurchasingStatusEnums.RETURN.getValue());
                 saveNodeEnter.setEvent(PurchasingEventEnums.RETURN.getValue());
                 saveNodeEnter.setMemo(memo);
-                this.saveNode(saveNodeEnter);
+                receiptTraceService.savePurchasingNode(saveNodeEnter);
             }
             opePurchas.setLaveWaitQcTotal(opePurchas.getLaveWaitQcTotal() - returnTotal);
             opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - returnTotal);
@@ -405,7 +409,7 @@ public class MaterialServiceImpl implements MaterialService {
             saveNodeEnter.setStatus(PurchasingStatusEnums.QC_AGAIN.getValue());
             saveNodeEnter.setEvent(PurchasingEventEnums.QC_AGAIN.getValue());
             saveNodeEnter.setMemo(null);
-            this.saveNode(saveNodeEnter);
+            receiptTraceService.savePurchasingNode(saveNodeEnter);
         });
         return new GeneralResult(enter.getRequestId());
     }
@@ -599,18 +603,44 @@ public class MaterialServiceImpl implements MaterialService {
                 }
             }
         }
-        if (qcResult) {
 
-            //判断采购单下其他部品状态
-            List<OpePurchasB> opePurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().eq(OpePurchasB::getPurchasId, opePurchasB.getPurchasId())
-                    .ne(OpePurchasB::getId, opePurchasB.getId())
-                    .ne(OpePurchasB::getLaveWaitQcQty, 0)
-            );
-            //查询采购单数据
-            OpePurchas opePurchas = opePurchasService.getById(opePurchasB.getPurchasId());
-            if (opePurchas == null) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        //查询采购单数据
+        OpePurchas opePurchas = opePurchasService.getById(opePurchasB.getPurchasId());
+        if (opePurchas == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.PENDING.getValue()) && !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        }
+
+        //判断采购单下其他部品状态
+        List<OpePurchasB> opePurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().eq(OpePurchasB::getPurchasId, opePurchasB.getPurchasId())
+                .ne(OpePurchasB::getId, opePurchasB.getId())
+                .ne(OpePurchasB::getLaveWaitQcQty, 0)
+        );
+
+
+        //判断如果为pending 状态时改变采购单的状态为 来料质检
+        //查询质检结果记录 若无 修改
+        if (StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.PENDING.getValue())) {
+            //查询质检结果
+            List<OpePurchasBQc> opePurchasBQcList = opePurchasBQcService.list(new LambdaQueryWrapper<OpePurchasBQc>().in(OpePurchasBQc::getPurchasBId,
+                    opePurchasBList.stream().map(OpePurchasB::getId).collect(Collectors.toList())));
+            //当前所有子订单 没有质检记录 修改主表状态  pengding--》 来料质检
+            if (CollectionUtils.isEmpty(opePurchasBQcList)) {
+                opePurchas.setStatus(PurchasingStatusEnums.MATERIALS_QC.getValue());
             }
+            SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+            BeanUtils.copyProperties(enter, saveNodeEnter);
+            saveNodeEnter.setId(opePurchas.getId());
+            saveNodeEnter.setStatus(PurchasingStatusEnums.MATERIALS_QC.getValue());
+            saveNodeEnter.setEvent(PurchasingStatusEnums.MATERIALS_QC.getValue());
+            saveNodeEnter.setMemo(null);
+            receiptTraceService.savePurchasingNode(saveNodeEnter);
+        }
+
+        //质检成功后进行的逻辑处理
+        if (qcResult) {
 
             //根据质检方式减库存
             if (opeParts.getIdClass()) {
@@ -627,7 +657,7 @@ public class MaterialServiceImpl implements MaterialService {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
             }
 
-            //判断是否要更新采购单状态
+            //判断是否要更新采购单状态为质检通过
             Boolean updatePuchasStatus = Boolean.TRUE;
             opePurchasBList.add(opePurchasB);
             for (OpePurchasB item : opePurchasBList) {
@@ -636,6 +666,7 @@ public class MaterialServiceImpl implements MaterialService {
                     break;
                 }
             }
+
             //更新采购单状态以及采购单记录
             if (updatePuchasStatus && qcResult) {
                 opePurchas.setStatus(PurchasingStatusEnums.QC_COMPLETED.getValue());
@@ -647,7 +678,7 @@ public class MaterialServiceImpl implements MaterialService {
                 saveNodeEnter.setStatus(PurchasingStatusEnums.QC_COMPLETED.getValue());
                 saveNodeEnter.setEvent(PurchasingStatusEnums.QC_COMPLETED.getValue());
                 saveNodeEnter.setMemo(null);
-                this.saveNode(saveNodeEnter);
+                receiptTraceService.savePurchasingNode(saveNodeEnter);
             }
             if (opePurchasB.getLaveWaitQcQty() == 0) {
                 opePurchasB.setQcStatus(QcStatusEnums.PASS.getValue());
@@ -656,11 +687,11 @@ public class MaterialServiceImpl implements MaterialService {
             opePurchasB.setUpdatedTime(new Date());
             opePurchasBService.updateById(opePurchasB);
 
-            opePurchas.setUpdatedBy(enter.getUserId());
-            opePurchas.setUpdatedTime(new Date());
-            opePurchasService.updateById(opePurchas);
         }
-
+        //主订单数据更新
+        opePurchas.setUpdatedBy(enter.getUserId());
+        opePurchas.setUpdatedTime(new Date());
+        opePurchasService.updateById(opePurchas);
 
         //保存质检结果
         OpePurchasBQc purchasBQc = buildOpePurchasBQc(enter, opeParts, opePurchasB, qcResult);
@@ -871,32 +902,5 @@ public class MaterialServiceImpl implements MaterialService {
             });
         });
         return opePurchasB;
-    }
-
-    /**
-     * 保存采购单记录
-     *
-     * @param enter
-     * @return
-     */
-    @Transactional
-    @Override
-    public GeneralResult saveNode(SaveNodeEnter enter) {
-        opePurchasTraceService.save(OpePurchasTrace.builder()
-                .id(idAppService.getId(SequenceName.OPE_PURCHAS_TRACE))
-                .dr(0)
-                .tenantId(0L)
-                .userId(enter.getUserId())
-                .purchasId(enter.getId())
-                .status(enter.getStatus())
-                .event(enter.getEvent())
-                .eventTime(new Date())
-                .memo(StringUtils.isBlank(enter.getMemo()) == true ? null : enter.getMemo())
-                .createBy(enter.getUserId())
-                .createTime(new Date())
-                .updateBy(enter.getUserId())
-                .updateTime(new Date())
-                .build());
-        return new GeneralResult(enter.getRequestId());
     }
 }
