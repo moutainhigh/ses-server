@@ -2,9 +2,14 @@ package com.redescooter.ses.web.ros.collectionUtilsTest;
 
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.redescooter.ses.api.common.constant.JedisConstant;
+import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
+import lombok.extern.log4j.Log4j;
+import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -19,6 +24,7 @@ import java.util.stream.IntStream;
  * @ClassName: RedisOne
  * @Function: TODO
  */
+@Log4j
 public class CollectionUtilTest {
 
     @Test
@@ -31,11 +37,4 @@ public class CollectionUtilTest {
         System.out.println("Method two:" + new Random().nextInt(100));
 
     }
-
-    @Test
-    public void stream() {
-        IntStream.range(1, 10).forEach(System.out::println);
-    }
-
-
 }

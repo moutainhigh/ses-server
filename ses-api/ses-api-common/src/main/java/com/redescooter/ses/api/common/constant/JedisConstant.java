@@ -10,7 +10,7 @@ package com.redescooter.ses.api.common.constant;
 public interface JedisConstant {
 
     //jedis 枷锁 key值
-    String JEDIS_KEY = "JEDIS_KEY";
+    String JEDIS_KEY = "edTaskOrder";
 
     //默认超时时间为1s
     int DEFAULT_EXPIRE = 1;
