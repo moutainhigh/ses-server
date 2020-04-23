@@ -96,7 +96,7 @@ public class MaterialServiceImpl implements MaterialService {
     public Map<String, Integer> countByStatus(GeneralEnter enter) {
         QueryWrapper<OpePurchas> opePurchasQueryWrapper = new QueryWrapper<>();
         opePurchasQueryWrapper.eq(OpePurchas.COL_DR, 0);
-        opePurchasQueryWrapper.eq(OpePurchas.COL_STATUS, PurchasingStatusEnums.MATERIALS_QC.getValue());
+        opePurchasQueryWrapper.in(OpePurchas.COL_STATUS, PurchasingStatusEnums.MATERIALS_QC.getValue(), PurchasingStatusEnums.PENDING.getValue());
 
         Map<String, Integer> map = Maps.newHashMap();
         map.put(QcTypeEnums.WAIT.getValue(), opePurchasService.count(opePurchasQueryWrapper));
@@ -113,7 +113,7 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public PageResult<MaterialQcListResult> list(PageEnter enter) {
         QueryWrapper<OpePurchas> opePurchasQueryWrapper = new QueryWrapper<>();
-        opePurchasQueryWrapper.eq(OpePurchas.COL_STATUS, PurchasingStatusEnums.MATERIALS_QC.getValue());
+        opePurchasQueryWrapper.in(OpePurchas.COL_STATUS, PurchasingStatusEnums.MATERIALS_QC.getValue(), PurchasingStatusEnums.PENDING.getValue());
         opePurchasQueryWrapper.eq(OpePurchas.COL_DR, 0);
         int count = opePurchasService.count(opePurchasQueryWrapper);
         if (count == 0) {
@@ -135,7 +135,7 @@ public class MaterialServiceImpl implements MaterialService {
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, 1, materialServiceMapper.failList(enter));
+        return PageResult.create(enter, count, materialServiceMapper.failList(enter));
     }
 
     /**
@@ -423,7 +423,7 @@ public class MaterialServiceImpl implements MaterialService {
         if (opePurchas == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue())) {
+        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue()) && !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.PENDING.getValue())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
 
@@ -447,7 +447,7 @@ public class MaterialServiceImpl implements MaterialService {
         if (opePurchas == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue())) {
+        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue()) && !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.PENDING.getValue())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
 
