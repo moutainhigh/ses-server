@@ -56,8 +56,8 @@ public interface Constant {
      * Excel批量导入车辆模板地址
      */
     String Import_Excel_Template = "https://rede.oss-cn-shanghai.aliyuncs.com/1567490261085.xlsx";
-
+    //admin id
     Long ADMINUSERID = 1000000L;
-
+    //百分比
     int AMOUNTP_ROPORTION = 100;
 }
