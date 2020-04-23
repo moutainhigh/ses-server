@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.preparematerial.PrepareMaterialServiceMapper">
-    <select id="allocateListCount" resultType="java.lang.Integer">
+    <select id="detailAllocateListCount" resultType="java.lang.Integer">
         select count(*)
         from ope_allocate_b allocateb
                  inner join ope_parts parts on parts.id = allocateb.part_id
@@ -9,7 +9,7 @@
           and allocateb.allocate_id=#{id}
     </select>
 
-    <select id="allocatelList"
+    <select id="detailAllocatelList"
             resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult">
         select allocateb.id                   as id,
         allocateb.part_id              as partId,
@@ -24,36 +24,57 @@
         and allocateb.allocate_id=#{id}
         order by allocateb.created_time asc
     </select>
-    <select id="stockBillList" resultType="com.redescooter.ses.mobile.rps.dm.OpeStockBill">
-        select id,
-               dr,
-               user_id,
-               tenant_id,
-               stock_id,
-               direction,
-               source_id,
-               status,
-               total,
-               source_type,
-               principal_id,
-               operatine_time,
-               revision,
-               created_by,
-               created_time,
-               updated_by,
-               updated_time,
-               def1,
-               def2,
-               def3,
-               def5,
-               def6
-        from ope_stock_bill
-        where dr = 0
-          and source_type in (2, 3)
+    <select id="allocatListCount" resultType="int">
+        select count(*)
+        from ope_stock_bill bill
+                 inner join ope_allocate allocate on bill.source_id = allocate.id
+        where bill.dr = 0
+          and allocate.status = 1
+          and bill.source_type = 2
+    </select>
+
+    <select id="allocatList"
+            resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult">
+        select allocate.id                     as id,
+               bill.source_type                as sourceType,
+                allocate.allocate_num                    as allocatN,
+               allocate.created_time           as createdTime,
+               allocate.preparation_wait_total as preparationWaitTotal
+        from ope_stock_bill bill
+                 inner join ope_allocate allocate on bill.source_id = allocate.id
+        where bill.dr = 0
+          and allocate.status = 1
+          and bill.source_type = 2
+        order by allocate.created_time desc
         limit #{startRow},#{pageSize}
     </select>
 
     <select id="assemblyListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_stock_bill bill
+                 inner join ope_assembly_order assem on bill.source_id = assem.id
+        where bill.dr = 0
+          and assem.status = 1
+          and bill.source_type = 3
+    </select>
+
+    <select id="assemblyList"
+            resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult">
+            select assem.id                     as id,
+               bill.source_type             as sourceType,
+               assem.assembly_number        as allocatN,
+               assem.created_time           as createdTime,
+               assem.wait_preparation_total as preparationWaitTotal
+        from ope_stock_bill bill
+                 inner join ope_assembly_order assem on bill.source_id = assem.id
+        where bill.dr = 0
+          and assem.status = 1
+          and bill.source_type = 3
+        order by assem.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detailAssemblyListCount" resultType="java.lang.Integer">
         select count(*)
         from ope_assembly_order_part opart
         inner join ope_parts parts on parts.id = opart.part_id
@@ -61,7 +82,7 @@
         and opart.assembly_id =#{id}
         order by opart.created_time asc
     </select>
-    <select id="assemblyList"
+    <select id="detailAssemblyList"
             resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult">
         select opart.id                   as id,
                 opart.part_id              as partId,

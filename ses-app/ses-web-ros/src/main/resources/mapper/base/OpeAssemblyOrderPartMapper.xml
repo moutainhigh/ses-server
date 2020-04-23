@@ -10,6 +10,7 @@
     <result column="part_id" jdbcType="BIGINT" property="partId" />
     <result column="assembly_id" jdbcType="BIGINT" property="assemblyId" />
     <result column="total_qty" jdbcType="INTEGER" property="totalQty" />
+    <result column="wait_preparation_qty" jdbcType="INTEGER" property="waitPreparationQty" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -23,8 +24,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, stock_id, part_id, assembly_id, total_qty, revision, created_by, created_time, 
-    updated_by, updated_time, def1, def2, def3, def5, def6
+    id, dr, stock_id, part_id, assembly_id, total_qty, wait_preparation_qty, revision, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -53,6 +54,11 @@
       <trim prefix="total_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.totalQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="wait_preparation_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.waitPreparationQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="revision = case" suffix="end,">
@@ -114,29 +120,33 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_assembly_order_part
-    (id, dr, stock_id, part_id, assembly_id, total_qty, revision, created_by, created_time, 
-      updated_by, updated_time, def1, def2, def3, def5, def6)
+    (id, dr, stock_id, part_id, assembly_id, total_qty, wait_preparation_qty, revision, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.stockId,jdbcType=BIGINT}, 
         #{item.partId,jdbcType=BIGINT}, #{item.assemblyId,jdbcType=BIGINT}, #{item.totalQty,jdbcType=INTEGER}, 
-        #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
-        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
-        #{item.def6,jdbcType=DOUBLE})
+        #{item.waitPreparationQty,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+        )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPart">
     <!--@mbg.generated-->
     insert into ope_assembly_order_part
-    (id, dr, stock_id, part_id, assembly_id, total_qty, revision, created_by, created_time, 
-      updated_by, updated_time, def1, def2, def3, def5, def6)
+    (id, dr, stock_id, part_id, assembly_id, total_qty, wait_preparation_qty, revision, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{stockId,jdbcType=BIGINT}, #{partId,jdbcType=BIGINT}, 
-      #{assemblyId,jdbcType=BIGINT}, #{totalQty,jdbcType=INTEGER}, #{revision,jdbcType=INTEGER}, 
-      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
-      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
-      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+      #{assemblyId,jdbcType=BIGINT}, #{totalQty,jdbcType=INTEGER}, #{waitPreparationQty,jdbcType=INTEGER}, 
+      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -144,6 +154,7 @@
     part_id = #{partId,jdbcType=BIGINT}, 
     assembly_id = #{assemblyId,jdbcType=BIGINT}, 
     total_qty = #{totalQty,jdbcType=INTEGER}, 
+    wait_preparation_qty = #{waitPreparationQty,jdbcType=INTEGER}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
@@ -176,6 +187,9 @@
       </if>
       <if test="totalQty != null">
         total_qty,
+      </if>
+      <if test="waitPreparationQty != null">
+        wait_preparation_qty,
       </if>
       <if test="revision != null">
         revision,
@@ -228,6 +242,9 @@
       <if test="totalQty != null">
         #{totalQty,jdbcType=INTEGER},
       </if>
+      <if test="waitPreparationQty != null">
+        #{waitPreparationQty,jdbcType=INTEGER},
+      </if>
       <if test="revision != null">
         #{revision,jdbcType=INTEGER},
       </if>
@@ -278,6 +295,9 @@
       </if>
       <if test="totalQty != null">
         total_qty = #{totalQty,jdbcType=INTEGER},
+      </if>
+      <if test="waitPreparationQty != null">
+        wait_preparation_qty = #{waitPreparationQty,jdbcType=INTEGER},
       </if>
       <if test="revision != null">
         revision = #{revision,jdbcType=INTEGER},

@@ -8,7 +8,7 @@
                purchas.lave_wait_qc_total as laveWaitQcTotal
         from ope_purchas purchas
         where purchas.dr = 0
-          and purchas.status = 3
+          and purchas.status in (1,3)
         order by created_time asc
         limit #{startRow},#{pageSize}
     </select>
@@ -17,7 +17,7 @@
          select count(*)
             from ope_purchas_b purchasb
                      inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr = 0
-                     inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status = 3
+                     inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status in (1,3)
             where purchasb.dr = 0
               and purchasb.purchas_id=#{id}
     </select>
@@ -31,7 +31,7 @@
                purchasb.lave_wait_qc_qty as laveWaitQcQty
         from ope_purchas_b purchasb
                  inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr=0
-                 inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status = 3
+                 inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status in (1,3)
         where purchasb.dr=0
         and purchasb.purchas_id=#{id}
     </select>

@@ -49,7 +49,7 @@ public class ReceiptTraceServiceImpl implements ReceiptTraceService {
     @Override
     public GeneralResult saveAllocateNode(SaveNodeEnter enter) {
         opeAllocateTraceService.save(OpeAllocateTrace.builder()
-                .id(idAppService.getId(SequenceName.OPE_ALLOCATE_B_TRACE))
+                .id(idAppService.getId(SequenceName.OPE_ALLOCATE_TRACE))
                 .dr(0)
                 .tenantId(0L)
                 .userId(enter.getUserId())
@@ -76,7 +76,7 @@ public class ReceiptTraceServiceImpl implements ReceiptTraceService {
     @Override
     public GeneralResult saveAssemblyNode(SaveNodeEnter enter) {
         opeAssembiyOrderTraceService.save(OpeAssembiyOrderTrace.builder()
-                .id(idAppService.getId(SequenceName.OPE_ALLOCATE_B_TRACE))
+                .id(idAppService.getId(SequenceName.OPE_ASSEMBIY_ORDER_TRACE))
                 .dr(0)
                 .userId(enter.getUserId())
                 .opeAssembiyOrderId(enter.getId())

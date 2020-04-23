@@ -20,8 +20,9 @@
     <result column="factory_annex" jdbcType="VARCHAR" property="factoryAnnex" />
     <result column="consignee_id" jdbcType="BIGINT" property="consigneeId" />
     <result column="wait_assembly_total" jdbcType="INTEGER" property="waitAssemblyTotal" />
-    <result column="in_wait_wh_total" jdbcType="VARCHAR" property="inWaitWhTotal" />
+    <result column="in_wait_wh_total" jdbcType="INTEGER" property="inWaitWhTotal" />
     <result column="lave_wait_qc_total" jdbcType="INTEGER" property="laveWaitQcTotal" />
+    <result column="wait_preparation_total" jdbcType="INTEGER" property="waitPreparationTotal" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -37,8 +38,9 @@
     <!--@mbg.generated-->
     id, dr, user_id, tenant_id, `status`, assembly_number, total_qty, total_price, processing_fee_ratio, 
     processing_fee, payment_type, product_price, factory_id, factory_annex, consignee_id, 
-    wait_assembly_total, in_wait_wh_total, lave_wait_qc_total, revision, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    wait_assembly_total, in_wait_wh_total, lave_wait_qc_total, wait_preparation_total, 
+    revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
+    def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -121,12 +123,17 @@
       </trim>
       <trim prefix="in_wait_wh_total = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.inWaitWhTotal,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.inWaitWhTotal,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="lave_wait_qc_total = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.laveWaitQcTotal,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="wait_preparation_total = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.waitPreparationTotal,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="revision = case" suffix="end,">
@@ -190,8 +197,9 @@
     insert into ope_assembly_order
     (id, dr, user_id, tenant_id, `status`, assembly_number, total_qty, total_price, processing_fee_ratio, 
       processing_fee, payment_type, product_price, factory_id, factory_annex, consignee_id, 
-      wait_assembly_total, in_wait_wh_total, lave_wait_qc_total, revision, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+      wait_assembly_total, in_wait_wh_total, lave_wait_qc_total, wait_preparation_total, 
+      revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.userId,jdbcType=BIGINT}, 
@@ -199,11 +207,12 @@
         #{item.totalQty,jdbcType=INTEGER}, #{item.totalPrice,jdbcType=DECIMAL}, #{item.processingFeeRatio,jdbcType=DECIMAL}, 
         #{item.processingFee,jdbcType=DECIMAL}, #{item.paymentType,jdbcType=VARCHAR}, #{item.productPrice,jdbcType=DECIMAL}, 
         #{item.factoryId,jdbcType=BIGINT}, #{item.factoryAnnex,jdbcType=VARCHAR}, #{item.consigneeId,jdbcType=BIGINT}, 
-        #{item.waitAssemblyTotal,jdbcType=INTEGER}, #{item.inWaitWhTotal,jdbcType=VARCHAR}, 
-        #{item.laveWaitQcTotal,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+        #{item.waitAssemblyTotal,jdbcType=INTEGER}, #{item.inWaitWhTotal,jdbcType=INTEGER}, 
+        #{item.laveWaitQcTotal,jdbcType=INTEGER}, #{item.waitPreparationTotal,jdbcType=INTEGER}, 
+        #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
+        #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeAssemblyOrder">
@@ -211,18 +220,20 @@
     insert into ope_assembly_order
     (id, dr, user_id, tenant_id, `status`, assembly_number, total_qty, total_price, processing_fee_ratio, 
       processing_fee, payment_type, product_price, factory_id, factory_annex, consignee_id, 
-      wait_assembly_total, in_wait_wh_total, lave_wait_qc_total, revision, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+      wait_assembly_total, in_wait_wh_total, lave_wait_qc_total, wait_preparation_total, 
+      revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, 
       #{status,jdbcType=VARCHAR}, #{assemblyNumber,jdbcType=VARCHAR}, #{totalQty,jdbcType=INTEGER}, 
       #{totalPrice,jdbcType=DECIMAL}, #{processingFeeRatio,jdbcType=DECIMAL}, #{processingFee,jdbcType=DECIMAL}, 
       #{paymentType,jdbcType=VARCHAR}, #{productPrice,jdbcType=DECIMAL}, #{factoryId,jdbcType=BIGINT}, 
       #{factoryAnnex,jdbcType=VARCHAR}, #{consigneeId,jdbcType=BIGINT}, #{waitAssemblyTotal,jdbcType=INTEGER}, 
-      #{inWaitWhTotal,jdbcType=VARCHAR}, #{laveWaitQcTotal,jdbcType=INTEGER}, #{revision,jdbcType=INTEGER}, 
-      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
-      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
-      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+      #{inWaitWhTotal,jdbcType=INTEGER}, #{laveWaitQcTotal,jdbcType=INTEGER}, #{waitPreparationTotal,jdbcType=INTEGER}, 
+      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -240,8 +251,9 @@
     factory_annex = #{factoryAnnex,jdbcType=VARCHAR}, 
     consignee_id = #{consigneeId,jdbcType=BIGINT}, 
     wait_assembly_total = #{waitAssemblyTotal,jdbcType=INTEGER}, 
-    in_wait_wh_total = #{inWaitWhTotal,jdbcType=VARCHAR}, 
+    in_wait_wh_total = #{inWaitWhTotal,jdbcType=INTEGER}, 
     lave_wait_qc_total = #{laveWaitQcTotal,jdbcType=INTEGER}, 
+    wait_preparation_total = #{waitPreparationTotal,jdbcType=INTEGER}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
@@ -310,6 +322,9 @@
       </if>
       <if test="laveWaitQcTotal != null">
         lave_wait_qc_total,
+      </if>
+      <if test="waitPreparationTotal != null">
+        wait_preparation_total,
       </if>
       <if test="revision != null">
         revision,
@@ -393,10 +408,13 @@
         #{waitAssemblyTotal,jdbcType=INTEGER},
       </if>
       <if test="inWaitWhTotal != null">
-        #{inWaitWhTotal,jdbcType=VARCHAR},
+        #{inWaitWhTotal,jdbcType=INTEGER},
       </if>
       <if test="laveWaitQcTotal != null">
         #{laveWaitQcTotal,jdbcType=INTEGER},
+      </if>
+      <if test="waitPreparationTotal != null">
+        #{waitPreparationTotal,jdbcType=INTEGER},
       </if>
       <if test="revision != null">
         #{revision,jdbcType=INTEGER},
@@ -480,10 +498,13 @@
         wait_assembly_total = #{waitAssemblyTotal,jdbcType=INTEGER},
       </if>
       <if test="inWaitWhTotal != null">
-        in_wait_wh_total = #{inWaitWhTotal,jdbcType=VARCHAR},
+        in_wait_wh_total = #{inWaitWhTotal,jdbcType=INTEGER},
       </if>
       <if test="laveWaitQcTotal != null">
         lave_wait_qc_total = #{laveWaitQcTotal,jdbcType=INTEGER},
+      </if>
+      <if test="waitPreparationTotal != null">
+        wait_preparation_total = #{waitPreparationTotal,jdbcType=INTEGER},
       </if>
       <if test="revision != null">
         revision = #{revision,jdbcType=INTEGER},

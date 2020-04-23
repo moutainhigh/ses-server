@@ -1,8 +1,12 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_assembly_order_part")
-public class OpeAssemblyOrderPart {
+public class OpeAssemblyOrderPart implements Serializable {
     /**
      * 主键
      */
@@ -28,7 +32,6 @@ public class OpeAssemblyOrderPart {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -58,6 +61,13 @@ public class OpeAssemblyOrderPart {
     @TableField(value = "total_qty")
     @ApiModelProperty(value = "消耗部件数量")
     private Integer totalQty;
+
+    /**
+     * 待备料数量
+     */
+    @TableField(value = "wait_preparation_qty")
+    @ApiModelProperty(value = "待备料数量")
+    private Integer waitPreparationQty;
 
     /**
      * 乐观锁
@@ -129,6 +139,8 @@ public class OpeAssemblyOrderPart {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -140,6 +152,8 @@ public class OpeAssemblyOrderPart {
     public static final String COL_ASSEMBLY_ID = "assembly_id";
 
     public static final String COL_TOTAL_QTY = "total_qty";
+
+    public static final String COL_WAIT_PREPARATION_QTY = "wait_preparation_qty";
 
     public static final String COL_REVISION = "revision";
 

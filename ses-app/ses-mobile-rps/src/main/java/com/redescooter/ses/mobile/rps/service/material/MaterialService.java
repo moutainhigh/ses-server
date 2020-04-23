@@ -86,12 +86,4 @@ public interface MaterialService {
      * @return
      */
     SaveMaterialQcResult saveMaterialQc(SaveMaterialQcEnter enter);
-
-    /**
-     * 保存采购单记录
-     *
-     * @param enter
-     * @return
-     */
-    GeneralResult saveNode(SaveNodeEnter enter);
 }

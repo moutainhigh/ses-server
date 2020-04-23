@@ -28,7 +28,7 @@ public interface PrepareMaterialServiceMapper {
      * @param enter
      * @return
      */
-    int allocateListCount(PrepareMaterialDetailEnter enter);
+    int detailAllocateListCount(PrepareMaterialDetailEnter enter);
 
     /**
      * 详情列表数据
@@ -36,7 +36,15 @@ public interface PrepareMaterialServiceMapper {
      * @param enter
      * @return
      */
-    List<PrepareMaterialDetailResult> allocatelList(PrepareMaterialDetailEnter enter);
+    List<PrepareMaterialDetailResult> detailAllocatelList(PrepareMaterialDetailEnter enter);
+
+    /**
+     * 组装单单列表
+     *
+     * @param enter
+     * @return
+     */
+    List<PrepareMaterialListResult> assemblyList(PageEnter enter);
 
     /**
      * 查询采购出库单、组装出库单
@@ -44,7 +52,23 @@ public interface PrepareMaterialServiceMapper {
      * @param enter
      * @return
      */
-    List<OpeStockBill> stockBillList(PageEnter enter);
+    int allocatListCount(PageEnter enter);
+
+    /**
+     * 调拨单列表
+     *
+     * @param enter
+     * @return
+     */
+    List<PrepareMaterialListResult> allocatList(PageEnter enter);
+
+    /**
+     * 组装单 数量统计
+     *
+     * @param enter
+     * @return
+     */
+    int assemblyListCount(PageEnter enter);
 
     /**
      * 组装单备料详情列表统计
@@ -52,7 +76,7 @@ public interface PrepareMaterialServiceMapper {
      * @param enter
      * @return
      */
-    int assemblyListCount(PrepareMaterialDetailEnter enter);
+    int detailAssemblyListCount(PrepareMaterialDetailEnter enter);
 
     /**
      * 组装单备料详情列表
@@ -60,5 +84,5 @@ public interface PrepareMaterialServiceMapper {
      * @param enter
      * @return
      */
-    List<PrepareMaterialDetailResult> assemblyList(PrepareMaterialDetailEnter enter);
+    List<PrepareMaterialDetailResult> detailAssemblyList(PrepareMaterialDetailEnter enter);
 }

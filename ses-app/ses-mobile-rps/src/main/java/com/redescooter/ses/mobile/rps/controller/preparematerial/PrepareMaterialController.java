@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.mobile.rps.service.preparematerial.PrepareMaterialService;
+import com.redescooter.ses.mobile.rps.vo.preparematerial.ConfirmPreparationEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult;
@@ -51,6 +52,12 @@ public class PrepareMaterialController {
     @ApiOperation(value = "列表", response = PrepareMaterialListResult.class)
     public Response<PageResult<PrepareMaterialListResult>> list(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response<>(prepareMaterialService.list(enter));
+    }
+
+    @PostMapping(value = "/confirmPreparation")
+    @ApiOperation(value = "确认备料", response = GeneralResult.class)
+    public Response<GeneralResult> confirmPreparation(@ModelAttribute @ApiParam("请求参数") ConfirmPreparationEnter enter) {
+        return new Response<>(prepareMaterialService.confirmPreparation(enter));
     }
 
     @PostMapping(value = "/detail")

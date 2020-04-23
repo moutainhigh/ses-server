@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderSta
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
@@ -19,8 +20,6 @@ import com.redescooter.ses.mobile.rps.dao.preparematerial.PrepareMaterialService
 import com.redescooter.ses.mobile.rps.dm.OpeAllocate;
 import com.redescooter.ses.mobile.rps.dm.OpeAllocateB;
 import com.redescooter.ses.mobile.rps.dm.OpeAllocateBTrace;
-import com.redescooter.ses.mobile.rps.dm.OpeAllocateTrace;
-import com.redescooter.ses.mobile.rps.dm.OpeAssembiyOrderTrace;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrderPart;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyPreparation;
@@ -32,14 +31,12 @@ import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAllocateTraceService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAssembiyOrderTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.mobile.rps.service.base.OpePartsService;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockBillService;
 import com.redescooter.ses.mobile.rps.service.base.impl.OpeAssemblyOrderPartService;
 import com.redescooter.ses.mobile.rps.service.base.impl.OpeAssemblyPreparationService;
 import com.redescooter.ses.mobile.rps.service.preparematerial.PrepareMaterialService;
+import com.redescooter.ses.mobile.rps.vo.preparematerial.ConfirmPreparationEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult;
@@ -110,58 +107,83 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      */
     @Override
     public PageResult<PrepareMaterialListResult> list(PageEnter enter) {
-        //查询出库单据
-        List<OpeStockBill> opeStockBillList = prepareMaterialServiceMapper.stockBillList(enter);
-        if (CollectionUtils.isEmpty(opeStockBillList)) {
+        //查询调拨单统计
+        int allocateListCount = prepareMaterialServiceMapper.allocatListCount(enter);
+        //组装单
+        int assemblyListCount = prepareMaterialServiceMapper.assemblyListCount(enter);
+
+        if (allocateListCount + assemblyListCount == 0) {
             return PageResult.createZeroRowResult(enter);
         }
 
-        //调拨单Id
-        List<Long> allocateIds =
-                opeStockBillList.stream().filter(item -> (StringUtils.equals(item.getSourceType(), SourceTypeEnums.ALLOCATE.getValue()))).map(OpeStockBill::getSourceId).collect(Collectors.toList());
-        //调拨单查询
-        Collection<OpeAllocate> opeAllocateList =
-                opeAllocateService.list(new LambdaQueryWrapper<OpeAllocate>().eq(OpeAllocate::getStatus, AllocateOrderStatusEnums.PENDING.getValue()).in(OpeAllocate::getId, allocateIds));
+        //调拨单数据
+        List<PrepareMaterialListResult> allocatList=prepareMaterialServiceMapper.allocatList(enter);
+        //组装单数据
+        List<PrepareMaterialListResult> assemblyList=prepareMaterialServiceMapper.assemblyList(enter);
 
-        //组装单Id
-        List<Long> assemblyIds =
-                opeStockBillList.stream().filter(item -> (StringUtils.equals(item.getSourceType(), SourceTypeEnums.ALLOCATE.getValue()))).map(OpeStockBill::getSourceId).collect(Collectors.toList());
-        //组装单查询
-        List<OpeAssemblyOrder> opeAssemblyOrderList =
-                opeAssemblyOrderService.list(new LambdaQueryWrapper<OpeAssemblyOrder>().eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.PENDING.getValue()).in(OpeAssemblyOrder::getId,
-                        assemblyIds));
-
-        List<PrepareMaterialListResult> prepareMaterialList = new ArrayList<>();
+        List<PrepareMaterialListResult> prepareMaterialList = new ArrayList(allocatList);
+        prepareMaterialList.addAll(assemblyList);
         //调拨单赋值
-        if (CollectionUtils.isNotEmpty(opeAllocateList)) {
-            opeAllocateList.forEach(item -> {
-                prepareMaterialList.add(
-                        PrepareMaterialListResult.builder()
-                                .id(item.getId())
-                                .sourceType(SourceTypeEnums.ALLOCATE.getValue())
-                                .preparationWaitTotal(item.getPreparationWaitTotal())
-                                .createdTime(item.getCreatedTime())
-                                .allocatN(item.getAllocateNum())
-                                .build()
-                );
-            });
-        }
-
-        //组装单赋值
-        if (CollectionUtils.isNotEmpty(opeAssemblyOrderList)) {
-            opeAssemblyOrderList.forEach(item -> {
-                prepareMaterialList.add(
-                        PrepareMaterialListResult.builder()
-                                .id(item.getId())
-                                .sourceType(SourceTypeEnums.ALLOCATE.getValue())
-                                .preparationWaitTotal(item.getWaitPreparationTotal())
-                                .createdTime(item.getCreatedTime())
-                                .allocatN(item.getAssemblyNumber())
-                                .build()
-                );
-            });
-        }
         return PageResult.create(enter, prepareMaterialList.size(), prepareMaterialList);
+    }
+
+    /**
+     * 确认备料
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult confirmPreparation(ConfirmPreparationEnter enter) {
+        if (StringUtils.equals(enter.getSourceType(), SourceTypeEnums.ALLOCATE.getValue())) {
+            //调拨单校验
+            OpeAllocate opeAllocate = opeAllocateService.getById(enter.getId());
+            if (opeAllocate == null) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+            }
+            if (!StringUtils.equals(opeAllocate.getStatus(), AllocateOrderStatusEnums.PENDING.getValue())) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+            }
+
+            //主订单修改状态
+            opeAllocate.setStatus(AllocateOrderStatusEnums.PREPARE.getValue());
+            opeAllocate.setUpdatedBy(enter.getUserId());
+            opeAllocate.setUpdatedTime(new Date());
+            opeAllocateService.updateById(opeAllocate);
+            //更新节点
+            SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+            BeanUtils.copyProperties(enter, saveNodeEnter);
+            saveNodeEnter.setId(opeAllocate.getId());
+            saveNodeEnter.setStatus(AllocateOrderStatusEnums.PREPARE.getValue());
+            saveNodeEnter.setEvent(AllocateOrderEventEnums.INPROGRESS.getValue());
+            saveNodeEnter.setMemo(null);
+            receiptTraceService.saveAllocateNode(saveNodeEnter);
+        }
+        if (StringUtils.equals(enter.getSourceType(), SourceTypeEnums.ASSEMBLY.getValue())) {
+            //组装备料
+            OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(enter.getId());
+            if (opeAssemblyOrder == null) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
+            }
+            if (!StringUtils.equals(opeAssemblyOrder.getStatus(), AssemblyStatusEnums.PENDING.getValue())) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+            }
+
+            opeAssemblyOrder.setStatus(AssemblyStatusEnums.PREPARE_MATERIAL.getValue());
+            opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+            opeAssemblyOrder.setUpdatedTime(new Date());
+            opeAssemblyOrderService.updateById(opeAssemblyOrder);
+            //更新节点
+            SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+            BeanUtils.copyProperties(enter, saveNodeEnter);
+            saveNodeEnter.setId(opeAssemblyOrder.getId());
+            saveNodeEnter.setStatus(AssemblyStatusEnums.PREPARE_MATERIAL.getValue());
+            saveNodeEnter.setEvent(AssemblyStatusEnums.PREPARE_MATERIAL.getValue());
+            saveNodeEnter.setMemo(null);
+            receiptTraceService.saveAssemblyNode(saveNodeEnter);
+        }
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -179,16 +201,16 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             if (opeAllocate == null) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
             }
-            if (!StringUtils.equals(opeAllocate.getStatus(), AllocateOrderStatusEnums.PENDING.getValue())) {
+            if (!StringUtils.equals(opeAllocate.getStatus(), AllocateOrderStatusEnums.PREPARE.getValue())) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
             }
 
             //调拨单数据查询
-            int count = prepareMaterialServiceMapper.allocateListCount(enter);
+            int count = prepareMaterialServiceMapper.detailAllocateListCount(enter);
             if (count == 0) {
                 return PageResult.createZeroRowResult(enter);
             }
-            return PageResult.create(enter, count, prepareMaterialServiceMapper.allocatelList(enter));
+            return PageResult.create(enter, count, prepareMaterialServiceMapper.detailAllocatelList(enter));
         }
 
         if (StringUtils.equals(enter.getSourceType(), SourceTypeEnums.ASSEMBLY.getValue())) {
@@ -201,11 +223,11 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                 throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
             }
             //组装数据查询
-            int count = prepareMaterialServiceMapper.assemblyListCount(enter);
+            int count = prepareMaterialServiceMapper.detailAssemblyListCount(enter);
             if (count == 0) {
                 return PageResult.createZeroRowResult(enter);
             }
-            return PageResult.create(enter, count, prepareMaterialServiceMapper.assemblyList(enter));
+            return PageResult.create(enter, count, prepareMaterialServiceMapper.detailAssemblyList(enter));
         }
         return PageResult.createZeroRowResult(enter);
     }
@@ -262,7 +284,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             if (opeAllocate == null) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
             }
-            if (!StringUtils.equals(opeAllocate.getStatus(), AllocateOrderStatusEnums.PENDING.getValue())) {
+            if (!StringUtils.equals(opeAllocate.getStatus(), AllocateOrderStatusEnums.PREPARE.getValue())) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
             }
 
@@ -280,7 +302,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             if (opeAssemblyOrder == null) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
             }
-            if (StringUtils.equals(opeAssemblyOrder.getStatus(), AssemblyStatusEnums.PENDING.getValue())) {
+            if (StringUtils.equals(opeAssemblyOrder.getStatus(), AssemblyStatusEnums.PREPARE_MATERIAL.getValue())) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
             }
 
@@ -309,19 +331,17 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                 int partQty = 0;
                 //便利部件基本数据
                 for (SavePartBasicDateEnter partMap : savePartBasicDateMap.get(opeAllocateB.getId())) {
-                    for (OpeParts part : opePartsList) {
-                        if (opeAllocateB.getPartId().equals(part.getId())) {
-                            //设置备料记录
-                            opeAllocateBTraceList.add(
-                                    buildOpeAllocateBTrace(enter.getUserId(), batchNo, opeAllocateB, partMap)
-                            );
-                        }
-                        partQty += partMap.getQty();
-                        totalPart += partMap.getQty();
+                    if (opeAllocateB.getPartId().equals(partMap.getPartId())) {
+                        //设置备料记录
+                        opeAllocateBTraceList.add(buildOpeAllocateBTrace(enter.getUserId(), batchNo, opeAllocateB, partMap));
                     }
+                    //部件数量校验
                     if (!opeAllocateB.getPreparationWaitQty().equals(partMap.getQty())) {
                         throw new SesMobileRpsException(ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getMessage());
                     }
+
+                    partQty += partMap.getQty();
+                    totalPart += partMap.getQty();
                 }
                 //待备料数量减掉
                 opeAllocateB.setPreparationWaitQty(opeAllocateB.getPreparationWaitQty() - partQty);
@@ -338,14 +358,14 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
 
             if (updateOpeAllocateStatus) {
                 opeAllocate.setPreparationWaitTotal(0);
-                opeAllocate.setStatus(AllocateOrderStatusEnums.PREPARE.getValue());
+                opeAllocate.setStatus(AllocateOrderStatusEnums.ALLOCATE.getValue());
 
                 //更新节点
                 SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
                 BeanUtils.copyProperties(enter, saveNodeEnter);
                 saveNodeEnter.setId(opeAllocate.getId());
-                saveNodeEnter.setStatus(AllocateOrderStatusEnums.PREPARE.getValue());
-                saveNodeEnter.setEvent(AllocateOrderEventEnums.INPROGRESS.getValue());
+                saveNodeEnter.setStatus(AllocateOrderStatusEnums.ALLOCATE.getValue());
+                saveNodeEnter.setEvent(AllocateOrderEventEnums.ALLOCATE.getValue());
                 saveNodeEnter.setMemo(null);
                 receiptTraceService.saveAllocateNode(saveNodeEnter);
             } else {
@@ -365,11 +385,14 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                 int partQty = 0;
                 //便利部件基本数据
                 for (SavePartBasicDateEnter value : savePartBasicDateMap.get(item.getId())) {
+                    //组装备料表数据保存
                     saveAssemblyPreparationList.add(buildOpeAssemblyPreparation(enter.getUserId(), batchNo, item, value));
                     //备料数量维护
                     partQty += value.getQty();
                     totalPart += value.getQty();
                 }
+
+                //部件数量校验
                 if (item.getWaitPreparationQty() != partQty) {
                     throw new SesMobileRpsException(ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getMessage());
                 }
@@ -401,23 +424,29 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                 saveNodeEnter.setMemo(null);
                 receiptTraceService.saveAssemblyNode(saveNodeEnter);
             } else {
-                opeAllocate.setPreparationWaitTotal(opeAllocate.getPreparationWaitTotal() - totalPart);
+                opeAssemblyOrder.setWaitPreparationTotal(opeAllocate.getPreparationWaitTotal() - totalPart);
             }
-            opeAllocate.setUpdatedBy(enter.getUserId());
-            opeAllocate.setUpdatedTime(new Date());
+            opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+            opeAssemblyOrder.setUpdatedTime(new Date());
             //主表记录更新
-            opeAllocateService.updateById(opeAllocate);
-            //子表记录更新
-            opeAllocateBService.updateBatch(opeAllocateBList);
-            //备料记录更新
-            opeAllocateBTraceService.saveBatch(opeAllocateBTraceList);
-
+            opeAssemblyOrderService.updateById(opeAssemblyOrder);
+            //部件表记录更新
+            opeAssemblyOrderPartService.updateBatch(opeAssemblyOrderPartList);
+            // 备料数据保存
+            opeAssemblyPreparationService.saveBatch(saveAssemblyPreparationList);
         }
-
-
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * buildOpeAllocateBTrace 备料子记录做保存
+     *
+     * @param userId
+     * @param batchNo
+     * @param opeAllocateB
+     * @param partMap
+     * @return
+     */
     private OpeAllocateBTrace buildOpeAllocateBTrace(Long userId, String batchNo, OpeAllocateB opeAllocateB, SavePartBasicDateEnter partMap) {
         return OpeAllocateBTrace.builder()
                 .id(idAppService.getId(SequenceName.OPE_ALLOCATE_B_TRACE))
