@@ -129,7 +129,9 @@ public enum ExceptionCodeEnums {
 
     WAIT_IN_WH_NUM_IS_EMPTY(10061,"待质检数量为空"),
 
-    OPE_ORDER_IS_EMPTY(10062,"组装单不存在")
+    OPE_ORDER_IS_EMPTY(10062,"组装单不存在"),
+
+    WAIT_IN_WH_NUM_ERROR(10063,"待入库总数错误")
    ;
 
     private int code;
