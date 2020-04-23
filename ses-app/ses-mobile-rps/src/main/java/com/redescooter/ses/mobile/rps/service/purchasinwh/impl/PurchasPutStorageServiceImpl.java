@@ -17,6 +17,7 @@ import com.redescooter.ses.mobile.rps.dao.purchasinwh.PurchasPutStorageMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
+import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.*;
 
 //import com.redescooter.ses.mobile.rps.service.base.impl.OpePurchasTraceService;
@@ -71,6 +72,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
     @Autowired
     private OpePurchasBQcService opePurchasBQcService;
+    @Autowired
+    private ReceiptTraceService receiptTraceService;
     /**
      * 采购仓库待入库信息
      *
@@ -216,7 +219,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         saveNodeEnter.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
         saveNodeEnter.setEvent(PurchasingEventEnums.IN_PURCHASING_WH.getValue());
         saveNodeEnter.setMemo(null);
-        this.savePurchasingNode(saveNodeEnter);
+        receiptTraceService.savePurchasingNode(saveNodeEnter);
         return purchasPutStorageMapper.haveIdPartsResult(enter);
     }
     /**
@@ -324,7 +327,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         saveNodeEnter.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
         saveNodeEnter.setEvent(PurchasingEventEnums.IN_PURCHASING_WH.getValue());
         saveNodeEnter.setMemo(null);
-        this.savePurchasingNode(saveNodeEnter);
+        receiptTraceService.savePurchasingNode(saveNodeEnter);
 
         return purchasPutStorageMapper.notIdPartsSucceedListResult(enter);
     }
@@ -345,33 +348,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         }
         return notIdPartsResult;
     }
-    /**
-     * 保存采购单节点
-     *
-     * @param enter
-     * @return
-     */
 
-    @Transactional
-    @Override
-    public GeneralResult savePurchasingNode(SaveNodeEnter enter) {
-        opePurchasTraceService.save(OpePurchasTrace.builder()
-                .id(idAppService.getId(SequenceName.OPE_PURCHAS_TRACE))
-                .dr(0)
-                .tenantId(0L)
-                .userId(enter.getUserId())
-                .purchasId(enter.getId())
-                .status(enter.getStatus())
-                .event(enter.getEvent())
-                .eventTime(new Date())
-                .memo(StringUtils.isBlank(enter.getMemo()) == true ? null : enter.getMemo())
-                .createBy(enter.getUserId())
-                .createTime(new Date())
-                .updateBy(enter.getUserId())
-                .updateTime(new Date())
-                .build());
-        return new GeneralResult(enter.getRequestId());
-    }
 
 
     private void saveStockBillSingle(PurchasDetailsEnter enter, List<OpeStock> saveStockList, List<OpeStockBill> saveOpeStockBillList, OpePurchas opePurchas) {

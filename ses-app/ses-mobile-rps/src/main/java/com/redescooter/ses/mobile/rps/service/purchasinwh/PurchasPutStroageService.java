@@ -50,12 +50,6 @@ public interface PurchasPutStroageService {
      */
     NotIdPartsSucceedResult notIdInWh(NotIdEnter enter);
 
-    /**
-     * 保存采购单节点
-     *
-     * @param enter
-     * @return
-     */
-    GeneralResult savePurchasingNode(SaveNodeEnter enter);
+
 }
 
