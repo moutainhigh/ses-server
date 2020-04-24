@@ -7,8 +7,15 @@ import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdsEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
 //import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
+
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
 
 /**
  * @ClassName:TransferScooterService
@@ -39,5 +46,14 @@ public interface TransferScooterService {
      * @return
      */
     GeneralResult transferScooter(TransferScooterEnter enter);
+
+
+
+    /**
+     * 车辆用户分配信息
+     *
+     * @param enter
+     */
+    PageResult<ScooterCustomerResult> scooterCustomerResult (PageEnter enter);
 
 }

@@ -8,6 +8,15 @@ import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterIdEnter;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
+import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
+import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -35,6 +44,9 @@ public class TransferScooterController{
     @Autowired
     private TransferScooterService transferScooterService;
 
+    @Autowired
+    private TransferScooterService transferScooterService;
+
     @IgnoreLoginCheck
     @ApiOperation(value = "分配整车列表", response = ChooseScooterResult.class)
     @PostMapping(value = "/chooseScooterList")
@@ -42,5 +54,12 @@ public class TransferScooterController{
         return new Response<>(transferScooterService.chooseScooterList(enter));
     }
 
+
+    @PostMapping(value = "/list")
+    @ApiOperation(value = "车辆分配用户信息", response = DetailsCustomerResult.class)
+    @IgnoreLoginCheck
+    public Response<PageResult<ScooterCustomerResult>> list(PageEnter enter) {
+        return new Response<>(transferScooterService.scooterCustomerResult(enter));
+    }
 
 }

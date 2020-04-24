@@ -14,6 +14,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -23,6 +24,10 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterIdEnter;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
@@ -35,6 +40,8 @@ import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +49,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Collection;
@@ -55,11 +65,28 @@ import java.util.Collection;
  */
 @Service
 public class TransferScooterServiceImpl implements TransferScooterService {
+    @Autowired
+    private CustomerServiceMapper customerServiceMapper;
 
     @Autowired
     private OpeStockProdProductService opeStockProdProductService;
 
     @Autowired
+    private OpeStockProdProductService opeStockProdProductService;
+    /**
+     * 车辆用户分配信息
+     *
+     * @param enter
+     */
+    @Override
+    public PageResult<ScooterCustomerResult> scooterCustomerResult(PageEnter enter) {
+        int count = customerServiceMapper.scooterCustomerCount(enter);
+        if (count==0){
+            PageResult.createZeroRowResult(enter);
+        }
+        List<ScooterCustomerResult> scooterCustomerResults = customerServiceMapper.scooterCustomerResult(enter);
+        return PageResult.create(enter,count,scooterCustomerResults);
+    }
     private OpeCustomerService opeCustomerService;
 
 
