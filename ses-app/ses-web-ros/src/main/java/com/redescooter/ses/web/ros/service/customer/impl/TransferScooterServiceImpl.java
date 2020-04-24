@@ -7,37 +7,36 @@ import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
 import com.redescooter.ses.api.common.enums.production.wh.StockItemStatusEnums;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.production.wh.StockItemStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeStock;
 import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.dm.OpeStockProdProduct;
-import com.redescooter.ses.web.ros.exception.ExceptionCode;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
 import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
 import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
 import com.redescooter.ses.web.ros.vo.customer.TransferScooterListEnter;
+import com.redescooter.ses.web.ros.vo.customer.ChooseScooterIdEnter;
+import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName:TransferScooterServiceImpl
@@ -48,12 +47,63 @@ import java.util.stream.Collectors;
  */
 @Service
 public class TransferScooterServiceImpl implements TransferScooterService {
-
     @Autowired
-    private OpeCustomerService opeCustomerService;
+    private CustomerServiceMapper customerServiceMapper;
 
     @Autowired
     private OpeStockProdProductService opeStockProdProductService;
+
+    /**
+     * 车辆用户分配信息
+     *
+     * @param enter
+     */
+    @Override
+    public PageResult<ScooterCustomerResult> scooterCustomerResult(PageEnter enter) {
+        int count = customerServiceMapper.scooterCustomerCount(enter);
+        if (count==0){
+            PageResult.createZeroRowResult(enter);
+        }
+        List<ScooterCustomerResult> scooterCustomerResults = customerServiceMapper.scooterCustomerResult(enter);
+        return PageResult.create(enter,count,scooterCustomerResults);
+    }
+    private OpeCustomerService opeCustomerService;
+
+
+    /**
+     * @param enter
+     * @return
+     * @Author kyle
+     * @Description //查询分配整车列表
+     * @Date 2020/4/24 17:01
+     * @Param [enter]
+     */
+    @Override
+    public PageResult<ChooseScooterResult> chooseScooterList(ChooseScooterIdEnter enter) {
+        //查询可分配的整车列表
+        QueryWrapper<OpeStockProdProduct> opeStockProdProductQueryWrapper = new QueryWrapper<>();
+        opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_DR, 0);
+        opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_STATUS, StockItemStatusEnums.AVAILABLE.getValue());
+        List<OpeStockProdProduct> opeStockProdProductList = opeStockProdProductService.list(opeStockProdProductQueryWrapper);
+
+        //可分配的整车列表为空
+        if (CollectionUtils.isEmpty(opeStockProdProductList)) {
+            PageResult.createZeroRowResult(enter);
+        }
+
+        //可分配的整车列表
+        List<ChooseScooterResult> chooseScooterList = new ArrayList<>();
+        opeStockProdProductList.forEach(opeStockProdProduct -> {
+            ChooseScooterResult chooseScooterResult = null;
+            chooseScooterList.add(
+                    chooseScooterResult = ChooseScooterResult.builder()
+                            .id(opeStockProdProduct.getId())
+                            .batchNum(opeStockProdProduct.getLot())
+                            .build());
+        });
+        return PageResult.create(enter, opeStockProdProductList.size(), chooseScooterList);
+    }
+
 
     @Autowired
     private OpeStockBillService opeStockBillService;

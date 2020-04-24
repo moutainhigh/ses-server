@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaI18nConfigMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaI18nConfig">
+      <!--@mbg.generated-->
+      <!--@Table pla_i18n_config-->
+      <id column="ID" jdbcType="BIGINT" property="id"/>
+      <result column="dr" jdbcType="INTEGER" property="dr"/>
+      <result column="group" jdbcType="VARCHAR" property="group"/>
+      <result column="key" jdbcType="VARCHAR" property="key"/>
+      <result column="type" jdbcType="VARCHAR" property="type"/>
+      <result column="country" jdbcType="VARCHAR" property="country"/>
+      <result column="value" jdbcType="VARCHAR" property="value"/>
+      <result column="desc" jdbcType="VARCHAR" property="desc"/>
+      <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+      <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+      <result column="deleted" jdbcType="BOOLEAN" property="deleted"/>
+      <result column="def1" jdbcType="VARCHAR" property="def1"/>
+      <result column="def2" jdbcType="VARCHAR" property="def2"/>
+      <result column="def3" jdbcType="VARCHAR" property="def3"/>
+      <result column="def5" jdbcType="VARCHAR" property="def5"/>
+      <result column="def6" jdbcType="DOUBLE" property="def6"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, dr, `group`, `key`, `type`, country, `value`, `desc`, update_time, created_time, 
+    deleted, def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update pla_i18n_config
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="`group` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.group,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`key` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.key,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`type` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.type,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.country,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`value` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.value,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`desc` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.desc,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.updateTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="deleted = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.deleted,jdbcType=BOOLEAN}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+            when ID = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+        <trim prefix="def6 = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when ID = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+            </foreach>
+        </trim>
+    </trim>
+      where ID in
+      <foreach close=")" collection="list" item="item" open="(" separator=", ">
+          #{item.id,jdbcType=BIGINT}
+      </foreach>
+  </update>
+    <update id="updateBatchSelective" parameterType="java.util.List">
+        <!--@mbg.generated-->
+        update pla_i18n_config
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="dr = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.dr != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="`group` = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.group != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.group,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="`key` = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.key != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.key,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="`type` = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.type != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.type,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="country = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.country != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.country,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="`value` = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.value != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.value,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="`desc` = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.desc != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.desc,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.updateTime != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.updateTime,jdbcType=TIMESTAMP}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="created_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.createdTime != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="deleted = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.deleted != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.deleted,jdbcType=BOOLEAN}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="def1 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.def1 != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="def2 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.def2 != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="def3 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.def3 != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="def5 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.def5 != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="def6 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.def6 != null">
+                        when ID = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where ID in
+        <foreach close=")" collection="list" item="item" open="(" separator=", ">
+            #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into pla_i18n_config
+        (ID, dr, `group`, `key`, `type`, country, `value`, `desc`, update_time, created_time,
+        deleted, def1, def2, def3, def5, def6)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.group,jdbcType=VARCHAR},
+            #{item.key,jdbcType=VARCHAR}, #{item.type,jdbcType=VARCHAR}, #{item.country,jdbcType=VARCHAR},
+            #{item.value,jdbcType=VARCHAR}, #{item.desc,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.deleted,jdbcType=BOOLEAN}, #{item.def1,jdbcType=VARCHAR},
+            #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
+            #{item.def6,jdbcType=DOUBLE})
+        </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaI18nConfig">
+    <!--@mbg.generated-->
+      insert into pla_i18n_config
+      (ID, dr, `group`, `key`, `type`, country, `value`, `desc`, update_time, created_time,
+      deleted, def1, def2, def3, def5, def6)
+      values
+      (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{group,jdbcType=VARCHAR}, #{key,jdbcType=VARCHAR},
+      #{type,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR},
+      #{desc,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP},
+      #{deleted,jdbcType=BOOLEAN}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
+      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+      on duplicate key update
+      ID = #{id,jdbcType=BIGINT},
+      dr = #{dr,jdbcType=INTEGER},
+      `group` = #{group,jdbcType=VARCHAR},
+      `key` = #{key,jdbcType=VARCHAR},
+      `type` = #{type,jdbcType=VARCHAR},
+      country = #{country,jdbcType=VARCHAR},
+      `value` = #{value,jdbcType=VARCHAR},
+      `desc` = #{desc,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      deleted = #{deleted,jdbcType=BOOLEAN},
+      def1 = #{def1,jdbcType=VARCHAR},
+      def2 = #{def2,jdbcType=VARCHAR},
+      def3 = #{def3,jdbcType=VARCHAR},
+      def5 = #{def5,jdbcType=VARCHAR},
+      def6 = #{def6,jdbcType=DOUBLE}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaI18nConfig">
+    <!--@mbg.generated-->
+    insert into pla_i18n_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="group != null">
+        `group`,
+      </if>
+      <if test="key != null">
+        `key`,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="country != null">
+        country,
+      </if>
+      <if test="value != null">
+        `value`,
+      </if>
+      <if test="desc != null">
+        `desc`,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+          #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+          #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="group != null">
+          #{group,jdbcType=VARCHAR},
+      </if>
+      <if test="key != null">
+          #{key,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+          #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null">
+          #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+          #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="desc != null">
+          #{desc,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+          #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+          #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+          #{deleted,jdbcType=BOOLEAN},
+      </if>
+      <if test="def1 != null">
+          #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+          #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+          #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+          #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+          #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+          ID = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+          dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="group != null">
+          `group` = #{group,jdbcType=VARCHAR},
+      </if>
+      <if test="key != null">
+          `key` = #{key,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+          `type` = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null">
+          country = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+          `value` = #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="desc != null">
+          `desc` = #{desc,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+          update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+          created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+          deleted = #{deleted,jdbcType=BOOLEAN},
+      </if>
+      <if test="def1 != null">
+          def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+          def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+          def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+          def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+          def6 = #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+</mapper>

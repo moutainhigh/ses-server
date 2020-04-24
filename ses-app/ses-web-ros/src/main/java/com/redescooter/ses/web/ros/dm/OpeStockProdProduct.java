@@ -13,6 +13,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 生产成品库
+ */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeStockProdProduct")
 @Data
 @Builder
@@ -26,6 +29,7 @@ public class OpeStockProdProduct implements Serializable {
 
     @TableField(value = "dr")
     @ApiModelProperty(value = "")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -46,7 +50,7 @@ public class OpeStockProdProduct implements Serializable {
      * 商品Id
      */
     @TableField(value = "product_id")
-    @ApiModelProperty(value = "商品Id")
+    @ApiModelProperty(value = "")
     private Long productId;
 
     /**

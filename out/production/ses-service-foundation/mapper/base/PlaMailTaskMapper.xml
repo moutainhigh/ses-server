@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaMailTaskMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaMailTask">
+    <!--@mbg.generated-->
+    <!--@Table pla_mail_task-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="status" property="status" />
+    <result column="system_id" property="systemId" />
+    <result column="app_id" property="appId" />
+    <result column="request_id" property="requestId" />
+    <result column="mail_template_no" property="mailTemplateNo" />
+    <result column="send_mail" property="sendMail" />
+    <result column="receive_mail" property="receiveMail" />
+    <result column="to_user_id" property="toUserId" />
+    <result column="subject" property="subject" />
+    <result column="file_path" property="filePath" />
+    <result column="parameter" property="parameter" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def5" property="def5" />
+    <result column="def6" property="def6" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.redescooter.ses.service.foundation.dm.base.PlaMailTask">
+    <!--@mbg.generated-->
+    <!--@Table pla_mail_task-->
+    <result column="content" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, `status`, system_id, app_id, request_id, mail_template_no, send_mail, receive_mail, 
+    to_user_id, subject, file_path, `parameter`, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def5, def6
+  </sql>
+  <sql id="Blob_Column_List">
+    <!--@mbg.generated-->
+    content
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update pla_mail_task
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="system_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.systemId}
+        </foreach>
+      </trim>
+      <trim prefix="app_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.appId}
+        </foreach>
+      </trim>
+      <trim prefix="request_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.requestId}
+        </foreach>
+      </trim>
+      <trim prefix="mail_template_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.mailTemplateNo}
+        </foreach>
+      </trim>
+      <trim prefix="send_mail = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.sendMail}
+        </foreach>
+      </trim>
+      <trim prefix="receive_mail = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.receiveMail}
+        </foreach>
+      </trim>
+      <trim prefix="to_user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.toUserId}
+        </foreach>
+      </trim>
+      <trim prefix="subject = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.subject}
+        </foreach>
+      </trim>
+      <trim prefix="file_path = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.filePath}
+        </foreach>
+      </trim>
+      <trim prefix="`parameter` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.parameter}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def6}
+        </foreach>
+      </trim>
+      <trim prefix="content = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.content}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into pla_mail_task
+    (id, dr, `status`, system_id, app_id, request_id, mail_template_no, send_mail, receive_mail, 
+      to_user_id, subject, file_path, `parameter`, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6, content)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.status}, #{item.systemId}, #{item.appId}, #{item.requestId}, 
+        #{item.mailTemplateNo}, #{item.sendMail}, #{item.receiveMail}, #{item.toUserId}, 
+        #{item.subject}, #{item.filePath}, #{item.parameter}, #{item.createdBy}, #{item.createdTime}, 
+        #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, 
+        #{item.def5}, #{item.def6}, #{item.content})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMailTask">
+    <!--@mbg.generated-->
+    insert into pla_mail_task
+    (id, dr, `status`, system_id, app_id, request_id, mail_template_no, send_mail, receive_mail, 
+      to_user_id, subject, file_path, `parameter`, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
+    values
+    (#{id}, #{dr}, #{status}, #{systemId}, #{appId}, #{requestId}, #{mailTemplateNo}, 
+      #{sendMail}, #{receiveMail}, #{toUserId}, #{subject}, #{filePath}, #{parameter}, 
+      #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, 
+      #{def5}, #{def6})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    `status` = #{status}, 
+    system_id = #{systemId}, 
+    app_id = #{appId}, 
+    request_id = #{requestId}, 
+    mail_template_no = #{mailTemplateNo}, 
+    send_mail = #{sendMail}, 
+    receive_mail = #{receiveMail}, 
+    to_user_id = #{toUserId}, 
+    subject = #{subject}, 
+    file_path = #{filePath}, 
+    `parameter` = #{parameter}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}
+  </insert>
+  <insert id="insertOrUpdateWithBLOBs" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMailTask">
+    <!--@mbg.generated-->
+    insert into pla_mail_task
+    (id, dr, `status`, system_id, app_id, request_id, mail_template_no, send_mail, receive_mail, 
+      to_user_id, subject, file_path, `parameter`, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6, content)
+    values
+    (#{id}, #{dr}, #{status}, #{systemId}, #{appId}, #{requestId}, #{mailTemplateNo}, 
+      #{sendMail}, #{receiveMail}, #{toUserId}, #{subject}, #{filePath}, #{parameter}, 
+      #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, 
+      #{def5}, #{def6}, #{content})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    `status` = #{status}, 
+    system_id = #{systemId}, 
+    app_id = #{appId}, 
+    request_id = #{requestId}, 
+    mail_template_no = #{mailTemplateNo}, 
+    send_mail = #{sendMail}, 
+    receive_mail = #{receiveMail}, 
+    to_user_id = #{toUserId}, 
+    subject = #{subject}, 
+    file_path = #{filePath}, 
+    `parameter` = #{parameter}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def5 = #{def5}, 
+    def6 = #{def6}, 
+    content = #{content}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaMailTask">
+    <!--@mbg.generated-->
+    insert into pla_mail_task
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="systemId != null">
+        system_id,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="requestId != null">
+        request_id,
+      </if>
+      <if test="mailTemplateNo != null">
+        mail_template_no,
+      </if>
+      <if test="sendMail != null">
+        send_mail,
+      </if>
+      <if test="receiveMail != null">
+        receive_mail,
+      </if>
+      <if test="toUserId != null">
+        to_user_id,
+      </if>
+      <if test="subject != null">
+        subject,
+      </if>
+      <if test="filePath != null">
+        file_path,
+      </if>
+      <if test="parameter != null">
+        `parameter`,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="systemId != null">
+        #{systemId},
+      </if>
+      <if test="appId != null">
+        #{appId},
+      </if>
+      <if test="requestId != null">
+        #{requestId},
+      </if>
+      <if test="mailTemplateNo != null">
+        #{mailTemplateNo},
+      </if>
+      <if test="sendMail != null">
+        #{sendMail},
+      </if>
+      <if test="receiveMail != null">
+        #{receiveMail},
+      </if>
+      <if test="toUserId != null">
+        #{toUserId},
+      </if>
+      <if test="subject != null">
+        #{subject},
+      </if>
+      <if test="filePath != null">
+        #{filePath},
+      </if>
+      <if test="parameter != null">
+        #{parameter},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+      <if test="def6 != null">
+        #{def6},
+      </if>
+      <if test="content != null">
+        #{content},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId},
+      </if>
+      <if test="requestId != null">
+        request_id = #{requestId},
+      </if>
+      <if test="mailTemplateNo != null">
+        mail_template_no = #{mailTemplateNo},
+      </if>
+      <if test="sendMail != null">
+        send_mail = #{sendMail},
+      </if>
+      <if test="receiveMail != null">
+        receive_mail = #{receiveMail},
+      </if>
+      <if test="toUserId != null">
+        to_user_id = #{toUserId},
+      </if>
+      <if test="subject != null">
+        subject = #{subject},
+      </if>
+      <if test="filePath != null">
+        file_path = #{filePath},
+      </if>
+      <if test="parameter != null">
+        `parameter` = #{parameter},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6},
+      </if>
+      <if test="content != null">
+        content = #{content},
+      </if>
+    </trim>
+  </insert>
+</mapper>
