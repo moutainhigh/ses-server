@@ -3,18 +3,19 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.util.Date;
-
+/**
+ * 生产成品库
+ */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeStockProdProduct")
 @Data
 @Builder
@@ -28,7 +29,6 @@ public class OpeStockProdProduct implements Serializable {
 
     @TableField(value = "dr")
     @ApiModelProperty(value = "")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -195,4 +195,8 @@ public class OpeStockProdProduct implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeStockProdProductBuilder builder() {
+        return new OpeStockProdProductBuilder();
+    }
 }
