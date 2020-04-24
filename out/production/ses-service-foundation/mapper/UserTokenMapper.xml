@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.UserTokenMapper">
+
+    <select id="checkPcUser" resultType="com.redescooter.ses.api.foundation.vo.login.AccountsDto">
+
+        select puser.ID as userId,
+        puser.TENANT_ID as tenantId,
+        puser.SYSTEM_ID as systemId,
+        puser.APP_ID as appId,
+        puser.LOGIN_NAME as loginName,
+        puser.STATUS as status,
+        puser.USER_TYPE as userType,
+        puser.LAST_LOGIN_TOKEN as lastLoginToken
+        from pla_user puser
+        where puser.APP_ID =#{appId}
+        and puser.SYSTEM_ID = #{systemId}
+        and puser.LOGIN_NAME = #{loginName}
+        and puser.dr = 0
+
+    </select>
+    <select id="chectPermission" resultType="com.redescooter.ses.service.foundation.dm.base.PlaUserPermission">
+        select a.Id,a.USER_ID,a.SYSTEM_ID,a.APP_ID,a.STATUS
+        from pla_user_permission a
+        where a.dr = 0
+        and a.USER_ID = #{userId}
+        and a.SYSTEM_ID=#{systemId}
+        and a.app_id=#{appId}
+    </select>
+    <select id="checkAPPUser" resultType="com.redescooter.ses.api.foundation.vo.login.AccountsDto">
+
+        select puser.ID as userId,
+        puser.TENANT_ID as tenantId,
+        puser.SYSTEM_ID as systemId,
+        puser.APP_ID as appId,
+        puser.LOGIN_NAME as loginName,
+        puser.STATUS as status,
+        puser.USER_TYPE as userType,
+        puser.LAST_LOGIN_TOKEN as lastLoginToken,
+        ifnull(tenant.tenant_name, 'Individual') as tenantName
+        from pla_user puser
+        left join pla_tenant tenant on puser.TENANT_ID = tenant.id
+        where puser.APP_ID =#{appId}
+        and puser.SYSTEM_ID = #{systemId}
+        and puser.LOGIN_NAME = #{loginName}
+        and puser.dr = 0
+
+    </select>
+    <update id="lockBySaaSAccount">
+        update pla_user
+        set STATUS ='LOCK',
+        UPDATED_TIME = now()
+        where STATUS <![CDATA[<>]]> 'CANCEL'
+        and TENANT_ID in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <update id="unlockBySaaSAccount">
+        update user
+        set STATUS ='NORMAL',
+        UPDATED_TIME = now()
+        where STATUS <![CDATA[<>]]> 'CANCEL'
+        and TENANT_ID in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </update>
+    <select id="getUserLimitOne" resultType="com.redescooter.ses.service.foundation.dm.base.PlaUser">
+        select *
+        from pla_user u
+        where 1=1
+        and u.dr = 0
+        <if test="email != null and email != ''">
+            and u.LOGIN_NAME =#{email}
+        </if>
+
+        <if test="userId != null">
+            and u.ID=#{userId}
+        </if>
+
+        <if test="appId != null and appId != ''">
+            and u.app_id=#{appId}
+        </if>
+
+        <if test="systemId != null and systemId != ''">
+            and u.SYSTEM_ID=#{systemId}
+        </if>
+        limit 1
+    </select>
+
+    <select id="queryAccountNodeDetail"
+            resultType="com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult">
+        select userNode.id,
+        userNode.dr,
+        userNode.user_id,
+        userNode.tenant_id,
+        userNode.event,
+        userNode.event_time,
+        userNode.memo,
+        userNode.create_time,
+        userNode.create_by,
+        userNode.update_time,
+        userNode.update_by,
+        userNode.def1,
+        userNode.def2,
+        userNode.def3,
+        userNode.def5,
+        userNode.def6
+        from pla_user_node userNode
+        inner join pla_user puser on puser.ID = userNode.user_id
+        where puser.dr = 0
+        and puser.dr = 0
+        and userNode.dr=0
+        and puser.USER_TYPE in
+        <foreach collection="accountType" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="enter.id != null">
+            and puser.ID = #{enter.id}
+        </if>
+        <if test="enter.email != null and enter.email != ''">
+            and puser.LOGIN_NAME = #{enter.email}
+        </if>
+    </select>
+
+</mapper>
