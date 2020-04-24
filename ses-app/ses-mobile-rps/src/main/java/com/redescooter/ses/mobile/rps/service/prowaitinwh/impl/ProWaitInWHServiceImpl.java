@@ -285,12 +285,15 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 .userId(enter.getUserId())
                 .tenantId(enter.getUserId())
                 .sourceId(enter.getUserId())
+                .principalId(enter.getUserId())
                 .sourceType(WhseTypeEnums.ASSEMBLY.getValue())
                 .operatineTime(new Date())
                 .revision(1)
                 .updatedTime(new Date())
                 .createdTime(new Date())
                 .operatineTime(new Date())
+                .createdBy(enter.getUserId())
+                .updatedBy(enter.getUserId())
                 .build();
         opeStockBillService.save(opeStockBill);
 
