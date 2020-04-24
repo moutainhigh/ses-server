@@ -44,8 +44,6 @@ public class TransferScooterController{
     @Autowired
     private TransferScooterService transferScooterService;
 
-    @Autowired
-    private TransferScooterService transferScooterService;
 
     @IgnoreLoginCheck
     @ApiOperation(value = "分配整车列表", response = ChooseScooterResult.class)

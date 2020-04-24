@@ -1,60 +1,31 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.enums.production.wh.StockItemStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpeStockProdProduct;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.dm.OpeStockProdProduct;
-import com.redescooter.ses.web.ros.exception.ExceptionCode;
-import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
-import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
-import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
-import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterIdEnter;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Collection;
 
 /**
  * @ClassName:TransferScooterServiceImpl
@@ -71,8 +42,6 @@ public class TransferScooterServiceImpl implements TransferScooterService {
     @Autowired
     private OpeStockProdProductService opeStockProdProductService;
 
-    @Autowired
-    private OpeStockProdProductService opeStockProdProductService;
     /**
      * 车辆用户分配信息
      *
@@ -108,7 +77,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
         //可分配的整车列表为空
         if (CollectionUtils.isEmpty(opeStockProdProductList)) {
-            //throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+            PageResult.createZeroRowResult(enter);
         }
 
         //可分配的整车列表
