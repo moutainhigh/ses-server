@@ -153,6 +153,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             opePurchas.setUpdatedBy(enter.getUserId());
             opePurchas.setUpdatedTime(new Date());
             opePurchasService.updateById(opePurchas);
+        }else {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         if (opePurchas.getInWaitWhTotal() == 0) {
             //采购单状态更新
@@ -275,6 +277,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             opePurchas.setUpdatedBy(enter.getUserId());
             opePurchas.setUpdatedTime(new Date());
             opePurchasService.updateById(opePurchas);
+        }else{
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         if (opePurchas.getInWaitWhTotal() == 0) {
             //采购单状态更新
