@@ -3,17 +3,15 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeStockProdProduct")
 @Data
@@ -28,7 +26,6 @@ public class OpeStockProdProduct implements Serializable {
 
     @TableField(value = "dr")
     @ApiModelProperty(value = "")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -45,8 +42,11 @@ public class OpeStockProdProduct implements Serializable {
     @ApiModelProperty(value = "库存id")
     private Long stockId;
 
+    /**
+     * 商品Id
+     */
     @TableField(value = "product_id")
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "商品Id")
     private Long productId;
 
     /**
@@ -71,6 +71,13 @@ public class OpeStockProdProduct implements Serializable {
     private String productNumber;
 
     /**
+     * 入库单Id
+     */
+    @TableField(value = "in_stock_bill_id")
+    @ApiModelProperty(value = "入库单Id")
+    private Long inStockBillId;
+
+    /**
      * 入库负责人Id
      */
     @TableField(value = "principal_id")
@@ -83,6 +90,27 @@ public class OpeStockProdProduct implements Serializable {
     @TableField(value = "in_stock_time")
     @ApiModelProperty(value = "入库时间")
     private Date inStockTime;
+
+    /**
+     * 出库单Id
+     */
+    @TableField(value = "out_stock_bill_id")
+    @ApiModelProperty(value = "出库单Id")
+    private Long outStockBillId;
+
+    /**
+     * 出库负责人
+     */
+    @TableField(value = "out_principal_id")
+    @ApiModelProperty(value = "出库负责人")
+    private Integer outPrincipalId;
+
+    /**
+     * 出库时间
+     */
+    @TableField(value = "out_stock_time")
+    @ApiModelProperty(value = "出库时间")
+    private Date outStockTime;
 
     /**
      * 乐观锁
@@ -110,7 +138,7 @@ public class OpeStockProdProduct implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Long updatedBy;
+    private Integer updatedBy;
 
     /**
      * 更新时间
@@ -172,9 +200,17 @@ public class OpeStockProdProduct implements Serializable {
 
     public static final String COL_PRODUCT_NUMBER = "product_number";
 
+    public static final String COL_IN_STOCK_BILL_ID = "in_stock_bill_id";
+
     public static final String COL_PRINCIPAL_ID = "principal_id";
 
     public static final String COL_IN_STOCK_TIME = "in_stock_time";
+
+    public static final String COL_OUT_STOCK_BILL_ID = "out_stock_bill_id";
+
+    public static final String COL_OUT_PRINCIPAL_ID = "out_principal_id";
+
+    public static final String COL_OUT_STOCK_TIME = "out_stock_time";
 
     public static final String COL_REVISION = "revision";
 
@@ -195,4 +231,8 @@ public class OpeStockProdProduct implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeStockProdProductBuilder builder() {
+        return new OpeStockProdProductBuilder();
+    }
 }

@@ -7,28 +7,26 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 import io.swagger.annotations.*;
 
 /**
- * @ClassName:TransferScooterEnter
- * @description: TransferScooterEnter
+ * @ClassName:TransferScooterListEnter
+ * @description: TransferScooterListEnter
  * @author: Alex
  * @Version：1.3
- * @create: 2020/04/24 16:46
+ * @create: 2020/04/24 18:26
  */
-@ApiModel(value = "车辆分配接口", description = "车辆分配接口")
+@ApiModel(value = "", description = "")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class TransferScooterEnter extends GeneralEnter {
+public class TransferScooterListEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "客户Id")
+    @ApiModelProperty(value = "库存条目Id")
     private Long id;
 
-    @ApiModelProperty(value = "客户库存条目Id")
-    private String productListJson;
+    @ApiModelProperty(value = "车牌号")
+    private String numberPlate;
 }
