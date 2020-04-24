@@ -102,7 +102,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
             saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.END_NAVIGATION.getValue());
             saveScooterRecordEnterList.add(saveScooterRecordEnter);
             //调用IOT 服务 关闭导航
-            iotAdminService.finishNavigation(scoScooter.getScooterNo());
+            //iotAdminService.finishNavigation(scoScooter.getScooterNo());
         }
 
         if (enter.getBluetoothCommunication()) {
@@ -112,7 +112,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
                     scoScooterNavigationMapper.insert(savaNaviation);
                     saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.START_NAVIGATION.getValue());
                     //调用IOT 服务开启导航
-                    iotAdminService.navigation(scoScooter.getScooterNo(),enter.getLongitude().toString(),enter.getLanguage().toString());
+                    //iotAdminService.navigation(scoScooter.getScooterNo(),enter.getLongitude().toString(),enter.getLanguage().toString());
                     break;
                 case "2":
                     // 关闭导航 因为刚开始我已经关闭 导航了 所以关闭导航不必在调用
@@ -168,7 +168,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
                 saveScooterRecordEnterList.add(saveScooterRecordEnter);
 
                 //调用IOT 服务 主锁上锁
-                iotAdminService.masterLock(scoScooter.getScooterNo(), Lock.MASTER);
+                //iotAdminService.masterLock(scoScooter.getScooterNo(), Lock.MASTER);
             }
         } else {
             if (StringUtils.equals(scooterList.get(0).getStatus(), ScooterLockStatusEnums.UNLOCK.getValue())) {
@@ -180,7 +180,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
                 saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.UNLOCK.getValue());
                 saveScooterRecordEnterList.add(saveScooterRecordEnter);
                 //IOT服务主锁解锁
-                iotAdminService.unMasterLocklock(scoScooter.getScooterNo(), Lock.MASTER);
+                //iotAdminService.unMasterLocklock(scoScooter.getScooterNo(), Lock.MASTER);
             }
         }
 

@@ -25,21 +25,23 @@ public class SesWebRosApplicationTests {
     public void tearDown() throws Exception {
         System.out.println("单元测试结束--------------------->");
     }
+
     @Autowired
     private JedisService jedisService;
 
     @Test
     public void stream() {
-        System.out.println(jedisService.lock("1234/56789", 10));
+        int count = 1;
+        System.out.println(jedisService.lock(String.valueOf(count++), 2));
 
 
         log.info("---------------------------------------------------------");
-        System.out.println(jedisService.get("1234/56789"));
-        test();
-    }
+        System.out.println(jedisService.get(String.valueOf(count)));
+        log.info("---------------------------------------------------------");
 
-    @Test
-    public  void test(){
-        jedisService.unlock("1234/56789");
+        System.out.println(jedisService.get("adasdasdasd"));
+
+        jedisService.unlock(String.valueOf(count));
+        System.out.println(jedisService.get(String.valueOf(count)));
     }
 }
