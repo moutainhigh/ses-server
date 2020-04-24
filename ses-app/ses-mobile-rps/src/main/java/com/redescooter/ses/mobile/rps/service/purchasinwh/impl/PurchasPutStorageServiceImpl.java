@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.purchasinwh.impl;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
@@ -140,18 +141,21 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         saveStockBillSingle(enter, saveStockList, saveOpeStockBillList, opePurchas);
         //入库单 保存
         opeStockBillService.saveBatch(saveOpeStockBillList);
-
-        //采购部件入库数量更新
-        opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - 1);
-        opePurchasB.setUpdatedBy(enter.getUserId());
-        opePurchasB.setUpdatedTime(new Date());
-        opePurchasBService.updateById(opePurchasB);
-        //采购总数量更新
-        opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - 1);
-        opePurchas.setId(opePurchasB.getPurchasId());
-        opePurchas.setUpdatedBy(enter.getUserId());
-        opePurchas.setUpdatedTime(new Date());
-        opePurchasService.updateById(opePurchas);
+        if(opePurchasB.getInWaitWhQty()!=null && opePurchas.getInWaitWhTotal()!=null) {
+            //采购部件入库数量更新
+            opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - 1);
+            opePurchasB.setUpdatedBy(enter.getUserId());
+            opePurchasB.setUpdatedTime(new Date());
+            opePurchasBService.updateById(opePurchasB);
+            //采购总数量更新
+            opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - 1);
+            opePurchas.setId(opePurchasB.getPurchasId());
+            opePurchas.setUpdatedBy(enter.getUserId());
+            opePurchas.setUpdatedTime(new Date());
+            opePurchasService.updateById(opePurchas);
+        }else {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
         if (opePurchas.getInWaitWhTotal() == 0) {
             //采购单状态更新
             opePurchas.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
@@ -261,17 +265,21 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         opeStockService.saveOrUpdateBatch(saveStockList);
         //入库单 保存
         opeStockBillService.saveBatch(saveOpeStockBillList);
-        //采购部件入库数量更新
-        opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - enter.getInWaitWhQty());
-        opePurchasB.setUpdatedBy(enter.getUserId());
-        opePurchasB.setUpdatedTime(new Date());
-        opePurchasBService.updateById(opePurchasB);
-        //采购总数量更新
-        opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - enter.getInWaitWhQty());
-        opePurchas.setId(opePurchasB.getPurchasId());
-        opePurchas.setUpdatedBy(enter.getUserId());
-        opePurchas.setUpdatedTime(new Date());
-        opePurchasService.updateById(opePurchas);
+        if(opePurchasB.getInWaitWhQty()!=null && opePurchas.getInWaitWhTotal()!=null){
+            //采购部件入库数量更新
+            opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - enter.getInWaitWhQty());
+            opePurchasB.setUpdatedBy(enter.getUserId());
+            opePurchasB.setUpdatedTime(new Date());
+            opePurchasBService.updateById(opePurchasB);
+            //采购总数量更新
+            opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - enter.getInWaitWhQty());
+            opePurchas.setId(opePurchasB.getPurchasId());
+            opePurchas.setUpdatedBy(enter.getUserId());
+            opePurchas.setUpdatedTime(new Date());
+            opePurchasService.updateById(opePurchas);
+        }else{
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
         if (opePurchas.getInWaitWhTotal() == 0) {
             //采购单状态更新
             opePurchas.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
