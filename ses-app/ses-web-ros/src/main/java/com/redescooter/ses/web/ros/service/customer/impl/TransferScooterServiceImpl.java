@@ -27,16 +27,25 @@ import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
+import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
 import com.redescooter.ses.web.ros.vo.customer.TransferScooterListEnter;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterIdEnter;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:TransferScooterServiceImpl
