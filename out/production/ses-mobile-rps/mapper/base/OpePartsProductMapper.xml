@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpePartsProductMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpePartsProduct">
+    <!--@mbg.generated-->
+    <!--@Table ope_parts_product-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="sn_class" jdbcType="VARCHAR" property="snClass" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_number" jdbcType="VARCHAR" property="productNumber" />
+    <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
+    <result column="fr_name" jdbcType="VARCHAR" property="frName" />
+    <result column="en_name" jdbcType="VARCHAR" property="enName" />
+    <result column="production_cycle" jdbcType="VARCHAR" property="productionCycle" />
+    <result column="sum_parts_qty" jdbcType="INTEGER" property="sumPartsQty" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="pictures" jdbcType="VARCHAR" property="pictures" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="after_sales_flag" jdbcType="BOOLEAN" property="afterSalesFlag" />
+    <result column="added_services_flag" jdbcType="BOOLEAN" property="addedServicesFlag" />
+    <result column="mater_parameter" jdbcType="VARCHAR" property="materParameter" />
+    <result column="other_parameter" jdbcType="VARCHAR" property="otherParameter" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="revision" jdbcType="INTEGER" property="revision" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DECIMAL" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, user_id, `status`, sn_class, product_type, product_code, product_number, 
+    cn_name, fr_name, en_name, production_cycle, sum_parts_qty, model, pictures, color, 
+    after_sales_flag, added_services_flag, mater_parameter, other_parameter, note, revision, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_parts_product
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="sn_class = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.snClass,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="product_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="product_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="product_number = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productNumber,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="cn_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.cnName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="fr_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.frName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="en_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.enName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="production_cycle = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productionCycle,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="sum_parts_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.sumPartsQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="model = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.model,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="pictures = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.pictures,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="color = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.color,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="after_sales_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.afterSalesFlag,jdbcType=BOOLEAN}
+        </foreach>
+      </trim>
+      <trim prefix="added_services_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.addedServicesFlag,jdbcType=BOOLEAN}
+        </foreach>
+      </trim>
+      <trim prefix="mater_parameter = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.materParameter,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="other_parameter = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.otherParameter,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="note = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.note,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_parts_product
+    (id, dr, tenant_id, user_id, `status`, sn_class, product_type, product_code, product_number, 
+      cn_name, fr_name, en_name, production_cycle, sum_parts_qty, model, pictures, color, 
+      after_sales_flag, added_services_flag, mater_parameter, other_parameter, note, 
+      revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.userId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, #{item.snClass,jdbcType=VARCHAR}, 
+        #{item.productType,jdbcType=INTEGER}, #{item.productCode,jdbcType=VARCHAR}, #{item.productNumber,jdbcType=VARCHAR}, 
+        #{item.cnName,jdbcType=VARCHAR}, #{item.frName,jdbcType=VARCHAR}, #{item.enName,jdbcType=VARCHAR}, 
+        #{item.productionCycle,jdbcType=VARCHAR}, #{item.sumPartsQty,jdbcType=INTEGER}, 
+        #{item.model,jdbcType=VARCHAR}, #{item.pictures,jdbcType=VARCHAR}, #{item.color,jdbcType=VARCHAR}, 
+        #{item.afterSalesFlag,jdbcType=BOOLEAN}, #{item.addedServicesFlag,jdbcType=BOOLEAN}, 
+        #{item.materParameter,jdbcType=VARCHAR}, #{item.otherParameter,jdbcType=VARCHAR}, 
+        #{item.note,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpePartsProduct">
+    <!--@mbg.generated-->
+    insert into ope_parts_product
+    (id, dr, tenant_id, user_id, `status`, sn_class, product_type, product_code, product_number, 
+      cn_name, fr_name, en_name, production_cycle, sum_parts_qty, model, pictures, color, 
+      after_sales_flag, added_services_flag, mater_parameter, other_parameter, note, 
+      revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{status,jdbcType=VARCHAR}, #{snClass,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER}, 
+      #{productCode,jdbcType=VARCHAR}, #{productNumber,jdbcType=VARCHAR}, #{cnName,jdbcType=VARCHAR}, 
+      #{frName,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, #{productionCycle,jdbcType=VARCHAR}, 
+      #{sumPartsQty,jdbcType=INTEGER}, #{model,jdbcType=VARCHAR}, #{pictures,jdbcType=VARCHAR}, 
+      #{color,jdbcType=VARCHAR}, #{afterSalesFlag,jdbcType=BOOLEAN}, #{addedServicesFlag,jdbcType=BOOLEAN}, 
+      #{materParameter,jdbcType=VARCHAR}, #{otherParameter,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL}
+      )
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    user_id = #{userId,jdbcType=BIGINT}, 
+    `status` = #{status,jdbcType=VARCHAR}, 
+    sn_class = #{snClass,jdbcType=VARCHAR}, 
+    product_type = #{productType,jdbcType=INTEGER}, 
+    product_code = #{productCode,jdbcType=VARCHAR}, 
+    product_number = #{productNumber,jdbcType=VARCHAR}, 
+    cn_name = #{cnName,jdbcType=VARCHAR}, 
+    fr_name = #{frName,jdbcType=VARCHAR}, 
+    en_name = #{enName,jdbcType=VARCHAR}, 
+    production_cycle = #{productionCycle,jdbcType=VARCHAR}, 
+    sum_parts_qty = #{sumPartsQty,jdbcType=INTEGER}, 
+    model = #{model,jdbcType=VARCHAR}, 
+    pictures = #{pictures,jdbcType=VARCHAR}, 
+    color = #{color,jdbcType=VARCHAR}, 
+    after_sales_flag = #{afterSalesFlag,jdbcType=BOOLEAN}, 
+    added_services_flag = #{addedServicesFlag,jdbcType=BOOLEAN}, 
+    mater_parameter = #{materParameter,jdbcType=VARCHAR}, 
+    other_parameter = #{otherParameter,jdbcType=VARCHAR}, 
+    note = #{note,jdbcType=VARCHAR}, 
+    revision = #{revision,jdbcType=INTEGER}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
+    def6 = #{def6,jdbcType=DECIMAL}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpePartsProduct">
+    <!--@mbg.generated-->
+    insert into ope_parts_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="snClass != null">
+        sn_class,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="productCode != null">
+        product_code,
+      </if>
+      <if test="productNumber != null">
+        product_number,
+      </if>
+      <if test="cnName != null">
+        cn_name,
+      </if>
+      <if test="frName != null">
+        fr_name,
+      </if>
+      <if test="enName != null">
+        en_name,
+      </if>
+      <if test="productionCycle != null">
+        production_cycle,
+      </if>
+      <if test="sumPartsQty != null">
+        sum_parts_qty,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="pictures != null">
+        pictures,
+      </if>
+      <if test="color != null">
+        color,
+      </if>
+      <if test="afterSalesFlag != null">
+        after_sales_flag,
+      </if>
+      <if test="addedServicesFlag != null">
+        added_services_flag,
+      </if>
+      <if test="materParameter != null">
+        mater_parameter,
+      </if>
+      <if test="otherParameter != null">
+        other_parameter,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="revision != null">
+        revision,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="snClass != null">
+        #{snClass,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=INTEGER},
+      </if>
+      <if test="productCode != null">
+        #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productNumber != null">
+        #{productNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="cnName != null">
+        #{cnName,jdbcType=VARCHAR},
+      </if>
+      <if test="frName != null">
+        #{frName,jdbcType=VARCHAR},
+      </if>
+      <if test="enName != null">
+        #{enName,jdbcType=VARCHAR},
+      </if>
+      <if test="productionCycle != null">
+        #{productionCycle,jdbcType=VARCHAR},
+      </if>
+      <if test="sumPartsQty != null">
+        #{sumPartsQty,jdbcType=INTEGER},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="pictures != null">
+        #{pictures,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="afterSalesFlag != null">
+        #{afterSalesFlag,jdbcType=BOOLEAN},
+      </if>
+      <if test="addedServicesFlag != null">
+        #{addedServicesFlag,jdbcType=BOOLEAN},
+      </if>
+      <if test="materParameter != null">
+        #{materParameter,jdbcType=VARCHAR},
+      </if>
+      <if test="otherParameter != null">
+        #{otherParameter,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="revision != null">
+        #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=DECIMAL},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="snClass != null">
+        sn_class = #{snClass,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=INTEGER},
+      </if>
+      <if test="productCode != null">
+        product_code = #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productNumber != null">
+        product_number = #{productNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="cnName != null">
+        cn_name = #{cnName,jdbcType=VARCHAR},
+      </if>
+      <if test="frName != null">
+        fr_name = #{frName,jdbcType=VARCHAR},
+      </if>
+      <if test="enName != null">
+        en_name = #{enName,jdbcType=VARCHAR},
+      </if>
+      <if test="productionCycle != null">
+        production_cycle = #{productionCycle,jdbcType=VARCHAR},
+      </if>
+      <if test="sumPartsQty != null">
+        sum_parts_qty = #{sumPartsQty,jdbcType=INTEGER},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="pictures != null">
+        pictures = #{pictures,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        color = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="afterSalesFlag != null">
+        after_sales_flag = #{afterSalesFlag,jdbcType=BOOLEAN},
+      </if>
+      <if test="addedServicesFlag != null">
+        added_services_flag = #{addedServicesFlag,jdbcType=BOOLEAN},
+      </if>
+      <if test="materParameter != null">
+        mater_parameter = #{materParameter,jdbcType=VARCHAR},
+      </if>
+      <if test="otherParameter != null">
+        other_parameter = #{otherParameter,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="revision != null">
+        revision = #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+</mapper>

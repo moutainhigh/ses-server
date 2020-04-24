@@ -1,0 +1,121 @@
+#Springboot 基础配置
+server:
+  port: 48190
+  servlet:
+    context-path: /ses/t/mobile/r/api
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  application:
+    name: ses-mobile-rps
+  profiles:
+    active: local
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false
+    encoding: UTF-8
+  datasource:                                                                                                           #数据库连接
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      time-between-eviction-runsMillis: 60000
+      min-evictable-idle-timeMillis: 300000
+      validation-query: select 'x' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 20
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      use-global-data-source-stat: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
+  #REDIS集群配置
+  redis:
+    cluster:
+      max-redirects: 3  # 获取失败 最大重定向次数
+    timeout: 6000  # 连接超时时长（毫秒）
+    jedis:
+      pool:
+        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1    # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 200      # 连接池中的最大空闲连接
+        min-idle: 50       # 连接池中的最小空闲连接
+
+  http:                                                                                                                 #编码格式
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+  freemarker:
+    check-template-location: false
+    #Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
+management:
+  server:
+    port: 48188
+    servlet:
+      context-path: "/management"
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: "/monitor"
+      exposure:                                                                                                         #设置暴露所有端点
+        include: "*"
+  endpoint:
+    shutdown:                                                                                                           #设置单个端点（/shutdown）可用
+      enabled: true
+
+dubbo:                                                                                                                  #DUBBO 配置
+  application:
+    id: ses-mobile-rps
+    name: ses-mobile-rps
+    qos-enable: false                                                                                                   #是否启动QoS
+    qos-accept-foreign-ip: false                                                                                        #是否允许远程访问
+    logger: log4j
+  registry:
+    check: false                                                                                                        #注册中心不存在时，是否报错
+    group: ses
+  scan:
+    base-packages: com.redescooter.ses                                                                                  #服务暴露与发现消费所在的package
+  provider:                                                                                                             #服务提供者缺省值配置
+    timeout: 30000
+    threads: 300
+  consumer:                                                                                                             #服务消费者缺省值配置
+    check: false                                                                                                        #启动时检查提供者是否存在，true报错，false忽略
+    timeout: 20000
+    filter: dubboAccessLogFilter
+  protocol:
+    port: -1
+    threads: 300
+    name: dubbo
+
+mybatis:                                                                                                                #MYBATIS配置
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl                                                               #打印sql
+
+mybatis-plus:                                                                                                           #mybaits-plus配置，此配置 不影响原始的mybatis
+  mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml
+  typeAliasesPackage: com.redescooter.ses.mobile.rps.vo,com.redescooter.ses.mobile.rps.dm
+  global-config:                                                                                                        #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    id-type: 3                                                                                                          #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 1                                                                                                   #驼峰下划线转换
+    db-column-underline: true                                                                                           #配置逻辑删除字段为1是删除
+    logic-delete-value: 1                                                                                               #配置逻辑删除字段为0是未删除
+    logic-not-delete-value: 0                                                                                           #刷新mapper 调试神器
+    refresh-mapper: true                                                                                                #数据库大写下划线转换
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+
+oss:                                                                                                                    #阿里oss上传
+  internalEndpoint: oss-cn-shanghai.aliyuncs.com
+  accessKeyId: LTAIDUpZRjkFVCze
+  secretAccesskey: lVM6XOqSdrdgJ3brHRcdSUOAVdxcS5
+  defaultBucketName: rede
+  publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
+  maxFileSize: 10485760
+

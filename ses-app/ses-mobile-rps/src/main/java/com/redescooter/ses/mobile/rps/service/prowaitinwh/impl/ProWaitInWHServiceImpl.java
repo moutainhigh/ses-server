@@ -294,26 +294,33 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 .build();
         opeStockBillService.save(opeStockBill);
 
+        //修改组装单和子单状态标记
+        boolean orderFlag = false;
 
         //把质检成功的产品对应的组装单和组装单子单的待入库数量进行修改
         //修改组装单的总待入库数量
-        opeAssemblyBOrder.setInWaitWhQty(opeAssemblyBOrder.getInWaitWhQty() - 1);
-        opeAssemblyOrder.setInWaitWhTotal(opeAssemblyOrder.getInWaitWhTotal() - 1);
-        boolean orderFlag = false;
-        if (opeAssemblyOrder.getInWaitWhTotal() == 0) {
-            //组装单入库完成
-            opeAssemblyOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
-            orderFlag = true;
-        }
-        if (opeAssemblyBOrder.getInWaitWhQty() == 0) {
-            //组装单入库完成
-            opeAssemblyBOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
-        }
-        if (opeAssemblyOrder.getLaveWaitQcTotal() < 0 || opeAssemblyBOrder.getLaveWaitQcQty() < 0) {
-            //待入库总数错误
+
+        if ((!StringUtils.isEmpty(opeAssemblyOrder.getInWaitWhTotal())) && (!StringUtils.isEmpty(opeAssemblyBOrder.getInWaitWhQty()))) {
+            //修改组装单子单的待入库数
+            opeAssemblyBOrder.setInWaitWhQty(opeAssemblyBOrder.getInWaitWhQty() - 1);
+            //修改组装单的待入库数
+            opeAssemblyOrder.setInWaitWhTotal(opeAssemblyOrder.getInWaitWhTotal() - 1);
+            if (opeAssemblyOrder.getInWaitWhTotal() == 0) {
+                //组装单入库完成
+                opeAssemblyOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
+                orderFlag = true;
+            }
+            if (opeAssemblyBOrder.getInWaitWhQty() == 0) {
+                //组装单入库完成
+                opeAssemblyBOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
+            }
+            if (opeAssemblyOrder.getInWaitWhTotal() < 0 || opeAssemblyBOrder.getInWaitWhQty() < 0) {
+                //待入库总数错误
+                throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getCode(), ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getMessage());
+            }
+        } else {
             throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getCode(), ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getMessage());
         }
-
         //修改订单状态该表的节点
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.RpsHeadServiceMapper">
+    <select id="rpsHeadMaterialsQc" resultType="int">
+        select count(*)
+        from ope_purchas
+        where dr=0
+        and  status=3
+    </select>
+    <select id="rpsHeadPurchasInWh" resultType="int">
+        select count(*)
+        from ope_purchas
+        where dr=0
+        and  status in (4,5)
+    </select>
+    <select id="rpsHeadPrepare" resultType="int">
+        select count(*)
+        from ope_allocate
+        where dr=0
+        and  status=1
+    </select>
+    <select id="rpsHeadAssembly" resultType="int">
+        select count(*)
+        from ope_assembly_order
+        where dr=0
+        and  status=2
+    </select>
+    <select id="rpsHeadProductQc" resultType="int">
+        select count(*)
+        from ope_assembly_order
+        where dr=0
+        and  status=4
+    </select>
+    <select id="rpsHeadProductionInWh" resultType="int">
+        select count(*)
+        from ope_assembly_order
+        where dr=0
+        and  status=5
+    </select>
+
+</mapper>

@@ -1,7 +1,7 @@
 #日志路径
 log:
   file:
-    path: ${log.path}@profile-active@
+    path: logs/local
     max-size: 128MB
     max-history: 180
 

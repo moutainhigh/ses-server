@@ -1,0 +1,43 @@
+{
+  "groups": [
+    {
+      "name": "oss",
+      "type": "com.redescooter.ses.starter.common.config.OssConfig",
+      "sourceType": "com.redescooter.ses.starter.common.config.OssConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "oss.access-key-id",
+      "type": "java.lang.String",
+      "sourceType": "com.redescooter.ses.starter.common.config.OssConfig"
+    },
+    {
+      "name": "oss.default-bucket-name",
+      "type": "java.lang.String",
+      "sourceType": "com.redescooter.ses.starter.common.config.OssConfig"
+    },
+    {
+      "name": "oss.internal-endpoint",
+      "type": "java.lang.String",
+      "sourceType": "com.redescooter.ses.starter.common.config.OssConfig"
+    },
+    {
+      "name": "oss.max-file-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.redescooter.ses.starter.common.config.OssConfig",
+      "defaultValue": 0
+    },
+    {
+      "name": "oss.public-endpoint-domain",
+      "type": "java.lang.String",
+      "sourceType": "com.redescooter.ses.starter.common.config.OssConfig"
+    },
+    {
+      "name": "oss.secret-accesskey",
+      "type": "java.lang.String",
+      "sourceType": "com.redescooter.ses.starter.common.config.OssConfig"
+    }
+  ],
+  "hints": []
+}

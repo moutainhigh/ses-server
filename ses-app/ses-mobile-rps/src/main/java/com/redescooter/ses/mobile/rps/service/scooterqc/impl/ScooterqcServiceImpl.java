@@ -282,6 +282,7 @@ public class ScooterqcServiceImpl implements ScooterqcService {
             //判断是否有质检项质检失败
             boolean qcOprionFlag = true;
             for (ScooterQcItemOptionEnter scooterQcItemOptionEnter : qcItemOptionEnterList) {
+                //获取质检模板
                 QueryWrapper<OpeProductQcTemplate> opeProductQcTemplateQueryWrapper = new QueryWrapper<>();
                 opeProductQcTemplateQueryWrapper.eq(OpeProductQcTemplate.COL_PRODUCT_ID, enter.getPartId());
                 OpeProductQcTemplate opeProductQcTemplate = opeProductQcTemplateService.getOne(opeProductQcTemplateQueryWrapper);
@@ -291,6 +292,7 @@ public class ScooterqcServiceImpl implements ScooterqcService {
                     throw new SesMobileRpsException(ExceptionCodeEnums.OPE_TEMPLATE_IS_EMPTY.getCode(), ExceptionCodeEnums.OPE_TEMPLATE_IS_EMPTY.getMessage());
                 }
 
+                //查询质检模板结果项
                 QueryWrapper<OpeProductQcTemplateB> opeProductQcTemplateBQueryWrapper = new QueryWrapper<>();
                 opeProductQcTemplateBQueryWrapper.eq(OpeProductQcTemplateB.COL_PRODUCT_QC_TEMPLATE_ID, opeProductQcTemplate.getId());
                 opeProductQcTemplateBQueryWrapper.eq(OpeProductQcTemplateB.COL_ID, scooterQcItemOptionEnter.getQcResultId());
@@ -377,32 +379,41 @@ public class ScooterqcServiceImpl implements ScooterqcService {
             saveNodeEnter.setMemo(null);
             receiptTraceService.saveAssemblyNode(saveNodeEnter);
 
+            //修改组装单和子单状态标记
+            boolean orderFlag = false;
 
             //把质检成功的产品对应的组装单和组装单子单的待质检数量进行修改
             //修改组装单的总待质检数量
-            if(qcOprionFlag){
-                opeAssemblyOrder.setLaveWaitQcTotal(opeAssemblyOrder.getLaveWaitQcTotal() - enter.getPartNum());
-                //修改组装单子单的待质检数
-                opeAssemblyBOrder.setLaveWaitQcQty((opeAssemblyBOrder.getLaveWaitQcQty() - enter.getPartNum()));
-            }
-            if (opeAssemblyOrder.getLaveWaitQcTotal() < 0 || opeAssemblyBOrder.getLaveWaitQcQty() < 0) {
-                //待质检总数错误
+            if((!StringUtils.isEmpty(opeAssemblyOrder.getLaveWaitQcTotal())) && (!StringUtils.isEmpty(opeAssemblyBOrder.getLaveWaitQcQty()))){
+                if (qcOprionFlag) {
+                    //修改组装单子单的待质检数
+                    opeAssemblyBOrder.setLaveWaitQcQty((opeAssemblyBOrder.getLaveWaitQcQty() - enter.getPartNum()));
+                    //修改组装单的待质检数
+                    opeAssemblyOrder.setLaveWaitQcTotal(opeAssemblyOrder.getLaveWaitQcTotal() - enter.getPartNum());
+                }
+                if (opeAssemblyOrder.getLaveWaitQcTotal() < 0 || opeAssemblyBOrder.getLaveWaitQcQty() < 0) {
+                    //待质检总数错误
+                    throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getCode(), ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getMessage());
+                }
+
+                //判断组装单和子单节点是否发生改变
+                if (opeAssemblyOrder.getLaveWaitQcTotal() == 0) {
+                    opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC_PASSED.getValue());
+                } else {
+                    opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC.getValue());
+                }
+                if (opeAssemblyBOrder.getLaveWaitQcQty() == 0) {
+                    opeAssemblyBOrder.setStatus(AssemblyStatusEnums.QC_PASSED.getValue());
+                    orderFlag = true;
+                } else {
+                    opeAssemblyBOrder.setStatus(AssemblyStatusEnums.QC.getValue());
+                }
+            }else {
                 throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getCode(), ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getMessage());
             }
 
-            //修改组装单和子单状态
-            boolean orderFlag = false;
-            if (opeAssemblyOrder.getLaveWaitQcTotal() == 0) {
-                opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC_PASSED.getValue());
-            } else {
-                opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC.getValue());
-            }
-            if (opeAssemblyBOrder.getLaveWaitQcQty() == 0) {
-                opeAssemblyBOrder.setStatus(AssemblyStatusEnums.QC_PASSED.getValue());
-                orderFlag = true;
-            } else {
-                opeAssemblyBOrder.setStatus(AssemblyStatusEnums.QC.getValue());
-            }
+
+
 
             //修改组装单子单的状态
             opeAssemblyBOrderService.updateById(opeAssemblyBOrder);
