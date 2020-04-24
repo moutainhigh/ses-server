@@ -235,7 +235,8 @@ public enum ExceptionCodeEnums {
     PART_IS_NOT_BIND_PRODUCT(10110, "部件未绑定产品"),
 
     PART_IS_BIND_PRODUCT(10111, "部件绑定产品,请先解绑"),
-    ;
+
+    CONVERT_TO_FORMAL_CUSTOMER_FIRST(10112, "请先转换为正式客户");;
 
 
     private int code;
