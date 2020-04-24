@@ -5,6 +5,10 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterIdEnter;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
+//import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
+
 /**
  * @ClassName:TransferScooterService
  * @description: TransferScooterService
@@ -27,5 +31,12 @@ public interface TransferScooterService {
     PageResult<ChooseScooterResult> chooseScooterList(ChooseScooterIdEnter enter);
 
 
+//    /**
+//     * 车辆分配
+//     *
+//     * @param enter
+//     * @return
+//     */
+//    GeneralResult transferScooter(TransferScooterEnter enter);
 
 }
