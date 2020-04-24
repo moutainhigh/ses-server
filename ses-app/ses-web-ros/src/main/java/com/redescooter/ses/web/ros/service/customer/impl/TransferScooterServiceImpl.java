@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.customer.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.enums.production.wh.StockItemStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -58,6 +59,9 @@ public class TransferScooterServiceImpl implements TransferScooterService {
     @Autowired
     private OpeStockProdProductService opeStockProdProductService;
 
+    @Autowired
+    private OpeCustomerService opeCustomerService;
+
 
     /**
      * @param enter
@@ -72,12 +76,12 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         //查询可分配的整车列表
         QueryWrapper<OpeStockProdProduct> opeStockProdProductQueryWrapper = new QueryWrapper<>();
         opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_DR, 0);
-        opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_STATUS, 2);
+        opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_STATUS, StockItemStatusEnums.AVAILABLE.getValue());
         List<OpeStockProdProduct> opeStockProdProductList = opeStockProdProductService.list(opeStockProdProductQueryWrapper);
 
         //可分配的整车列表为空
         if (CollectionUtils.isEmpty(opeStockProdProductList)) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+            //throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
 
         //可分配的整车列表
@@ -86,18 +90,13 @@ public class TransferScooterServiceImpl implements TransferScooterService {
             ChooseScooterResult chooseScooterResult = null;
             chooseScooterList.add(
                     chooseScooterResult = ChooseScooterResult.builder()
-                            .id(1L)
+                            .id(opeStockProdProduct.getId())
                             .batchNum(opeStockProdProduct.getLot())
                             .build());
         });
         return PageResult.create(enter, opeStockProdProductList.size(), chooseScooterList);
     }
 
-    @Autowired
-    private OpeCustomerService opeCustomerService;
-
-    @Autowired
-    private OpeStockProdProductService opeStockProdProductService;
 
     /**
      * 车辆分配
@@ -124,7 +123,6 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         if (opeStockProdProductList.size() != enter.getStockItemId().size()) {
 
         }
-
 
         return null;
     }
