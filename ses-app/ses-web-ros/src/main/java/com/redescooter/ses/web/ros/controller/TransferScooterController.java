@@ -1,14 +1,24 @@
 package com.redescooter.ses.web.ros.controller;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
+import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
+import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @ClassName:TransferScooterController
@@ -22,6 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/transferscooter")
 public class TransferScooterController{
-
+    @Autowired
+    private TransferScooterService transferScooterService;
+    @PostMapping(value = "/list")
+    @ApiOperation(value = "车辆分配用户信息", response = DetailsCustomerResult.class)
+    @IgnoreLoginCheck
+    public Response<PageResult<ScooterCustomerResult>> list(PageEnter enter) {
+        return new Response<>(transferScooterService.scooterCustomerResult(enter));
+    }
 
 }

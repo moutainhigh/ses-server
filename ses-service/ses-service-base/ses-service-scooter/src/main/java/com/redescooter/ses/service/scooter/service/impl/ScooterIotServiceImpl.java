@@ -10,7 +10,7 @@ import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
-import com.redescooter.ses.api.scooter.service.IotAdminService;
+/*import com.redescooter.ses.api.scooter.service.IotAdminService;*/
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.api.scooter.service.ScooterRecordService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
@@ -65,8 +65,8 @@ public class ScooterIotServiceImpl implements ScooterIotService {
     @Autowired
     private ScooterService scooterService;
 
-    @Autowired
-    private IotAdminService iotAdminService;
+/*    @Autowired
+    private IotAdminService iotAdminService;*/
 
     @Autowired
     private ScooterIotServiceMapper scooterIotServiceMapper;
