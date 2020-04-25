@@ -18,4 +18,6 @@ public interface CusotmerScooterService {
      * @return
      */
     QueryDriverScooterResult queryDriverScooter(GeneralEnter enter);
+
+
 }

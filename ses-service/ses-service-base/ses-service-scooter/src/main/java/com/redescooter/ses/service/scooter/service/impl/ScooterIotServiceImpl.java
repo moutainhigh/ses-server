@@ -10,16 +10,12 @@ import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
-/*import com.redescooter.ses.api.scooter.service.IotAdminService;*/
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.api.scooter.service.ScooterRecordService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.SaveScooterRecordEnter;
-import com.redescooter.ses.iot.enums.InvokeResult;
-import com.redescooter.ses.iot.enums.Lock;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterIotServiceMapper;
-import com.redescooter.ses.service.scooter.dao.base.ScoScooterMapper;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterNavigationMapper;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooter;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterNavigation;
@@ -38,6 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+/*import com.redescooter.ses.api.scooter.service.IotAdminService;*/
 
 /**
  * @ClassName:IotScooterService
