@@ -10,11 +10,15 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeStockPurchas")
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
