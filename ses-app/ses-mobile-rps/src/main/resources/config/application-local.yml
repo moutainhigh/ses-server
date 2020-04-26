@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:52181
+    address: zookeeper://192.168.2.200:42181
 
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
