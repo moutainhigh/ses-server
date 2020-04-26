@@ -161,9 +161,12 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         ChooseScooterResult result = ChooseScooterResult.builder().id(121L)
                 .batchNum("UUUOOO112")
                 .build();
+        ChooseScooterResult result2 = ChooseScooterResult.builder().id(122L)
+                .batchNum("UUUOOO113")
+                .build();
         List<ChooseScooterResult> list=new ArrayList<>();
         list.add(result);
-
+        list.add(result2);
         return PageResult.create(enter, list.size(), list);
     }
 
