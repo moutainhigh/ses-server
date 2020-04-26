@@ -8,6 +8,8 @@ import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
 import org.apache.ibatis.annotations.Param;
 
@@ -104,4 +106,20 @@ public interface AssemblyServiceMapper {
      * @return
      */
     List<productItemResult> productItemList(IdEnter enter);
+
+    /**
+     * 车辆组装记录
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductAssemblyTraceResult> productAssemblyTrace(IdEnter enter);
+
+    /**
+     * 组装记录条目
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductAssemblyTraceItemResult> productAssemblyItemTrace(IdEnter enter);
 }

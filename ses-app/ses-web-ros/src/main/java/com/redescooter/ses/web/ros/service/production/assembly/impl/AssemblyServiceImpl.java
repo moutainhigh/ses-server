@@ -66,9 +66,11 @@ import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
@@ -834,7 +836,8 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @return
      */
     @Override
-    public List<AssemblyQcResult> assemblyQcTrces(AssemblyQcEnter enter) {
+    public List<AssemblyQcInfoResult> assemblyQcInfo(AssemblyQcInfoEnter enter) {
+
         return null;
     }
 
@@ -1217,8 +1220,35 @@ public class AssemblyServiceImpl implements AssemblyService {
                 productItemResult.setPrice(null);
             });
         }
-
         return list;
+    }
+
+    /**
+     * 组装记录
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ProductAssemblyTraceResult> productAssemblyTrace(IdEnter enter) {
+        //组装单校验
+        checkAssembly(enter.getId(), null);
+        return assemblyServiceMapper.productAssemblyTrace(enter);
+    }
+
+    /**
+     * 组装记录条目
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ProductAssemblyTraceItemResult> productAssemblyTraceItem(IdEnter enter) {
+        OpeAssemblyBOrder assemblyBOrder = opeAssemblyOrderBService.getById(enter.getId());
+        if (assemblyBOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
+        }
+        return assemblyServiceMapper.productAssemblyItemTrace(enter);
     }
 
     /**
