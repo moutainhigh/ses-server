@@ -40,7 +40,7 @@ public class TransferScooterController{
 
 
     @PostMapping(value = "/list")
-    @ApiOperation(value = "车辆分配用户信息", response = ScooterCustomerResult.class)
+    @ApiOperation(value = "车辆分配用户列表", response = ScooterCustomerResult.class)
     public Response<PageResult<ScooterCustomerResult>> list(PageEnter enter) {
         return new Response<>(transferScooterService.scooterCustomerResult(enter));
     }
