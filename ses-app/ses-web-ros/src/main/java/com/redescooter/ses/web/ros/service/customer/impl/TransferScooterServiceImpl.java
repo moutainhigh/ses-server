@@ -28,6 +28,7 @@ import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
 import com.redescooter.ses.web.ros.vo.customer.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.math3.analysis.function.Add;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,17 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
     @Autowired
     private OpeStockProdProductService opeStockProdProductService;
+    @Autowired
+    private OpeCustomerService opeCustomerService;
+
+    @Autowired
+    private OpeStockBillService opeStockBillService;
+
+    @Autowired
+    private OpeStockService opeStockService;
+
+    @Reference
+    private IdAppService idAppService;
 
     /**
      * 车辆用户分配信息
@@ -58,15 +70,26 @@ public class TransferScooterServiceImpl implements TransferScooterService {
      */
     @Override
     public PageResult<ScooterCustomerResult> scooterCustomerResult(PageEnter enter) {
-        int count = customerServiceMapper.scooterCustomerCount(enter);
+/*        int count = customerServiceMapper.scooterCustomerCount(enter);
         if (count == 0) {
             PageResult.createZeroRowResult(enter);
         }
-        List<ScooterCustomerResult> scooterCustomerResults = customerServiceMapper.scooterCustomerResult(enter);
-        return PageResult.create(enter, count, scooterCustomerResults);
+        List<ScooterCustomerResult> scooterCustomerResults = customerServiceMapper.scooterCustomerResult(enter);*/
+        ScooterCustomerResult build = ScooterCustomerResult.builder()
+                .customerName("小花")
+                .customerType("个人")
+                .email("redes@123.com")
+                .id(1L)
+                .industryType("快递")
+                .scooterQuantity("4")
+                .build();
+        List<ScooterCustomerResult>  list=new ArrayList<>();
+            list.add(build);
+
+        return PageResult.create(enter, list.size(), list);
     }
 
-    private OpeCustomerService opeCustomerService;
+
 
 
     /**
@@ -79,7 +102,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
      */
     @Override
     public PageResult<ChooseScooterResult> chooseScooterList(ChooseScooterIdEnter enter) {
-        //查询可分配的整车列表
+     /*  //查询可分配的整车列表
         QueryWrapper<OpeStockProdProduct> opeStockProdProductQueryWrapper = new QueryWrapper<>();
         opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_DR, 0);
         opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_STATUS, StockItemStatusEnums.AVAILABLE.getValue());
@@ -89,9 +112,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         //可分配的整车列表为空
         if (CollectionUtils.isEmpty(opeStockProdProductList)) {
             PageResult.createZeroRowResult(enter);
-        }
-
-        //可分配的整车列表
+        }        //可分配的整车列表
         List<ChooseScooterResult> chooseScooterList = new ArrayList<>();
         opeStockProdProductList.forEach(opeStockProdProduct -> {
             ChooseScooterResult chooseScooterResult = null;
@@ -100,19 +121,17 @@ public class TransferScooterServiceImpl implements TransferScooterService {
                             .id(opeStockProdProduct.getId())
                             .batchNum(opeStockProdProduct.getLot())
                             .build());
-        });
-        return PageResult.create(enter, opeStockProdProductList.size(), chooseScooterList);
+        });*/
+        ChooseScooterResult result = ChooseScooterResult.builder().id(121L)
+                .batchNum("UUUOOO112")
+                .build();
+        List<ChooseScooterResult> list=new ArrayList<>();
+        list.add(result);
+
+        return PageResult.create(enter, list.size(), list);
     }
 
 
-    @Autowired
-    private OpeStockBillService opeStockBillService;
-
-    @Autowired
-    private OpeStockService opeStockService;
-
-    @Reference
-    private IdAppService idAppService;
 
     /**
      * 车辆分配

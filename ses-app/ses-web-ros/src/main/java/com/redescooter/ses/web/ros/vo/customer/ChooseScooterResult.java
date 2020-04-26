@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -19,7 +20,7 @@ import lombok.*;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class ChooseScooterResult extends PageResult {
+public class ChooseScooterResult extends GeneralResult {
 
     @ApiModelProperty(value = "主键")
     private Long id;
