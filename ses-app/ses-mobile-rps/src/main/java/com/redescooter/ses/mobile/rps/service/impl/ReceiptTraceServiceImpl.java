@@ -8,7 +8,6 @@ import com.redescooter.ses.mobile.rps.dm.OpeAssembiyOrderTrace;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasTrace;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateTraceService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAssembiyOrderTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasTraceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.lang3.StringUtils;

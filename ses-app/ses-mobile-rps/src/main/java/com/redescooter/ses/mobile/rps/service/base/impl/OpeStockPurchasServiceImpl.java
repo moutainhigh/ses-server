@@ -1,13 +1,12 @@
 package com.redescooter.ses.mobile.rps.service.base.impl;
 
+import com.redescooter.ses.mobile.rps.service.base.OpeStockPurchasService;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
+
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import java.util.List;
 import com.redescooter.ses.mobile.rps.dm.OpeStockPurchas;
 import com.redescooter.ses.mobile.rps.dao.base.OpeStockPurchasMapper;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockPurchasService;
 
 @Service
 public class OpeStockPurchasServiceImpl extends ServiceImpl<OpeStockPurchasMapper, OpeStockPurchas> implements OpeStockPurchasService {
@@ -32,6 +31,9 @@ public class OpeStockPurchasServiceImpl extends ServiceImpl<OpeStockPurchasMappe
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+
+
 
 
 
