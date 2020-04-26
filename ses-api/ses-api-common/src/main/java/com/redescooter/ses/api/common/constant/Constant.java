@@ -1,5 +1,7 @@
 package com.redescooter.ses.api.common.constant;
 
+import java.math.BigDecimal;
+
 /**
  * @description: Constant
  * @author: Darren
@@ -60,4 +62,8 @@ public interface Constant {
     Long ADMINUSERID = 1000000L;
     //百分比
     int AMOUNTP_ROPORTION = 100;
+    //默认经纬度
+    BigDecimal LONGITUDE = new BigDecimal("48.862868");
+
+    BigDecimal LATITUDE=new BigDecimal("2.313960");
 }

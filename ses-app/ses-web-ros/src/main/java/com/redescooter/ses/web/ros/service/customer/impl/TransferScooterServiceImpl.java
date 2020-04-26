@@ -1,16 +1,29 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
 import com.redescooter.ses.api.common.enums.production.wh.StockItemStatusEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
+import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
+import com.redescooter.ses.api.hub.service.corporate.CorporateScooterService;
+import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
+import com.redescooter.ses.api.hub.vo.HubSaveScooterEnter;
+import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
@@ -25,15 +38,17 @@ import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
 import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
+import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.customer.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.math3.analysis.function.Add;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,8 +66,9 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
     @Autowired
     private OpeStockProdProductService opeStockProdProductService;
-    @Autowired
-    private OpeCustomerService opeCustomerService;
+
+    @Reference
+    private ScooterService scooterService;
 
     @Autowired
     private OpeStockBillService opeStockBillService;
@@ -61,7 +77,17 @@ public class TransferScooterServiceImpl implements TransferScooterService {
     private OpeStockService opeStockService;
 
     @Reference
+    private AccountBaseService accountBaseService;
+
+    @Reference
+    private CorporateScooterService corporateScooterService;
+
+    @Reference
+    private CusotmerScooterService cusotmerScooterService;
+
+    @Reference
     private IdAppService idAppService;
+
 
     /**
      * 车辆用户分配信息
@@ -70,26 +96,15 @@ public class TransferScooterServiceImpl implements TransferScooterService {
      */
     @Override
     public PageResult<ScooterCustomerResult> scooterCustomerResult(PageEnter enter) {
-/*        int count = customerServiceMapper.scooterCustomerCount(enter);
+        int count = customerServiceMapper.scooterCustomerCount(enter);
         if (count == 0) {
             PageResult.createZeroRowResult(enter);
         }
-        List<ScooterCustomerResult> scooterCustomerResults = customerServiceMapper.scooterCustomerResult(enter);*/
-        ScooterCustomerResult build = ScooterCustomerResult.builder()
-                .customerName("小花")
-                .customerType("个人")
-                .email("redes@123.com")
-                .id(1L)
-                .industryType("快递")
-                .scooterQuantity("4")
-                .build();
-        List<ScooterCustomerResult>  list=new ArrayList<>();
-            list.add(build);
-
-        return PageResult.create(enter, list.size(), list);
+        List<ScooterCustomerResult> scooterCustomerResults = customerServiceMapper.scooterCustomerResult(enter);
+        return PageResult.create(enter, count, scooterCustomerResults);
     }
 
-
+    private OpeCustomerService opeCustomerService;
 
 
     /**
@@ -102,7 +117,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
      */
     @Override
     public PageResult<ChooseScooterResult> chooseScooterList(ChooseScooterIdEnter enter) {
-     /*  //查询可分配的整车列表
+        //查询可分配的整车列表
         QueryWrapper<OpeStockProdProduct> opeStockProdProductQueryWrapper = new QueryWrapper<>();
         opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_DR, 0);
         opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_STATUS, StockItemStatusEnums.AVAILABLE.getValue());
@@ -112,7 +127,9 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         //可分配的整车列表为空
         if (CollectionUtils.isEmpty(opeStockProdProductList)) {
             PageResult.createZeroRowResult(enter);
-        }        //可分配的整车列表
+        }
+
+        //可分配的整车列表
         List<ChooseScooterResult> chooseScooterList = new ArrayList<>();
         opeStockProdProductList.forEach(opeStockProdProduct -> {
             ChooseScooterResult chooseScooterResult = null;
@@ -121,17 +138,9 @@ public class TransferScooterServiceImpl implements TransferScooterService {
                             .id(opeStockProdProduct.getId())
                             .batchNum(opeStockProdProduct.getLot())
                             .build());
-        });*/
-        ChooseScooterResult result = ChooseScooterResult.builder().id(121L)
-                .batchNum("UUUOOO112")
-                .build();
-        List<ChooseScooterResult> list=new ArrayList<>();
-        list.add(result);
-
-        return PageResult.create(enter, list.size(), list);
+        });
+        return PageResult.create(enter, opeStockProdProductList.size(), chooseScooterList);
     }
-
-
 
     /**
      * 车辆分配
@@ -168,6 +177,9 @@ public class TransferScooterServiceImpl implements TransferScooterService {
             throw new SesWebRosException(ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getCode(),
                     ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getMessage());
         }
+        if (opeCustomer.getScooterQuantity() < transferScooterListEnterList.size()) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getCode(),ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getMessage());
+        }
 
         //验证库存信息
         Collection<OpeStockProdProduct> opeStockProdProductList =
@@ -191,9 +203,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         Collection<OpeStock> opeStockList =
                 opeStockService.listByIds(opeStockProdProductList.stream().map(OpeStockProdProduct::getStockId).collect(Collectors.toList()));
 
-
         //根据产品型号形成 出库单
-
         Map<Long, Integer> stockBillMap = new HashMap<>();
         opeStockProdProductList.forEach(item -> {
             if (stockBillMap.containsKey(item.getStockId())) {
@@ -205,25 +215,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
         stockBillMap.forEach((key, value) -> {
             //形成出库单
-            saveStockBillList.add(OpeStockBill.builder()
-                    .id(idAppService.getId(SequenceName.OPE_STOCK_PROD_PRODUCT))
-                    .dr(0)
-                    .userId(enter.getUserId())
-                    .tenantId(enter.getTenantId())
-                    .status(StockBillStatusEnums.NORMAL.getValue())
-                    .stockId(key)
-                    .direction(InOutWhEnums.OUT.getValue())
-                    .sourceId(null)
-                    .sourceType(SourceTypeEnums.SCOOTER_ALLOCATE.getValue())
-                    .total(value)
-                    .principalId(enter.getUserId())
-                    .operatineTime(new Date())
-                    .revision(0)
-                    .createdBy(enter.getUserId())
-                    .createdTime(new Date())
-                    .updatedBy(enter.getUserId())
-                    .updatedTime(new Date())
-                    .build());
+            saveStockBillList.add(buildStockBillSingle(enter, key, value));
         });
         //库存更新
         opeStockList.forEach(item -> {
@@ -237,10 +229,45 @@ public class TransferScooterServiceImpl implements TransferScooterService {
             item.setUpdatedTime(new Date());
         });
 
-        //将数据存储到Scooter库
+        //查询客户的账号信息
+        QueryAccountResult queryAccountResult = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
+
+        //车辆信息保存Scooter 库
+        List<BaseScooterEnter> savBaseScooterEnterList = Lists.newArrayList();
+        transferScooterListEnterList.forEach(item -> {
+            BaseScooterEnter baseScooterEnter = buildScooter(item);
+            BeanUtils.copyProperties(enter, baseScooterEnter);
+            savBaseScooterEnterList.add(baseScooterEnter);
+        });
+
+        //客户和车辆产生绑定关系
+        List<HubSaveScooterEnter> saveScooterEnterList = new ArrayList<>();
+
 
         //将数据存储到相对应的 corporate、cumstomer 数据库
+        if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
+            transferScooterListEnterList.forEach(item -> {
+                HubSaveScooterEnter scooterEnter = buildHubSaveScooterEnterSingle(enter, item);
+                scooterEnter.setUserId(queryAccountResult.getId());
+                scooterEnter.setTenantId(queryAccountResult.getTenantId());
+                BeanUtils.copyProperties(enter, scooterEnter);
+                saveScooterEnterList.add(scooterEnter);
+            });
+            cusotmerScooterService.saveScooter(saveScooterEnterList);
+        }
+        //将数据 保存到 customer、corporate 数据库
+        if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
+            transferScooterListEnterList.forEach(item -> {
+                HubSaveScooterEnter scooterEnter = buildHubSaveScooterEnterSingle(enter, item);
+                scooterEnter.setUserId(queryAccountResult.getId());
+                BeanUtils.copyProperties(enter, scooterEnter);
+                saveScooterEnterList.add(scooterEnter);
+            });
+            corporateScooterService.saveScooter(saveScooterEnterList);
+        }
 
+        //将数据存储到Scooter库
+        scooterService.saveScooter(savBaseScooterEnterList);
 
         //出库单据保存
         opeStockBillService.saveBatch(saveStockBillList);
@@ -251,6 +278,64 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         //更新库存条目
         opeStockProdProductService.updateBatchById(opeStockProdProductList);
 
-        return null;
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    private HubSaveScooterEnter buildHubSaveScooterEnterSingle(TransferScooterEnter enter, TransferScooterListEnter item) {
+        HubSaveScooterEnter scooterEnter = HubSaveScooterEnter.builder()
+                .scooterId(item.getId())
+                .model(ScooterModelEnums.SCOOTER_125_CC.getValue())
+                .longitude(Constant.LONGITUDE)
+                .latitude(Constant.LATITUDE)
+                .licensePlate(item.getNumberPlate())
+                .licensePlatePicture(null)
+                .status(ScooterStatusEnums.AVAILABLE.getValue())
+                .build();
+        BeanUtils.copyProperties(enter, scooterEnter);
+        return scooterEnter;
+    }
+
+    private OpeStockBill buildStockBillSingle(TransferScooterEnter enter, Long key, Integer value) {
+        return OpeStockBill.builder()
+                .id(idAppService.getId(SequenceName.OPE_STOCK_PROD_PRODUCT))
+                .dr(0)
+                .userId(enter.getUserId())
+                .tenantId(enter.getTenantId())
+                .status(StockBillStatusEnums.NORMAL.getValue())
+                .stockId(key)
+                .direction(InOutWhEnums.OUT.getValue())
+                .sourceId(null)
+                .sourceType(SourceTypeEnums.SCOOTER_ALLOCATE.getValue())
+                .total(value)
+                .principalId(enter.getUserId())
+                .operatineTime(new Date())
+                .revision(0)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+    }
+
+    private BaseScooterEnter buildScooter(TransferScooterListEnter item) {
+        return BaseScooterEnter.builder()
+                .id(item.getId())
+                .scooterNo(RandomUtil.randomString(8))
+                .status(ScooterLockStatusEnums.LOCK.getValue())
+                .availableStatus(ScooterStatusEnums.AVAILABLE.getValue())
+                .boxStatus(ScooterLockStatusEnums.LOCK.getValue())
+                .model(ScooterModelEnums.SCOOTER_125_CC.getValue())
+                .licensePlate(item.getNumberPlate())
+                .licensePlatePicture(null)
+                .licensePlateTime(new Date())
+                .scooterIdPicture(null)
+                .insurance(null)
+                .insureTime(new Date())
+                .revision(0)
+                .scooterEcuId(0L)
+                .longitule(BigDecimal.ZERO)
+                .latitude(BigDecimal.ZERO)
+                .battery(100)
+                .build();
     }
 }

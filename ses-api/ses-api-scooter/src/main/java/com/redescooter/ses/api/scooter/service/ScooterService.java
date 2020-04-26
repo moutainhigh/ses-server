@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.scooter.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
 
@@ -28,7 +29,7 @@ public interface ScooterService {
      * @param enter
      * @return
      */
-    GeneralResult saveScooter(BaseScooterResult enter);
+    GeneralResult saveScooter(List<BaseScooterEnter> enter);
 
     /**
      * 修改 车辆状态

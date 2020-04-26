@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -236,7 +237,10 @@ public enum ExceptionCodeEnums {
 
     PART_IS_BIND_PRODUCT(10111, "部件绑定产品,请先解绑"),
 
-    CONVERT_TO_FORMAL_CUSTOMER_FIRST(10112, "请先转换为正式客户");;
+    CONVERT_TO_FORMAL_CUSTOMER_FIRST(10112, "请先转换为正式客户"),
+
+    CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG(10113,"客户分配车辆数量是错误的"),
+    ;
 
 
     private int code;

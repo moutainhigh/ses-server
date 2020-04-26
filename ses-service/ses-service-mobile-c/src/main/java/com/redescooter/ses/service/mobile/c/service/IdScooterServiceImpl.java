@@ -2,6 +2,7 @@ package com.redescooter.ses.service.mobile.c.service;
 
 import java.math.BigDecimal;
 
+import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -12,7 +13,6 @@ import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
-import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import com.redescooter.ses.api.hub.vo.QueryDriverScooterResult;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
 import com.redescooter.ses.api.mobile.c.service.IdScooterService;
