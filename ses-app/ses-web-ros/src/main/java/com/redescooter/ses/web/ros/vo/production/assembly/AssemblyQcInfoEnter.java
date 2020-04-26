@@ -27,7 +27,7 @@ import java.util.Date;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class AssemblyQcEnter extends PageEnter {
+public class AssemblyQcInfoEnter extends PageEnter {
 
     @ApiModelProperty(value = "状态")
     private String status;

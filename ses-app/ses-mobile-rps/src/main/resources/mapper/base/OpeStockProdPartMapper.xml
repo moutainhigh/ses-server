@@ -10,12 +10,12 @@
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     <result column="stock_bill_id" jdbcType="BIGINT" property="stockBillId" />
-    <result column="stock_id" jdbcType="BIGINT" property="stockId" />
+    <result column="stock_id" jdbcType="INTEGER" property="stockId" />
     <result column="part_id" jdbcType="BIGINT" property="partId" />
     <result column="lot" jdbcType="VARCHAR" property="lot" />
     <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
     <result column="parts_number" jdbcType="VARCHAR" property="partsNumber" />
-    <result column="principal_id" jdbcType="BIGINT" property="principalId" />
+    <result column="principal_id" jdbcType="INTEGER" property="principalId" />
     <result column="in_stock_time" jdbcType="TIMESTAMP" property="inStockTime" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
@@ -65,7 +65,7 @@
       </trim>
       <trim prefix="stock_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.stockId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.stockId,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="part_id = case" suffix="end,">
@@ -90,7 +90,7 @@
       </trim>
       <trim prefix="principal_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.principalId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.principalId,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="in_stock_time = case" suffix="end,">
@@ -164,8 +164,8 @@
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.userId,jdbcType=BIGINT}, 
         #{item.status,jdbcType=VARCHAR}, #{item.tenantId,jdbcType=BIGINT}, #{item.stockBillId,jdbcType=BIGINT}, 
-        #{item.stockId,jdbcType=BIGINT}, #{item.partId,jdbcType=BIGINT}, #{item.lot,jdbcType=VARCHAR}, 
-        #{item.serialNumber,jdbcType=VARCHAR}, #{item.partsNumber,jdbcType=VARCHAR}, #{item.principalId,jdbcType=BIGINT}, 
+        #{item.stockId,jdbcType=INTEGER}, #{item.partId,jdbcType=BIGINT}, #{item.lot,jdbcType=VARCHAR}, 
+        #{item.serialNumber,jdbcType=VARCHAR}, #{item.partsNumber,jdbcType=VARCHAR}, #{item.principalId,jdbcType=INTEGER}, 
         #{item.inStockTime,jdbcType=TIMESTAMP}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
@@ -180,9 +180,9 @@
       updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, 
-      #{tenantId,jdbcType=BIGINT}, #{stockBillId,jdbcType=BIGINT}, #{stockId,jdbcType=BIGINT}, 
+      #{tenantId,jdbcType=BIGINT}, #{stockBillId,jdbcType=BIGINT}, #{stockId,jdbcType=INTEGER}, 
       #{partId,jdbcType=BIGINT}, #{lot,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR}, 
-      #{partsNumber,jdbcType=VARCHAR}, #{principalId,jdbcType=BIGINT}, #{inStockTime,jdbcType=TIMESTAMP}, 
+      #{partsNumber,jdbcType=VARCHAR}, #{principalId,jdbcType=INTEGER}, #{inStockTime,jdbcType=TIMESTAMP}, 
       #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
       #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
@@ -194,12 +194,12 @@
     `status` = #{status,jdbcType=VARCHAR}, 
     tenant_id = #{tenantId,jdbcType=BIGINT}, 
     stock_bill_id = #{stockBillId,jdbcType=BIGINT}, 
-    stock_id = #{stockId,jdbcType=BIGINT}, 
+    stock_id = #{stockId,jdbcType=INTEGER}, 
     part_id = #{partId,jdbcType=BIGINT}, 
     lot = #{lot,jdbcType=VARCHAR}, 
     serial_number = #{serialNumber,jdbcType=VARCHAR}, 
     parts_number = #{partsNumber,jdbcType=VARCHAR}, 
-    principal_id = #{principalId,jdbcType=BIGINT}, 
+    principal_id = #{principalId,jdbcType=INTEGER}, 
     in_stock_time = #{inStockTime,jdbcType=TIMESTAMP}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
@@ -307,7 +307,7 @@
         #{stockBillId,jdbcType=BIGINT},
       </if>
       <if test="stockId != null">
-        #{stockId,jdbcType=BIGINT},
+        #{stockId,jdbcType=INTEGER},
       </if>
       <if test="partId != null">
         #{partId,jdbcType=BIGINT},
@@ -322,7 +322,7 @@
         #{partsNumber,jdbcType=VARCHAR},
       </if>
       <if test="principalId != null">
-        #{principalId,jdbcType=BIGINT},
+        #{principalId,jdbcType=INTEGER},
       </if>
       <if test="inStockTime != null">
         #{inStockTime,jdbcType=TIMESTAMP},
@@ -379,7 +379,7 @@
         stock_bill_id = #{stockBillId,jdbcType=BIGINT},
       </if>
       <if test="stockId != null">
-        stock_id = #{stockId,jdbcType=BIGINT},
+        stock_id = #{stockId,jdbcType=INTEGER},
       </if>
       <if test="partId != null">
         part_id = #{partId,jdbcType=BIGINT},
@@ -394,7 +394,7 @@
         parts_number = #{partsNumber,jdbcType=VARCHAR},
       </if>
       <if test="principalId != null">
-        principal_id = #{principalId,jdbcType=BIGINT},
+        principal_id = #{principalId,jdbcType=INTEGER},
       </if>
       <if test="inStockTime != null">
         in_stock_time = #{inStockTime,jdbcType=TIMESTAMP},

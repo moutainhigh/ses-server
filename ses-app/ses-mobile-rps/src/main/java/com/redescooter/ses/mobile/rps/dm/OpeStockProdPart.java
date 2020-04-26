@@ -1,6 +1,9 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -22,8 +25,7 @@ public class OpeStockProdPart implements Serializable {
     private Long id;
 
     @TableField(value = "dr")
-    @ApiModelProperty(value = "删除标识")
-    @TableLogic
+    @ApiModelProperty(value = "")
     private Integer dr;
 
     /**
@@ -59,7 +61,7 @@ public class OpeStockProdPart implements Serializable {
      */
     @TableField(value = "stock_id")
     @ApiModelProperty(value = "库存id")
-    private Long stockId;
+    private Integer stockId;
 
     /**
      * 物料ID
@@ -94,7 +96,7 @@ public class OpeStockProdPart implements Serializable {
      */
     @TableField(value = "principal_id")
     @ApiModelProperty(value = "入库负责人Id")
-    private Long principalId;
+    private Integer principalId;
 
     /**
      * 入库时间

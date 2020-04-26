@@ -1,12 +1,9 @@
-package com.redescooter.ses.mobile.rps.service.base;
+package com.redescooter.ses.mobile.rps.service.base.impl;
 
 import java.util.List;
 import com.redescooter.ses.mobile.rps.dm.OpeStockPurchas;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
-
-@Transactional
-public interface OpeStockPurchasService extends IService<OpeStockPurchas> {
+public interface OpeStockPurchasService extends IService<OpeStockPurchas>{
 
 
     int updateBatch(List<OpeStockPurchas> list);
@@ -17,11 +14,4 @@ public interface OpeStockPurchasService extends IService<OpeStockPurchas> {
 
     int insertOrUpdateSelective(OpeStockPurchas record);
 
-    int updateBatchSelective(List<OpeStockPurchas> list);
 }
-
-
-
-
-
-

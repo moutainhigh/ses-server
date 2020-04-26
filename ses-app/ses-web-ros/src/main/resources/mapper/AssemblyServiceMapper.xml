@@ -238,4 +238,30 @@
         order by trace.created_time asc
     </select>
 
+    <select id="productAssemblyTrace"
+            resultType="com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult">
+        select border.id                         as id,
+                border.product_id                 as productId,
+                border.product_number             as productN,
+                product.en_name                   as productName,
+                border.assembly_qty               as assemblyTotal,
+                border.complete_qty               as assemblyCompleteTotal,
+                if(border.complete_qty = 0, 0, 1) as assemblyFlag
+        from ope_assembly_b_order border
+                 inner join ope_parts_product product on border.product_id = product.id
+        where border.assembly_id = #{id}
+    </select>
+
+    <select id="productAssemblyItemTrace"
+            resultType="com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult">
+        select count(assem.id)                             as assemblyCompleteTotal,
+               DATE_FORMAT(assem.created_time, '%Y-%m-%d') as assemblyDate
+        from ope_product_assembly assem
+                 left join ope_assembly_b_order border
+                           on assem.assembly_b_id = border.id
+
+        group by assemblyDate
+    </select>
+
+
 </mapper>

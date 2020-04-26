@@ -24,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class AssemblyQcResult extends GeneralResult {
+public class AssemblyQcInfoResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;

@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.rps.service.base.impl;
+package com.redescooter.ses.mobile.rps.service.base;
 
 import java.util.List;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyPreparation;

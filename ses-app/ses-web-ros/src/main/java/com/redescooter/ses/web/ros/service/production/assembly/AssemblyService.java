@@ -13,9 +13,13 @@ import com.redescooter.ses.web.ros.vo.production.PaymentDetailResullt;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
@@ -146,9 +150,16 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    List<AssemblyQcResult> assemblyQcTrces(AssemblyQcEnter enter);
+    List<AssemblyQcInfoResult> assemblyQcInfo(AssemblyQcInfoEnter enter);
 
-//    List<> assemblyQcItem(IdEnter);
+    /**
+     * 质检记录条目
+     * @param enter
+     * @return
+     */
+//    List<AssemblyQcItemResult> assemblyQcInfoItem(IdEnter enter);
+//
+//    List<AssemblyQcItemViewResult> assemblyQcInfoItem(IdEnter enter);
 
     /**
      * 组装单信息导出
@@ -252,5 +263,21 @@ public interface AssemblyService {
      * @return
      */
     List<productItemResult> ordinaryProductItemList(IdEnter enter);
+
+    /**
+     * 组装记录
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductAssemblyTraceResult> productAssemblyTrace(IdEnter enter);
+
+    /**
+     * 组装记录条目
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductAssemblyTraceItemResult> productAssemblyTraceItem(IdEnter enter);
 
 }
