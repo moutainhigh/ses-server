@@ -1,8 +1,12 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_allocate")
-public class OpeAllocate {
+public class OpeAllocate implements Serializable {
     /**
      * 主键
      */
@@ -28,7 +32,6 @@ public class OpeAllocate {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -79,6 +82,13 @@ public class OpeAllocate {
     @TableField(value = "preparation_wait_total")
     @ApiModelProperty(value = "待备料总数")
     private Integer preparationWaitTotal;
+
+    /**
+     * 待入库数量
+     */
+    @TableField(value = "pending_storage_total")
+    @ApiModelProperty(value = "待入库数量")
+    private Integer pendingStorageTotal;
 
     /**
      * 乐观锁
@@ -150,6 +160,8 @@ public class OpeAllocate {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -167,6 +179,8 @@ public class OpeAllocate {
     public static final String COL_CONSIGNEE_ID = "consignee_id";
 
     public static final String COL_PREPARATION_WAIT_TOTAL = "preparation_wait_total";
+
+    public static final String COL_PENDING_STORAGE_TOTAL = "pending_storage_total";
 
     public static final String COL_REVISION = "revision";
 

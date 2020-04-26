@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public interface OpeAllocateBService extends IService<OpeAllocateB>{
+public interface OpeAllocateBService extends IService<OpeAllocateB> {
 
 
     int updateBatch(List<OpeAllocateB> list);
@@ -18,3 +18,4 @@ public interface OpeAllocateBService extends IService<OpeAllocateB>{
     int insertOrUpdateSelective(OpeAllocateB record);
 
 }
+

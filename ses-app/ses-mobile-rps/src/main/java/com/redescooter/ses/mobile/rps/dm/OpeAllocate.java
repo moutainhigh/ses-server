@@ -1,6 +1,9 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -10,9 +13,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 调拨单
- */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAllocate")
 @Data
 @Builder
@@ -32,7 +32,6 @@ public class OpeAllocate implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -75,7 +74,7 @@ public class OpeAllocate implements Serializable {
      */
     @TableField(value = "consignee_id")
     @ApiModelProperty(value = "收获人Id")
-    private Long consigneeId;
+    private Integer consigneeId;
 
     /**
      * 待备料总数
@@ -83,6 +82,13 @@ public class OpeAllocate implements Serializable {
     @TableField(value = "preparation_wait_total")
     @ApiModelProperty(value = "待备料总数")
     private Integer preparationWaitTotal;
+
+    /**
+     * 待入库数量
+     */
+    @TableField(value = "pending_storage_total")
+    @ApiModelProperty(value = "待入库数量")
+    private Integer pendingStorageTotal;
 
     /**
      * 乐观锁
@@ -173,6 +179,8 @@ public class OpeAllocate implements Serializable {
     public static final String COL_CONSIGNEE_ID = "consignee_id";
 
     public static final String COL_PREPARATION_WAIT_TOTAL = "preparation_wait_total";
+
+    public static final String COL_PENDING_STORAGE_TOTAL = "pending_storage_total";
 
     public static final String COL_REVISION = "revision";
 

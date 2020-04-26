@@ -14,10 +14,11 @@
     <result column="materiel_product_type" jdbcType="VARCHAR" property="materielProductType" />
     <result column="total" jdbcType="INTEGER" property="total" />
     <result column="preparation_wait_qty" jdbcType="INTEGER" property="preparationWaitQty" />
+    <result column="pending_storage_qty" jdbcType="INTEGER" property="pendingStorageQty" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     <result column="def1" jdbcType="VARCHAR" property="def1" />
     <result column="def2" jdbcType="VARCHAR" property="def2" />
@@ -28,8 +29,8 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, user_id, tenant_id, allocate_id, part_id, materiel_product_id, materiel_product_type, 
-    total, preparation_wait_qty, revision, created_by, created_time, updated_by, updated_time, 
-    def1, def2, def3, def5, def6
+    total, preparation_wait_qty, pending_storage_qty, revision, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -80,6 +81,11 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.preparationWaitQty,jdbcType=INTEGER}
         </foreach>
       </trim>
+      <trim prefix="pending_storage_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.pendingStorageQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
       <trim prefix="revision = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
@@ -97,7 +103,7 @@
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
@@ -140,34 +146,34 @@
     <!--@mbg.generated-->
     insert into ope_allocate_b
     (id, dr, user_id, tenant_id, allocate_id, part_id, materiel_product_id, materiel_product_type, 
-      total, preparation_wait_qty, revision, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def5, def6)
+      total, preparation_wait_qty, pending_storage_qty, revision, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.userId,jdbcType=BIGINT}, 
         #{item.tenantId,jdbcType=BIGINT}, #{item.allocateId,jdbcType=BIGINT}, #{item.partId,jdbcType=BIGINT}, 
         #{item.materielProductId,jdbcType=BIGINT}, #{item.materielProductType,jdbcType=VARCHAR}, 
-        #{item.total,jdbcType=INTEGER}, #{item.preparationWaitQty,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
-        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
-        )
+        #{item.total,jdbcType=INTEGER}, #{item.preparationWaitQty,jdbcType=INTEGER}, #{item.pendingStorageQty,jdbcType=INTEGER}, 
+        #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=INTEGER}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
+        #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeAllocateB">
     <!--@mbg.generated-->
     insert into ope_allocate_b
     (id, dr, user_id, tenant_id, allocate_id, part_id, materiel_product_id, materiel_product_type, 
-      total, preparation_wait_qty, revision, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def5, def6)
+      total, preparation_wait_qty, pending_storage_qty, revision, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, 
       #{allocateId,jdbcType=BIGINT}, #{partId,jdbcType=BIGINT}, #{materielProductId,jdbcType=BIGINT}, 
       #{materielProductType,jdbcType=VARCHAR}, #{total,jdbcType=INTEGER}, #{preparationWaitQty,jdbcType=INTEGER}, 
-      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
-      )
+      #{pendingStorageQty,jdbcType=INTEGER}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=INTEGER}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -179,10 +185,11 @@
     materiel_product_type = #{materielProductType,jdbcType=VARCHAR}, 
     total = #{total,jdbcType=INTEGER}, 
     preparation_wait_qty = #{preparationWaitQty,jdbcType=INTEGER}, 
+    pending_storage_qty = #{pendingStorageQty,jdbcType=INTEGER}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_by = #{updatedBy,jdbcType=INTEGER}, 
     updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
     def1 = #{def1,jdbcType=VARCHAR}, 
     def2 = #{def2,jdbcType=VARCHAR}, 
@@ -223,6 +230,9 @@
       </if>
       <if test="preparationWaitQty != null">
         preparation_wait_qty,
+      </if>
+      <if test="pendingStorageQty != null">
+        pending_storage_qty,
       </if>
       <if test="revision != null">
         revision,
@@ -287,6 +297,9 @@
       <if test="preparationWaitQty != null">
         #{preparationWaitQty,jdbcType=INTEGER},
       </if>
+      <if test="pendingStorageQty != null">
+        #{pendingStorageQty,jdbcType=INTEGER},
+      </if>
       <if test="revision != null">
         #{revision,jdbcType=INTEGER},
       </if>
@@ -297,7 +310,7 @@
         #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy,jdbcType=BIGINT},
+        #{updatedBy,jdbcType=INTEGER},
       </if>
       <if test="updatedTime != null">
         #{updatedTime,jdbcType=TIMESTAMP},
@@ -350,6 +363,9 @@
       <if test="preparationWaitQty != null">
         preparation_wait_qty = #{preparationWaitQty,jdbcType=INTEGER},
       </if>
+      <if test="pendingStorageQty != null">
+        pending_storage_qty = #{pendingStorageQty,jdbcType=INTEGER},
+      </if>
       <if test="revision != null">
         revision = #{revision,jdbcType=INTEGER},
       </if>
@@ -360,7 +376,7 @@
         created_time = #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=BIGINT},
+        updated_by = #{updatedBy,jdbcType=INTEGER},
       </if>
       <if test="updatedTime != null">
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},

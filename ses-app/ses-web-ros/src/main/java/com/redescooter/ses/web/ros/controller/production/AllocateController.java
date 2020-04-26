@@ -67,17 +67,17 @@ public class AllocateController {
         return new Response<>(allocateService.allocateOrderDetailPartsList(enter));
     }
 
-    @PostMapping(value = "/startPrepare")
-    @ApiOperation(value = "开始备料", response = GeneralResult.class)
-    public Response<GeneralResult> startPrepare(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(allocateService.startPrepare(enter));
-    }
-
-    @PostMapping(value = "/startAllocate")
-    @ApiOperation(value = "开始调拨单", response = GeneralResult.class)
-    public Response<GeneralResult> startAllocate(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(allocateService.startAllocate(enter));
-    }
+//    @PostMapping(value = "/startPrepare")
+//    @ApiOperation(value = "开始备料", response = GeneralResult.class)
+//    public Response<GeneralResult> startPrepare(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(allocateService.startPrepare(enter));
+//    }
+//
+//    @PostMapping(value = "/startAllocate")
+//    @ApiOperation(value = "开始调拨单", response = GeneralResult.class)
+//    public Response<GeneralResult> startAllocate(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(allocateService.startAllocate(enter));
+//    }
 
     @PostMapping(value = "/cancel")
     @ApiOperation(value = "取消调拨单", response = GeneralResult.class)
@@ -91,11 +91,11 @@ public class AllocateController {
         return new Response<>(allocateService.allocatePartsList(enter));
     }
 
-    @PostMapping(value = "/inWhAllocate")
-    @ApiOperation(value = "调拨单入库", response = GeneralResult.class)
-    public Response<GeneralResult> inWhAllocate(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(allocateService.inWhAllocate(enter));
-    }
+//    @PostMapping(value = "/inWhAllocate")
+//    @ApiOperation(value = "调拨单入库", response = GeneralResult.class)
+//    public Response<GeneralResult> inWhAllocate(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(allocateService.inWhAllocate(enter));
+//    }
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存调拨单", response = GeneralResult.class)
