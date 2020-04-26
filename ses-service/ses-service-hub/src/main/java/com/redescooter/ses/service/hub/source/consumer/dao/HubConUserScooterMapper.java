@@ -3,9 +3,8 @@ package com.redescooter.ses.service.hub.source.consumer.dao;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 @DS("consumer")
 public interface HubConUserScooterMapper extends BaseMapper<HubConUserScooter> {

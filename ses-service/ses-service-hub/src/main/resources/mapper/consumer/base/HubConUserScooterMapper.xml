@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.service.hub.source.consumer.dao.ConUserScooterMapper">
+<mapper namespace="com.redescooter.ses.service.hub.source.consumer.dao.HubConUserScooterMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter">
     <!--@mbg.generated-->
     <!--@Table con_user_scooter-->

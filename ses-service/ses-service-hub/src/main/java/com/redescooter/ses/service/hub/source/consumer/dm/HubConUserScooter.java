@@ -3,6 +3,7 @@ package com.redescooter.ses.service.hub.source.consumer.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,6 +33,7 @@ public class HubConUserScooter implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
+    @TableLogic
     private Integer dr;
 
     /**
