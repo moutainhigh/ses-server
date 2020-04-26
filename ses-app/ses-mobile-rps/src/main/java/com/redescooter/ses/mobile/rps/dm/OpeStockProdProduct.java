@@ -75,14 +75,21 @@ public class OpeStockProdProduct implements Serializable {
      */
     @TableField(value = "in_stock_bill_id")
     @ApiModelProperty(value = "入库单Id")
-    private Long inStockBillId;
+    private Integer inStockBillId;
 
     /**
      * 入库负责人Id
      */
     @TableField(value = "principal_id")
     @ApiModelProperty(value = "入库负责人Id")
-    private Long principalId;
+    private Integer principalId;
+
+    /**
+     * 入库数量
+     */
+    @TableField(value = "in__wh_qty")
+    @ApiModelProperty(value = "入库数量")
+    private Integer inWhQty;
 
     /**
      * 入库时间
@@ -138,7 +145,7 @@ public class OpeStockProdProduct implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Integer updatedBy;
+    private Long updatedBy;
 
     /**
      * 更新时间
@@ -203,6 +210,8 @@ public class OpeStockProdProduct implements Serializable {
     public static final String COL_IN_STOCK_BILL_ID = "in_stock_bill_id";
 
     public static final String COL_PRINCIPAL_ID = "principal_id";
+
+    public static final String COL_IN__WH_QTY = "in__wh_qty";
 
     public static final String COL_IN_STOCK_TIME = "in_stock_time";
 

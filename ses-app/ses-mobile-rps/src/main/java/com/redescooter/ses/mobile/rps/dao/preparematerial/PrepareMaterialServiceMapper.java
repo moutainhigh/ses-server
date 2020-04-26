@@ -2,6 +2,7 @@ package com.redescooter.ses.mobile.rps.dao.preparematerial;
 
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.mobile.rps.dm.OpeStockBill;
+import com.redescooter.ses.mobile.rps.vo.bo.QueryStockBillDto;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult;
@@ -10,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -85,4 +87,13 @@ public interface PrepareMaterialServiceMapper {
      * @return
      */
     List<PrepareMaterialDetailResult> detailAssemblyList(PrepareMaterialDetailEnter enter);
+
+    /**
+     * 出库单据
+     *
+     * @param id
+     * @param value
+     * @return
+     */
+    List<QueryStockBillDto> queryStockBillBySourceTypeId(@Param("id") Long id, @Param("value") String value);
 }

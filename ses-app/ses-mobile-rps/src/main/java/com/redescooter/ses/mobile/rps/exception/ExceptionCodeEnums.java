@@ -131,7 +131,9 @@ public enum ExceptionCodeEnums {
 
     OPE_ORDER_IS_EMPTY(10062,"组装单不存在"),
 
-    WAIT_IN_WH_NUM_ERROR(10063,"待入库总数错误")
+    WAIT_IN_WH_NUM_ERROR(10063,"待入库总数错误"),
+
+    PART_IS_ALREADY_DAMAGE(10064,"部件已损坏"),
    ;
 
     private int code;

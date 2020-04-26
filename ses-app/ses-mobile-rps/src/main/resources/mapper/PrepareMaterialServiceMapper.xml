@@ -97,4 +97,16 @@
         and opart.assembly_id =#{id}
         order by opart.created_time asc
     </select>
+
+    <select id="queryStockBillBySourceTypeId"
+            resultType="com.redescooter.ses.mobile.rps.vo.bo.QueryStockBillDto">
+        select stock.materiel_product_id as partId,
+               stockBill.id              as stockBillId,
+               stockBill.source_type     as sourceType,
+               stock.id                  as stockId
+        from ope_stock_bill stockBill
+                 inner join ope_stock stock on stockBill.stock_id = stock.id
+        where stockBill.source_type = #{value}
+          and stockBill.source_id = #{id};
+    </select>
 </mapper>

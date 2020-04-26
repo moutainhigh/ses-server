@@ -19,3 +19,5 @@ public interface OpeStockProdProductService extends IService<OpeStockProdProduct
 
 }
 
+
+

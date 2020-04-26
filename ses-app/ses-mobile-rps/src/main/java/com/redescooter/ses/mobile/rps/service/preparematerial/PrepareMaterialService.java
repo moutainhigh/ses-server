@@ -1,10 +1,10 @@
 package com.redescooter.ses.mobile.rps.service.preparematerial;
 
-import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.mobile.rps.vo.preparematerial.AllocatePreparationEnter;
+import com.redescooter.ses.mobile.rps.vo.preparematerial.AssemblyPreparationEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.ConfirmPreparationEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult;
@@ -49,4 +49,19 @@ public interface PrepareMaterialService {
      * @return
      */
     GeneralResult save(SavePrepareMaterialEnter enter);
+
+    /**
+     * 调拨单备料
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult allocatePreparation(AllocatePreparationEnter enter);
+
+    /**
+     * 组装单备料
+     *
+    * @return
+     */
+    GeneralResult assemblyPreparation(AssemblyPreparationEnter enter);
 }
