@@ -30,11 +30,6 @@ public class OpeStockPurchasServiceImpl extends ServiceImpl<OpeStockPurchasMappe
     public int insertOrUpdateSelective(OpeStockPurchas record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
-
-    @Override
-    public int updateBatchSelective(List<OpeStockPurchas> list) {
-        return baseMapper.updateBatchSelective(list);
-    }
 }
 
 

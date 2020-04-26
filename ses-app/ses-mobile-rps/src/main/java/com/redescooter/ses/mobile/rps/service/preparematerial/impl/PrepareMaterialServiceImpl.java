@@ -25,6 +25,7 @@ import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrderPart;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyPreparation;
 import com.redescooter.ses.mobile.rps.dm.OpeParts;
 import com.redescooter.ses.mobile.rps.dm.OpeStockProdPart;
+import com.redescooter.ses.mobile.rps.dm.OpeStockPurchas;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
@@ -109,7 +110,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
     private OpeStockBillService opeStockBillService;
 
     @Autowired
-    private OpeStockPurchasService opestockpurchasService;
+    private OpeStockPurchasService opeStockPurchasService;
 
     @Reference
     private IdAppService idAppService;
@@ -325,6 +326,10 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
         //校验调拨子订单
         List<OpeAllocateB> opeAllocateBList =
                 new ArrayList<>(opeAllocateBService.listByIds(enter.getSavePrepareMaterialListEnterList().stream().map(SavePrepareMaterialPartListEnter::getId).collect(Collectors.toList())));
+        if (CollectionUtils.isEmpty(opeAllocateBList)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
         if (opeAllocateBList.size() != enter.getSavePrepareMaterialListEnterList().size()) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
         }
@@ -355,81 +360,89 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                         serialNList.add(serialN.getSerialN());
                     } else {
                         if (stockProdPartIdMap.containsKey(serialN.getPartId())) {
-                            stockProdPartIdMap.put(serialN.getPartId(), serialN.getQty());
-                        } else {
                             stockProdPartIdMap.put(serialN.getPartId(), stockProdPartIdMap.get(serialN.getPartId()) + serialN.getQty());
+                        } else {
+                            stockProdPartIdMap.put(serialN.getPartId(), serialN.getQty());
                         }
                     }
                 });
             });
         });
 
-        //有Id 校验
-        List<OpeStockProdPart> opeStockProdPartListIdClassTrue = opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>().in(OpeStockProdPart::getSerialNumber, serialNList));
-        if (CollectionUtils.isEmpty(opeStockProdPartListIdClassTrue)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        if (CollectionUtils.isNotEmpty(serialNList)) {
+            //有Id 校验
+            List<OpeStockProdPart> opeStockProdPartListIdClassTrue = opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>().in(OpeStockProdPart::getSerialNumber, serialNList));
+            if (CollectionUtils.isEmpty(opeStockProdPartListIdClassTrue)) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+            }
+            opeStockProdPartListIdClassTrue.forEach(item -> {
+                if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
+                    throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
+                }
+
+                //修改数据
+                queryStockBillDtoList.forEach(stockStill -> {
+                    if (stockStill.getPartId().equals(item.getPartId())) {
+                        item.setOutStockBillId(stockStill.getStockBillId());
+                        item.setOutPrincipalId(enter.getUserId());
+                        item.setOutStockTime(new Date());
+                        item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
+                        item.setUpdatedBy(enter.getUserId());
+                        item.setUpdatedTime(new Date());
+                    }
+                });
+            });
+            opeStockProdPartService.updateBatch(opeStockProdPartListIdClassTrue);
         }
-        opeStockProdPartListIdClassTrue.forEach(item -> {
-            if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
+
+        if (!stockProdPartIdMap.isEmpty()) {
+
+            //无Id校验
+            List<OpeStockPurchas> opeStockProdPartListIdClassFalse =
+                    opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>().in(OpeStockPurchas::getPartId, stockProdPartIdMap.keySet()).orderByAsc(OpeStockPurchas::getCreatedTime));
+            if (CollectionUtils.isEmpty(opeStockProdPartListIdClassFalse)) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
 
-            //修改数据
-            queryStockBillDtoList.forEach(stockStill -> {
-                if (stockStill.getPartId().equals(item.getPartId())) {
-                    item.setOutStockBillId(stockStill.getStockBillId());
-                    item.setOutPrincipalId(enter.getUserId());
-                    item.setOutStockTime(new Date());
-                    item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
-                    item.setUpdatedBy(enter.getUserId());
-                    item.setUpdatedTime(new Date());
+            //减掉 库存条目中的数量
+            opeStockProdPartListIdClassFalse.forEach(item -> {
+                if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
+                    throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
+                }
+                //修改数据
+                Integer partQty = stockProdPartIdMap.get(item.getPartId());
+
+                for (QueryStockBillDto stockStill : queryStockBillDtoList) {
+                    if (stockStill.getPartId().equals(item.getPartId())) {
+
+                        if (partQty >= item.getInWhQty()) {
+                            partQty -= item.getInWhQty();
+                            item.setInWhQty(0);
+                            item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
+                            item.setOutStockBillId(stockStill.getStockBillId());
+                            item.setOutPrincipalId(enter.getUserId());
+                            item.setOutStockTime(new Date());
+                            item.setUpdatedBy(enter.getUserId());
+                            item.setUpdatedTime(new Date());
+                        }
+
+                        if (partQty < item.getInWhQty()) {
+                            item.setInWhQty(item.getInWhQty() - partQty);
+                            item.setOutStockBillId(stockStill.getStockBillId());
+                            item.setOutPrincipalId(enter.getUserId());
+                            item.setOutStockTime(new Date());
+                            item.setUpdatedBy(enter.getUserId());
+                            item.setUpdatedTime(new Date());
+                        }
+
+                        if (partQty == 0) {
+                            break;
+                        }
+                    }
                 }
             });
-        });
-
-        //无Id校验
-        List<OpeStockProdPart> opeStockProdPartListIdClassFalse =
-                opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>().in(OpeStockProdPart::getPartId, stockProdPartIdMap.keySet()).orderByAsc(OpeStockProdPart::getCreatedTime));
-        if (CollectionUtils.isEmpty(opeStockProdPartListIdClassFalse)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+            opeStockPurchasService.updateBatch(opeStockProdPartListIdClassFalse);
         }
-
-        //减掉 库存条目中的数量
-        opeStockProdPartListIdClassFalse.forEach(item -> {
-            if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
-            }
-            //修改数据
-            Integer partQty = stockProdPartIdMap.get(item.getPartId());
-
-            for (QueryStockBillDto stockStill : queryStockBillDtoList) {
-                if (stockStill.getPartId().equals(item.getPartId())) {
-
-                    if (partQty > item.getInWhQty()) {
-                        partQty -= item.getInWhQty();
-                        item.setInWhQty(0);
-                        item.setOutStockBillId(stockStill.getStockBillId());
-                        item.setOutPrincipalId(enter.getUserId());
-                        item.setOutStockTime(new Date());
-                        item.setUpdatedBy(enter.getUserId());
-                        item.setUpdatedTime(new Date());
-                    }
-
-                    if (partQty < item.getInWhQty()) {
-                        item.setInWhQty(item.getInWhQty() - partQty);
-                        item.setOutStockBillId(stockStill.getStockBillId());
-                        item.setOutPrincipalId(enter.getUserId());
-                        item.setOutStockTime(new Date());
-                        item.setUpdatedBy(enter.getUserId());
-                        item.setUpdatedTime(new Date());
-                    }
-
-                    if (partQty == 0) {
-                        break;
-                    }
-                }
-            }
-        });
 
 
         //todo 备料批次号 需修改
@@ -556,72 +569,79 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             });
         });
 
-        //有Id 校验
-        List<OpeStockProdPart> opeStockProdPartListIdClassTrue = opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>().in(OpeStockProdPart::getSerialNumber, serialNList));
-        if (CollectionUtils.isEmpty(opeStockProdPartListIdClassTrue)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        if (CollectionUtils.isNotEmpty(serialNList)) {
+            //有Id 校验
+            List<OpeStockProdPart> opeStockProdPartListIdClassTrue = opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>().in(OpeStockProdPart::getSerialNumber, serialNList));
+            if (CollectionUtils.isEmpty(opeStockProdPartListIdClassTrue)) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+            }
+            opeStockProdPartListIdClassTrue.forEach(item -> {
+                if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
+                    throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
+                }
+
+                //修改数据
+                queryStockBillDtoList.forEach(stockStill -> {
+                    if (stockStill.getPartId().equals(item.getPartId())) {
+                        item.setOutStockBillId(stockStill.getStockBillId());
+                        item.setOutPrincipalId(enter.getUserId());
+                        item.setOutStockTime(new Date());
+                        item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
+                        item.setUpdatedBy(enter.getUserId());
+                        item.setUpdatedTime(new Date());
+                    }
+                });
+            });
+            opeStockProdPartService.updateBatch(opeStockProdPartListIdClassTrue);
         }
-        opeStockProdPartListIdClassTrue.forEach(item -> {
-            if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
+
+        if (stockProdPartIdMap.isEmpty()) {
+            //无Id校验
+            List<OpeStockProdPart> opeStockProdPartListIdClassFalse =
+                    opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>().in(OpeStockProdPart::getPartId, stockProdPartIdMap.keySet()).orderByAsc(OpeStockProdPart::getCreatedTime));
+            if (CollectionUtils.isEmpty(opeStockProdPartListIdClassFalse)) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
 
-            //修改数据
-            queryStockBillDtoList.forEach(stockStill -> {
-                if (stockStill.getPartId().equals(item.getPartId())) {
-                    item.setOutStockBillId(stockStill.getStockBillId());
-                    item.setOutPrincipalId(enter.getUserId());
-                    item.setOutStockTime(new Date());
-                    item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
-                    item.setUpdatedBy(enter.getUserId());
-                    item.setUpdatedTime(new Date());
+            //减掉 库存条目中的数量
+            opeStockProdPartListIdClassFalse.forEach(item -> {
+                if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
+                    throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
+                }
+                //修改数据
+                Integer partQty = stockProdPartIdMap.get(item.getPartId());
+
+                for (QueryStockBillDto stockStill : queryStockBillDtoList) {
+                    if (stockStill.getPartId().equals(item.getPartId())) {
+
+                        if (partQty >= item.getInWhQty()) {
+                            partQty -= item.getInWhQty();
+                            item.setInWhQty(0);
+                            item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
+                            item.setOutStockBillId(stockStill.getStockBillId());
+                            item.setOutPrincipalId(enter.getUserId());
+                            item.setOutStockTime(new Date());
+                            item.setUpdatedBy(enter.getUserId());
+                            item.setUpdatedTime(new Date());
+                        }
+
+                        if (partQty < item.getInWhQty()) {
+                            item.setInWhQty(item.getInWhQty() - partQty);
+                            item.setOutStockBillId(stockStill.getStockBillId());
+                            item.setOutPrincipalId(enter.getUserId());
+                            item.setOutStockTime(new Date());
+                            item.setUpdatedBy(enter.getUserId());
+                            item.setUpdatedTime(new Date());
+                        }
+
+                        if (partQty == 0) {
+                            break;
+                        }
+                    }
                 }
             });
-        });
-
-        //无Id校验
-        List<OpeStockProdPart> opeStockProdPartListIdClassFalse =
-                opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>().in(OpeStockProdPart::getPartId, stockProdPartIdMap.keySet()).orderByAsc(OpeStockProdPart::getCreatedTime));
-        if (CollectionUtils.isEmpty(opeStockProdPartListIdClassFalse)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+            opeStockProdPartService.updateBatch(opeStockProdPartListIdClassFalse);
         }
-
-        //减掉 库存条目中的数量
-        opeStockProdPartListIdClassFalse.forEach(item -> {
-            if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
-            }
-            //修改数据
-            Integer partQty = stockProdPartIdMap.get(item.getPartId());
-
-            for (QueryStockBillDto stockStill : queryStockBillDtoList) {
-                if (stockStill.getPartId().equals(item.getPartId())) {
-
-                    if (partQty > item.getInWhQty()) {
-                        partQty -= item.getInWhQty();
-                        item.setInWhQty(0);
-                        item.setOutStockBillId(stockStill.getStockBillId());
-                        item.setOutPrincipalId(enter.getUserId());
-                        item.setOutStockTime(new Date());
-                        item.setUpdatedBy(enter.getUserId());
-                        item.setUpdatedTime(new Date());
-                    }
-
-                    if (partQty < item.getInWhQty()) {
-                        item.setInWhQty(item.getInWhQty() - partQty);
-                        item.setOutStockBillId(stockStill.getStockBillId());
-                        item.setOutPrincipalId(enter.getUserId());
-                        item.setOutStockTime(new Date());
-                        item.setUpdatedBy(enter.getUserId());
-                        item.setUpdatedTime(new Date());
-                    }
-
-                    if (partQty == 0) {
-                        break;
-                    }
-                }
-            }
-        });
 
 
         //todo 备料批次号 需修改

@@ -210,7 +210,7 @@ public class AssemblyController {
         return new Response<>(assemblyService.productItemList(enter));
     }
 
-    @PostMapping(value = "/property/productItemList")
+    @PostMapping(value = "/property/productAssemblyTrace")
     @ApiOperation(value = "财务人员组装单组装记录", response = productItemResult.class)
     public Response<List<ProductAssemblyTraceResult>> productAssemblyTrace(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(assemblyService.productAssemblyTrace(enter));

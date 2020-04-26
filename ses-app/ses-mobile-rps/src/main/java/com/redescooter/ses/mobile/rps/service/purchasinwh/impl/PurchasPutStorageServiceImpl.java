@@ -76,6 +76,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
     private OpePurchasBQcService opePurchasBQcService;
     @Autowired
     private ReceiptTraceService receiptTraceService;
+
     /**
      * 采购仓库待入库信息
      *
@@ -91,6 +92,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         }
         return PageResult.create(enter, count, purchasPutStorageMapper.putStorageResult(enter));
     }
+
     /**
      * 采购仓库待入库详情信息
      *
@@ -129,14 +131,14 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         }
         //拿取部件信息
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-        if (partsData.getIdClass()!=true){
+        if (partsData.getIdClass() != true) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
         //库存数据更新
         OpeStock opeStock = new OpeStock();
         //入库单数据保存
-        OpeStockBill saveOpeStockBill =new OpeStockBill();
+        OpeStockBill saveOpeStockBill = new OpeStockBill();
 
         //生成入库单、库存数据更新
         saveStockBillSingle(enter, opeStock, saveOpeStockBill, opePurchasB);
@@ -145,7 +147,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         opeStockService.saveOrUpdate(opeStock);
         //入库单 保存
         opeStockBillService.save(saveOpeStockBill);
-        if(opePurchasB.getInWaitWhQty()!=null && opePurchas.getInWaitWhTotal()!=null) {
+        if (opePurchasB.getInWaitWhQty() != null && opePurchas.getInWaitWhTotal() != null) {
             //采购部件入库数量更新
             opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - 1);
             opePurchasB.setUpdatedBy(enter.getUserId());
@@ -157,7 +159,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             opePurchas.setUpdatedBy(enter.getUserId());
             opePurchas.setUpdatedTime(new Date());
             opePurchasService.updateById(opePurchas);
-        }else {
+        } else {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         if (opePurchas.getInWaitWhTotal() == 0) {
@@ -230,6 +232,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         receiptTraceService.savePurchasingNode(saveNodeEnter);
         return purchasPutStorageMapper.haveIdPartsResult(enter);
     }
+
     /**
      * 无Id 入库
      *
@@ -253,14 +256,14 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-        if ( partsData.getIdClass()!=false){
+        if (partsData.getIdClass() != false) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
         //库存数据更新
         OpeStock opeStock = new OpeStock();
         //入库单数据保存
-        OpeStockBill saveOpeStockBill =new OpeStockBill();
+        OpeStockBill saveOpeStockBill = new OpeStockBill();
 
         //生成入库单、库存数据更新
         saveStockBill(enter, opeStock, saveOpeStockBill, opePurchasB);
@@ -269,7 +272,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         opeStockService.saveOrUpdate(opeStock);
         //入库单 保存
         opeStockBillService.save(saveOpeStockBill);
-        if(opePurchasB.getInWaitWhQty()!=null && opePurchas.getInWaitWhTotal()!=null){
+        if (opePurchasB.getInWaitWhQty() != null && opePurchas.getInWaitWhTotal() != null) {
             //采购部件入库数量更新
             opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - enter.getInWaitWhQty());
             opePurchasB.setUpdatedBy(enter.getUserId());
@@ -281,7 +284,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             opePurchas.setUpdatedBy(enter.getUserId());
             opePurchas.setUpdatedTime(new Date());
             opePurchasService.updateById(opePurchas);
-        }else{
+        } else {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         if (opePurchas.getInWaitWhTotal() == 0) {
@@ -350,6 +353,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
         return purchasPutStorageMapper.notIdPartsSucceedListResult(enter);
     }
+
     /**
      * 入库信息展示
      *
@@ -366,18 +370,17 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
         }
         OpePurchasB opePurchasB = opePurchasBService.getById(enter.getId());
-        if (opePurchasB==null){
+        if (opePurchasB == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-        if ( partsData.getIdClass()!=false){
+        if (partsData.getIdClass() != false) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
         return notIdPartsResult;
     }
-
 
 
     private void saveStockBillSingle(PurchasDetailsEnter enter, OpeStock saveStockList, OpeStockBill saveOpeStockBill, OpePurchasB opePurchasB) {
@@ -409,9 +412,9 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             opeStock.setIntTotal(opeStock.getIntTotal() + opePurchasB.getTotalCount());
             opeStock.setUpdatedBy(enter.getUserId());
             opeStock.setUpdatedTime(new Date());
-            BeanUtils.copyProperties(opeStock,saveStockList);
+            BeanUtils.copyProperties(opeStock, saveStockList);
             //入库单 生成
-            BeanUtils.copyProperties(buildOpeStockBill(enter, opePurchasB, opeStock),saveOpeStockBill);
+            BeanUtils.copyProperties(buildOpeStockBill(enter, opePurchasB, opeStock), saveOpeStockBill);
         }
 
         if (!stockExist) {
@@ -435,12 +438,12 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                     .createdBy(enter.getUserId())
                     .createdTime(new Date())
                     .build();
-            BeanUtils.copyProperties(opeStock,saveStockList);
-            BeanUtils.copyProperties(buildOpeStockBill(enter, opePurchasB, opeStock),saveOpeStockBill);
+            BeanUtils.copyProperties(opeStock, saveStockList);
+            BeanUtils.copyProperties(buildOpeStockBill(enter, opePurchasB, opeStock), saveOpeStockBill);
         }
 
 
-        if (saveStockList!=null) {
+        if (saveStockList != null) {
 
             if (saveStockList.getMaterielProductId().equals(partsList.getId())) {
                 saveStockList.setMaterielProductName(partsList.getCnName());
@@ -469,52 +472,53 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         opeStockQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opePurchasB.getPartId());
         OpeStock opeStock = opeStockService.getOne(opeStockQueryWrapper);
 
-
-            Boolean stockExist = Boolean.FALSE;
-
-                if (opePurchasB.getId().equals(opeStock.getMaterielProductId())) {
-                    stockExist = Boolean.TRUE;
-                    //有库存 库存累计
-                    opeStock.setAvailableTotal(opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
-                    opeStock.setIntTotal(opeStock.getIntTotal() + opePurchasB.getTotalCount());
-                    opeStock.setUpdatedBy(enter.getUserId());
-                    opeStock.setUpdatedTime(new Date());
-                    BeanUtils.copyProperties(opeStock,saveStockList);
-                    //入库单 生成
-                    BeanUtils.copyProperties(NotbuildOpeStockBill(enter, opePurchasB, opeStock),saveOpeStockBillList);
-                }
-
-            if (!stockExist) {
-                //无库存
-                OpeStock stock = OpeStock.builder()
-                        .id(idAppService.getId(SequenceName.OPE_STOCK))
-                        .dr(0)
-                        .userId(0L)
-                        .tenantId(0L)
-                        .whseId(opeWhse.getId())
-                        .intTotal(opePurchasB.getTotalCount())
-                        .availableTotal(opePurchasB.getTotalCount())
-                        .outTotal(0)
-                        .wornTotal(0)
-                        .materielProductId(opePurchasB.getPartId())
-                        .materielProductName(null)
-                        .materielProductType(null)
-                        .revision(0)
-                        .updatedBy(enter.getUserId())
-                        .updatedTime(new Date())
-                        .createdBy(enter.getUserId())
-                        .createdTime(new Date())
-                        .build();
-                BeanUtils.copyProperties(opeStock,saveStockList);
-                BeanUtils.copyProperties(NotbuildOpeStockBill(enter, opePurchasB, opeStock),saveOpeStockBillList);
+        Boolean stockExist = Boolean.FALSE;
+        if (opeStock!=null){
+            if (opePurchasB.getId().equals(opeStock.getMaterielProductId())) {
+                stockExist = Boolean.TRUE;
+                //有库存 库存累计
+                opeStock.setAvailableTotal(opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
+                opeStock.setIntTotal(opeStock.getIntTotal() + opePurchasB.getTotalCount());
+                opeStock.setUpdatedBy(enter.getUserId());
+                opeStock.setUpdatedTime(new Date());
+                //todo 变量命名
+                BeanUtils.copyProperties(opeStock, saveStockList);
+                //入库单 生成
+                BeanUtils.copyProperties(NotbuildOpeStockBill(enter, opePurchasB, opeStock), saveOpeStockBillList);
             }
+        }
 
-        if (saveStockList!=null) {
+        if (!stockExist) {
+            //无库存
+            OpeStock stock = OpeStock.builder()
+                    .id(idAppService.getId(SequenceName.OPE_STOCK))
+                    .dr(0)
+                    .userId(0L)
+                    .tenantId(0L)
+                    .whseId(opeWhse.getId())
+                    .intTotal(opePurchasB.getTotalCount())
+                    .availableTotal(opePurchasB.getTotalCount())
+                    .outTotal(0)
+                    .wornTotal(0)
+                    .materielProductId(opePurchasB.getPartId())
+                    .materielProductName(null)
+                    .materielProductType(null)
+                    .revision(0)
+                    .updatedBy(enter.getUserId())
+                    .updatedTime(new Date())
+                    .createdBy(enter.getUserId())
+                    .createdTime(new Date())
+                    .build();
+            BeanUtils.copyProperties(stock, saveStockList);
+            BeanUtils.copyProperties(NotbuildOpeStockBill(enter, opePurchasB, stock), saveOpeStockBillList);
+        }
 
-                    if (saveStockList.getMaterielProductId().equals(partsList.getId())) {
-                        saveStockList.setMaterielProductName(partsList.getCnName());
-                        saveStockList.setMaterielProductType(partsList.getPartsType());
-                  }
+        if (saveStockList != null) {
+
+            if (saveStockList.getMaterielProductId().equals(partsList.getId())) {
+                saveStockList.setMaterielProductName(partsList.getCnName());
+                saveStockList.setMaterielProductType(partsList.getPartsType());
+            }
 
         }
     }
@@ -562,7 +566,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .updatedTime(new Date())
                 .build();
     }
-
 
 
 }
