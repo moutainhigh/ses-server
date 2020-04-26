@@ -9,6 +9,7 @@ import com.redescooter.ses.mobile.rps.dm.OpePurchasTrace;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasTraceService;
+import com.redescooter.ses.mobile.rps.service.base.impl.OpeAssembiyOrderTraceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;

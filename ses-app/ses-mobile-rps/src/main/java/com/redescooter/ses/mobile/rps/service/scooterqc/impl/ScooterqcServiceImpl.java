@@ -14,6 +14,7 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.*;
+import com.redescooter.ses.mobile.rps.service.base.impl.OpeAssemblyOrderService;
 import com.redescooter.ses.mobile.rps.service.scooterqc.ScooterqcService;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
