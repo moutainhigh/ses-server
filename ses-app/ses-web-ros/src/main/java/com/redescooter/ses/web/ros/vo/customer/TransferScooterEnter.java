@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +29,7 @@ import io.swagger.annotations.*;
 public class TransferScooterEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "客户Id")
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 不为空")
     private Long id;
 
     @ApiModelProperty(value = "客户库存条目Id")

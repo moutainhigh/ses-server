@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.controller;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -10,6 +11,7 @@ import com.redescooter.ses.web.ros.vo.customer.ChooseScooterIdEnter;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
 import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -27,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/transferscooter")
-public class TransferScooterController{
+public class TransferScooterController {
 
     @Autowired
     private TransferScooterService transferScooterService;
@@ -38,11 +40,15 @@ public class TransferScooterController{
         return new Response<>(transferScooterService.chooseScooterList(enter));
     }
 
-
     @PostMapping(value = "/list")
     @ApiOperation(value = "车辆分配用户列表", response = ScooterCustomerResult.class)
     public Response<PageResult<ScooterCustomerResult>> list(PageEnter enter) {
         return new Response<>(transferScooterService.scooterCustomerResult(enter));
     }
 
+    @PostMapping(value = "/transferScooter")
+    @ApiOperation(value = "客户分配车辆", response = GeneralResult.class)
+    public Response<GeneralResult> list(TransferScooterEnter enter) {
+        return new Response<>(transferScooterService.transferScooter(enter));
+    }
 }
