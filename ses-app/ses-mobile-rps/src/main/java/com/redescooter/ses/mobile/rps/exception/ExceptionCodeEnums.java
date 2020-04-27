@@ -137,6 +137,8 @@ public enum ExceptionCodeEnums {
 
     ALLOCATE_TRACE_IS_EMPTY(10065,"调拨单记录为空"),
 
+    PART_IS_ALREADY_DAMAGE(10066,"未知")
+
 
 
    ;
