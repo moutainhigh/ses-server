@@ -3,7 +3,6 @@ package com.redescooter.ses.mobile.rps.vo.purchasinwh;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
