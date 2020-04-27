@@ -1,10 +1,9 @@
 package com.redescooter.ses.mobile.rps.controller.scooterqc;
 
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.mobile.rps.service.scooterqc.ScooterqcService;
+import com.redescooter.ses.mobile.rps.service.scooterqc.ScooterQcService;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,10 +18,10 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/scooterqc/")
-public class ScooterqcController {
+public class ScooterQcController {
 
     @Autowired
-    private ScooterqcService scooterService;
+    private ScooterQcService scooterService;
 
     @PostMapping(value = "/scooterQcList")
     @ApiOperation(value = "整车质检列表", response = ScooterQcOneResult.class)
