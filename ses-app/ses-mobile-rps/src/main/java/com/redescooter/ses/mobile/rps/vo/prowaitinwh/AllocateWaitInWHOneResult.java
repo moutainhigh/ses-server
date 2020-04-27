@@ -11,25 +11,25 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 /**
- * @ClassNameProWaitInWHLOneResult
+ * @ClassNameAllocateWaitInWHOneResult
  * @Description
  * @Author kyle
- * @Date2020/4/14 15:38
+ * @Date2020/4/26 14:15
  * @Version V1.0
  **/
-@ApiModel(value = "生产待入库单列表出参", description = "生产待入库单列表出参")
+@ApiModel(value = "调拨待入库单列表出参", description = "调拨待入库单列表出参")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ProWaitInWHLOneResult extends GeneralResult {
+public class AllocateWaitInWHOneResult extends GeneralResult {
 
     @ApiModelProperty(value = "待入库单单号")
     private String waitInWHStr;
 
-    @ApiModelProperty(value = "组装单id")
-    private Long scooterId;
+    @ApiModelProperty(value = "调拨单id")
+    private Long allocateId;
 
     @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
@@ -38,5 +38,9 @@ public class ProWaitInWHLOneResult extends GeneralResult {
 
     @ApiModelProperty(value = "待入库总数")
     private Integer waitInWHNum;
+
+    @ApiModelProperty(value = "仓库类型")
+    private String wHType;
+
 
 }

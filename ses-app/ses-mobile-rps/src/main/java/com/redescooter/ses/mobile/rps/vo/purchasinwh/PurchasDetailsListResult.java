@@ -1,11 +1,9 @@
 package com.redescooter.ses.mobile.rps.vo.purchasinwh;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-
-import java.sql.Date;
 @ApiModel(value = "采购仓库待入库信息", description = "采购仓库待入库信息")
 @Data
 @AllArgsConstructor

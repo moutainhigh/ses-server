@@ -5,23 +5,20 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-import java.util.Date;
-import java.util.List;
-
 /**
- * @ClassNameProWaitInWHItemResult
+ * @ClassNameAllocateWaitInWHItemResult
  * @Description
  * @Author kyle
- * @Date2020/4/14 15:59
+ * @Date2020/4/26 16:54
  * @Version V1.0
  **/
-@ApiModel(value = "生产待入库部件详情出参", description = "生产待入库部件详情出参")
+@ApiModel(value = "调拨单待入库部件详情出参", description = "调拨单待入库部件详情出参")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ProWaitInWHItemResult extends GeneralResult {
+public class AllocateWaitInWHItemResult extends GeneralResult {
 
     @ApiModelProperty(value = "主键", required = true)
     private Long id;
@@ -29,11 +26,11 @@ public class ProWaitInWHItemResult extends GeneralResult {
     @ApiModelProperty(value = "部件名称")
     private String partName;
 
-    @ApiModelProperty(value = "组装单子表id")
-    private Long scooterBId;
+    @ApiModelProperty(value = "调拨单子表id")
+    private Long allocateBId;
 
-    @ApiModelProperty(value = "组装单编号")
-    private String scooterStr;
+    @ApiModelProperty(value = "调拨单编号")
+    private String allocateNum;
 
     @ApiModelProperty(value = "部件id")
     private Long partId;

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public interface OpeStockProdProductService extends IService<OpeStockProdProduct>{
+public interface OpeStockProdProductService extends IService<OpeStockProdProduct> {
 
 
     int updateBatch(List<OpeStockProdProduct> list);

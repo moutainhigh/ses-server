@@ -1,17 +1,16 @@
 package com.redescooter.ses.mobile.rps.service.purchasinwh.impl;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.common.collect.Lists;
-import com.redescooter.ses.api.common.enums.production.*;
+import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
+import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
+import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
+import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
-//import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
@@ -21,24 +20,22 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.*;
-
-//import com.redescooter.ses.mobile.rps.service.base.impl.OpePurchasTraceService;
 import com.redescooter.ses.mobile.rps.service.purchasinwh.PurchasPutStroageService;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
+//import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
+//import com.redescooter.ses.mobile.rps.service.base.impl.OpePurchasTraceService;
 
 @Slf4j
 @Service
@@ -147,28 +144,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         opeStockService.saveOrUpdate(opeStock);
         //入库单 保存
         opeStockBillService.save(saveOpeStockBill);
-        if (opePurchasB.getInWaitWhQty() != null && opePurchas.getInWaitWhTotal() != null) {
-            //采购部件入库数量更新
-            opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - 1);
-            opePurchasB.setUpdatedBy(enter.getUserId());
-            opePurchasB.setUpdatedTime(new Date());
-            opePurchasBService.updateById(opePurchasB);
-            //采购总数量更新
-            opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - 1);
-            opePurchas.setId(opePurchasB.getPurchasId());
-            opePurchas.setUpdatedBy(enter.getUserId());
-            opePurchas.setUpdatedTime(new Date());
-            opePurchasService.updateById(opePurchas);
-        } else {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
-        if (opePurchas.getInWaitWhTotal() == 0) {
-            //采购单状态更新
-            opePurchas.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
-            opePurchas.setUpdatedBy(enter.getUserId());
-            opePurchas.setUpdatedTime(new Date());
-            opePurchasService.updateById(opePurchas);
-        }
 
         //查询仓库id
         QueryWrapper<OpeWhse> opeWhse = new QueryWrapper<>();
@@ -218,10 +193,37 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .createdTime(new Date())
                 .updatedBy(enter.getUserId())
                 .updatedTime(new Date())
+                .inStockBillId(saveOpeStockBill.getId())
+                .outPrincipalId(0L)
+                .outStockBillId(0L)
+                .outStockTime(null)
                 .inWhQty(1)
                 .build();
         //增加仓库数据
         opeStockPurchasService.save(opeStockPurchas);
+        if (opePurchasB.getInWaitWhQty() != null && opePurchas.getInWaitWhTotal() != null) {
+            //采购部件入库数量更新
+            opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - 1);
+            opePurchasB.setUpdatedBy(enter.getUserId());
+            opePurchasB.setUpdatedTime(new Date());
+            opePurchasBService.updateById(opePurchasB);
+            //采购总数量更新
+            opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - 1);
+            opePurchas.setId(opePurchasB.getPurchasId());
+            opePurchas.setUpdatedBy(enter.getUserId());
+            opePurchas.setUpdatedTime(new Date());
+            opePurchasService.updateById(opePurchas);
+        } else {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        if (opePurchas.getInWaitWhTotal() == 0) {
+            //采购单状态更新
+            opePurchas.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
+            opePurchas.setUpdatedBy(enter.getUserId());
+            opePurchas.setUpdatedTime(new Date());
+            opePurchasService.updateById(opePurchas);
+        }
+
         //节点
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
@@ -272,28 +274,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         opeStockService.saveOrUpdate(opeStock);
         //入库单 保存
         opeStockBillService.save(saveOpeStockBill);
-        if (opePurchasB.getInWaitWhQty() != null && opePurchas.getInWaitWhTotal() != null) {
-            //采购部件入库数量更新
-            opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - enter.getInWaitWhQty());
-            opePurchasB.setUpdatedBy(enter.getUserId());
-            opePurchasB.setUpdatedTime(new Date());
-            opePurchasBService.updateById(opePurchasB);
-            //采购总数量更新
-            opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - enter.getInWaitWhQty());
-            opePurchas.setId(opePurchasB.getPurchasId());
-            opePurchas.setUpdatedBy(enter.getUserId());
-            opePurchas.setUpdatedTime(new Date());
-            opePurchasService.updateById(opePurchas);
-        } else {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
-        if (opePurchas.getInWaitWhTotal() == 0) {
-            //采购单状态更新
-            opePurchas.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
-            opePurchas.setUpdatedBy(enter.getUserId());
-            opePurchas.setUpdatedTime(new Date());
-            opePurchasService.updateById(opePurchas);
-        }
 
         //查询仓库id
         QueryWrapper<OpeWhse> opeWhse = new QueryWrapper<>();
@@ -337,10 +317,31 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .outStockTime(null)
                 .inWhQty(opePurchasB.getInWaitWhQty())
                 .build();
-
         //增加仓库数据
-
         opeStockPurchasService.save(opeStockPurchas);
+
+        if (opePurchasB.getInWaitWhQty() != null && opePurchas.getInWaitWhTotal() != null) {
+            //采购部件入库数量更新
+            opePurchasB.setInWaitWhQty(opePurchasB.getInWaitWhQty() - enter.getInWaitWhQty());
+            opePurchasB.setUpdatedBy(enter.getUserId());
+            opePurchasB.setUpdatedTime(new Date());
+            opePurchasBService.updateById(opePurchasB);
+            //采购总数量更新
+            opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - enter.getInWaitWhQty());
+            opePurchas.setId(opePurchasB.getPurchasId());
+            opePurchas.setUpdatedBy(enter.getUserId());
+            opePurchas.setUpdatedTime(new Date());
+            opePurchasService.updateById(opePurchas);
+        } else {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        if (opePurchas.getInWaitWhTotal() == 0) {
+            //采购单状态更新
+            opePurchas.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
+            opePurchas.setUpdatedBy(enter.getUserId());
+            opePurchas.setUpdatedTime(new Date());
+            opePurchasService.updateById(opePurchas);
+        }
 
         //节点
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
@@ -405,7 +406,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
         Boolean stockExist = Boolean.FALSE;
        if (opeStock!=null) {
-           if (opePurchasB.getId().equals(opeStock.getMaterielProductId())) {
+           if (opePurchasB.getPartId().equals(opeStock.getMaterielProductId())) {
                stockExist = Boolean.TRUE;
                //有库存 库存累计
                opeStock.setAvailableTotal(opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
@@ -475,7 +476,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
         Boolean stockExist = Boolean.FALSE;
         if (opeStock!=null){
-            if (opePurchasB.getId().equals(opeStock.getMaterielProductId())) {
+            if (opePurchasB.getPartId().equals(opeStock.getMaterielProductId())) {
                 stockExist = Boolean.TRUE;
                 //有库存 库存累计
                 opeStock.setAvailableTotal(opeStock.getAvailableTotal() + opePurchasB.getTotalCount());

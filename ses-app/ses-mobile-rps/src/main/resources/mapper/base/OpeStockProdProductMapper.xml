@@ -12,8 +12,8 @@
     <result column="lot" jdbcType="VARCHAR" property="lot" />
     <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
     <result column="product_number" jdbcType="VARCHAR" property="productNumber" />
-    <result column="in_stock_bill_id" jdbcType="INTEGER" property="inStockBillId" />
-    <result column="principal_id" jdbcType="INTEGER" property="principalId" />
+    <result column="in_stock_bill_id" jdbcType="BIGINT" property="inStockBillId" />
+    <result column="principal_id" jdbcType="BIGINT" property="principalId" />
     <result column="in__wh_qty" jdbcType="INTEGER" property="inWhQty" />
     <result column="in_stock_time" jdbcType="TIMESTAMP" property="inStockTime" />
     <result column="out_stock_bill_id" jdbcType="BIGINT" property="outStockBillId" />
@@ -78,12 +78,12 @@
       </trim>
       <trim prefix="in_stock_bill_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.inStockBillId,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.inStockBillId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="principal_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.principalId,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.principalId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="in__wh_qty = case" suffix="end,">
@@ -167,6 +167,184 @@
       #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_stock_prod_product
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.status != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="stock_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.stockId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.stockId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="product_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.productId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="lot = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.lot != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.lot,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="serial_number = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.serialNumber != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.serialNumber,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="product_number = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.productNumber != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.productNumber,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="in_stock_bill_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.inStockBillId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.inStockBillId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="principal_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.principalId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.principalId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="in__wh_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.inWhQty != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.inWhQty,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="in_stock_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.inStockTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.inStockTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="out_stock_bill_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.outStockBillId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.outStockBillId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="out_principal_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.outPrincipalId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.outPrincipalId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="out_stock_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.outStockTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.outStockTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.revision != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_stock_prod_product
@@ -179,7 +357,7 @@
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
         #{item.stockId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, #{item.lot,jdbcType=VARCHAR}, 
         #{item.serialNumber,jdbcType=VARCHAR}, #{item.productNumber,jdbcType=VARCHAR}, 
-        #{item.inStockBillId,jdbcType=INTEGER}, #{item.principalId,jdbcType=INTEGER}, #{item.inWhQty,jdbcType=INTEGER}, 
+        #{item.inStockBillId,jdbcType=BIGINT}, #{item.principalId,jdbcType=BIGINT}, #{item.inWhQty,jdbcType=INTEGER}, 
         #{item.inStockTime,jdbcType=TIMESTAMP}, #{item.outStockBillId,jdbcType=BIGINT}, 
         #{item.outPrincipalId,jdbcType=BIGINT}, #{item.outStockTime,jdbcType=TIMESTAMP}, 
         #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
@@ -198,7 +376,7 @@
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{stockId,jdbcType=BIGINT}, 
       #{productId,jdbcType=BIGINT}, #{lot,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR}, 
-      #{productNumber,jdbcType=VARCHAR}, #{inStockBillId,jdbcType=INTEGER}, #{principalId,jdbcType=INTEGER}, 
+      #{productNumber,jdbcType=VARCHAR}, #{inStockBillId,jdbcType=BIGINT}, #{principalId,jdbcType=BIGINT}, 
       #{inWhQty,jdbcType=INTEGER}, #{inStockTime,jdbcType=TIMESTAMP}, #{outStockBillId,jdbcType=BIGINT}, 
       #{outPrincipalId,jdbcType=BIGINT}, #{outStockTime,jdbcType=TIMESTAMP}, #{revision,jdbcType=INTEGER}, 
       #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
@@ -213,8 +391,8 @@
     lot = #{lot,jdbcType=VARCHAR}, 
     serial_number = #{serialNumber,jdbcType=VARCHAR}, 
     product_number = #{productNumber,jdbcType=VARCHAR}, 
-    in_stock_bill_id = #{inStockBillId,jdbcType=INTEGER}, 
-    principal_id = #{principalId,jdbcType=INTEGER}, 
+    in_stock_bill_id = #{inStockBillId,jdbcType=BIGINT}, 
+    principal_id = #{principalId,jdbcType=BIGINT}, 
     in__wh_qty = #{inWhQty,jdbcType=INTEGER}, 
     in_stock_time = #{inStockTime,jdbcType=TIMESTAMP}, 
     out_stock_bill_id = #{outStockBillId,jdbcType=BIGINT}, 
@@ -338,10 +516,10 @@
         #{productNumber,jdbcType=VARCHAR},
       </if>
       <if test="inStockBillId != null">
-        #{inStockBillId,jdbcType=INTEGER},
+        #{inStockBillId,jdbcType=BIGINT},
       </if>
       <if test="principalId != null">
-        #{principalId,jdbcType=INTEGER},
+        #{principalId,jdbcType=BIGINT},
       </if>
       <if test="inWhQty != null">
         #{inWhQty,jdbcType=INTEGER},
@@ -416,10 +594,10 @@
         product_number = #{productNumber,jdbcType=VARCHAR},
       </if>
       <if test="inStockBillId != null">
-        in_stock_bill_id = #{inStockBillId,jdbcType=INTEGER},
+        in_stock_bill_id = #{inStockBillId,jdbcType=BIGINT},
       </if>
       <if test="principalId != null">
-        principal_id = #{principalId,jdbcType=INTEGER},
+        principal_id = #{principalId,jdbcType=BIGINT},
       </if>
       <if test="inWhQty != null">
         in__wh_qty = #{inWhQty,jdbcType=INTEGER},

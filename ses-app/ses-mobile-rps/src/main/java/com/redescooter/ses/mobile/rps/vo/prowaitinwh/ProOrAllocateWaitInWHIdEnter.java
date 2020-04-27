@@ -9,7 +9,7 @@ import lombok.*;
  * @ClassNameProWaitInWHIdEnter
  * @Description
  * @Author kyle
- * @Date2020/4/18 10:27
+ * @Date2020/4/26 15:54
  * @Version V1.0
  **/
 @ApiModel(value = "整车部件入库项操作入参", description = "整车部件入库项操作入参")
@@ -18,13 +18,13 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ProWaitInWHIdEnter extends PageEnter {
+public class ProOrAllocateWaitInWHIdEnter extends PageEnter {
 
-    @ApiModelProperty(value = "组装单子单id")
-    private Long scooterBId;
+    @ApiModelProperty(value = "组装单id")
+    private Long id;
 
-    @ApiModelProperty(value = "产品id")
-    private Long partId;
+    @ApiModelProperty(value = "仓库类型")
+    private String type;
 
 
 

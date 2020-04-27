@@ -3,10 +3,8 @@ package com.redescooter.ses.mobile.rps.service.prowaitinwh;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHIdEnter;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHInfoResult;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHItemResult;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.ProWaitInWHLOneResult;
+import com.redescooter.ses.mobile.rps.vo.prowaitinwh.*;
+import org.apache.poi.ss.formula.functions.T;
 
 /**
  * @ClassNameProWaitInWHService
@@ -25,7 +23,7 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    PageResult<ProWaitInWHLOneResult> proWaitInWHList(PageEnter enter);
+    PageResult<AllocateAndProductResult> proWaitInWHList(PageEnter enter);
 
     /**
      * @Author kyle
@@ -34,7 +32,7 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    PageResult<ProWaitInWHItemResult> proWaitWHItemList(ProWaitInWHIdEnter enter);
+    <T> PageResult<T> proWaitWHItemList(ProOrAllocateWaitInWHIdEnter enter);
 
 
     /**
@@ -54,5 +52,5 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    ProWaitInWHInfoResult proWaitInWHInfoIn(ProWaitInWHIdEnter enter);
+    ProWaitInWHInfoResult proWaitInWHInfoIn(ProWaitInWHIdItemEnter enter);
 }

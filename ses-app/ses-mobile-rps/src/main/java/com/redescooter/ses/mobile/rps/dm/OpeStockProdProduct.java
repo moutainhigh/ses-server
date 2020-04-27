@@ -7,20 +7,23 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 生产成品库
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeStockProdProduct")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_stock_prod_product")
-public class OpeStockProdProduct implements Serializable {
+public class OpeStockProdProduct {
+    private static final long serialVersionUID = 1L;
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "")
     private Long id;
@@ -77,14 +80,14 @@ public class OpeStockProdProduct implements Serializable {
      */
     @TableField(value = "in_stock_bill_id")
     @ApiModelProperty(value = "入库单Id")
-    private Integer inStockBillId;
+    private Long inStockBillId;
 
     /**
      * 入库负责人Id
      */
     @TableField(value = "principal_id")
     @ApiModelProperty(value = "入库负责人Id")
-    private Integer principalId;
+    private Long principalId;
 
     /**
      * 入库数量
@@ -190,8 +193,6 @@ public class OpeStockProdProduct implements Serializable {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
-
-    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 
