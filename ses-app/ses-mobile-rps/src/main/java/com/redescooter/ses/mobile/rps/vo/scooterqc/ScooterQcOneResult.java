@@ -30,5 +30,5 @@ public class ScooterQcOneResult extends GeneralResult {
     private Date checkTime;
 
     @ApiModelProperty(value = "待质检总数")
-    private Integer waitInWHName;
+    private Integer waitQcNum;
 }
