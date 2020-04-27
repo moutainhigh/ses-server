@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
 import java.util.List;
-import com.redescooter.ses.web.ros.dm.OpeStockProdProduct;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 public interface OpeStockProdProductService extends IService<OpeStockProdProduct>{
 
