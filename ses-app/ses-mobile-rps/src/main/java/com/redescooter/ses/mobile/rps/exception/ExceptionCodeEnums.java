@@ -115,11 +115,11 @@ public enum ExceptionCodeEnums {
 
     OPE_B_ORDER_IS_EMPTY(10054,"组装子单为空"),
 
-    OPE_TEMPLATE_IS_EMPTY(10055,"质检模板为空"),
+    QC_TEMPLATE_IS_EMPTY(10055,"质检模板为空"),
 
-    OPE_OPTION_IS_EMPTY(10056,"质检项目为空"),
+    QC_OPTION_IS_EMPTY(10056,"质检项目为空"),
 
-    OPE_TEMPLATE_B_IS_EMPTY(10057,"质检模板详情为空"),
+    QC_TEMPLATE_B_IS_EMPTY(10057,"质检模板详情为空"),
 
     WAIT_QC_PART_NUM_ERROR(10058,"输入的待质检部件数错误"),
 
@@ -129,11 +129,16 @@ public enum ExceptionCodeEnums {
 
     WAIT_IN_WH_NUM_IS_EMPTY(10061,"待质检数量为空"),
 
-    OPE_ORDER_IS_EMPTY(10062,"组装单不存在"),
+    ALLOCATE_B_ORDER_IS_NOT_EXIST(10062,"调拨单子单不存在"),
 
     WAIT_IN_WH_NUM_ERROR(10063,"待入库总数错误"),
 
-    PART_IS_ALREADY_DAMAGE(10064,"部件已损坏"),
+    WH_IS_EMPTY(10064,"仓库不存在"),
+
+    ALLOCATE_TRACE_IS_EMPTY(10065,"调拨单记录为空"),
+
+
+
    ;
 
     private int code;

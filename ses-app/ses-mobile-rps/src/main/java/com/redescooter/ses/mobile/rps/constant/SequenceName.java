@@ -6,6 +6,11 @@ package com.redescooter.ses.mobile.rps.constant;
  * @create: 2019/02/22 15:51
  */
 public interface SequenceName {
+
+    String OPE_STOCK_PROD_PRODUCT = "OPE_STOCK_PROD_PRODUCT";
+
+    String OPE_STOCK_PROD_PART = "OPE_STOCK_PROD_PART";
+
     String OPE_ASSEMBLY_B_QC = "OPE_ASSEMBLY_B_QC";
 
     String OPE_ASSEMBLY_QC_TRACE = "OPE_ASSEMBLY_QC_TRACE";

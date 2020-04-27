@@ -17,7 +17,9 @@ public interface OpeStockProdProductService extends IService<OpeStockProdProduct
 
     int insertOrUpdateSelective(OpeStockProdProduct record);
 
+    int updateBatchSelective(List<OpeStockProdProduct> list);
 }
+
 
 
 
