@@ -26,10 +26,12 @@ import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
+import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -61,6 +63,7 @@ public class TokenRosServiceImpl implements TokenRosService {
     private OpeSysUserRoleService sysUserRoleService;
     @Reference
     private IdAppService idAppService;
+
 
     /**
      * 用户登录
@@ -236,7 +239,6 @@ public class TokenRosServiceImpl implements TokenRosService {
 
         return new GeneralResult(enter.getRequestId());
     }
-
 
     private OpeSysUser buildSysUserSingle(AddSysUserEnter enter, String password) {
         OpeSysUser sysUser = new OpeSysUser();
