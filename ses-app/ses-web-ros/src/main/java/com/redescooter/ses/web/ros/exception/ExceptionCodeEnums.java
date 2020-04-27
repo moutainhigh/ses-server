@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -239,7 +240,11 @@ public enum ExceptionCodeEnums {
     QC_TEMPLATE_IS_NOT_EXIT(10112,"质检模板不存在"),
 
     QC_PASS_RESULT_ONLY_ONE(10113,"质检项通过结果只能有一个"),
-  ;
+
+    CONVERT_TO_FORMAL_CUSTOMER_FIRST(10114, "请先转换为正式客户"),
+
+    CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG(10115,"客户分配车辆数量是错误的"),
+    ;
 
 
     private int code;

@@ -3,28 +3,29 @@
 <mapper namespace="com.redescooter.ses.service.hub.source.consumer.dao.HubConUserScooterMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter">
     <!--@mbg.generated-->
-    <id column="ID" jdbcType="BIGINT" property="id"/>
-    <result column="dr" jdbcType="INTEGER" property="dr"/>
-    <result column="TENANT_ID" jdbcType="BIGINT" property="tenantId"/>
-    <result column="USER_ID" jdbcType="BIGINT" property="userId"/>
-    <result column="SCOOTER_ID" jdbcType="BIGINT" property="scooterId"/>
-    <result column="BEGIN_TIME" jdbcType="TIMESTAMP" property="beginTime"/>
-    <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime"/>
-    <result column="STATUS" jdbcType="VARCHAR" property="status"/>
-    <result column="MILEAGE" jdbcType="DOUBLE" property="mileage"/>
-    <result column="CREATED_BY" jdbcType="BIGINT" property="createdBy"/>
-    <result column="CREATED_TIME" jdbcType="TIMESTAMP" property="createdTime"/>
-    <result column="UPDATED_BY" jdbcType="BIGINT" property="updatedBy"/>
-    <result column="UPDATED_TIME" jdbcType="TIMESTAMP" property="updatedTime"/>
-    <result column="def1" jdbcType="VARCHAR" property="def1"/>
-    <result column="def2" jdbcType="VARCHAR" property="def2"/>
-    <result column="def3" jdbcType="VARCHAR" property="def3"/>
-    <result column="def5" jdbcType="VARCHAR" property="def5"/>
-    <result column="def6" jdbcType="DOUBLE" property="def6"/>
+    <!--@Table con_user_scooter-->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="TENANT_ID" jdbcType="BIGINT" property="tenantId" />
+    <result column="USER_ID" jdbcType="BIGINT" property="userId" />
+    <result column="SCOOTER_ID" jdbcType="BIGINT" property="scooterId" />
+    <result column="BEGIN_TIME" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="MILEAGE" jdbcType="DOUBLE" property="mileage" />
+    <result column="CREATED_BY" jdbcType="BIGINT" property="createdBy" />
+    <result column="CREATED_TIME" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="UPDATED_BY" jdbcType="BIGINT" property="updatedBy" />
+    <result column="UPDATED_TIME" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DOUBLE" property="def6" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    ID, dr, TENANT_ID, USER_ID, SCOOTER_ID, BEGIN_TIME, END_TIME, `STATUS`, MILEAGE,
+    ID, dr, TENANT_ID, USER_ID, SCOOTER_ID, BEGIN_TIME, END_TIME, `STATUS`, MILEAGE, 
     CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
@@ -125,55 +126,54 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into con_user_scooter
-    (ID, dr, TENANT_ID, USER_ID, SCOOTER_ID, BEGIN_TIME, END_TIME, `STATUS`, MILEAGE,
-    CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, def2, def3, def5, def6
+    (ID, dr, TENANT_ID, USER_ID, SCOOTER_ID, BEGIN_TIME, END_TIME, `STATUS`, MILEAGE, 
+      CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, def2, def3, def5, def6
       )
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
-      #{item.userId,jdbcType=BIGINT}, #{item.scooterId,jdbcType=BIGINT}, #{item.beginTime,jdbcType=TIMESTAMP},
-      #{item.endTime,jdbcType=TIMESTAMP}, #{item.status,jdbcType=VARCHAR}, #{item.mileage,jdbcType=DOUBLE},
-      #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-      #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
-      #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
-      )
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.userId,jdbcType=BIGINT}, #{item.scooterId,jdbcType=BIGINT}, #{item.beginTime,jdbcType=TIMESTAMP}, 
+        #{item.endTime,jdbcType=TIMESTAMP}, #{item.status,jdbcType=VARCHAR}, #{item.mileage,jdbcType=DOUBLE}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+        )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter">
     <!--@mbg.generated-->
     insert into con_user_scooter
-    (ID, dr, TENANT_ID, USER_ID, SCOOTER_ID, BEGIN_TIME, END_TIME, `STATUS`, MILEAGE,
-    CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, def2, def3, def5, def6
+    (ID, dr, TENANT_ID, USER_ID, SCOOTER_ID, BEGIN_TIME, END_TIME, `STATUS`, MILEAGE, 
+      CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, def1, def2, def3, def5, def6
       )
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
-    #{scooterId,jdbcType=BIGINT}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
-    #{status,jdbcType=VARCHAR}, #{mileage,jdbcType=DOUBLE}, #{createdBy,jdbcType=BIGINT},
-    #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
-    #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
-    #{def6,jdbcType=DOUBLE})
-    on duplicate key update
-    ID = #{id,jdbcType=BIGINT},
-    dr = #{dr,jdbcType=INTEGER},
-    TENANT_ID = #{tenantId,jdbcType=BIGINT},
-    USER_ID = #{userId,jdbcType=BIGINT},
-    SCOOTER_ID = #{scooterId,jdbcType=BIGINT},
-    BEGIN_TIME = #{beginTime,jdbcType=TIMESTAMP},
-    END_TIME = #{endTime,jdbcType=TIMESTAMP},
-    `STATUS` = #{status,jdbcType=VARCHAR},
-    MILEAGE = #{mileage,jdbcType=DOUBLE},
-    CREATED_BY = #{createdBy,jdbcType=BIGINT},
-    CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
-    UPDATED_BY = #{updatedBy,jdbcType=BIGINT},
-    UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
-    def1 = #{def1,jdbcType=VARCHAR},
-    def2 = #{def2,jdbcType=VARCHAR},
-    def3 = #{def3,jdbcType=VARCHAR},
-    def5 = #{def5,jdbcType=VARCHAR},
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{scooterId,jdbcType=BIGINT}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=VARCHAR}, #{mileage,jdbcType=DOUBLE}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DOUBLE})
+    on duplicate key update 
+    ID = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    TENANT_ID = #{tenantId,jdbcType=BIGINT}, 
+    USER_ID = #{userId,jdbcType=BIGINT}, 
+    SCOOTER_ID = #{scooterId,jdbcType=BIGINT}, 
+    BEGIN_TIME = #{beginTime,jdbcType=TIMESTAMP}, 
+    END_TIME = #{endTime,jdbcType=TIMESTAMP}, 
+    `STATUS` = #{status,jdbcType=VARCHAR}, 
+    MILEAGE = #{mileage,jdbcType=DOUBLE}, 
+    CREATED_BY = #{createdBy,jdbcType=BIGINT}, 
+    CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP}, 
+    UPDATED_BY = #{updatedBy,jdbcType=BIGINT}, 
+    UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
     def6 = #{def6,jdbcType=DOUBLE}
   </insert>
-  <insert id="insertOrUpdateSelective"
-          parameterType="com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter">
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter">
     <!--@mbg.generated-->
     insert into con_user_scooter
     <trim prefix="(" suffix=")" suffixOverrides=",">

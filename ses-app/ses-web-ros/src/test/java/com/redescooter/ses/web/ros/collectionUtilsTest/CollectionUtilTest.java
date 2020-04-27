@@ -1,17 +1,11 @@
 package com.redescooter.ses.web.ros.collectionUtilsTest;
 
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.RandomUtil;
-import com.redescooter.ses.tool.utils.parts.ESCUtils;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.IntStream;
 
 /**
  * @author Mr.lijiating
@@ -20,6 +14,7 @@ import java.util.stream.IntStream;
  * @ClassName: RedisOne
  * @Function: TODO
  */
+@Log4j
 public class CollectionUtilTest {
 
     @Test

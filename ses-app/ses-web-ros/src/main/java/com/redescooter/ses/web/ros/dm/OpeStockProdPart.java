@@ -1,8 +1,12 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,14 +19,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_stock_prod_part")
-public class OpeStockProdPart {
+public class OpeStockProdPart implements Serializable {
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value="")
     private Long id;
 
     @TableField(value = "dr")
-    @ApiModelProperty(value="删除标识")
-    @TableLogic
+    @ApiModelProperty(value="")
     private Integer dr;
 
     /**
@@ -47,13 +50,6 @@ public class OpeStockProdPart {
     private Long tenantId;
 
     /**
-     * 入库单Id
-     */
-    @TableField(value = "stock_bill_id")
-    @ApiModelProperty(value="入库单Id")
-    private Long stockBillId;
-
-    /**
      * 库存id
      */
     @TableField(value = "stock_id")
@@ -73,6 +69,20 @@ public class OpeStockProdPart {
     @TableField(value = "lot")
     @ApiModelProperty(value="批次号")
     private String lot;
+
+    /**
+     * 入库单Id
+     */
+    @TableField(value = "in_stock_bill_id")
+    @ApiModelProperty(value="入库单Id")
+    private Long inStockBillId;
+
+    /**
+     * 出库单Id
+     */
+    @TableField(value = "out_stock_bill_id")
+    @ApiModelProperty(value="出库单Id")
+    private Integer outStockBillId;
 
     /**
      * 序列号
@@ -96,11 +106,32 @@ public class OpeStockProdPart {
     private Long principalId;
 
     /**
+     * 入库数量
+     */
+    @TableField(value = "in__wh_qty")
+    @ApiModelProperty(value="入库数量")
+    private Integer inWhQty;
+
+    /**
      * 入库时间
      */
     @TableField(value = "in_stock_time")
     @ApiModelProperty(value="入库时间")
     private Date inStockTime;
+
+    /**
+     * 出库时间
+     */
+    @TableField(value = "out_stock_time")
+    @ApiModelProperty(value="出库时间")
+    private Date outStockTime;
+
+    /**
+     * 出库负责人
+     */
+    @TableField(value = "out_principal_id")
+    @ApiModelProperty(value="出库负责人")
+    private Long outPrincipalId;
 
     /**
      * 乐观锁
@@ -172,6 +203,8 @@ public class OpeStockProdPart {
     @ApiModelProperty(value="冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -182,13 +215,15 @@ public class OpeStockProdPart {
 
     public static final String COL_TENANT_ID = "tenant_id";
 
-    public static final String COL_STOCK_BILL_ID = "stock_bill_id";
-
     public static final String COL_STOCK_ID = "stock_id";
 
     public static final String COL_PART_ID = "part_id";
 
     public static final String COL_LOT = "lot";
+
+    public static final String COL_IN_STOCK_BILL_ID = "in_stock_bill_id";
+
+    public static final String COL_OUT_STOCK_BILL_ID = "out_stock_bill_id";
 
     public static final String COL_SERIAL_NUMBER = "serial_number";
 
@@ -196,7 +231,13 @@ public class OpeStockProdPart {
 
     public static final String COL_PRINCIPAL_ID = "principal_id";
 
+    public static final String COL_IN__WH_QTY = "in__wh_qty";
+
     public static final String COL_IN_STOCK_TIME = "in_stock_time";
+
+    public static final String COL_OUT_STOCK_TIME = "out_stock_time";
+
+    public static final String COL_OUT_PRINCIPAL_ID = "out_principal_id";
 
     public static final String COL_REVISION = "revision";
 

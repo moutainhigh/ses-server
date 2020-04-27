@@ -132,11 +132,12 @@
 
     <select id="customerAccountDeatil"
             resultType="com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult">
-        select user.id as id,
-        user.LOGIN_NAME as email,
+        select user.id             as id,
+        user.TENANT_ID      as tenantId,
+        user.LOGIN_NAME     as email,
         user.effective_time as activationTime,
-        user.expire_time as expirationTime,
-        user.status as status
+        user.expire_time    as expirationTime,
+        user.status         as status
         from pla_user user
         where user.dr = 0
         and user.LOGIN_NAME=#{email}
