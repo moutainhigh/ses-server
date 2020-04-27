@@ -536,7 +536,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         opeAllocateService.updateById(opeAllocate);
         //保存调拨子单状态
         opeAllocateBService.updateById(opeAllocateB);
-        //更新一条生产入库信息
+        //保存一条生产入库信息
         opeStockBillService.save(opeStockBill);
         //保存生产成品库的数据
         opeStockProdPartService.save(opeStockProdPart);
@@ -674,7 +674,6 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 .createdBy(enter.getUserId())
                 .updatedBy(enter.getUserId())
                 .build();
-        opeStockBillService.save(opeStockBill);
 
         //把入库成功的产品对应的组装单和组装单子单的待入库数量进行修改
         //修改组装单的总待入库数量
@@ -701,39 +700,41 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 saveNodeEnter.setMemo(null);
                 receiptTraceService.saveAssemblyNode(saveNodeEnter);
             }
-            if (opeAssemblyBOrder.getInWaitWhQty() == 0) {
-                //组装子单入库完成
-                opeAssemblyBOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
-            }
-
-            //创建生产成品库的数据
-            OpeStockProdProduct opeStockProdProduct = OpeStockProdProduct.builder()
-                    .id(idAppService.getId(SequenceName.OPE_STOCK_PROD_PRODUCT))
-                    .dr(0)
-                    .status(StockProductPartStatusEnums.AVAILABLE.getValue())
-                    .stockId(opeStock.getId())
-                    .productId(opeAssemblyBOrder.getProductId())
-                    .lot(opeAssemblyBQc.getBatchNo())
-                    .serialNumber(opeAssemblyQcItem.getSerialNum())
-                    .productNumber(opeAssemblyBOrder.getProductNumber())
-                    .inStockBillId(opeStockBill.getId())
-                    .principalId(enter.getUserId())
-                    .inStockTime(new Date())
-                    .revision(0)
-                    .inWhQty(enter.getIdFlag() ? 1 : enter.getInWhNum())
-                    .createdBy(enter.getUserId())
-                    .createdTime(new Date())
-                    .updatedBy(enter.getUserId())
-                    .updatedTime(new Date())
-                    .build();
-            //保存生产成品库的数据
-            opeStockProdProductService.save(opeStockProdProduct);
-
         } else {
             throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getCode(), ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getMessage());
         }
 
 
+        if (opeAssemblyBOrder.getInWaitWhQty() == 0) {
+            //组装子单入库完成
+            opeAssemblyBOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
+        }
+
+        //创建生产成品库的数据
+        OpeStockProdProduct opeStockProdProduct = OpeStockProdProduct.builder()
+                .id(idAppService.getId(SequenceName.OPE_STOCK_PROD_PRODUCT))
+                .dr(0)
+                .status(StockProductPartStatusEnums.AVAILABLE.getValue())
+                .stockId(opeStock.getId())
+                .productId(opeAssemblyBOrder.getProductId())
+                .lot(opeAssemblyBQc.getBatchNo())
+                .serialNumber(opeAssemblyQcItem.getSerialNum())
+                .productNumber(opeAssemblyBOrder.getProductNumber())
+                .inStockBillId(opeStockBill.getId())
+                .principalId(enter.getUserId())
+                .inStockTime(new Date())
+                .revision(0)
+                .inWhQty(enter.getIdFlag() ? 1 : enter.getInWhNum())
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+
+        //保存生产成品库的数据
+        opeStockProdProductService.save(opeStockProdProduct);
+        //保存一条生产入库信息
+        opeStockBillService.save(opeStockBill);
         //保存子单状态
         opeAssemblyBOrderService.updateById(opeAssemblyBOrder);
         //保存组装单状态
