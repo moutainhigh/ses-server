@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
+import com.redescooter.ses.web.ros.dm.OpeStockProdPart;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
