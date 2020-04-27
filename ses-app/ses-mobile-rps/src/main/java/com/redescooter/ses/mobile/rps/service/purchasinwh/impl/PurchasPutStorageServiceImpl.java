@@ -383,9 +383,9 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
     }
 
 
-    private void saveStockBillSingle(PurchasDetailsEnter enter, OpeStock saveStockList, OpeStockBill saveOpeStockBill, OpePurchasB opePurchasB) {
+    private void saveStockBillSingle(PurchasDetailsEnter enter, OpeStock saveStock, OpeStockBill saveOpeStockBill, OpePurchasB opePurchasB) {
 
-        OpeParts partsList = opePartsService.getById(opePurchasB.getPartId());
+        OpeParts parts = opePartsService.getById(opePurchasB.getPartId());
 
         //查询采购仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
@@ -404,18 +404,19 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
 
         Boolean stockExist = Boolean.FALSE;
-
-        if (opePurchasB.getId().equals(opeStock.getMaterielProductId())) {
-            stockExist = Boolean.TRUE;
-            //有库存 库存累计
-            opeStock.setAvailableTotal(opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
-            opeStock.setIntTotal(opeStock.getIntTotal() + opePurchasB.getTotalCount());
-            opeStock.setUpdatedBy(enter.getUserId());
-            opeStock.setUpdatedTime(new Date());
-            BeanUtils.copyProperties(opeStock, saveStockList);
-            //入库单 生成
-            BeanUtils.copyProperties(buildOpeStockBill(enter, opePurchasB, opeStock), saveOpeStockBill);
-        }
+       if (opeStock!=null) {
+           if (opePurchasB.getId().equals(opeStock.getMaterielProductId())) {
+               stockExist = Boolean.TRUE;
+               //有库存 库存累计
+               opeStock.setAvailableTotal(opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
+               opeStock.setIntTotal(opeStock.getIntTotal() + opePurchasB.getTotalCount());
+               opeStock.setUpdatedBy(enter.getUserId());
+               opeStock.setUpdatedTime(new Date());
+               BeanUtils.copyProperties(opeStock, saveStock);
+               //入库单 生成
+               BeanUtils.copyProperties(buildOpeStockBill(enter, opePurchasB, opeStock), saveOpeStockBill);
+           }
+       }
 
         if (!stockExist) {
             //无库存
@@ -438,24 +439,24 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                     .createdBy(enter.getUserId())
                     .createdTime(new Date())
                     .build();
-            BeanUtils.copyProperties(opeStock, saveStockList);
+            BeanUtils.copyProperties(opeStock, saveStock);
             BeanUtils.copyProperties(buildOpeStockBill(enter, opePurchasB, opeStock), saveOpeStockBill);
         }
 
 
-        if (saveStockList != null) {
+        if (saveStock != null) {
 
-            if (saveStockList.getMaterielProductId().equals(partsList.getId())) {
-                saveStockList.setMaterielProductName(partsList.getCnName());
-                saveStockList.setMaterielProductType(partsList.getPartsType());
+            if (saveStock.getMaterielProductId().equals(parts.getId())) {
+                saveStock.setMaterielProductName(parts.getCnName());
+                saveStock.setMaterielProductType(parts.getPartsType());
             }
 
         }
     }
 
-    private void saveStockBill(NotIdEnter enter, OpeStock saveStockList, OpeStockBill saveOpeStockBillList, OpePurchasB opePurchasB) {
+    private void saveStockBill(NotIdEnter enter, OpeStock saveStock, OpeStockBill saveOpeStockBill, OpePurchasB opePurchasB) {
 
-        OpeParts partsList = opePartsService.getById(opePurchasB.getPartId());
+        OpeParts parts = opePartsService.getById(opePurchasB.getPartId());
 
         //查询采购仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
@@ -482,9 +483,9 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 opeStock.setUpdatedBy(enter.getUserId());
                 opeStock.setUpdatedTime(new Date());
                 //todo 变量命名
-                BeanUtils.copyProperties(opeStock, saveStockList);
+                BeanUtils.copyProperties(opeStock, saveStock);
                 //入库单 生成
-                BeanUtils.copyProperties(NotbuildOpeStockBill(enter, opePurchasB, opeStock), saveOpeStockBillList);
+                BeanUtils.copyProperties(NotbuildOpeStockBill(enter, opePurchasB, opeStock), saveOpeStockBill);
             }
         }
 
@@ -509,15 +510,15 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                     .createdBy(enter.getUserId())
                     .createdTime(new Date())
                     .build();
-            BeanUtils.copyProperties(stock, saveStockList);
-            BeanUtils.copyProperties(NotbuildOpeStockBill(enter, opePurchasB, stock), saveOpeStockBillList);
+            BeanUtils.copyProperties(stock, saveStock);
+            BeanUtils.copyProperties(NotbuildOpeStockBill(enter, opePurchasB, stock), saveOpeStockBill);
         }
 
-        if (saveStockList != null) {
+        if (saveStock != null) {
 
-            if (saveStockList.getMaterielProductId().equals(partsList.getId())) {
-                saveStockList.setMaterielProductName(partsList.getCnName());
-                saveStockList.setMaterielProductType(partsList.getPartsType());
+            if (saveStock.getMaterielProductId().equals(parts.getId())) {
+                saveStock.setMaterielProductName(parts.getCnName());
+                saveStock.setMaterielProductType(parts.getPartsType());
             }
 
         }
