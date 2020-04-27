@@ -46,7 +46,4 @@ public class ProductAssemblyTraceResult extends GeneralResult {
 
     @ApiModelProperty(value = "是否已开始组装 下拉标记")
     private Boolean assemblyFlag;
-
-//    @ApiModelProperty(value = "组装日期")
-//    private Date assemblyDate;
 }

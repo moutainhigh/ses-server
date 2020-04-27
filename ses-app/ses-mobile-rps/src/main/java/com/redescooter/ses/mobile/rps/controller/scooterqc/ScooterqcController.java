@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"整车质检"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rps/scooterqc/")
+@RequestMapping(value = "/scooterqc/")
 public class ScooterqcController {
 
     @Autowired

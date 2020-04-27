@@ -23,13 +23,12 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"Rps首页"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rps/head")
+@RequestMapping(value = "/head")
 public class RpsHeadController {
 
     @Autowired
     private RpsHeadService rpsHeadService;
 
-    @IgnoreLoginCheck
     @PostMapping(value = "/index")
     @ApiOperation(value = "Rps首页数据", response = RpsHeadResult.class)
     public Response<RpsHeadResult> accountList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {

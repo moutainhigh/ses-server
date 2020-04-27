@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"生产仓库入库"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/rps/prowaitinwh/")
+@RequestMapping(value = "/prowaitinwh")
 public class ProWaitInWHController {
 
     @Autowired

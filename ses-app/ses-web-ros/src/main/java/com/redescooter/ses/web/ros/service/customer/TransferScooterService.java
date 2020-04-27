@@ -2,20 +2,13 @@ package com.redescooter.ses.web.ros.service.customer;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.customer.ChooseScooterIdEnter;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
 //import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
 
-import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
 
 /**
  * @ClassName:TransferScooterService
@@ -36,7 +29,7 @@ public interface TransferScooterService {
      * @Param [enter]
      * @return
      **/
-    PageResult<ChooseScooterResult> chooseScooterList(ChooseScooterIdEnter enter);
+    PageResult<ChooseScooterResult> chooseScooterList(PageEnter enter);
 
 
     /**

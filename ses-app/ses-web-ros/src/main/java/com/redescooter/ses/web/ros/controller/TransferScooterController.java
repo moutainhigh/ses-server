@@ -1,15 +1,11 @@
 package com.redescooter.ses.web.ros.controller;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
-import com.redescooter.ses.web.ros.vo.customer.ChooseScooterIdEnter;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
-import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
 import io.swagger.annotations.Api;
@@ -36,7 +32,7 @@ public class TransferScooterController {
 
     @ApiOperation(value = "分配整车列表", response = ChooseScooterResult.class)
     @PostMapping(value = "/chooseScooterList")
-    public Response<PageResult<ChooseScooterResult>> chooseScooterList(@ModelAttribute @ApiParam("请求参数") ChooseScooterIdEnter enter) {
+    public Response<PageResult<ChooseScooterResult>> chooseScooterList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response<>(transferScooterService.chooseScooterList(enter));
     }
 

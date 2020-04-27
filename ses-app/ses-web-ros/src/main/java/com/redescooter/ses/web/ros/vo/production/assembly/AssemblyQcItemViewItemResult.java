@@ -9,35 +9,32 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
- * @ClassName:AssemblyQcInfoResult
- * @description: AssemblyQcInfoResult
+ * @ClassName:AssemblyQcItemViewItemResult
+ * @description: AssemblyQcItemViewItemResult
  * @author: Alex
  * @Version：1.3
- * @create: 2020/03/30 15:25
+ * @create: 2020/04/27 17:17
  */
-@ApiModel(value = "质检详情", description = "质检详情")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class AssemblyQcInfoResult extends GeneralResult {
-
+@ApiModel(value = "质检条目的质检项", description = "质检条目的质检项")
+public class AssemblyQcItemViewItemResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "产品编号")
-    private String productN;
+    @ApiModelProperty(value = "质检项Id")
+    private Long itemId;
 
-    @ApiModelProperty(value = "产品名称")
-    private String enName;
+    @ApiModelProperty(value = "质检项名称")
+    private String itemName;
 
-    @ApiModelProperty(value = "质检总数")
-    private int qcTotal;
+    @ApiModelProperty(value = "质检项结果Id")
+    private Long qcResultId;
 
-    @ApiModelProperty(value = "质检通过数量")
-    private int passTotal;
+    @ApiModelProperty(value = "质检项名称")
+    private String qcResultName;
 }

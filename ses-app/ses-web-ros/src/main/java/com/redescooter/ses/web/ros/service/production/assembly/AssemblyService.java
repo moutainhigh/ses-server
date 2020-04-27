@@ -146,7 +146,7 @@ public interface AssemblyService {
 
     /**
      * 质检记录
-     *
+     * //todo ROS 新增
      * @param enter
      * @return
      */
@@ -154,12 +154,19 @@ public interface AssemblyService {
 
     /**
      * 质检记录条目
+     * //todo ROS 新增
      * @param enter
      * @return
      */
-//    List<AssemblyQcItemResult> assemblyQcInfoItem(IdEnter enter);
-//
-//    List<AssemblyQcItemViewResult> assemblyQcInfoItem(IdEnter enter);
+    List<AssemblyQcItemResult> assemblyQcInfoItem(IdEnter enter);
+
+    /**
+     * 质检条目的质检项
+     * //todo ROS 新增
+     * @param enter
+     * @return
+     */
+    AssemblyQcItemViewResult assemblyQcItemView(IdEnter enter);
 
     /**
      * 组装单信息导出

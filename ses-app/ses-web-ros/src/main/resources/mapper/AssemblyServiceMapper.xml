@@ -259,9 +259,72 @@
         from ope_product_assembly assem
                  left join ope_assembly_b_order border
                            on assem.assembly_b_id = border.id
-
         group by assemblyDate
     </select>
 
+    <select id="assemblyQcInfo"
+            resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult">
+        select assBqc.id as id,
+        oabo.product_number as productN,
+        oabo.en_name as enName,
+        assBqc.total_quality_inspected as qcTotal,
+        assBqc.pass_count as passTotal
+        from ope_assembly_b_qc assBqc
+        left join ope_assembly_b_order oabo on assBqc.assembly_b_id = oabo.id and oabo.dr = 0
+        left join ope_assembly_order oao on oabo.assembly_id = oao.id and oao.dr = 0
+        left join ope_parts_product product on product.id = oabo.product_id and product.dr = 0
+        where oao.id =#{id}
+        and assBqc.dr = 0
+        <if test="status != null and status != ''">
+            and assBqc.status=#{status}
+        </if>
+        <if test="qcStartTime != null and  qcEndTime != null">
+            and (assBqc.created_time between #{qcStartTime} and #{qcEndTime})
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            product.en_name like concat("%",#{keyword},"%") or
+            and product.product_number like concat("%",#{keyword},"%")
+            )
+        </if>
+    </select>
 
+    <select id="assemblyQcInfoItem"
+            resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult">
+            select item.id           as id,
+                   item.serial_num   as serialN,
+                   item.qc_result    as qcStatus,
+                   item.created_time as qcDate
+            from ope_assembly_qc_item item
+                     left join ope_assembly_b_qc bqc on bqc.id = item.assembly_b_qc_id and bqc.dr = 0
+            where bqc.id = #{id}
+              and item.dr = 0
+    </select>
+
+    <select id="assemblyQcItemView"
+            resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult">
+            select item.id            as id,
+                   item.serial_num    as serialN,
+                   item.qc_result     as qcStatus,
+                   item.created_time  as qcDate,
+                   profile.first_name as operatorFirstName,
+                   profile.last_name  as operatorLastName
+            from ope_assembly_qc_item item
+                     inner join ope_sys_user_profile profile on profile.sys_user_id = item.created_by and profile.dr=0
+            where item.id = #{id}
+              and item.dr = 0
+    </select>
+
+    <select id="assemblyQcItemViewItem"
+            resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemResult">
+            select trace.id                         as id,
+                   trace.product_qc_template_id     as itemId,
+                   trace.product_qc_template_name   as itemName,
+                   trace.product_qc_template_b_id   as qcResultId,
+                   trace.product_qc_template_b_name as qcResultName
+            from ope_assembly_qc_trace trace
+                     left join ope_assembly_qc_item item on trace.assembly_qc_item_id = item.id and item.dr = 0
+            where trace.dr = 0
+              and item.id = #{id}
+    </select>
 </mapper>

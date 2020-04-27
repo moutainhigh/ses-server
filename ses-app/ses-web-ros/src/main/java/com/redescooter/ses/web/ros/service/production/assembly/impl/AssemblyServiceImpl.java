@@ -30,9 +30,11 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyBOrder;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyBQc;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrder;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPart;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyQcItem;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
@@ -40,6 +42,8 @@ import com.redescooter.ses.web.ros.dm.OpeStock;
 import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
+import com.redescooter.ses.web.ros.service.base.OpeAssemblyBQcService;
+import com.redescooter.ses.web.ros.service.base.OpeAssemblyQcItemService;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -68,6 +72,9 @@ import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductRes
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
@@ -137,6 +144,12 @@ public class AssemblyServiceImpl implements AssemblyService {
 
     @Autowired
     private OpeStockBillService opeStockBillService;
+
+    @Autowired
+    private OpeAssemblyBQcService opeAssemblyBQcService;
+
+    @Autowired
+    private OpeAssemblyQcItemService opeAssemblyQcItemService;
 
     @Reference
     private IdAppService idAppService;
@@ -837,8 +850,48 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public List<AssemblyQcInfoResult> assemblyQcInfo(AssemblyQcInfoEnter enter) {
+        //校验组装单Id
+        checkAssembly(enter.getId(), null);
+        //组装单 质检结果集
+        return assemblyServiceMapper.assemblyQcInfo(enter);
+    }
 
-        return null;
+    /**
+     * 质检记录条目
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<AssemblyQcItemResult> assemblyQcInfoItem(IdEnter enter) {
+        //校验质检结果
+        OpeAssemblyBQc opeAssemblyBQc = opeAssemblyBQcService.getById(enter.getId());
+        if (opeAssemblyBQc == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_B_QC_RESULT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_B_QC_RESULT_IS_NOT_EXIST.getMessage());
+        }
+        return assemblyServiceMapper.assemblyQcInfoItem(enter);
+    }
+
+    /**
+     * 质检条目的质检项
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public AssemblyQcItemViewResult assemblyQcItemView(IdEnter enter) {
+        // 查询车辆质检信息
+        AssemblyQcItemViewResult result = assemblyServiceMapper.assemblyQcItemView(enter);
+        if (result == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getMessage());
+        }
+        //查询车辆对应的质检项
+        List<AssemblyQcItemViewItemResult> assemblyQcItemViewItemResultList=assemblyServiceMapper.assemblyQcItemViewItem(enter.getId());
+        if (CollectionUtils.isEmpty(assemblyQcItemViewItemResultList)){
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_RESULT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ASSEMBLY_QC_RESULT_IS_NOT_EXIST.getMessage());
+        }
+        result.setAssemblyQcItemViewItemResultList(assemblyQcItemViewItemResultList);
+        return result;
     }
 
     /**
@@ -1206,13 +1259,19 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public List<productItemResult> productItemList(IdEnter enter) {
-        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), null);
+        checkAssembly(enter.getId(), null);
         return assemblyServiceMapper.productItemList(enter);
     }
 
+    /**
+     * 组装单详情商品列表
+     *
+     * @param enter
+     * @return
+     */
     @Override
     public List<productItemResult> ordinaryProductItemList(IdEnter enter) {
-        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), null);
+        checkAssembly(enter.getId(), null);
         List<productItemResult> list = assemblyServiceMapper.productItemList(enter);
 
         if (CollectionUtil.isEmpty(list)) {
@@ -1246,7 +1305,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     public List<ProductAssemblyTraceItemResult> productAssemblyTraceItem(IdEnter enter) {
         OpeAssemblyBOrder assemblyBOrder = opeAssemblyOrderBService.getById(enter.getId());
         if (assemblyBOrder == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
         }
         return assemblyServiceMapper.productAssemblyItemTrace(enter);
     }

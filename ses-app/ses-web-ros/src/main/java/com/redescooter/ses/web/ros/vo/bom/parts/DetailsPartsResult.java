@@ -56,7 +56,7 @@ public class DetailsPartsResult extends GeneralResult {
     private String snClassFlag;
 
     @ApiModelProperty(value = "是否有唯一编码")
-    private Boolean idClass;
+    private String idClass;
 
     @ApiModelProperty(value = "生产周期")
     private String productionCycle;
