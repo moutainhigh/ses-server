@@ -28,3 +28,4 @@ public class OpeStockProdProductServiceImpl extends ServiceImpl<OpeStockProdProd
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

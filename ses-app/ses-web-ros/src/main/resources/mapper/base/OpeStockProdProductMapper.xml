@@ -27,8 +27,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, `status`, stock_id, product_id, lot, serial_number, product_number, principal_id, 
-    in_stock_time, revision, created_by, created_time, updated_by, updated_time, def1, 
+    id, dr, `status`, stock_id, product_id, lot, serial_number, product_number, principal_id,
+    in_stock_time, revision, created_by, created_time, updated_by, updated_time, def1,
     def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
@@ -139,17 +139,17 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_stock_prod_product
-    (id, dr, `status`, stock_id, product_id, lot, serial_number, product_number, principal_id, 
-      in_stock_time, revision, created_by, created_time, updated_by, updated_time, def1, 
+    (id, dr, `status`, stock_id, product_id, lot, serial_number, product_number, principal_id,
+      in_stock_time, revision, created_by, created_time, updated_by, updated_time, def1,
       def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.stockId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, #{item.lot,jdbcType=VARCHAR}, 
-        #{item.serialNumber,jdbcType=VARCHAR}, #{item.productNumber,jdbcType=VARCHAR}, 
-        #{item.principalId,jdbcType=BIGINT}, #{item.inStockTime,jdbcType=TIMESTAMP}, #{item.revision,jdbcType=INTEGER}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR},
+        #{item.stockId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, #{item.lot,jdbcType=VARCHAR},
+        #{item.serialNumber,jdbcType=VARCHAR}, #{item.productNumber,jdbcType=VARCHAR},
+        #{item.principalId,jdbcType=BIGINT}, #{item.inStockTime,jdbcType=TIMESTAMP}, #{item.revision,jdbcType=INTEGER},
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
         #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
         )
     </foreach>
@@ -157,37 +157,37 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeStockProdProduct">
     <!--@mbg.generated-->
     insert into ope_stock_prod_product
-    (id, dr, `status`, stock_id, product_id, lot, serial_number, product_number, principal_id, 
-      in_stock_time, revision, created_by, created_time, updated_by, updated_time, def1, 
+    (id, dr, `status`, stock_id, product_id, lot, serial_number, product_number, principal_id,
+      in_stock_time, revision, created_by, created_time, updated_by, updated_time, def1,
       def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{stockId,jdbcType=BIGINT}, 
-      #{productId,jdbcType=BIGINT}, #{lot,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR}, 
-      #{productNumber,jdbcType=VARCHAR}, #{principalId,jdbcType=BIGINT}, #{inStockTime,jdbcType=TIMESTAMP}, 
-      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{stockId,jdbcType=BIGINT},
+      #{productId,jdbcType=BIGINT}, #{lot,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR},
+      #{productNumber,jdbcType=VARCHAR}, #{principalId,jdbcType=BIGINT}, #{inStockTime,jdbcType=TIMESTAMP},
+      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
       #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
       )
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    `status` = #{status,jdbcType=VARCHAR}, 
-    stock_id = #{stockId,jdbcType=BIGINT}, 
-    product_id = #{productId,jdbcType=BIGINT}, 
-    lot = #{lot,jdbcType=VARCHAR}, 
-    serial_number = #{serialNumber,jdbcType=VARCHAR}, 
-    product_number = #{productNumber,jdbcType=VARCHAR}, 
-    principal_id = #{principalId,jdbcType=BIGINT}, 
-    in_stock_time = #{inStockTime,jdbcType=TIMESTAMP}, 
-    revision = #{revision,jdbcType=INTEGER}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def5 = #{def5,jdbcType=VARCHAR}, 
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    `status` = #{status,jdbcType=VARCHAR},
+    stock_id = #{stockId,jdbcType=BIGINT},
+    product_id = #{productId,jdbcType=BIGINT},
+    lot = #{lot,jdbcType=VARCHAR},
+    serial_number = #{serialNumber,jdbcType=VARCHAR},
+    product_number = #{productNumber,jdbcType=VARCHAR},
+    principal_id = #{principalId,jdbcType=BIGINT},
+    in_stock_time = #{inStockTime,jdbcType=TIMESTAMP},
+    revision = #{revision,jdbcType=INTEGER},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def5 = #{def5,jdbcType=VARCHAR},
     def6 = #{def6,jdbcType=DOUBLE}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeStockProdProduct">
@@ -318,7 +318,7 @@
         #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},

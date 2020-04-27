@@ -316,16 +316,11 @@ public class RtDriverServiceImpl implements RtDriverService {
      */
     @Override
     public PageResult<ListDriverResult> list(ListDriverPage page) {
-
         int totalRows = driverServiceMapper.listCount(page);
-
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(page);
         }
-
-        List<ListDriverResult> list = driverServiceMapper.list(page);
-
-        return PageResult.create(page, totalRows, list);
+        return PageResult.create(page, totalRows, driverServiceMapper.list(page));
     }
 
     /**

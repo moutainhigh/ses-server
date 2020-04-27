@@ -10,4 +10,7 @@ public interface SequenceName {
     String SCO_SCOOTER="SCO_SCOOTER";
 
     String SCO_SCOOTER_ACTION_TRACE="SCO_SCOOTER_ACTION_TRACE";
+
+    String CON_USER_SCOOTER = "CON_USER_SCOOTER";
+
 }

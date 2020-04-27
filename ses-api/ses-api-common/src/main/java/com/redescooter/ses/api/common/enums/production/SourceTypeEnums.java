@@ -18,7 +18,9 @@ public enum SourceTypeEnums {
 
     PURCHAS("PURCHAS", "采购", "1"),
     ALLOCATE("ALLOCATE", "调拨", "2"),
-    ASSEMBLY("ASSEMBLY", "组装", "3");
+    ASSEMBLY("ASSEMBLY", "组装", "3"),
+    SCOOTER_ALLOCATE("SCOOTER_ALLOCATE","车辆分配","4"),
+    ;
 
     private String code;
 

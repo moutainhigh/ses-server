@@ -9,7 +9,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeStockProdProduct")
+/**
+ * 生产成品库
+ */
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeStockProdProduct")
 @Data
 @Builder
 @AllArgsConstructor
@@ -39,6 +42,9 @@ public class OpeStockProdProduct {
     @ApiModelProperty(value="库存id")
     private Long stockId;
 
+    /**
+     * 商品Id
+     */
     @TableField(value = "product_id")
     @ApiModelProperty(value="")
     private Long productId;
@@ -54,7 +60,7 @@ public class OpeStockProdProduct {
      * 序列号
      */
     @TableField(value = "serial_number")
-    @ApiModelProperty(value="序列号")
+    @ApiModelProperty(value = "序列号")
     private String serialNumber;
 
     /**
@@ -63,6 +69,13 @@ public class OpeStockProdProduct {
     @TableField(value = "product_number")
     @ApiModelProperty(value="部件号")
     private String productNumber;
+
+    /**
+     * 入库单Id
+     */
+    @TableField(value = "in_stock_bill_id")
+    @ApiModelProperty(value = "入库单Id")
+    private Long inStockBillId;
 
     /**
      * 入库负责人Id
@@ -77,6 +90,27 @@ public class OpeStockProdProduct {
     @TableField(value = "in_stock_time")
     @ApiModelProperty(value="入库时间")
     private Date inStockTime;
+
+    /**
+     * 出库单Id
+     */
+    @TableField(value = "out_stock_bill_id")
+    @ApiModelProperty(value = "出库单Id")
+    private Long outStockBillId;
+
+    /**
+     * 出库负责人
+     */
+    @TableField(value = "out_principal_id")
+    @ApiModelProperty(value = "出库负责人")
+    private Integer outPrincipalId;
+
+    /**
+     * 出库时间
+     */
+    @TableField(value = "out_stock_time")
+    @ApiModelProperty(value = "出库时间")
+    private Date outStockTime;
 
     /**
      * 乐观锁
@@ -164,9 +198,17 @@ public class OpeStockProdProduct {
 
     public static final String COL_PRODUCT_NUMBER = "product_number";
 
+    public static final String COL_IN_STOCK_BILL_ID = "in_stock_bill_id";
+
     public static final String COL_PRINCIPAL_ID = "principal_id";
 
     public static final String COL_IN_STOCK_TIME = "in_stock_time";
+
+    public static final String COL_OUT_STOCK_BILL_ID = "out_stock_bill_id";
+
+    public static final String COL_OUT_PRINCIPAL_ID = "out_principal_id";
+
+    public static final String COL_OUT_STOCK_TIME = "out_stock_time";
 
     public static final String COL_REVISION = "revision";
 
@@ -187,4 +229,8 @@ public class OpeStockProdProduct {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeStockProdProductBuilder builder() {
+        return new OpeStockProdProductBuilder();
+    }
 }

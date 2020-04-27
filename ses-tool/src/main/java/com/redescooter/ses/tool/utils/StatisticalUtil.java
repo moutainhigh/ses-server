@@ -24,6 +24,6 @@ public class StatisticalUtil {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(percentageUtil(10, 30, 2));
+		System.out.println(percentageUtil(10, 30, 0));
 	}
 }

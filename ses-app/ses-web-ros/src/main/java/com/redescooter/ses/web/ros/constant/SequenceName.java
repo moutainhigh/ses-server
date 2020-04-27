@@ -98,4 +98,6 @@ public interface SequenceName {
     String OPE_PART_QC_TEMPLATE="OPE_PART_QC_TEMPLATE";
 
     String OPE_PART_QC_TEMPLATE_B="OPE_PART_QC_TEMPLATE_B";
+
+    String OPE_STOCK_PROD_PRODUCT = "OPE_STOCK_PROD_PRODUCT";
 }
