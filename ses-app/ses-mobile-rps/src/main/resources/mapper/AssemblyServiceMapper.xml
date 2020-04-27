@@ -9,7 +9,7 @@
         from ope_assembly_order asso
         where asso.dr=0
         and asso.wait_assembly_total!=0
-        and asso.status=2
+        and asso.status=3
         order by  asso.created_time asc
         limit #{startRow},#{pageSize}
     </select>

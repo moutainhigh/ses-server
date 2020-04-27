@@ -440,8 +440,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                     .createdBy(enter.getUserId())
                     .createdTime(new Date())
                     .build();
-            BeanUtils.copyProperties(opeStock, saveStock);
-            BeanUtils.copyProperties(buildOpeStockBill(enter, opePurchasB, opeStock), saveOpeStockBill);
+            BeanUtils.copyProperties(stock, saveStock);
+            BeanUtils.copyProperties(buildOpeStockBill(enter, opePurchasB, stock), saveOpeStockBill);
         }
 
 

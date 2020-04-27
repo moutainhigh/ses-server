@@ -76,7 +76,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public PageResult<WaitAssemblyListResult> list(PageEnter enter) {
         int count = opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>().ne(OpeAssemblyOrder::getWaitAssemblyTotal, 0).eq(OpeAssemblyOrder::getStatus,
-                AssemblyStatusEnums.PREPARE_MATERIAL.getValue()));
+                AssemblyStatusEnums.ASSEMBLING.getValue()));
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }

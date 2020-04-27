@@ -370,7 +370,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
 
         if (CollectionUtils.isNotEmpty(serialNList)) {
             //有Id 校验
-            List<OpeStockProdPart> opeStockProdPartListIdClassTrue = opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>().in(OpeStockProdPart::getSerialNumber, serialNList));
+            List<OpeStockPurchas> opeStockProdPartListIdClassTrue=opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>().in(OpeStockPurchas::getSerialNumber, serialNList));
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassTrue)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
@@ -391,7 +391,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                     }
                 });
             });
-            opeStockProdPartService.updateBatch(opeStockProdPartListIdClassTrue);
+            opeStockPurchasService.updateBatch(opeStockProdPartListIdClassTrue);
         }
 
         if (!stockProdPartIdMap.isEmpty()) {
@@ -522,9 +522,9 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
 
         OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(enter.getId());
         if (opeAssemblyOrder == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
         }
-        if (StringUtils.equals(opeAssemblyOrder.getStatus(), AssemblyStatusEnums.PREPARE_MATERIAL.getValue())) {
+        if (!StringUtils.equals(opeAssemblyOrder.getStatus(), AssemblyStatusEnums.PREPARE_MATERIAL.getValue())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
 
@@ -594,7 +594,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             opeStockProdPartService.updateBatch(opeStockProdPartListIdClassTrue);
         }
 
-        if (stockProdPartIdMap.isEmpty()) {
+        if (!stockProdPartIdMap.isEmpty()) {
             //无Id校验
             List<OpeStockProdPart> opeStockProdPartListIdClassFalse =
                     opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>().in(OpeStockProdPart::getPartId, stockProdPartIdMap.keySet()).orderByAsc(OpeStockProdPart::getCreatedTime));

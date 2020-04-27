@@ -1,6 +1,9 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -10,9 +13,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 采购单质检记录
- */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpePurchasQcTrace")
 @Data
 @Builder
@@ -33,7 +33,6 @@ public class OpePurchasQcTrace implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -65,11 +64,25 @@ public class OpePurchasQcTrace implements Serializable {
     private Long partQcTemplateId;
 
     /**
+     * 模板质检项名称
+     */
+    @TableField(value = "part_qc_template_name")
+    @ApiModelProperty(value = "模板质检项名称")
+    private String partQcTemplateName;
+
+    /**
      * 质检结果Id
      */
     @TableField(value = "part_qc_template_b_id")
     @ApiModelProperty(value = "质检结果Id")
     private Long partQcTemplateBId;
+
+    /**
+     * 模板质检结果名称
+     */
+    @TableField(value = "part_qc_template_b_name")
+    @ApiModelProperty(value = "模板质检结果名称")
+    private String partQcTemplateBName;
 
     /**
      * 质检条目Id
@@ -169,7 +182,11 @@ public class OpePurchasQcTrace implements Serializable {
 
     public static final String COL_PART_QC_TEMPLATE_ID = "part_qc_template_id";
 
+    public static final String COL_PART_QC_TEMPLATE_NAME = "part_qc_template_name";
+
     public static final String COL_PART_QC_TEMPLATE_B_ID = "part_qc_template_b_id";
+
+    public static final String COL_PART_QC_TEMPLATE_B_NAME = "part_qc_template_b_name";
 
     public static final String COL_PURCHAS_B_QC_ITEM_ID = "purchas_b_qc_item_id";
 

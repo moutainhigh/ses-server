@@ -20,6 +20,7 @@ public interface RpsHeadServiceMapper {
 
     /**
      * 采购入库
+     *
      * @param enter
      * @return
      */
@@ -27,6 +28,7 @@ public interface RpsHeadServiceMapper {
 
     /**
      * 调拨备料
+     *
      * @param enter
      * @return
      */
@@ -34,6 +36,7 @@ public interface RpsHeadServiceMapper {
 
     /**
      * 组装
+     *
      * @param enter
      * @return
      */
@@ -41,6 +44,7 @@ public interface RpsHeadServiceMapper {
 
     /**
      * 产品质检
+     *
      * @param enter
      * @return
      */
@@ -48,8 +52,16 @@ public interface RpsHeadServiceMapper {
 
     /**
      * 生产入库
+     *
      * @param enter
      * @return
      */
     int rpsHeadProductionInWh(GeneralEnter enter);
+
+    /**
+     * 调拨备料
+     *
+     * @param enter
+     */
+    int rpsHeadPrepareAllocate(GeneralEnter enter);
 }

@@ -11,7 +11,8 @@
 
     <select id="detailAllocatelList"
             resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult">
-        select allocateb.id                   as id,
+        select allocateb.allocate_id          as id,
+        allocateb.id                   as childOrderId,
         allocateb.part_id              as partId,
         parts.id_class                 as idClass,
         parts.parts_number             as partN,
@@ -84,13 +85,14 @@
     </select>
     <select id="detailAssemblyList"
             resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult">
-        select opart.id                   as id,
-                opart.part_id              as partId,
-                parts.id_class             as idClass,
-                parts.parts_number         as partN,
-                parts.cn_name              as partCnName,
-                opart.wait_preparation_qty as preparationWaitQty,
-                3                          as sourceType
+        select opart.assembly_id          as id,
+        opart.id                   as childOrderId,
+        opart.part_id              as partId,
+        parts.id_class             as idClass,
+        parts.parts_number         as partN,
+        parts.cn_name              as partCnName,
+        opart.wait_preparation_qty as preparationWaitQty,
+        3                          as sourceType
         from ope_assembly_order_part opart
         inner join ope_parts parts on parts.id = opart.part_id
         where opart.dr = 0

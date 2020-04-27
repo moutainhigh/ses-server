@@ -28,6 +28,9 @@ public class PrepareMaterialDetailResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "子订单Id")
+    private Long childOrderId;
+
     @ApiModelProperty(value = "来源类型")
     private String sourceType;
 
