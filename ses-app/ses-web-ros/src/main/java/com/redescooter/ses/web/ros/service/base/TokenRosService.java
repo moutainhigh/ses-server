@@ -5,6 +5,7 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
+import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
 
 /**
  * 功能描述: TOKE服务
@@ -70,4 +71,5 @@ public interface TokenRosService {
      * @return
      */
     GeneralResult deleteRosUser(IdEnter enter);
+
 }

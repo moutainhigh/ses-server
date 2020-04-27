@@ -6,6 +6,7 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
+import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -66,5 +67,4 @@ public class TokenController {
     public Response<GeneralResult> sendCode(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
         return new Response<>(tokenRosService.sendCode(enter));
     }
-
 }
