@@ -379,7 +379,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
 
         //查询调拨单子单
         QueryWrapper<OpeAllocateB> opeAllocateBQueryWrapper = new QueryWrapper<>();
-        opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_ALLOCATE_ID, enter.getId());
+        opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_ID, enter.getId());
         opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_PART_ID, enter.getPartId());
         OpeAllocateB opeAllocateB = opeAllocateBService.getOne(opeAllocateBQueryWrapper);
 
@@ -446,14 +446,14 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
             opeStock = OpeStock.builder()
                     .id(idAppService.getId(SequenceName.OPE_STOCK))
                     .dr(0)
-                    .intTotal(enter.getIdFlag() ? 1 : (opeStock.getIntTotal() + enter.getInWhNum()))
+                    .intTotal(enter.getIdFlag() ? 1 : enter.getInWhNum())
                     .whseId(opeWhse.getId())
                     .revision(0)
                     .userId(enter.getUserId())
                     .tenantId(enter.getTenantId())
                     .materielProductName(opeParts.getFrName())//显示法文
                     .materielProductId(enter.getPartId())
-                    .availableTotal(enter.getIdFlag() ? 1 : (opeStock.getIntTotal() + enter.getInWhNum()))
+                    .availableTotal(enter.getIdFlag() ? 1 : enter.getInWhNum())
                     .updatedTime(new Date())
                     .createdTime(new Date())
                     .updatedBy(enter.getUserId())
@@ -468,7 +468,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
             //修改调拨单的待入库数量
             opeAllocate.setPendingStorageTotal(enter.getIdFlag() ? (opeAllocate.getPendingStorageTotal() - 1) : (opeAllocate.getPendingStorageTotal() - enter.getInWhNum()));
             //修改调拨单子单的待入库数量
-            opeAllocateB.setPendingStorageQty(enter.getIdFlag() ? (opeAllocate.getPendingStorageTotal() - 1) : (opeAllocate.getPendingStorageTotal() - enter.getInWhNum()));
+            opeAllocateB.setPendingStorageQty(enter.getIdFlag() ? (opeAllocateB.getPendingStorageQty() - 1) : (opeAllocateB.getPendingStorageQty() - enter.getInWhNum()));
             //待入库总数错误
             if (opeAllocate.getPendingStorageTotal() < 0 || opeAllocateB.getPendingStorageQty() < 0) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getCode(), ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getMessage());
@@ -483,7 +483,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 saveNodeEnter.setStatus(AllocateOrderStatusEnums.INPRODUCTIONWH.getValue());
                 saveNodeEnter.setEvent(AllocateOrderEventEnums.INPRODUCTIONWH.getValue());
                 saveNodeEnter.setMemo(null);
-                receiptTraceService.saveAssemblyNode(saveNodeEnter);
+                receiptTraceService.saveAllocateNode(saveNodeEnter);
             }
         } else {
             throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getCode(), ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getMessage());
@@ -532,6 +532,10 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 .updatedTime(new Date())
                 .build();
 
+        //保存调拨单状态
+        opeAllocateService.updateById(opeAllocate);
+        //保存调拨子单状态
+        opeAllocateBService.updateById(opeAllocateB);
         //更新一条生产入库信息
         opeStockBillService.save(opeStockBill);
         //保存生产成品库的数据
@@ -632,14 +636,14 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
             opeStock = OpeStock.builder()
                     .id(idAppService.getId(SequenceName.OPE_STOCK))
                     .dr(0)
-                    .intTotal(enter.getIdFlag() ? 1 : (opeStock.getIntTotal() + enter.getInWhNum()))
+                    .intTotal(enter.getIdFlag() ? 1 : enter.getInWhNum())
                     .whseId(opeWhse.getId())
                     .revision(0)
                     .userId(enter.getUserId())
                     .tenantId(enter.getTenantId())
                     .materielProductName(opeAssemblyBOrder.getEnName())
                     .materielProductId(enter.getPartId())
-                    .availableTotal(enter.getIdFlag() ? 1 : (opeStock.getIntTotal() + enter.getInWhNum()))
+                    .availableTotal(enter.getIdFlag() ? 1 : enter.getInWhNum())
                     .updatedTime(new Date())
                     .createdTime(new Date())
                     .updatedBy(enter.getUserId())

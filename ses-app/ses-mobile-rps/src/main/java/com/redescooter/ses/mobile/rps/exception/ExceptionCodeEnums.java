@@ -133,11 +133,11 @@ public enum ExceptionCodeEnums {
 
     WAIT_IN_WH_NUM_ERROR(10063,"待入库总数错误"),
 
-    WH_IS_EMPTY(10064,"仓库不存在"),
+    PART_IS_ALREADY_DAMAGE(10064,"部件已损坏"),
 
-    ALLOCATE_TRACE_IS_EMPTY(10065,"调拨单记录为空"),
+    WH_IS_EMPTY(10065,"仓库不存在"),
 
-    PART_IS_ALREADY_DAMAGE(10066,"未知")
+    ALLOCATE_TRACE_IS_EMPTY(10066,"调拨单记录为空"),
 
 
 
