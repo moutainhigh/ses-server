@@ -144,7 +144,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         //获取调拨单的数据集合
         List<AllocateWaitInWhOneResult> allocateWaitInWhOneResultList = this.allocateWaitInWHList(enter);
         //展示列表为空
-        if ((CollectionUtils.isEmpty(allocateWaitInWhOneResultList) || allocateWaitInWhOneResultList.size() == 0) && count == 0) {
+        if ((CollectionUtils.isEmpty(allocateWaitInWhOneResultList)) && (CollectionUtils.isEmpty(productWaitInWhOneResultList))){
             return PageResult.createZeroRowResult(enter);
         }
         //调拨单不能为空
@@ -152,9 +152,19 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
             allocateAndProductResult.setAllocateWaitInWhOneResultList(allocateWaitInWhOneResultList);
         }
 
+        //总的显示行数
+        int total = 0;
+
+        if (!CollectionUtils.isEmpty(allocateWaitInWhOneResultList)) {
+            total += allocateWaitInWhOneResultList.size();
+        }
+        if (!CollectionUtils.isEmpty(productWaitInWhOneResultList)) {
+            total += productWaitInWhOneResultList.size();
+        }
+
         //组装单和调拨单可入库产品集合
         allocateAndProductResultList.add(allocateAndProductResult);
-        return PageResult.create(enter, count, allocateAndProductResultList);
+        return PageResult.create(enter, total, allocateAndProductResultList);
     }
 
     /**
@@ -171,7 +181,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         List<OpeAllocate> opeAllocateList = opeAllocateService.list(opeAllocateQueryWrapper);
         //调拨单为空
         if (CollectionUtils.isEmpty(opeAllocateList)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+            return null;
         }
         List<AllocateWaitInWhOneResult> allocateWaitInWhOneResultList = new ArrayList<>();
         AllocateWaitInWhOneResult allocateWaitInWHOneResult = null;
