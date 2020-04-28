@@ -123,9 +123,11 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
     @Override
     public PageResult<PrepareMaterialListResult> list(PageEnter enter) {
         //查询调拨单统计
-        int allocateListCount = prepareMaterialServiceMapper.allocatListCount(enter);
+//        int allocateListCount = prepareMaterialServiceMapper.allocatListCount(enter);
+        int allocateListCount = opeAllocateService.count(new LambdaQueryWrapper<OpeAllocate>().eq(OpeAllocate::getStatus, AllocateOrderStatusEnums.PENDING.getValue()));
         //组装单
-        int assemblyListCount = prepareMaterialServiceMapper.assemblyListCount(enter);
+//        int assemblyListCount = prepareMaterialServiceMapper.assemblyListCount(enter);
+        int assemblyListCount = opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>().eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.PENDING.getValue()));
 
         if (allocateListCount + assemblyListCount == 0) {
             return PageResult.createZeroRowResult(enter);
