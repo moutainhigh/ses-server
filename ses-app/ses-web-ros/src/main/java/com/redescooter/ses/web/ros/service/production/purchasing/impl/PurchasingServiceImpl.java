@@ -363,7 +363,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         List<ConsigneeResult> consigneeResultlist = new ArrayList<>();
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
-        opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_SYS_USER_ID, Constant.ADMINUSERID);
+        opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_FIRST_NAME, Constant.ADMIN_USER_NAME);
         List<OpeSysUserProfile> opeSysUserProfileList = opeSysUserProfileService.list(opeSysUserProfileQueryWrapper);
         opeSysUserProfileList.forEach(item -> {
             consigneeResultlist.add(ConsigneeResult.builder()

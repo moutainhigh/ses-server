@@ -32,6 +32,7 @@ public class RpsHeadServiceImpl implements RpsHeadService {
 
     @Autowired
     private OpeAssemblyOrderService opeAssemblyOrderService;
+
     /**
      * rps 首页数据
      *
@@ -40,11 +41,22 @@ public class RpsHeadServiceImpl implements RpsHeadService {
      */
     @Override
     public RpsHeadResult rpsHead(GeneralEnter enter) {
-        int prepareCount=opeAllocateService.count(new LambdaQueryWrapper<OpeAllocate>().eq(OpeAllocate::getStatus, AllocateOrderStatusEnums.PENDING.getValue()))+
-                opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>().eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.PENDING.getValue()));
-
-        int productionInWh=opeAllocateService.count(new LambdaQueryWrapper<OpeAllocate>().eq(OpeAllocate::getStatus, AllocateOrderStatusEnums.ALLOCATE.getValue()))+
-                opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>().eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.QC_PASSED.getValue()));
+        //待备料 统计
+        int prepareCount = opeAllocateService.count(new LambdaQueryWrapper<OpeAllocate>()
+                .eq(OpeAllocate::getStatus, AllocateOrderStatusEnums.PENDING.getValue())
+                .ne(OpeAllocate::getPreparationWaitTotal, 0))
+                +
+                opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>()
+                        .eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.PENDING.getValue())
+                        .ne(OpeAssemblyOrder::getLaveWaitQcTotal, 0));
+        //生产入库统计
+        int productionInWh = opeAllocateService.count(new LambdaQueryWrapper<OpeAllocate>()
+                .eq(OpeAllocate::getStatus, AllocateOrderStatusEnums.ALLOCATE.getValue())
+                .ne(OpeAllocate::getPendingStorageTotal, 0))
+                +
+                opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>()
+                        .eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.QC_PASSED.getValue())
+                        .ne(OpeAssemblyOrder::getInWaitWhTotal, 0));
         return RpsHeadResult.builder()
                 //来料质检
                 .materialQcTotal(rpsHeadServiceMapper.rpsHeadMaterialsQc(enter))
