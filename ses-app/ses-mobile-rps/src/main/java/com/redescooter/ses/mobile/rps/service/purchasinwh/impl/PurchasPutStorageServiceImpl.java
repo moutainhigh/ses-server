@@ -104,7 +104,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             return PageResult.createZeroRowResult(enter);
         }
         List<PurchasDetailsListResult> purchasDetailsListResults = purchasPutStorageMapper.storageDetailsResult(enter);
-        if (purchasDetailsListResults.size() <= 0) {
+        if (purchasDetailsListResults.isEmpty()) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         return PageResult.create(enter, count, purchasDetailsListResults);
