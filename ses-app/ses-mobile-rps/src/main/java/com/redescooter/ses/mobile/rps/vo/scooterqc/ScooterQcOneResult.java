@@ -22,7 +22,7 @@ public class ScooterQcOneResult extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "组装单号")
-    private String scooterNum;
+    private String assemblyNum;
 
     @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)

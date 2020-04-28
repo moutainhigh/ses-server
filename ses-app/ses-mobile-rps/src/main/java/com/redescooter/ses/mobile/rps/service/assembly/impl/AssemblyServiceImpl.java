@@ -204,6 +204,7 @@ public class AssemblyServiceImpl implements AssemblyService {
             opeAssemblyOrder.setUpdatedBy(enter.getUserId());
             opeAssemblyOrder.setUpdatedTime(new Date());
             opeAssemblyOrderService.updateById(opeAssemblyOrder);
+
             //日志记录
             SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
             BeanUtils.copyProperties(enter, saveNodeEnter);
@@ -254,6 +255,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         });
 
         //子订单数据更新
+        opeAssemblyBOrder.setCompleteQty(1);
         opeAssemblyBOrder.setUpdatedBy(enter.getUserId());
         opeAssemblyBOrder.setUpdatedTime(new Date());
         opeAssemblyBOrderService.updateById(opeAssemblyBOrder);
@@ -262,7 +264,6 @@ public class AssemblyServiceImpl implements AssemblyService {
         opeProductAssemblyService.save(opeProductAssembly);
         //产品组装部件保存
         opeProductAssemblyBService.saveBatch(saveProductAssemblyBList);
-
 
         return SaveFormulaDateResult.builder()
                 .id(opeProductAssembly.getId())
@@ -281,7 +282,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Transactional
     @Override
-    public GeneralResult printCode(PrintCodeEnter enter) {
+    public PrintCodeResult printCode(PrintCodeEnter enter) {
         OpeProductAssembly opeProductAssembly = opeProductAssemblyService.getById(enter.getId());
         if (opeProductAssembly == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PRODUCT_ASSEMBLY_TRACE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_ASSEMBLY_TRACE_IS_NOT_EXIST.getMessage());
@@ -291,14 +292,13 @@ public class AssemblyServiceImpl implements AssemblyService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PRODUCT_SERIAL_NUMBER_NON_REPEATABLE_PRINTING.getCode(), ExceptionCodeEnums.PRODUCT_SERIAL_NUMBER_NON_REPEATABLE_PRINTING.getMessage());
         }
 
-        if (!opeProductAssembly.getPrintFlag() && enter.getResult() == false) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PRINT_SERIAL_NUMBER_FAILURE.getCode(), ExceptionCodeEnums.PRINT_SERIAL_NUMBER_FAILURE.getMessage());
+        if (!opeProductAssembly.getPrintFlag() && enter.getPrintCodeResult()) {
+            opeProductAssembly.setPrintFlag(Boolean.TRUE);
+            opeProductAssembly.setUpdatedBy(enter.getUserId());
+            opeProductAssembly.setUpdatedTime(new Date());
+            opeProductAssemblyService.updateById(opeProductAssembly);
         }
-        opeProductAssembly.setPrintFlag(Boolean.TRUE);
-        opeProductAssembly.setUpdatedBy(enter.getUserId());
-        opeProductAssembly.setUpdatedTime(new Date());
-        opeProductAssemblyService.updateById(opeProductAssembly);
-        return new GeneralResult(enter.getRequestId());
+        return PrintCodeResult.builder().printCodeResult(enter.getPrintCodeResult()).build();
     }
 
     /**

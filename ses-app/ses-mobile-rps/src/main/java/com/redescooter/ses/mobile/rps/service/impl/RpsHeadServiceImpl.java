@@ -1,8 +1,15 @@
 package com.redescooter.ses.mobile.rps.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.mobile.rps.dao.RpsHeadServiceMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeAllocate;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
 import com.redescooter.ses.mobile.rps.service.RpsHeadService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAllocateService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.mobile.rps.vo.materialqc.RpsHeadResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +26,12 @@ public class RpsHeadServiceImpl implements RpsHeadService {
 
     @Autowired
     private RpsHeadServiceMapper rpsHeadServiceMapper;
+
+    @Autowired
+    private OpeAllocateService opeAllocateService;
+
+    @Autowired
+    private OpeAssemblyOrderService opeAssemblyOrderService;
     /**
      * rps 首页数据
      *
@@ -27,22 +40,24 @@ public class RpsHeadServiceImpl implements RpsHeadService {
      */
     @Override
     public RpsHeadResult rpsHead(GeneralEnter enter) {
-        //todo 带备料 修改
-        //rpsHeadServiceMapper.rpsHeadPrepareAllocate(enter);
-        //todo 生产入库统计
+        int prepareCount=opeAllocateService.count(new LambdaQueryWrapper<OpeAllocate>().eq(OpeAllocate::getStatus, AllocateOrderStatusEnums.PENDING.getValue()))+
+                opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>().eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.PENDING.getValue()));
+
+        int productionInWh=opeAllocateService.count(new LambdaQueryWrapper<OpeAllocate>().eq(OpeAllocate::getStatus, AllocateOrderStatusEnums.ALLOCATE.getValue()))+
+                opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>().eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.QC_PASSED.getValue()));
         return RpsHeadResult.builder()
                 //来料质检
                 .materialQcTotal(rpsHeadServiceMapper.rpsHeadMaterialsQc(enter))
                 //采购入库
                 .purchasInWhTotal(rpsHeadServiceMapper.rpsHeadPurchasInWh(enter))
-                //带备料
-                .prepareMaterialTotal(rpsHeadServiceMapper.rpsHeadPrepare(enter))
+                //待备料（调拨单、组装单）
+                .prepareMaterialTotal(prepareCount)
                 //整车组装
                 .assemblyTotal(rpsHeadServiceMapper.rpsHeadAssembly(enter))
                 //整车质检
                 .scooterQcTotal(rpsHeadServiceMapper.rpsHeadProductQc(enter))
-                //生产入库
-                .productionInWhTotal(rpsHeadServiceMapper.rpsHeadProductionInWh(enter))
+                //生产入库(组装单、调拨单)
+                .productionInWhTotal(productionInWh)
                 .build();
     }
 }

@@ -30,7 +30,13 @@ public class OpeStockProdPartServiceImpl extends ServiceImpl<OpeStockProdPartMap
     public int insertOrUpdateSelective(OpeStockProdPart record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<OpeStockProdPart> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
 
 
 

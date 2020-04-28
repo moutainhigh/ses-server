@@ -1,7 +1,9 @@
-package com.redescooter.ses.mobile.rps.service.prowaitinwh.impl;
+package com.redescooter.ses.mobile.rps.service.productwaitinwh.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
+import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
 import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderEventEnums;
@@ -14,19 +16,18 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.prowaitinwh.ProWaitInWHServiceMapper;
+import com.redescooter.ses.mobile.rps.dao.productwaitinwh.ProductWaitInWhServiceMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
-import com.redescooter.ses.mobile.rps.service.prowaitinwh.ProWaitInWHService;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.*;
+import com.redescooter.ses.mobile.rps.service.productwaitinwh.ProductWaitInWhService;
+import com.redescooter.ses.mobile.rps.vo.productwaitinwh.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,11 +46,11 @@ import java.util.List;
  * @Version V1.0
  **/
 @Service
-public class ProWaitInWHServiceImpl implements ProWaitInWHService {
+public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
 
     @Autowired
-    private ProWaitInWHServiceMapper proWaitInWHServiceMapper;
+    private ProductWaitInWhServiceMapper productWaitInWhServiceMapper;
 
     @Autowired
     private OpeAssemblyOrderService opeAssemblyOrderService;
@@ -88,11 +89,13 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
     private OpePartsService opePartsService;
 
     @Autowired
+    private OpePartsProductService opePartsProductService;
+
+    @Autowired
     private OpeAllocateBTraceService opeAllocateBTraceService;
 
     @Autowired
     private OpeStockProdPartService opeStockProdPartService;
-
 
     @Reference
     private IdAppService idAppService;
@@ -108,9 +111,9 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      */
     @Transactional
     @Override
-    public PageResult<AllocateAndProductResult> proWaitInWHList(PageEnter enter) {
-        int count = proWaitInWHServiceMapper.proWaitInWHListCount();
-        List<ProWaitInWHOneResult> proWaitInWHOneResultList = new ArrayList<>();
+    public PageResult<AllocateAndProductResult> productWaitInWhList(PageEnter enter) {
+        int count = productWaitInWhServiceMapper.proWaitInWHListCount();
+        List<ProductWaitInWhOneResult> productWaitInWhOneResultList = new ArrayList<>();
         //存放组装单和调拨单的可入库数据
         List<AllocateAndProductResult> allocateAndProductResultList = new ArrayList<>();
         AllocateAndProductResult allocateAndProductResult = new AllocateAndProductResult();
@@ -123,38 +126,45 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
             opeAssemblyOrderQueryWrapper.eq(OpeAssemblyOrder.COL_STATUS, AssemblyStatusEnums.QC_PASSED.getValue());
             List<OpeAssemblyOrder> opeAssemblyOrderList = opeAssemblyOrderService.list(opeAssemblyOrderQueryWrapper);
             //返回结果集
-            ProWaitInWHOneResult proWaitInWHOneResult = null;
+            ProductWaitInWhOneResult productWaitInWhOneResult = null;
             if (!CollectionUtils.isEmpty(opeAssemblyOrderList)) {
                 for (OpeAssemblyOrder opeAssemblyOrder : opeAssemblyOrderList) {
-                    proWaitInWHOneResultList.add(
-                            proWaitInWHOneResult = ProWaitInWHOneResult.builder()
-                                    .scooterId(opeAssemblyOrder.getId())
+                    productWaitInWhOneResultList.add(
+                            productWaitInWhOneResult = ProductWaitInWhOneResult.builder()
+                                    .assemblyId(opeAssemblyOrder.getId())
                                     .waitInWHNum(opeAssemblyOrder.getInWaitWhTotal())
                                     .waitInWHStr(opeAssemblyOrder.getAssemblyNumber())
                                     .inWHTListTime(new Date())
-                                    .wHType(WhseTypeEnums.ASSEMBLY.getValue()) //仓库类型
+                                    .sourceType(SourceTypeEnums.ASSEMBLY.getValue())//单据类型
                                     .build());
                 }
-                allocateAndProductResult.setProWaitInWHOneResultList(proWaitInWHOneResultList);
+                allocateAndProductResult.setProductWaitInWhOneResultList(productWaitInWhOneResultList);
             }
         }
         //获取调拨单的数据集合
-        List<AllocateWaitInWHOneResult> allocateWaitInWHOneResultList = this.allocateWaitInWHList(enter);
+        List<AllocateWaitInWhOneResult> allocateWaitInWhOneResultList = this.allocateWaitInWHList(enter);
         //展示列表为空
-        if (allocateWaitInWHOneResultList.size() == 0 && count == 0) {
+        if ((CollectionUtils.isEmpty(allocateWaitInWhOneResultList)) && (CollectionUtils.isEmpty(productWaitInWhOneResultList))){
             return PageResult.createZeroRowResult(enter);
         }
-        //调拨单为空
-        if (!CollectionUtils.isEmpty(allocateWaitInWHOneResultList)) {
-            allocateAndProductResult.setAllocateWaitInWHOneResultList(allocateWaitInWHOneResultList);
+        //调拨单不能为空
+        if (!CollectionUtils.isEmpty(allocateWaitInWhOneResultList)) {
+            allocateAndProductResult.setAllocateWaitInWhOneResultList(allocateWaitInWhOneResultList);
         }
-//            if (CollectionUtils.isEmpty(opeAssemblyOrderList) && CollectionUtils.isEmpty(allocateWaitInWHOneResultList)) {
-//                return PageResult.createZeroRowResult(enter);
-//            }
+
+        //总的显示行数
+        int total = 0;
+
+        if (!CollectionUtils.isEmpty(allocateWaitInWhOneResultList)) {
+            total += allocateWaitInWhOneResultList.size();
+        }
+        if (!CollectionUtils.isEmpty(productWaitInWhOneResultList)) {
+            total += productWaitInWhOneResultList.size();
+        }
 
         //组装单和调拨单可入库产品集合
         allocateAndProductResultList.add(allocateAndProductResult);
-        return PageResult.create(enter, count, allocateAndProductResultList);
+        return PageResult.create(enter, total, allocateAndProductResultList);
     }
 
     /**
@@ -165,30 +175,31 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      * @Param [enter]
      **/
     @Transactional
-    public List<AllocateWaitInWHOneResult> allocateWaitInWHList(PageEnter enter) {
+    public List<AllocateWaitInWhOneResult> allocateWaitInWHList(PageEnter enter) {
         QueryWrapper<OpeAllocate> opeAllocateQueryWrapper = new QueryWrapper<>();
         opeAllocateQueryWrapper.eq(OpeAllocate.COL_STATUS, AllocateOrderStatusEnums.ALLOCATE.getValue());
         List<OpeAllocate> opeAllocateList = opeAllocateService.list(opeAllocateQueryWrapper);
+        //调拨单为空
         if (CollectionUtils.isEmpty(opeAllocateList)) {
-            //throw new
+            return null;
         }
-        List<AllocateWaitInWHOneResult> allocateWaitInWHOneResultList = new ArrayList<>();
-        AllocateWaitInWHOneResult allocateWaitInWHOneResult = null;
+        List<AllocateWaitInWhOneResult> allocateWaitInWhOneResultList = new ArrayList<>();
+        AllocateWaitInWhOneResult allocateWaitInWHOneResult = null;
         if (opeAllocateList.size() == 0) {
             return null;
         } else {
             for (OpeAllocate opeAllocate : opeAllocateList) {
-                allocateWaitInWHOneResultList.add(
-                        allocateWaitInWHOneResult = AllocateWaitInWHOneResult.builder()
+                allocateWaitInWhOneResultList.add(
+                        allocateWaitInWHOneResult = AllocateWaitInWhOneResult.builder()
                                 .allocateId(opeAllocate.getId())
                                 .waitInWHNum(opeAllocate.getCount())
                                 .waitInWHStr(opeAllocate.getAllocateNum())
                                 .inWHTListTime(new Date())
-                                .wHType(WhseTypeEnums.ALLOCATE.getValue()) //仓库类型
+                                .sourceType(SourceTypeEnums.ALLOCATE.getValue())//单据类型
                                 .build());
             }
         }
-        return allocateWaitInWHOneResultList;
+        return allocateWaitInWhOneResultList;
     }
 
 
@@ -202,18 +213,18 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      */
     @Transactional
     @Override
-    public <T> PageResult<T> proWaitWHItemList(ProOrAllocateWaitInWHIdEnter enter) {
+    public <T> PageResult<T> productWaitWhItemList(ProductOrAllocateWaitInWhIdEnter enter) {
         if (StringUtils.isEmpty(enter)) {
             return PageResult.createZeroRowResult(enter);
         }
 
-        List<ProWaitInWHItemResult> proWaitWHItemListResult = new ArrayList<>();
+        List<ProductWaitInWhItemResult> proWaitWHItemListResult = new ArrayList<>();
         //返回结果集详情
-        ProWaitInWHItemResult proWaitInWHItemResult = null;
+        ProductWaitInWhItemResult productWaitInWhItemResult = null;
 
         //生产（组装）仓库
-        if (enter.getType().equals(WhseTypeEnums.ASSEMBLY.getValue())) {
-            int count = proWaitInWHServiceMapper.proWaitWHItemListCount();
+        if (enter.getSourceType().equals(SourceTypeEnums.ASSEMBLY.getValue())) {
+            int count = productWaitInWhServiceMapper.proWaitWHItemListCount();
             if (count == 0) {
                 return PageResult.createZeroRowResult(enter);
             } else {
@@ -237,26 +248,25 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 if (!CollectionUtils.isEmpty(opeAssemblyBOrderList)) {
                     for (OpeAssemblyBOrder opeAssemblyBOrder : opeAssemblyBOrderList) {
                         //去查询调拨单对应的产品详细信息
-                        QueryWrapper<OpeParts> opePartsQueryWrapper = new QueryWrapper<>();
+                        QueryWrapper<OpePartsProduct> opePartsQueryWrapper = new QueryWrapper<>();
                         opePartsQueryWrapper.eq(OpeParts.COL_ID, opeAssemblyBOrder.getProductId());
-                        OpeParts opeParts = opePartsService.getOne(opePartsQueryWrapper);
+                        OpePartsProduct opePartsProduct = opePartsProductService.getOne(opePartsQueryWrapper);
 
                         //部件不存在
-                        if (StringUtils.isEmpty(opeParts)) {
+                        if (StringUtils.isEmpty(opePartsProduct)) {
                             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
                         }
 
                         proWaitWHItemListResult.add(
-                                proWaitInWHItemResult = ProWaitInWHItemResult.builder()
+                                productWaitInWhItemResult = ProductWaitInWhItemResult.builder()
                                         .id(opeAssemblyBOrder.getId())
-                                        .scooterBId(opeAssemblyBOrder.getId())
-                                        .scooterStr(opeAssemblyOrder.getAssemblyNumber())
-                                        .partId(opeAssemblyBOrder.getProductId())
-                                        .partNum(opeAssemblyBOrder.getInWaitWhQty())
-                                        .partStr(opeAssemblyBOrder.getProductNumber())
-                                        .partName(opeAssemblyBOrder.getEnName())
-                                        .wHType(WhseTypeEnums.ASSEMBLY.getValue())
-                                        .idFlag(opeParts.getIdClass() ? Boolean.TRUE : Boolean.FALSE)
+                                        .assemblyBId(opeAssemblyBOrder.getId())
+                                        .assemblyStr(opeAssemblyOrder.getAssemblyNumber())
+                                        .productId(opeAssemblyBOrder.getProductId())
+                                        .productNum(opeAssemblyBOrder.getInWaitWhQty())
+                                        .productStr(opeAssemblyBOrder.getProductNumber())
+                                        .productName(opeAssemblyBOrder.getEnName())
+                                        .sourceType(SourceTypeEnums.ALLOCATE.getValue())
                                         .build());
                     }
                 } else {
@@ -267,7 +277,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         }
 
         //调拨单子单
-        if (enter.getType().equals(WhseTypeEnums.ALLOCATE.getValue())) {
+        if (enter.getSourceType().equals(SourceTypeEnums.ALLOCATE.getValue())) {
             //查询调拨单子单
             QueryWrapper<OpeAllocateB> opeAllocateBQueryWrapper = new QueryWrapper<>();
             opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_ALLOCATE_ID, enter.getId());
@@ -283,14 +293,14 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
             }
 
-            //调拨单子单为空（需要修改）
+            //调拨单子单为空
             if (CollectionUtils.isEmpty(opeAllocateBList)) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+                throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_B_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_B_ORDER_IS_NOT_EXIST.getMessage());
             }
 
             //返回结果集详情
-            AllocateWaitInWHItemResult allocateWaitInWHItemResult = null;
-            List<AllocateWaitInWHItemResult> allocateWaitInWHItemResultList = new ArrayList<>();
+            AllocateWaitInWhItemResult allocateWaitInWHItemResult = null;
+            List<AllocateWaitInWhItemResult> allocateWaitInWhItemResultList = new ArrayList<>();
             for (OpeAllocateB opeAllocateB : opeAllocateBList) {
                 //去查询调拨单对应的产品详细信息
                 QueryWrapper<OpeParts> opePartsQueryWrapper = new QueryWrapper<>();
@@ -303,8 +313,8 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 }
 
                 //查询调拨单的编号
-                allocateWaitInWHItemResultList.add(
-                        allocateWaitInWHItemResult = AllocateWaitInWHItemResult.builder()
+                allocateWaitInWhItemResultList.add(
+                        allocateWaitInWHItemResult = AllocateWaitInWhItemResult.builder()
                                 .id(opeAllocateB.getId())
                                 .allocateBId(opeAllocateB.getId())
                                 .allocateNum(allocate.getAllocateNum())//调拨单编号
@@ -316,7 +326,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                                 .idFlag(opeParts.getIdClass() ? Boolean.TRUE : Boolean.FALSE)
                                 .build());
             }
-            return (PageResult<T>) PageResult.create(enter, opeAllocateBList.size(), allocateWaitInWHItemResultList);
+            return (PageResult<T>) PageResult.create(enter, opeAllocateBList.size(), allocateWaitInWhItemResultList);
         }
         return PageResult.createZeroRowResult(enter);
     }
@@ -331,7 +341,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      */
     @Transactional
     @Override
-    public ProWaitInWHInfoResult proWaitInWHInfoOut(IdEnter enter) {
+    public ProductWaitInWhInfoResult proWaitInWHInfoOut(IdEnter enter) {
         return null;
     }
 
@@ -345,7 +355,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      */
     @Transactional
     @Override
-    public ProWaitInWHInfoResult proWaitInWHInfoIn(ProWaitInWHIdItemEnter enter) {
+    public ProductWaitInWhInfoResult productWaitInWhInfoIn(ProductWaitInWhIdItemEnter enter) {
 
         //本次应该入库的数量和实际入库数量不符
         if (!enter.getInWhNum().equals(enter.getShouldInWhNum())) {
@@ -353,13 +363,13 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         }
 
         //组装单入库
-        if (enter.getType().equals(WhseTypeEnums.ASSEMBLY.getValue())) {
-            return this.getProWaitInWHInfoResultFromAssembly(enter);
+        if (enter.getSourceType().equals(SourceTypeEnums.ASSEMBLY.getValue())) {
+            return this.getProductWaitInWhInfoResultFromAssembly(enter);
         }
 
         //调拨单入库
-        if (enter.getType().equals(WhseTypeEnums.ALLOCATE.getValue())) {
-            return this.getProWaitInWHInfoResultFromAllocate(enter);
+        if (enter.getSourceType().equals(SourceTypeEnums.ALLOCATE.getValue())) {
+            return this.getProductWaitInWhInfoResultFromAllocate(enter);
         }
 
         return null;
@@ -373,14 +383,13 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      * @Date 2020/4/26 19:45
      * @Param [enter]
      **/
-    private ProWaitInWHInfoResult getProWaitInWHInfoResultFromAllocate(ProWaitInWHIdItemEnter enter) {
+    private ProductWaitInWhInfoResult getProductWaitInWhInfoResultFromAllocate(ProductWaitInWhIdItemEnter enter) {
         //返回结果集
-        ProWaitInWHInfoResult proWaitInWHInfoResult = null;
+        ProductWaitInWhInfoResult productWaitInWhInfoResult = null;
 
         //查询调拨单子单
         QueryWrapper<OpeAllocateB> opeAllocateBQueryWrapper = new QueryWrapper<>();
         opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_ID, enter.getId());
-        opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_PART_ID, enter.getPartId());
         OpeAllocateB opeAllocateB = opeAllocateBService.getOne(opeAllocateBQueryWrapper);
 
         //调拨单子单为空
@@ -410,7 +419,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
 
         //去查询调拨单对应的产品详细信息
         QueryWrapper<OpeParts> opePartsQueryWrapper = new QueryWrapper<>();
-        opePartsQueryWrapper.eq(OpeParts.COL_ID, enter.getPartId());
+        opePartsQueryWrapper.eq(OpeParts.COL_ID, opeAllocateB.getPartId());
         OpeParts opeParts = opePartsService.getOne(opePartsQueryWrapper);
 
         //部件不存在
@@ -431,29 +440,31 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         //根据仓库id查询库存表
         QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
-        opeStockQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, enter.getPartId());
+        opeStockQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opeAllocateB.getPartId());
         OpeStock opeStock = opeStockService.getOne(opeStockQueryWrapper);
 
         //查询仓库中是否有该产品，有就数量叠加，没有就新增
         if (!StringUtils.isEmpty(opeStock)) {
             //入库总数+
-            opeStock.setIntTotal(enter.getIdFlag() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
+            opeStock.setIntTotal(opeParts.getIdClass() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
             //剩余库存数+
-            opeStock.setIntTotal(enter.getIdFlag() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
+            opeStock.setIntTotal(opeParts.getIdClass() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
             opeStockService.updateById(opeStock);
         } else {
             //新建库存
             opeStock = OpeStock.builder()
                     .id(idAppService.getId(SequenceName.OPE_STOCK))
                     .dr(0)
-                    .intTotal(enter.getIdFlag() ? 1 : enter.getInWhNum())
+                    .intTotal(opeParts.getIdClass() ? 1 : enter.getInWhNum())
+                    .outTotal(0)
                     .whseId(opeWhse.getId())
                     .revision(0)
                     .userId(enter.getUserId())
                     .tenantId(enter.getTenantId())
-                    .materielProductName(opeParts.getFrName())//显示法文
-                    .materielProductId(enter.getPartId())
-                    .availableTotal(enter.getIdFlag() ? 1 : enter.getInWhNum())
+                    .materielProductName(opeParts.getCnName())
+                    .materielProductId(opeAllocateB.getPartId())
+                    .materielProductType(opeParts.getPartsType())//产品物料类型
+                    .availableTotal(opeParts.getIdClass() ? 1 : enter.getInWhNum())
                     .updatedTime(new Date())
                     .createdTime(new Date())
                     .updatedBy(enter.getUserId())
@@ -466,9 +477,9 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         //判断调拨单的状态是否改变，记录调拨单状态变更
         if ((!StringUtils.isEmpty(opeAllocate.getPendingStorageTotal())) && (!StringUtils.isEmpty(opeAllocateB.getPendingStorageQty()))) {
             //修改调拨单的待入库数量
-            opeAllocate.setPendingStorageTotal(enter.getIdFlag() ? (opeAllocate.getPendingStorageTotal() - 1) : (opeAllocate.getPendingStorageTotal() - enter.getInWhNum()));
+            opeAllocate.setPendingStorageTotal(opeParts.getIdClass() ? (opeAllocate.getPendingStorageTotal() - 1) : (opeAllocate.getPendingStorageTotal() - enter.getInWhNum()));
             //修改调拨单子单的待入库数量
-            opeAllocateB.setPendingStorageQty(enter.getIdFlag() ? (opeAllocateB.getPendingStorageQty() - 1) : (opeAllocateB.getPendingStorageQty() - enter.getInWhNum()));
+            opeAllocateB.setPendingStorageQty(opeParts.getIdClass() ? (opeAllocateB.getPendingStorageQty() - 1) : (opeAllocateB.getPendingStorageQty() - enter.getInWhNum()));
             //待入库总数错误
             if (opeAllocate.getPendingStorageTotal() < 0 || opeAllocateB.getPendingStorageQty() < 0) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getCode(), ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getMessage());
@@ -496,7 +507,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 .stockId(opeStock.getId())
                 .direction(InOutWhEnums.IN.getValue())
                 .status(StockBillStatusEnums.NORMAL.getValue())
-                .total(enter.getIdFlag() ? 1 : enter.getInWhNum())
+                .total(opeParts.getIdClass() ? 1 : enter.getInWhNum())
                 .userId(enter.getUserId())
                 .tenantId(enter.getTenantId())
                 .sourceId(opeAllocate.getId())
@@ -515,6 +526,8 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         OpeStockProdPart opeStockProdPart = OpeStockProdPart.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PROD_PART))
                 .dr(0)
+                .userId(enter.getUserId())
+                .tenantId(enter.getTenantId())
                 .status(StockProductPartStatusEnums.AVAILABLE.getValue())
                 .stockId(opeStock.getId())
                 .partId(opeParts.getId())
@@ -522,10 +535,13 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 .serialNumber(opeAllocateBTrace.getSerialNum())
                 .partsNumber(opeParts.getPartsNumber())
                 .inStockBillId(opeStockBill.getId())
+                .outStockBillId(0L)
+                .outStockTime(null)
+                .outPrincipalId(0L)
                 .principalId(enter.getUserId())
                 .inStockTime(new Date())
                 .revision(0)
-                .inWhQty(enter.getIdFlag() ? 1 : enter.getInWhNum())
+                .inWhQty(opeParts.getIdClass() ? 1 : enter.getInWhNum())
                 .createdBy(enter.getUserId())
                 .createdTime(new Date())
                 .updatedBy(enter.getUserId())
@@ -542,11 +558,12 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         opeStockProdPartService.save(opeStockProdPart);
 
         //返回成功结果集
-        return ProWaitInWHInfoResult.builder()
-                .partNum(opeParts.getPartsNumber())
-                .batchNum(opeAllocateBTrace.getBatchNo())  //批次号
-                .partName(opeParts.getFrName())
+        return ProductWaitInWhInfoResult.builder()
                 .residueNum(opeAllocateB.getPendingStorageQty())
+                .partNum(opeParts.getPartsNumber())
+                .partName(opeParts.getCnName())
+                .batchNum(opeAllocateBTrace.getBatchNo())  //批次号
+                .serialNum(opeParts.getIdClass() ? opeAllocateBTrace.getSerialNum() : null)  //序列号
                 .build();
     }
 
@@ -557,13 +574,12 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
      * @Date 2020/4/26 19:33
      * @Param [enter]
      **/
-    private ProWaitInWHInfoResult getProWaitInWHInfoResultFromAssembly(ProWaitInWHIdItemEnter enter) {
+    private ProductWaitInWhInfoResult getProductWaitInWhInfoResultFromAssembly(ProductWaitInWhIdItemEnter enter) {
         //返回结果集
-        ProWaitInWHInfoResult proWaitInWHInfoResult = null;
+        ProductWaitInWhInfoResult productWaitInWhInfoResult = null;
 
         //查询对应的质检记录
         QueryWrapper<OpeAssemblyBQc> opeAssemblyBQcQueryWrapper = new QueryWrapper<>();
-        opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_PRODUCT_ID, enter.getPartId());
         opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_ASSEMBLY_B_ID, enter.getId());
         opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_STATUS, AssemblyStatusEnums.QC_PASSED.getValue());
         OpeAssemblyBQc opeAssemblyBQc = opeAssemblyBQcService.getOne(opeAssemblyBQcQueryWrapper);
@@ -575,7 +591,6 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         } else {
             //通过质检项查询质检结果id
             QueryWrapper<OpeAssemblyQcItem> opeAssemblyQcItemQueryWrapper = new QueryWrapper<>();
-            opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_PRODUCT_ID, enter.getPartId());
             opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_ASSEMBLY_B_ID, enter.getId());
             opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_ASSEMBLY_B_QC_ID, opeAssemblyBQc.getId());
             opeAssemblyQcItem = opeAssemblyQcItemService.getOne(opeAssemblyQcItemQueryWrapper);
@@ -584,7 +599,6 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         //获取组装单子单
         QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
         opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ID, enter.getId());
-        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_PRODUCT_ID, enter.getPartId());
         opeAssemblyBOrderQueryWrapper.gt(OpeAssemblyBOrder.COL_IN_WAIT_WH_QTY, 0);
         OpeAssemblyBOrder opeAssemblyBOrder = opeAssemblyBOrderService.getOne(opeAssemblyBOrderQueryWrapper);
 
@@ -619,31 +633,44 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
             throw new SesMobileRpsException(ExceptionCodeEnums.WH_IS_EMPTY.getCode(), ExceptionCodeEnums.WH_IS_EMPTY.getMessage());
         }
 
+        //去查询组装单单对应的产品详细信息
+        QueryWrapper<OpePartsProduct> opePartsQueryWrapper = new QueryWrapper<>();
+        opePartsQueryWrapper.eq(OpeParts.COL_ID, opeAssemblyBOrder.getProductId());
+        OpePartsProduct opePartsProduct = opePartsProductService.getOne(opePartsQueryWrapper);
+
+        //产品不存在
+        if (StringUtils.isEmpty(opePartsProduct)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
         //根据仓库id查询库存表
         QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
-        opeStockQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, enter.getPartId());
+        opeStockQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opeAssemblyBOrder.getProductId());
         OpeStock opeStock = opeStockService.getOne(opeStockQueryWrapper);
 
         //查询仓库中是否有该产品，有就数量叠加，没有就新增
         if (!StringUtils.isEmpty(opeStock)) {
             //入库总数+1
-            opeStock.setIntTotal(enter.getIdFlag() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
+            opeStock.setIntTotal(opeStock.getIntTotal() + 1);
             //剩余库存数+1
-            opeStock.setIntTotal(enter.getIdFlag() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
+            opeStock.setAvailableTotal(opeStock.getAvailableTotal() + 1);
             opeStockService.updateById(opeStock);
         } else {
             opeStock = OpeStock.builder()
                     .id(idAppService.getId(SequenceName.OPE_STOCK))
                     .dr(0)
-                    .intTotal(enter.getIdFlag() ? 1 : enter.getInWhNum())
+                    .intTotal(1)
+                    .outTotal(0)
                     .whseId(opeWhse.getId())
                     .revision(0)
                     .userId(enter.getUserId())
                     .tenantId(enter.getTenantId())
                     .materielProductName(opeAssemblyBOrder.getEnName())
-                    .materielProductId(enter.getPartId())
-                    .availableTotal(enter.getIdFlag() ? 1 : enter.getInWhNum())
+                    .materielProductId(opeAssemblyBOrder.getProductId())
+                    .materielProductType(BomCommonTypeEnums.SCOOTER.getCode())  //类型是整车
+                    .availableTotal(1)
+                    .wornTotal(0)
                     .updatedTime(new Date())
                     .createdTime(new Date())
                     .updatedBy(enter.getUserId())
@@ -660,7 +687,7 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 .stockId(opeStock.getId())
                 .direction(InOutWhEnums.IN.getValue())
                 .status(StockBillStatusEnums.NORMAL.getValue())
-                .total(enter.getIdFlag() ? 1 : enter.getInWhNum())
+                .total(1)
                 .userId(enter.getUserId())
                 .tenantId(enter.getTenantId())
                 .sourceId(opeAssemblyOrder.getId())
@@ -679,9 +706,9 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         //修改组装单的总待入库数量
         if ((!StringUtils.isEmpty(opeAssemblyOrder.getInWaitWhTotal())) && (!StringUtils.isEmpty(opeAssemblyBOrder.getInWaitWhQty()))) {
             //修改组装单子单的待入库数
-            opeAssemblyBOrder.setInWaitWhQty(enter.getIdFlag() ? (opeAssemblyBOrder.getInWaitWhQty() - 1) : (opeAssemblyBOrder.getInWaitWhQty() - enter.getInWhNum()));
+            opeAssemblyBOrder.setInWaitWhQty(opeAssemblyBOrder.getInWaitWhQty() - 1);
             //修改组装单的待入库数
-            opeAssemblyOrder.setInWaitWhTotal(enter.getIdFlag() ? (opeAssemblyOrder.getInWaitWhTotal() - 1) : (opeAssemblyOrder.getInWaitWhTotal() - enter.getInWhNum()));
+            opeAssemblyOrder.setInWaitWhTotal(opeAssemblyOrder.getInWaitWhTotal() - 1);
 
             //待入库总数错误
             if (opeAssemblyOrder.getInWaitWhTotal() < 0 || opeAssemblyBOrder.getInWaitWhQty() < 0) {
@@ -704,7 +731,6 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
             throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getCode(), ExceptionCodeEnums.WAIT_IN_WH_NUM_ERROR.getMessage());
         }
 
-
         if (opeAssemblyBOrder.getInWaitWhQty() == 0) {
             //组装子单入库完成
             opeAssemblyBOrder.setStatus(AssemblyStatusEnums.IN_PRODUCTION_WH.getValue());
@@ -722,9 +748,13 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
                 .productNumber(opeAssemblyBOrder.getProductNumber())
                 .inStockBillId(opeStockBill.getId())
                 .principalId(enter.getUserId())
+                .outPrincipalId(0L)
+                .outStockBillId(0L)
+                .outStockTime(null)
+                .inStockBillId(0L)
                 .inStockTime(new Date())
                 .revision(0)
-                .inWhQty(enter.getIdFlag() ? 1 : enter.getInWhNum())
+                .inWhQty(1)
                 .createdBy(enter.getUserId())
                 .createdTime(new Date())
                 .updatedBy(enter.getUserId())
@@ -741,15 +771,12 @@ public class ProWaitInWHServiceImpl implements ProWaitInWHService {
         opeAssemblyOrderService.updateById(opeAssemblyOrder);
 
         //返回入库成功结果集
-        return ProWaitInWHInfoResult.builder()
-                .partNum(opeAssemblyBOrder.getProductNumber())
-                .batchNum(opeAssemblyBQc.getBatchNo())  //批次号
-                .proTime(opeAssemblyOrder.getCreatedTime())
-                .partName(opeAssemblyBOrder.getEnName())
+        return ProductWaitInWhInfoResult.builder()
                 .residueNum(opeAssemblyBOrder.getInWaitWhQty())
-                .Num(opeAssemblyQcItem.getSerialNum())  //序列号
+                .partName(opeAssemblyBOrder.getEnName())
+                .productNum(opePartsProduct.getProductNumber())  //车辆编码
+                .serialNum(opeAssemblyQcItem.getSerialNum())  //序列号
+                .proTime(opeAssemblyOrder.getCreatedTime())
                 .build();
     }
-
-
 }

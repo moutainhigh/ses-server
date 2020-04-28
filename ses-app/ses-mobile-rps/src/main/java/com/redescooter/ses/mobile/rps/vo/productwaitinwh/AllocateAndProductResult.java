@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.rps.vo.prowaitinwh;
+package com.redescooter.ses.mobile.rps.vo.productwaitinwh;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
@@ -23,10 +23,10 @@ import java.util.List;
 public class AllocateAndProductResult extends GeneralResult {
 
     @ApiModelProperty(value = "生产仓库（组装）可入库集合")
-    private List<ProWaitInWHOneResult> proWaitInWHOneResultList;
+    private List<ProductWaitInWhOneResult> productWaitInWhOneResultList;
 
     @ApiModelProperty(value = "生产仓库（调拨）可入库集合")
-    private List<AllocateWaitInWHOneResult> allocateWaitInWHOneResultList;
+    private List<AllocateWaitInWhOneResult> allocateWaitInWhOneResultList;
 
 
 }

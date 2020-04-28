@@ -55,7 +55,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    GeneralResult printCode(PrintCodeEnter enter);
+    PrintCodeResult printCode(PrintCodeEnter enter);
 
     /**
      * 查询打印条码结果

@@ -24,7 +24,7 @@ import io.swagger.annotations.*;
 @Builder
 public class SaveFormulaPartListEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "部件 id")
     private Long id;
 
     @ApiModelProperty(value = "数量")

@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.rps.vo.prowaitinwh;
+package com.redescooter.ses.mobile.rps.vo.productwaitinwh;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
@@ -18,7 +18,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class AllocateWaitInWHItemResult extends GeneralResult {
+public class AllocateWaitInWhItemResult extends GeneralResult {
 
     @ApiModelProperty(value = "主键", required = true)
     private Long id;

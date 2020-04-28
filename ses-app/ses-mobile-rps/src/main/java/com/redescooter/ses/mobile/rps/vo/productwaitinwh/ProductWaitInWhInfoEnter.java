@@ -1,27 +1,26 @@
-package com.redescooter.ses.mobile.rps.vo.prowaitinwh;
+package com.redescooter.ses.mobile.rps.vo.productwaitinwh;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-
-import io.swagger.annotations.*;
 
 import java.util.Date;
 
 /**
- * @ClassNameProWaitInWHInfoResult
+ * @ClassNameProWaitInWHInfoEnter
  * @Description
  * @Author kyle
- * @Date2020/4/14 17:10
+ * @Date2020/4/14 17:15
  * @Version V1.0
  **/
-@ApiModel(value = "生产仓库入库信息出参", description = "生产仓库入库信息出参")
+@ApiModel(value = "生产仓库入库信息入参", description = "生产仓库入库信息入参")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ProWaitInWHInfoResult extends GeneralResult {
+public class ProductWaitInWhInfoEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "部品名称")
     private String partName;

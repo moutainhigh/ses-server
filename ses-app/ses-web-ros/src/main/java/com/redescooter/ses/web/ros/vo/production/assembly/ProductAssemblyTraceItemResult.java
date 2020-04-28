@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.production.assembly;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:ProductAssemblyTraceItemResult
@@ -26,10 +29,15 @@ import io.swagger.annotations.*;
 @Builder
 public class ProductAssemblyTraceItemResult extends GeneralResult {
 
+    @ApiModelProperty(value = "需组装总数量")
+    private int assemblyTotal;
+
     @ApiModelProperty(value = "组装数量")
     private int assemblyCompleteTotal;
 
     @ApiModelProperty(value = "组装时间")
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date assemblyDate;
 
 }
