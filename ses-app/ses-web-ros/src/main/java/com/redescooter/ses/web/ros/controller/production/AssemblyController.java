@@ -16,6 +16,8 @@ import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductRes
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
@@ -132,10 +134,22 @@ public class AssemblyController {
         return new Response<>(assemblyService.assemblyNode(enter));
     }
 
-    @PostMapping(value = "/assemblyNode")
+    @PostMapping(value = "/assemblyQcInfo")
     @ApiOperation(value = "组装单质检记录", response = AssemblyQcInfoResult.class)
-    public Response<List<AssemblyQcInfoResult>> assemblyQcTrces(@ModelAttribute @ApiParam("请求参数") AssemblyQcInfoEnter enter) {
+    public Response<List<AssemblyQcInfoResult>> assemblyQcInfo(@ModelAttribute @ApiParam("请求参数") AssemblyQcInfoEnter enter) {
         return new Response<>(assemblyService.assemblyQcInfo(enter));
+    }
+
+    @PostMapping(value = "/assemblyQcInfoItem")
+    @ApiOperation(value = "组装单质检记录条目", response = productItemResult.class)
+    public Response<List<AssemblyQcItemResult>> assemblyQcInfoItem(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(assemblyService.assemblyQcInfoItem(enter));
+    }
+
+    @PostMapping(value = "/assemblyQcItemView")
+    @ApiOperation(value = "组装单质检条目质检结果信息", response = AssemblyQcItemViewResult.class)
+    public Response<AssemblyQcItemViewResult> assemblyQcItemView(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(assemblyService.assemblyQcItemView(enter));
     }
 
     @PostMapping(value = "/export")
@@ -210,14 +224,14 @@ public class AssemblyController {
         return new Response<>(assemblyService.productItemList(enter));
     }
 
-    @PostMapping(value = "/property/productAssemblyTrace")
-    @ApiOperation(value = "财务人员组装单组装记录", response = productItemResult.class)
+    @PostMapping(value = "/productAssemblyTrace")
+    @ApiOperation(value = "组装单组装记录", response = productItemResult.class)
     public Response<List<ProductAssemblyTraceResult>> productAssemblyTrace(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(assemblyService.productAssemblyTrace(enter));
     }
 
-    @PostMapping(value = "/property/productAssemblyTraceItem")
-    @ApiOperation(value = "财务人员组装单组装记录条目", response = productItemResult.class)
+    @PostMapping(value = "/productAssemblyTraceItem")
+    @ApiOperation(value = "组装单组装记录条目", response = productItemResult.class)
     public Response<List<ProductAssemblyTraceItemResult>> productAssemblyTraceItem(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(assemblyService.productAssemblyTraceItem(enter));
     }

@@ -28,7 +28,7 @@ public class UserProfileController{
     private SysUserProfileService sysUserProfileService;
 
     @ApiOperation(value = "获取用户个人信息", response = UserInfoResult.class)
-    @PostMapping(value = "/getUser")
+    @PostMapping(value = "/getUserInfo")
     public Response<UserInfoResult> userInfo(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(sysUserProfileService.userInfo(enter));
     }

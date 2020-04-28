@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.*;
 
-public interface ScooterqcService {
+public interface ScooterQcService {
     /**
      * @Author kyle
      * @Description //查询整车质检列表并展示

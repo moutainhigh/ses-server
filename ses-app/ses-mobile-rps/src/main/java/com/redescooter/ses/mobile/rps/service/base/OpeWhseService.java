@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.mobile.rps.dm.OpeWhse;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public interface OpeWhseService extends IService<OpeWhse> {
 
 

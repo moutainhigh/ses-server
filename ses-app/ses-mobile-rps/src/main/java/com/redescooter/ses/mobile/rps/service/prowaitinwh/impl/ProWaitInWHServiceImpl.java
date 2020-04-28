@@ -20,7 +20,7 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.*;
-import com.redescooter.ses.mobile.rps.service.base.impl.OpeAssemblyOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.mobile.rps.service.prowaitinwh.ProWaitInWHService;
 import com.redescooter.ses.mobile.rps.vo.prowaitinwh.*;
 import com.redescooter.ses.starter.common.service.IdAppService;

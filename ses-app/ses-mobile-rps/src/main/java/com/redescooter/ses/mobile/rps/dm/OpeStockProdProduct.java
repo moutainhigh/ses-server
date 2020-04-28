@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,6 +30,7 @@ public class OpeStockProdProduct {
 
     @TableField(value = "dr")
     @ApiModelProperty(value = "")
+    @TableLogic
     private Integer dr;
 
     /**

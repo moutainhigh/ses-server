@@ -7,6 +7,11 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
@@ -109,6 +114,7 @@ public interface AssemblyServiceMapper {
 
     /**
      * 车辆组装记录
+     * ROS 1.4 补充的接口
      *
      * @param enter
      * @return
@@ -122,4 +128,36 @@ public interface AssemblyServiceMapper {
      * @return
      */
     List<ProductAssemblyTraceItemResult> productAssemblyItemTrace(IdEnter enter);
+
+    /**
+     * 质检结果
+     *
+     * @param enter
+     * @return
+     */
+    List<AssemblyQcInfoResult> assemblyQcInfo(AssemblyQcInfoEnter enter);
+
+    /**
+     * 质检结果下的质检条目
+     *
+     * @param enter
+     * @return
+     */
+    List<AssemblyQcItemResult> assemblyQcInfoItem(IdEnter enter);
+
+    /**
+     * 质检条目的质检项
+     *
+     * @param enter
+     * @return
+     */
+    AssemblyQcItemViewResult assemblyQcItemView(IdEnter enter);
+
+    /**
+     * 产品质检项条目
+     *
+     * @param id
+     * @return
+     */
+    List<AssemblyQcItemViewItemResult> assemblyQcItemViewItem(Long id);
 }

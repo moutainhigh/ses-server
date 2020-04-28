@@ -1,11 +1,8 @@
-package com.redescooter.ses.mobile.rps.service.base;
+package com.redescooter.ses.web.ros.service.base;
 
 import java.util.List;
-import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBQc;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyBQc;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
-
-@Transactional
 public interface OpeAssemblyBQcService extends IService<OpeAssemblyBQc>{
 
 

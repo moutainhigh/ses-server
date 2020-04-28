@@ -16,8 +16,8 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.assembly.AssemblyService;
 import com.redescooter.ses.mobile.rps.service.base.*;
-import com.redescooter.ses.mobile.rps.service.base.impl.OpeAssembiyOrderTraceService;
-import com.redescooter.ses.mobile.rps.service.base.impl.OpeAssemblyOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssembiyOrderTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.mobile.rps.vo.assembly.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
@@ -76,7 +76,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public PageResult<WaitAssemblyListResult> list(PageEnter enter) {
         int count = opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>().ne(OpeAssemblyOrder::getWaitAssemblyTotal, 0).eq(OpeAssemblyOrder::getStatus,
-                AssemblyStatusEnums.PREPARE_MATERIAL.getValue()));
+                AssemblyStatusEnums.ASSEMBLING.getValue()));
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }

@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,9 +14,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 组装单质检记录
- */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAssemblyQcTrace")
 @Data
 @Builder
@@ -35,6 +33,7 @@ public class OpeAssemblyQcTrace implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -52,11 +51,25 @@ public class OpeAssemblyQcTrace implements Serializable {
     private Long productQcTemplateBId;
 
     /**
+     * 质检结果
+     */
+    @TableField(value = "product_qc_template_b_name")
+    @ApiModelProperty(value = "质检结果")
+    private String productQcTemplateBName;
+
+    /**
      * 质检项Id
      */
     @TableField(value = "product_qc_template_id")
     @ApiModelProperty(value = "质检项Id")
     private Long productQcTemplateId;
+
+    /**
+     * 质检项名称
+     */
+    @TableField(value = "product_qc_template_name")
+    @ApiModelProperty(value = "质检项名称")
+    private String productQcTemplateName;
 
     /**
      * 商品质检条目
@@ -152,7 +165,11 @@ public class OpeAssemblyQcTrace implements Serializable {
 
     public static final String COL_PRODUCT_QC_TEMPLATE_B_ID = "product_qc_template_b_id";
 
+    public static final String COL_PRODUCT_QC_TEMPLATE_B_NAME = "product_qc_template_b_name";
+
     public static final String COL_PRODUCT_QC_TEMPLATE_ID = "product_qc_template_id";
+
+    public static final String COL_PRODUCT_QC_TEMPLATE_NAME = "product_qc_template_name";
 
     public static final String COL_ASSEMBLY_QC_ITEM_ID = "assembly_qc_item_id";
 

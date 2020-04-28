@@ -1,7 +1,10 @@
 package com.redescooter.ses.web.ros.vo.production.assembly;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,7 +30,11 @@ import java.util.Date;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class AssemblyQcInfoEnter extends PageEnter {
+public class AssemblyQcInfoEnter extends GeneralEnter {
+
+    @ApiModelProperty(value = "id")
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 为空")
+    private Long id;
 
     @ApiModelProperty(value = "状态")
     private String status;

@@ -27,6 +27,9 @@ public class RpsHeadServiceImpl implements RpsHeadService {
      */
     @Override
     public RpsHeadResult rpsHead(GeneralEnter enter) {
+        //todo 带备料 修改
+        //rpsHeadServiceMapper.rpsHeadPrepareAllocate(enter);
+        //todo 生产入库统计
         return RpsHeadResult.builder()
                 //来料质检
                 .materialQcTotal(rpsHeadServiceMapper.rpsHeadMaterialsQc(enter))

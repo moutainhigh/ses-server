@@ -1,5 +1,7 @@
 package com.redescooter.ses.mobile.rps.service.material.impl;
 
+import java.util.HashMap;
+
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -578,26 +580,29 @@ public class MaterialServiceImpl implements MaterialService {
             }
         }
 
-        //质检结果
+        //质检结果 是否通过判断
         Boolean qcResult = Boolean.TRUE;
         for (Map.Entry<PartTemplateEnter, Long> entry : templateMap.entrySet()) {
             PartTemplateEnter partTemplateEnter = entry.getKey();
             Long value = entry.getValue();
 
-            //质检项
+            //质检项 是否存在判断
             Boolean qcItem = Boolean.FALSE;
             for (OpePartQcTemplate item : passTemplateMap.keySet()) {
                 if (item.getId().equals(partTemplateEnter.getId())) {
                     qcItem = Boolean.TRUE;
+                    break;
                 }
             }
             if (!qcItem) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getCode(), ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getMessage());
             }
+            // 判断 质检项 是否 质检通过的模板要求
             for (Map.Entry<OpePartQcTemplate, OpePartQcTemplateB> e : passTemplateMap.entrySet()) {
                 OpePartQcTemplate key = e.getKey();
                 OpePartQcTemplateB passValue = e.getValue();
-                if (!passValue.getId().equals(value)) {
+                // 判断同一个质检项 的质检结果
+                if (key.getId().equals(partTemplateEnter.getId()) && !passValue.getId().equals(value)) {
                     qcResult = Boolean.FALSE;
                     break;
                 }
@@ -688,6 +693,31 @@ public class MaterialServiceImpl implements MaterialService {
             opePurchasBService.updateById(opePurchasB);
 
         }
+        //查询 前端传过来的质检结果 如果符合 pass模板跳过查询 不符合 重新查询
+        Map<OpePartQcTemplate, OpePartQcTemplateB> opePartQcTemplateMap = new HashMap<>();
+        if (qcResult) {
+            opePartQcTemplateMap.putAll(passTemplateMap);
+        } else {
+            //前端 传参的质检结果集 判断做处理
+            Collection<OpePartQcTemplate> opePartQcTemplateList = opePartQcTemplateService.listByIds(templateMap.keySet().stream().map(PartTemplateEnter::getId).collect(Collectors.toList()));
+            if (CollectionUtils.isEmpty(opePartQcTemplateList)) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(), ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
+            }
+            Collection<OpePartQcTemplateB> opePartQcTemplateBList = opePartQcTemplateBService.listByIds(templateMap.values());
+            if (CollectionUtils.isEmpty(opePartQcTemplateBList)) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getCode(), ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getMessage());
+            }
+
+            //封装Map
+            opePartQcTemplateList.forEach(template -> {
+                opePartQcTemplateBList.forEach(templateB -> {
+                    if (template.getId().equals(templateB.getPartQcTemplateId()) && passTemplateMap.containsValue(templateB.getId())) {
+                        opePartQcTemplateMap.put(template, templateB);
+                    }
+                });
+            });
+        }
+
         //主订单数据更新
         opePurchas.setUpdatedBy(enter.getUserId());
         opePurchas.setUpdatedTime(new Date());
@@ -702,7 +732,7 @@ public class MaterialServiceImpl implements MaterialService {
 
         //保存质检项记录
         templateMap.forEach((key, value) -> {
-            opePurchasQcTraceList.add(buildOpePurchasQcTrace(enter, opePurchasB.getId(), purchasBQc.getId(), purchasBQcItem.getId(), key, value));
+            opePurchasQcTraceList.add(buildOpePurchasQcTrace(enter, opePurchasB.getId(), purchasBQc.getId(), purchasBQcItem.getId(), key, value,opePartQcTemplateMap));
         });
         opePurchasQcTraceService.saveBatch(opePurchasQcTraceList);
 
@@ -825,8 +855,9 @@ public class MaterialServiceImpl implements MaterialService {
      * @return
      */
     private OpePurchasQcTrace buildOpePurchasQcTrace(SaveMaterialQcEnter enter, Long opePurchasBId, Long purchasBQcId, Long purchasBQcItemId, PartTemplateEnter key,
-                                                     Long value) {
-        return OpePurchasQcTrace.builder()
+                                                     Long value,Map<OpePartQcTemplate, OpePartQcTemplateB> opePartQcTemplateMap) {
+
+        OpePurchasQcTrace opePurchasQcTrace = OpePurchasQcTrace.builder()
                 .id(idAppService.getId(SequenceName.OPE_PURCHAS_QC_TRACE))
                 .dr(0)
                 .partId(enter.getId())
@@ -834,7 +865,9 @@ public class MaterialServiceImpl implements MaterialService {
                 .purchasBQcId(purchasBQcId)
                 .purchasBQcItemId(purchasBQcItemId)
                 .partQcTemplateId(key.getId())
+                .partQcTemplateName(opePartQcTemplateMap.keySet().stream().filter(item -> item.getId().equals(key.getId())).findFirst().get().getQcItemName())
                 .partQcTemplateBId(value)
+                .partQcTemplateBName(opePartQcTemplateMap.values().stream().filter(item -> item.getId().equals(value)).findFirst().get().getQcResult())
                 .partQcPicture(key.getPictureList())
                 .revision(0)
                 .createdBy(enter.getUserId())
@@ -842,6 +875,8 @@ public class MaterialServiceImpl implements MaterialService {
                 .updatedBy(enter.getUserId())
                 .updatedTime(new Date())
                 .build();
+
+        return opePurchasQcTrace;
     }
 
     /**

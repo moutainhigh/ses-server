@@ -1,9 +1,8 @@
-package com.redescooter.ses.mobile.rps.dm;
+package com.redescooter.ses.web.ros.dm;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,13 +13,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value="com-redescooter-ses-mobile-rps-dm-OpeAssemblyPreparation")
+@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeAssemblyBQc")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_assembly_preparation")
-public class OpeAssemblyPreparation implements Serializable {
+@TableName(value = "ope_assembly_b_qc")
+public class OpeAssemblyBQc implements Serializable {
     /**
      * 主键
      */
@@ -29,68 +28,88 @@ public class OpeAssemblyPreparation implements Serializable {
     private Long id;
 
     /**
-     * 逻辑删除标识
+     * 删除标志
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除标识")
-    @TableLogic
+    @ApiModelProperty(value="删除标志")
     private Integer dr;
 
     /**
-     * 用户id
-     */
-    @TableField(value = "user_id")
-    @ApiModelProperty(value="用户id")
-    private Long userId;
-
-    /**
-     * 租户id
+     * 租户Id
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value="租户id")
+    @ApiModelProperty(value="租户Id")
     private Long tenantId;
 
     /**
-     * 组装单Id
+     * userId
      */
-    @TableField(value = "assembly_id")
-    @ApiModelProperty(value="组装单Id")
-    private Long assemblyId;
+    @TableField(value = "user_id")
+    @ApiModelProperty(value="userId")
+    private Long userId;
 
     /**
-     * 组装部品表Id
+     * 组装子表Id
      */
-    @TableField(value = "assembly_order_part_id")
-    @ApiModelProperty(value="组装部品表Id")
-    private Long assemblyOrderPartId;
+    @TableField(value = "assembly_b_id")
+    @ApiModelProperty(value="组装子表Id")
+    private Long assemblyBId;
 
     /**
-     * 部件Id
+     * 产品Id
      */
-    @TableField(value = "part_id")
-    @ApiModelProperty(value="部件Id")
-    private Long partId;
+    @TableField(value = "product_id")
+    @ApiModelProperty(value="产品Id")
+    private Long productId;
 
     /**
-     * 序列号
+     * 质检人Id
      */
-    @TableField(value = "serial_num")
-    @ApiModelProperty(value="序列号")
-    private String serialNum;
+    @TableField(value = "quality_inspector_id")
+    @ApiModelProperty(value="质检人Id")
+    private Long qualityInspectorId;
 
     /**
-     * 批次号
+     * 质检批次号
      */
     @TableField(value = "batch_no")
-    @ApiModelProperty(value="批次号")
+    @ApiModelProperty(value="质检批次号")
     private String batchNo;
 
     /**
-     * 备料数量
+     * 质检状态
      */
-    @TableField(value = "qty")
-    @ApiModelProperty(value="备料数量")
-    private Integer qty;
+    @TableField(value = "status")
+    @ApiModelProperty(value="质检状态")
+    private String status;
+
+    /**
+     * 需要质检总数
+     */
+    @TableField(value = "total_quality_inspected")
+    @ApiModelProperty(value="需要质检总数")
+    private Integer totalQualityInspected;
+
+    /**
+     * 质检通过数量
+     */
+    @TableField(value = "pass_count")
+    @ApiModelProperty(value="质检通过数量")
+    private Integer passCount;
+
+    /**
+     * 质检失败数量
+     */
+    @TableField(value = "fail_count")
+    @ApiModelProperty(value="质检失败数量")
+    private Integer failCount;
+
+    /**
+     * 质检时间
+     */
+    @TableField(value = "quality_inspection_time")
+    @ApiModelProperty(value="质检时间")
+    private Date qualityInspectionTime;
 
     /**
      * 乐观锁
@@ -168,21 +187,27 @@ public class OpeAssemblyPreparation implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_USER_ID = "user_id";
-
     public static final String COL_TENANT_ID = "tenant_id";
 
-    public static final String COL_ASSEMBLY_ID = "assembly_id";
+    public static final String COL_USER_ID = "user_id";
 
-    public static final String COL_ASSEMBLY_ORDER_PART_ID = "assembly_order_part_id";
+    public static final String COL_ASSEMBLY_B_ID = "assembly_b_id";
 
-    public static final String COL_PART_ID = "part_id";
+    public static final String COL_PRODUCT_ID = "product_id";
 
-    public static final String COL_SERIAL_NUM = "serial_num";
+    public static final String COL_QUALITY_INSPECTOR_ID = "quality_inspector_id";
 
     public static final String COL_BATCH_NO = "batch_no";
 
-    public static final String COL_QTY = "qty";
+    public static final String COL_STATUS = "status";
+
+    public static final String COL_TOTAL_QUALITY_INSPECTED = "total_quality_inspected";
+
+    public static final String COL_PASS_COUNT = "pass_count";
+
+    public static final String COL_FAIL_COUNT = "fail_count";
+
+    public static final String COL_QUALITY_INSPECTION_TIME = "quality_inspection_time";
 
     public static final String COL_REVISION = "revision";
 

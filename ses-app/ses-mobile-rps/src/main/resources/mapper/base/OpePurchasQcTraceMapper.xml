@@ -10,7 +10,9 @@
     <result column="purchas_id" jdbcType="BIGINT" property="purchasId" />
     <result column="purchas_b_qc_id" jdbcType="BIGINT" property="purchasBQcId" />
     <result column="part_qc_template_id" jdbcType="BIGINT" property="partQcTemplateId" />
+    <result column="part_qc_template_name" jdbcType="VARCHAR" property="partQcTemplateName" />
     <result column="part_qc_template_b_id" jdbcType="BIGINT" property="partQcTemplateBId" />
+    <result column="part_qc_template_b_name" jdbcType="VARCHAR" property="partQcTemplateBName" />
     <result column="purchas_b_qc_item_id" jdbcType="BIGINT" property="purchasBQcItemId" />
     <result column="part_qc_picture" jdbcType="VARCHAR" property="partQcPicture" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
@@ -26,9 +28,10 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, part_id, purchas_id, purchas_b_qc_id, part_qc_template_id, part_qc_template_b_id, 
-    purchas_b_qc_item_id, part_qc_picture, revision, created_by, created_time, updated_by, 
-    updated_time, def1, def2, def3, def5, def6
+    id, dr, part_id, purchas_id, purchas_b_qc_id, part_qc_template_id, part_qc_template_name, 
+    part_qc_template_b_id, part_qc_template_b_name, purchas_b_qc_item_id, part_qc_picture, 
+    revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
+    def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -59,9 +62,19 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateId,jdbcType=BIGINT}
         </foreach>
       </trim>
+      <trim prefix="part_qc_template_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
       <trim prefix="part_qc_template_b_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateBId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_template_b_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateBName,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="purchas_b_qc_item_id = case" suffix="end,">
@@ -133,14 +146,16 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_purchas_qc_trace
-    (id, dr, part_id, purchas_id, purchas_b_qc_id, part_qc_template_id, part_qc_template_b_id, 
-      purchas_b_qc_item_id, part_qc_picture, revision, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def5, def6)
+    (id, dr, part_id, purchas_id, purchas_b_qc_id, part_qc_template_id, part_qc_template_name, 
+      part_qc_template_b_id, part_qc_template_b_name, purchas_b_qc_item_id, part_qc_picture, 
+      revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.partId,jdbcType=BIGINT}, 
         #{item.purchasId,jdbcType=BIGINT}, #{item.purchasBQcId,jdbcType=BIGINT}, #{item.partQcTemplateId,jdbcType=BIGINT}, 
-        #{item.partQcTemplateBId,jdbcType=BIGINT}, #{item.purchasBQcItemId,jdbcType=BIGINT}, 
+        #{item.partQcTemplateName,jdbcType=VARCHAR}, #{item.partQcTemplateBId,jdbcType=BIGINT}, 
+        #{item.partQcTemplateBName,jdbcType=VARCHAR}, #{item.purchasBQcItemId,jdbcType=BIGINT}, 
         #{item.partQcPicture,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
@@ -150,12 +165,14 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpePurchasQcTrace">
     <!--@mbg.generated-->
     insert into ope_purchas_qc_trace
-    (id, dr, part_id, purchas_id, purchas_b_qc_id, part_qc_template_id, part_qc_template_b_id, 
-      purchas_b_qc_item_id, part_qc_picture, revision, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def5, def6)
+    (id, dr, part_id, purchas_id, purchas_b_qc_id, part_qc_template_id, part_qc_template_name, 
+      part_qc_template_b_id, part_qc_template_b_name, purchas_b_qc_item_id, part_qc_picture, 
+      revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{partId,jdbcType=BIGINT}, #{purchasId,jdbcType=BIGINT}, 
-      #{purchasBQcId,jdbcType=BIGINT}, #{partQcTemplateId,jdbcType=BIGINT}, #{partQcTemplateBId,jdbcType=BIGINT}, 
+      #{purchasBQcId,jdbcType=BIGINT}, #{partQcTemplateId,jdbcType=BIGINT}, #{partQcTemplateName,jdbcType=VARCHAR}, 
+      #{partQcTemplateBId,jdbcType=BIGINT}, #{partQcTemplateBName,jdbcType=VARCHAR}, 
       #{purchasBQcItemId,jdbcType=BIGINT}, #{partQcPicture,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, 
       #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
       #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
@@ -167,7 +184,9 @@
     purchas_id = #{purchasId,jdbcType=BIGINT}, 
     purchas_b_qc_id = #{purchasBQcId,jdbcType=BIGINT}, 
     part_qc_template_id = #{partQcTemplateId,jdbcType=BIGINT}, 
+    part_qc_template_name = #{partQcTemplateName,jdbcType=VARCHAR}, 
     part_qc_template_b_id = #{partQcTemplateBId,jdbcType=BIGINT}, 
+    part_qc_template_b_name = #{partQcTemplateBName,jdbcType=VARCHAR}, 
     purchas_b_qc_item_id = #{purchasBQcItemId,jdbcType=BIGINT}, 
     part_qc_picture = #{partQcPicture,jdbcType=VARCHAR}, 
     revision = #{revision,jdbcType=INTEGER}, 
@@ -203,8 +222,14 @@
       <if test="partQcTemplateId != null">
         part_qc_template_id,
       </if>
+      <if test="partQcTemplateName != null">
+        part_qc_template_name,
+      </if>
       <if test="partQcTemplateBId != null">
         part_qc_template_b_id,
+      </if>
+      <if test="partQcTemplateBName != null">
+        part_qc_template_b_name,
       </if>
       <if test="purchasBQcItemId != null">
         purchas_b_qc_item_id,
@@ -263,8 +288,14 @@
       <if test="partQcTemplateId != null">
         #{partQcTemplateId,jdbcType=BIGINT},
       </if>
+      <if test="partQcTemplateName != null">
+        #{partQcTemplateName,jdbcType=VARCHAR},
+      </if>
       <if test="partQcTemplateBId != null">
         #{partQcTemplateBId,jdbcType=BIGINT},
+      </if>
+      <if test="partQcTemplateBName != null">
+        #{partQcTemplateBName,jdbcType=VARCHAR},
       </if>
       <if test="purchasBQcItemId != null">
         #{purchasBQcItemId,jdbcType=BIGINT},
@@ -323,8 +354,14 @@
       <if test="partQcTemplateId != null">
         part_qc_template_id = #{partQcTemplateId,jdbcType=BIGINT},
       </if>
+      <if test="partQcTemplateName != null">
+        part_qc_template_name = #{partQcTemplateName,jdbcType=VARCHAR},
+      </if>
       <if test="partQcTemplateBId != null">
         part_qc_template_b_id = #{partQcTemplateBId,jdbcType=BIGINT},
+      </if>
+      <if test="partQcTemplateBName != null">
+        part_qc_template_b_name = #{partQcTemplateBName,jdbcType=VARCHAR},
       </if>
       <if test="purchasBQcItemId != null">
         purchas_b_qc_item_id = #{purchasBQcItemId,jdbcType=BIGINT},
