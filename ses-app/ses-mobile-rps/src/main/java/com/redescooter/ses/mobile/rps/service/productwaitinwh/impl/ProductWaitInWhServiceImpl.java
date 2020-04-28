@@ -399,7 +399,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      */
     @Transactional
     @Override
-    public ProductWaitInWhInfoResult productWaitInWhInfoIn(ProductWaitInWhIdItemEnter enter) {
+    public ProductWaitInWhInfoResult setProductWaitInWhInfo(ProductWaitInWhIdItemEnter enter) {
 
         //本次应该入库的数量和实际入库数量不符
         if (!enter.getInWhNum().equals(enter.getShouldInWhNum())) {
