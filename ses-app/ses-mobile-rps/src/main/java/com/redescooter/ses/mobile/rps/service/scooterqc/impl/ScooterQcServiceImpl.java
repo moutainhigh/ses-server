@@ -15,7 +15,7 @@ import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
-import com.redescooter.ses.mobile.rps.service.scooterqc.ScooterqcService;
+import com.redescooter.ses.mobile.rps.service.scooterqc.ScooterQcService;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.dubbo.config.annotation.Reference;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class ScooterqcServiceImpl implements ScooterqcService {
+public class ScooterQcServiceImpl implements ScooterQcService {
 
     @Autowired
     private OpeAssemblyOrderService opeAssemblyOrderService;
