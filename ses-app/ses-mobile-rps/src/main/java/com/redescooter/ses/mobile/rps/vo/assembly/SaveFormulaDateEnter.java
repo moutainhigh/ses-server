@@ -27,7 +27,7 @@ import io.swagger.annotations.*;
 @Builder
 public class SaveFormulaDateEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "id 子表Id")
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 不能为空")
     private Long id;
 

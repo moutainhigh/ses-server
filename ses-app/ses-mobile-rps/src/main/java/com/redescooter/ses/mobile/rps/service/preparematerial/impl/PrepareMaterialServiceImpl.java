@@ -123,9 +123,11 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
     @Override
     public PageResult<PrepareMaterialListResult> list(PageEnter enter) {
         //查询调拨单统计
-        int allocateListCount = prepareMaterialServiceMapper.allocatListCount(enter);
+//        int allocateListCount = prepareMaterialServiceMapper.allocatListCount(enter);
+        int allocateListCount = opeAllocateService.count(new LambdaQueryWrapper<OpeAllocate>().eq(OpeAllocate::getStatus, AllocateOrderStatusEnums.PENDING.getValue()));
         //组装单
-        int assemblyListCount = prepareMaterialServiceMapper.assemblyListCount(enter);
+//        int assemblyListCount = prepareMaterialServiceMapper.assemblyListCount(enter);
+        int assemblyListCount = opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>().eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.PENDING.getValue()));
 
         if (allocateListCount + assemblyListCount == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -555,13 +557,15 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             opePartsList.forEach(part -> {
                 enter.getSavePartBasicDateMap().get(item.getId()).forEach(serialN -> {
                     //判断part 有Id 验证序列号 没有Id 验证数量
-                    if (part.getId().equals(serialN.getPartId()) && part.getIdClass()) {
-                        serialNList.add(serialN.getSerialN());
-                    } else {
-                        if (stockProdPartIdMap.containsKey(serialN.getPartId())) {
-                            stockProdPartIdMap.put(serialN.getPartId(), serialN.getQty());
+                    if (part.getId().equals(serialN.getPartId())){
+                        if ( part.getIdClass()) {
+                            serialNList.add(serialN.getSerialN());
                         } else {
-                            stockProdPartIdMap.put(serialN.getPartId(), stockProdPartIdMap.get(serialN.getPartId()) + serialN.getQty());
+                            if (!stockProdPartIdMap.containsKey(serialN.getPartId())) {
+                                stockProdPartIdMap.put(serialN.getPartId(), serialN.getQty());
+                            } else {
+                                stockProdPartIdMap.put(serialN.getPartId(), stockProdPartIdMap.get(serialN.getPartId()) + serialN.getQty());
+                            }
                         }
                     }
                 });

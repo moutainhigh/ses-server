@@ -37,15 +37,12 @@
     <select id="allocatList"
             resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult">
         select allocate.id                     as id,
-               bill.source_type                as sourceType,
-                allocate.allocate_num                    as allocatN,
-               allocate.created_time           as createdTime,
-               allocate.preparation_wait_total as preparationWaitTotal
-        from ope_stock_bill bill
-                 inner join ope_allocate allocate on bill.source_id = allocate.id
-        where bill.dr = 0
-          and allocate.status = 1
-          and bill.source_type = 2
+        2                               as sourceType,
+        allocate.allocate_num           as allocatN,
+        allocate.created_time           as createdTime,
+        allocate.preparation_wait_total as preparationWaitTotal
+        from  ope_allocate allocate
+        where  allocate.status = 1
         order by allocate.created_time desc
         limit #{startRow},#{pageSize}
     </select>
@@ -61,16 +58,13 @@
 
     <select id="assemblyList"
             resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult">
-            select assem.id                     as id,
-               bill.source_type             as sourceType,
-               assem.assembly_number        as allocatN,
-               assem.created_time           as createdTime,
-               assem.wait_preparation_total as preparationWaitTotal
-        from ope_stock_bill bill
-                 inner join ope_assembly_order assem on bill.source_id = assem.id
-        where bill.dr = 0
-          and assem.status = 1
-          and bill.source_type = 3
+        select assem.id                     as id,
+        3                            as sourceType,
+        assem.assembly_number        as allocatN,
+        assem.created_time           as createdTime,
+        assem.wait_preparation_total as preparationWaitTotal
+        from ope_assembly_order assem
+        where assem.status = 1
         order by assem.created_time desc
         limit #{startRow},#{pageSize}
     </select>

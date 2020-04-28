@@ -26,13 +26,13 @@ public interface RpsHeadServiceMapper {
      */
     int rpsHeadPurchasInWh(GeneralEnter enter);
 
-    /**
-     * 调拨备料
-     *
-     * @param enter
-     * @return
-     */
-    int rpsHeadPrepare(GeneralEnter enter);
+//    /**
+//     * 调拨备料
+//     *
+//     * @param enter
+//     * @return
+//     */
+//    int rpsHeadPrepare(GeneralEnter enter);
 
     /**
      * 组装
@@ -50,18 +50,18 @@ public interface RpsHeadServiceMapper {
      */
     int rpsHeadProductQc(GeneralEnter enter);
 
-    /**
-     * 生产入库
-     *
-     * @param enter
-     * @return
-     */
-    int rpsHeadProductionInWh(GeneralEnter enter);
+//    /**
+//     * 生产入库
+//     *
+//     * @param enter
+//     * @return
+//     */
+//    int rpsHeadProductionInWh(GeneralEnter enter);
 
-    /**
-     * 调拨备料
-     *
-     * @param enter
-     */
-    int rpsHeadPrepareAllocate(GeneralEnter enter);
+//    /**
+//     * 调拨备料
+//     *
+//     * @param enter
+//     */
+//    int rpsHeadPrepareAllocate(GeneralEnter enter);
 }
