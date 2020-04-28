@@ -1,12 +1,9 @@
-package com.redescooter.ses.mobile.rps.vo.prowaitinwh;
+package com.redescooter.ses.mobile.rps.vo.productwaitinwh;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * @ClassNameProWaitInWHItemResult
@@ -21,33 +18,31 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ProWaitInWHItemResult extends GeneralResult {
+public class ProductWaitInWhItemResult extends GeneralResult {
 
     @ApiModelProperty(value = "主键", required = true)
     private Long id;
 
-    @ApiModelProperty(value = "部件名称")
-    private String partName;
+    @ApiModelProperty(value = "产品名称")
+    private String productName;
 
     @ApiModelProperty(value = "组装单子表id")
-    private Long scooterBId;
+    private Long assemblyBId;
 
     @ApiModelProperty(value = "组装单编号")
-    private String scooterStr;
+    private String assemblyStr;
 
-    @ApiModelProperty(value = "部件id")
-    private Long partId;
+    @ApiModelProperty(value = "产品id")
+    private Long productId;
 
-    @ApiModelProperty(value = "部件编号")
-    private String partStr;
+    @ApiModelProperty(value = "产品编号")
+    private String productStr;
 
-    @ApiModelProperty(value = "部件数量")
-    private Integer partNum;
+    @ApiModelProperty(value = "产品数量")
+    private Integer productNum;
 
-    @ApiModelProperty(value = "仓库类型")
-    private String wHType;
+    @ApiModelProperty(value = "单据类型")
+    private String sourceType;
 
-    @ApiModelProperty(value = "有无id")
-    private Boolean idFlag;
 
 }

@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.rps.dao.prowaitinwh;
+package com.redescooter.ses.mobile.rps.dao.productwaitinwh;
 
 /**
  * @ClassNameProWaitInWHMapper
@@ -8,7 +8,7 @@ package com.redescooter.ses.mobile.rps.dao.prowaitinwh;
  * @Version V1.0
  **/
 
-public interface ProWaitInWHServiceMapper {
+public interface ProductWaitInWhServiceMapper {
     int proWaitInWHListCount();
 
     int proWaitWHItemListCount();

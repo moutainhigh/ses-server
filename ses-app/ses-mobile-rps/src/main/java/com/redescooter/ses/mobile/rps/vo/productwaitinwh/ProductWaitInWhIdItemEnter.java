@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.rps.vo.prowaitinwh;
+package com.redescooter.ses.mobile.rps.vo.productwaitinwh;
 
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModel;
@@ -9,7 +9,7 @@ import lombok.*;
  * @ClassNameProWaitInWHIdEnter
  * @Description
  * @Author kyle
- * @Date2020/4/26 15:54
+ * @Date2020/4/18 10:27
  * @Version V1.0
  **/
 @ApiModel(value = "整车部件入库项操作入参", description = "整车部件入库项操作入参")
@@ -18,14 +18,19 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ProOrAllocateWaitInWHIdEnter extends PageEnter {
+public class ProductWaitInWhIdItemEnter extends PageEnter {
 
-    @ApiModelProperty(value = "组装单id")
+    @ApiModelProperty(value = "子单id")
     private Long id;
 
-    @ApiModelProperty(value = "仓库类型")
-    private String type;
+    @ApiModelProperty(value = "单据类型")
+    private String sourceType;
 
+    @ApiModelProperty(value = "本次应该入库数量")
+    private Integer shouldInWhNum;
+
+    @ApiModelProperty(value = "本次入库数量")
+    private Integer inWhNum;
 
 
 }
