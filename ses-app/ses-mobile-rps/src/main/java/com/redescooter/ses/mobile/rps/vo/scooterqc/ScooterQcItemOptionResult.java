@@ -19,13 +19,17 @@ public class ScooterQcItemOptionResult extends GeneralResult {
     @ApiModelProperty(value = "质检项名称")
     private String qcName;
 
+    @ApiModelProperty(value = "质检项结果")
+    private String qcResult;
+
     @ApiModelProperty(value = "选项排序")
     private Integer optionNum;
 
-    @ApiModelProperty(value = "组装单子表id")
-    private Long scooterBId;
+    @ApiModelProperty(value = "是否允许上传图片")
+    private Boolean uploadFlag;
 
-    @ApiModelProperty(value = "部件id")
-    private Long partId;
+
+
+
 
 }

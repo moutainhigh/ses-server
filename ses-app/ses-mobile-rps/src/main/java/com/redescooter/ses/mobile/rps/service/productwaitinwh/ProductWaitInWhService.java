@@ -1,10 +1,9 @@
-package com.redescooter.ses.mobile.rps.service.prowaitinwh;
+package com.redescooter.ses.mobile.rps.service.productwaitinwh;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.mobile.rps.vo.prowaitinwh.*;
-import org.apache.poi.ss.formula.functions.T;
+import com.redescooter.ses.mobile.rps.vo.productwaitinwh.*;
 
 /**
  * @ClassNameProWaitInWHService
@@ -15,7 +14,7 @@ import org.apache.poi.ss.formula.functions.T;
  **/
 
 
-public interface ProWaitInWHService {
+public interface ProductWaitInWhService {
     /**
      * @Author kyle
      * @Description //1、查询生产仓库待入库列表
@@ -23,7 +22,7 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    PageResult<AllocateAndProductResult> proWaitInWHList(PageEnter enter);
+    PageResult<AllocateAndProductResult> productWaitInWhList(PageEnter enter);
 
     /**
      * @Author kyle
@@ -32,7 +31,7 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    <T> PageResult<T> proWaitWHItemList(ProOrAllocateWaitInWHIdEnter enter);
+    <T> PageResult<T> productWaitWhItemList(ProductOrAllocateWaitInWhIdEnter enter);
 
 
     /**
@@ -42,7 +41,7 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    ProWaitInWHInfoResult proWaitInWHInfoOut(IdEnter enter);
+    ProductWaitInWhInfoResult proWaitInWHInfoOut(IdEnter enter);
 
 
     /**
@@ -52,5 +51,5 @@ public interface ProWaitInWHService {
      * @Param [enter]
      * @return
      **/
-    ProWaitInWHInfoResult proWaitInWHInfoIn(ProWaitInWHIdItemEnter enter);
+    ProductWaitInWhInfoResult productWaitInWhInfoIn(ProductWaitInWhIdItemEnter enter);
 }

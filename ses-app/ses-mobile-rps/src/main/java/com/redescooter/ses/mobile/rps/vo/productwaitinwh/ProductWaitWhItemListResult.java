@@ -1,11 +1,10 @@
-package com.redescooter.ses.mobile.rps.vo.prowaitinwh;
+package com.redescooter.ses.mobile.rps.vo.productwaitinwh;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,15 +20,12 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ProWaitWHItemListResult extends GeneralResult {
+public class ProductWaitWhItemListResult extends GeneralResult {
 
     @ApiModelProperty(value = "主键", required = true)
     private Long id;
 
     @ApiModelProperty(value = "组装单号")
-    private List<ProWaitInWHItemResult> proWaitInWHItemResultList;
-
-
-
+    private List<ProductWaitInWhItemResult> productWaitInWhItemResultList;
 
 }

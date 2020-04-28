@@ -209,6 +209,233 @@
       #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_parts_product
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.userId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.status != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sn_class = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.snClass != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.snClass,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="product_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.productType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.productType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="product_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.productCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.productCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="product_number = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.productNumber != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.productNumber,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="cn_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.cnName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.cnName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="fr_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.frName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.frName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="en_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.enName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.enName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="production_cycle = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.productionCycle != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.productionCycle,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sum_parts_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.sumPartsQty != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.sumPartsQty,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="model = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.model != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.model,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="pictures = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.pictures != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.pictures,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="color = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.color != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.color,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="after_sales_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.afterSalesFlag != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.afterSalesFlag,jdbcType=BOOLEAN}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="added_services_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.addedServicesFlag != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.addedServicesFlag,jdbcType=BOOLEAN}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="mater_parameter = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.materParameter != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.materParameter,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="other_parameter = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.otherParameter != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.otherParameter,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="note = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.note != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.note,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.revision != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_parts_product

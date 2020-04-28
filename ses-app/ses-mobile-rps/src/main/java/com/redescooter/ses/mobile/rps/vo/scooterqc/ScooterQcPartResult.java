@@ -16,17 +16,17 @@ import lombok.*;
 public class ScooterQcPartResult extends GeneralResult {
 
     @ApiModelProperty(value = "部件名称")
-    private String partName;
+    private String productName;
 
     @ApiModelProperty(value = "组装单子表id")
-    private Long scooterBId;
+    private Long assemblyBId;
 
-    @ApiModelProperty(value = "部件id")
-    private Long partId;
+    @ApiModelProperty(value = "产品id")
+    private Long productId;
 
     @ApiModelProperty(value = "部件编号")
-    private String partStr;
+    private String productStr;
 
     @ApiModelProperty(value = "部件数量")
-    private Integer partNum;
+    private Integer productNum;
 }
