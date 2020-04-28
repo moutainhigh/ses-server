@@ -11,6 +11,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.mobile.rps.service.assembly.AssemblyService;
 import com.redescooter.ses.mobile.rps.vo.assembly.AssemblyDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.assembly.PrintCodeEnter;
+import com.redescooter.ses.mobile.rps.vo.assembly.PrintCodeResult;
 import com.redescooter.ses.mobile.rps.vo.assembly.ProductFormulaResult;
 import com.redescooter.ses.mobile.rps.vo.assembly.QueryProductCodeResult;
 import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaDateEnter;
@@ -78,8 +79,8 @@ public class AssemblyController {
     }
 
     @PostMapping(value = "/printCode")
-    @ApiOperation(value = "打印条码", response = GeneralResult.class)
-    public Response<GeneralResult> printCode(@ModelAttribute @ApiParam("请求参数") PrintCodeEnter enter) {
+    @ApiOperation(value = "打印条码", response = PrintCodeResult.class)
+    public Response<PrintCodeResult> printCode(@ModelAttribute @ApiParam("请求参数") PrintCodeEnter enter) {
         return new Response<>(assemblyService.printCode(enter));
     }
 

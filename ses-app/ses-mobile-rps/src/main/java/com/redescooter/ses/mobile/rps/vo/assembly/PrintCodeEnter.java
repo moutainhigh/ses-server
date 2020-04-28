@@ -32,5 +32,5 @@ public class PrintCodeEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "打印结果")
     @NotNull(code = com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode.PRINT_CODE_RESULT, message = "打印结果为空")
-    private Boolean result;
+    private Boolean printCodeResult;
 }
