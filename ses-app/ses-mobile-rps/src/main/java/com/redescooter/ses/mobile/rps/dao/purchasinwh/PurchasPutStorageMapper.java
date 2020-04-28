@@ -46,7 +46,7 @@ public interface PurchasPutStorageMapper {
       * @param
       * @return
       */
-     NotIdPartsResult notIdpartslistresult(@Param("enter") PurchasDetailsEnter enter);
+     NotIdPartsResult notIdpartslistresult(@Param("enter") NotIdDetailsEnter enter);
 
      /**
       * 无ID入库成功信息
@@ -62,5 +62,5 @@ public interface PurchasPutStorageMapper {
       * @param
       * @return
       */
-     HaveIdPartsResult haveIdPartsResult(@Param("enter") PurchasDetailsEnter enter);
+     HaveIdPartsResult haveIdPartsResult(@Param("enter") HaveIdEnter enter);
 }
