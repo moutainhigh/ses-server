@@ -555,13 +555,15 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             opePartsList.forEach(part -> {
                 enter.getSavePartBasicDateMap().get(item.getId()).forEach(serialN -> {
                     //判断part 有Id 验证序列号 没有Id 验证数量
-                    if (part.getId().equals(serialN.getPartId()) && part.getIdClass()) {
-                        serialNList.add(serialN.getSerialN());
-                    } else {
-                        if (stockProdPartIdMap.containsKey(serialN.getPartId())) {
-                            stockProdPartIdMap.put(serialN.getPartId(), serialN.getQty());
+                    if (part.getId().equals(serialN.getPartId())){
+                        if ( part.getIdClass()) {
+                            serialNList.add(serialN.getSerialN());
                         } else {
-                            stockProdPartIdMap.put(serialN.getPartId(), stockProdPartIdMap.get(serialN.getPartId()) + serialN.getQty());
+                            if (!stockProdPartIdMap.containsKey(serialN.getPartId())) {
+                                stockProdPartIdMap.put(serialN.getPartId(), serialN.getQty());
+                            } else {
+                                stockProdPartIdMap.put(serialN.getPartId(), stockProdPartIdMap.get(serialN.getPartId()) + serialN.getQty());
+                            }
                         }
                     }
                 });

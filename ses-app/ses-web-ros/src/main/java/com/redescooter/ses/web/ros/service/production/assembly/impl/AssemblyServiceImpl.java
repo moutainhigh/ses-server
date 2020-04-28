@@ -93,6 +93,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:AssemblyServiceImpl
@@ -1313,11 +1314,7 @@ public class AssemblyServiceImpl implements AssemblyService {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
         }
         List<ProductAssemblyTraceItemResult> productAssemblyTraceItemResultList = assemblyServiceMapper.productAssemblyItemTrace(enter);
-        productAssemblyTraceItemResultList.stream().filter(item -> {
-            item.setAssemblyTotal(assemblyBOrder.getAssemblyQty());
-            return true;
-        });
-        return productAssemblyTraceItemResultList;
+        return productAssemblyTraceItemResultList.stream().filter(item -> {item.setAssemblyTotal(assemblyBOrder.getAssemblyQty()); return true;}).collect(Collectors.toList());
     }
 
     /**
