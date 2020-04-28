@@ -26,6 +26,9 @@ import io.swagger.annotations.*;
 @Builder
 public class ProductAssemblyTraceItemResult extends GeneralResult {
 
+    @ApiModelProperty(value = "需组装总数量")
+    private int assemblyTotal;
+
     @ApiModelProperty(value = "组装数量")
     private int assemblyCompleteTotal;
 

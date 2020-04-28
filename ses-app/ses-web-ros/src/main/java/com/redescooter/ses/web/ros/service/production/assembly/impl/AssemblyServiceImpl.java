@@ -82,6 +82,7 @@ import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -883,12 +884,12 @@ public class AssemblyServiceImpl implements AssemblyService {
         // 查询车辆质检信息
         AssemblyQcItemViewResult result = assemblyServiceMapper.assemblyQcItemView(enter);
         if (result == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getMessage());
         }
         //查询车辆对应的质检项
-        List<AssemblyQcItemViewItemResult> assemblyQcItemViewItemResultList=assemblyServiceMapper.assemblyQcItemViewItem(enter.getId());
-        if (CollectionUtils.isEmpty(assemblyQcItemViewItemResultList)){
-            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_RESULT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ASSEMBLY_QC_RESULT_IS_NOT_EXIST.getMessage());
+        List<AssemblyQcItemViewItemResult> assemblyQcItemViewItemResultList = assemblyServiceMapper.assemblyQcItemViewItem(enter.getId());
+        if (CollectionUtils.isEmpty(assemblyQcItemViewItemResultList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_RESULT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_QC_RESULT_IS_NOT_EXIST.getMessage());
         }
         result.setAssemblyQcItemViewItemResultList(assemblyQcItemViewItemResultList);
         return result;
@@ -1307,7 +1308,16 @@ public class AssemblyServiceImpl implements AssemblyService {
         if (assemblyBOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
         }
-        return assemblyServiceMapper.productAssemblyItemTrace(enter);
+        OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(assemblyBOrder.getAssemblyId());
+        if (opeAssemblyOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
+        }
+        List<ProductAssemblyTraceItemResult> productAssemblyTraceItemResultList = assemblyServiceMapper.productAssemblyItemTrace(enter);
+        productAssemblyTraceItemResultList.stream().filter(item -> {
+            item.setAssemblyTotal(assemblyBOrder.getAssemblyQty());
+            return true;
+        });
+        return productAssemblyTraceItemResultList;
     }
 
     /**
