@@ -41,7 +41,7 @@ public interface ProductWaitInWhService {
      * @Param [enter]
      * @return
      **/
-    ProductWaitInWhInfoResult proWaitInWHInfoOut(IdEnter enter);
+    AllocateWaitInWhItemResult allocateWaitInWhItem(IdEnter enter);
 
 
     /**

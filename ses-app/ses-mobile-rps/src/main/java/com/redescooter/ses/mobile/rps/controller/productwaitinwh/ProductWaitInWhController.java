@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.controller.productwaitinwh;
 
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -39,6 +40,12 @@ public class ProductWaitInWhController {
     @ApiOperation(value = "生产仓库待入库商品部件列表", response = ProductWaitWhItemListResult.class)
     public <T> Response<PageResult<T>> productWaitWhItemList(@ModelAttribute @ApiParam("请求参数") ProductOrAllocateWaitInWhIdEnter enter) {
         return new Response(productWaitInWhService.productWaitWhItemList(enter));
+    }
+
+    @PostMapping(value = "/allocateWaitInWhItem")
+    @ApiOperation(value = "调拨单入生产库商品部件列表详情", response = ProductWaitWhItemListResult.class)
+    public Response<AllocateWaitInWhItemResult> allocateWaitInWhItem(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response(productWaitInWhService.allocateWaitInWhItem(enter));
     }
 
     @PostMapping(value = "/proWaitInWHInfoIn")

@@ -20,14 +20,11 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class ProductWaitInWhItemResult extends GeneralResult {
 
-    @ApiModelProperty(value = "主键", required = true)
-    private Long id;
+    @ApiModelProperty(value = "组装单子表id")
+    private Long assemblyBId;
 
     @ApiModelProperty(value = "产品名称")
     private String productName;
-
-    @ApiModelProperty(value = "组装单子表id")
-    private Long assemblyBId;
 
     @ApiModelProperty(value = "组装单编号")
     private String assemblyStr;
