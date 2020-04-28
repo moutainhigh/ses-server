@@ -20,9 +20,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class AllocateWaitInWhItemResult extends GeneralResult {
 
-    @ApiModelProperty(value = "主键", required = true)
-    private Long id;
-
     @ApiModelProperty(value = "部件名称")
     private String partName;
 
@@ -41,10 +38,9 @@ public class AllocateWaitInWhItemResult extends GeneralResult {
     @ApiModelProperty(value = "部件数量")
     private Integer partNum;
 
-    @ApiModelProperty(value = "仓库类型")
-    private String wHType;
+    @ApiModelProperty(value = "单据类型")
+    private String sourceType;
 
-    @ApiModelProperty(value = "有无id")
-    private Boolean idFlag;
+
 
 }

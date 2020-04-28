@@ -20,7 +20,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class ProductOrAllocateWaitInWhIdEnter extends PageEnter {
 
-    @ApiModelProperty(value = "组装单id")
+    @ApiModelProperty(value = "主单id")
     private Long id;
 
     @ApiModelProperty(value = "单据类型")

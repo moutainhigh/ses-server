@@ -111,37 +111,39 @@ public enum ExceptionCodeEnums {
 
     PLEASE_SCAN_THE_CODE_FIRST(10052, "请先进行质检"),
 
-    PART_PASSED_THE_QUALITY_INSPECTION(10053,"部件已经通过质检"),
+    PART_PASSED_THE_QUALITY_INSPECTION(10053, "部件已经通过质检"),
 
-    OPE_B_ORDER_IS_EMPTY(10054,"组装子单为空"),
+    OPE_B_ORDER_IS_EMPTY(10054, "组装子单为空"),
 
-    QC_TEMPLATE_IS_EMPTY(10055,"质检模板为空"),
+    QC_TEMPLATE_IS_EMPTY(10055, "质检模板为空"),
 
-    QC_OPTION_IS_EMPTY(10056,"质检项目为空"),
+    QC_OPTION_IS_EMPTY(10056, "质检项目为空"),
 
-    QC_TEMPLATE_B_IS_EMPTY(10057,"质检模板详情为空"),
+    QC_TEMPLATE_B_IS_EMPTY(10057, "质检模板详情为空"),
 
-    WAIT_QC_PART_NUM_ERROR(10058,"输入的待质检部件数错误"),
+    WAIT_QC_PART_NUM_ERROR(10058, "输入的待质检部件数错误"),
 
-    WAIT_QC_NUM_ERROR(10059,"待质检总数错误"),
+    WAIT_QC_NUM_ERROR(10059, "待质检总数错误"),
 
-    QC_INFO_IS_EMPTY(10060,"质检记录为空"),
+    QC_INFO_IS_EMPTY(10060, "质检记录为空"),
 
-    WAIT_IN_WH_NUM_IS_EMPTY(10061,"待质检数量为空"),
+    WAIT_IN_WH_NUM_IS_EMPTY(10061, "待质检数量为空"),
 
-    ALLOCATE_B_ORDER_IS_NOT_EXIST(10062,"调拨单子单不存在"),
+    ALLOCATE_B_ORDER_IS_NOT_EXIST(10062, "调拨单子单不存在"),
 
-    WAIT_IN_WH_NUM_ERROR(10063,"待入库总数错误"),
+    WAIT_IN_WH_NUM_ERROR(10063, "待入库总数错误"),
 
-    PART_IS_ALREADY_DAMAGE(10064,"部件已损坏"),
+    PART_IS_ALREADY_DAMAGE(10064, "部件已损坏"),
 
-    WH_IS_EMPTY(10065,"仓库不存在"),
+    WH_IS_EMPTY(10065, "仓库不存在"),
 
-    ALLOCATE_TRACE_IS_EMPTY(10066,"调拨单记录为空"),
+    ALLOCATE_TRACE_IS_EMPTY(10066, "调拨单记录为空"),
 
+    PURCHAS_PART_FINISHED_PREPARATION(10067, "采购部品已完成备料"),
 
+    SERIAL_NUMBER_IS_EMPTY(10068,"序列号不存在"),
 
-   ;
+    ;
 
     private int code;
 
