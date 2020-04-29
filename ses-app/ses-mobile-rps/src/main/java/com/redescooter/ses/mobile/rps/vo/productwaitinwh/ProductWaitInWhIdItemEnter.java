@@ -32,5 +32,8 @@ public class ProductWaitInWhIdItemEnter extends PageEnter {
     @ApiModelProperty(value = "本次入库数量")
     private Integer inWhNum;
 
+    @ApiModelProperty(value = "产品序列号")
+    private String productSerialNum;
+
 
 }

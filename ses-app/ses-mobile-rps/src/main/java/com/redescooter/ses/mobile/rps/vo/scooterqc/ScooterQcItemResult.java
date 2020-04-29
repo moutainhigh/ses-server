@@ -15,14 +15,16 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ScooterQcItemResult extends GeneralResult {
 
-    //调整
     @ApiModelProperty(value = "组装单子表id")
     private Long id;
 
     @ApiModelProperty(value = "质检模板id")
     private Long qcTemplateId;
 
-    @ApiModelProperty(value = "质检项集合")
+    @ApiModelProperty(value = "质检项名称")
+    private String qcName;
+
+    @ApiModelProperty(value = "质检详情集合")
     private List<ScooterQcItemOptionResult> scooterQcItemOptionResultList;
 
 

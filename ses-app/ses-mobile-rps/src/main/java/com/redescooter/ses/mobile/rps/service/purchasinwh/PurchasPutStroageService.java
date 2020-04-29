@@ -1,11 +1,8 @@
 package com.redescooter.ses.mobile.rps.service.purchasinwh;
 
-import com.redescooter.ses.api.common.vo.SaveNodeEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.*;
-import org.apache.jute.compiler.JString;
 
 public interface PurchasPutStroageService {
     /**
@@ -31,7 +28,7 @@ public interface PurchasPutStroageService {
      * @return
      */
 
-    HaveIdPartsResult haveIdPartsResult(PurchasDetailsEnter enter);
+    HaveIdPartsResult haveIdPartsResult(HaveIdEnter enter);
 
 
     /**
@@ -40,7 +37,7 @@ public interface PurchasPutStroageService {
      * @param
      * @return
      */
-    NotIdPartsResult notIdPartsResult(PurchasDetailsEnter enter);
+    NotIdPartsResult notIdPartsResult(NotIdDetailsEnter enter);
 
     /**
      * 无Id 入库

@@ -97,6 +97,12 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
     @Autowired
     private OpeStockProdPartService opeStockProdPartService;
 
+    @Autowired
+    private OpeProductAssemblyService opeProductAssemblyService;
+
+    @Autowired
+    private OpeStockPurchasService opeStockPurchasService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -393,7 +399,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      */
     @Transactional
     @Override
-    public ProductWaitInWhInfoResult productWaitInWhInfoIn(ProductWaitInWhIdItemEnter enter) {
+    public ProductWaitInWhInfoResult setProductWaitInWhInfo(ProductWaitInWhIdItemEnter enter) {
 
         //本次应该入库的数量和实际入库数量不符
         if (!enter.getInWhNum().equals(enter.getShouldInWhNum())) {
@@ -424,6 +430,16 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
     private ProductWaitInWhInfoResult getProductWaitInWhInfoResultFromAllocate(ProductWaitInWhIdItemEnter enter) {
         //返回结果集
         ProductWaitInWhInfoResult productWaitInWhInfoResult = null;
+
+        //验证序列号是否存在
+        QueryWrapper<OpeStockPurchas> opeStockPurchasQueryWrapper = new QueryWrapper<>();
+        opeStockPurchasQueryWrapper.eq(OpeStockPurchas.COL_SERIAL_NUMBER,enter.getProductSerialNum());
+        OpeStockPurchas opeStockPurchas = opeStockPurchasService.getOne(opeStockPurchasQueryWrapper);
+
+        //序列号不存在
+        if(StringUtils.isEmpty(opeStockPurchas)){
+            throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getMessage());
+        }
 
         //查询调拨单子单
         QueryWrapper<OpeAllocateB> opeAllocateBQueryWrapper = new QueryWrapper<>();
@@ -570,7 +586,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .stockId(opeStock.getId())
                 .partId(opeParts.getId())
                 .lot(opeAllocateBTrace.getBatchNo())
-                .serialNumber(opeAllocateBTrace.getSerialNum())
+                .serialNumber(opeStockPurchas.getSerialNumber()) //序列号
                 .partsNumber(opeParts.getPartsNumber())
                 .inStockBillId(opeStockBill.getId())
                 .outStockBillId(0L)
@@ -615,6 +631,16 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
     private ProductWaitInWhInfoResult getProductWaitInWhInfoResultFromAssembly(ProductWaitInWhIdItemEnter enter) {
         //返回结果集
         ProductWaitInWhInfoResult productWaitInWhInfoResult = null;
+
+        //验证序列号是否存在
+        QueryWrapper<OpeProductAssembly> opeProductAssemblyQueryWrapper = new QueryWrapper<>();
+        opeProductAssemblyQueryWrapper.eq(OpeProductAssembly.COL_PRODUCT_SERIAL_NUM,enter.getProductSerialNum());
+        OpeProductAssembly opeProductAssembly = opeProductAssemblyService.getOne(opeProductAssemblyQueryWrapper);
+
+        //序列号不存在
+        if(StringUtils.isEmpty(opeProductAssembly)){
+            throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getMessage());
+        }
 
         //查询对应的质检记录
         QueryWrapper<OpeAssemblyBQc> opeAssemblyBQcQueryWrapper = new QueryWrapper<>();
@@ -782,7 +808,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .stockId(opeStock.getId())
                 .productId(opeAssemblyBOrder.getProductId())
                 .lot(opeAssemblyBQc.getBatchNo())
-                .serialNumber(opeAssemblyQcItem.getSerialNum())
+                .serialNumber(opeProductAssembly.getProductSerialNum()) //序列号
                 .productNumber(opeAssemblyBOrder.getProductNumber())
                 .inStockBillId(opeStockBill.getId())
                 .principalId(enter.getUserId())

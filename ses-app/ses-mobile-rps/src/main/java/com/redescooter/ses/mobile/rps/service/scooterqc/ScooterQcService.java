@@ -28,7 +28,7 @@ public interface ScooterQcService {
      * @Date 2020/4/14 14:36
      * @Param [enter]
      **/
-    PageResult<ScooterQcItemResult> scooterQcItem(ScooterQcIdItemEnter enter);
+    ScooterQcItemListResult scooterQcItem(ScooterQcIdItemEnter enter);
 
     /**
      * @Author kyle

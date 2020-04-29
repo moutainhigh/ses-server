@@ -112,7 +112,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
     @Transactional
     @Override
-    public HaveIdPartsResult haveIdPartsResult(PurchasDetailsEnter enter) {
+    public HaveIdPartsResult haveIdPartsResult(HaveIdEnter enter) {
 
         OpePurchasB opePurchasB = opePurchasBService.getById(enter.getId());
         if (opePurchasB == null) {
@@ -167,7 +167,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .eq(OpePurchasBQcItem::getPartId, opePurchasB.getPartId())
                 .eq(OpePurchasBQcItem::getQcResult, QcStatusEnums.PASS.getValue())
         );
-        if (opePurchasBQcItem == null) {
+        if (opePurchasBQcItem == null && opePurchasBQcItem.getSerialNum().equals(enter.getSerialNum())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
@@ -188,7 +188,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .lot(opePurchasBQc.getBatchNo())
                 .partNumber(partsData.getPartsNumber())
                 .principalId(enter.getUserId())
-                .serialNumber(opePurchasBQcItem.getSerialNum())
+                .serialNumber(enter.getSerialNum())
                 .inStockTime(new Date())
                 .revision(0)
                 .createdBy(enter.getUserId())
@@ -375,7 +375,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
     @Transactional
     @Override
-    public NotIdPartsResult notIdPartsResult(PurchasDetailsEnter enter) {
+    public NotIdPartsResult notIdPartsResult(NotIdDetailsEnter enter) {
         NotIdPartsResult notIdPartsResult = purchasPutStorageMapper.notIdpartslistresult(enter);
         if (notIdPartsResult == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
@@ -395,7 +395,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
     }
 
 
-    private void saveStockBillSingle(PurchasDetailsEnter enter, OpeStock saveStock, OpeStockBill saveOpeStockBill, OpePurchasB opePurchasB) {
+    private void saveStockBillSingle(HaveIdEnter enter, OpeStock saveStock, OpeStockBill saveOpeStockBill, OpePurchasB opePurchasB) {
 
         OpeParts parts = opePartsService.getById(opePurchasB.getPartId());
 
@@ -558,7 +558,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .build();
     }
 
-    private OpeStockBill buildOpeStockBill(PurchasDetailsEnter enter, OpePurchasB item, OpeStock stock) {
+    private OpeStockBill buildOpeStockBill(HaveIdEnter enter, OpePurchasB item, OpeStock stock) {
         return OpeStockBill.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
                 .dr(0)

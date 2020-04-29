@@ -36,8 +36,8 @@ public class ScooterQcController {
     }
 
     @PostMapping(value = "/scooterQcItem")
-    @ApiOperation(value = "整车质检具体选项处理", response = ScooterQcItemResult.class)
-    public Response<PageResult<ScooterQcItemResult>> scooterQcItem(@ModelAttribute @ApiParam("请求参数") ScooterQcIdItemEnter enter) {
+    @ApiOperation(value = "整车质检具体选项处理", response = ScooterQcItemListResult.class)
+    public Response<ScooterQcItemListResult> scooterQcItem(@ModelAttribute @ApiParam("请求参数") ScooterQcIdItemEnter enter) {
         return new Response(scooterService.scooterQcItem(enter));
     }
 
