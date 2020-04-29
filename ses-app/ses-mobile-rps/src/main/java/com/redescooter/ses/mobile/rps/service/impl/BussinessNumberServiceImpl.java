@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.production.ProductContractEnums;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyLotTrace;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasLotTrace;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyLotTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasBService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasLotTraceService;
 import com.redescooter.ses.tool.utils.DateUtil;
@@ -32,6 +34,9 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
 
     @Autowired
     private OpePurchasLotTraceService opePurchasLotTraceService;
+
+    @Autowired
+    private OpeAssemblyLotTraceService opeAssemblyLotTraceService;
 
     /**
      * 来料质检 OpePurchasBQc 批次号 id为采购单子表Id
@@ -69,7 +74,23 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
      * @Param
      **/
     @Override
-    public String getBatchNum() {
-        return UUID.randomUUID().toString().replace("-", "");
+    public String getBatchNum(IdEnter enter) {
+        OpeAssemblyLotTrace opeAssemblyLotTrace = opeAssemblyLotTraceService.getOne(new LambdaQueryWrapper<OpeAssemblyLotTrace>().eq(OpeAssemblyLotTrace::getAssemblyId, enter.getId()));
+
+        //如果是同一天 批次号 后三位累加
+        //规则 “PN”+“年份”+“日期”+“3位数递增”。例如：PN20200202001
+        if (opeAssemblyLotTrace != null) {
+            //同一天副用 同一个批次号
+            if (DateUtils.isSameDay(opeAssemblyLotTrace.getCreatedTime(), new Date())) {
+                return opeAssemblyLotTrace.getBatchNo();
+            } else {
+                //不是同一天批次号累加
+                String batchNo = opeAssemblyLotTrace.getBatchNo();
+                Integer num = Integer.valueOf(batchNo.substring(batchNo.length() - 3, batchNo.length())) + 1;
+                return batchNo.substring(0, batchNo.length() - 3) + num.toString();
+            }
+        }
+        //没有质检记录 返回当前新的批次号
+        return new StringBuilder(ProductContractEnums.MATERIALQCBATCHNO.getCode()).append(DateUtil.getDateTime(new Date(), DateConstant.YMD)).append("001").toString();
     }
 }
