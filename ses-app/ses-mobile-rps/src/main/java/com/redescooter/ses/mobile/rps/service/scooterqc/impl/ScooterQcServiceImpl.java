@@ -285,7 +285,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
             }
 
             //订单详情集合
-            List<OpeAssemblyQcItem> opeAssemblyQcItemList = new ArrayList<>();
+            List<OpeAssemblyQcTrace> opeAssemblyQcTraceList = new ArrayList<>();
 
             //判断是否有质检项质检失败
             boolean qcOptionFlag = true;
@@ -335,26 +335,9 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                     qcOptionFlag = false;
                 }
 
-                //质检Item
-                OpeAssemblyQcItem opeAssemblyQcItem = null;
-                opeAssemblyQcItemList.add(opeAssemblyQcItem = OpeAssemblyQcItem.builder()
-                        .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_QC_ITEM))
-                        .dr(0)
-                        .serialNum(bussinessNumberService.getBatchNum())
-                        .assemblyBId(opeAssemblyBOrder.getId())
-                        .assemblyId(opeAssemblyOrder.getId())
-                        .updatedBy(enter.getUserId())
-                        .updatedTime(new Date())
-                        .productId(opeAssemblyBOrder.getProductId())
-                        .qcResult(opeProductQcTemplateB.getQcResult())
-                        .revision(0)
-                        .createdBy(enter.getUserId())  //创建表？
-                        .createdTime(new Date())
-                        .batchNo(StringUtils.isEmpty(assemblyQcItem) ? batchNum : assemblyQcItem.getBatchNo())  //批次号
-                        .build());
-
                 //质检Trace
-                OpeAssemblyQcTrace opeAssemblyQcTrace = OpeAssemblyQcTrace.builder()
+                OpeAssemblyQcTrace opeAssemblyQcTrace = null;
+                opeAssemblyQcTraceList.add(opeAssemblyQcTrace = OpeAssemblyQcTrace.builder()
                         .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_QC_TRACE))
                         .dr(0)
                         .productQcTemplateBId(opeProductQcTemplateB.getId())
@@ -362,38 +345,15 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                         .productQcTemplateId(opeProductQcTemplate.getId())
                         .productQcTemplateName(opeProductQcTemplate.getQcItemName())
                         .opeAssemblyBId(opeAssemblyBOrder.getId())
-                        .assemblyQcItemId(opeAssemblyQcItem.getId())
                         .updatedBy(enter.getUserId())
                         .updatedTime(new Date())
                         .revision(0)
                         .picture(scooterQcItemOptionEnter.getImageUrl())
                         .createdTime(new Date())
-                        .build();
-                //保存每个质检项的质检Trace
-                opeAssemblyQcTraceService.save(opeAssemblyQcTrace);
+                        .build());
             }
 
-            //质检记录
-            OpeAssemblyBQc opeAssemblyBQc = OpeAssemblyBQc.builder()
-                    .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_B_QC))
-                    .dr(0)
-                    .batchNo(StringUtils.isEmpty(assemblyQcItem) ? batchNum : assemblyQcItem.getBatchNo())
-                    .assemblyBId(opeAssemblyBOrder.getId())
-                    .tenantId(enter.getTenantId())
-                    .userId(enter.getUserId())
-                    .qualityInspectionTime(new Date())
-                    .createdTime(new Date())
-                    .createdBy(enter.getUserId())
-                    .updatedTime(new Date())
-                    .updatedBy(enter.getUserId())
-                    .productId(opeAssemblyBOrder.getProductId())
-                    .status(qcOptionFlag?QcStatusEnums.PASS.getValue():QcStatusEnums.FAIL.getValue())
-                    .qualityInspectorId(enter.getUserId())
-                    .totalQualityInspected(1)  //需要质检总数
-                    .passCount(qcOptionFlag ? 1 : 0)
-                    .failCount(qcOptionFlag ? 0 : 1)
-                    .build();
-
+            //质检批次记录
             OpeAssemblyLotTrace opeAssemblyLotTrace = null;
             if (!StringUtils.isEmpty(assemblyQcItem)) {
                 QueryWrapper<OpeAssemblyLotTrace> opeAssemblyLotTraceQueryWrapper = new QueryWrapper<>();
@@ -402,7 +362,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                 if (!StringUtils.isEmpty(opeAssemblyLotTrace)) {
                     opeAssemblyLotTrace.setPassCount(qcOptionFlag ? opeAssemblyLotTrace.getPassCount() + 1 : opeAssemblyLotTrace.getPassCount());
                     opeAssemblyLotTrace.setFailCount(qcOptionFlag ? opeAssemblyLotTrace.getFailCount() : opeAssemblyLotTrace.getFailCount() + 1);
-                    opeAssemblyLotTrace.setTotalQualityInspected(qcOptionFlag ? opeAssemblyLotTrace.getTotalQualityInspected() : opeAssemblyLotTrace.getTotalQualityInspected() + 1);
+                    opeAssemblyLotTrace.setTotalQualityInspected(opeAssemblyLotTrace.getTotalQualityInspected() + 1);
                     opeAssemblyLotTrace.setUpdatedBy(enter.getUserId());
                     opeAssemblyLotTrace.setUpdatedTime(new Date());
                 }
@@ -426,11 +386,62 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                         .build();
             }
 
+            //查找对应的质检记录是否存在
+            OpeAssemblyBQc opeAssemblyBQc = null;
+            QueryWrapper<OpeAssemblyBQc> opeAssemblyBQcQueryWrapper = new QueryWrapper<>();
+            opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_ASSEMBLY_B_ID, enter.getId());
+            opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_BATCH_NO, assemblyQcItem.getBatchNo());
+            opeAssemblyBQc = opeAssemblyBQcService.getOne(opeAssemblyBQcQueryWrapper);
+
+            if (StringUtils.isEmpty(opeAssemblyBQc)) {
+                //质检记录
+                opeAssemblyBQc = OpeAssemblyBQc.builder()
+                        .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_B_QC))
+                        .dr(0)
+                        .batchNo(StringUtils.isEmpty(assemblyQcItem) ? batchNum : assemblyQcItem.getBatchNo())
+                        .assemblyBId(opeAssemblyBOrder.getId())
+                        .tenantId(enter.getTenantId())
+                        .userId(enter.getUserId())
+                        .qualityInspectionTime(new Date())
+                        .createdTime(new Date())
+                        .createdBy(enter.getUserId())
+                        .updatedTime(new Date())
+                        .updatedBy(enter.getUserId())
+                        .productId(opeAssemblyBOrder.getProductId())
+                        .status(qcOptionFlag ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue())
+                        .qualityInspectorId(enter.getUserId())
+                        .totalQualityInspected(1)  //需要质检总数
+                        .passCount(qcOptionFlag ? 1 : 0)
+                        .failCount(0)
+                        .build();
+            } else {
+                opeAssemblyBQc.setStatus(qcOptionFlag ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue());
+                opeAssemblyBQc.setPassCount(qcOptionFlag ? opeAssemblyBQc.getPassCount() + 1 : opeAssemblyBQc.getPassCount());
+                opeAssemblyBQc.setTotalQualityInspected(opeAssemblyBQc.getTotalQualityInspected() + 1);
+            }
+
+            //质检Item
+            OpeAssemblyQcItem opeAssemblyQcItem = OpeAssemblyQcItem.builder()
+                    .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_QC_ITEM))
+                    .dr(0)
+                    .serialNum(bussinessNumberService.getBatchNum())
+                    .assemblyBId(opeAssemblyBOrder.getId())
+                    .assemblyId(opeAssemblyOrder.getId())
+                    .updatedBy(enter.getUserId())
+                    .updatedTime(new Date())
+                    .assemblyBQcId(opeAssemblyBQc.getId())
+                    .assemblyLotId(opeAssemblyLotTrace.getId())
+                    .productId(opeAssemblyBOrder.getProductId())
+                    .qcResult(qcOptionFlag ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue())
+                    .revision(0)
+                    .createdBy(enter.getUserId())
+                    .createdTime(new Date())
+                    .batchNo(qcOptionFlag ? (StringUtils.isEmpty(assemblyQcItem) ? batchNum : assemblyQcItem.getBatchNo()) : null)  //批次号
+                    .build();
 
             //质检结果批量插入批次表id和质检记录id
-            for (OpeAssemblyQcItem opeAssemblyQcItemOne : opeAssemblyQcItemList) {
-                opeAssemblyQcItemOne.setAssemblyBQcId(opeAssemblyBQc.getId());
-                opeAssemblyQcItemOne.setAssemblyLotId(opeAssemblyLotTrace.getId());
+            for (OpeAssemblyQcTrace opeAssemblyQcTrace : opeAssemblyQcTraceList) {
+                opeAssemblyQcTrace.setAssemblyQcItemId(opeAssemblyQcItem.getId());
             }
 
             //修改组装单和子单状态标记
@@ -438,8 +449,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
 
             //把质检成功的产品对应的组装单和组装单子单的待质检数量进行修改
             //修改组装单的总待质检数量
-            if ((!StringUtils.isEmpty(
-                    opeAssemblyOrder.getLaveWaitQcTotal())) && (!StringUtils.isEmpty(opeAssemblyBOrder.getLaveWaitQcQty()))) {
+            if ((!StringUtils.isEmpty(opeAssemblyOrder.getLaveWaitQcTotal())) && (!StringUtils.isEmpty(opeAssemblyBOrder.getLaveWaitQcQty()))) {
                 if (qcOptionFlag) {
                     //修改组装单子单的待质检数
                     opeAssemblyBOrder.setLaveWaitQcQty(opeAssemblyBOrder.getLaveWaitQcQty() - 1);
@@ -477,15 +487,17 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                 throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getCode(), ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getMessage());
             }
 
-            //保存质检批次记录
 
+            //保存每个质检项的质检Trace集合
+            opeAssemblyQcTraceService.saveBatch(opeAssemblyQcTraceList);
+            //保存质检批次记录
             opeAssemblyLotTraceService.saveOrUpdate(opeAssemblyLotTrace);
             //保存质检详情记录
-            opeAssemblyQcItemService.saveBatch(opeAssemblyQcItemList);
+            opeAssemblyQcItemService.save(opeAssemblyQcItem);
             //修改组装单子单的状态
             opeAssemblyBOrderService.updateById(opeAssemblyBOrder);
             //保存质检批次记录
-            opeAssemblyBQcService.save(opeAssemblyBQc);
+            opeAssemblyBQcService.saveOrUpdate(opeAssemblyBQc);
             //保存组装单
             opeAssemblyOrderService.updateById(opeAssemblyOrder);
 
