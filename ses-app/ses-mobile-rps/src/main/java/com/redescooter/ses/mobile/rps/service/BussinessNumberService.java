@@ -17,4 +17,13 @@ public interface BussinessNumberService {
      * @return
      */
     String materialQcBatchNo(IdEnter enter);
+
+    /**
+     * @Author kyle
+     * @Description //批次号生成
+     * @Date  2020/4/29 15:33
+     * @Param
+     * @return
+     **/
+    String getBatchNum();
 }

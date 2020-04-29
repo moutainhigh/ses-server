@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @ClassName:BussinessNumberServiceImpl
@@ -51,5 +52,17 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
             }
         }
         return new StringBuilder(ProductContractEnums.MATERIALQCBATCHNO.getCode()).append(DateUtil.getDateTime(new Date(), DateConstant.YMD)).toString();
+    }
+
+    /**
+     * @return
+     * @Author kyle
+     * @Description //批次号生成
+     * @Date 2020/4/29 15:33
+     * @Param
+     **/
+    @Override
+    public String getBatchNum() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }
