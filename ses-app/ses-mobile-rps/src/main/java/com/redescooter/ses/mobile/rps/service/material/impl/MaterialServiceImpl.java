@@ -361,16 +361,10 @@ public class MaterialServiceImpl implements MaterialService {
                 throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
             }
         });
-        //1.验证是否有质检失败的部品
-        List<OpePurchasB> checkPurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().in(OpePurchasB::getPurchasId,
-                opePurchasList.stream().map(OpePurchas::getId).collect(Collectors.toList())));
-        if (CollectionUtils.isEmpty(checkPurchasBList)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
 
-        //2.质检表数据获取
+        //1.质检表数据获取
         List<OpePurchasBQc> opePurchasBQcList = opePurchasBQcService.list(new LambdaQueryWrapper<OpePurchasBQc>().in(OpePurchasBQc::getPurchasBId,
-                checkPurchasBList.stream().map(OpePurchasB::getId).collect(Collectors.toList())));
+                opePurchasBList.stream().map(OpePurchasB::getId).collect(Collectors.toList())));
         if (CollectionUtils.isEmpty(opePurchasBQcList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PLEASE_SCAN_THE_CODE_FIRST.getCode(), ExceptionCodeEnums.PLEASE_SCAN_THE_CODE_FIRST.getMessage());
         }
@@ -381,32 +375,36 @@ public class MaterialServiceImpl implements MaterialService {
         }
 
         //校验质检结果表 数据是否要进行修改
-        for (OpePurchasB purchasB : checkPurchasBList) {
+        for (OpePurchasB purchasB : opePurchasBList) {
+            int initFailTotal = 0;
             for (OpePurchasBQc item : opePurchasBQcList) {
-                if (item.getFailCount() == 0) {
-                    failConut++;
-                }
-                item.setFailCount(0);
-                item.setUpdatedBy(enter.getUserId());
-                item.setStatus(QcStatusEnums.PASS.getValue());
-                item.setUpdatedTime(new Date());
-
-                if (purchasB.getId().equals(item.getPurchasBId()) && item.getPartsId().equals(purchasB.getPartId())) {
+                if (purchasB.getId().equals(item.getPurchasBId())){
+                    if (item.getFailCount() != 0) {
+                        failConut++;
+                        initFailTotal += item.getFailCount();
+                    }
+                    purchasB.setLaveWaitQcQty(purchasB.getLaveWaitQcQty() + initFailTotal);
                     purchasB.setQcStatus(QcStatusEnums.QUALITY_INSPECTION.getValue());
                     purchasB.setUpdatedBy(enter.getUserId());
                     purchasB.setUpdatedTime(new Date());
                 }
-
+                item.setTotalQualityInspected(item.getTotalQualityInspected() - item.getFailCount());
+                item.setFailCount(0);
+                item.setUpdatedBy(enter.getUserId());
+                item.setStatus(QcStatusEnums.PASS.getValue());
+                item.setUpdatedTime(new Date());
+            }
+            for (OpePurchas item : opePurchasList) {
+                if (item.getId().equals(purchasB.getPurchasId())) {
+                    item.setLaveWaitQcTotal(item.getLaveWaitQcTotal() + initFailTotal);
+                    item.setUpdatedBy(enter.getUserId());
+                    item.setUpdatedTime(new Date());
+                }
             }
         }
         //若无质检失败的话 无需质检
-        if (failConut == opePurchasBQcList.size()) {
+        if (failConut == 0) {
             throw new SesMobileRpsException(ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(), ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
-        }
-
-        //更新质检结果表
-        if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
-            opePurchasBQcService.updateBatchById(opePurchasBQcList);
         }
 
         //抹除掉 质检失败和批次号建立的绑定关系
@@ -422,16 +420,14 @@ public class MaterialServiceImpl implements MaterialService {
             });
             opePurchasBQcItemService.updateBatchById(opePurchasBQcItemList);
         }
-
-        //判断是否全部QC 通过 通过的话修改子表状态
-        opePurchasBQcList.removeIf(item -> StringUtils.equals(item.getStatus(), QcStatusEnums.PASS.getValue()));
-        opePurchasBQcList.forEach(item -> {
-            item.setStatus(QcStatusEnums.PASS.getValue());
-            item.setUpdatedBy(enter.getUserId());
-            item.setUpdatedTime(new Date());
-        });
+        //更新质检结果表
         if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
             opePurchasBQcService.updateBatchById(opePurchasBQcList);
+        }
+
+        //更新子表数据
+        if (CollectionUtils.isNotEmpty(opePurchasBList)) {
+            opePurchasBService.updateBatchById(opePurchasBList);
         }
 
         //订单节点 更新
@@ -697,6 +693,7 @@ public class MaterialServiceImpl implements MaterialService {
         }
 
         //根据质检方式减库存
+        int initLaveWaitQcQty = opePurchasB.getLaveWaitQcQty();
         //质检成功、质检失败 都要待备料数量递减
         if (opeParts.getIdClass()) {
             opePurchasB.setLaveWaitQcQty(opePurchasB.getLaveWaitQcQty() - 1);
@@ -786,14 +783,16 @@ public class MaterialServiceImpl implements MaterialService {
         String batchNo = bussinessNumberService.materialQcBatchNo(batchNoEnter);
 
         //保存质检结果
-        OpePurchasBQc purchasBQc = buildOpePurchasBQc(enter, opeParts, opePurchasB, qcResult, batchNo);
+        OpePurchasBQc purchasBQc = buildOpePurchasBQc(enter, opeParts, opePurchasB, qcResult, batchNo, initLaveWaitQcQty);
         opePurchasBQcService.saveOrUpdate(purchasBQc);
-        //保存质检条目
-        OpePurchasBQcItem purchasBQcItem = buildOpePurchasBQcItem(enter, opeParts, purchasBQc, qcResult, batchNo);
-        opePurchasBQcItemService.save(purchasBQcItem);
 
         //保存批次号的质检记录
-        opePurchasLotTraceService.saveOrUpdate(buildOpepurchasLotTraceSingle(enter, opeParts, qcResult, opePurchas, batchNo));
+        OpePurchasLotTrace opePurchasLotTrace = buildOpepurchasLotTraceSingle(enter, opeParts, qcResult, opePurchas, batchNo);
+        opePurchasLotTraceService.saveOrUpdate(opePurchasLotTrace);
+
+        //保存质检条目
+        OpePurchasBQcItem purchasBQcItem = buildOpePurchasBQcItem(enter, opeParts, purchasBQc, qcResult, batchNo, opePurchasLotTrace.getId());
+        opePurchasBQcItemService.save(purchasBQcItem);
 
         //保存质检项记录
         templateMap.forEach((key, value) -> {
@@ -872,7 +871,7 @@ public class MaterialServiceImpl implements MaterialService {
         return opePurchasLotTrace;
     }
 
-    private OpePurchasBQc buildOpePurchasBQc(SaveMaterialQcEnter enter, OpeParts opeParts, OpePurchasB opePurchasB, Boolean qcResult, String batchNo) {
+    private OpePurchasBQc buildOpePurchasBQc(SaveMaterialQcEnter enter, OpeParts opeParts, OpePurchasB opePurchasB, Boolean qcResult, String batchNo, int initLaveWaitQcQty) {
         //查询今天是否 已经质检过
         OpePurchasBQc opePurchasBQc = opePurchasBQcService.getOne(new LambdaQueryWrapper<OpePurchasBQc>().eq(OpePurchasBQc::getPurchasBId, opePurchasB.getId()));
 
@@ -901,8 +900,8 @@ public class MaterialServiceImpl implements MaterialService {
                     purchasBQc.setTotalQualityInspected(1);
                     purchasBQc.setPassCount(1);
                 } else {
-                    purchasBQc.setPassCount(opePurchasB.getLaveWaitQcQty());
-                    purchasBQc.setTotalQualityInspected(opePurchasB.getLaveWaitQcQty());
+                    purchasBQc.setPassCount(initLaveWaitQcQty);
+                    purchasBQc.setTotalQualityInspected(initLaveWaitQcQty);
                 }
                 purchasBQc.setFailCount(0);
                 purchasBQc.setStatus(QcStatusEnums.PASS.getValue());
@@ -911,8 +910,8 @@ public class MaterialServiceImpl implements MaterialService {
                     purchasBQc.setTotalQualityInspected(1);
                     purchasBQc.setFailCount(1);
                 } else {
-                    purchasBQc.setFailCount(opePurchasB.getLaveWaitQcQty());
-                    purchasBQc.setTotalQualityInspected(opePurchasB.getLaveWaitQcQty());
+                    purchasBQc.setFailCount(initLaveWaitQcQty);
+                    purchasBQc.setTotalQualityInspected(initLaveWaitQcQty);
                 }
                 purchasBQc.setPassCount(0);
                 purchasBQc.setStatus(QcStatusEnums.FAIL.getValue());
@@ -946,13 +945,14 @@ public class MaterialServiceImpl implements MaterialService {
         return purchasBQc;
     }
 
-    private OpePurchasBQcItem buildOpePurchasBQcItem(SaveMaterialQcEnter enter, OpeParts opeParts, OpePurchasBQc purchasBQc, Boolean qcResult, String batchNo) {
+    private OpePurchasBQcItem buildOpePurchasBQcItem(SaveMaterialQcEnter enter, OpeParts opeParts, OpePurchasBQc purchasBQc, Boolean qcResult, String batchNo, Long lotTraceId) {
         return OpePurchasBQcItem.builder()
                 .id(idAppService.getId(SequenceName.OPE_PURCHAS_B_QC_ITEM))
                 .dr(0)
                 .partId(opeParts.getId())
                 .purchasBId(enter.getId())
                 .purchasBQcId(purchasBQc.getId())
+                .purchasBLotTraceId(lotTraceId)
                 .batchNo(batchNo)
                 .qcBatchTotal(opeParts.getIdClass() == true ? 1 : enter.getQty())
                 .serialNum(opeParts.getIdClass() == true ? "REDE" + RandomUtil.BASE_CHAR_NUMBER : null)

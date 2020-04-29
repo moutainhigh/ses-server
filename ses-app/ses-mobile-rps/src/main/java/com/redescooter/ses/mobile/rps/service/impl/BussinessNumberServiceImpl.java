@@ -62,6 +62,6 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
             }
         }
         //没有质检记录 返回当前新的批次号
-        return new StringBuilder(ProductContractEnums.MATERIALQCBATCHNO.getCode()).append(DateUtil.getDateTime(new Date(), DateConstant.YMD)).append(001).toString();
+        return new StringBuilder(ProductContractEnums.MATERIALQCBATCHNO.getCode()).append(DateUtil.getDateTime(new Date(), DateConstant.YMD)).append("001").toString();
     }
 }
