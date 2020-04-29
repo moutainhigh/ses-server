@@ -387,7 +387,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                     .updatedTime(new Date())
                     .updatedBy(enter.getUserId())
                     .productId(opeAssemblyBOrder.getProductId())
-                    .status(QcStatusEnums.PASS.getValue())
+                    .status(qcOptionFlag?QcStatusEnums.PASS.getValue():QcStatusEnums.FAIL.getValue())
                     .qualityInspectorId(enter.getUserId())
                     .totalQualityInspected(1)  //需要质检总数
                     .passCount(qcOptionFlag ? 1 : 0)
@@ -478,6 +478,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
             }
 
             //保存质检批次记录
+
             opeAssemblyLotTraceService.saveOrUpdate(opeAssemblyLotTrace);
             //保存质检详情记录
             opeAssemblyQcItemService.saveBatch(opeAssemblyQcItemList);
