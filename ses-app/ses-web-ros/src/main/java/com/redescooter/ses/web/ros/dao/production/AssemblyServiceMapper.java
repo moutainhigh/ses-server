@@ -10,11 +10,12 @@ import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.QcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
 import org.apache.ibatis.annotations.Param;
 
@@ -156,8 +157,16 @@ public interface AssemblyServiceMapper {
     /**
      * 产品质检项条目
      *
+     * @param serialN
+     * @return
+     */
+    List<QcItemViewResult> qcItemViewResult(String serialN);
+
+    /**
+     * 产品质检模板结果
+     *
      * @param id
      * @return
      */
-    List<AssemblyQcItemViewItemResult> assemblyQcItemViewItem(Long id);
+    List<AssemblyQcItemViewItemTemplateResult> viewItemTemplate(Long id);
 }

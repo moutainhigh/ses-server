@@ -16,6 +16,7 @@ import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
@@ -145,8 +146,17 @@ public interface AssemblyService {
     List<CommonNodeResult> ordinaryAssemblyNode(IdEnter enter);
 
     /**
+     * 质检结果集合
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, String> qcResultList(GeneralEnter enter);
+
+    /**
      * 质检记录
      * //todo ROS 新增
+     *
      * @param enter
      * @return
      */
@@ -155,6 +165,7 @@ public interface AssemblyService {
     /**
      * 质检记录条目
      * //todo ROS 新增
+     *
      * @param enter
      * @return
      */
@@ -163,10 +174,20 @@ public interface AssemblyService {
     /**
      * 质检条目的质检项
      * //todo ROS 新增
+     *
      * @param enter
      * @return
      */
     AssemblyQcItemViewResult assemblyQcItemView(IdEnter enter);
+
+    /**
+     * 模板质检结果
+     *
+     * @param enter
+     * @return
+     */
+    List<AssemblyQcItemViewItemTemplateResult> viewItemTemplate(IdEnter enter);
+
 
     /**
      * 组装单信息导出

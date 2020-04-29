@@ -5,22 +5,16 @@ import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.production.ProductContractEnums;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyLotTrace;
-import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasLotTrace;
-import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
-import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyLotTraceService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasBService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasLotTraceService;
 import com.redescooter.ses.tool.utils.DateUtil;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * @ClassName:BussinessNumberServiceImpl
@@ -58,7 +52,7 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
             } else {
                 //不是同一天批次号累加
                 String batchNo = opePurchasLotTrace.getBatchNo();
-                Integer num = Integer.valueOf(batchNo.substring(batchNo.length() - 3, batchNo.length())) + 1;
+                Integer num = Integer.valueOf(batchNo.substring(batchNo.length() - 3)) + 1;
                 return batchNo.substring(0, batchNo.length() - 3) + num.toString();
             }
         }
@@ -86,7 +80,7 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
             } else {
                 //不是同一天批次号累加
                 String batchNo = opeAssemblyLotTrace.getBatchNo();
-                Integer num = Integer.valueOf(batchNo.substring(batchNo.length() - 3, batchNo.length())) + 1;
+                Integer num = Integer.valueOf(batchNo.substring(batchNo.length() - 3)) + 1;
                 return batchNo.substring(0, batchNo.length() - 3) + num.toString();
             }
         }

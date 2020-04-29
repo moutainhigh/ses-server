@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.enums.production.assembly.AssemblyEventEnu
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
@@ -291,7 +292,10 @@ public class ScooterQcServiceImpl implements ScooterQcService {
             boolean qcOptionFlag = true;
 
             //本次质检的批次号
-            String batchNum = bussinessNumberService.getBatchNum();
+            IdEnter idEnter=new IdEnter();
+            BeanUtils.copyProperties(enter,idEnter);
+            idEnter.setId(opeAssemblyOrder.getId());
+            String batchNum = bussinessNumberService.getBatchNum(idEnter);
 
             //查询质检详情中时间最近的一条质检记录
             QueryWrapper<OpeAssemblyQcItem> opeAssemblyQcItemQueryWrapper = new QueryWrapper<>();
@@ -340,7 +344,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                 opeAssemblyQcItemList.add(opeAssemblyQcItem = OpeAssemblyQcItem.builder()
                         .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_QC_ITEM))
                         .dr(0)
-                        .serialNum(bussinessNumberService.getBatchNum())
+                        .serialNum(batchNum)
                         .assemblyBId(opeAssemblyBOrder.getId())
                         .assemblyId(opeAssemblyOrder.getId())
                         .updatedBy(enter.getUserId())
