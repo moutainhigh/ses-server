@@ -1,17 +1,14 @@
 package com.redescooter.ses.mobile.rps.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.production.ProductContractEnums;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
-import com.redescooter.ses.mobile.rps.dm.OpePurchasBQc;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasLotTrace;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasBService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasLotTraceService;
 import com.redescooter.ses.tool.utils.DateUtil;
@@ -21,8 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 /**
  * @ClassName:BussinessNumberServiceImpl
@@ -63,5 +59,17 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
         }
         //没有质检记录 返回当前新的批次号
         return new StringBuilder(ProductContractEnums.MATERIALQCBATCHNO.getCode()).append(DateUtil.getDateTime(new Date(), DateConstant.YMD)).append("001").toString();
+    }
+
+    /**
+     * @return
+     * @Author kyle
+     * @Description //批次号生成
+     * @Date 2020/4/29 15:33
+     * @Param
+     **/
+    @Override
+    public String getBatchNum() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }

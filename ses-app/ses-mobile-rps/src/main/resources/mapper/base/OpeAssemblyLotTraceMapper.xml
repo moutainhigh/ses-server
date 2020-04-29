@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeAssemblyQcItemMapper">
-  <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeAssemblyQcItem">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeAssemblyLotTraceMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeAssemblyLotTrace">
     <!--@mbg.generated-->
-    <!--@Table ope_assembly_qc_item-->
+    <!--@Table ope_assembly_lot_trace-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="assembly_id" jdbcType="BIGINT" property="assemblyId" />
-    <result column="assembly_b_id" jdbcType="BIGINT" property="assemblyBId" />
-    <result column="assembly_b_qc_id" jdbcType="BIGINT" property="assemblyBQcId" />
-    <result column="product_id" jdbcType="BIGINT" property="productId" />
-    <result column="assembly_lot_id" jdbcType="BIGINT" property="assemblyLotId" />
-    <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+    <result column="quality_inspector_id" jdbcType="BIGINT" property="qualityInspectorId" />
     <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
-    <result column="qc_result" jdbcType="VARCHAR" property="qcResult" />
+    <result column="total_quality_inspected" jdbcType="INTEGER" property="totalQualityInspected" />
+    <result column="pass_count" jdbcType="INTEGER" property="passCount" />
+    <result column="fail_count" jdbcType="INTEGER" property="failCount" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -27,17 +27,27 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, assembly_id, assembly_b_id, assembly_b_qc_id, product_id, assembly_lot_id, 
-    serial_num, batch_no, qc_result, revision, created_by, created_time, updated_by, 
-    updated_time, def1, def2, def3, def5, def6
+    id, dr, tenant_id, user_id, assembly_id, quality_inspector_id, batch_no, total_quality_inspected, 
+    pass_count, fail_count, revision, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_assembly_qc_item
+    update ope_assembly_lot_trace
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="assembly_id = case" suffix="end,">
@@ -45,29 +55,9 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyId,jdbcType=BIGINT}
         </foreach>
       </trim>
-      <trim prefix="assembly_b_id = case" suffix="end,">
+      <trim prefix="quality_inspector_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyBId,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="assembly_b_qc_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyBQcId,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="product_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="assembly_lot_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyLotId,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="serial_num = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.serialNum,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qualityInspectorId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="batch_no = case" suffix="end,">
@@ -75,9 +65,19 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.batchNo,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="qc_result = case" suffix="end,">
+      <trim prefix="total_quality_inspected = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.qcResult,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.totalQualityInspected,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="pass_count = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.passCount,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="fail_count = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.failCount,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="revision = case" suffix="end,">
@@ -138,12 +138,26 @@
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_assembly_qc_item
+    update ope_assembly_lot_trace
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.dr != null">
             when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.userId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
           </if>
         </foreach>
       </trim>
@@ -154,38 +168,10 @@
           </if>
         </foreach>
       </trim>
-      <trim prefix="assembly_b_id = case" suffix="end,">
+      <trim prefix="quality_inspector_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.assemblyBId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyBId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="assembly_b_qc_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.assemblyBQcId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyBQcId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="product_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.productId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="assembly_lot_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.assemblyLotId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyLotId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="serial_num = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.serialNum != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.serialNum,jdbcType=VARCHAR}
+          <if test="item.qualityInspectorId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.qualityInspectorId,jdbcType=BIGINT}
           </if>
         </foreach>
       </trim>
@@ -196,10 +182,24 @@
           </if>
         </foreach>
       </trim>
-      <trim prefix="qc_result = case" suffix="end,">
+      <trim prefix="total_quality_inspected = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.qcResult != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.qcResult,jdbcType=VARCHAR}
+          <if test="item.totalQualityInspected != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.totalQualityInspected,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="pass_count = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.passCount != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.passCount,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="fail_count = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.failCount != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.failCount,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -281,31 +281,32 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_assembly_qc_item
-    (id, dr, assembly_id, assembly_b_id, assembly_b_qc_id, product_id, assembly_lot_id, 
-      serial_num, batch_no, qc_result, revision, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def5, def6)
+    insert into ope_assembly_lot_trace
+    (id, dr, tenant_id, user_id, assembly_id, quality_inspector_id, batch_no, total_quality_inspected, 
+      pass_count, fail_count, revision, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.assemblyId,jdbcType=BIGINT}, 
-        #{item.assemblyBId,jdbcType=BIGINT}, #{item.assemblyBQcId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, 
-        #{item.assemblyLotId,jdbcType=BIGINT}, #{item.serialNum,jdbcType=VARCHAR}, #{item.batchNo,jdbcType=VARCHAR}, 
-        #{item.qcResult,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.userId,jdbcType=BIGINT}, #{item.assemblyId,jdbcType=BIGINT}, #{item.qualityInspectorId,jdbcType=BIGINT}, 
+        #{item.batchNo,jdbcType=VARCHAR}, #{item.totalQualityInspected,jdbcType=INTEGER}, 
+        #{item.passCount,jdbcType=INTEGER}, #{item.failCount,jdbcType=INTEGER}, #{item.revision,jdbcType=INTEGER}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+        )
     </foreach>
   </insert>
-  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeAssemblyQcItem">
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeAssemblyLotTrace">
     <!--@mbg.generated-->
-    insert into ope_assembly_qc_item
-    (id, dr, assembly_id, assembly_b_id, assembly_b_qc_id, product_id, assembly_lot_id, 
-      serial_num, batch_no, qc_result, revision, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def5, def6)
+    insert into ope_assembly_lot_trace
+    (id, dr, tenant_id, user_id, assembly_id, quality_inspector_id, batch_no, total_quality_inspected, 
+      pass_count, fail_count, revision, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{assemblyId,jdbcType=BIGINT}, #{assemblyBId,jdbcType=BIGINT}, 
-      #{assemblyBQcId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{assemblyLotId,jdbcType=BIGINT}, 
-      #{serialNum,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR}, #{qcResult,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{assemblyId,jdbcType=BIGINT}, #{qualityInspectorId,jdbcType=BIGINT}, #{batchNo,jdbcType=VARCHAR}, 
+      #{totalQualityInspected,jdbcType=INTEGER}, #{passCount,jdbcType=INTEGER}, #{failCount,jdbcType=INTEGER}, 
       #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
       #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
@@ -313,14 +314,14 @@
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    user_id = #{userId,jdbcType=BIGINT}, 
     assembly_id = #{assemblyId,jdbcType=BIGINT}, 
-    assembly_b_id = #{assemblyBId,jdbcType=BIGINT}, 
-    assembly_b_qc_id = #{assemblyBQcId,jdbcType=BIGINT}, 
-    product_id = #{productId,jdbcType=BIGINT}, 
-    assembly_lot_id = #{assemblyLotId,jdbcType=BIGINT}, 
-    serial_num = #{serialNum,jdbcType=VARCHAR}, 
+    quality_inspector_id = #{qualityInspectorId,jdbcType=BIGINT}, 
     batch_no = #{batchNo,jdbcType=VARCHAR}, 
-    qc_result = #{qcResult,jdbcType=VARCHAR}, 
+    total_quality_inspected = #{totalQualityInspected,jdbcType=INTEGER}, 
+    pass_count = #{passCount,jdbcType=INTEGER}, 
+    fail_count = #{failCount,jdbcType=INTEGER}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
@@ -332,9 +333,9 @@
     def5 = #{def5,jdbcType=VARCHAR}, 
     def6 = #{def6,jdbcType=DOUBLE}
   </insert>
-  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeAssemblyQcItem">
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeAssemblyLotTrace">
     <!--@mbg.generated-->
-    insert into ope_assembly_qc_item
+    insert into ope_assembly_lot_trace
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -342,29 +343,29 @@
       <if test="dr != null">
         dr,
       </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
       <if test="assemblyId != null">
         assembly_id,
       </if>
-      <if test="assemblyBId != null">
-        assembly_b_id,
-      </if>
-      <if test="assemblyBQcId != null">
-        assembly_b_qc_id,
-      </if>
-      <if test="productId != null">
-        product_id,
-      </if>
-      <if test="assemblyLotId != null">
-        assembly_lot_id,
-      </if>
-      <if test="serialNum != null">
-        serial_num,
+      <if test="qualityInspectorId != null">
+        quality_inspector_id,
       </if>
       <if test="batchNo != null">
         batch_no,
       </if>
-      <if test="qcResult != null">
-        qc_result,
+      <if test="totalQualityInspected != null">
+        total_quality_inspected,
+      </if>
+      <if test="passCount != null">
+        pass_count,
+      </if>
+      <if test="failCount != null">
+        fail_count,
       </if>
       <if test="revision != null">
         revision,
@@ -405,29 +406,29 @@
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
       </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
       <if test="assemblyId != null">
         #{assemblyId,jdbcType=BIGINT},
       </if>
-      <if test="assemblyBId != null">
-        #{assemblyBId,jdbcType=BIGINT},
-      </if>
-      <if test="assemblyBQcId != null">
-        #{assemblyBQcId,jdbcType=BIGINT},
-      </if>
-      <if test="productId != null">
-        #{productId,jdbcType=BIGINT},
-      </if>
-      <if test="assemblyLotId != null">
-        #{assemblyLotId,jdbcType=BIGINT},
-      </if>
-      <if test="serialNum != null">
-        #{serialNum,jdbcType=VARCHAR},
+      <if test="qualityInspectorId != null">
+        #{qualityInspectorId,jdbcType=BIGINT},
       </if>
       <if test="batchNo != null">
         #{batchNo,jdbcType=VARCHAR},
       </if>
-      <if test="qcResult != null">
-        #{qcResult,jdbcType=VARCHAR},
+      <if test="totalQualityInspected != null">
+        #{totalQualityInspected,jdbcType=INTEGER},
+      </if>
+      <if test="passCount != null">
+        #{passCount,jdbcType=INTEGER},
+      </if>
+      <if test="failCount != null">
+        #{failCount,jdbcType=INTEGER},
       </if>
       <if test="revision != null">
         #{revision,jdbcType=INTEGER},
@@ -468,29 +469,29 @@
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
       </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
       <if test="assemblyId != null">
         assembly_id = #{assemblyId,jdbcType=BIGINT},
       </if>
-      <if test="assemblyBId != null">
-        assembly_b_id = #{assemblyBId,jdbcType=BIGINT},
-      </if>
-      <if test="assemblyBQcId != null">
-        assembly_b_qc_id = #{assemblyBQcId,jdbcType=BIGINT},
-      </if>
-      <if test="productId != null">
-        product_id = #{productId,jdbcType=BIGINT},
-      </if>
-      <if test="assemblyLotId != null">
-        assembly_lot_id = #{assemblyLotId,jdbcType=BIGINT},
-      </if>
-      <if test="serialNum != null">
-        serial_num = #{serialNum,jdbcType=VARCHAR},
+      <if test="qualityInspectorId != null">
+        quality_inspector_id = #{qualityInspectorId,jdbcType=BIGINT},
       </if>
       <if test="batchNo != null">
         batch_no = #{batchNo,jdbcType=VARCHAR},
       </if>
-      <if test="qcResult != null">
-        qc_result = #{qcResult,jdbcType=VARCHAR},
+      <if test="totalQualityInspected != null">
+        total_quality_inspected = #{totalQualityInspected,jdbcType=INTEGER},
+      </if>
+      <if test="passCount != null">
+        pass_count = #{passCount,jdbcType=INTEGER},
+      </if>
+      <if test="failCount != null">
+        fail_count = #{failCount,jdbcType=INTEGER},
       </if>
       <if test="revision != null">
         revision = #{revision,jdbcType=INTEGER},

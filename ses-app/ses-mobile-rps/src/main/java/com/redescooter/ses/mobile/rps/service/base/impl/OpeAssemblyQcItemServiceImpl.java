@@ -30,5 +30,11 @@ public class OpeAssemblyQcItemServiceImpl extends ServiceImpl<OpeAssemblyQcItemM
     public int insertOrUpdateSelective(OpeAssemblyQcItem record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<OpeAssemblyQcItem> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
 
