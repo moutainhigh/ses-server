@@ -120,7 +120,7 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public PageResult<MaterialQcListResult> list(PageEnter enter) {
         QueryWrapper<OpePurchas> opePurchasQueryWrapper = new QueryWrapper<>();
-        opePurchasQueryWrapper.in(OpePurchas.COL_STATUS, PurchasingStatusEnums.MATERIALS_QC.getValue(), PurchasingStatusEnums.PENDING.getValue());
+        opePurchasQueryWrapper.eq(OpePurchas.COL_STATUS, PurchasingStatusEnums.MATERIALS_QC.getValue());
         opePurchasQueryWrapper.eq(OpePurchas.COL_DR, 0);
         opePurchasQueryWrapper.ne(OpePurchas.COL_LAVE_WAIT_QC_TOTAL, 0);
         int count = opePurchasService.count(opePurchasQueryWrapper);
