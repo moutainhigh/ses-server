@@ -64,7 +64,7 @@
         assem.created_time           as createdTime,
         assem.wait_preparation_total as preparationWaitTotal
         from ope_assembly_order assem
-        where assem.status = 1
+        where assem.status = 2
         order by assem.created_time desc
         limit #{startRow},#{pageSize}
     </select>

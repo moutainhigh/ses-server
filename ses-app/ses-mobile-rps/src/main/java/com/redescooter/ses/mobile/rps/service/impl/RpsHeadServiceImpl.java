@@ -47,7 +47,7 @@ public class RpsHeadServiceImpl implements RpsHeadService {
                 .ne(OpeAllocate::getPreparationWaitTotal, 0))
                 +
                 opeAssemblyOrderService.count(new LambdaQueryWrapper<OpeAssemblyOrder>()
-                        .eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.PENDING.getValue())
+                        .eq(OpeAssemblyOrder::getStatus, AssemblyStatusEnums.PREPARE_MATERIAL.getValue())
                         .ne(OpeAssemblyOrder::getLaveWaitQcTotal, 0));
         //生产入库统计
         int productionInWh = opeAllocateService.count(new LambdaQueryWrapper<OpeAllocate>()

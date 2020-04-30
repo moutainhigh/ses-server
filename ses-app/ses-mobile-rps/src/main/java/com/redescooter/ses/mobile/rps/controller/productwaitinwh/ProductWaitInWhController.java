@@ -36,17 +36,25 @@ public class ProductWaitInWhController {
         return new Response(productWaitInWhService.productWaitInWhList(enter));
     }
 
+
+
+
     @PostMapping(value = "/productWaitWHItemList")
     @ApiOperation(value = "生产仓库待入库商品部件列表", response = ProductWaitWhItemListResult.class)
     public <T> Response<PageResult<T>> productWaitWhItemList(@ModelAttribute @ApiParam("请求参数") ProductOrAllocateWaitInWhIdEnter enter) {
         return new Response(productWaitInWhService.productWaitWhItemList(enter));
     }
 
+
     @PostMapping(value = "/allocateWaitInWhItem")
     @ApiOperation(value = "调拨单入生产库商品部件列表详情", response = ProductWaitWhItemListResult.class)
     public Response<AllocateWaitInWhItemResult> allocateWaitInWhItem(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(productWaitInWhService.allocateWaitInWhItem(enter));
     }
+
+
+
+
 
     @PostMapping(value = "/productWaitInWHInfoIn")
     @ApiOperation(value = "提交生产仓库入库信息", response = ProductWaitInWhInfoResult.class)

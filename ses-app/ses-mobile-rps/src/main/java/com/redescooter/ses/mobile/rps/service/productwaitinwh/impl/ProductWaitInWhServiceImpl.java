@@ -313,7 +313,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                                 .sourceType(SourceTypeEnums.ALLOCATE.getValue())
                                 .build());
             }
-            return (PageResult<T>) PageResult.create(enter, opeAllocateBList.size(), allocateWaitInWhItemResultList);
+            return (PageResult<T>) PageResult.create(enter, allocateWaitInWhItemResultList.size(), allocateWaitInWhItemResultList);
         }
         return PageResult.createZeroRowResult(enter);
     }

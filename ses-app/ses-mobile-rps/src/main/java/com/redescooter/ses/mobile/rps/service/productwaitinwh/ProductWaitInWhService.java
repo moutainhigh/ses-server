@@ -24,6 +24,9 @@ public interface ProductWaitInWhService {
      **/
     PageResult<AllocateAndProductResult> productWaitInWhList(PageEnter enter);
 
+
+
+
     /**
      * @Author kyle
      * @Description //1、根据组装单id查询对应的待入库商品详情列表
@@ -42,6 +45,10 @@ public interface ProductWaitInWhService {
      * @return
      **/
     AllocateWaitInWhItemResult allocateWaitInWhItem(IdEnter enter);
+
+
+
+
 
 
     /**
