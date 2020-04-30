@@ -2,7 +2,6 @@ package com.redescooter.ses.mobile.rps.service.material.impl;
 
 import java.util.HashMap;
 
-import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -27,10 +26,8 @@ import com.redescooter.ses.mobile.rps.service.material.MaterialService;
 import com.redescooter.ses.mobile.rps.vo.bo.RpsPartDetailDto;
 import com.redescooter.ses.mobile.rps.vo.materialqc.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
