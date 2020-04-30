@@ -295,6 +295,11 @@ public class ScooterQcServiceImpl implements ScooterQcService {
             idEnter.setId(opeAssemblyOrder.getId());
             String batchNum = bussinessNumberService.assemblyBatchNo(idEnter);
 
+            //本次质检的序列号
+            idEnter.setId(opeAssemblyBOrder.getId());
+            String serialNum = bussinessNumberService.productSerialN(idEnter);
+
+
             //查询质检详情中时间最近的一条质检记录
             QueryWrapper<OpeAssemblyQcItem> opeAssemblyQcItemQueryWrapper = new QueryWrapper<>();
             opeAssemblyQcItemQueryWrapper.isNotNull(OpeAssemblyQcItem.COL_BATCH_NO);
@@ -427,7 +432,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
             OpeAssemblyQcItem opeAssemblyQcItem = OpeAssemblyQcItem.builder()
                     .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_QC_ITEM))
                     .dr(0)
-                    .serialNum(batchNum)
+                    .serialNum(serialNum)  //序列号
                     .assemblyBId(opeAssemblyBOrder.getId())
                     .assemblyId(opeAssemblyOrder.getId())
                     .updatedBy(enter.getUserId())
@@ -452,7 +457,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
 
             //把质检成功的产品对应的组装单和组装单子单的待质检数量进行修改
             //修改组装单的总待质检数量
-            if ((!StringUtils.isEmpty(opeAssemblyOrder.getLaveWaitQcTotal())) && (!StringUtils.isEmpty(opeAssemblyBOrder.getLaveWaitQcQty()))) {
+            if ((opeAssemblyOrder.getLaveWaitQcTotal() != null) && (opeAssemblyBOrder.getLaveWaitQcQty() != null)) {
                 if (qcOptionFlag) {
                     //修改组装单子单的待质检数
                     opeAssemblyBOrder.setLaveWaitQcQty(opeAssemblyBOrder.getLaveWaitQcQty() - 1);

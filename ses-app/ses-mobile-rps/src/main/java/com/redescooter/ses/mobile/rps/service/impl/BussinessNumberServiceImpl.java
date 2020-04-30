@@ -10,6 +10,7 @@ import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyLotTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasLotTraceService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,6 +93,7 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
         return new StringBuilder(ProductContractEnums.MATERIALQCBATCHNO.getCode()).append(DateUtil.getDateTime(new Date(), DateConstant.YMD)).append("001").toString();
     }
 
+
     /**
      * 产品序列号生成
      *
@@ -99,6 +101,6 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
      */
     @Override
     public String productSerialN() {
-        return null;
+        return RandomStringUtils.randomPrint(16);
     }
 }

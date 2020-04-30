@@ -119,58 +119,40 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
     @Override
     public PageResult<AllocateAndProductResult> productWaitInWhList(PageEnter enter) {
         int count = productWaitInWhServiceMapper.proWaitInWHListCount();
-        List<ProductWaitInWhOneResult> productWaitInWhOneResultList = new ArrayList<>();
         //存放组装单和调拨单的可入库数据
         List<AllocateAndProductResult> allocateAndProductResultList = new ArrayList<>();
-        AllocateAndProductResult allocateAndProductResult = new AllocateAndProductResult();
 
-        //opeAssemblyOrderService对应的数据库表为空的时候直接返回
-        if (count != 0) {
+        if (count > 0) {
             QueryWrapper<OpeAssemblyOrder> opeAssemblyOrderQueryWrapper = new QueryWrapper<>();
             //待入库数量大于0
-            opeAssemblyOrderQueryWrapper.ge(OpeAssemblyOrder.COL_IN_WAIT_WH_TOTAL, 0);
+            opeAssemblyOrderQueryWrapper.gt(OpeAssemblyOrder.COL_IN_WAIT_WH_TOTAL, 0);
             opeAssemblyOrderQueryWrapper.eq(OpeAssemblyOrder.COL_STATUS, AssemblyStatusEnums.QC_PASSED.getValue());
             List<OpeAssemblyOrder> opeAssemblyOrderList = opeAssemblyOrderService.list(opeAssemblyOrderQueryWrapper);
             //返回结果集
-            ProductWaitInWhOneResult productWaitInWhOneResult = null;
+
+            AllocateAndProductResult allocateAndProductResult = null;
             if (!CollectionUtils.isEmpty(opeAssemblyOrderList)) {
                 for (OpeAssemblyOrder opeAssemblyOrder : opeAssemblyOrderList) {
-                    productWaitInWhOneResultList.add(
-                            productWaitInWhOneResult = ProductWaitInWhOneResult.builder()
-                                    .assemblyId(opeAssemblyOrder.getId())
+                    allocateAndProductResultList.add(
+                            allocateAndProductResult = AllocateAndProductResult.builder()
+                                    .id(opeAssemblyOrder.getId())
                                     .waitInWHNum(opeAssemblyOrder.getInWaitWhTotal())
                                     .waitInWHStr(opeAssemblyOrder.getAssemblyNumber())
                                     .inWHTListTime(new Date())
                                     .sourceType(SourceTypeEnums.ASSEMBLY.getValue())//单据类型
                                     .build());
                 }
-                allocateAndProductResult.setProductWaitInWhOneResultList(productWaitInWhOneResultList);
             }
         }
         //获取调拨单的数据集合
-        List<AllocateWaitInWhOneResult> allocateWaitInWhOneResultList = this.allocateWaitInWHList(enter);
+        allocateAndProductResultList = this.allocateWaitInWHList(enter,allocateAndProductResultList);
         //展示列表为空
-        if ((CollectionUtils.isEmpty(allocateWaitInWhOneResultList)) && (CollectionUtils.isEmpty(productWaitInWhOneResultList))){
+        if (CollectionUtils.isEmpty(allocateAndProductResultList)) {
             return PageResult.createZeroRowResult(enter);
-        }
-        //调拨单不能为空
-        if (!CollectionUtils.isEmpty(allocateWaitInWhOneResultList)) {
-            allocateAndProductResult.setAllocateWaitInWhOneResultList(allocateWaitInWhOneResultList);
-        }
-
-        //总的显示行数
-        int total = 0;
-
-        if (!CollectionUtils.isEmpty(allocateWaitInWhOneResultList)) {
-            total += allocateWaitInWhOneResultList.size();
-        }
-        if (!CollectionUtils.isEmpty(productWaitInWhOneResultList)) {
-            total += productWaitInWhOneResultList.size();
         }
 
         //组装单和调拨单可入库产品集合
-        allocateAndProductResultList.add(allocateAndProductResult);
-        return PageResult.create(enter, total, allocateAndProductResultList);
+        return PageResult.create(enter, allocateAndProductResultList.size(), allocateAndProductResultList);
     }
 
     /**
@@ -181,23 +163,24 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Param [enter]
      **/
     @Transactional
-    public List<AllocateWaitInWhOneResult> allocateWaitInWHList(PageEnter enter) {
+    public List<AllocateAndProductResult> allocateWaitInWHList(PageEnter enter,List<AllocateAndProductResult> allocateAndProductResultList) {
         QueryWrapper<OpeAllocate> opeAllocateQueryWrapper = new QueryWrapper<>();
         opeAllocateQueryWrapper.eq(OpeAllocate.COL_STATUS, AllocateOrderStatusEnums.ALLOCATE.getValue());
+        opeAllocateQueryWrapper.gt(OpeAllocate.COL_PENDING_STORAGE_TOTAL, 0);
         List<OpeAllocate> opeAllocateList = opeAllocateService.list(opeAllocateQueryWrapper);
         //调拨单为空
         if (CollectionUtils.isEmpty(opeAllocateList)) {
-            return null;
+            return allocateAndProductResultList;
         }
-        List<AllocateWaitInWhOneResult> allocateWaitInWhOneResultList = new ArrayList<>();
-        AllocateWaitInWhOneResult allocateWaitInWHOneResult = null;
+
         if (opeAllocateList.size() == 0) {
-            return null;
+            return allocateAndProductResultList;
         } else {
             for (OpeAllocate opeAllocate : opeAllocateList) {
-                allocateWaitInWhOneResultList.add(
-                        allocateWaitInWHOneResult = AllocateWaitInWhOneResult.builder()
-                                .allocateId(opeAllocate.getId())
+                AllocateAndProductResult allocateAndProductResult = null;
+                allocateAndProductResultList.add(
+                        allocateAndProductResult = AllocateAndProductResult.builder()
+                                .id(opeAllocate.getId())
                                 .waitInWHNum(opeAllocate.getCount())
                                 .waitInWHStr(opeAllocate.getAllocateNum())
                                 .inWHTListTime(new Date())
@@ -205,7 +188,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                                 .build());
             }
         }
-        return allocateWaitInWhOneResultList;
+        return allocateAndProductResultList;
     }
 
 
@@ -433,11 +416,11 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
         //验证序列号是否存在
         QueryWrapper<OpeStockPurchas> opeStockPurchasQueryWrapper = new QueryWrapper<>();
-        opeStockPurchasQueryWrapper.eq(OpeStockPurchas.COL_SERIAL_NUMBER,enter.getProductSerialNum());
+        opeStockPurchasQueryWrapper.eq(OpeStockPurchas.COL_SERIAL_NUMBER, enter.getProductSerialNum());
         OpeStockPurchas opeStockPurchas = opeStockPurchasService.getOne(opeStockPurchasQueryWrapper);
 
         //序列号不存在
-        if(StringUtils.isEmpty(opeStockPurchas)){
+        if (StringUtils.isEmpty(opeStockPurchas)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getMessage());
         }
 
@@ -634,11 +617,11 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
         //验证序列号是否存在
         QueryWrapper<OpeProductAssembly> opeProductAssemblyQueryWrapper = new QueryWrapper<>();
-        opeProductAssemblyQueryWrapper.eq(OpeProductAssembly.COL_PRODUCT_SERIAL_NUM,enter.getProductSerialNum());
+        opeProductAssemblyQueryWrapper.eq(OpeProductAssembly.COL_PRODUCT_SERIAL_NUM, enter.getProductSerialNum());
         OpeProductAssembly opeProductAssembly = opeProductAssemblyService.getOne(opeProductAssemblyQueryWrapper);
 
         //序列号不存在
-        if(StringUtils.isEmpty(opeProductAssembly)){
+        if (StringUtils.isEmpty(opeProductAssembly)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getMessage());
         }
 
@@ -768,7 +751,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
         //把入库成功的产品对应的组装单和组装单子单的待入库数量进行修改
         //修改组装单的总待入库数量
-        if ((!StringUtils.isEmpty(opeAssemblyOrder.getInWaitWhTotal())) && (!StringUtils.isEmpty(opeAssemblyBOrder.getInWaitWhQty()))) {
+        if ((opeAssemblyOrder.getInWaitWhTotal() != null) && (opeAssemblyBOrder.getInWaitWhQty() != null)) {
             //修改组装单子单的待入库数
             opeAssemblyBOrder.setInWaitWhQty(opeAssemblyBOrder.getInWaitWhQty() - 1);
             //修改组装单的待入库数
