@@ -585,29 +585,31 @@ public class MaterialServiceImpl implements MaterialService {
         //对入参数据做校验
         OpePurchasB opePurchasB = checkSaveMaterialEnter(enter, partQcResultList, templateMap, passTemplateMap);
 
-        // 有IdClas校验是否已经 通过质检
-        List<OpePurchasBQcItem> checkPurchasBQcItemList = opePurchasBQcItemService.list(
-                new LambdaQueryWrapper<OpePurchasBQcItem>().eq(OpePurchasBQcItem::getSerialNum, enter.getSerialNum())
-                        .ne(OpePurchasBQcItem::getQcResult, QcStatusEnums.PASS.getValue()));
-        if (CollectionUtils.isNotEmpty(checkPurchasBQcItemList)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_PASSED_THE_QUALITY_INSPECTION.getCode(), ExceptionCodeEnums.PART_PASSED_THE_QUALITY_INSPECTION.getMessage());
-        }
-
         OpeParts opeParts = opePartsService.getById(opePurchasB.getPartId());
         if (opeParts == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
         //根据质检类型校验质检数量
-        if (opeParts.getIdClass().equals(Boolean.TRUE)) {
+        if (opeParts.getIdClass()) {
+
+            //序列号不能为空
+            if (StringUtils.isBlank(enter.getSerialNum())) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getMessage());
+            }
+
+            // 有IdClas校验是否已经 通过质检
+            List<OpePurchasBQcItem> checkPurchasBQcItemList = opePurchasBQcItemService.list(
+                    new LambdaQueryWrapper<OpePurchasBQcItem>().eq(OpePurchasBQcItem::getSerialNum, enter.getSerialNum())
+                            .ne(OpePurchasBQcItem::getQcResult, QcStatusEnums.PASS.getValue()));
+            if (CollectionUtils.isNotEmpty(checkPurchasBQcItemList)) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PART_PASSED_THE_QUALITY_INSPECTION.getCode(), ExceptionCodeEnums.PART_PASSED_THE_QUALITY_INSPECTION.getMessage());
+            }
+
             if (enter.getQty() == null || enter.getQty() == 0) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getCode(), ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getMessage());
             }
             if (enter.getQty() > opePurchasB.getLaveWaitQcQty()) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
-            }
-            //序列号不能为空
-            if (StringUtils.isBlank(enter.getSerialNum())) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getMessage());
             }
         }
         //没有IdClas 校验质检数量
@@ -615,7 +617,7 @@ public class MaterialServiceImpl implements MaterialService {
             if (enter.getQty() == null || enter.getQty() == 0) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getCode(), ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getMessage());
             }
-            if (enter.getQty() <= opePurchasB.getLaveWaitQcQty()) {
+            if (enter.getQty() > opePurchasB.getLaveWaitQcQty()) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
             }
         }
@@ -700,7 +702,7 @@ public class MaterialServiceImpl implements MaterialService {
             opePurchas.setLaveWaitQcTotal(opePurchas.getLaveWaitQcTotal() - 1);
         } else {
             opePurchasB.setLaveWaitQcQty(0);
-            opePurchas.setLaveWaitQcTotal(opePurchas.getLaveWaitQcTotal() - opePurchasB.getLaveWaitQcQty());
+            opePurchas.setLaveWaitQcTotal(opePurchas.getLaveWaitQcTotal() - initLaveWaitQcQty);
         }
         if (opePurchasB.getLaveWaitQcQty() < 0) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
@@ -875,11 +877,9 @@ public class MaterialServiceImpl implements MaterialService {
         //查询今天是否 已经质检过
         OpePurchasBQc opePurchasBQc = opePurchasBQcService.getOne(new LambdaQueryWrapper<OpePurchasBQc>().eq(OpePurchasBQc::getPurchasBId, opePurchasB.getId()));
 
-        OpePurchasBQc purchasBQc = null;
-
         //如果 质检结果数据不存在新建，如果存在就进行数据的累加
         if (opePurchasBQc == null) {
-            purchasBQc = OpePurchasBQc.builder()
+            opePurchasBQc = OpePurchasBQc.builder()
                     .id(idAppService.getId(SequenceName.OPE_PURCHAS_B_QC))
                     .dr(0)
                     .tenantId(0L)
@@ -897,52 +897,52 @@ public class MaterialServiceImpl implements MaterialService {
                     .build();
             if (qcResult) {
                 if (opeParts.getIdClass()) {
-                    purchasBQc.setTotalQualityInspected(1);
-                    purchasBQc.setPassCount(1);
+                    opePurchasBQc.setTotalQualityInspected(1);
+                    opePurchasBQc.setPassCount(1);
                 } else {
-                    purchasBQc.setPassCount(initLaveWaitQcQty);
-                    purchasBQc.setTotalQualityInspected(initLaveWaitQcQty);
+                    opePurchasBQc.setPassCount(initLaveWaitQcQty);
+                    opePurchasBQc.setTotalQualityInspected(initLaveWaitQcQty);
                 }
-                purchasBQc.setFailCount(0);
-                purchasBQc.setStatus(QcStatusEnums.PASS.getValue());
+                opePurchasBQc.setFailCount(0);
+                opePurchasBQc.setStatus(QcStatusEnums.PASS.getValue());
             } else {
                 if (opeParts.getIdClass()) {
-                    purchasBQc.setTotalQualityInspected(1);
-                    purchasBQc.setFailCount(1);
+                    opePurchasBQc.setTotalQualityInspected(1);
+                    opePurchasBQc.setFailCount(1);
                 } else {
-                    purchasBQc.setFailCount(initLaveWaitQcQty);
-                    purchasBQc.setTotalQualityInspected(initLaveWaitQcQty);
+                    opePurchasBQc.setFailCount(initLaveWaitQcQty);
+                    opePurchasBQc.setTotalQualityInspected(initLaveWaitQcQty);
                 }
-                purchasBQc.setPassCount(0);
-                purchasBQc.setStatus(QcStatusEnums.FAIL.getValue());
+                opePurchasBQc.setPassCount(0);
+                opePurchasBQc.setStatus(QcStatusEnums.FAIL.getValue());
             }
         }
 
-        if (purchasBQc != null) {
+        if (opePurchasBQc != null) {
 
             if (qcResult) {
                 if (opeParts.getIdClass()) {
-                    purchasBQc.setTotalQualityInspected(purchasBQc.getTotalQualityInspected() + 1);
-                    purchasBQc.setPassCount(purchasBQc.getPassCount() + 1);
+                    opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + 1);
+                    opePurchasBQc.setPassCount(opePurchasBQc.getPassCount() + 1);
                 } else {
-                    purchasBQc.setPassCount(purchasBQc.getPassCount() + opePurchasB.getLaveWaitQcQty());
-                    purchasBQc.setTotalQualityInspected(purchasBQc.getTotalQualityInspected() + opePurchasB.getLaveWaitQcQty());
+                    opePurchasBQc.setPassCount(opePurchasBQc.getPassCount() + opePurchasB.getLaveWaitQcQty());
+                    opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + opePurchasB.getLaveWaitQcQty());
                 }
-                purchasBQc.setFailCount(purchasBQc.getFailCount());
-                purchasBQc.setStatus(purchasBQc.getStatus());
+                opePurchasBQc.setFailCount(opePurchasBQc.getFailCount());
+                opePurchasBQc.setStatus(opePurchasBQc.getStatus());
             } else {
                 if (opeParts.getIdClass()) {
-                    purchasBQc.setTotalQualityInspected(purchasBQc.getTotalQualityInspected() + 1);
-                    purchasBQc.setFailCount(purchasBQc.getFailCount() + 1);
+                    opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + 1);
+                    opePurchasBQc.setFailCount(opePurchasBQc.getFailCount() + 1);
                 } else {
-                    purchasBQc.setFailCount(purchasBQc.getFailCount() + opePurchasB.getLaveWaitQcQty());
-                    purchasBQc.setTotalQualityInspected(purchasBQc.getTotalQualityInspected() + opePurchasB.getLaveWaitQcQty());
+                    opePurchasBQc.setFailCount(opePurchasBQc.getFailCount() + opePurchasB.getLaveWaitQcQty());
+                    opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + opePurchasB.getLaveWaitQcQty());
                 }
-                purchasBQc.setPassCount(purchasBQc.getPassCount());
-                purchasBQc.setStatus(QcStatusEnums.FAIL.getValue());
+                opePurchasBQc.setPassCount(opePurchasBQc.getPassCount());
+                opePurchasBQc.setStatus(QcStatusEnums.FAIL.getValue());
             }
         }
-        return purchasBQc;
+        return opePurchasBQc;
     }
 
     private OpePurchasBQcItem buildOpePurchasBQcItem(SaveMaterialQcEnter enter, OpeParts opeParts, OpePurchasBQc purchasBQc, Boolean qcResult, String batchNo, Long lotTraceId) {
@@ -955,7 +955,7 @@ public class MaterialServiceImpl implements MaterialService {
                 .purchasBLotTraceId(lotTraceId)
                 .batchNo(batchNo)
                 .qcBatchTotal(opeParts.getIdClass() == true ? 1 : enter.getQty())
-                .serialNum(opeParts.getIdClass() == true ? "REDE" + RandomUtil.BASE_CHAR_NUMBER : null)
+                .serialNum(opeParts.getIdClass() == true ? enter.getSerialNum() : null)
                 .qcResult(qcResult == true ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue())
                 .revision(0)
                 .createdBy(enter.getUserId())

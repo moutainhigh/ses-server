@@ -19,24 +19,18 @@ public interface BussinessNumberService {
     String materialQcBatchNo(IdEnter enter);
 
     /**
-     * @Author kyle
-     * @Description //整车质检批次号生成
-     * @Date  2020/4/29 15:33
-     * @Param
      * @return
+     * @Author kyle
+     * @Description //批次号生成
+     * @Date 2020/4/29 15:33
+     * @Param
      **/
-    String scooterQcBatchNo(IdEnter enter);
+    String assemblyBatchNo(IdEnter enter);
 
     /**
-     * @Author kyle
-     * @Description //整车质检序列号
-     * @TODO 需要修改
-     * @Date  2020/4/30 10:37
-     * @Param [enter]
+     * 产品序列号生成
+     *
      * @return
-     **/
-    String scooterQcserialNo(IdEnter enter);
-
-
-
+     */
+    String productSerialN(IdEnter enter);
 }
