@@ -295,7 +295,13 @@ public class ScooterQcServiceImpl implements ScooterQcService {
             IdEnter idEnter=new IdEnter();
             BeanUtils.copyProperties(enter,idEnter);
             idEnter.setId(opeAssemblyOrder.getId());
-            String batchNum = bussinessNumberService.getBatchNum(idEnter);
+            String batchNum = bussinessNumberService.scooterQcBatchNo(idEnter);
+
+            //本次质检的序列号
+            BeanUtils.copyProperties(enter,idEnter);
+            idEnter.setId(opeAssemblyBOrder.getId());
+            String serialNum = bussinessNumberService.scooterQcserialNo(idEnter);
+
 
             //查询质检详情中时间最近的一条质检记录
             QueryWrapper<OpeAssemblyQcItem> opeAssemblyQcItemQueryWrapper = new QueryWrapper<>();
@@ -429,7 +435,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
             OpeAssemblyQcItem opeAssemblyQcItem = OpeAssemblyQcItem.builder()
                     .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_QC_ITEM))
                     .dr(0)
-                    .serialNum(batchNum)
+                    .serialNum(serialNum)  //序列号
                     .assemblyBId(opeAssemblyBOrder.getId())
                     .assemblyId(opeAssemblyOrder.getId())
                     .updatedBy(enter.getUserId())

@@ -10,6 +10,7 @@ import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyLotTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasLotTraceService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,7 +69,7 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
      * @Param
      **/
     @Override
-    public String getBatchNum(IdEnter enter) {
+    public String scooterQcBatchNo(IdEnter enter) {
         OpeAssemblyLotTrace opeAssemblyLotTrace = opeAssemblyLotTraceService.getOne(new LambdaQueryWrapper<OpeAssemblyLotTrace>().eq(OpeAssemblyLotTrace::getAssemblyId, enter.getId()));
 
         //如果是同一天 批次号 后三位累加
@@ -87,4 +88,19 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
         //没有质检记录 返回当前新的批次号
         return new StringBuilder(ProductContractEnums.MATERIALQCBATCHNO.getCode()).append(DateUtil.getDateTime(new Date(), DateConstant.YMD)).append("001").toString();
     }
+
+    /**
+     * @param
+     * @return
+     * @Author kyle
+     * @Description //整车质检序列号
+     * @TODO 需要修改
+     * @Date 2020/4/30 10:37
+     * @Param [enter]
+     */
+    @Override
+    public String scooterQcserialNo(IdEnter enter) {
+        return RandomStringUtils.randomPrint(16);
+    }
+
 }

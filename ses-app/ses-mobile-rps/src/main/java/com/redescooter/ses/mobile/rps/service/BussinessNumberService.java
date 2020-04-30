@@ -20,10 +20,23 @@ public interface BussinessNumberService {
 
     /**
      * @Author kyle
-     * @Description //批次号生成
+     * @Description //整车质检批次号生成
      * @Date  2020/4/29 15:33
      * @Param
      * @return
      **/
-    String getBatchNum(IdEnter enter);
+    String scooterQcBatchNo(IdEnter enter);
+
+    /**
+     * @Author kyle
+     * @Description //整车质检序列号
+     * @TODO 需要修改
+     * @Date  2020/4/30 10:37
+     * @Param [enter]
+     * @return
+     **/
+    String scooterQcserialNo(IdEnter enter);
+
+
+
 }

@@ -31,7 +31,7 @@ public class ProductWaitInWhController {
     private ProductWaitInWhService productWaitInWhService;
 
     @PostMapping(value = "/productWaitInWHList")
-    @ApiOperation(value = "生产仓库待入库商品列表", response = ProductWaitInWhOneResult.class)
+    @ApiOperation(value = "生产仓库待入库商品列表", response = AllocateAndProductResult.class)
     public Response<PageResult<AllocateAndProductResult>> productWaitInWhList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response(productWaitInWhService.productWaitInWhList(enter));
     }
