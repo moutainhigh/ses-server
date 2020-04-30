@@ -24,14 +24,12 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -344,7 +342,6 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                     //如果有质检失败的质检项，本次质检则失败
                     qcOptionFlag = false;
                 }
-
 
                 //质检Trace
                 OpeAssemblyQcTrace opeAssemblyQcTrace = null;
