@@ -25,8 +25,5 @@ public interface ValidationExceptionCode {
     int EMAIL_IS_EMPTY = 10007;
     // id为空
     int ID_IS_EMPTY = 10008;
-    // id为空
-    int IN_WAIT_WH_QTY = 10009;
-    // 序列号
-    int SERIAL_NUM = 10009;
+
 }

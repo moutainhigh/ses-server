@@ -28,5 +28,8 @@ public interface ValidationExceptionCode {
     int PART_TRMPLATE_RESULT_IS_EMPTY = 10033;
     //单据来源类型
     int SOURCE_TYPE_IS_EMPTY = 10034;
+    // 序列号
+    int BATCH_NO = 10036;
+    int SERIAL_NUM=10037;
 
 }

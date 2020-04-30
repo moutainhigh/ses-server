@@ -66,36 +66,4 @@
 		WHERE
 			purb.id = #{enter.id} and purb.dr=0 and purb.in_wait_wh_qty >0 and purb.qc_status=1
     </select>
-    <select id="notIdPartsSucceedListResult"
-            resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdPartsSucceedResult">
-	 SELECT
-		purb.id AS id,
-		parts.cn_Name AS cnName,
-		parts.parts_Number AS partsNumber,
-		purb.in_wait_wh_qty AS inWaitWhQty,
-		qc.batch_no AS batchNo
-	FROM
-		ope_purchas_b purb
-	INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and  parts.dr=0
-	LEFT  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
-	WHERE
-		purb.id = #{enter.id} and  purb.dr=0 and purb.qc_status=1
-    </select>
-    <select id="haveIdPartsResult"
-            resultType="com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdPartsResult">
-	 SELECT
-		purb.id AS id,
-		parts.cn_Name AS cnName,
-		parts.parts_Number AS partsNumber,
-		purb.in_wait_wh_qty AS inWaitWhQty,
-		qc.batch_no AS batchNo,
-		item.serial_num AS serialNum
-	FROM
-		ope_purchas_b purb
-	INNER JOIN ope_parts parts ON (purb.part_id = parts.id)and  parts.dr=0
-	LEFT  JOIN ope_purchas_b_qc qc ON (qc.purchas_b_id = purb.id)and  qc.dr=0
-	LEFT  JOIN ope_purchas_b_qc_item item ON (item.purchas_b_id = purb.id)and  item.dr=0
-	WHERE
-		purb.id=#{enter.id} and  purb.dr=0  and purb.qc_status=1
-    </select>
 </mapper>

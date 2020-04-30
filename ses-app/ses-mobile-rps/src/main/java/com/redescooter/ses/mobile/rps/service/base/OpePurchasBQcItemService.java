@@ -17,7 +17,11 @@ public interface OpePurchasBQcItemService extends IService<OpePurchasBQcItem> {
 
     int insertOrUpdateSelective(OpePurchasBQcItem record);
 
+    int updateBatchSelective(List<OpePurchasBQcItem> list);
 }
+
+
+
 
 
 

@@ -29,7 +29,15 @@ public class OpePurchasBQcItemServiceImpl extends ServiceImpl<OpePurchasBQcItemM
     public int insertOrUpdateSelective(OpePurchasBQcItem record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<OpePurchasBQcItem> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
+
+
 
 
 
