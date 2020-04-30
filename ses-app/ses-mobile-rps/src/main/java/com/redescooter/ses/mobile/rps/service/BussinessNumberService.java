@@ -26,4 +26,5 @@ public interface BussinessNumberService {
      * @return
      **/
     String getBatchNum();
+
 }

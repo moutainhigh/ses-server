@@ -449,7 +449,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
 
             //把质检成功的产品对应的组装单和组装单子单的待质检数量进行修改
             //修改组装单的总待质检数量
-            if ((!StringUtils.isEmpty(opeAssemblyOrder.getLaveWaitQcTotal())) && (!StringUtils.isEmpty(opeAssemblyBOrder.getLaveWaitQcQty()))) {
+            if ((opeAssemblyOrder.getLaveWaitQcTotal() != null) && (opeAssemblyBOrder.getLaveWaitQcQty() != null)) {
                 if (qcOptionFlag) {
                     //修改组装单子单的待质检数
                     opeAssemblyBOrder.setLaveWaitQcQty(opeAssemblyBOrder.getLaveWaitQcQty() - 1);

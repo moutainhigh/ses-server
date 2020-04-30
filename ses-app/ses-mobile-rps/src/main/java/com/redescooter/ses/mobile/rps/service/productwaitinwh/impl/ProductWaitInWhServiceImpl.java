@@ -150,7 +150,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         //获取调拨单的数据集合
         List<AllocateWaitInWhOneResult> allocateWaitInWhOneResultList = this.allocateWaitInWHList(enter);
         //展示列表为空
-        if ((CollectionUtils.isEmpty(allocateWaitInWhOneResultList)) && (CollectionUtils.isEmpty(productWaitInWhOneResultList))){
+        if ((CollectionUtils.isEmpty(allocateWaitInWhOneResultList)) && (CollectionUtils.isEmpty(productWaitInWhOneResultList))) {
             return PageResult.createZeroRowResult(enter);
         }
         //调拨单不能为空
@@ -433,11 +433,11 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
         //验证序列号是否存在
         QueryWrapper<OpeStockPurchas> opeStockPurchasQueryWrapper = new QueryWrapper<>();
-        opeStockPurchasQueryWrapper.eq(OpeStockPurchas.COL_SERIAL_NUMBER,enter.getProductSerialNum());
+        opeStockPurchasQueryWrapper.eq(OpeStockPurchas.COL_SERIAL_NUMBER, enter.getProductSerialNum());
         OpeStockPurchas opeStockPurchas = opeStockPurchasService.getOne(opeStockPurchasQueryWrapper);
 
         //序列号不存在
-        if(StringUtils.isEmpty(opeStockPurchas)){
+        if (StringUtils.isEmpty(opeStockPurchas)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getMessage());
         }
 
@@ -634,11 +634,11 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
         //验证序列号是否存在
         QueryWrapper<OpeProductAssembly> opeProductAssemblyQueryWrapper = new QueryWrapper<>();
-        opeProductAssemblyQueryWrapper.eq(OpeProductAssembly.COL_PRODUCT_SERIAL_NUM,enter.getProductSerialNum());
+        opeProductAssemblyQueryWrapper.eq(OpeProductAssembly.COL_PRODUCT_SERIAL_NUM, enter.getProductSerialNum());
         OpeProductAssembly opeProductAssembly = opeProductAssemblyService.getOne(opeProductAssemblyQueryWrapper);
 
         //序列号不存在
-        if(StringUtils.isEmpty(opeProductAssembly)){
+        if (StringUtils.isEmpty(opeProductAssembly)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getMessage());
         }
 
@@ -768,7 +768,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
         //把入库成功的产品对应的组装单和组装单子单的待入库数量进行修改
         //修改组装单的总待入库数量
-        if ((!StringUtils.isEmpty(opeAssemblyOrder.getInWaitWhTotal())) && (!StringUtils.isEmpty(opeAssemblyBOrder.getInWaitWhQty()))) {
+        if ((opeAssemblyOrder.getInWaitWhTotal() != null) && (opeAssemblyBOrder.getInWaitWhQty() != null)) {
             //修改组装单子单的待入库数
             opeAssemblyBOrder.setInWaitWhQty(opeAssemblyBOrder.getInWaitWhQty() - 1);
             //修改组装单的待入库数
