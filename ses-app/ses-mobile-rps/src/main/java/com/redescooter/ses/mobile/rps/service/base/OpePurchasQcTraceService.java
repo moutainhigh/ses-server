@@ -17,7 +17,12 @@ public interface OpePurchasQcTraceService extends IService<OpePurchasQcTrace> {
 
     int insertOrUpdateSelective(OpePurchasQcTrace record);
 
+    int updateBatchSelective(List<OpePurchasQcTrace> list);
 }
+
+
+
+
 
 
 

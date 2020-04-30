@@ -421,7 +421,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
         //序列号不存在
         if (StringUtils.isEmpty(opeStockPurchas)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getMessage());
         }
 
         //查询调拨单子单
@@ -622,7 +622,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
         //序列号不存在
         if (StringUtils.isEmpty(opeProductAssembly)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getMessage());
         }
 
         //查询对应的质检记录

@@ -24,7 +24,7 @@ public class HaveIdEnter extends GeneralEnter {
     @ApiModelProperty(value = "主键",required = true)
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
     private Long id;
-    @NotNull(code = ValidationExceptionCode.SERIAL_NUM, message = "商品序列号不能为空")
+    @NotNull(code = com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode.SERIAL_NUM, message = "商品序列号不能为空")
     @ApiModelProperty(value = "商品序列号",required = true)
     private  String serialNum;
 

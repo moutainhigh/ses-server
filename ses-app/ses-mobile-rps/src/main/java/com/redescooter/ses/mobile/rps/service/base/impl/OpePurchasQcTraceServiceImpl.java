@@ -31,7 +31,16 @@ public class OpePurchasQcTraceServiceImpl extends ServiceImpl<OpePurchasQcTraceM
     public int insertOrUpdateSelective(OpePurchasQcTrace record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<OpePurchasQcTrace> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
+
+
+
 
 
 

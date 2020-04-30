@@ -141,7 +141,7 @@ public enum ExceptionCodeEnums {
 
     PURCHAS_PART_FINISHED_PREPARATION(10067, "采购部品已完成备料"),
 
-    SERIAL_NUMBER_IS_EMPTY(10068,"序列号不存在"),
+    SERIAL_NUMBER_IS_WRONG(10068,"序列号是错误的"),
 
     ;
 

@@ -594,7 +594,7 @@ public class MaterialServiceImpl implements MaterialService {
 
             //序列号不能为空
             if (StringUtils.isBlank(enter.getSerialNum())) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_EMPTY.getMessage());
+                throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getMessage());
             }
 
             // 有IdClas校验是否已经 通过质检
