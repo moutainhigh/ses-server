@@ -3,11 +3,9 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +21,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_assembly_qc_item")
-public class OpeAssemblyQcItem implements Serializable {
+public class OpeAssemblyQcItem {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键
      */
@@ -36,7 +35,6 @@ public class OpeAssemblyQcItem implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -68,11 +66,25 @@ public class OpeAssemblyQcItem implements Serializable {
     private Long productId;
 
     /**
+     * 批次质检记录id
+     */
+    @TableField(value = "assembly_lot_id")
+    @ApiModelProperty(value = "批次质检记录id")
+    private Long assemblyLotId;
+
+    /**
      * 序列号
      */
     @TableField(value = "serial_num")
     @ApiModelProperty(value = "序列号")
     private String serialNum;
+
+    /**
+     * 批次号
+     */
+    @TableField(value = "batch_no")
+    @ApiModelProperty(value = "批次号")
+    private String batchNo;
 
     /**
      * 质检结果
@@ -151,8 +163,6 @@ public class OpeAssemblyQcItem implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -165,7 +175,11 @@ public class OpeAssemblyQcItem implements Serializable {
 
     public static final String COL_PRODUCT_ID = "product_id";
 
+    public static final String COL_ASSEMBLY_LOT_ID = "assembly_lot_id";
+
     public static final String COL_SERIAL_NUM = "serial_num";
+
+    public static final String COL_BATCH_NO = "batch_no";
 
     public static final String COL_QC_RESULT = "qc_result";
 

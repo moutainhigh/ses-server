@@ -30,13 +30,13 @@ public class ProductWaitInWhController {
     @Autowired
     private ProductWaitInWhService productWaitInWhService;
 
-    @PostMapping(value = "/proWaitInWHList")
-    @ApiOperation(value = "生产仓库待入库商品列表", response = ProductWaitInWhOneResult.class)
+    @PostMapping(value = "/productWaitInWHList")
+    @ApiOperation(value = "生产仓库待入库商品列表", response = AllocateAndProductResult.class)
     public Response<PageResult<AllocateAndProductResult>> productWaitInWhList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response(productWaitInWhService.productWaitInWhList(enter));
     }
 
-    @PostMapping(value = "/proWaitWHItemList")
+    @PostMapping(value = "/productWaitWHItemList")
     @ApiOperation(value = "生产仓库待入库商品部件列表", response = ProductWaitWhItemListResult.class)
     public <T> Response<PageResult<T>> productWaitWhItemList(@ModelAttribute @ApiParam("请求参数") ProductOrAllocateWaitInWhIdEnter enter) {
         return new Response(productWaitInWhService.productWaitWhItemList(enter));
@@ -48,10 +48,10 @@ public class ProductWaitInWhController {
         return new Response(productWaitInWhService.allocateWaitInWhItem(enter));
     }
 
-    @PostMapping(value = "/proWaitInWHInfoIn")
+    @PostMapping(value = "/productWaitInWHInfoIn")
     @ApiOperation(value = "提交生产仓库入库信息", response = ProductWaitInWhInfoResult.class)
     public Response<ProductWaitInWhInfoResult> productWaitInWhInfoIn(@ModelAttribute @ApiParam("请求参数") ProductWaitInWhIdItemEnter enter) {
-        return new Response(productWaitInWhService.productWaitInWhInfoIn(enter));
+        return new Response(productWaitInWhService.setProductWaitInWhInfo(enter));
     }
 
 }

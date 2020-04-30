@@ -18,6 +18,7 @@ import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.OpeAssemblyBStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
@@ -73,16 +74,16 @@ import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.QcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
-import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -786,6 +787,23 @@ public class AssemblyServiceImpl implements AssemblyService {
         return assemblyServiceMapper.ordinaryAssemblyNode(enter);
     }
 
+
+    /**
+     * 质检结果集合
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, String> qcResultList(GeneralEnter enter) {
+        Map<String, String> map = new HashMap<>();
+        for (QcStatusEnums item : QcStatusEnums.values()) {
+            map.put(item.getCode(), item.getValue());
+        }
+        map.remove(QcStatusEnums.QUALITY_INSPECTION);
+        return map;
+    }
+
     /**
      * 组装单信息导出
      *
@@ -888,12 +906,27 @@ public class AssemblyServiceImpl implements AssemblyService {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getMessage());
         }
         //查询车辆对应的质检项
-        List<AssemblyQcItemViewItemResult> assemblyQcItemViewItemResultList = assemblyServiceMapper.assemblyQcItemViewItem(enter.getId());
-        if (CollectionUtils.isEmpty(assemblyQcItemViewItemResultList)) {
+        List<QcItemViewResult> qcItemViewResultList = assemblyServiceMapper.qcItemViewResult(result.getSerialN());
+        if (CollectionUtils.isEmpty(qcItemViewResultList)) {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_RESULT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_QC_RESULT_IS_NOT_EXIST.getMessage());
         }
-        result.setAssemblyQcItemViewItemResultList(assemblyQcItemViewItemResultList);
+        result.setQcItemViewResultList(qcItemViewResultList);
         return result;
+    }
+
+    /**
+     * 模板质检结果
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<AssemblyQcItemViewItemTemplateResult> viewItemTemplate(IdEnter enter) {
+        OpeAssemblyQcItem assemblyQcItem = opeAssemblyQcItemService.getById(enter.getId());
+        if (assemblyQcItem == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getMessage());
+        }
+        return assemblyServiceMapper.viewItemTemplate(enter.getId());
     }
 
     /**
@@ -1314,7 +1347,10 @@ public class AssemblyServiceImpl implements AssemblyService {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
         }
         List<ProductAssemblyTraceItemResult> productAssemblyTraceItemResultList = assemblyServiceMapper.productAssemblyItemTrace(enter);
-        return productAssemblyTraceItemResultList.stream().filter(item -> {item.setAssemblyTotal(assemblyBOrder.getAssemblyQty()); return true;}).collect(Collectors.toList());
+        return productAssemblyTraceItemResultList.stream().filter(item -> {
+            item.setAssemblyTotal(assemblyBOrder.getAssemblyQty());
+            return true;
+        }).collect(Collectors.toList());
     }
 
     /**

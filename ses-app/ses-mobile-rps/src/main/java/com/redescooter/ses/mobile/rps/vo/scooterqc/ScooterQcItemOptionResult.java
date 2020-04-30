@@ -13,11 +13,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class ScooterQcItemOptionResult extends GeneralResult {
 
-    @ApiModelProperty(value = "质检项id")
+    @ApiModelProperty(value = "质检项结果id")
     private Long id;
-
-    @ApiModelProperty(value = "质检项名称")
-    private String qcName;
 
     @ApiModelProperty(value = "质检项结果")
     private String qcResult;

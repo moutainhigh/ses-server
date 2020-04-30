@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 @ApiModel(value = "质检条目的质检项", description = "质检条目的质检项")
-public class AssemblyQcItemViewItemResult extends GeneralResult {
+public class AssemblyQcItemViewItemTemplateResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
@@ -37,4 +37,7 @@ public class AssemblyQcItemViewItemResult extends GeneralResult {
 
     @ApiModelProperty(value = "质检项名称")
     private String qcResultName;
+
+    @ApiModelProperty(value = "部件质检图片")
+    private String partQcPicture;
 }

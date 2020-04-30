@@ -51,5 +51,5 @@ public interface ProductWaitInWhService {
      * @Param [enter]
      * @return
      **/
-    ProductWaitInWhInfoResult productWaitInWhInfoIn(ProductWaitInWhIdItemEnter enter);
+    ProductWaitInWhInfoResult setProductWaitInWhInfo(ProductWaitInWhIdItemEnter enter);
 }

@@ -33,7 +33,7 @@ public class ProductWaitInWhIdItemEnter extends PageEnter {
     private Integer inWhNum;
 
     @ApiModelProperty(value = "产品序列号")
-    private Integer productSerialNum;
+    private String productSerialNum;
 
 
 }

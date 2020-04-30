@@ -7,6 +7,8 @@ package com.redescooter.ses.mobile.rps.constant;
  */
 public interface SequenceName {
 
+    String OPE_ASSEMBLY_LOT_TRACE = "OPE_ASSEMBLY_LOT_TRACE";
+
     String OPE_STOCK_PROD_PRODUCT = "OPE_STOCK_PROD_PRODUCT";
 
     String OPE_STOCK_PROD_PART = "OPE_STOCK_PROD_PART";
@@ -42,4 +44,6 @@ public interface SequenceName {
     String OPE_ASSEMBLY_PREPARATION = "OPE_ASSEMBLY_PREPARATION";
 
     String OPE_ALLOCATE_TRACE = "OPE_ALLOCATE_TRACE";
+
+    String OPE_PURCHAS_LOT_TRACE="OPE_PURCHAS_LOT_TRACE";
 }

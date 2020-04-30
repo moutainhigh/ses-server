@@ -1,10 +1,14 @@
 package com.redescooter.ses.mobile.rps.vo.productwaitinwh;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,11 +26,23 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class AllocateAndProductResult extends GeneralResult {
 
-    @ApiModelProperty(value = "生产仓库（组装）可入库集合")
-    private List<ProductWaitInWhOneResult> productWaitInWhOneResultList;
+    @ApiModelProperty(value = "待入库单单号")
+    private String waitInWHStr;
 
-    @ApiModelProperty(value = "生产仓库（调拨）可入库集合")
-    private List<AllocateWaitInWhOneResult> allocateWaitInWhOneResultList;
+    @ApiModelProperty(value = "主单id")
+    private Long id;
+
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    @ApiModelProperty(value = " 加入待入库列表时间")
+    private Date inWHTListTime;
+
+    @ApiModelProperty(value = "待入库总数")
+    private Integer waitInWHNum;
+
+    @ApiModelProperty(value = "单据类型")
+    private String sourceType;
+
 
 
 }
