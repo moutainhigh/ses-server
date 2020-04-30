@@ -32,5 +32,5 @@ public interface BussinessNumberService {
      *
      * @return
      */
-    String productSerialN();
+    String productSerialN(IdEnter enter);
 }

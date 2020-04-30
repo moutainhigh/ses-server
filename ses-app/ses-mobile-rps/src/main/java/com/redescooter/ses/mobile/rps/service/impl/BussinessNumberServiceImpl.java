@@ -100,7 +100,7 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
      * @return
      */
     @Override
-    public String productSerialN() {
+    public String productSerialN(IdEnter enter) {
         return RandomStringUtils.randomPrint(16);
     }
 }
