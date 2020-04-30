@@ -13,16 +13,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 组装单质检条目
+ * 采购条目QC质检
  */
-@ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAssemblyQcItem")
+@ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeAssemblyLotTrace")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_assembly_qc_item")
-public class OpeAssemblyQcItem {
-    private static final long serialVersionUID = 1L;
+@TableName(value = "ope_assembly_lot_trace")
+public class OpeAssemblyLotTrace {
     /**
      * 主键
      */
@@ -31,67 +30,67 @@ public class OpeAssemblyQcItem {
     private Long id;
 
     /**
-     * 删除标识
+     * 删除标志
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value = "删除标识")
+    @ApiModelProperty(value = "删除标志")
     private Integer dr;
 
     /**
-     * 组装单id
+     * 租户Id
+     */
+    @TableField(value = "tenant_id")
+    @ApiModelProperty(value = "租户Id")
+    private Long tenantId;
+
+    /**
+     * userId
+     */
+    @TableField(value = "user_id")
+    @ApiModelProperty(value = "userId")
+    private Long userId;
+
+    /**
+     * 组装表Id
      */
     @TableField(value = "assembly_id")
-    @ApiModelProperty(value = "组装单id")
+    @ApiModelProperty(value = "组装表Id")
     private Long assemblyId;
 
     /**
-     * 组装单子表Id
+     * 质检人Id
      */
-    @TableField(value = "assembly_b_id")
-    @ApiModelProperty(value = "组装单子表Id")
-    private Long assemblyBId;
+    @TableField(value = "quality_inspector_id")
+    @ApiModelProperty(value = "质检人Id")
+    private Long qualityInspectorId;
 
     /**
-     * 质检结果表
-     */
-    @TableField(value = "assembly_b_qc_id")
-    @ApiModelProperty(value = "质检结果表")
-    private Long assemblyBQcId;
-
-    /**
-     * 产品Id
-     */
-    @TableField(value = "product_id")
-    @ApiModelProperty(value = "产品Id")
-    private Long productId;
-
-    /**
-     * 批次质检记录id
-     */
-    @TableField(value = "assembly_lot_id")
-    @ApiModelProperty(value = "批次质检记录id")
-    private Long assemblyLotId;
-
-    /**
-     * 序列号
-     */
-    @TableField(value = "serial_num")
-    @ApiModelProperty(value = "序列号")
-    private String serialNum;
-
-    /**
-     * 批次号
+     * 质检批次号
      */
     @TableField(value = "batch_no")
-    @ApiModelProperty(value = "批次号")
+    @ApiModelProperty(value = "质检批次号")
     private String batchNo;
 
     /**
-     * 质检结果
+     * 需要质检总数
      */
-    @TableField(value = "qc_result")
-    @ApiModelProperty(value = "质检结果")
-    private String qcResult;
+    @TableField(value = "total_quality_inspected")
+    @ApiModelProperty(value = "需要质检总数")
+    private Integer totalQualityInspected;
+
+    /**
+     * 质检通过数量
+     */
+    @TableField(value = "pass_count")
+    @ApiModelProperty(value = "质检通过数量")
+    private Integer passCount;
+
+    /**
+     * 质检失败数量
+     */
+    @TableField(value = "fail_count")
+    @ApiModelProperty(value = "质检失败数量")
+    private Integer failCount;
 
     /**
      * 乐观锁
@@ -101,10 +100,10 @@ public class OpeAssemblyQcItem {
     private Integer revision;
 
     /**
-     * 创建表
+     * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value = "创建表")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
@@ -167,21 +166,21 @@ public class OpeAssemblyQcItem {
 
     public static final String COL_DR = "dr";
 
+    public static final String COL_TENANT_ID = "tenant_id";
+
+    public static final String COL_USER_ID = "user_id";
+
     public static final String COL_ASSEMBLY_ID = "assembly_id";
 
-    public static final String COL_ASSEMBLY_B_ID = "assembly_b_id";
-
-    public static final String COL_ASSEMBLY_B_QC_ID = "assembly_b_qc_id";
-
-    public static final String COL_PRODUCT_ID = "product_id";
-
-    public static final String COL_ASSEMBLY_LOT_ID = "assembly_lot_id";
-
-    public static final String COL_SERIAL_NUM = "serial_num";
+    public static final String COL_QUALITY_INSPECTOR_ID = "quality_inspector_id";
 
     public static final String COL_BATCH_NO = "batch_no";
 
-    public static final String COL_QC_RESULT = "qc_result";
+    public static final String COL_TOTAL_QUALITY_INSPECTED = "total_quality_inspected";
+
+    public static final String COL_PASS_COUNT = "pass_count";
+
+    public static final String COL_FAIL_COUNT = "fail_count";
 
     public static final String COL_REVISION = "revision";
 
@@ -203,7 +202,7 @@ public class OpeAssemblyQcItem {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpeAssemblyQcItemBuilder builder() {
-        return new OpeAssemblyQcItemBuilder();
+    public static OpeAssemblyLotTraceBuilder builder() {
+        return new OpeAssemblyLotTraceBuilder();
     }
 }
