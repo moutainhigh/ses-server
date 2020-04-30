@@ -25,6 +25,5 @@ public interface BussinessNumberService {
      * @Param
      * @return
      **/
-    String getBatchNum();
-
+    String getBatchNum(IdEnter enter);
 }

@@ -305,26 +305,35 @@
             resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult">
             select item.id            as id,
                    item.serial_num    as serialN,
-                   item.qc_result     as qcStatus,
-                   item.created_time  as qcDate,
-                   profile.first_name as operatorFirstName,
-                   profile.last_name  as operatorLastName
+                   item.qc_result     as qcStatus
             from ope_assembly_qc_item item
-                     inner join ope_sys_user_profile profile on profile.sys_user_id = item.created_by and profile.dr=0
             where item.id = #{id}
               and item.dr = 0
     </select>
 
-    <select id="assemblyQcItemViewItem"
-            resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemResult">
+    <select id="qcItemViewResult"
+            resultType="com.redescooter.ses.web.ros.vo.production.assembly.QcItemViewResult">
+            select item.id            as id,
+                   item.qc_result     as status,
+                   item.created_by    as operatorId,
+                   profile.first_name as operatorFirstName,
+                   profile.last_name  as operatorLastName,
+                   item.created_time  as qcDate
+            from ope_assembly_qc_item item
+                     inner join ope_sys_user_profile profile on item.created_by = profile.sys_user_id
+            where item.serial_num = #{serialN}
+    </select>
+    <select id="viewItemTemplate"
+            resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult">
             select trace.id                         as id,
                    trace.product_qc_template_id     as itemId,
                    trace.product_qc_template_name   as itemName,
                    trace.product_qc_template_b_id   as qcResultId,
-                   trace.product_qc_template_b_name as qcResultName
+                   trace.product_qc_template_b_name as qcResultName,
+                   trace.picture                    as partQcPicture
             from ope_assembly_qc_trace trace
-                     left join ope_assembly_qc_item item on trace.assembly_qc_item_id = item.id and item.dr = 0
+                     inner join ope_sys_user_profile profile on profile.sys_user_id = trace.created_by
             where trace.dr = 0
-              and item.id = #{id}
+              and trace.assembly_qc_item_id =#{id}
     </select>
 </mapper>

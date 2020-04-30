@@ -8,7 +8,7 @@
                purchas.lave_wait_qc_total as laveWaitQcTotal
         from ope_purchas purchas
         where purchas.dr = 0
-          and purchas.status in (1,3)
+          and purchas.status =3
         and purchas.lave_wait_qc_total !=0
         order by created_time asc
         limit #{startRow},#{pageSize}

@@ -17,6 +17,7 @@ import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
@@ -134,6 +135,14 @@ public class AssemblyController {
         return new Response<>(assemblyService.assemblyNode(enter));
     }
 
+
+    @PostMapping(value = "/qcResultList")
+    @ApiOperation(value = "质检结果列表", response = Map.class)
+    public Response<Map<String, String>> qcResultList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(assemblyService.qcResultList(enter));
+    }
+
+
     @PostMapping(value = "/assemblyQcInfo")
     @ApiOperation(value = "组装单质检记录", response = AssemblyQcInfoResult.class)
     public Response<List<AssemblyQcInfoResult>> assemblyQcInfo(@ModelAttribute @ApiParam("请求参数") AssemblyQcInfoEnter enter) {
@@ -150,6 +159,12 @@ public class AssemblyController {
     @ApiOperation(value = "组装单质检条目质检结果信息", response = AssemblyQcItemViewResult.class)
     public Response<AssemblyQcItemViewResult> assemblyQcItemView(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(assemblyService.assemblyQcItemView(enter));
+    }
+
+    @PostMapping(value = "/viewItemTemplate")
+    @ApiOperation(value = "质检结果模板信息", response = AssemblyQcItemViewItemTemplateResult.class)
+    public Response<List<AssemblyQcItemViewItemTemplateResult>> viewItemTemplate(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(assemblyService.viewItemTemplate(enter));
     }
 
     @PostMapping(value = "/export")
