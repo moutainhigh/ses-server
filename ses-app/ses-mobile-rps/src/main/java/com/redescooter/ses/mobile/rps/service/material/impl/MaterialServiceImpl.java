@@ -387,12 +387,12 @@ public class MaterialServiceImpl implements MaterialService {
                     purchasB.setQcStatus(QcStatusEnums.QUALITY_INSPECTION.getValue());
                     purchasB.setUpdatedBy(enter.getUserId());
                     purchasB.setUpdatedTime(new Date());
+                    item.setTotalQualityInspected(item.getTotalQualityInspected() - item.getFailCount());
+                    item.setFailCount(0);
+                    item.setUpdatedBy(enter.getUserId());
+                    item.setStatus(QcStatusEnums.PASS.getValue());
+                    item.setUpdatedTime(new Date());
                 }
-                item.setTotalQualityInspected(item.getTotalQualityInspected() - item.getFailCount());
-                item.setFailCount(0);
-                item.setUpdatedBy(enter.getUserId());
-                item.setStatus(QcStatusEnums.PASS.getValue());
-                item.setUpdatedTime(new Date());
             }
             for (OpePurchas item : opePurchasList) {
                 if (item.getId().equals(purchasB.getPurchasId())) {
@@ -418,12 +418,15 @@ public class MaterialServiceImpl implements MaterialService {
                     item.setUpdatedTime(new Date());
                 }
             });
-            opePurchasBQcItemService.updateBatchById(opePurchasBQcItemList);
         }
+        opePurchasBQcItemService.updateBatch(opePurchasBQcItemList);
         //更新质检结果表
         if (CollectionUtils.isNotEmpty(opePurchasBQcList)) {
             opePurchasBQcService.updateBatchById(opePurchasBQcList);
         }
+
+        //更新主表
+        opePurchasService.updateBatchById(opePurchasList);
 
         //更新子表数据
         if (CollectionUtils.isNotEmpty(opePurchasBList)) {
@@ -590,7 +593,7 @@ public class MaterialServiceImpl implements MaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
         //根据质检类型校验质检数量
-        if (opeParts.getIdClass()) {
+        if (opeParts.getIdClass().equals(Boolean.TRUE)) {
 
             //序列号不能为空
             if (StringUtils.isBlank(enter.getSerialNum())) {
@@ -600,7 +603,7 @@ public class MaterialServiceImpl implements MaterialService {
             // 有IdClas校验是否已经 通过质检
             List<OpePurchasBQcItem> checkPurchasBQcItemList = opePurchasBQcItemService.list(
                     new LambdaQueryWrapper<OpePurchasBQcItem>().eq(OpePurchasBQcItem::getSerialNum, enter.getSerialNum())
-                            .ne(OpePurchasBQcItem::getQcResult, QcStatusEnums.PASS.getValue()));
+                            .eq(OpePurchasBQcItem::getQcResult, QcStatusEnums.PASS.getValue()));
             if (CollectionUtils.isNotEmpty(checkPurchasBQcItemList)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_PASSED_THE_QUALITY_INSPECTION.getCode(), ExceptionCodeEnums.PART_PASSED_THE_QUALITY_INSPECTION.getMessage());
             }
@@ -613,7 +616,7 @@ public class MaterialServiceImpl implements MaterialService {
             }
         }
         //没有IdClas 校验质检数量
-        if (opeParts.getIdClass()) {
+        if (!opeParts.getIdClass()) {
             if (enter.getQty() == null || enter.getQty() == 0) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getCode(), ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getMessage());
             }
