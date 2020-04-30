@@ -429,7 +429,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
             OpeAssemblyQcItem opeAssemblyQcItem = OpeAssemblyQcItem.builder()
                     .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_QC_ITEM))
                     .dr(0)
-                    .serialNum(bussinessNumberService.getBatchNum())
+                    .serialNum(batchNum)
                     .assemblyBId(opeAssemblyBOrder.getId())
                     .assemblyId(opeAssemblyOrder.getId())
                     .updatedBy(enter.getUserId())
