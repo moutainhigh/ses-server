@@ -467,6 +467,8 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         mailTask.setCreatedTime(new Date());
         mailTask.setUpdatedTime(new Date());
         mailTaskMapper.insert(mailTask);
+
+
         return mailTask;
     }
 
