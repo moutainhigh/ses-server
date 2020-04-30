@@ -314,11 +314,12 @@
     <select id="qcItemViewResult"
             resultType="com.redescooter.ses.web.ros.vo.production.assembly.QcItemViewResult">
             select item.id            as id,
-                   item.qc_result     as status,
-                   item.created_by    as operatorId,
-                   profile.first_name as operatorFirstName,
-                   profile.last_name  as operatorLastName,
-                   item.created_time  as qcDate
+                    item.qc_result     as status,
+                    item.created_by    as operatorId,
+                    profile.first_name as operatorFirstName,
+                    profile.last_name  as operatorLastName,
+                    item.created_time  as qcDate,
+                    item.qc_result     as status
             from ope_assembly_qc_item item
                      inner join ope_sys_user_profile profile on item.created_by = profile.sys_user_id
             where item.serial_num = #{serialN}
