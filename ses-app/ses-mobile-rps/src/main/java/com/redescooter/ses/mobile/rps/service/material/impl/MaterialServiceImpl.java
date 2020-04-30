@@ -378,7 +378,7 @@ public class MaterialServiceImpl implements MaterialService {
         for (OpePurchasB purchasB : opePurchasBList) {
             int initFailTotal = 0;
             for (OpePurchasBQc item : opePurchasBQcList) {
-                if (purchasB.getId().equals(item.getPurchasBId())){
+                if (purchasB.getId().equals(item.getPurchasBId())) {
                     if (item.getFailCount() != 0) {
                         failConut++;
                         initFailTotal += item.getFailCount();
@@ -919,9 +919,7 @@ public class MaterialServiceImpl implements MaterialService {
                 opePurchasBQc.setPassCount(0);
                 opePurchasBQc.setStatus(QcStatusEnums.FAIL.getValue());
             }
-        }
-
-        if (opePurchasBQc != null) {
+        } else {
 
             if (qcResult) {
                 if (opeParts.getIdClass()) {
