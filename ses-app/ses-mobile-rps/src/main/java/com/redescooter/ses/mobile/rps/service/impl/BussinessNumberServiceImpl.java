@@ -34,6 +34,8 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
 
     /**
      * 来料质检 OpePurchasBQc 批次号 id为采购单子表Id
+     * 1、来料质检 批次号生成 和 部品号、当前时间 有关
+     *
      *
      * @param enter
      * @return
@@ -66,9 +68,11 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
      * @Description //批次号生成
      * @Date 2020/4/29 15:33
      * @Param
+     *
+     * 1、来料质检 批次号生成 和 产品型号、当前时间 有关
      **/
     @Override
-    public String getBatchNum(IdEnter enter) {
+    public String assemblyBatchNo(IdEnter enter) {
         OpeAssemblyLotTrace opeAssemblyLotTrace = opeAssemblyLotTraceService.getOne(new LambdaQueryWrapper<OpeAssemblyLotTrace>().eq(OpeAssemblyLotTrace::getAssemblyId, enter.getId()));
 
         //如果是同一天 批次号 后三位累加
@@ -86,5 +90,15 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
         }
         //没有质检记录 返回当前新的批次号
         return new StringBuilder(ProductContractEnums.MATERIALQCBATCHNO.getCode()).append(DateUtil.getDateTime(new Date(), DateConstant.YMD)).append("001").toString();
+    }
+
+    /**
+     * 产品序列号生成
+     *
+     * @return
+     */
+    @Override
+    public String productSerialN() {
+        return null;
     }
 }

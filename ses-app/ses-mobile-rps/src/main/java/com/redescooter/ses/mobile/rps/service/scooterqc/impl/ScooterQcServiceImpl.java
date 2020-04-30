@@ -24,14 +24,12 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -295,7 +293,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
             IdEnter idEnter=new IdEnter();
             BeanUtils.copyProperties(enter,idEnter);
             idEnter.setId(opeAssemblyOrder.getId());
-            String batchNum = bussinessNumberService.getBatchNum(idEnter);
+            String batchNum = bussinessNumberService.assemblyBatchNo(idEnter);
 
             //查询质检详情中时间最近的一条质检记录
             QueryWrapper<OpeAssemblyQcItem> opeAssemblyQcItemQueryWrapper = new QueryWrapper<>();
