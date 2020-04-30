@@ -64,7 +64,7 @@
         <jasypt.version>2.1.1</jasypt.version>
         <jpush.client.version>3.3.10</jpush.client.version>
         <codingapi.txlcn.version>5.0.2.RELEASE</codingapi.txlcn.version>
-        <!--        <codingapi.txlcn.version>5.0.2.RELEASE</codingapi.txlcn.version>-->
+        <!--<codingapi.txlcn.version>5.0.2.RELEASE</codingapi.txlcn.version>-->
 
         <!--build-plugin相关版本控制-->
         <lombok-maven-plugin.version>1.16.8.0</lombok-maven-plugin.version>
@@ -124,6 +124,11 @@
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-poi</artifactId>
+                <version>${ses.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-starter-rabbitmq</artifactId>
                 <version>${ses.version}</version>
             </dependency>
             <!--ses-api start引入-->

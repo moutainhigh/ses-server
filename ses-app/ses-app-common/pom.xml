@@ -48,6 +48,10 @@
         </dependency>
         <dependency>
             <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-rabbitmq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-foundation</artifactId>
         </dependency>
         <dependency>

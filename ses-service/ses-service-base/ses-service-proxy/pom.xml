@@ -42,6 +42,10 @@
             <artifactId>jpush-client</artifactId>
             <version>${jpush.client.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-rabbitmq</artifactId>
+        </dependency>
     </dependencies>
 
     <!--环境配置-->

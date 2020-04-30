@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros;
 
-import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;

@@ -33,6 +33,13 @@ spring:
         login-password: admin
         enabled: false
         url-pattern: /druid/*
+  #rabbitmq配置
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        max-concurrency: 10
+        prefetch: 1
   #REDIS集群配置
   redis:
     cluster:

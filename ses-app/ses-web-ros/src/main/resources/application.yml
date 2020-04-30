@@ -51,7 +51,15 @@ spring:
       enabled: true
   freemarker:
     check-template-location: false
-                                                                                                                        #Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
+  #rabbitmq配置
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        max-concurrency: 10
+        prefetch: 1
+
+#Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
 management:
   server:
     port: 28188
