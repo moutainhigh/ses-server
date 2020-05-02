@@ -18,14 +18,11 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ProductOrAllocateWaitInWhIdEnter extends PageEnter {
+public class ProductDetailEnter extends PageEnter {
 
     @ApiModelProperty(value = "主单id")
     private Long id;
 
     @ApiModelProperty(value = "单据类型")
     private String sourceType;
-
-
-
 }

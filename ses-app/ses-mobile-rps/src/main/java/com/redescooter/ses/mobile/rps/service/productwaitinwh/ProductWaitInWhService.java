@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.rps.service.productwaitinwh;
 
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.productwaitinwh.*;
@@ -34,22 +33,22 @@ public interface ProductWaitInWhService {
      * @Param [enter]
      * @return
      **/
-    <T> PageResult<T> productWaitWhItemList(ProductOrAllocateWaitInWhIdEnter enter);
+    PageResult<ProductWaitInWhItemResult> productWaitWhItemList(ProductDetailEnter enter);
 
 
     /**
-     * @Author kyle
-     * @Description //1、根据具体的部品id查询生产仓库待入库详情
-     * @Date  2020/4/14 17:50
-     * @Param [enter]
+     * 调拨单详情列表
+     * @param enter
      * @return
-     **/
-    AllocateWaitInWhItemResult allocateWaitInWhItem(IdEnter enter);
+     */
+    PageResult<ProductWaitInWhItemResult> allocateDetaiList(ProductDetailEnter enter);
 
-
-
-
-
+    /**
+     * 组装单详情列表
+     * @param enter
+     * @return
+     */
+    PageResult<ProductWaitInWhItemResult> assemblyDetaiList(ProductDetailEnter enter);
 
     /**
      * @Author kyle

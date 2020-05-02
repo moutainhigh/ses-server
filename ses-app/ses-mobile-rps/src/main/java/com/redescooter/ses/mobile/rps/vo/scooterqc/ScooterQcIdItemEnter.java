@@ -1,6 +1,6 @@
 package com.redescooter.ses.mobile.rps.vo.scooterqc;
 
-import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -18,7 +18,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ScooterQcIdItemEnter extends PageEnter {
+public class ScooterQcIdItemEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "组装单子单id")
     private Long id;

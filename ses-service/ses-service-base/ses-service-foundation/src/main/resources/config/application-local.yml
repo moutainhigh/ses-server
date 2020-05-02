@@ -7,9 +7,9 @@ log:
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://localhost:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://39.108.92.232:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: root123
+    password: 1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
@@ -19,13 +19,13 @@ spring:
   redis:
     cluster:
       nodes:
-        - 192.168.2.200:7000
-        - 192.168.2.200:7001
-        - 192.168.2.200:7002
-        - 192.168.2.200:7003
-        - 192.168.2.200:7004
-        - 192.168.2.200:7005
+        - 39.108.92.232:7000
+        - 39.108.92.232:7001
+        - 39.108.92.232:7002
+        - 39.108.92.232:7003
+        - 39.108.92.232:7004
+        - 39.108.92.232:7005
 ## DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://192.168.2.200:42181
+    address: zookeeper://39.108.92.232:22181

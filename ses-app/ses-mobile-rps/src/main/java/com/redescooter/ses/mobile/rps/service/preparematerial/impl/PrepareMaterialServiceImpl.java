@@ -227,7 +227,29 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             if (count == 0) {
                 return PageResult.createZeroRowResult(enter);
             }
-            return PageResult.create(enter, count, prepareMaterialServiceMapper.detailAllocatelList(enter));
+            List<PrepareMaterialDetailResult> resultList = prepareMaterialServiceMapper.detailAllocatelList(enter);
+
+            //查询符合条件的序列号
+            List<OpeStockPurchas> stockPurchasList =
+                    opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
+                            .in(OpeStockPurchas::getPartId, resultList.stream().map(PrepareMaterialDetailResult::getPartId).collect(Collectors.toList()))
+                    .eq(OpeStockPurchas::getStatus,StockProductPartStatusEnums.OUT_WH.getValue()));
+            if (CollectionUtils.isEmpty(stockPurchasList)){
+                return PageResult.create(enter, count, resultList);
+            }
+
+            //封装 序列号
+            resultList.forEach(item->{
+                List<String> serialList = Lists.newArrayList();
+                stockPurchasList.forEach(stock->{
+                    if(item.getPartId().equals(stock.getStatus())){
+                        serialList.add(stock.getSerialNumber());
+                    }
+                });
+                item.setSerialNumList(serialList);
+            });
+
+            return PageResult.create(enter, count, resultList);
         }
 
         if (StringUtils.equals(enter.getSourceType(), SourceTypeEnums.ASSEMBLY.getValue())) {
@@ -244,7 +266,25 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             if (count == 0) {
                 return PageResult.createZeroRowResult(enter);
             }
-            return PageResult.create(enter, count, prepareMaterialServiceMapper.detailAssemblyList(enter));
+            List<PrepareMaterialDetailResult> resultList = prepareMaterialServiceMapper.detailAssemblyList(enter);
+
+            //查询序列号
+            List<OpeStockProdPart> opeStockProdPartList = opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>()
+                    .in(OpeStockProdPart::getPartId,resultList.stream().map(PrepareMaterialDetailResult::getPartId).collect(Collectors.toList()))
+                    .eq(OpeStockProdPart::getStatus, StockProductPartStatusEnums.OUT_WH.getValue()));
+
+            //封装 序列号
+            resultList.forEach(item->{
+                List<String> serialList = Lists.newArrayList();
+                opeStockProdPartList.forEach(stock->{
+                    if(item.getPartId().equals(stock.getStatus())){
+                        serialList.add(stock.getSerialNumber());
+                    }
+                });
+                item.setSerialNumList(serialList);
+            });
+
+            return PageResult.create(enter, count, resultList);
         }
         return PageResult.createZeroRowResult(enter);
     }

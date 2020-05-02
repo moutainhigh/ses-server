@@ -228,6 +228,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .productType(partsProduct.getProductType().toString())
                 .productCode(partsProduct.getProductCode())
                 .productionDate(new Date())
+                .inwhStatus(Boolean.FALSE)
                 .printFlag(enter.getPrintCodeResult())
                 .revision(0)
                 .createdBy(enter.getUserId())

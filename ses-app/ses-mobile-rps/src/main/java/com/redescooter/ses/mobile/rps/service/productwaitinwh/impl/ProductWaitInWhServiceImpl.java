@@ -1,6 +1,8 @@
 package com.redescooter.ses.mobile.rps.service.productwaitinwh.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
@@ -12,7 +14,6 @@ import com.redescooter.ses.api.common.enums.production.assembly.AssemblyEventEnu
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
@@ -22,7 +23,6 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.*;
-import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.mobile.rps.service.productwaitinwh.ProductWaitInWhService;
 import com.redescooter.ses.mobile.rps.vo.productwaitinwh.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -37,6 +37,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassNameProWaitInWHServiceImpl
@@ -145,7 +146,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
             }
         }
         //获取调拨单的数据集合
-        allocateAndProductResultList = this.allocateWaitInWHList(enter,allocateAndProductResultList);
+        allocateAndProductResultList = this.allocateWaitInWHList(enter, allocateAndProductResultList);
         //展示列表为空
         if (CollectionUtils.isEmpty(allocateAndProductResultList)) {
             return PageResult.createZeroRowResult(enter);
@@ -163,7 +164,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Param [enter]
      **/
     @Transactional
-    public List<AllocateAndProductResult> allocateWaitInWHList(PageEnter enter,List<AllocateAndProductResult> allocateAndProductResultList) {
+    public List<AllocateAndProductResult> allocateWaitInWHList(PageEnter enter, List<AllocateAndProductResult> allocateAndProductResultList) {
         QueryWrapper<OpeAllocate> opeAllocateQueryWrapper = new QueryWrapper<>();
         opeAllocateQueryWrapper.eq(OpeAllocate.COL_STATUS, AllocateOrderStatusEnums.ALLOCATE.getValue());
         opeAllocateQueryWrapper.gt(OpeAllocate.COL_PENDING_STORAGE_TOTAL, 0);
@@ -202,175 +203,106 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      */
     @Transactional
     @Override
-    public <T> PageResult<T> productWaitWhItemList(ProductOrAllocateWaitInWhIdEnter enter) {
-        if (StringUtils.isEmpty(enter)) {
-            return PageResult.createZeroRowResult(enter);
-        }
-
-        List<ProductWaitInWhItemResult> proWaitWHItemListResult = new ArrayList<>();
-        //返回结果集详情
-        ProductWaitInWhItemResult productWaitInWhItemResult = null;
+    public PageResult<ProductWaitInWhItemResult> productWaitWhItemList(ProductDetailEnter enter) {
 
         //生产（组装）仓库
         if (enter.getSourceType().equals(SourceTypeEnums.ASSEMBLY.getValue())) {
-            int count = productWaitInWhServiceMapper.proWaitWHItemListCount();
-            if (count == 0) {
-                return PageResult.createZeroRowResult(enter);
-            } else {
-                //查询组装单子单
-                QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
-                opeAssemblyBOrderQueryWrapper.gt(OpeAssemblyBOrder.COL_IN_WAIT_WH_QTY, 0);
-                opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ASSEMBLY_ID, enter.getId());
-                //查询组装单
-                QueryWrapper<OpeAssemblyOrder> opeAssemblyOrderQueryWrapper = new QueryWrapper<>();
-                opeAssemblyOrderQueryWrapper.eq(OpeAssemblyOrder.COL_ID, enter.getId());
-                opeAssemblyOrderQueryWrapper.eq(OpeAssemblyOrder.COL_STATUS, AssemblyStatusEnums.QC_PASSED.getValue());
-                OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getOne(opeAssemblyOrderQueryWrapper);
-
-                //抛组装单为空异常
-                if (StringUtils.isEmpty(opeAssemblyOrder)) {
-                    throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
-                }
-
-                //通过组装单子表id查找
-                List<OpeAssemblyBOrder> opeAssemblyBOrderList = opeAssemblyBOrderService.list(opeAssemblyBOrderQueryWrapper);
-
-                if (!CollectionUtils.isEmpty(opeAssemblyBOrderList)) {
-                    for (OpeAssemblyBOrder opeAssemblyBOrder : opeAssemblyBOrderList) {
-                        //去查询调拨单对应的产品详细信息
-                        QueryWrapper<OpePartsProduct> opePartsQueryWrapper = new QueryWrapper<>();
-                        opePartsQueryWrapper.eq(OpeParts.COL_ID, opeAssemblyBOrder.getProductId());
-                        OpePartsProduct opePartsProduct = opePartsProductService.getOne(opePartsQueryWrapper);
-
-                        //部件不存在
-                        if (StringUtils.isEmpty(opePartsProduct)) {
-                            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
-                        }
-
-                        proWaitWHItemListResult.add(
-                                productWaitInWhItemResult = ProductWaitInWhItemResult.builder()
-                                        .assemblyBId(opeAssemblyBOrder.getId())
-                                        .assemblyStr(opeAssemblyOrder.getAssemblyNumber())
-                                        .productId(opeAssemblyBOrder.getProductId())
-                                        .productNum(opeAssemblyBOrder.getInWaitWhQty())
-                                        .productStr(opeAssemblyBOrder.getProductNumber())
-                                        .productName(opeAssemblyBOrder.getEnName())
-                                        .sourceType(SourceTypeEnums.ALLOCATE.getValue())
-                                        .build());
-                    }
-                } else {
-                    return PageResult.createZeroRowResult(enter);
-                }
-            }
-            return (PageResult<T>) PageResult.create(enter, count, proWaitWHItemListResult);
+            return assemblyDetaiList(enter);
         }
-
-        //调拨单子单
-        if (enter.getSourceType().equals(SourceTypeEnums.ALLOCATE.getValue())) {
-            //查询调拨单子单
-            QueryWrapper<OpeAllocateB> opeAllocateBQueryWrapper = new QueryWrapper<>();
-            opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_ALLOCATE_ID, enter.getId());
-            opeAllocateBQueryWrapper.gt(OpeAllocateB.COL_PENDING_STORAGE_QTY, 0);
-            List<OpeAllocateB> opeAllocateBList = opeAllocateBService.list(opeAllocateBQueryWrapper);
-
-            //查询调拨单
-            QueryWrapper<OpeAllocate> opeAllocateQueryWrapper = new QueryWrapper<>();
-            opeAllocateQueryWrapper.eq(OpeAllocate.COL_ID, enter.getId());
-            opeAllocateQueryWrapper.eq(OpeAllocate.COL_STATUS, AllocateOrderStatusEnums.ALLOCATE.getValue());
-            OpeAllocate allocate = opeAllocateService.getOne(opeAllocateQueryWrapper);
-
-            //调拨单为空
-            if (StringUtils.isEmpty(allocate)) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
-            }
-
-            //调拨单子单为空
-            if (CollectionUtils.isEmpty(opeAllocateBList)) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_B_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_B_ORDER_IS_NOT_EXIST.getMessage());
-            }
-
-            //返回结果集详情
-            AllocateWaitInWhItemResult allocateWaitInWHItemResult = null;
-            List<AllocateWaitInWhItemResult> allocateWaitInWhItemResultList = new ArrayList<>();
-            for (OpeAllocateB opeAllocateB : opeAllocateBList) {
-                //去查询调拨单对应的产品详细信息
-                QueryWrapper<OpeParts> opePartsQueryWrapper = new QueryWrapper<>();
-                opePartsQueryWrapper.eq(OpeParts.COL_ID, opeAllocateB.getPartId());
-                OpeParts opeParts = opePartsService.getOne(opePartsQueryWrapper);
-
-                //部件不存在
-                if (StringUtils.isEmpty(opeParts)) {
-                    throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
-                }
-
-                //查询调拨单的编号
-                allocateWaitInWhItemResultList.add(
-                        allocateWaitInWHItemResult = AllocateWaitInWhItemResult.builder()
-                                .allocateBId(opeAllocateB.getId())
-                                .partNum(opeAllocateB.getTotal())
-                                .partName(opeParts.getCnName())
-                                .partStr(opeParts.getPartsNumber())
-                                .sourceType(SourceTypeEnums.ALLOCATE.getValue())
-                                .build());
-            }
-            return (PageResult<T>) PageResult.create(enter, allocateWaitInWhItemResultList.size(), allocateWaitInWhItemResultList);
+        if(enter.getSourceType().equals(SourceTypeEnums.ALLOCATE.getValue())) {
+            return allocateDetaiList(enter);
         }
-        return PageResult.createZeroRowResult(enter);
+        return null;
     }
 
     /**
+     * 调拨单详情列表
      * @param enter
      * @return
-     * @Author kyle
-     * @Description //1、根据子单id查询生产仓库待入库详情
-     * @Date 2020/4/14 17:50
-     * @Param [enter]
      */
-    @Transactional
     @Override
-    public AllocateWaitInWhItemResult allocateWaitInWhItem(IdEnter enter) {
-
-        //查询调拨单子单
-        QueryWrapper<OpeAllocateB> opeAllocateBQueryWrapper = new QueryWrapper<>();
-        opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_ID, enter.getId());
-        opeAllocateBQueryWrapper.gt(OpeAllocateB.COL_PENDING_STORAGE_QTY, 0); //待入库数大于0
-        OpeAllocateB opeAllocateB = opeAllocateBService.getOne(opeAllocateBQueryWrapper);
-
-        //调拨单为空
-        if (StringUtils.isEmpty(opeAllocateB)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_B_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_B_ORDER_IS_NOT_EXIST.getMessage());
+    public PageResult<ProductWaitInWhItemResult> allocateDetaiList(ProductDetailEnter enter) {
+        OpeAllocate opeAllocate = opeAllocateService.getById(enter.getId());
+        if (opeAllocate==null){
+            throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+        }
+        if (!org.apache.commons.lang3.StringUtils.equals(opeAllocate.getStatus(),AllocateOrderStatusEnums.ALLOCATE.getValue())){
+            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        }
+        int count = opeAllocateBService.count(new LambdaQueryWrapper<OpeAllocateB>().eq(OpeAllocateB::getAllocateId,enter.getId()));
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
         }
 
-        //查询调拨单
-        QueryWrapper<OpeAllocate> opeAllocateQueryWrapper = new QueryWrapper<>();
-        opeAllocateQueryWrapper.eq(OpeAllocate.COL_ID, opeAllocateB.getAllocateId());
-        opeAllocateQueryWrapper.eq(OpeAllocate.COL_STATUS, AllocateOrderStatusEnums.ALLOCATE.getValue());
-        OpeAllocate allocate = opeAllocateService.getOne(opeAllocateQueryWrapper);
+        List<ProductWaitInWhItemResult> result = productWaitInWhServiceMapper.allocateDetaiList(enter);
 
-        //调拨单子单为空
-        if (StringUtils.isEmpty(allocate)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+        //查询满足条件的序列号
+        List<OpeStockPurchas> opeStockPurchasList =
+                opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
+                        .in(OpeStockPurchas::getPartId,result.stream().map(ProductWaitInWhItemResult::getProductId).collect(Collectors.toList()))
+                        .eq(OpeStockPurchas::getStatus,StockProductPartStatusEnums.OUT_WH.getValue()));
+        if(CollectionUtils.isEmpty(opeStockPurchasList)){
+            return PageResult.create(enter,count, result);
         }
 
-        //去查询调拨单对应的产品详细信息
-        QueryWrapper<OpeParts> opePartsQueryWrapper = new QueryWrapper<>();
-        opePartsQueryWrapper.eq(OpeParts.COL_ID, opeAllocateB.getPartId());
-        OpeParts opeParts = opePartsService.getOne(opePartsQueryWrapper);
+        //封装到反残对象中
+        result.forEach(item->{
+            List<String> serialList = Lists.newArrayList();
+            opeStockPurchasList.forEach(stock->{
+                if (item.getProductId().equals(stock.getPartId())){
+                    serialList.add(stock.getSerialNumber());
+                }
+            });
+            item.setSerialNumList(serialList);
+        });
 
-        //部件不存在
-        if (StringUtils.isEmpty(opeParts)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
-        }
-
-        return AllocateWaitInWhItemResult.builder()
-                .allocateBId(opeAllocateB.getId())
-                .allocateNum(allocate.getAllocateNum())
-                .partId(opeAllocateB.getPartId())
-                .partNum(opeAllocateB.getTotal())
-                .partName(opeParts.getFrName())
-                .sourceType(SourceTypeEnums.ALLOCATE.getValue())
-                .build();
+        return PageResult.create(enter,count, result);
     }
+
+
+    /**
+     * 组装单详情列表
+     * @param enter
+     * @return
+     */
+    @Override
+    public PageResult<ProductWaitInWhItemResult> assemblyDetaiList(ProductDetailEnter enter) {
+        OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(enter.getId());
+        if (opeAssemblyOrder==null){
+            throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(),ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
+        }
+        if (!org.apache.commons.lang3.StringUtils.equals(opeAssemblyOrder.getStatus(),AssemblyStatusEnums.QC_PASSED.getValue())){
+            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        }
+        int count=opeAssemblyBOrderService.count(new LambdaQueryWrapper<OpeAssemblyBOrder>().eq(OpeAssemblyBOrder::getAssemblyId,enter.getId()));
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<ProductWaitInWhItemResult> result = productWaitInWhServiceMapper.assemblyDetaiList(enter);
+
+        //查询符合条件的序列号
+        List<OpeProductAssembly> opeProductAssemblyList = opeProductAssemblyService.list(new LambdaQueryWrapper<OpeProductAssembly>()
+                .in(OpeProductAssembly::getProductId,
+                        result.stream().map(ProductWaitInWhItemResult::getProductId).collect(Collectors.toList()))
+                .eq(OpeProductAssembly::getInwhStatus, Boolean.TRUE));
+        if (CollectionUtils.isEmpty(opeProductAssemblyList)){
+            return PageResult.create(enter,count, result);
+        }
+
+        //封装到反残对象中
+        result.forEach(item->{
+            List<String> serialList = Lists.newArrayList();
+            opeProductAssemblyList.forEach(stock->{
+                if (item.getProductId().equals(stock.getProductId())){
+                    serialList.add(stock.getProductSerialNum());
+                }
+            });
+            item.setSerialNumList(serialList);
+        });
+
+        return PageResult.create(enter,count, result);
+    }
+
 
     /**
      * @param enter

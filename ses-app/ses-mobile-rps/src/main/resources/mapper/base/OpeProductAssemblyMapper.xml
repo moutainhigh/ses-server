@@ -2,239 +2,251 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeProductAssemblyMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeProductAssembly">
-    <!--@mbg.generated-->
-    <!--@Table ope_product_assembly-->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="product_id" jdbcType="BIGINT" property="productId" />
-    <result column="assembly_b_id" jdbcType="BIGINT" property="assemblyBId" />
-    <result column="assembly_id" jdbcType="BIGINT" property="assemblyId" />
-    <result column="product_name" jdbcType="VARCHAR" property="productName" />
-    <result column="product_serial_num" jdbcType="VARCHAR" property="productSerialNum" />
-    <result column="product_type" jdbcType="VARCHAR" property="productType" />
-    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
-    <result column="production_date" jdbcType="TIMESTAMP" property="productionDate" />
-    <result column="print_flag" jdbcType="BOOLEAN" property="printFlag" />
-    <result column="revision" jdbcType="INTEGER" property="revision" />
-    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-    <result column="def1" jdbcType="VARCHAR" property="def1" />
-    <result column="def2" jdbcType="VARCHAR" property="def2" />
-    <result column="def3" jdbcType="VARCHAR" property="def3" />
-    <result column="def5" jdbcType="VARCHAR" property="def5" />
-    <result column="def6" jdbcType="DOUBLE" property="def6" />
+      <!--@mbg.generated-->
+      <!--@Table ope_product_assembly-->
+      <id column="id" property="id"/>
+      <result column="dr" property="dr"/>
+      <result column="product_id" property="productId"/>
+      <result column="assembly_b_id" property="assemblyBId"/>
+      <result column="assembly_id" property="assemblyId"/>
+      <result column="inwh_status" property="inwhStatus"/>
+      <result column="product_name" property="productName"/>
+      <result column="product_serial_num" property="productSerialNum"/>
+      <result column="product_type" property="productType"/>
+      <result column="product_code" property="productCode"/>
+      <result column="production_date" property="productionDate"/>
+      <result column="print_flag" property="printFlag"/>
+      <result column="revision" property="revision"/>
+      <result column="created_by" property="createdBy"/>
+      <result column="created_time" property="createdTime"/>
+      <result column="updated_by" property="updatedBy"/>
+      <result column="updated_time" property="updatedTime"/>
+      <result column="def1" property="def1"/>
+      <result column="def2" property="def2"/>
+      <result column="def3" property="def3"/>
+      <result column="def5" property="def5"/>
+      <result column="def6" property="def6"/>
+      <result column="status" property="status"/>
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, product_id, assembly_b_id, assembly_id, product_name, product_serial_num, 
-    product_type, product_code, production_date, print_flag, revision, created_by, created_time, 
-    updated_by, updated_time, def1, def2, def3, def5, def6
+      id, dr, product_id, assembly_b_id, assembly_id, inwh_status, product_name, product_serial_num,
+      product_type, product_code, production_date, print_flag, revision, created_by, created_time,
+      updated_by, updated_time, def1, def2, def3, def5, def6, `status`
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
     update ope_product_assembly
     <trim prefix="set" suffixOverrides=",">
-      <trim prefix="dr = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-        </foreach>
-      </trim>
-      <trim prefix="product_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="assembly_b_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyBId,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="assembly_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.assemblyId,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="product_name = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productName,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="product_serial_num = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productSerialNum,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="product_type = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productType,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="product_code = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productCode,jdbcType=VARCHAR}
-        </foreach>
+        <trim prefix="dr = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.dr}
+            </foreach>
+        </trim>
+        <trim prefix="product_id = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.productId}
+            </foreach>
+        </trim>
+        <trim prefix="assembly_b_id = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.assemblyBId}
+            </foreach>
+        </trim>
+        <trim prefix="assembly_id = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.assemblyId}
+            </foreach>
+        </trim>
+        <trim prefix="inwh_status = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.inwhStatus}
+            </foreach>
+        </trim>
+        <trim prefix="product_name = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.productName}
+            </foreach>
+        </trim>
+        <trim prefix="product_serial_num = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.productSerialNum}
+            </foreach>
+        </trim>
+        <trim prefix="product_type = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.productType}
+            </foreach>
+        </trim>
+        <trim prefix="product_code = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.productCode}
+            </foreach>
       </trim>
       <trim prefix="production_date = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productionDate,jdbcType=TIMESTAMP}
+            when id = #{item.id} then #{item.productionDate}
         </foreach>
       </trim>
       <trim prefix="print_flag = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.printFlag,jdbcType=BOOLEAN}
+            when id = #{item.id} then #{item.printFlag}
         </foreach>
       </trim>
       <trim prefix="revision = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+            when id = #{item.id} then #{item.revision}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+            when id = #{item.id} then #{item.createdBy}
         </foreach>
       </trim>
       <trim prefix="created_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+            when id = #{item.id} then #{item.createdTime}
         </foreach>
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+            when id = #{item.id} then #{item.updatedBy}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+            when id = #{item.id} then #{item.updatedTime}
         </foreach>
       </trim>
       <trim prefix="def1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+            when id = #{item.id} then #{item.def1}
         </foreach>
       </trim>
-      <trim prefix="def2 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def3 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def5 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def6 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
-        </foreach>
-      </trim>
+        <trim prefix="def2 = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.def2}
+            </foreach>
+        </trim>
+        <trim prefix="def3 = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.def3}
+            </foreach>
+        </trim>
+        <trim prefix="def5 = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.def5}
+            </foreach>
+        </trim>
+        <trim prefix="def6 = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.def6}
+            </foreach>
+        </trim>
+        <trim prefix="`status` = case" suffix="end,">
+            <foreach collection="list" index="index" item="item">
+                when id = #{item.id} then #{item.status}
+            </foreach>
+        </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id,jdbcType=BIGINT}
+        #{item.id}
     </foreach>
   </update>
-  <insert id="batchInsert" parameterType="map">
-    <!--@mbg.generated-->
-    insert into ope_product_assembly
-    (id, dr, product_id, assembly_b_id, assembly_id, product_name, product_serial_num, 
-      product_type, product_code, production_date, print_flag, revision, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
-    values
-    <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.productId,jdbcType=BIGINT}, 
-        #{item.assemblyBId,jdbcType=BIGINT}, #{item.assemblyId,jdbcType=BIGINT}, #{item.productName,jdbcType=VARCHAR}, 
-        #{item.productSerialNum,jdbcType=VARCHAR}, #{item.productType,jdbcType=VARCHAR}, 
-        #{item.productCode,jdbcType=VARCHAR}, #{item.productionDate,jdbcType=TIMESTAMP}, 
-        #{item.printFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
-    </foreach>
-  </insert>
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into ope_product_assembly
+        (id, dr, product_id, assembly_b_id, assembly_id, inwh_status, product_name, product_serial_num,
+        product_type, product_code, production_date, print_flag, revision, created_by,
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6, `status`)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id}, #{item.dr}, #{item.productId}, #{item.assemblyBId}, #{item.assemblyId},
+            #{item.inwhStatus}, #{item.productName}, #{item.productSerialNum}, #{item.productType},
+            #{item.productCode}, #{item.productionDate}, #{item.printFlag}, #{item.revision},
+            #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime},
+            #{item.def1}, #{item.def2}, #{item.def3}, #{item.def5}, #{item.def6}, #{item.status}
+            )
+        </foreach>
+    </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeProductAssembly">
     <!--@mbg.generated-->
-    insert into ope_product_assembly
-    (id, dr, product_id, assembly_b_id, assembly_id, product_name, product_serial_num, 
-      product_type, product_code, production_date, print_flag, revision, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
-    values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{productId,jdbcType=BIGINT}, #{assemblyBId,jdbcType=BIGINT}, 
-      #{assemblyId,jdbcType=BIGINT}, #{productName,jdbcType=VARCHAR}, #{productSerialNum,jdbcType=VARCHAR}, 
-      #{productType,jdbcType=VARCHAR}, #{productCode,jdbcType=VARCHAR}, #{productionDate,jdbcType=TIMESTAMP}, 
-      #{printFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
-      #{def6,jdbcType=DOUBLE})
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    product_id = #{productId,jdbcType=BIGINT}, 
-    assembly_b_id = #{assemblyBId,jdbcType=BIGINT}, 
-    assembly_id = #{assemblyId,jdbcType=BIGINT}, 
-    product_name = #{productName,jdbcType=VARCHAR}, 
-    product_serial_num = #{productSerialNum,jdbcType=VARCHAR}, 
-    product_type = #{productType,jdbcType=VARCHAR}, 
-    product_code = #{productCode,jdbcType=VARCHAR}, 
-    production_date = #{productionDate,jdbcType=TIMESTAMP}, 
-    print_flag = #{printFlag,jdbcType=BOOLEAN}, 
-    revision = #{revision,jdbcType=INTEGER}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def5 = #{def5,jdbcType=VARCHAR}, 
-    def6 = #{def6,jdbcType=DOUBLE}
+      insert into ope_product_assembly
+      (id, dr, product_id, assembly_b_id, assembly_id, inwh_status, product_name, product_serial_num,
+      product_type, product_code, production_date, print_flag, revision, created_by,
+      created_time, updated_by, updated_time, def1, def2, def3, def5, def6, `status`)
+      values
+      (#{id}, #{dr}, #{productId}, #{assemblyBId}, #{assemblyId}, #{inwhStatus}, #{productName},
+      #{productSerialNum}, #{productType}, #{productCode}, #{productionDate}, #{printFlag},
+      #{revision}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1},
+      #{def2}, #{def3}, #{def5}, #{def6}, #{status})
+      on duplicate key update
+      id = #{id},
+      dr = #{dr},
+      product_id = #{productId},
+      assembly_b_id = #{assemblyBId},
+      assembly_id = #{assemblyId},
+      inwh_status = #{inwhStatus},
+      product_name = #{productName},
+      product_serial_num = #{productSerialNum},
+      product_type = #{productType},
+      product_code = #{productCode},
+      production_date = #{productionDate},
+      print_flag = #{printFlag},
+      revision = #{revision},
+      created_by = #{createdBy},
+      created_time = #{createdTime},
+      updated_by = #{updatedBy},
+      updated_time = #{updatedTime},
+      def1 = #{def1},
+      def2 = #{def2},
+      def3 = #{def3},
+      def5 = #{def5},
+      def6 = #{def6},
+      `status` = #{status}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeProductAssembly">
     <!--@mbg.generated-->
     insert into ope_product_assembly
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="dr != null">
-        dr,
-      </if>
-      <if test="productId != null">
-        product_id,
-      </if>
-      <if test="assemblyBId != null">
-        assembly_b_id,
-      </if>
-      <if test="assemblyId != null">
-        assembly_id,
-      </if>
-      <if test="productName != null">
-        product_name,
-      </if>
-      <if test="productSerialNum != null">
-        product_serial_num,
-      </if>
-      <if test="productType != null">
-        product_type,
-      </if>
-      <if test="productCode != null">
-        product_code,
-      </if>
-      <if test="productionDate != null">
-        production_date,
-      </if>
-      <if test="printFlag != null">
-        print_flag,
-      </if>
-      <if test="revision != null">
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="id != null">
+              id,
+          </if>
+          <if test="dr != null">
+              dr,
+          </if>
+          <if test="productId != null">
+              product_id,
+          </if>
+          <if test="assemblyBId != null">
+              assembly_b_id,
+          </if>
+          <if test="assemblyId != null">
+              assembly_id,
+          </if>
+          <if test="inwhStatus != null">
+              inwh_status,
+          </if>
+          <if test="productName != null">
+              product_name,
+          </if>
+          <if test="productSerialNum != null">
+              product_serial_num,
+          </if>
+          <if test="productType != null">
+              product_type,
+          </if>
+          <if test="productCode != null">
+              product_code,
+          </if>
+          <if test="productionDate != null">
+              production_date,
+          </if>
+          <if test="printFlag != null">
+              print_flag,
+          </if>
+          <if test="revision != null">
         revision,
       </if>
       <if test="createdBy != null">
@@ -246,156 +258,171 @@
       <if test="updatedBy != null">
         updated_by,
       </if>
-      <if test="updatedTime != null">
-        updated_time,
-      </if>
-      <if test="def1 != null">
-        def1,
-      </if>
-      <if test="def2 != null">
-        def2,
-      </if>
-      <if test="def3 != null">
-        def3,
-      </if>
-      <if test="def5 != null">
-        def5,
-      </if>
-      <if test="def6 != null">
-        def6,
-      </if>
-    </trim>
+          <if test="updatedTime != null">
+              updated_time,
+          </if>
+          <if test="def1 != null">
+              def1,
+          </if>
+          <if test="def2 != null">
+              def2,
+          </if>
+          <if test="def3 != null">
+              def3,
+          </if>
+          <if test="def5 != null">
+              def5,
+          </if>
+          <if test="def6 != null">
+              def6,
+          </if>
+          <if test="status != null">
+              `status`,
+          </if>
+      </trim>
     values
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="dr != null">
-        #{dr,jdbcType=INTEGER},
-      </if>
-      <if test="productId != null">
-        #{productId,jdbcType=BIGINT},
-      </if>
-      <if test="assemblyBId != null">
-        #{assemblyBId,jdbcType=BIGINT},
-      </if>
-      <if test="assemblyId != null">
-        #{assemblyId,jdbcType=BIGINT},
-      </if>
-      <if test="productName != null">
-        #{productName,jdbcType=VARCHAR},
-      </if>
-      <if test="productSerialNum != null">
-        #{productSerialNum,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        #{productType,jdbcType=VARCHAR},
-      </if>
-      <if test="productCode != null">
-        #{productCode,jdbcType=VARCHAR},
-      </if>
-      <if test="productionDate != null">
-        #{productionDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="printFlag != null">
-        #{printFlag,jdbcType=BOOLEAN},
-      </if>
-      <if test="revision != null">
-        #{revision,jdbcType=INTEGER},
-      </if>
-      <if test="createdBy != null">
-        #{createdBy,jdbcType=BIGINT},
-      </if>
-      <if test="createdTime != null">
-        #{createdTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedBy != null">
-        #{updatedBy,jdbcType=BIGINT},
-      </if>
-      <if test="updatedTime != null">
-        #{updatedTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="def1 != null">
-        #{def1,jdbcType=VARCHAR},
-      </if>
-      <if test="def2 != null">
-        #{def2,jdbcType=VARCHAR},
-      </if>
-      <if test="def3 != null">
-        #{def3,jdbcType=VARCHAR},
-      </if>
-      <if test="def5 != null">
-        #{def5,jdbcType=VARCHAR},
-      </if>
-      <if test="def6 != null">
-        #{def6,jdbcType=DOUBLE},
-      </if>
-    </trim>
-    on duplicate key update 
-    <trim suffixOverrides=",">
-      <if test="id != null">
-        id = #{id,jdbcType=BIGINT},
-      </if>
-      <if test="dr != null">
-        dr = #{dr,jdbcType=INTEGER},
-      </if>
-      <if test="productId != null">
-        product_id = #{productId,jdbcType=BIGINT},
-      </if>
-      <if test="assemblyBId != null">
-        assembly_b_id = #{assemblyBId,jdbcType=BIGINT},
-      </if>
-      <if test="assemblyId != null">
-        assembly_id = #{assemblyId,jdbcType=BIGINT},
-      </if>
-      <if test="productName != null">
-        product_name = #{productName,jdbcType=VARCHAR},
-      </if>
-      <if test="productSerialNum != null">
-        product_serial_num = #{productSerialNum,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        product_type = #{productType,jdbcType=VARCHAR},
-      </if>
-      <if test="productCode != null">
-        product_code = #{productCode,jdbcType=VARCHAR},
-      </if>
-      <if test="productionDate != null">
-        production_date = #{productionDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="printFlag != null">
-        print_flag = #{printFlag,jdbcType=BOOLEAN},
-      </if>
-      <if test="revision != null">
-        revision = #{revision,jdbcType=INTEGER},
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="id != null">
+              #{id},
+          </if>
+          <if test="dr != null">
+              #{dr},
+          </if>
+          <if test="productId != null">
+              #{productId},
+          </if>
+          <if test="assemblyBId != null">
+              #{assemblyBId},
+          </if>
+          <if test="assemblyId != null">
+              #{assemblyId},
+          </if>
+          <if test="inwhStatus != null">
+              #{inwhStatus},
+          </if>
+          <if test="productName != null">
+              #{productName},
+          </if>
+          <if test="productSerialNum != null">
+              #{productSerialNum},
+          </if>
+          <if test="productType != null">
+              #{productType},
+          </if>
+          <if test="productCode != null">
+              #{productCode},
+          </if>
+          <if test="productionDate != null">
+              #{productionDate},
+          </if>
+          <if test="printFlag != null">
+              #{printFlag},
+          </if>
+          <if test="revision != null">
+              #{revision},
       </if>
       <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=BIGINT},
+          #{createdBy},
       </if>
       <if test="createdTime != null">
-        created_time = #{createdTime,jdbcType=TIMESTAMP},
+          #{createdTime},
       </if>
-      <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=BIGINT},
+          <if test="updatedBy != null">
+              #{updatedBy},
+          </if>
+          <if test="updatedTime != null">
+              #{updatedTime},
+          </if>
+          <if test="def1 != null">
+              #{def1},
+          </if>
+          <if test="def2 != null">
+              #{def2},
+          </if>
+          <if test="def3 != null">
+              #{def3},
+          </if>
+          <if test="def5 != null">
+              #{def5},
+          </if>
+          <if test="def6 != null">
+              #{def6},
+          </if>
+          <if test="status != null">
+              #{status},
+          </if>
+      </trim>
+    on duplicate key update
+      <trim suffixOverrides=",">
+          <if test="id != null">
+              id = #{id},
+          </if>
+          <if test="dr != null">
+              dr = #{dr},
+          </if>
+          <if test="productId != null">
+              product_id = #{productId},
+          </if>
+          <if test="assemblyBId != null">
+              assembly_b_id = #{assemblyBId},
+          </if>
+          <if test="assemblyId != null">
+              assembly_id = #{assemblyId},
+          </if>
+          <if test="inwhStatus != null">
+              inwh_status = #{inwhStatus},
+          </if>
+          <if test="productName != null">
+              product_name = #{productName},
+          </if>
+          <if test="productSerialNum != null">
+              product_serial_num = #{productSerialNum},
+          </if>
+          <if test="productType != null">
+              product_type = #{productType},
+          </if>
+          <if test="productCode != null">
+              product_code = #{productCode},
+          </if>
+          <if test="productionDate != null">
+              production_date = #{productionDate},
+          </if>
+          <if test="printFlag != null">
+              print_flag = #{printFlag},
+          </if>
+          <if test="revision != null">
+              revision = #{revision},
+          </if>
+      <if test="createdBy != null">
+          created_by = #{createdBy},
       </if>
-      <if test="updatedTime != null">
-        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      <if test="createdTime != null">
+          created_time = #{createdTime},
       </if>
-      <if test="def1 != null">
-        def1 = #{def1,jdbcType=VARCHAR},
-      </if>
-      <if test="def2 != null">
-        def2 = #{def2,jdbcType=VARCHAR},
-      </if>
-      <if test="def3 != null">
-        def3 = #{def3,jdbcType=VARCHAR},
-      </if>
-      <if test="def5 != null">
-        def5 = #{def5,jdbcType=VARCHAR},
-      </if>
-      <if test="def6 != null">
-        def6 = #{def6,jdbcType=DOUBLE},
-      </if>
-    </trim>
+          <if test="updatedBy != null">
+              updated_by = #{updatedBy},
+          </if>
+          <if test="updatedTime != null">
+              updated_time = #{updatedTime},
+          </if>
+          <if test="def1 != null">
+              def1 = #{def1},
+          </if>
+          <if test="def2 != null">
+              def2 = #{def2},
+          </if>
+          <if test="def3 != null">
+              def3 = #{def3},
+          </if>
+          <if test="def5 != null">
+              def5 = #{def5},
+          </if>
+          <if test="def6 != null">
+              def6 = #{def6},
+          </if>
+          <if test="status != null">
+              `status` = #{status},
+          </if>
+      </trim>
   </insert>
 </mapper>

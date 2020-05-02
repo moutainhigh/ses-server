@@ -1,14 +1,16 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.util.Date;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 产品组装表
@@ -16,8 +18,6 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeProductAssembly")
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @TableName(value = "ope_product_assembly")
 public class OpeProductAssembly implements Serializable {
     /**
@@ -32,7 +32,6 @@ public class OpeProductAssembly implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -55,6 +54,13 @@ public class OpeProductAssembly implements Serializable {
     @TableField(value = "assembly_id")
     @ApiModelProperty(value = "组装单id")
     private Long assemblyId;
+
+    /**
+     * 是否入库
+     */
+    @TableField(value = "inwh_status")
+    @ApiModelProperty(value = "是否入库")
+    private Boolean inwhStatus;
 
     /**
      * 产品名称
@@ -168,6 +174,13 @@ public class OpeProductAssembly implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    /**
+     * 是否入库
+     */
+    @TableField(value = "status")
+    @ApiModelProperty(value = "是否入库")
+    private Boolean status;
+
     private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
@@ -179,6 +192,8 @@ public class OpeProductAssembly implements Serializable {
     public static final String COL_ASSEMBLY_B_ID = "assembly_b_id";
 
     public static final String COL_ASSEMBLY_ID = "assembly_id";
+
+    public static final String COL_INWH_STATUS = "inwh_status";
 
     public static final String COL_PRODUCT_NAME = "product_name";
 
@@ -212,7 +227,5 @@ public class OpeProductAssembly implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpeProductAssemblyBuilder builder() {
-        return new OpeProductAssemblyBuilder();
-    }
+    public static final String COL_STATUS = "status";
 }

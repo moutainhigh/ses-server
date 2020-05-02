@@ -1,14 +1,11 @@
 package com.redescooter.ses.mobile.rps.vo.preparematerial;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
-import io.swagger.annotations.*;
+import java.util.List;
 
 /**
  * @ClassName:PrepareMaterialDetailResult
@@ -48,4 +45,7 @@ public class PrepareMaterialDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "待备料数量")
     private int preparationWaitQty;
+
+    @ApiModelProperty(value = "可用序列号列表")
+    private List<String> serialNumList;
 }
