@@ -5,6 +5,8 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.*;
 
+import java.util.List;
+
 public interface ScooterQcService {
     /**
      * @Author kyle
@@ -28,7 +30,7 @@ public interface ScooterQcService {
      * @Date 2020/4/14 14:36
      * @Param [enter]
      **/
-    ScooterQcItemListResult scooterQcItem(ScooterQcIdItemEnter enter);
+    List<ScooterQcItemResult> scooterQcItem(ScooterQcIdItemEnter enter);
 
     /**
      * @Author kyle
