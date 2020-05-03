@@ -24,7 +24,7 @@
         select count(*)
         from ope_assembly_order
         where dr=0
-        and  status=2
+        and  status=3
     </select>
     <select id="rpsHeadProductQc" resultType="int">
         select count(*)

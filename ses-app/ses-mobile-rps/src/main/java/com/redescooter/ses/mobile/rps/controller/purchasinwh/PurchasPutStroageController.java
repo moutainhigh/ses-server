@@ -40,11 +40,11 @@ public class PurchasPutStroageController{
         return new Response<>(purchasPutStroageService.haveIdPartsResult(enter));
     }
 
-    @PostMapping(value = "/notId")
-    @ApiOperation(value = "无ID入库界面", response = NotIdPartsResult.class)
-    public Response<NotIdPartsResult> NotIDPartsResult(@ModelAttribute @ApiParam("请求参数") NotIdDetailsEnter enter) {
-        return new Response<>(purchasPutStroageService.notIdPartsResult(enter));
-    }
+    // @PostMapping(value = "/notId")
+    // @ApiOperation(value = "无ID入库界面", response = NotIdPartsResult.class)
+    // public Response<NotIdPartsResult> NotIDPartsResult(@ModelAttribute @ApiParam("请求参数") NotIdDetailsEnter enter) {
+    // return new Response<>(purchasPutStroageService.notIdPartsResult(enter));
+    // }
 
     @PostMapping(value = "/notIdSucceed")
     @ApiOperation(value = "无ID入库成功接口", response = PurchasDetailsListResult.class)

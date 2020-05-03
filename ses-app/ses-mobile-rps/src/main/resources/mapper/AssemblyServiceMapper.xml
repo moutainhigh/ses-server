@@ -28,15 +28,16 @@
     </select>
     <select id="formulaByAssemblyBId"
             resultType="com.redescooter.ses.mobile.rps.vo.assembly.ProductFormulaResult">
-        select assb.id        as id,
-               parts.id           as partId,
-               parts.cn_name      as partCnName,
-               parts.parts_number as partN,
-               productb.parts_qty as qty
+        select assb.id as id,
+        parts.id as partId,
+        parts.cn_name as partCnName,
+        parts.id_class as idClass,
+        parts.parts_number as partN,
+        productb.parts_qty as qty
         from ope_parts_product_b productb
-                 inner join ope_parts parts on productb.parts_id = parts.id and productb.dr = 0
-                 left join ope_assembly_b_order assb on assb.product_id = productb.parts_product_id and assb.dr = 0
+        inner join ope_parts parts on productb.parts_id = parts.id and productb.dr = 0
+        left join ope_assembly_b_order assb on assb.product_id = productb.parts_product_id and assb.dr = 0
         where productb.dr = 0
-          and assb.id = #{id}
+        and assb.id = #{id}
     </select>
 </mapper>

@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderEve
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyEventEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -284,7 +285,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         List<OpeProductAssembly> opeProductAssemblyList = opeProductAssemblyService.list(new LambdaQueryWrapper<OpeProductAssembly>()
                 .in(OpeProductAssembly::getProductId,
                         result.stream().map(ProductWaitInWhItemResult::getProductId).collect(Collectors.toList()))
-                .eq(OpeProductAssembly::getInwhStatus, Boolean.TRUE));
+                .eq(OpeProductAssembly::getInwhStatus, Boolean.FALSE));
         if (CollectionUtils.isEmpty(opeProductAssemblyList)){
             return PageResult.create(enter,count, result);
         }
@@ -560,7 +561,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         //查询对应的质检记录
         QueryWrapper<OpeAssemblyBQc> opeAssemblyBQcQueryWrapper = new QueryWrapper<>();
         opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_ASSEMBLY_B_ID, enter.getId());
-        opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_STATUS, AssemblyStatusEnums.QC_PASSED.getValue());
+        opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_STATUS, QcStatusEnums.PASS.getValue());
         OpeAssemblyBQc opeAssemblyBQc = opeAssemblyBQcService.getOne(opeAssemblyBQcQueryWrapper);
 
         //抛质检记录为空异常

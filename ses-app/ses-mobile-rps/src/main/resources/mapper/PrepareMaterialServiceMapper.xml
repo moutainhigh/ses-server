@@ -97,12 +97,33 @@
     <select id="queryStockBillBySourceTypeId"
             resultType="com.redescooter.ses.mobile.rps.vo.bo.QueryStockBillDto">
         select stock.materiel_product_id as partId,
-               stockBill.id              as stockBillId,
-               stockBill.source_type     as sourceType,
-               stock.id                  as stockId
+        stockBill.id as stockBillId,
+        stockBill.source_type as sourceType,
+        stock.id as stockId
         from ope_stock_bill stockBill
-                 inner join ope_stock stock on stockBill.stock_id = stock.id
+        inner join ope_stock stock on stockBill.stock_id = stock.id
         where stockBill.source_type = #{value}
-          and stockBill.source_id = #{id};
+        and stockBill.source_id = #{id};
+    </select>
+
+    <select id="queryStockProductPartSerialNList" resultType="com.redescooter.ses.mobile.rps.dm.OpeStockProdPart">
+        select part.*
+        from ope_stock_prod_part part
+        left join ope_stock_bill bill on part.out_stock_bill_id = bill.id and bill.dr=0 and bill.dr=0
+        left join ope_assembly_order asso on asso.id=bill.source_id and asso.dr=0
+        where part.dr=0
+        and part.status=3
+        and bill.source_type=3
+        and part.id=#{id}
+    </select>
+    <select id="queryStockPurchasSerialNList" resultType="com.redescooter.ses.mobile.rps.dm.OpeStockPurchas">
+        select part.*
+        from ope_stock_purchas part
+        left join ope_stock_bill bill on part.out_stock_bill_id = bill.id and bill.dr=0 and bill.dr=0
+        left join ope_allocate allocate on allocate.id=bill.source_id and allocate.dr=0
+        where part.dr=0
+        and part.status=3
+        and bill.source_type=2
+        and part.id=#{id}
     </select>
 </mapper>

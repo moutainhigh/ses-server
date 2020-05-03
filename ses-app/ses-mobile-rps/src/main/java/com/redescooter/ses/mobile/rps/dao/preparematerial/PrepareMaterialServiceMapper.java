@@ -1,16 +1,12 @@
 package com.redescooter.ses.mobile.rps.dao.preparematerial;
 
 import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.mobile.rps.dm.OpeStockBill;
+import com.redescooter.ses.mobile.rps.dm.OpeStockProdPart;
+import com.redescooter.ses.mobile.rps.dm.OpeStockPurchas;
 import com.redescooter.ses.mobile.rps.vo.bo.QueryStockBillDto;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -96,4 +92,20 @@ public interface PrepareMaterialServiceMapper {
      * @return
      */
     List<QueryStockBillDto> queryStockBillBySourceTypeId(@Param("id") Long id, @Param("value") String value);
+
+    /**
+     * 组装备料序列号
+     * 
+     * @param id
+     * @return
+     */
+    List<OpeStockProdPart> queryStockProductPartSerialNList(Long id);
+
+    /**
+     * 调拨备料序列号
+     * 
+     * @param id
+     * @return
+     */
+    List<OpeStockPurchas> queryStockPurchasSerialNList(Long id);
 }

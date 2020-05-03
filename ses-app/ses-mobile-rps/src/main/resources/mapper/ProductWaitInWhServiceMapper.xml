@@ -25,6 +25,7 @@
             resultType="com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhItemResult">
         select assemblyB.id as id,
         product.en_name as productName,
+        product.product_number as productN,
         product.id as productId,
         assemblyB.in_wait_wh_qty as productNum,
         3 as sourceType
