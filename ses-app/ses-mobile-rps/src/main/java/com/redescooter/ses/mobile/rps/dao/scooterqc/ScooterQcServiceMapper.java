@@ -13,6 +13,4 @@ public interface ScooterQcServiceMapper {
     int scooterQcListCount();
 
     int partListByIdCount();
-
-    int scooterQcItemCount();
 }

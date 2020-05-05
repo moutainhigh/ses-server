@@ -30,6 +30,9 @@ public class ProductFormulaResult extends GeneralResult {
     @ApiModelProperty(value = "部件Id")
     private Long partId;
 
+    @ApiModelProperty(value = "产品质检方式")
+    private Boolean idClass;
+
     @ApiModelProperty(value = "部件名称")
     private String partCnName;
 

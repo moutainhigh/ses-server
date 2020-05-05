@@ -233,7 +233,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             List<OpeStockPurchas> stockPurchasList =
                     opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
                             .in(OpeStockPurchas::getPartId, resultList.stream().map(PrepareMaterialDetailResult::getPartId).collect(Collectors.toList()))
-                    .eq(OpeStockPurchas::getStatus,StockProductPartStatusEnums.OUT_WH.getValue()));
+                    .eq(OpeStockPurchas::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue()));
             if (CollectionUtils.isEmpty(stockPurchasList)){
                 return PageResult.create(enter, count, resultList);
             }
@@ -242,7 +242,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             resultList.forEach(item->{
                 List<String> serialList = Lists.newArrayList();
                 stockPurchasList.forEach(stock->{
-                    if(item.getPartId().equals(stock.getStatus())){
+                    if (item.getPartId().equals(stock.getPartId())) {
                         serialList.add(stock.getSerialNumber());
                     }
                 });
@@ -271,13 +271,13 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             //查询序列号
             List<OpeStockProdPart> opeStockProdPartList = opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>()
                     .in(OpeStockProdPart::getPartId,resultList.stream().map(PrepareMaterialDetailResult::getPartId).collect(Collectors.toList()))
-                    .eq(OpeStockProdPart::getStatus, StockProductPartStatusEnums.OUT_WH.getValue()));
+                        .eq(OpeStockProdPart::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue()));
 
             //封装 序列号
             resultList.forEach(item->{
                 List<String> serialList = Lists.newArrayList();
                 opeStockProdPartList.forEach(stock->{
-                    if(item.getPartId().equals(stock.getStatus())){
+                    if (item.getPartId().equals(stock.getPartId())) {
                         serialList.add(stock.getSerialNumber());
                     }
                 });

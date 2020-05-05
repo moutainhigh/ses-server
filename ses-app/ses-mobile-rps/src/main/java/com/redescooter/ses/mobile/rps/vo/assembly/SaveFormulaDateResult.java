@@ -1,15 +1,11 @@
 package com.redescooter.ses.mobile.rps.vo.assembly;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 import java.util.Date;
-
-import io.swagger.annotations.*;
 
 /**
  * @ClassName:SaveFormulaDateResult

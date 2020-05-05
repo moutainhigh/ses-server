@@ -12,13 +12,4 @@
         select count(*)
         from ope_assembly_b_order
     </select>
-
-    <select id="scooterQcItemCount" resultType="int">
-        select count(*)
-        from ope_assembly_b_order ob
-        inner join ope_assembly_order o
-        on ob.assembly_id = o.id
-    </select>
-
-
 </mapper>

@@ -190,12 +190,12 @@ public class AssemblyController {
     public Response<GeneralResult> startPrepare(@ModelAttribute @ApiParam("请求参数") StartPrepareEnter enter) {
         return new Response<>(assemblyService.startPrepare(enter));
     }
-
-    @PostMapping(value = "/startAssembly")
-    @ApiOperation(value = "开始组装单", response = GeneralResult.class)
-    public Response<GeneralResult> startAssembly(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(assemblyService.startAssembly(enter));
-    }
+//
+//    @PostMapping(value = "/startAssembly")
+//    @ApiOperation(value = "开始组装单", response = GeneralResult.class)
+//    public Response<GeneralResult> startAssembly(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(assemblyService.startAssembly(enter));
+//    }
 //
 //    @PostMapping(value = "/startQc")
 //    @ApiOperation(value = "开始组装单质检", response = GeneralResult.class)
