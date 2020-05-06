@@ -207,14 +207,23 @@
     </select>
     <select id="scooterCustomerResult"
             resultType="com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult">
-        select id as  id, customer_first_name as customerName,
-        customer_type as customerType,industry_type as industryType,
-        email as email,scooter_quantity as scooterQuantity
-         from ope_customer where dr=0 and status=2
+        select id                  as id,
+               customer_first_name as customerName,
+               customer_type       as customerType,
+               industry_type       as industryType,
+               email               as email,
+               scooter_quantity    as scooterQuantity,
+               company_name        as companyName
+        from ope_customer
+        where dr = 0
+          and status = 2
     </select>
     <select id="scooterCustomerCount"
             resultType="int">
             select count(*)
-         from ope_customer where dr=0 and status=2  order by created_time desc
+            from ope_customer
+            where dr = 0
+              and status = 2
+            order by created_time desc
     </select>
 </mapper>

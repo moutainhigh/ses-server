@@ -823,14 +823,19 @@ public class BomRosServiceImpl implements BomRosService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
+        //质检结果排序校验
+        int sequence = 0;
+
         //入参校验
-        qcResultEnterMap.forEach((key, value) -> {
+        for (Map.Entry<QcItemTemplateEnter, List<QcResultEnter>> entry : qcResultEnterMap.entrySet()) {
+            QcItemTemplateEnter key = entry.getKey();
+            List<QcResultEnter> value = entry.getValue();
             //质检项校验
             if (StringUtils.isBlank(key.getQcItemName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getMessage());
             }
 
-            value.forEach(item -> {
+            for (QcResultEnter item : value) {
                 if (StringUtils.isBlank(item.getResult())) {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getMessage());
                 }
@@ -842,8 +847,17 @@ public class BomRosServiceImpl implements BomRosService {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(),
                             ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
                 }
-            });
-        });
+
+                //结果集 排序校验
+                if (sequence == 0) {
+                    sequence = item.getResultSequence();
+                } else {
+                    if (!item.getResultSequence().equals(sequence + 1)) {
+                        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                    }
+                }
+            }
+        }
 
         //商品验证
         OpePartsProduct opePartsProduct = opePartsProductService.getById(enter.getId());
@@ -859,7 +873,7 @@ public class BomRosServiceImpl implements BomRosService {
 
         }
         //质检项结果集数据保存
-        if (CollectionUtils.isNotEmpty(saveOpeProductQcTemplateBList)){
+        if (CollectionUtils.isNotEmpty(saveOpeProductQcTemplateBList)) {
             opeProductQcTemplateBService.saveOrUpdateBatch(saveOpeProductQcTemplateBList);
         }
         return new GeneralResult(enter.getRequestId());
@@ -966,8 +980,8 @@ public class BomRosServiceImpl implements BomRosService {
         //质检项 结果集数量校验
         for (QcItemTemplateEnter qcItemTemplateEnter : qcResultEnterMap.keySet()) {
             int passResult = (int) qcResultEnterMap.get(qcItemTemplateEnter).stream().filter(QcResultEnter::getPassFlag).count();
-            if (passResult!=1){
-                throw new SesWebRosException(ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getCode(),ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
+            if (passResult != 1) {
+                throw new SesWebRosException(ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getCode(), ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
             }
         }
 
@@ -1204,8 +1218,8 @@ public class BomRosServiceImpl implements BomRosService {
                     count++;
                 }
             }
-            if (count!=1){
-                throw new SesWebRosException(ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getCode(),ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
+            if (count != 1) {
+                throw new SesWebRosException(ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getCode(), ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
             }
         }
 
@@ -1305,7 +1319,10 @@ public class BomRosServiceImpl implements BomRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getMessage());
             }
 
-            value.forEach(item -> {
+
+            // 结果集排序校验（原因：会引发 RPS 模板数据展示问题）
+            int sequence = 0;
+            for (QcResultEnter item : value) {
                 if (StringUtils.isBlank(item.getResult())) {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getMessage());
                 }
@@ -1317,7 +1334,16 @@ public class BomRosServiceImpl implements BomRosService {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(),
                             ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
                 }
-            });
+
+                //结果集校验  排序校验
+                if (sequence == 0) {
+                    sequence = item.getResultSequence();
+                } else {
+                    if (!item.getResultSequence().equals(sequence + 1)) {
+                        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                    }
+                }
+            }
         });
 
         //部品验证

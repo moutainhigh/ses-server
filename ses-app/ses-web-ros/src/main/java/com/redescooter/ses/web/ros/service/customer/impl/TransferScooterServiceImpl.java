@@ -10,7 +10,7 @@ import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
-import com.redescooter.ses.api.common.enums.production.wh.StockItemStatusEnums;
+import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
@@ -119,7 +119,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         //查询可分配的整车列表
         QueryWrapper<OpeStockProdProduct> opeStockProdProductQueryWrapper = new QueryWrapper<>();
         opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_DR, 0);
-        opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_STATUS, StockItemStatusEnums.AVAILABLE.getValue());
+        opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_STATUS, StockProductPartStatusEnums.AVAILABLE.getValue());
         List<OpeStockProdProduct> opeStockProdProductList =
                 opeStockProdProductService.list(opeStockProdProductQueryWrapper);
         //可分配的整车列表为空
@@ -191,7 +191,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         }
         //修改状态
         opeStockProdProductList.forEach(item -> {
-            item.setStatus(StockItemStatusEnums.OUT_OF_STOCK.getValue());
+            item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
             item.setUpdatedBy(enter.getUserId());
             item.setUpdatedTime(new Date());
         });

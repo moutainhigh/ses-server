@@ -31,6 +31,9 @@ public class ScooterCustomerResult extends GeneralResult {
     @ApiModelProperty(value = "客户行业")
     private String industryType;
     @ApiModelProperty(value = "车辆数量")
-    private String  scooterQuantity;
+    private String scooterQuantity;
+    @ApiModelProperty(value = "公司名称")
+    private String companyName;
+
 
 }
