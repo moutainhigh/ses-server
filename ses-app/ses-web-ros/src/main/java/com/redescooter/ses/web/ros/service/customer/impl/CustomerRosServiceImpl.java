@@ -202,6 +202,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotBlank(enter.getRemark())) {
             saveVo.setMemo(enter.getRemark());
         }
+        saveVo.setAssignationScooterQty(0);
         saveVo.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
         saveVo.setCreatedBy(enter.getUserId());
         saveVo.setCreatedTime(new Date());

@@ -18,6 +18,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
+import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.hub.service.corporate.CorporateScooterService;
@@ -174,8 +175,37 @@ public class TransferScooterServiceImpl implements TransferScooterService {
             throw new SesWebRosException(ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getCode(),
                     ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getMessage());
         }
-        if (opeCustomer.getScooterQuantity() < transferScooterListEnterList.size()) {
-            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getMessage());
+
+        //验证前端输入的车辆数量
+        if (opeCustomer.getAssignationScooterQty() != null && opeCustomer.getAssignationScooterQty() != 0) {
+            if (opeCustomer.getAssignationScooterQty() < transferScooterListEnterList.size()) {
+                throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getMessage());
+            }
+        }
+        //验证可以已分配的车辆数量
+        if (opeCustomer.getAssignationScooterQty() != null && opeCustomer.getAssignationScooterQty().equals(0)) {
+            if (opeCustomer.getScooterQuantity() < transferScooterListEnterList.size()) {
+                throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getMessage());
+            }
+        }
+
+        //客户采购的车辆 已完成分配数量 无需分配
+        if (opeCustomer.getAssignationScooterQty().equals(opeCustomer.getScooterQuantity())) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_IS_NOT_NEED_ALLOCATION_SCOOTER.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_NEED_ALLOCATION_SCOOTER.getMessage());
+        }
+
+        //校验车牌号是否已经存在
+        Set<String> scooterPlates = new HashSet<>();
+        transferScooterListEnterList.forEach(item -> {
+            if (scooterPlates.contains(item.getNumberPlate())) {
+                throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_PLATES_NOT_REPEATABLE.getCode(), ExceptionCodeEnums.SCOOTER_PLATES_NOT_REPEATABLE.getMessage());
+            }
+            scooterPlates.add(item.getNumberPlate());
+        });
+        //查询车辆基本信息
+        List<BaseScooterResult> baseScooterResultList = scooterService.scooterInforByPlates(new ArrayList<>(scooterPlates));
+        if (CollectionUtils.isNotEmpty(baseScooterResultList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_IS_ALREADY_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_ALREADY_EXIST.getMessage());
         }
 
         //验证库存信息
@@ -191,6 +221,9 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         }
         //修改状态
         opeStockProdProductList.forEach(item -> {
+            if (!item.getStatus().equals(StockProductPartStatusEnums.AVAILABLE.getValue())) {
+                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+            }
             item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
             item.setUpdatedBy(enter.getUserId());
             item.setUpdatedTime(new Date());
@@ -208,6 +241,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
             } else {
                 stockBillMap.put(item.getStockId(), 1);
             }
+
         });
 
         stockBillMap.forEach((key, value) -> {
@@ -226,13 +260,23 @@ public class TransferScooterServiceImpl implements TransferScooterService {
             item.setUpdatedTime(new Date());
         });
 
+        // 维护客户表中 客户的车辆分配数量的字段
+        if (opeCustomer.getScooterQuantity() != null && opeCustomer.getScooterQuantity() != 0) {
+            opeCustomer.setAssignationScooterQty(opeCustomer.getAssignationScooterQty() + Long.valueOf(stockBillMap.values().stream().count()).intValue());
+        } else {
+            opeCustomer.setAssignationScooterQty(Long.valueOf(stockBillMap.values().stream().count()).intValue());
+        }
+        opeCustomer.setUpdatedBy(enter.getUserId());
+        opeCustomer.setUpdatedTime(new Date());
+        opeCustomerService.updateById(opeCustomer);
+
         //查询客户的账号信息
         QueryAccountResult queryAccountResult = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
 
         //车辆信息保存Scooter 库
         List<BaseScooterEnter> savBaseScooterEnterList = Lists.newArrayList();
         transferScooterListEnterList.forEach(item -> {
-            BaseScooterEnter baseScooterEnter = buildScooter(item);
+            BaseScooterEnter baseScooterEnter = buildScooter(item, opeStockProdProductList);
             BeanUtils.copyProperties(enter, baseScooterEnter);
             savBaseScooterEnterList.add(baseScooterEnter);
         });
@@ -245,22 +289,23 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
             transferScooterListEnterList.forEach(item -> {
                 HubSaveScooterEnter scooterEnter = buildHubSaveScooterEnterSingle(enter, item);
+                BeanUtils.copyProperties(enter, scooterEnter);
                 scooterEnter.setUserId(queryAccountResult.getId());
                 scooterEnter.setTenantId(queryAccountResult.getTenantId());
-                BeanUtils.copyProperties(enter, scooterEnter);
                 saveScooterEnterList.add(scooterEnter);
             });
-            cusotmerScooterService.saveScooter(saveScooterEnterList);
+            corporateScooterService.saveScooter(saveScooterEnterList);
         }
         //将数据 保存到 customer、corporate 数据库
         if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
             transferScooterListEnterList.forEach(item -> {
                 HubSaveScooterEnter scooterEnter = buildHubSaveScooterEnterSingle(enter, item);
-                scooterEnter.setUserId(queryAccountResult.getId());
                 BeanUtils.copyProperties(enter, scooterEnter);
+                scooterEnter.setUserId(queryAccountResult.getId());
+                scooterEnter.setTenantId(queryAccountResult.getTenantId());
                 saveScooterEnterList.add(scooterEnter);
             });
-            corporateScooterService.saveScooter(saveScooterEnterList);
+            cusotmerScooterService.saveScooter(saveScooterEnterList);
         }
 
         //将数据存储到Scooter库
@@ -314,10 +359,16 @@ public class TransferScooterServiceImpl implements TransferScooterService {
                 .build();
     }
 
-    private BaseScooterEnter buildScooter(TransferScooterListEnter item) {
+    private BaseScooterEnter buildScooter(TransferScooterListEnter item, Collection<OpeStockProdProduct> opeStockProdProductList) {
+        OpeStockProdProduct opeStockProdProduct = null;
+        for (OpeStockProdProduct product : opeStockProdProductList) {
+            if (item.getId().equals(product.getId())) {
+                opeStockProdProduct = product;
+            }
+        }
         return BaseScooterEnter.builder()
                 .id(item.getId())
-                .scooterNo(RandomUtil.randomString(8))
+                .scooterNo(opeStockProdProduct.getSerialNumber())
                 .status(ScooterLockStatusEnums.LOCK.getValue())
                 .availableStatus(ScooterStatusEnums.AVAILABLE.getValue())
                 .boxStatus(ScooterLockStatusEnums.LOCK.getValue())

@@ -76,7 +76,7 @@ public class HubCustomerScooterServiceImpl implements CusotmerScooterService {
                             .id(idAppService.getId(SequenceName.CON_USER_SCOOTER))
                             .dr(0)
                             .userId(item.getUserId())
-                            .tenantId(0L)
+                            .tenantId(item.getTenantId())
                             .scooterId(item.getScooterId())
                             .beginTime(new Date())
                             .endTime(null)

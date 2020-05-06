@@ -38,4 +38,12 @@ public interface ScooterService {
      * @return
      */
     GeneralResult updateStatus(UpdateStatusEnter enter);
+
+    /**
+     * 根据车牌号查询车辆信息
+     *
+     * @param enter
+     * @return
+     */
+    List<BaseScooterResult> scooterInforByPlates(List<String> enter);
 }

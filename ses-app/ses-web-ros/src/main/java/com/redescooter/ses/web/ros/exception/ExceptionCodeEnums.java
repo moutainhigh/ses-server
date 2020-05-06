@@ -250,6 +250,12 @@ public enum ExceptionCodeEnums {
     ASSEMBLY_QC_ITEM_IS_NOT_EXIST(10117, "质检条目不存在"),
 
     ASSEMBLY_QC_RESULT_IS_NOT_EXIST(10118, "直接结果不存在"),
+
+    SCOOTER_PLATES_NOT_REPEATABLE(10119, "车牌号不可重复"),
+
+    SCOOTER_IS_ALREADY_EXIST(10120, "车牌号已经存在"),
+
+    CUSTOMER_IS_NOT_NEED_ALLOCATION_SCOOTER(10121,"客户无需分配车辆"),
     ;
 
 

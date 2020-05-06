@@ -14,4 +14,12 @@ import java.util.List;
 public interface ScooterServiceMapper {
 
     List<BaseScooterResult> scooterInfor(List<Long> enter);
+
+    /**
+     * 根据车牌号查询车辆信息
+     *
+     * @param enter
+     * @return
+     */
+    List<BaseScooterResult> scooterInforByplates(List<String> enter);
 }

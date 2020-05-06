@@ -34,6 +34,7 @@
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="memo" jdbcType="VARCHAR" property="memo" />
     <result column="scooter_quantity" jdbcType="INTEGER" property="scooterQuantity" />
+    <result column="assignation_scooter_qty" jdbcType="INTEGER" property="assignationScooterQty" />
     <result column="certificate_type" jdbcType="VARCHAR" property="certificateType" />
     <result column="certificate_positive_annex" jdbcType="VARCHAR" property="certificatePositiveAnnex" />
     <result column="certificate_negative_annex" jdbcType="VARCHAR" property="certificateNegativeAnnex" />
@@ -59,10 +60,10 @@
     customer_code, customer_first_name, customer_last_name, customer_full_name, company_name, 
     picture, customer_source, customer_type, industry_type, address, place_id, longitude, 
     latitude, contact_first_name, contact_last_name, contact_full_name, telephone, email, 
-    memo, scooter_quantity, certificate_type, certificate_positive_annex, certificate_negative_annex, 
-    business_license_num, business_license_annex, invoice_num, invoice_annex, contract_annex, 
-    account_flag, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-    def5, def6
+    memo, scooter_quantity, assignation_scooter_qty, certificate_type, certificate_positive_annex, 
+    certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+    invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -213,6 +214,11 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.scooterQuantity,jdbcType=INTEGER}
         </foreach>
       </trim>
+      <trim prefix="assignation_scooter_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.assignationScooterQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
       <trim prefix="certificate_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=VARCHAR}
@@ -316,10 +322,10 @@
       customer_code, customer_first_name, customer_last_name, customer_full_name, company_name, 
       picture, customer_source, customer_type, industry_type, address, place_id, longitude, 
       latitude, contact_first_name, contact_last_name, contact_full_name, telephone, 
-      email, memo, scooter_quantity, certificate_type, certificate_positive_annex, certificate_negative_annex, 
-      business_license_num, business_license_annex, invoice_num, invoice_annex, contract_annex, 
-      account_flag, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def5, def6)
+      email, memo, scooter_quantity, assignation_scooter_qty, certificate_type, certificate_positive_annex, 
+      certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+      invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
@@ -332,10 +338,11 @@
         #{item.placeId,jdbcType=VARCHAR}, #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL}, 
         #{item.contactFirstName,jdbcType=VARCHAR}, #{item.contactLastName,jdbcType=VARCHAR}, 
         #{item.contactFullName,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 
-        #{item.memo,jdbcType=VARCHAR}, #{item.scooterQuantity,jdbcType=INTEGER}, #{item.certificateType,jdbcType=VARCHAR}, 
-        #{item.certificatePositiveAnnex,jdbcType=VARCHAR}, #{item.certificateNegativeAnnex,jdbcType=VARCHAR}, 
-        #{item.businessLicenseNum,jdbcType=VARCHAR}, #{item.businessLicenseAnnex,jdbcType=VARCHAR}, 
-        #{item.invoiceNum,jdbcType=VARCHAR}, #{item.invoiceAnnex,jdbcType=VARCHAR}, #{item.contractAnnex,jdbcType=VARCHAR}, 
+        #{item.memo,jdbcType=VARCHAR}, #{item.scooterQuantity,jdbcType=INTEGER}, #{item.assignationScooterQty,jdbcType=INTEGER}, 
+        #{item.certificateType,jdbcType=VARCHAR}, #{item.certificatePositiveAnnex,jdbcType=VARCHAR}, 
+        #{item.certificateNegativeAnnex,jdbcType=VARCHAR}, #{item.businessLicenseNum,jdbcType=VARCHAR}, 
+        #{item.businessLicenseAnnex,jdbcType=VARCHAR}, #{item.invoiceNum,jdbcType=VARCHAR}, 
+        #{item.invoiceAnnex,jdbcType=VARCHAR}, #{item.contractAnnex,jdbcType=VARCHAR}, 
         #{item.accountFlag,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
         #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
         #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
@@ -349,10 +356,10 @@
       customer_code, customer_first_name, customer_last_name, customer_full_name, company_name, 
       picture, customer_source, customer_type, industry_type, address, place_id, longitude, 
       latitude, contact_first_name, contact_last_name, contact_full_name, telephone, 
-      email, memo, scooter_quantity, certificate_type, certificate_positive_annex, certificate_negative_annex, 
-      business_license_num, business_license_annex, invoice_num, invoice_annex, contract_annex, 
-      account_flag, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def5, def6)
+      email, memo, scooter_quantity, assignation_scooter_qty, certificate_type, certificate_positive_annex, 
+      certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+      invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{timeZone,jdbcType=VARCHAR}, 
       #{country,jdbcType=BIGINT}, #{countryCode,jdbcType=VARCHAR}, #{city,jdbcType=BIGINT}, 
@@ -363,14 +370,14 @@
       #{address,jdbcType=VARCHAR}, #{placeId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, 
       #{latitude,jdbcType=DECIMAL}, #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR}, 
       #{contactFullName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
-      #{memo,jdbcType=VARCHAR}, #{scooterQuantity,jdbcType=INTEGER}, #{certificateType,jdbcType=VARCHAR}, 
-      #{certificatePositiveAnnex,jdbcType=VARCHAR}, #{certificateNegativeAnnex,jdbcType=VARCHAR}, 
-      #{businessLicenseNum,jdbcType=VARCHAR}, #{businessLicenseAnnex,jdbcType=VARCHAR}, 
-      #{invoiceNum,jdbcType=VARCHAR}, #{invoiceAnnex,jdbcType=VARCHAR}, #{contractAnnex,jdbcType=VARCHAR}, 
-      #{accountFlag,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
-      )
+      #{memo,jdbcType=VARCHAR}, #{scooterQuantity,jdbcType=INTEGER}, #{assignationScooterQty,jdbcType=INTEGER}, 
+      #{certificateType,jdbcType=VARCHAR}, #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
+      #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{businessLicenseNum,jdbcType=VARCHAR}, 
+      #{businessLicenseAnnex,jdbcType=VARCHAR}, #{invoiceNum,jdbcType=VARCHAR}, #{invoiceAnnex,jdbcType=VARCHAR}, 
+      #{contractAnnex,jdbcType=VARCHAR}, #{accountFlag,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -402,6 +409,7 @@
     email = #{email,jdbcType=VARCHAR}, 
     memo = #{memo,jdbcType=VARCHAR}, 
     scooter_quantity = #{scooterQuantity,jdbcType=INTEGER}, 
+    assignation_scooter_qty = #{assignationScooterQty,jdbcType=INTEGER}, 
     certificate_type = #{certificateType,jdbcType=VARCHAR}, 
     certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
     certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR}, 
@@ -514,6 +522,9 @@
       </if>
       <if test="scooterQuantity != null">
         scooter_quantity,
+      </if>
+      <if test="assignationScooterQty != null">
+        assignation_scooter_qty,
       </if>
       <if test="certificateType != null">
         certificate_type,
@@ -662,6 +673,9 @@
       <if test="scooterQuantity != null">
         #{scooterQuantity,jdbcType=INTEGER},
       </if>
+      <if test="assignationScooterQty != null">
+        #{assignationScooterQty,jdbcType=INTEGER},
+      </if>
       <if test="certificateType != null">
         #{certificateType,jdbcType=VARCHAR},
       </if>
@@ -808,6 +822,9 @@
       </if>
       <if test="scooterQuantity != null">
         scooter_quantity = #{scooterQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="assignationScooterQty != null">
+        assignation_scooter_qty = #{assignationScooterQty,jdbcType=INTEGER},
       </if>
       <if test="certificateType != null">
         certificate_type = #{certificateType,jdbcType=VARCHAR},
