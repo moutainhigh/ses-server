@@ -14,6 +14,7 @@ import com.redescooter.ses.mobile.rps.dao.assembly.AssemblyServiceMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
+import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.assembly.AssemblyService;
 import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssembiyOrderTraceService;
@@ -63,6 +64,9 @@ public class AssemblyServiceImpl implements AssemblyService {
 
     @Autowired
     private OpeAssembiyOrderTraceService opeAssembiyOrderTraceService;
+
+    @Autowired
+    private BussinessNumberService bussinessNumberService;
 
     @Reference
     private IdAppService idAppService;
@@ -215,6 +219,11 @@ public class AssemblyServiceImpl implements AssemblyService {
             this.saveNode(saveNodeEnter);
         }
 
+        IdEnter idEnter = new IdEnter();
+        BeanUtils.copyProperties(enter,idEnter);
+        idEnter.setId(1L);
+        String productSerialN = bussinessNumberService.productSerialN(idEnter);
+
         //整车组装记录
         OpeProductAssembly opeProductAssembly = OpeProductAssembly.builder()
                 .id(idAppService.getId(SequenceName.OPE_PRODUCT_ASSEMBLY))
@@ -222,7 +231,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .productId(opeAssemblyBOrder.getProductId())
                 .assemblyBId(opeAssemblyBOrder.getId())
                 .assemblyId(opeAssemblyBOrder.getAssemblyId())
-                .productSerialNum(RandomUtil.BASE_CHAR_NUMBER)
+                .productSerialNum(productSerialN)
                 .productName(partsProduct.getCnName())
                 .productSerialNum(RandomUtil.BASE_CHAR)
                 .productType(partsProduct.getProductType().toString())

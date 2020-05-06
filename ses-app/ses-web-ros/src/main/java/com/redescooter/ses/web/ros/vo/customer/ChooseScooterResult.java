@@ -28,5 +28,8 @@ public class ChooseScooterResult extends GeneralResult {
     @ApiModelProperty(value = "序列号")
     private String batchNum;
 
+    //todo 等前端调试好需要删除
+    @ApiModelProperty(value = "车牌号")
+    private String numberPlate;
 
 }

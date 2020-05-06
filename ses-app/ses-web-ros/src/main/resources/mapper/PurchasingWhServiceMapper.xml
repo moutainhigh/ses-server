@@ -5,6 +5,7 @@
     <sql id="wher_availableList">
         where whse_id = #{whseId}
         and stock.dr=0
+        and stock.available_total <![CDATA[ > ]]>  0
         <if test="enter.type != null and enter.type != ''">
             and part.parts_type =#{enter.type}
         </if>

@@ -84,6 +84,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         OpeWhse opeWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.PURCHAS.getValue())).get(0);
         QueryWrapper<OpeStock> availableWrapper = new QueryWrapper<>();
         availableWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
+        availableWrapper.gt(OpeStock.COL_AVAILABLE_TOTAL,0);
         int availableCount = opeStockService.count(availableWrapper);
         map.put(PurchasingWhTypeEnums.AVAILABLE.getValue(), availableCount);
 
