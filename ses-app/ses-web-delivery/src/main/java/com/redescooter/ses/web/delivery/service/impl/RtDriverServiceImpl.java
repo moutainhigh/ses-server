@@ -70,6 +70,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -130,6 +132,8 @@ public class RtDriverServiceImpl implements RtDriverService {
     private ScooterService scooterService;
     @Reference
     private TenantBaseService tenantBaseService;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
 
     /**
@@ -153,6 +157,15 @@ public class RtDriverServiceImpl implements RtDriverService {
         }
         enter.setId(driver.getUserId());
         GeneralResult result = accountBaseService.sendEmailActiv(enter);
+
+        //发送消息给MQ====================================================================================================================
+        try {
+            amqpTemplate.convertAndSend("delivery.exchange","delivery.sendemail.again",enter);
+        } catch (AmqpException e) {
+            e.printStackTrace();
+            //抛激活邮箱发送异常
+        }
+
         return result;
     }
 
@@ -262,6 +275,14 @@ public class RtDriverServiceImpl implements RtDriverService {
                 BeanUtils.copyProperties(enter, idEnter);
                 idEnter.setId(driverSave.getUserId());
                 accountBaseService.sendEmailActiv(idEnter);
+
+                //发送消息给MQ====================================================================================================================
+                try {
+                    amqpTemplate.convertAndSend("delivery.exchange","delivery.sendemail.new",idEnter);
+                } catch (AmqpException e) {
+                    e.printStackTrace();
+                    //抛激活邮箱发送异常
+                }
             }
 
             //维护租户的司机数量
@@ -508,7 +529,7 @@ public class RtDriverServiceImpl implements RtDriverService {
 
         List<ListScooterResult> resultList = new ArrayList<>();
         scooterService.scooterInfor(scooterIdList).forEach(scooter -> {
-            Optional.ofNullable(scooter).ifPresent(it->{
+            Optional.ofNullable(scooter).ifPresent(it -> {
                 ListScooterResult scooterResult = ListScooterResult.builder()
                         .id(scooter.getId())
                         .battery(scooter.getBattery())
