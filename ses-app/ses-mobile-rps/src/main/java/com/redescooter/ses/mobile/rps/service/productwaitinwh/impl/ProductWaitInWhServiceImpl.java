@@ -210,7 +210,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         if (enter.getSourceType().equals(SourceTypeEnums.ASSEMBLY.getValue())) {
             return assemblyDetaiList(enter);
         }
-        if(enter.getSourceType().equals(SourceTypeEnums.ALLOCATE.getValue())) {
+        if (enter.getSourceType().equals(SourceTypeEnums.ALLOCATE.getValue())) {
             return allocateDetaiList(enter);
         }
         return null;
@@ -218,19 +218,20 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
     /**
      * 调拨单详情列表
+     *
      * @param enter
      * @return
      */
     @Override
     public PageResult<ProductWaitInWhItemResult> allocateDetaiList(ProductDetailEnter enter) {
         OpeAllocate opeAllocate = opeAllocateService.getById(enter.getId());
-        if (opeAllocate==null){
-            throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+        if (opeAllocate == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
         }
-        if (!org.apache.commons.lang3.StringUtils.equals(opeAllocate.getStatus(),AllocateOrderStatusEnums.ALLOCATE.getValue())){
-            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        if (!org.apache.commons.lang3.StringUtils.equals(opeAllocate.getStatus(), AllocateOrderStatusEnums.ALLOCATE.getValue())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
-        int count = opeAllocateBService.count(new LambdaQueryWrapper<OpeAllocateB>().eq(OpeAllocateB::getAllocateId,enter.getId()));
+        int count = opeAllocateBService.count(new LambdaQueryWrapper<OpeAllocateB>().eq(OpeAllocateB::getAllocateId, enter.getId()));
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
@@ -240,42 +241,43 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         //查询满足条件的序列号
         List<OpeStockPurchas> opeStockPurchasList =
                 opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
-                        .in(OpeStockPurchas::getPartId,result.stream().map(ProductWaitInWhItemResult::getProductId).collect(Collectors.toList()))
-                        .eq(OpeStockPurchas::getStatus,StockProductPartStatusEnums.OUT_WH.getValue()));
-        if(CollectionUtils.isEmpty(opeStockPurchasList)){
-            return PageResult.create(enter,count, result);
+                        .in(OpeStockPurchas::getPartId, result.stream().map(ProductWaitInWhItemResult::getProductId).collect(Collectors.toList()))
+                        .eq(OpeStockPurchas::getStatus, StockProductPartStatusEnums.OUT_WH.getValue()));
+        if (CollectionUtils.isEmpty(opeStockPurchasList)) {
+            return PageResult.create(enter, count, result);
         }
 
         //封装到反残对象中
-        result.forEach(item->{
+        result.forEach(item -> {
             List<String> serialList = Lists.newArrayList();
-            opeStockPurchasList.forEach(stock->{
-                if (item.getProductId().equals(stock.getPartId())){
+            opeStockPurchasList.forEach(stock -> {
+                if (item.getProductId().equals(stock.getPartId())) {
                     serialList.add(stock.getSerialNumber());
                 }
             });
             item.setSerialNumList(serialList);
         });
 
-        return PageResult.create(enter,count, result);
+        return PageResult.create(enter, count, result);
     }
 
 
     /**
      * 组装单详情列表
+     *
      * @param enter
      * @return
      */
     @Override
     public PageResult<ProductWaitInWhItemResult> assemblyDetaiList(ProductDetailEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(enter.getId());
-        if (opeAssemblyOrder==null){
-            throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(),ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
+        if (opeAssemblyOrder == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
         }
-        if (!org.apache.commons.lang3.StringUtils.equals(opeAssemblyOrder.getStatus(),AssemblyStatusEnums.QC_PASSED.getValue())){
-            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        if (!org.apache.commons.lang3.StringUtils.equals(opeAssemblyOrder.getStatus(), AssemblyStatusEnums.QC_PASSED.getValue())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
-        int count=opeAssemblyBOrderService.count(new LambdaQueryWrapper<OpeAssemblyBOrder>().eq(OpeAssemblyBOrder::getAssemblyId,enter.getId()));
+        int count = opeAssemblyBOrderService.count(new LambdaQueryWrapper<OpeAssemblyBOrder>().eq(OpeAssemblyBOrder::getAssemblyId, enter.getId()));
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
@@ -286,22 +288,22 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .in(OpeProductAssembly::getProductId,
                         result.stream().map(ProductWaitInWhItemResult::getProductId).collect(Collectors.toList()))
                 .eq(OpeProductAssembly::getInwhStatus, Boolean.FALSE));
-        if (CollectionUtils.isEmpty(opeProductAssemblyList)){
-            return PageResult.create(enter,count, result);
+        if (CollectionUtils.isEmpty(opeProductAssemblyList)) {
+            return PageResult.create(enter, count, result);
         }
 
         //封装到反残对象中
-        result.forEach(item->{
+        result.forEach(item -> {
             List<String> serialList = Lists.newArrayList();
-            opeProductAssemblyList.forEach(stock->{
-                if (item.getProductId().equals(stock.getProductId())){
+            opeProductAssemblyList.forEach(stock -> {
+                if (item.getProductId().equals(stock.getProductId())) {
                     serialList.add(stock.getProductSerialNum());
                 }
             });
             item.setSerialNumList(serialList);
         });
 
-        return PageResult.create(enter,count, result);
+        return PageResult.create(enter, count, result);
     }
 
 
@@ -344,18 +346,6 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Param [enter]
      **/
     private ProductWaitInWhInfoResult getProductWaitInWhInfoResultFromAllocate(ProductWaitInWhIdItemEnter enter) {
-        //返回结果集
-        ProductWaitInWhInfoResult productWaitInWhInfoResult = null;
-
-        //验证序列号是否存在
-        QueryWrapper<OpeStockPurchas> opeStockPurchasQueryWrapper = new QueryWrapper<>();
-        opeStockPurchasQueryWrapper.eq(OpeStockPurchas.COL_SERIAL_NUMBER, enter.getProductSerialNum());
-        OpeStockPurchas opeStockPurchas = opeStockPurchasService.getOne(opeStockPurchasQueryWrapper);
-
-        //序列号不存在
-        if (StringUtils.isEmpty(opeStockPurchas)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getMessage());
-        }
 
         //查询调拨单子单
         QueryWrapper<OpeAllocateB> opeAllocateBQueryWrapper = new QueryWrapper<>();
@@ -392,9 +382,23 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         opePartsQueryWrapper.eq(OpeParts.COL_ID, opeAllocateB.getPartId());
         OpeParts opeParts = opePartsService.getOne(opePartsQueryWrapper);
 
+
         //部件不存在
         if (StringUtils.isEmpty(opeParts)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
+        //IdClass存在的话验证序列号
+        OpeStockPurchas opeStockPurchas = null;
+        if (opeParts.getIdClass()) {
+            //验证序列号是否存在
+            QueryWrapper<OpeStockPurchas> opeStockPurchasQueryWrapper = new QueryWrapper<>();
+            opeStockPurchasQueryWrapper.eq(OpeStockPurchas.COL_SERIAL_NUMBER, enter.getProductSerialNum());
+            opeStockPurchas = opeStockPurchasService.getOne(opeStockPurchasQueryWrapper);
+            //序列号不存在
+            if (StringUtils.isEmpty(opeStockPurchas)) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getMessage());
+            }
         }
 
         //查找仓库类型
@@ -503,7 +507,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .stockId(opeStock.getId())
                 .partId(opeParts.getId())
                 .lot(opeAllocateBTrace.getBatchNo())
-                .serialNumber(opeStockPurchas.getSerialNumber()) //序列号
+                .serialNumber(opeParts.getIdClass() == true ? opeStockPurchas.getSerialNumber() : null) //序列号
                 .partsNumber(opeParts.getPartsNumber())
                 .inStockBillId(opeStockBill.getId())
                 .outStockBillId(0L)
@@ -546,15 +550,12 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Param [enter]
      **/
     private ProductWaitInWhInfoResult getProductWaitInWhInfoResultFromAssembly(ProductWaitInWhIdItemEnter enter) {
-        //返回结果集
-        ProductWaitInWhInfoResult productWaitInWhInfoResult = null;
 
         //验证序列号是否存在
         QueryWrapper<OpeProductAssembly> opeProductAssemblyQueryWrapper = new QueryWrapper<>();
         opeProductAssemblyQueryWrapper.eq(OpeProductAssembly.COL_PRODUCT_SERIAL_NUM, enter.getProductSerialNum());
         OpeProductAssembly opeProductAssembly = opeProductAssemblyService.getOne(opeProductAssemblyQueryWrapper);
 
-        //序列号不存在
         if (StringUtils.isEmpty(opeProductAssembly)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getMessage());
         }

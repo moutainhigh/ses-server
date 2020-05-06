@@ -38,7 +38,6 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
      * 来料质检 OpePurchasBQc 批次号 id为采购单子表Id
      * 1、来料质检 批次号生成 和 部品号、当前时间 有关
      *
-     *
      * @param enter
      * @return
      */
@@ -69,9 +68,7 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
      * @Author kyle
      * @Description //批次号生成
      * @Date 2020/4/29 15:33
-     * @Param
-     *
-     * 1、来料质检 批次号生成 和 产品型号、当前时间 有关
+     * @Param 1、来料质检 批次号生成 和 产品型号、当前时间 有关
      **/
     @Override
     public String assemblyBatchNo(IdEnter enter) {
@@ -103,5 +100,10 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
     @Override
     public String productSerialN(IdEnter enter) {
         return new StringBuilder().append(enter.getId()).append(RandomUtils.nextInt(10000,999999)).toString();
+
+
+
+
+//        return null;
     }
 }
