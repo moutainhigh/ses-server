@@ -11,6 +11,7 @@ import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyLotTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasLotTraceService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,6 +102,6 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
      */
     @Override
     public String productSerialN(IdEnter enter) {
-        return RandomStringUtils.randomPrint(16);
+        return new StringBuilder().append(enter.getId()).append(RandomUtils.nextInt(10000,999999)).toString();
     }
 }

@@ -22,6 +22,7 @@ import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.mobile.rps.vo.assembly.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
@@ -219,10 +220,6 @@ public class AssemblyServiceImpl implements AssemblyService {
             this.saveNode(saveNodeEnter);
         }
 
-        IdEnter idEnter = new IdEnter();
-        BeanUtils.copyProperties(enter,idEnter);
-        idEnter.setId(1L);
-        String productSerialN = bussinessNumberService.productSerialN(idEnter);
 
         //整车组装记录
         OpeProductAssembly opeProductAssembly = OpeProductAssembly.builder()
@@ -231,7 +228,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .productId(opeAssemblyBOrder.getProductId())
                 .assemblyBId(opeAssemblyBOrder.getId())
                 .assemblyId(opeAssemblyBOrder.getAssemblyId())
-                .productSerialNum(productSerialN)
+//                .productSerialNum(productSerialN)
                 .productName(partsProduct.getCnName())
                 .productSerialNum(RandomUtil.BASE_CHAR)
                 .productType(partsProduct.getProductType().toString())
@@ -245,6 +242,12 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .updatedBy(enter.getUserId())
                 .updatedTime(new Date())
                 .build();
+
+        IdEnter idEnter = new IdEnter();
+        BeanUtils.copyProperties(enter,idEnter);
+        idEnter.setId(opeProductAssembly.getId());
+        String productSerialN = bussinessNumberService.productSerialN(idEnter);
+        opeProductAssembly.setProductSerialNum(productSerialN);
 
         saveFormulaPartListEnterList.forEach(item -> {
             saveProductAssemblyBList.add(

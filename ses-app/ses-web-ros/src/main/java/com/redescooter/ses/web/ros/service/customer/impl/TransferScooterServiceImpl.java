@@ -14,7 +14,9 @@ import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
@@ -32,6 +34,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeStock;
 import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.dm.OpeStockProdProduct;
+import com.redescooter.ses.web.ros.exception.ExceptionCode;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
@@ -40,6 +43,7 @@ import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
 import com.redescooter.ses.web.ros.vo.customer.*;
+import com.redescooter.ses.web.ros.vo.transferscooter.ChooseScooterListResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -116,28 +120,38 @@ public class TransferScooterServiceImpl implements TransferScooterService {
      * @Param [enter]
      */
     @Override
-    public PageResult<ChooseScooterResult> chooseScooterList(PageEnter enter) {
+    public ChooseScooterListResult chooseScooterList(IdEnter enter) {
+        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+
+        int allocateScooterQty = opeCustomer.getScooterQuantity() - opeCustomer.getAssignationScooterQty();
+
         //查询可分配的整车列表
         QueryWrapper<OpeStockProdProduct> opeStockProdProductQueryWrapper = new QueryWrapper<>();
         opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_DR, 0);
         opeStockProdProductQueryWrapper.eq(OpeStockProdProduct.COL_STATUS, StockProductPartStatusEnums.AVAILABLE.getValue());
-        List<OpeStockProdProduct> opeStockProdProductList =
-                opeStockProdProductService.list(opeStockProdProductQueryWrapper);
-        //可分配的整车列表为空
-        if (CollectionUtils.isEmpty(opeStockProdProductList)) {
-            PageResult.createZeroRowResult(enter);
+        List<OpeStockProdProduct> opeStockProdProductList = opeStockProdProductService.list(opeStockProdProductQueryWrapper);
+
+        List<ChooseScooterResult> resultList = Lists.newArrayList();
+        //封装反参
+        if (CollectionUtils.isNotEmpty(opeStockProdProductList)) {
+            opeStockProdProductList.forEach(item -> {
+                resultList.add(
+                        ChooseScooterResult.builder()
+                                .id(item.getId())
+                                .batchNum(item.getLot())
+                                .build()
+                );
+            });
         }
-        //可分配的整车列表
-        List<ChooseScooterResult> chooseScooterList = new ArrayList<>();
-        opeStockProdProductList.forEach(opeStockProdProduct -> {
-            ChooseScooterResult chooseScooterResult = null;
-            chooseScooterList.add(
-                    chooseScooterResult = ChooseScooterResult.builder()
-                            .id(opeStockProdProduct.getId())
-                            .batchNum(opeStockProdProduct.getLot())
-                            .build());
-        });
-        return PageResult.create(enter, opeStockProdProductList.size(), chooseScooterList);
+
+        return ChooseScooterListResult.builder()
+                .allocateScooterQty(CollectionUtils.isEmpty(opeStockProdProductList) == true ? 0 : (allocateScooterQty > opeStockProdProductList.size() ? opeStockProdProductList.size() :
+                        allocateScooterQty))
+                .chooseScooterResultList(resultList)
+                .build();
     }
 
     /**
@@ -165,6 +179,20 @@ public class TransferScooterServiceImpl implements TransferScooterService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                     ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+        //解析车牌号
+        for (TransferScooterListEnter transferScooterListEnter : transferScooterListEnterList) {
+            if (StringUtils.isEmpty(transferScooterListEnter.getNumberPlate())){
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            StringBuilder numberPlate = new StringBuilder();
+            numberPlate.append(numberPlate.substring(0, 2)).
+                    append("-").
+                    append(numberPlate.substring(transferScooterListEnter.getNumberPlate().length() - 2))
+                    .append("-");
+            transferScooterListEnter.setNumberPlate(numberPlate.toString());
+        }
+
+
         //验证客户 状态
         OpeCustomer opeCustomer = opeCustomerService.getById(enter.getId());
         if (opeCustomer == null) {
