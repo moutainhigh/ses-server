@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:32181
+    address: zookeeper://192.168.2.200:42181
 
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
@@ -42,10 +42,10 @@ spring:                                                                         
         - 192.168.2.200:7005
   #rabbitmq配置
   rabbitmq:
-    host: 192.168.2.200
+    host: 127.0.0.1
     port: 5672
-    username: admin
-    password: admin
+    username: guest
+    password: guest
     virtual-host: /
 
   swagger:                                                                                                              #swagger在线文档配置

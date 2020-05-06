@@ -13,6 +13,13 @@
     <name>ses-service-foundation</name>
     <description>Base Server Application Service</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-rabbitmq</artifactId>
+        </dependency>
+    </dependencies>
+
     <!--环境配置-->
     <profiles>
         <profile>

@@ -28,10 +28,10 @@ spring:
         - 192.168.2.200:7005
   #rabbitmq配置
   rabbitmq:
-    host: 192.168.2.200
+    host: 127.0.0.1
     port: 5672
-    username: rede
-    password: alex@redescooter2020
+    username: guest
+    password: guest
     virtual-host: /
 
   # 邮件配置
@@ -45,7 +45,7 @@ spring:
 # DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:32181
+    address: zookeeper://192.168.2.200:42181
 
 
 

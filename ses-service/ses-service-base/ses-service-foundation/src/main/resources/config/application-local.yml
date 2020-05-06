@@ -25,7 +25,14 @@ spring:
         - 192.168.2.200:7003
         - 192.168.2.200:7004
         - 192.168.2.200:7005
+  #rabbitmq配置
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
 ## DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://192.168.2.200:22181
+    address: zookeeper://192.168.2.200:42181

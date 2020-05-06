@@ -1,5 +1,4 @@
 package com.redescooter.ses.service.proxy.mq.producer;
-
 import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
