@@ -418,7 +418,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
             //入库总数+
             opeStock.setIntTotal(opeParts.getIdClass() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
             //剩余库存数+
-            opeStock.setIntTotal(opeParts.getIdClass() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
+            opeStock.setAvailableTotal(opeParts.getIdClass() ? (opeStock.getAvailableTotal() + 1) : (opeStock.getAvailableTotal() + enter.getInWhNum()));
             opeStockService.updateById(opeStock);
         } else {
             //新建库存
@@ -427,6 +427,8 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .dr(0)
                     .intTotal(opeParts.getIdClass() ? 1 : enter.getInWhNum())
                     .outTotal(0)
+                    .wornTotal(0)
+                    .availableTotal(opeParts.getIdClass() ? 1 : enter.getInWhNum())
                     .whseId(opeWhse.getId())
                     .revision(0)
                     .userId(enter.getUserId())
@@ -434,7 +436,6 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .materielProductName(opeParts.getCnName())
                     .materielProductId(opeAllocateB.getPartId())
                     .materielProductType(opeParts.getPartsType())//产品物料类型
-                    .availableTotal(opeParts.getIdClass() ? 1 : enter.getInWhNum())
                     .updatedTime(new Date())
                     .createdTime(new Date())
                     .updatedBy(enter.getUserId())
