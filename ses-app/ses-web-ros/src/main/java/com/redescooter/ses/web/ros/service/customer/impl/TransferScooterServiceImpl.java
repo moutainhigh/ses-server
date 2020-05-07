@@ -169,20 +169,17 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         //解析json 数据
         List<TransferScooterListEnter> transferScooterListEnterList = new ArrayList<>();
         try {
-            transferScooterListEnterList.addAll(JSON.parseArray(enter.getProductListJson(),
-                    TransferScooterListEnter.class));
+            transferScooterListEnterList.addAll(JSON.parseArray(enter.getProductListJson(), TransferScooterListEnter.class));
         } catch (Exception e) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
-                    ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (CollectionUtils.isEmpty(transferScooterListEnterList)) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
-                    ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        //解析车牌号
+        //解析车牌号 合适 AA-001-AA
         for (TransferScooterListEnter transferScooterListEnter : transferScooterListEnterList) {
-            if (StringUtils.isEmpty(transferScooterListEnter.getNumberPlate())){
-                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            if (StringUtils.isEmpty(transferScooterListEnter.getNumberPlate())) {
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
             StringBuilder numberPlate = new StringBuilder();
             numberPlate.append(numberPlate.substring(0, 2)).
