@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.customer.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -108,6 +109,20 @@ public class TransferScooterServiceImpl implements TransferScooterService {
             PageResult.createZeroRowResult(enter);
         }
         List<ScooterCustomerResult> scooterCustomerResults = customerServiceMapper.scooterCustomerResult(enter);
+
+        // 查询是否有库存
+        List<OpeStockProdProduct> opeStockProdProductList = opeStockProdProductService.list(new LambdaQueryWrapper<OpeStockProdProduct>().eq(OpeStockProdProduct::getStatus,
+                StockProductPartStatusEnums.AVAILABLE.getValue()).eq(OpeStockProdProduct::getDr,0));
+        if (CollectionUtils.isEmpty(opeStockProdProductList)){
+            scooterCustomerResults.forEach(item->{
+                item.setHasProductStock(Boolean.FALSE);
+            });
+        }else {
+            scooterCustomerResults.forEach(item->{
+                item.setHasProductStock(Boolean.TRUE);
+            });
+        }
+
         return PageResult.create(enter, count, scooterCustomerResults);
     }
 

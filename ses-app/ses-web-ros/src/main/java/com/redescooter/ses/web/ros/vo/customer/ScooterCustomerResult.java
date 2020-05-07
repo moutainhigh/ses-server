@@ -36,6 +36,8 @@ public class ScooterCustomerResult extends GeneralResult {
     private Integer assignationScooterQty;
     @ApiModelProperty(value = "公司名称")
     private String companyName;
+    @ApiModelProperty(value = "是否存在库存")
+    private Boolean hasProductStock;
 
 
 }

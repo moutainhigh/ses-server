@@ -333,7 +333,6 @@
                    trace.product_qc_template_b_name as qcResultName,
                    trace.picture                    as partQcPicture
             from ope_assembly_qc_trace trace
-                     inner join ope_sys_user_profile profile on profile.sys_user_id = trace.created_by
             where trace.dr = 0
               and trace.assembly_qc_item_id =#{id}
     </select>
