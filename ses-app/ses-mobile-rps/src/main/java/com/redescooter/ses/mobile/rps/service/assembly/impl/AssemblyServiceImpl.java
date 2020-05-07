@@ -244,7 +244,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .build();
 
         IdEnter idEnter = new IdEnter();
-        BeanUtils.copyProperties(enter,idEnter);
+        BeanUtils.copyProperties(enter, idEnter);
         idEnter.setId(opeProductAssembly.getId());
         String productSerialN = bussinessNumberService.productSerialN(idEnter);
         opeProductAssembly.setProductSerialNum(productSerialN);
@@ -284,6 +284,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .createdTime(new Date())
                 .productName(partsProduct.getCnName())
                 .serialNum(opeProductAssembly.getProductSerialNum())
+                .waitAssemblyQty(opeAssemblyBOrder.getAssemblyQty() - opeAssemblyBOrder.getCompleteQty())
                 .build();
     }
 

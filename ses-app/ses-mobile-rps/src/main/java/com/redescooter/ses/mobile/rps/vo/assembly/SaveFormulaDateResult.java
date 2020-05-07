@@ -36,4 +36,7 @@ public class SaveFormulaDateResult extends GeneralResult {
 
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
+
+    @ApiModelProperty(value = "待组装数量")
+    private Integer waitAssemblyQty;
 }
