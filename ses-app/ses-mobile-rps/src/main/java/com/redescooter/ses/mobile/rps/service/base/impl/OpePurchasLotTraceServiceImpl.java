@@ -30,5 +30,12 @@ public class OpePurchasLotTraceServiceImpl extends ServiceImpl<OpePurchasLotTrac
     public int insertOrUpdateSelective(OpePurchasLotTrace record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<OpePurchasLotTrace> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
+
 

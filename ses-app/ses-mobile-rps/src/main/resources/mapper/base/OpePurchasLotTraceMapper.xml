@@ -142,260 +142,154 @@
       #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
-  <insert id="batchInsert" parameterType="map">
+  <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    insert into ope_purchas_lot_trace
-    (id, dr, tenant_id, user_id, purchas_id, quality_inspector_id, batch_no, total_quality_inspected, 
-      pass_count, fail_count, quality_inspection_time, revision, created_by, created_time, 
-      updated_by, updated_time, def1, def2, def3, def5, def6)
-    values
-    <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
-        #{item.userId,jdbcType=BIGINT}, #{item.purchasId,jdbcType=BIGINT}, #{item.qualityInspectorId,jdbcType=BIGINT}, 
-        #{item.batchNo,jdbcType=VARCHAR}, #{item.totalQualityInspected,jdbcType=INTEGER}, 
-        #{item.passCount,jdbcType=INTEGER}, #{item.failCount,jdbcType=INTEGER}, #{item.qualityInspectionTime,jdbcType=TIMESTAMP}, 
-        #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
-        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
-        #{item.def6,jdbcType=DOUBLE})
+    update ope_purchas_lot_trace
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.userId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="purchas_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.purchasId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.purchasId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="quality_inspector_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.qualityInspectorId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.qualityInspectorId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="batch_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.batchNo != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.batchNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="total_quality_inspected = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.totalQualityInspected != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.totalQualityInspected,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="pass_count = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.passCount != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.passCount,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="fail_count = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.failCount != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.failCount,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="quality_inspection_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.qualityInspectionTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.qualityInspectionTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.revision != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
     </foreach>
-  </insert>
-  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpePurchasLotTrace">
-    <!--@mbg.generated-->
-    insert into ope_purchas_lot_trace
-    (id, dr, tenant_id, user_id, purchas_id, quality_inspector_id, batch_no, total_quality_inspected, 
-      pass_count, fail_count, quality_inspection_time, revision, created_by, created_time, 
-      updated_by, updated_time, def1, def2, def3, def5, def6)
-    values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
-      #{purchasId,jdbcType=BIGINT}, #{qualityInspectorId,jdbcType=BIGINT}, #{batchNo,jdbcType=VARCHAR}, 
-      #{totalQualityInspected,jdbcType=INTEGER}, #{passCount,jdbcType=INTEGER}, #{failCount,jdbcType=INTEGER}, 
-      #{qualityInspectionTime,jdbcType=TIMESTAMP}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
-      #{def6,jdbcType=DOUBLE})
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    tenant_id = #{tenantId,jdbcType=BIGINT}, 
-    user_id = #{userId,jdbcType=BIGINT}, 
-    purchas_id = #{purchasId,jdbcType=BIGINT}, 
-    quality_inspector_id = #{qualityInspectorId,jdbcType=BIGINT}, 
-    batch_no = #{batchNo,jdbcType=VARCHAR}, 
-    total_quality_inspected = #{totalQualityInspected,jdbcType=INTEGER}, 
-    pass_count = #{passCount,jdbcType=INTEGER}, 
-    fail_count = #{failCount,jdbcType=INTEGER}, 
-    quality_inspection_time = #{qualityInspectionTime,jdbcType=TIMESTAMP}, 
-    revision = #{revision,jdbcType=INTEGER}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def5 = #{def5,jdbcType=VARCHAR}, 
-    def6 = #{def6,jdbcType=DOUBLE}
-  </insert>
-  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpePurchasLotTrace">
-    <!--@mbg.generated-->
-    insert into ope_purchas_lot_trace
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="dr != null">
-        dr,
-      </if>
-      <if test="tenantId != null">
-        tenant_id,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="purchasId != null">
-        purchas_id,
-      </if>
-      <if test="qualityInspectorId != null">
-        quality_inspector_id,
-      </if>
-      <if test="batchNo != null">
-        batch_no,
-      </if>
-      <if test="totalQualityInspected != null">
-        total_quality_inspected,
-      </if>
-      <if test="passCount != null">
-        pass_count,
-      </if>
-      <if test="failCount != null">
-        fail_count,
-      </if>
-      <if test="qualityInspectionTime != null">
-        quality_inspection_time,
-      </if>
-      <if test="revision != null">
-        revision,
-      </if>
-      <if test="createdBy != null">
-        created_by,
-      </if>
-      <if test="createdTime != null">
-        created_time,
-      </if>
-      <if test="updatedBy != null">
-        updated_by,
-      </if>
-      <if test="updatedTime != null">
-        updated_time,
-      </if>
-      <if test="def1 != null">
-        def1,
-      </if>
-      <if test="def2 != null">
-        def2,
-      </if>
-      <if test="def3 != null">
-        def3,
-      </if>
-      <if test="def5 != null">
-        def5,
-      </if>
-      <if test="def6 != null">
-        def6,
-      </if>
-    </trim>
-    values
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="dr != null">
-        #{dr,jdbcType=INTEGER},
-      </if>
-      <if test="tenantId != null">
-        #{tenantId,jdbcType=BIGINT},
-      </if>
-      <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="purchasId != null">
-        #{purchasId,jdbcType=BIGINT},
-      </if>
-      <if test="qualityInspectorId != null">
-        #{qualityInspectorId,jdbcType=BIGINT},
-      </if>
-      <if test="batchNo != null">
-        #{batchNo,jdbcType=VARCHAR},
-      </if>
-      <if test="totalQualityInspected != null">
-        #{totalQualityInspected,jdbcType=INTEGER},
-      </if>
-      <if test="passCount != null">
-        #{passCount,jdbcType=INTEGER},
-      </if>
-      <if test="failCount != null">
-        #{failCount,jdbcType=INTEGER},
-      </if>
-      <if test="qualityInspectionTime != null">
-        #{qualityInspectionTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="revision != null">
-        #{revision,jdbcType=INTEGER},
-      </if>
-      <if test="createdBy != null">
-        #{createdBy,jdbcType=BIGINT},
-      </if>
-      <if test="createdTime != null">
-        #{createdTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedBy != null">
-        #{updatedBy,jdbcType=BIGINT},
-      </if>
-      <if test="updatedTime != null">
-        #{updatedTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="def1 != null">
-        #{def1,jdbcType=VARCHAR},
-      </if>
-      <if test="def2 != null">
-        #{def2,jdbcType=VARCHAR},
-      </if>
-      <if test="def3 != null">
-        #{def3,jdbcType=VARCHAR},
-      </if>
-      <if test="def5 != null">
-        #{def5,jdbcType=VARCHAR},
-      </if>
-      <if test="def6 != null">
-        #{def6,jdbcType=DOUBLE},
-      </if>
-    </trim>
-    on duplicate key update 
-    <trim suffixOverrides=",">
-      <if test="id != null">
-        id = #{id,jdbcType=BIGINT},
-      </if>
-      <if test="dr != null">
-        dr = #{dr,jdbcType=INTEGER},
-      </if>
-      <if test="tenantId != null">
-        tenant_id = #{tenantId,jdbcType=BIGINT},
-      </if>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="purchasId != null">
-        purchas_id = #{purchasId,jdbcType=BIGINT},
-      </if>
-      <if test="qualityInspectorId != null">
-        quality_inspector_id = #{qualityInspectorId,jdbcType=BIGINT},
-      </if>
-      <if test="batchNo != null">
-        batch_no = #{batchNo,jdbcType=VARCHAR},
-      </if>
-      <if test="totalQualityInspected != null">
-        total_quality_inspected = #{totalQualityInspected,jdbcType=INTEGER},
-      </if>
-      <if test="passCount != null">
-        pass_count = #{passCount,jdbcType=INTEGER},
-      </if>
-      <if test="failCount != null">
-        fail_count = #{failCount,jdbcType=INTEGER},
-      </if>
-      <if test="qualityInspectionTime != null">
-        quality_inspection_time = #{qualityInspectionTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="revision != null">
-        revision = #{revision,jdbcType=INTEGER},
-      </if>
-      <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=BIGINT},
-      </if>
-      <if test="createdTime != null">
-        created_time = #{createdTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=BIGINT},
-      </if>
-      <if test="updatedTime != null">
-        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="def1 != null">
-        def1 = #{def1,jdbcType=VARCHAR},
-      </if>
-      <if test="def2 != null">
-        def2 = #{def2,jdbcType=VARCHAR},
-      </if>
-      <if test="def3 != null">
-        def3 = #{def3,jdbcType=VARCHAR},
-      </if>
-      <if test="def5 != null">
-        def5 = #{def5,jdbcType=VARCHAR},
-      </if>
-      <if test="def6 != null">
-        def6 = #{def6,jdbcType=DOUBLE},
-      </if>
-    </trim>
-  </insert>
+  </update>
 </mapper>

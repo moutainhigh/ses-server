@@ -8,9 +8,9 @@ log:
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://192.168.2.200:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: 1qaz2wsx
+    password: root123
     druid:
       initial-size: 8
       min-idle: 1
