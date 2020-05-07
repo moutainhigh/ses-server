@@ -64,6 +64,11 @@ public class TokenRpsServiceImpl implements TokenRpsService {
     @Override
     public TokenResult login(LoginEnter enter) {
 
+
+        //用户名密码去除空格
+        enter.setLoginName(StringUtils.trim(enter.getLoginName()));
+        enter.setPassword(StringUtils.trim(enter.getPassword()));
+
         QueryWrapper<OpeSysUser> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getLoginName());
         wrapper.eq(OpeSysUser.COL_DR, 0);

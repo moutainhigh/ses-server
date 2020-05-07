@@ -90,6 +90,10 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Override
     public LoginResult login(LoginEnter enter) {
 
+        //用户名密码去除空格
+        enter.setLoginName(StringUtils.trim(enter.getLoginName()));
+        enter.setPassword(StringUtils.trim(enter.getPassword()));
+
         if (enter.getAppId().equals(AppIDEnums.SAAS_WEB.getValue())) {
             // ① PC端登录逻辑
             return signIn(checkDefaultUser(enter), enter);
