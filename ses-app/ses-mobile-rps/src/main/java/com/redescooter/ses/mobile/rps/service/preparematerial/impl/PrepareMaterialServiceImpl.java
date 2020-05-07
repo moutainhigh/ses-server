@@ -233,15 +233,15 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             List<OpeStockPurchas> stockPurchasList =
                     opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
                             .in(OpeStockPurchas::getPartId, resultList.stream().map(PrepareMaterialDetailResult::getPartId).collect(Collectors.toList()))
-                    .eq(OpeStockPurchas::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue()));
-            if (CollectionUtils.isEmpty(stockPurchasList)){
+                            .eq(OpeStockPurchas::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue()));
+            if (CollectionUtils.isEmpty(stockPurchasList)) {
                 return PageResult.create(enter, count, resultList);
             }
 
             //封装 序列号
-            resultList.forEach(item->{
+            resultList.forEach(item -> {
                 List<String> serialList = Lists.newArrayList();
-                stockPurchasList.forEach(stock->{
+                stockPurchasList.forEach(stock -> {
                     if (item.getPartId().equals(stock.getPartId())) {
                         serialList.add(stock.getSerialNumber());
                     }
@@ -270,13 +270,13 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
 
             //查询序列号
             List<OpeStockProdPart> opeStockProdPartList = opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>()
-                    .in(OpeStockProdPart::getPartId,resultList.stream().map(PrepareMaterialDetailResult::getPartId).collect(Collectors.toList()))
-                        .eq(OpeStockProdPart::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue()));
+                    .in(OpeStockProdPart::getPartId, resultList.stream().map(PrepareMaterialDetailResult::getPartId).collect(Collectors.toList()))
+                    .eq(OpeStockProdPart::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue()));
 
             //封装 序列号
-            resultList.forEach(item->{
+            resultList.forEach(item -> {
                 List<String> serialList = Lists.newArrayList();
-                opeStockProdPartList.forEach(stock->{
+                opeStockProdPartList.forEach(stock -> {
                     if (item.getPartId().equals(stock.getPartId())) {
                         serialList.add(stock.getSerialNumber());
                     }
@@ -374,6 +374,14 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
         if (opeAllocateBList.size() != enter.getSavePrepareMaterialListEnterList().size()) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
         }
+        //校验 不部件和订单部件 是否匹配
+        opeAllocateBList.forEach(item -> {
+            enter.getSavePartBasicDateMap().get(item.getId()).forEach(part -> {
+                if (!item.getPartId().equals(part.getPartId())) {
+                    throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_MATCH.getCode(), ExceptionCodeEnums.PART_IS_NOT_MATCH.getMessage());
+                }
+            });
+        });
         partIds.addAll(opeAllocateBList.stream().map(OpeAllocateB::getPartId).collect(Collectors.toList()));
 
 
@@ -397,13 +405,17 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             opePartsList.forEach(part -> {
                 enter.getSavePartBasicDateMap().get(item.getId()).forEach(serialN -> {
                     //判断part 有Id 验证序列号 没有Id 验证数量
-                    if (part.getId().equals(serialN.getPartId()) && part.getIdClass()) {
-                        serialNList.add(serialN.getSerialN());
-                    } else {
-                        if (stockProdPartIdMap.containsKey(serialN.getPartId())) {
-                            stockProdPartIdMap.put(serialN.getPartId(), stockProdPartIdMap.get(serialN.getPartId()) + serialN.getQty());
+                    if (part.getId().equals(serialN.getPartId())) {
+                        //有Id校验
+                        if (part.getIdClass()) {
+                            serialNList.add(serialN.getSerialN());
                         } else {
-                            stockProdPartIdMap.put(serialN.getPartId(), serialN.getQty());
+                            //无ID 校验
+                            if (stockProdPartIdMap.containsKey(serialN.getPartId())) {
+                                stockProdPartIdMap.put(serialN.getPartId(), stockProdPartIdMap.get(serialN.getPartId()) + serialN.getQty());
+                            } else {
+                                stockProdPartIdMap.put(serialN.getPartId(), serialN.getQty());
+                            }
                         }
                     }
                 });
@@ -412,7 +424,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
 
         if (CollectionUtils.isNotEmpty(serialNList)) {
             //有Id 校验
-            List<OpeStockPurchas> opeStockProdPartListIdClassTrue=opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>().in(OpeStockPurchas::getSerialNumber, serialNList));
+            List<OpeStockPurchas> opeStockProdPartListIdClassTrue = opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>().in(OpeStockPurchas::getSerialNumber, serialNList));
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassTrue)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
@@ -575,6 +587,15 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
         if (opeAssemblyOrderPartList.size() != enter.getSavePrepareMaterialListEnterList().size()) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
         }
+
+        opeAssemblyOrderPartList.forEach(item -> {
+            enter.getSavePartBasicDateMap().get(item.getId()).forEach(part -> {
+                if (!item.getPartId().equals(part.getPartId())) {
+                    throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_MATCH.getCode(), ExceptionCodeEnums.PART_IS_NOT_MATCH.getMessage());
+                }
+            });
+        });
+
         partIds.addAll(opeAssemblyOrderPartList.stream().map(OpeAssemblyOrderPart::getPartId).collect(Collectors.toList()));
 
         //查询配件信息
@@ -597,8 +618,8 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             opePartsList.forEach(part -> {
                 enter.getSavePartBasicDateMap().get(item.getId()).forEach(serialN -> {
                     //判断part 有Id 验证序列号 没有Id 验证数量
-                    if (part.getId().equals(serialN.getPartId())){
-                        if ( part.getIdClass()) {
+                    if (part.getId().equals(serialN.getPartId())) {
+                        if (part.getIdClass()) {
                             serialNList.add(serialN.getSerialN());
                         } else {
                             if (!stockProdPartIdMap.containsKey(serialN.getPartId())) {

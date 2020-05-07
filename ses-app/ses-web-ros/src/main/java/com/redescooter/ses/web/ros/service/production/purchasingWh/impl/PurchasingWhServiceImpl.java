@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.production.purchasingWh.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -8,6 +9,7 @@ import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.wh.PurchasingWhTypeEnums;
+import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.production.PurchasingWhServiceMapper;
@@ -15,12 +17,14 @@ import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
 import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
 import com.redescooter.ses.web.ros.dm.OpeStock;
+import com.redescooter.ses.web.ros.dm.OpeStockPurchas;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.OpePurchasService;
+import com.redescooter.ses.web.ros.service.base.OpeStockPurchasService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.purchasingWh.PurchasingWhService;
@@ -38,9 +42,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:PurchasingWhServiceImpl
@@ -68,6 +74,9 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
     private OpeWhseService opeWhseService;
 
     @Autowired
+    private OpeStockPurchasService opeStockPurchasService;
+
+    @Autowired
     private OpePurchasService opePurchasService;
 
     /**
@@ -84,7 +93,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         OpeWhse opeWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.PURCHAS.getValue())).get(0);
         QueryWrapper<OpeStock> availableWrapper = new QueryWrapper<>();
         availableWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
-        availableWrapper.gt(OpeStock.COL_AVAILABLE_TOTAL,0);
+        availableWrapper.gt(OpeStock.COL_AVAILABLE_TOTAL, 0);
         int availableCount = opeStockService.count(availableWrapper);
         map.put(PurchasingWhTypeEnums.AVAILABLE.getValue(), availableCount);
 
@@ -146,59 +155,64 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         }
         List<AvailableListResult> availableList = purchasingWhServiceMapper.availableList(enter, opeWhse.getId());
 
-        // 查询质检批次号
-        List<Long> partIds = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(availableList)) {
+            // 查询质检批次号
+            List<OpeStockPurchas> opeStockPurchasList = opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
+                    .eq(OpeStockPurchas::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue())
+                    .in(OpeStockPurchas::getPartId, availableList.stream().map(AvailableListResult::getId).collect(Collectors.toList())));
 
-        availableList.stream().forEach(item -> {
-            partIds.add(item.getId());
-        });
-        List<OpePurchasBQc> opePurchasBQcList = purchasingWhServiceMapper.PurchasBQc(partIds, PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
+            //批次号集合
+            Map<Long, List<AvailableListBatchNResult>> batchNMap = new HashMap<>();
 
+            //往集合里放入数据
+            for (OpeStockPurchas item : opeStockPurchasList) {
+                if (batchNMap.containsKey(item.getPartId())) {
 
-        Map<Long, List<AvailableListBatchNResult>> batchNMap = Maps.newHashMap();
-        availableList.forEach(item -> {
-            List<AvailableListBatchNResult> batchNList = Lists.newArrayList();
-            opePurchasBQcList.forEach(qc -> {
-                if (item.getId().equals(qc.getPartsId())) {
-                    if (CollectionUtils.isNotEmpty(batchNList)) {
-                        batchNList.forEach(batch -> {
-                            if (StringUtils.equals(batch.getBatchN(), qc.getBatchNo())) {
-                                batch.setQty(batch.getQty() + qc.getPassCount());
-                                batchNList.set(batchNList.indexOf(batch), batch);
-                            }
-                        });
+                    //若批次号存在 维护数量、若不存在 新增一个批次号
+                    List<AvailableListBatchNResult> availableListBatchNList = batchNMap.get(item.getPartId());
+
+                    Boolean existBatchN = Boolean.FALSE;
+
+                    for (AvailableListBatchNResult batchN : availableListBatchNList) {
+                        if (StringUtils.equals(item.getLot(), batchN.getBatchN())) {
+                            existBatchN = Boolean.TRUE;
+
+                            batchN.setQty(batchN.getQty() + item.getInWhQty());
+                            break;
+                        }
                     }
-                    batchNList.add(
-                            AvailableListBatchNResult
-                                    .builder()
-                                    .id(qc.getPartsId())
-                                    .batchN(qc.getBatchNo())
-                                    .qty(qc.getPassCount())
-                                    .build()
-                    );
+                    //已存在批次号 更新map 集合 不存在 生成新的对象
+                    if (!existBatchN) {
+                        //否则 在map的value集合中放入新数据
+                        availableListBatchNList.add(AvailableListBatchNResult.builder()
+                                .id(item.getPartId())
+                                .qty(item.getInWhQty())
+                                .batchN(item.getLot())
+                                .build());
+                    }
+                    batchNMap.put(item.getPartId(), availableListBatchNList);
                 }
-            });
-            batchNMap.put(item.getId(), batchNList);
-        });
 
-        //批次号 设置
-        availableList.forEach(item -> {
-            if (batchNMap.containsKey(item.getId())) {
-                if (StringUtils.isNotEmpty(enter.getKeyword())) {
-                    batchNMap.forEach((key, value) -> {
-                        value.forEach(valueList -> {
-                            if (valueList.getBatchN().contains(enter.getKeyword())) {
-                                item.setBatchNList(new ArrayList<>(batchNMap.get(item.getId())));
-                            }
-                        });
-                    });
-                } else {
-                    item.setBatchNList(new ArrayList<>(batchNMap.get(item.getId())));
+                //map中不存在这个部件 就在map放入新数据
+                if (!batchNMap.containsKey(item.getPartId())) {
+                    List<AvailableListBatchNResult> availableListBatchNList = new ArrayList<>();
+                    availableListBatchNList.add(AvailableListBatchNResult.builder()
+                            .id(item.getPartId())
+                            .qty(item.getInWhQty())
+                            .batchN(item.getLot())
+                            .build());
+                    batchNMap.put(item.getPartId(), availableListBatchNList);
                 }
             }
-        });
+            //封装数据返回
+            availableList.forEach(item->{
+                if (batchNMap.containsKey(item.getId())){
+                    item.setBatchNList(batchNMap.get(item.getId()));
+                }
+            });
+        }
 
-        availableList.removeIf(item -> CollectionUtils.isEmpty(item.getBatchNList()));
+
         return PageResult.create(enter, count, availableList);
     }
 

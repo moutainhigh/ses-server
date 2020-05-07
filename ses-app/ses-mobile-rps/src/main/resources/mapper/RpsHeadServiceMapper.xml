@@ -11,7 +11,7 @@
         select count(*)
         from ope_purchas
         where dr=0
-        and lave_wait_qc_total <![CDATA[ > ]]>  0
+        and lave_wait_qc_total =  0
         and  status in (4,5)
     </select>
     <select id="rpsHeadPrepare" resultType="int">

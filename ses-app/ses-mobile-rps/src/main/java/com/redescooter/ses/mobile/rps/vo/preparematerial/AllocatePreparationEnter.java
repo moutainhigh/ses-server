@@ -36,6 +36,7 @@ public class AllocatePreparationEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "部件集合")
     List<SavePrepareMaterialPartListEnter> savePrepareMaterialListEnterList;
+
     @ApiModelProperty(value = "部件基本数据")
     Map<Long, List<SavePartBasicDateEnter>> savePartBasicDateMap;
 }

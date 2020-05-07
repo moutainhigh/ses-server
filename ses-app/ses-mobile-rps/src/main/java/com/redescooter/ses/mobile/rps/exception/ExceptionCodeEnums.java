@@ -147,6 +147,8 @@ public enum ExceptionCodeEnums {
     PRODUCT_IS_NOT_QC_RESULT(10070, "产品没有质检结果项"),
 
     PRODUCT_IS_NOT_NEED_QC(10071, "产品无需质检"),
+
+    PART_IS_NOT_MATCH(10072, "部件不匹配"),
     ;;
 
     private int code;
