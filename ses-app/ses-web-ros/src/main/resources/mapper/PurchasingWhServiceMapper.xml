@@ -269,11 +269,10 @@
         group by id, partN, type, enName, cnName
         ) result
     </select>
-    <select id="countByTypeOutWhCount" resultType="int">
+    <select id="countByTypeOutWhCountAssembly" resultType="int">
         select count(*)
         from ope_stock stock
-        inner join ope_parts_product product
-        on stock.materiel_product_id = product.id and product.dr=0
+        inner join ope_parts_product product on stock.materiel_product_id = product.id and product.dr=0
         where stock.dr=0
     </select>
 </mapper>

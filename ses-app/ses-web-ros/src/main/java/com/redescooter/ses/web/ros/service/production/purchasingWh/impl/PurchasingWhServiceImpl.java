@@ -7,7 +7,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
-import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.wh.PurchasingWhTypeEnums;
 import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -15,7 +14,6 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.production.PurchasingWhServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
-import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
 import com.redescooter.ses.web.ros.dm.OpeStock;
 import com.redescooter.ses.web.ros.dm.OpeStockPurchas;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
@@ -108,8 +106,11 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         opeWhseList.forEach(item -> {
             whseIds.add(item.getId());
         });
-        int outWhCount = purchasingWhServiceMapper.countByTypeOutWhCount(enter);
-        map.put(PurchasingWhTypeEnums.OUT_WH.getValue(), outWhCount);
+
+        //出库列表统计 （调拨入库、组装入库）
+        int outWhCountAssembly = purchasingWhServiceMapper.countByTypeOutWhCountAssembly(enter);
+
+//        int outWhCountAllocate = purchasingWhServiceMapper.countByTypeOutWhCountAllocate(enter);
 
         for (PurchasingWhTypeEnums item : PurchasingWhTypeEnums.values()) {
             if (!map.containsKey(item.getValue())) {

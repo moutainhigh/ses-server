@@ -733,7 +733,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .outPrincipalId(0L)
                 .outStockBillId(0L)
                 .outStockTime(null)
-                .inStockBillId(0L)
+                .inStockBillId(opeStockBill.getId())
                 .inStockTime(new Date())
                 .revision(0)
                 .inWhQty(1)
@@ -742,6 +742,12 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .updatedBy(enter.getUserId())
                 .updatedTime(new Date())
                 .build();
+
+        //更新组装数据
+        opeProductAssembly.setInwhStatus(Boolean.TRUE);
+        opeProductAssembly.setUpdatedBy(enter.getUserId());
+        opeProductAssembly.setUpdatedTime(new Date());
+        opeProductAssemblyService.updateById(opeProductAssembly);
 
         //保存生产成品库的数据
         opeStockProdProductService.save(opeStockProdProduct);

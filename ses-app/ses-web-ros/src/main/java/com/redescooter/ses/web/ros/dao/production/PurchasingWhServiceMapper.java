@@ -134,7 +134,15 @@ public interface PurchasingWhServiceMapper {
      * @param enter
      * @return
      */
-    int countByTypeOutWhCount(GeneralEnter enter);
+    int countByTypeOutWhCountAssembly(GeneralEnter enter);
+
+//    /**
+//     * 调拨出库
+//     *
+//     * @param enter
+//     * @return
+//     */
+//    int countByTypeOutWhCountAllocate(GeneralEnter enter);
 
     /**
      * 调波 出库列表
