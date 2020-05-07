@@ -401,26 +401,27 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
         Map<Long, Integer> stockProdPartIdMap = Maps.newHashMap();
 
         //判断有Id 的序列号是否存在
-        opeAllocateBList.forEach(item -> {
-            opePartsList.forEach(part -> {
-                enter.getSavePartBasicDateMap().get(item.getId()).forEach(serialN -> {
-                    //判断part 有Id 验证序列号 没有Id 验证数量
+        for (OpeAllocateB allocateB : opeAllocateBList) {
+            for (OpeParts part : opePartsList) {
+                for (SavePartBasicDateEnter serialN : enter.getSavePartBasicDateMap().get(allocateB.getId())) {//判断part 有Id 验证序列号 没有Id 验证数量
                     if (part.getId().equals(serialN.getPartId())) {
                         //有Id校验
                         if (part.getIdClass()) {
                             serialNList.add(serialN.getSerialN());
+                            continue;
                         } else {
                             //无ID 校验
                             if (stockProdPartIdMap.containsKey(serialN.getPartId())) {
                                 stockProdPartIdMap.put(serialN.getPartId(), stockProdPartIdMap.get(serialN.getPartId()) + serialN.getQty());
+                                continue;
                             } else {
                                 stockProdPartIdMap.put(serialN.getPartId(), serialN.getQty());
                             }
                         }
                     }
-                });
-            });
-        });
+                }
+            }
+        }
 
         if (CollectionUtils.isNotEmpty(serialNList)) {
             //有Id 校验
@@ -452,7 +453,10 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
 
             //无Id校验
             List<OpeStockPurchas> opeStockProdPartListIdClassFalse =
-                    opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>().in(OpeStockPurchas::getPartId, stockProdPartIdMap.keySet()).orderByAsc(OpeStockPurchas::getCreatedTime));
+                    opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
+                            .in(OpeStockPurchas::getPartId, stockProdPartIdMap.keySet())
+                            .eq(OpeStockPurchas::getStatus,StockProductPartStatusEnums.AVAILABLE.getValue())
+                            .orderByAsc(OpeStockPurchas::getCreatedTime));
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassFalse)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
@@ -662,7 +666,10 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
         if (!stockProdPartIdMap.isEmpty()) {
             //无Id校验
             List<OpeStockProdPart> opeStockProdPartListIdClassFalse =
-                    opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>().in(OpeStockProdPart::getPartId, stockProdPartIdMap.keySet()).orderByAsc(OpeStockProdPart::getCreatedTime));
+                    opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>()
+                            .in(OpeStockProdPart::getPartId, stockProdPartIdMap.keySet())
+                            .eq(OpeStockProdPart::getStatus,StockProductPartStatusEnums.AVAILABLE.getValue())
+                            .orderByAsc(OpeStockProdPart::getCreatedTime));
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassFalse)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
