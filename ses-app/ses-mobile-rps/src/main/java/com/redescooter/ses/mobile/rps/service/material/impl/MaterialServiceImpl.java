@@ -23,6 +23,7 @@ import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.material.MaterialService;
+import com.redescooter.ses.mobile.rps.vo.bo.ReturnCompletePartDto;
 import com.redescooter.ses.mobile.rps.vo.bo.RpsPartDetailDto;
 import com.redescooter.ses.mobile.rps.vo.materialqc.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -179,13 +180,14 @@ public class MaterialServiceImpl implements MaterialService {
             }
         });
         //查询所有主订单相关联的子表数据
-        Collection<OpePurchasB> checkOpePurchasBList = opePurchasBService.listByIds(opePurchasList.stream().map(OpePurchas::getId).collect(Collectors.toList()));
+        Collection<OpePurchasB> checkOpePurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().in(OpePurchasB::getPurchasId,
+                opePurchasList.stream().map(OpePurchas::getId).collect(Collectors.toList())));
 
         //查询qc 信息
         QueryWrapper<OpePurchasBQc> opePurchasBQcQueryWrapper = new QueryWrapper<>();
         opePurchasBQcQueryWrapper.in(OpePurchasBQc.COL_PURCHAS_B_ID, opePurchasBList.stream().map(OpePurchasB::getId).collect(Collectors.toList()));
         opePurchasBQcQueryWrapper.eq(OpePurchasBQc.COL_DR, 0);
-        opePurchasBQcQueryWrapper.ne(OpePurchasBQc.COL_FAIL_COUNT, 0);
+        opePurchasBQcQueryWrapper.gt(OpePurchasBQc.COL_FAIL_COUNT, 0);
         List<OpePurchasBQc> purchasBQcList = opePurchasBQcService.list(opePurchasBQcQueryWrapper);
 
         if (CollectionUtils.isEmpty(purchasBQcList)) {
@@ -229,6 +231,9 @@ public class MaterialServiceImpl implements MaterialService {
         if (CollectionUtils.isEmpty(opePurchasPaymentList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
         }
+
+        //封装退货时主订单的信息
+        Map<Long, ReturnCompletePartDto> returnCompletePartDtoMap = new HashMap<>();
 
         //对采购子订单 价格、数量 处理
         for (OpePurchas opePurchas : opePurchasList) {//退货金额
@@ -278,30 +283,14 @@ public class MaterialServiceImpl implements MaterialService {
                 }
             }
 
-            //主表数量、数量维护
-            Boolean updatePurchasStatus = Boolean.TRUE;
-            for (OpePurchasB checkOpePurchasB : checkOpePurchasBList) {
-                if (checkOpePurchasB.getPurchasId().equals(opePurchas.getId()) && checkOpePurchasB.getLaveWaitQcQty() != 0) {
-                    updatePurchasStatus = Boolean.FALSE;
-                }
-            }
-            if (updatePurchasStatus) {
-                opePurchas.setStatus(PurchasingStatusEnums.RETURN.getValue());
 
-                //节点
-                String memo = new StringBuffer(originalAmount.toString() + CurrencyUnitEnums.FR.getName()).append(",").append(retureTotalPrice.toString() + CurrencyUnitEnums.FR.getName()).toString();
-                SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
-                BeanUtils.copyProperties(enter, saveNodeEnter);
-                saveNodeEnter.setId(opePurchas.getId());
-                saveNodeEnter.setStatus(PurchasingStatusEnums.RETURN.getValue());
-                saveNodeEnter.setEvent(PurchasingEventEnums.RETURN.getValue());
-                saveNodeEnter.setMemo(memo);
-                receiptTraceService.savePurchasingNode(saveNodeEnter);
-            }
-            opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - returnTotal);
-            opePurchas.setTotalQty(opePurchas.getTotalQty() - returnTotal);
-            opePurchas.setUpdatedBy(enter.getUserId());
-            opePurchas.setUpdatedTime(new Date());
+            ReturnCompletePartDto returnCompletePartDto = ReturnCompletePartDto.builder()
+                    .id(opePurchas.getId())
+                    .originalAmount(originalAmount)
+                    .retureTotalPrice(retureTotalPrice)
+                    .returnTotal(returnTotal)
+                    .build();
+            returnCompletePartDtoMap.put(opePurchas.getId(), returnCompletePartDto);
         }
 
         //抹除掉 质检失败和批次号建立的绑定关系
@@ -326,6 +315,64 @@ public class MaterialServiceImpl implements MaterialService {
             item.setUpdatedBy(enter.getUserId());
             item.setUpdatedTime(new Date());
         });
+
+
+        List<OpePurchasB> checkPurchasList = new ArrayList<>();
+
+        checkOpePurchasBList.forEach(item -> {
+            opePurchasBList.forEach(opePurchasB -> {
+                if (item.getId().equals(opePurchasB.getId())) {
+                    checkPurchasList.add(opePurchasB);
+                } else {
+                    checkPurchasList.add(item);
+                }
+            });
+        });
+
+
+        for (OpePurchas opePurchas : opePurchasList) {//主表数量、数量维护
+            Boolean updatePurchasStatus = Boolean.TRUE;
+
+            for (OpePurchasB item : checkPurchasList) {
+                if (item.getPurchasId().equals(opePurchas.getId())) {
+                    //子订单判断是否 有质检记录
+                    if (item.getLaveWaitQcQty() < item.getTotalCount()) {
+
+                        //校验质检信息是否能 已经全部质检过
+                        for (OpePurchasBQc purchasbqc : purchasBQcList) {
+                            if (item.getPurchasId().equals(opePurchas.getId())) {
+                                if ( item.getId().equals(purchasbqc.getPurchasBId()) &&!item.getTotalCount().equals(purchasbqc.getPassCount())){
+                                    updatePurchasStatus = Boolean.FALSE;
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+            }
+            //修改主订单状态
+            ReturnCompletePartDto returnCompletePartDto = returnCompletePartDtoMap.get(opePurchas.getId());
+            if (updatePurchasStatus) {
+                opePurchas.setStatus(PurchasingStatusEnums.RETURN.getValue());
+
+                //节点
+                String memo =
+                        new StringBuffer(returnCompletePartDto.getOriginalAmount().toString() + CurrencyUnitEnums.FR.getName()).append(",").append(returnCompletePartDto.getRetureTotalPrice().toString() + CurrencyUnitEnums.FR.getName()).toString();
+                SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+                BeanUtils.copyProperties(enter, saveNodeEnter);
+                saveNodeEnter.setId(opePurchas.getId());
+                saveNodeEnter.setStatus(PurchasingStatusEnums.RETURN.getValue());
+                saveNodeEnter.setEvent(PurchasingEventEnums.RETURN.getValue());
+                saveNodeEnter.setMemo(memo);
+                receiptTraceService.savePurchasingNode(saveNodeEnter);
+            }
+            opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - returnCompletePartDto.getReturnTotal());
+            opePurchas.setTotalQty(opePurchas.getTotalQty() - returnCompletePartDto.getReturnTotal());
+            opePurchas.setUpdatedBy(enter.getUserId());
+            opePurchas.setUpdatedTime(new Date());
+        }
+
 
         //更新付款价格
         opePurchasPaymentService.updateBatch(opePurchasPaymentList);
