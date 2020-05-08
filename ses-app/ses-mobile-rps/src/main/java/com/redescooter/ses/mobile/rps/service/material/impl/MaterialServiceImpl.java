@@ -114,6 +114,7 @@ public class MaterialServiceImpl implements MaterialService {
         if (CollectionUtils.isEmpty(opePurchasBList)) {
             map.put(QcTypeEnums.FAIL.getValue(), 0);
         }
+        //质检失败 数量
         map.put(QcTypeEnums.FAIL.getValue(), opePurchasBList.stream().map(OpePurchasB::getPurchasId).collect(Collectors.toSet()).size());
         return map;
     }
