@@ -279,7 +279,8 @@
         from ope_parts_product_b productb
         inner join ope_parts parts on parts.id = productb.parts_id and parts.dr = 0
         inner join ope_supplier supplier on parts.supplier_id = supplier.id and supplier.dr = 0
-        left join ope_price_sheet sheet on sheet.parts_id = productb.parts_id and sheet.dr = 0
+        inner join ope_price_sheet sheet on sheet.parts_id = productb.parts_id and sheet.dr = 0 and
+        sheet.currency_unit = 1
         where productb.dr = 0
         <if test="list != null and list.size() != 0">
             and productb.parts_product_id in
