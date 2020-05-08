@@ -103,7 +103,7 @@ public class MaterialServiceImpl implements MaterialService {
     public Map<String, Integer> countByStatus(GeneralEnter enter) {
         QueryWrapper<OpePurchas> opePurchasQueryWrapper = new QueryWrapper<>();
         opePurchasQueryWrapper.eq(OpePurchas.COL_DR, 0);
-        opePurchasQueryWrapper.in(OpePurchas.COL_STATUS, PurchasingStatusEnums.MATERIALS_QC.getValue(), PurchasingStatusEnums.PENDING.getValue());
+        opePurchasQueryWrapper.eq(OpePurchas.COL_STATUS, PurchasingStatusEnums.PENDING.getValue());
         opePurchasQueryWrapper.ne(OpePurchas.COL_LAVE_WAIT_QC_TOTAL, 0);
 
         Map<String, Integer> map = Maps.newHashMap();
