@@ -305,7 +305,7 @@
             resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult">
             select item.id            as id,
                    item.serial_num    as serialN,
-                   item.qc_result     as qcStatus
+                   item.qc_result     as qcResult
             from ope_assembly_qc_item item
             where item.id = #{id}
               and item.dr = 0
