@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -108,7 +109,12 @@ public class MaterialServiceImpl implements MaterialService {
 
         Map<String, Integer> map = Maps.newHashMap();
         map.put(QcTypeEnums.WAIT.getValue(), opePurchasService.count(opePurchasQueryWrapper));
-        map.put(QcTypeEnums.FAIL.getValue(), materialServiceMapper.qcFailType(enter));
+        //查询质检 质检失败的主订单
+        List<OpePurchasB> opePurchasBList = materialServiceMapper.qcFailPurchasBList(enter);
+        if (CollectionUtils.isEmpty(opePurchasBList)) {
+            map.put(QcTypeEnums.FAIL.getValue(), 0);
+        }
+        map.put(QcTypeEnums.FAIL.getValue(), opePurchasBList.stream().map(OpePurchasB::getPurchasId).collect(Collectors.toSet()).size());
         return map;
     }
 
@@ -875,7 +881,7 @@ public class MaterialServiceImpl implements MaterialService {
         return opePurchasLotTrace;
     }
 
-    private OpePurchasBQc buildOpePurchasBQc(SaveMaterialQcEnter enter, OpeParts opeParts,Long opePurchasBId, Boolean qcResult, String batchNo, int initLaveWaitQcQty) {
+    private OpePurchasBQc buildOpePurchasBQc(SaveMaterialQcEnter enter, OpeParts opeParts, Long opePurchasBId, Boolean qcResult, String batchNo, int initLaveWaitQcQty) {
         //查询今天是否 已经质检过
         OpePurchasBQc opePurchasBQc = opePurchasBQcService.getOne(new LambdaQueryWrapper<OpePurchasBQc>().eq(OpePurchasBQc::getPurchasBId, opePurchasBId));
 

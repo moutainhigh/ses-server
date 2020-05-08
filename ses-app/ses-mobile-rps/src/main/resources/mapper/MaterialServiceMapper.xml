@@ -84,12 +84,12 @@
         order by purchasb.created_time asc
         limit #{startRow},#{pageSize}
     </select>
-    <select id="qcFailType" resultType="java.lang.Integer">
-        select count(purchas.id)
-        from ope_purchas purchas
-                 left join ope_purchas_b purchasb on purchas.id = purchasb.purchas_id
-                 inner join ope_purchas_b_qc purchasbqc on purchasb.id = purchasbqc.purchas_b_id
-        where purchasbqc.fail_count != 0
+    <select id="qcFailPurchasBList" resultType="com.redescooter.ses.mobile.rps.dm.OpePurchasB">
+       select purchasB.*
+        from ope_purchas_b_qc bqc
+                 inner join ope_purchas_b purchasB on bqc.purchas_b_id = purchasB.id
+        left join ope_purchas purchas on  purchas.id=purchasB.purchas_id
+        where bqc.fail_count != 0;
     </select>
     <select id="partDetailById" resultType="com.redescooter.ses.mobile.rps.vo.bo.RpsPartDetailDto">
         select parts.id as partId,

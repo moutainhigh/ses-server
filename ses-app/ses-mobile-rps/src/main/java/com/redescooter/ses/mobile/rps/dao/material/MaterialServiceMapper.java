@@ -2,6 +2,7 @@ package com.redescooter.ses.mobile.rps.dao.material;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
 import com.redescooter.ses.mobile.rps.vo.bo.RpsPartDetailDto;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
@@ -76,7 +77,7 @@ public interface MaterialServiceMapper {
      * @param enter
      * @return
      */
-    Integer qcFailType(GeneralEnter enter);
+    List<OpePurchasB> qcFailPurchasBList(GeneralEnter enter);
 
     /**
      * 查询产品价格
