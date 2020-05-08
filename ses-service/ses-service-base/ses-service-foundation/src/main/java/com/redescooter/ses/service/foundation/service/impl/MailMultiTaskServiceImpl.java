@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTaskStatusEnums;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.foundation.mq.EmailMassageProducerMq;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.account.FreezeWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.account.NnfreezeWarnWebTaskEnter;
@@ -20,11 +22,9 @@ import com.redescooter.ses.service.foundation.dm.base.PlaMailConfig;
 import com.redescooter.ses.service.foundation.dm.base.PlaMailTask;
 import com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -59,7 +59,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Reference
     private IMailService iMailService;
     @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private EmailMassageProducerMq emailMassageProducerMq;
 
     /**
      * Mobile激活邮件任务
@@ -491,10 +491,11 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         jedisCluster.hmset(key, map);
         //默认为72小时
         jedisCluster.expire(key, seconds);
-        //触发该邮件的发送
-       /*  runTaskById(mailTask.getId());*/
-            rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_TOPICS_INFORM,RabbitConfig.QUEUE_INFORM_EMAIL,mailTask.getId());
-            System.out.println("发送的邮件消息:'" + mailTask.getId() + "'");
+        //MQ邮件的发送
 
-        }
+        emailMassageProducerMq.SendEmailMassage(IdEnter.builder()
+                .id(mailTask.getId())
+                .build());
+
+    }
 }

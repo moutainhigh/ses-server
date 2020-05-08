@@ -11,12 +11,9 @@ import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+import com.redescooter.ses.api.foundation.mq.EmailMassageProducerMq;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
@@ -30,42 +27,12 @@ import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
 import com.redescooter.ses.web.delivery.dao.EdScooterServiceMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorTenantScooterMapper;
-import com.redescooter.ses.web.delivery.dm.CorDelivery;
-import com.redescooter.ses.web.delivery.dm.CorDeliveryTrace;
-import com.redescooter.ses.web.delivery.dm.CorDriver;
-import com.redescooter.ses.web.delivery.dm.CorDriverScooter;
-import com.redescooter.ses.web.delivery.dm.CorDriverScooterHistory;
-import com.redescooter.ses.web.delivery.dm.CorScooterRideStat;
-import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
-import com.redescooter.ses.web.delivery.dm.CorUserProfile;
+import com.redescooter.ses.web.delivery.dm.*;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.RtDriverService;
-import com.redescooter.ses.web.delivery.service.base.CorDeliveryService;
-import com.redescooter.ses.web.delivery.service.base.CorDeliveryTraceService;
-import com.redescooter.ses.web.delivery.service.base.CorDriverScooterHistoryService;
-import com.redescooter.ses.web.delivery.service.base.CorDriverScooterService;
-import com.redescooter.ses.web.delivery.service.base.CorDriverService;
-import com.redescooter.ses.web.delivery.service.base.CorScooterRideStatService;
-import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
-import com.redescooter.ses.web.delivery.service.base.CorUserProfileService;
-import com.redescooter.ses.web.delivery.vo.AssignScooterEnter;
-import com.redescooter.ses.web.delivery.vo.DeliveryChartDto;
-import com.redescooter.ses.web.delivery.vo.DeliveryChartEnter;
-import com.redescooter.ses.web.delivery.vo.DeliveryChartListResult;
-import com.redescooter.ses.web.delivery.vo.DeliveryChartResult;
-import com.redescooter.ses.web.delivery.vo.DeliveryHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult;
-import com.redescooter.ses.web.delivery.vo.DriverDetailsResult;
-import com.redescooter.ses.web.delivery.vo.DriverScooterHistoryResult;
-import com.redescooter.ses.web.delivery.vo.DriverScooterHistroyEnter;
-import com.redescooter.ses.web.delivery.vo.DriverScooterInforResult;
-import com.redescooter.ses.web.delivery.vo.ListDriverPage;
-import com.redescooter.ses.web.delivery.vo.ListDriverResult;
-import com.redescooter.ses.web.delivery.vo.ListScooterResult;
-import com.redescooter.ses.web.delivery.vo.SaveDriverEnter;
-import com.redescooter.ses.web.delivery.vo.ScooterListEnter;
-import com.redescooter.ses.web.delivery.vo.ScooterModelListResult;
+import com.redescooter.ses.web.delivery.service.base.*;
+import com.redescooter.ses.web.delivery.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -79,14 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Mr.lijiating
@@ -134,6 +94,8 @@ public class RtDriverServiceImpl implements RtDriverService {
     private TenantBaseService tenantBaseService;
     @Autowired
     private AmqpTemplate amqpTemplate;
+    @Reference
+    private EmailMassageProducerMq emailMassageProducerMq;
 
 
     /**
@@ -157,15 +119,6 @@ public class RtDriverServiceImpl implements RtDriverService {
         }
         enter.setId(driver.getUserId());
         GeneralResult result = accountBaseService.sendEmailActiv(enter);
-
-        //发送消息给MQ====================================================================================================================
-        try {
-            amqpTemplate.convertAndSend("delivery.exchange","delivery.sendemail.again",enter);
-        } catch (AmqpException e) {
-            e.printStackTrace();
-            //抛激活邮箱发送异常
-        }
-
         return result;
     }
 
@@ -275,14 +228,6 @@ public class RtDriverServiceImpl implements RtDriverService {
                 BeanUtils.copyProperties(enter, idEnter);
                 idEnter.setId(driverSave.getUserId());
                 accountBaseService.sendEmailActiv(idEnter);
-
-                //发送消息给MQ====================================================================================================================
-                try {
-                    amqpTemplate.convertAndSend("delivery.exchange","delivery.sendemail.new",idEnter);
-                } catch (AmqpException e) {
-                    e.printStackTrace();
-                    //抛激活邮箱发送异常
-                }
             }
 
             //维护租户的司机数量

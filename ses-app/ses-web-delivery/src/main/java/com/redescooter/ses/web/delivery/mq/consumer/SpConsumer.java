@@ -15,12 +15,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SpConsumer {
+/*
 
     // 监听email队列
     @RabbitListener(queues = {RabbitConfig.QUEUE_INFORM_EMAIL})
     public void receive_email(String msg, Message message, Channel channel) {
         System.out.println("接收到的email；" + msg);
     }
+*/
 
     // 监听sms队列
     @RabbitListener(queues = {RabbitConfig.QUEUE_INFORM_SMS})

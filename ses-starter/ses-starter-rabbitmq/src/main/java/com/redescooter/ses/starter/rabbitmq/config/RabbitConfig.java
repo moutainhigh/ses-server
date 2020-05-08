@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    public static final String QUEUE_INFORM_EMAIL = "queue_inform_email";
+    public static final String QUEUE_INFORM_EMAIL = "inform.#.email.#";
     public static final String QUEUE_INFORM_SMS = "queue_inform_sms";
     public static final String EXCHANGE_TOPICS_INFORM = "exchange_topics_inform";
 

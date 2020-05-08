@@ -19,5 +19,4 @@
             <artifactId>ses-api-common</artifactId>
         </dependency>
     </dependencies>
-
 </project>
