@@ -197,10 +197,12 @@ public class TransferScooterServiceImpl implements TransferScooterService {
                 throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
             StringBuilder numberPlate = new StringBuilder();
-            numberPlate.append(transferScooterListEnter.getNumberPlate().substring(0, 2)).
+            numberPlate
+                    .append(transferScooterListEnter.getNumberPlate().substring(0, 2)).
                     append("-").
-                    append(transferScooterListEnter.getNumberPlate().substring(transferScooterListEnter.getNumberPlate().length() - 2))
-                    .append("-");
+                    append(transferScooterListEnter.getNumberPlate().substring(2,transferScooterListEnter.getNumberPlate().length() - 2))
+                    .append("-")
+                    .append(transferScooterListEnter.getNumberPlate().substring(transferScooterListEnter.getNumberPlate().length() - 2));
             transferScooterListEnter.setNumberPlate(numberPlate.toString());
         }
 
