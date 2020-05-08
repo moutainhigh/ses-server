@@ -109,8 +109,10 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 
         //出库列表统计 （调拨入库、组装入库）
         int outWhCountAssembly = purchasingWhServiceMapper.countByTypeOutWhCountAssembly(enter);
+        int outWhCountAllocate = purchasingWhServiceMapper.countByTypeOutWhCountAllocate(enter);
 
-//        int outWhCountAllocate = purchasingWhServiceMapper.countByTypeOutWhCountAllocate(enter);
+        map.put(PurchasingWhTypeEnums.OUT_WH.getValue(), outWhCountAssembly + outWhCountAllocate);
+
 
         for (PurchasingWhTypeEnums item : PurchasingWhTypeEnums.values()) {
             if (!map.containsKey(item.getValue())) {
@@ -206,8 +208,8 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                 }
             }
             //封装数据返回
-            availableList.forEach(item->{
-                if (batchNMap.containsKey(item.getId())){
+            availableList.forEach(item -> {
+                if (batchNMap.containsKey(item.getId())) {
                     item.setBatchNList(batchNMap.get(item.getId()));
                 }
             });

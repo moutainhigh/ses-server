@@ -149,7 +149,9 @@ public enum ExceptionCodeEnums {
     PRODUCT_IS_NOT_NEED_QC(10071, "产品无需质检"),
 
     PART_IS_NOT_MATCH(10072, "部件不匹配"),
-    ;;
+
+    PURCHAS_ORDER_HAS_EXIST_PART_NOT_QC(10073,"采购单存在其他部件未进行质检，不可退货并完成"),
+    ;
 
     private int code;
 

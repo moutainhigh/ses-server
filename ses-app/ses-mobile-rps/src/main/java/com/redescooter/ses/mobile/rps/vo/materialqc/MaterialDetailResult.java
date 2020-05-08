@@ -41,4 +41,7 @@ public class MaterialDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "待质检数量")
     private int laveWaitQcQty;
+
+    @ApiModelProperty(value = "主订单 所有部件是否全部直接完成")
+    private Boolean whetherQcComplate;
 }

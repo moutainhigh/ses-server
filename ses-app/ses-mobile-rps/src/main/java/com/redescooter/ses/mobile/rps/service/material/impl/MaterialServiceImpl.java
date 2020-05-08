@@ -174,9 +174,14 @@ public class MaterialServiceImpl implements MaterialService {
         if (CollectionUtils.isEmpty(opePurchasList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
+
         opePurchasList.forEach(item -> {
             if (!StringUtils.equals(item.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue())) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+            }
+
+            if (item.getLaveWaitQcTotal() != 0) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_ORDER_HAS_EXIST_PART_NOT_QC.getCode(), ExceptionCodeEnums.PURCHAS_ORDER_HAS_EXIST_PART_NOT_QC.getMessage());
             }
         });
         //查询所有主订单相关联的子表数据
@@ -341,7 +346,7 @@ public class MaterialServiceImpl implements MaterialService {
                         //校验质检信息是否能 已经全部质检过
                         for (OpePurchasBQc purchasbqc : purchasBQcList) {
                             if (item.getPurchasId().equals(opePurchas.getId())) {
-                                if ( item.getId().equals(purchasbqc.getPurchasBId()) &&!item.getTotalCount().equals(purchasbqc.getPassCount())){
+                                if (item.getId().equals(purchasbqc.getPurchasBId()) && !item.getTotalCount().equals(purchasbqc.getPassCount())) {
                                     updatePurchasStatus = Boolean.FALSE;
                                 }
                             }
@@ -542,8 +547,15 @@ public class MaterialServiceImpl implements MaterialService {
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-
-        return PageResult.create(enter, count, materialServiceMapper.qcFailDetail(enter));
+        List<MaterialDetailResult> materialDetailResultList = materialServiceMapper.qcFailDetail(enter);
+        materialDetailResultList.forEach(item -> {
+            if (opePurchas.getLaveWaitQcTotal() > 0) {
+                item.setWhetherQcComplate(Boolean.FALSE);
+            } else {
+                item.setWhetherQcComplate(Boolean.TRUE);
+            }
+        });
+        return PageResult.create(enter, count, materialDetailResultList);
     }
 
     /**
