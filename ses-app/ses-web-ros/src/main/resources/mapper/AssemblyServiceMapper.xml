@@ -368,7 +368,7 @@
         <foreach collection="ids" open="(" close=")" item="item">
             #{item}
         </foreach>
-        <if test="enter.status">
+        <if test="enter.status != null and enter.status != ''">
             and item.qc_result=#{enter.status}
         </if>
         <if test="enter.qcStartTime != null and enter.qcEndTime != null">

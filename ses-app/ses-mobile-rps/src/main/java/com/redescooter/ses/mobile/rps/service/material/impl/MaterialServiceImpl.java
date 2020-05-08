@@ -103,7 +103,7 @@ public class MaterialServiceImpl implements MaterialService {
     public Map<String, Integer> countByStatus(GeneralEnter enter) {
         QueryWrapper<OpePurchas> opePurchasQueryWrapper = new QueryWrapper<>();
         opePurchasQueryWrapper.eq(OpePurchas.COL_DR, 0);
-        opePurchasQueryWrapper.eq(OpePurchas.COL_STATUS, PurchasingStatusEnums.PENDING.getValue());
+        opePurchasQueryWrapper.eq(OpePurchas.COL_STATUS, PurchasingStatusEnums.MATERIALS_QC.getValue());
         opePurchasQueryWrapper.ne(OpePurchas.COL_LAVE_WAIT_QC_TOTAL, 0);
 
         Map<String, Integer> map = Maps.newHashMap();
@@ -694,6 +694,8 @@ public class MaterialServiceImpl implements MaterialService {
             receiptTraceService.savePurchasingNode(saveNodeEnter);
         }
 
+        //更新直接结果
+
         //根据质检方式减库存
         int initLaveWaitQcQty = opePurchasB.getLaveWaitQcQty();
         //质检成功、质检失败 都要待备料数量递减
@@ -785,7 +787,7 @@ public class MaterialServiceImpl implements MaterialService {
         String batchNo = bussinessNumberService.materialQcBatchNo(batchNoEnter);
 
         //保存质检结果
-        OpePurchasBQc purchasBQc = buildOpePurchasBQc(enter, opeParts, opePurchasB, qcResult, batchNo, initLaveWaitQcQty);
+        OpePurchasBQc purchasBQc = buildOpePurchasBQc(enter, opeParts, opePurchasB.getId(), qcResult, batchNo, initLaveWaitQcQty);
         opePurchasBQcService.saveOrUpdate(purchasBQc);
 
         //保存批次号的质检记录
@@ -873,9 +875,9 @@ public class MaterialServiceImpl implements MaterialService {
         return opePurchasLotTrace;
     }
 
-    private OpePurchasBQc buildOpePurchasBQc(SaveMaterialQcEnter enter, OpeParts opeParts, OpePurchasB opePurchasB, Boolean qcResult, String batchNo, int initLaveWaitQcQty) {
+    private OpePurchasBQc buildOpePurchasBQc(SaveMaterialQcEnter enter, OpeParts opeParts,Long opePurchasBId, Boolean qcResult, String batchNo, int initLaveWaitQcQty) {
         //查询今天是否 已经质检过
-        OpePurchasBQc opePurchasBQc = opePurchasBQcService.getOne(new LambdaQueryWrapper<OpePurchasBQc>().eq(OpePurchasBQc::getPurchasBId, opePurchasB.getId()));
+        OpePurchasBQc opePurchasBQc = opePurchasBQcService.getOne(new LambdaQueryWrapper<OpePurchasBQc>().eq(OpePurchasBQc::getPurchasBId, opePurchasBId));
 
         //如果 质检结果数据不存在新建，如果存在就进行数据的累加
         if (opePurchasBQc == null) {
@@ -884,7 +886,7 @@ public class MaterialServiceImpl implements MaterialService {
                     .dr(0)
                     .tenantId(0L)
                     .userId(0L)
-                    .purchasBId(opePurchasB.getId())
+                    .purchasBId(opePurchasBId)
                     .partsId(enter.getId())
                     .qualityInspectorId(enter.getUserId())
                     .batchNo(batchNo)
@@ -917,28 +919,26 @@ public class MaterialServiceImpl implements MaterialService {
                 opePurchasBQc.setStatus(QcStatusEnums.FAIL.getValue());
             }
         } else {
-
             if (qcResult) {
                 if (opeParts.getIdClass()) {
                     opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + 1);
                     opePurchasBQc.setPassCount(opePurchasBQc.getPassCount() + 1);
                 } else {
-                    opePurchasBQc.setPassCount(opePurchasBQc.getPassCount() + opePurchasB.getLaveWaitQcQty());
-                    opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + opePurchasB.getLaveWaitQcQty());
+                    opePurchasBQc.setPassCount(opePurchasBQc.getPassCount() + initLaveWaitQcQty);
+                    opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + initLaveWaitQcQty);
                 }
                 opePurchasBQc.setFailCount(opePurchasBQc.getFailCount());
-                opePurchasBQc.setStatus(opePurchasBQc.getStatus());
             } else {
                 if (opeParts.getIdClass()) {
                     opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + 1);
                     opePurchasBQc.setFailCount(opePurchasBQc.getFailCount() + 1);
                 } else {
-                    opePurchasBQc.setFailCount(opePurchasBQc.getFailCount() + opePurchasB.getLaveWaitQcQty());
-                    opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + opePurchasB.getLaveWaitQcQty());
+                    opePurchasBQc.setFailCount(opePurchasBQc.getFailCount() + initLaveWaitQcQty);
+                    opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + initLaveWaitQcQty);
                 }
                 opePurchasBQc.setPassCount(opePurchasBQc.getPassCount());
-                opePurchasBQc.setStatus(QcStatusEnums.FAIL.getValue());
             }
+            opePurchasBQc.setStatus(QcStatusEnums.FAIL.getValue());
         }
         return opePurchasBQc;
     }
