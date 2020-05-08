@@ -137,11 +137,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public IntResult checkMailCount(StringEnter enter) {
+        //邮箱去空格
+        enter.setSt(StringUtils.trim(enter.getSt()));
+
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, enter.getSt());
         wrapper.eq(OpeCustomer.COL_DR, 0);
         Integer count = opeCustomerMapper.selectCount(wrapper);
-
         return new IntResult(count);
     }
 
@@ -154,6 +156,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Transactional
     @Override
     public GeneralResult save(CreateCustomerEnter enter) {
+        //邮箱去空格
+        if (StringUtils.isNotEmpty(enter.getEmail())){
+            enter.setEmail(StringUtils.trim(enter.getEmail()));
+        }
+
 
         QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
@@ -222,6 +229,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Transactional
     @Override
     public GeneralResult edit(EditCustomerEnter enter) {
+
+        //邮箱去空格
+        if (StringUtils.isNotEmpty(enter.getEmail())){
+            enter.setEmail(StringUtils.trim(enter.getEmail()));
+        }
 
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         final Long tenantId = customer.getTenantId();
@@ -754,6 +766,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Transactional
     @Override
     public GeneralResult customerSetPassword(SetPasswordEnter enter) {
+
+        //密码去空格
+        if (StringUtils.isNotEmpty(enter.getNewPassword())){
+            enter.setNewPassword(enter.getNewPassword().trim());
+        }
+        if (StringUtils.isNotEmpty(enter.getConfirmPassword())){
+            enter.setConfirmPassword(enter.getConfirmPassword().trim());
+        }
+
         // 数据校验
         String code = jedisCluster.get(enter.getRequestId());
         if (!StringUtils.equals(code, enter.getCode())) {

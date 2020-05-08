@@ -165,6 +165,19 @@ public class RtDriverServiceImpl implements RtDriverService {
     @Override
     public GeneralResult save(SaveDriverEnter enter) {
 
+        //邮箱去空格
+        if (StringUtils.isNotEmpty(enter.getEmail())){
+            enter.setEmail(enter.getEmail().trim());
+        }
+        //密码去空格
+        if (StringUtils.isNotEmpty(enter.getPassword())){
+            enter.setPassword(enter.getPassword().trim());
+        }
+        if (StringUtils.isNotEmpty(enter.getPasswordAgain())){
+            enter.setPasswordAgain(enter.getPasswordAgain().trim());
+        }
+
+
         Boolean aBoolean = Boolean.FALSE;
         //驾照等级
         String driverLicenseLevel = enter.getDriverLicenseLevel();

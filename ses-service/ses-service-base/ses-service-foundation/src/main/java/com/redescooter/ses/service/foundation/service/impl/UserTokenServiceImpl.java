@@ -540,6 +540,16 @@ public class UserTokenServiceImpl implements UserTokenService {
      */
     @Override
     public GeneralResult setPassword(SetPasswordEnter enter) {
+
+        //密码去空格
+        if (StringUtils.isNotEmpty(enter.getConfirmPassword())){
+            enter.setConfirmPassword(enter.getConfirmPassword().trim());
+        }
+        if (StringUtils.isNotEmpty(enter.getNewPassword())){
+            enter.setNewPassword(enter.getNewPassword().trim());
+        }
+
+
         /**
          * 系统内部进行设置密码
          */
@@ -639,6 +649,23 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Transactional
     @Override
     public GeneralResult chanagePassword(ChanagePasswordEnter enter) {
+
+        //邮箱、密码去空格
+        if (StringUtils.isNotEmpty(enter.getEmail())){
+            enter.setEmail(enter.getEmail().trim());
+        }
+        if (StringUtils.isNotEmpty(enter.getNewPassword())){
+            enter.setNewPassword(enter.getNewPassword().trim());
+        }
+        if (StringUtils.isNotEmpty(enter.getOldPassword())){
+            enter.setOldPassword(enter.getOldPassword());
+        }
+        if (StringUtils.isNotEmpty(enter.getConfirmNewPassword())){
+            enter.setConfirmNewPassword(enter.getConfirmNewPassword().trim());
+        }
+
+
+
         //新密码判断是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmNewPassword())) {
             throw new FoundationException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
@@ -684,6 +711,11 @@ public class UserTokenServiceImpl implements UserTokenService {
      */
     @Override
     public GeneralResult sendEmail(BaseSendMailEnter enter) {
+
+        //邮箱去空格
+        if (StringUtils.isNotEmpty(enter.getMail())){
+            enter.setMail(enter.getMail().trim());
+        }
 
         GetUserEnter getUser = new GetUserEnter();
         BeanUtils.copyProperties(enter, getUser);
