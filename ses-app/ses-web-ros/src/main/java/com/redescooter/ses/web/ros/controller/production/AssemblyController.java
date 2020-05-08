@@ -15,6 +15,7 @@ import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnt
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoItemEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
@@ -151,7 +152,7 @@ public class AssemblyController {
 
     @PostMapping(value = "/assemblyQcInfoItem")
     @ApiOperation(value = "组装单质检记录条目", response = productItemResult.class)
-    public Response<List<AssemblyQcItemResult>> assemblyQcInfoItem(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<List<AssemblyQcItemResult>> assemblyQcInfoItem(@ModelAttribute @ApiParam("请求参数") AssemblyQcInfoItemEnter enter) {
         return new Response<>(assemblyService.assemblyQcInfoItem(enter));
     }
 

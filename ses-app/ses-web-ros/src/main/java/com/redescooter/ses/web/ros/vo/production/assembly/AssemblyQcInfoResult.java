@@ -40,4 +40,7 @@ public class AssemblyQcInfoResult extends GeneralResult {
 
     @ApiModelProperty(value = "质检通过数量")
     private int passTotal;
+
+    @ApiModelProperty(value = "是否有之间信息")
+    private Boolean hasChildDate;
 }

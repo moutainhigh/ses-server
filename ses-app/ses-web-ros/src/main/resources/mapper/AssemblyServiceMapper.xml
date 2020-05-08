@@ -99,6 +99,21 @@
                payment.planned_payment_time as estimatedPaymentDate
     </sql>
 
+    <sql id="WHERE_ASSEMBLYQCINFOLIST">
+        where oao.id =#{id}
+        and assBqc.dr = 0
+        <if test="keyword != null and keyword != ''">
+            and (
+            product.en_name like concat("%",#{keyword},"%") or
+            and product.product_number like concat("%",#{keyword},"%")
+            )
+        </if>
+    </sql>
+
+    <sql id="WHERE_ASSEMBLYQCINFOITEM">
+
+    </sql>
+
     <select id="countByTypes" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select count(st.sta) as totalCount,
                st.sta        as status
@@ -262,7 +277,16 @@
         group by assemblyDate
     </select>
 
-    <select id="assemblyQcInfo"
+    <select id="assemblyQcInfoCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_assembly_b_qc assBqc
+        left join ope_assembly_b_order oabo on assBqc.assembly_b_id = oabo.id and oabo.dr = 0
+        left join ope_assembly_order oao on oabo.assembly_id = oao.id and oao.dr = 0
+        left join ope_parts_product product on product.id = oabo.product_id and product.dr = 0
+        <include refid="WHERE_ASSEMBLYQCINFOLIST"/>
+    </select>
+
+    <select id="assemblyQcInfoList"
             resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult">
         select assBqc.id as id,
         oabo.product_number as productN,
@@ -273,32 +297,26 @@
         left join ope_assembly_b_order oabo on assBqc.assembly_b_id = oabo.id and oabo.dr = 0
         left join ope_assembly_order oao on oabo.assembly_id = oao.id and oao.dr = 0
         left join ope_parts_product product on product.id = oabo.product_id and product.dr = 0
-        where oao.id =#{id}
-        and assBqc.dr = 0
-        <if test="status != null and status != ''">
-            and assBqc.status=#{status}
-        </if>
-        <if test="qcStartTime != null and  qcEndTime != null">
-            and (assBqc.created_time between #{qcStartTime} and #{qcEndTime})
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            product.en_name like concat("%",#{keyword},"%") or
-            and product.product_number like concat("%",#{keyword},"%")
-            )
-        </if>
+        <include refid="WHERE_ASSEMBLYQCINFOLIST"/>
     </select>
 
     <select id="assemblyQcInfoItem"
             resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult">
-            select item.id           as id,
-                   item.serial_num   as serialN,
-                   item.qc_result    as qcStatus,
-                   item.created_time as qcDate
+            select item.id           as  id,
+                    item.serial_num   as  serialN,
+                    item.qc_result    as  qcStatus,
+                    item.created_time as  qcDate,
+                    item.assembly_b_qc_id as  assemblyBQcId
             from ope_assembly_qc_item item
                      left join ope_assembly_b_qc bqc on bqc.id = item.assembly_b_qc_id and bqc.dr = 0
             where bqc.id = #{id}
               and item.dr = 0
+            <if test="status != null and status != ''">
+                and item.qc_result=#{status}
+            </if>
+            <if test="qcStartTime != null and qcEndTime != null">
+                and (item.created_time between #{qcStartTime}  and #{qcEndTime} )
+            </if>
     </select>
 
     <select id="assemblyQcItemView"
@@ -335,5 +353,26 @@
             from ope_assembly_qc_trace trace
             where trace.dr = 0
               and trace.assembly_qc_item_id =#{id}
+    </select>
+    <select id="assemblyQcInfoItemByIds"
+            resultType="com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult">
+        select item.id           as  id,
+                item.serial_num   as  serialN,
+                item.qc_result    as  qcStatus,
+                item.created_time as  qcDate,
+                item.assembly_b_qc_id as  assemblyBQcId
+        from ope_assembly_qc_item item
+        left join ope_assembly_b_qc bqc on bqc.id = item.assembly_b_qc_id and bqc.dr = 0
+        where item.dr = 0
+        and bqc.id in
+        <foreach collection="ids" open="(" close=")" item="item">
+            #{item}
+        </foreach>
+        <if test="enter.status">
+            and item.qc_result=#{enter.status}
+        </if>
+        <if test="enter.qcStartTime != null and enter.qcEndTime != null">
+            and (item.created_time between #{enter.qcStartTime}  and #{enter.qcEndTime} )
+        </if>
     </select>
 </mapper>

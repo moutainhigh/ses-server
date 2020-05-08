@@ -14,6 +14,7 @@ import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnt
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoItemEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
@@ -169,7 +170,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    List<AssemblyQcItemResult> assemblyQcInfoItem(IdEnter enter);
+    List<AssemblyQcItemResult> assemblyQcInfoItem(AssemblyQcInfoItemEnter enter);
 
     /**
      * 质检条目的质检项

@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -72,6 +73,7 @@ import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnt
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoItemEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
@@ -872,8 +874,41 @@ public class AssemblyServiceImpl implements AssemblyService {
     public List<AssemblyQcInfoResult> assemblyQcInfo(AssemblyQcInfoEnter enter) {
         //校验组装单Id
         checkAssembly(enter.getId(), null);
+        //分页时候放开就好了
+//        int count = assemblyServiceMapper.assemblyQcInfoCount(enter);
+//        if (count == 0) {
+//            return new ;
+//        }
+
         //组装单 质检结果集
-        return assemblyServiceMapper.assemblyQcInfo(enter);
+        List<AssemblyQcInfoResult> assemblyQcInfoResultList = assemblyServiceMapper.assemblyQcInfoList(enter);
+
+        //查询子集
+        List<AssemblyQcItemResult> assemblyQcItemResultList = assemblyServiceMapper.assemblyQcInfoItemByIds(enter,
+                assemblyQcInfoResultList.stream().map(AssemblyQcInfoResult::getId).collect(Collectors.toList()));
+
+        //封装是否要查询的Boolean 字段
+        if (CollectionUtils.isNotEmpty(assemblyQcItemResultList)) {
+            List<Long> existIds = Lists.newArrayList();
+            for (AssemblyQcInfoResult result : assemblyQcInfoResultList) {
+                for (AssemblyQcItemResult item : assemblyQcItemResultList) {
+                    if (existIds.contains(result.getId())) {
+                        break;
+                    } else {
+                        if (item.getAssemblyBQcId().equals(result.getId())) {
+                            result.setHasChildDate(Boolean.TRUE);
+                            existIds.add(item.getAssemblyBQcId());
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            for (AssemblyQcInfoResult result : assemblyQcInfoResultList) {
+                result.setHasChildDate(Boolean.FALSE);
+            }
+        }
+        return assemblyQcInfoResultList;
     }
 
     /**
@@ -883,7 +918,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @return
      */
     @Override
-    public List<AssemblyQcItemResult> assemblyQcInfoItem(IdEnter enter) {
+    public List<AssemblyQcItemResult> assemblyQcInfoItem(AssemblyQcInfoItemEnter enter) {
         //校验质检结果
         OpeAssemblyBQc opeAssemblyBQc = opeAssemblyBQcService.getById(enter.getId());
         if (opeAssemblyBQc == null) {
