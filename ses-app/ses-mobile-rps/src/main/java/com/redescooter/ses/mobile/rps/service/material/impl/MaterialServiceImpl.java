@@ -340,18 +340,14 @@ public class MaterialServiceImpl implements MaterialService {
 
             for (OpePurchasB item : checkPurchasList) {
                 if (item.getPurchasId().equals(opePurchas.getId())) {
-                    //子订单判断是否 有质检记录
-                    if (item.getLaveWaitQcQty() < item.getTotalCount()) {
 
-                        //校验质检信息是否能 已经全部质检过
-                        for (OpePurchasBQc purchasbqc : purchasBQcList) {
-                            if (item.getPurchasId().equals(opePurchas.getId())) {
-                                if (item.getId().equals(purchasbqc.getPurchasBId()) && !item.getTotalCount().equals(purchasbqc.getPassCount())) {
-                                    updatePurchasStatus = Boolean.FALSE;
-                                }
+                    //校验质检信息是否能 已经全部质检过
+                    for (OpePurchasBQc purchasbqc : purchasBQcList) {
+                        if (item.getPurchasId().equals(opePurchas.getId())) {
+                            if (!item.getTotalCount().equals(purchasbqc.getPassCount())) {
+                                updatePurchasStatus = Boolean.FALSE;
                             }
                         }
-
                     }
                 }
 
