@@ -220,16 +220,17 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             opePurchas.setUpdatedBy(enter.getUserId());
             opePurchas.setUpdatedTime(new Date());
             opePurchasService.updateById(opePurchas);
+
+            //节点
+            SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+            BeanUtils.copyProperties(enter, saveNodeEnter);
+            saveNodeEnter.setId(opePurchas.getId());
+            saveNodeEnter.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
+            saveNodeEnter.setEvent(PurchasingEventEnums.IN_PURCHASING_WH.getValue());
+            saveNodeEnter.setMemo(null);
+            receiptTraceService.savePurchasingNode(saveNodeEnter);
         }
 
-        //节点
-        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
-        BeanUtils.copyProperties(enter, saveNodeEnter);
-        saveNodeEnter.setId(opePurchas.getId());
-        saveNodeEnter.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
-        saveNodeEnter.setEvent(PurchasingEventEnums.IN_PURCHASING_WH.getValue());
-        saveNodeEnter.setMemo(null);
-        receiptTraceService.savePurchasingNode(saveNodeEnter);
         return HaveIdPartsResult.builder()
                 .id(opePurchasB.getId())
                 .inWaitWhQty(opePurchasB.getInWaitWhQty())
@@ -351,16 +352,17 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             opePurchas.setUpdatedBy(enter.getUserId());
             opePurchas.setUpdatedTime(new Date());
             opePurchasService.updateById(opePurchas);
+
+            //节点
+            SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+            BeanUtils.copyProperties(enter, saveNodeEnter);
+            saveNodeEnter.setId(opePurchas.getId());
+            saveNodeEnter.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
+            saveNodeEnter.setEvent(PurchasingEventEnums.IN_PURCHASING_WH.getValue());
+            saveNodeEnter.setMemo(null);
+            receiptTraceService.savePurchasingNode(saveNodeEnter);
         }
 
-        //节点
-        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
-        BeanUtils.copyProperties(enter, saveNodeEnter);
-        saveNodeEnter.setId(opePurchas.getId());
-        saveNodeEnter.setStatus(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
-        saveNodeEnter.setEvent(PurchasingEventEnums.IN_PURCHASING_WH.getValue());
-        saveNodeEnter.setMemo(null);
-        receiptTraceService.savePurchasingNode(saveNodeEnter);
 
         return NotIdPartsSucceedResult.builder()
                 .id(opePurchasB.getId())
