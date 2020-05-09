@@ -323,7 +323,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 
         List<OpePurchasB> checkPurchasList = new ArrayList<>();
-
+        //形成 子订单校验集合
         checkOpePurchasBList.forEach(item -> {
             opePurchasBList.forEach(opePurchasB -> {
                 if (item.getId().equals(opePurchasB.getId())) {
@@ -334,8 +334,9 @@ public class MaterialServiceImpl implements MaterialService {
             });
         });
 
-
-        for (OpePurchas opePurchas : opePurchasList) {//主表数量、数量维护
+        //主表数量、数量维护
+        for (OpePurchas opePurchas : opePurchasList) {
+            //校验每个主订单部件 是否全部通过质检
             Boolean updatePurchasStatus = Boolean.TRUE;
 
             for (OpePurchasB item : checkPurchasList) {
@@ -343,6 +344,7 @@ public class MaterialServiceImpl implements MaterialService {
 
                     //校验质检信息是否能 已经全部质检过
                     for (OpePurchasBQc purchasbqc : purchasBQcList) {
+                        //同一个主订单下 判断所有子订单 是否 采购所有部件 是否已经通过质检  都通过时 修改主订单状态
                         if (item.getPurchasId().equals(opePurchas.getId())) {
                             if (!item.getTotalCount().equals(purchasbqc.getPassCount())) {
                                 updatePurchasStatus = Boolean.FALSE;
