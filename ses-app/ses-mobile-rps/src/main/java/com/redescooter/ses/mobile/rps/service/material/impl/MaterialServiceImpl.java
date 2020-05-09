@@ -849,6 +849,7 @@ public class MaterialServiceImpl implements MaterialService {
                 .batchN(batchNo)
                 .partN(opeParts.getPartsNumber())
                 .qcResult(qcResult)
+                .laveQcTotal(opePurchas.getLaveWaitQcTotal())
                 .build();
     }
 

@@ -19,4 +19,7 @@ public class ScooterQcResidueNumResult extends GeneralResult {
 
     @ApiModelProperty(value = "整车质检剩余产品数量")
     private Integer residueNum;
+
+    @ApiModelProperty(value = "主订单质检剩余产品数量")
+    private Integer laveQcTotal;
 }
