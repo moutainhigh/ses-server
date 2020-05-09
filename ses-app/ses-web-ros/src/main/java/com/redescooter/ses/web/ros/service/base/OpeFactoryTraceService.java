@@ -19,3 +19,13 @@ public interface OpeFactoryTraceService extends IService<OpeFactoryTrace> {
     int insertOrUpdateSelective(OpeFactoryTrace record);
 
 }
+
+
+
+
+
+
+
+
+
+

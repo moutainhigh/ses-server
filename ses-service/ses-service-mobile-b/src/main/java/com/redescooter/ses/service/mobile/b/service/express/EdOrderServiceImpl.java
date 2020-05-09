@@ -1,23 +1,9 @@
 package com.redescooter.ses.service.mobile.b.service.express;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.redescooter.ses.tool.utils.SesStringUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
@@ -59,9 +45,27 @@ import com.redescooter.ses.service.mobile.b.service.base.CorExpressOrderService;
 import com.redescooter.ses.service.mobile.b.service.base.CorTenantScooterService;
 import com.redescooter.ses.service.mobile.b.service.base.CorUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.RedisKeyUtil;
+import com.redescooter.ses.starter.redis.RedisLock;
+import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EdOrderServiceImpl implements EdOrderService {
@@ -87,6 +91,9 @@ public class EdOrderServiceImpl implements EdOrderService {
     @Autowired
     private CorUserProfileService corUserProfileService;
 
+    @Autowired
+    private JedisService jedisService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -98,73 +105,73 @@ public class EdOrderServiceImpl implements EdOrderService {
 
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/6 15:18
      * @Param: enter
      * @Return: PageResult<OrderResult>
      * @desc: 订单列表
-     * @param enter
      */
     @Override
     public List<OrderResult> orderList(GeneralEnter enter) {
-        List<OrderResult> orderList=edOrderServiceMapper.orderList(enter);
-        if (CollectionUtils.isEmpty(orderList)){
+        List<OrderResult> orderList = edOrderServiceMapper.orderList(enter);
+        if (CollectionUtils.isEmpty(orderList)) {
             return null;
         }
         return orderList;
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/6 15:30
      * @Param: enter
      * @Return: OrderResult
      * @desc: 订单详情
-     * @param enter
      */
     @Override
     public OrderResult orderDetail(IdEnter enter) {
         CorExpressOrder corExpressOrder = corExpressOrderService.getById(enter.getId());
-        OrderResult orderResult=new OrderResult();
-        BeanUtils.copyProperties(corExpressOrder,orderResult);
+        OrderResult orderResult = new OrderResult();
+        BeanUtils.copyProperties(corExpressOrder, orderResult);
         return orderResult;
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/6 15:31
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 开始订单
-     * @param enter
      */
     @Transactional
     @Override
     public GeneralResult start(StartEnter enter) {
         // 是否有正在进行的订单
-        int count=edOrderServiceMapper.dirverShippingOrder(enter);
-        if (count>0){
-            throw new MobileBException(ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getCode(),ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getMessage());
+        int count = edOrderServiceMapper.dirverShippingOrder(enter);
+        if (count > 0) {
+            throw new MobileBException(ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getCode(), ExceptionCodeEnums.DRIVER_HAS_AN_DELIVERY_IN_PROGRESS.getMessage());
         }
         //验证订单是否存在
         CorExpressOrder corExpressOrder = corExpressOrderService.getById(enter.getId());
-        if (corExpressOrder==null){
-            throw new MobileBException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+        if (corExpressOrder == null) {
+            throw new MobileBException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
         // 状态过滤
-        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.ASGN.getValue())){
-            throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        if (!StringUtils.equals(corExpressOrder.getStatus(), ExpressOrderStatusEnums.ASGN.getValue())) {
+            throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         // 开启订单
         // 查询expressDeliveryDetail订单
-        QueryWrapper<CorExpressDeliveryDetail> corExpressDeliveryDetailQueryWrapper=new QueryWrapper<>();
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_DR,0);
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_TENANT_ID,enter.getTenantId());
+        QueryWrapper<CorExpressDeliveryDetail> corExpressDeliveryDetailQueryWrapper = new QueryWrapper<>();
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_DR, 0);
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_TENANT_ID, enter.getTenantId());
         corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_STATUS, ExpressDeliveryDetailStatusEnums.ASGN.getValue());
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_EXPRESS_ORDER_ID,enter.getId());
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_EXPRESS_ORDER_ID, enter.getId());
         CorExpressDeliveryDetail deliveryDetail = corExpressDeliveryDetailService.getOne(corExpressDeliveryDetailQueryWrapper);
 
         deliveryDetail.setStatus(ExpressDeliveryDetailStatusEnums.SHIPPING.getValue());
@@ -182,22 +189,22 @@ public class EdOrderServiceImpl implements EdOrderService {
         corExpressOrderService.updateById(corExpressOrder);
 
         // 骑行数据维护
-        CorExpressDelivery corExpressDelivery=corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
+        CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
         corExpressDelivery.setDrivenMileage(new BigDecimal(enter.getMileage()).add(corExpressDelivery.getDrivenMileage()));
         corExpressDelivery.setCo2(corExpressDelivery.getCo2().add(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(Long.valueOf(enter.getMileage())))));
         corExpressDelivery.setSavings(corExpressDelivery.getSavings().add(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(Long.valueOf(enter.getMileage())))));
         // 刚开始第一单
-        if (corExpressDelivery.getOrderCompleteNum()==0){
+        if (corExpressDelivery.getOrderCompleteNum() == 0) {
             corExpressDelivery.setStatus(TaskStatusEnums.INPROGRESS.getValue());
             corExpressDelivery.setDeliveryStartTime(new Date());
         }
         corExpressDeliveryService.updateById(corExpressDelivery);
 
         // 获取正在骑行的车辆记录
-       CorDriverScooter corDriverScooter=edOrderServiceMapper.queryScooterIdByUserId(enter.getUserId(),enter.getTenantId());
+        CorDriverScooter corDriverScooter = edOrderServiceMapper.queryScooterIdByUserId(enter.getUserId(), enter.getTenantId());
         // 开启导航
-        IotScooterEnter iotScooterEnter =new IotScooterEnter();
-        BeanUtils.copyProperties(enter,iotScooterEnter);
+        IotScooterEnter iotScooterEnter = new IotScooterEnter();
+        BeanUtils.copyProperties(enter, iotScooterEnter);
         iotScooterEnter.setId(corDriverScooter.getScooterId());
         iotScooterEnter.setEvent(CommonEvent.START.getValue());
         iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
@@ -206,11 +213,11 @@ public class EdOrderServiceImpl implements EdOrderService {
         scooterIotService.navigation(iotScooterEnter);
 
         // 查询车辆信息
-        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper=new QueryWrapper<>();
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR,0);
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID,corDriverScooter.getScooterId());
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID,enter.getTenantId());
-        CorTenantScooter corTenantScooter=corTenantScooterService.getOne(corTenantScooterQueryWrapper);
+        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, corDriverScooter.getScooterId());
+        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
+        CorTenantScooter corTenantScooter = corTenantScooterService.getOne(corTenantScooterQueryWrapper);
         // 记录日志
         savrOrderTrace(enter, enter.getLng(), enter.getLat(),
                 deliveryDetail.getExpressDeliveryId(),
@@ -226,149 +233,135 @@ public class EdOrderServiceImpl implements EdOrderService {
     }
 
 
-
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/6 15:32
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 拒绝订单
-     * @param enter
      */
     @Transactional
     @Override
     public GeneralResult refuse(EdRfuseEnter enter) {
-        //验证订单是否存在
-        CorExpressOrder corExpressOrder = corExpressOrderService.getById(enter.getId());
-        if (corExpressOrder==null){
-            throw new MobileBException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
-        }
-        // 状态过滤
-        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.SHIPPING.getValue())){
-            throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
-        }
-        // 拒绝订单
-        // 查询expressDeliveryDetail订单
-        QueryWrapper<CorExpressDeliveryDetail> corExpressDeliveryDetailQueryWrapper=new QueryWrapper<>();
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_DR,0);
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_TENANT_ID,enter.getTenantId());
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_EXPRESS_ORDER_ID,enter.getId());
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_STATUS, ExpressDeliveryDetailStatusEnums.SHIPPING.getValue());
-        CorExpressDeliveryDetail deliveryDetail = corExpressDeliveryDetailService.getOne(corExpressDeliveryDetailQueryWrapper);
+        try {
+            //redis 加锁
+            jedisService.lock(JedisConstant.JEDIS_KEY, JedisConstant.DEFAULT_EXPIRE);
 
-        deliveryDetail.setStatus(ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
-        deliveryDetail.setUpdatedBy(enter.getUserId());
-        deliveryDetail.setUpdatedTime(new Date());
-        corExpressDeliveryDetailService.updateById(deliveryDetail);
+            //验证订单是否存在
+            CorExpressOrder corExpressOrder = corExpressOrderService.getById(enter.getId());
+            if (corExpressOrder == null) {
+                throw new MobileBException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+            }
+            // 状态过滤
+            if (!StringUtils.equals(corExpressOrder.getStatus(), ExpressOrderStatusEnums.SHIPPING.getValue())) {
+                throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+            }
+            // 拒绝订单
+            // 查询expressDeliveryDetail订单
+            QueryWrapper<CorExpressDeliveryDetail> corExpressDeliveryDetailQueryWrapper = new QueryWrapper<>();
+            corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_DR, 0);
+            corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_TENANT_ID, enter.getTenantId());
+            corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_EXPRESS_ORDER_ID, enter.getId());
+            corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_STATUS, ExpressDeliveryDetailStatusEnums.SHIPPING.getValue());
+            CorExpressDeliveryDetail deliveryDetail = corExpressDeliveryDetailService.getOne(corExpressDeliveryDetailQueryWrapper);
 
-        // 更新expressOrder 信息
-        corExpressOrder.setStatus(ExpressOrderStatusEnums.REJECTED.getValue());
-        corExpressOrder.setDenialReason(enter.getReason());
-        corExpressOrder.setUpdatedBy(enter.getUserId());
-        corExpressOrder.setUpdatedTime(new Date());
-        corExpressOrderService.updateById(corExpressOrder);
+            deliveryDetail.setStatus(ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
+            deliveryDetail.setUpdatedBy(enter.getUserId());
+            deliveryDetail.setUpdatedTime(new Date());
+            corExpressDeliveryDetailService.updateById(deliveryDetail);
 
-        //查询task
-        CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
-        Boolean taskPush = Boolean.FALSE;
-        corExpressDelivery.setOrderCompleteNum(corExpressDelivery.getOrderCompleteNum()+1);
-        if ((corExpressDelivery.getOrderCompleteNum()).equals(corExpressDelivery.getOrderSum())) {
-            corExpressDelivery.setStatus(TaskStatusEnums.DELIVERED.getValue());
-            corExpressDelivery.setDeliveryEndTime(new Date());
+            // 更新expressOrder 信息
+            corExpressOrder.setStatus(ExpressOrderStatusEnums.REJECTED.getValue());
+            corExpressOrder.setDenialReason(enter.getReason());
+            corExpressOrder.setUpdatedBy(enter.getUserId());
+            corExpressOrder.setUpdatedTime(new Date());
+            corExpressOrderService.updateById(corExpressOrder);
 
-            // 大订单需要推送
-            taskPush = Boolean.TRUE;
-        }
-        // 更新 task 信息
-        corExpressDelivery.setUpdatedBy(enter.getUserId());
-        corExpressDelivery.setUpdatedTime(new Date());
-        corExpressDeliveryService.updateById(corExpressDelivery);
+            //查询task
+            CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
+            Boolean taskPush = Boolean.FALSE;
+            corExpressDelivery.setOrderCompleteNum(corExpressDelivery.getOrderCompleteNum() + 1);
+            if ((corExpressDelivery.getOrderCompleteNum()).equals(corExpressDelivery.getOrderSum())) {
+                corExpressDelivery.setStatus(TaskStatusEnums.DELIVERED.getValue());
+                corExpressDelivery.setDeliveryEndTime(new Date());
+
+                // 大订单需要推送
+                taskPush = Boolean.TRUE;
+            }
+            // 更新 task 信息
+            corExpressDelivery.setUpdatedBy(enter.getUserId());
+            corExpressDelivery.setUpdatedTime(new Date());
+            corExpressDeliveryService.updateById(corExpressDelivery);
 
 
-        // 获取正在骑行的车辆记录
-        CorDriverScooter corDriverScooter=edOrderServiceMapper.queryScooterIdByUserId(enter.getUserId(),enter.getTenantId());
+            // 获取正在骑行的车辆记录
+            CorDriverScooter corDriverScooter = edOrderServiceMapper.queryScooterIdByUserId(enter.getUserId(), enter.getTenantId());
 
-        // 查询车辆信息
-        QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper=new QueryWrapper<>();
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR,0);
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID,corDriverScooter.getScooterId());
-        corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID,enter.getTenantId());
-        CorTenantScooter corTenantScooter=corTenantScooterService.getOne(corTenantScooterQueryWrapper);
+            // 查询车辆信息
+            QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
+            corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_DR, 0);
+            corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, corDriverScooter.getScooterId());
+            corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
+            CorTenantScooter corTenantScooter = corTenantScooterService.getOne(corTenantScooterQueryWrapper);
 
-        // 结束导航
-        IotScooterEnter iotScooterEnter =new IotScooterEnter();
-        BeanUtils.copyProperties(enter,iotScooterEnter);
-        iotScooterEnter.setId(corDriverScooter.getScooterId());
-        iotScooterEnter.setEvent(CommonEvent.END.getValue());
-        iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
-        iotScooterEnter.setLongitude(new BigDecimal(enter.getLng()));
-        iotScooterEnter.setBluetoothCommunication(enter.getBluetoothCommunication());
-        scooterIotService.navigation(iotScooterEnter);
+            // 结束导航
+            IotScooterEnter iotScooterEnter = new IotScooterEnter();
+            BeanUtils.copyProperties(enter, iotScooterEnter);
+            iotScooterEnter.setId(corDriverScooter.getScooterId());
+            iotScooterEnter.setEvent(CommonEvent.END.getValue());
+            iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
+            iotScooterEnter.setLongitude(new BigDecimal(enter.getLng()));
+            iotScooterEnter.setBluetoothCommunication(enter.getBluetoothCommunication());
+            scooterIotService.navigation(iotScooterEnter);
 
-        savrOrderTrace(enter, null, null,
-                deliveryDetail.getExpressDeliveryId(),
-                deliveryDetail.getExpressOrderId(),
-                corDriverScooter.getDriverId(),
-                corDriverScooter.getScooterId(),
-                corTenantScooter.getLatitude(),
-                corTenantScooter.getLatitude(),
-                ExpressOrderStatusEnums.REJECTED.getValue(),
-                ExpressOrderEventEnums.REJECTED.getValue(),
-                enter.getReason());
+            savrOrderTrace(enter, null, null,
+                    deliveryDetail.getExpressDeliveryId(),
+                    deliveryDetail.getExpressOrderId(),
+                    corDriverScooter.getDriverId(),
+                    corDriverScooter.getScooterId(),
+                    corTenantScooter.getLatitude(),
+                    corTenantScooter.getLatitude(),
+                    ExpressOrderStatusEnums.REJECTED.getValue(),
+                    ExpressOrderEventEnums.REJECTED.getValue(),
+                    enter.getReason());
 
-        // 个人信息
-        QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
-        corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
-        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
-        corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
-        CorUserProfile corUserProfile = corUserProfileService.getOne(corUserProfileQueryWrapper);
+            // 个人信息
+            QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
+            corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
+            corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+            corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getTenantId());
+            CorUserProfile corUserProfile = corUserProfileService.getOne(corUserProfileQueryWrapper);
 
-        Object[] args = new Object[]{corExpressOrder.getOrderNo(), corExpressDelivery.getId(),
-                new StringBuffer(corUserProfile.getFirstName()).append(" ").append(corUserProfile.getLastName()).toString(),
-                enter.getReason()};
+            Object[] args = new Object[]{corExpressOrder.getOrderNo(), corExpressDelivery.getId(),
+                    new StringBuffer(corUserProfile.getFirstName()).append(" ").append(corUserProfile.getLastName()).toString(),
+                    enter.getReason()};
 
-        // 消息推送
-        // 1、 app 自己
-        PushMsgBo pushApp = PushMsgBo.builder()
-                .enter(enter)
-                .status(ExpressOrderStatusEnums.REJECTED.getValue())
-                .args(args)
-                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
-                .bizId(enter.getId())
-                .belongId(enter.getUserId())
-                .appId(AppIDEnums.SAAS_APP.getAppId())
-                .systemId(AppIDEnums.SAAS_APP.getSystemId())
-                .pushType(PlatformTypeEnum.ANDROID.getValue())
-                .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
-                .mesageType(MesageTypeEnum.SITE.getValue())
-                .build();
-        pushMsg(pushApp);
-
-        // 2 app----》web
-        PushMsgBo pushWeb = PushMsgBo.builder()
-                .enter(enter)
-                .status(ExpressOrderStatusEnums.REJECTED.getValue())
-                .args(args)
-                .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
-                .bizId(enter.getId())
-                .belongId(corExpressDelivery.getCreateBy())
-                .appId(AppIDEnums.SAAS_WEB.getAppId())
-                .systemId(AppIDEnums.SAAS_WEB.getSystemId())
-                .pushType(PlatformTypeEnum.PC.getValue())
-                .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
-                .mesageType(MesageTypeEnum.NONE.getValue())
-                .build();
-        pushMsg(pushWeb);
-
-        // 判断大订单是否完成 完成进行大订单推送
-        if (taskPush) {
-            PushMsgBo taskPushWeb = PushMsgBo.builder()
+            // 消息推送
+            // 1、 app 自己
+            PushMsgBo pushApp = PushMsgBo.builder()
                     .enter(enter)
-                    .status(TaskStatusEnums.DELIVERED.getValue())
+                    .status(ExpressOrderStatusEnums.REJECTED.getValue())
                     .args(args)
-                    .bizType(MesageBizTypeEnum.EXPRESS_DELIVERY.getValue())
-                    .bizId(corExpressDelivery.getId())
+                    .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
+                    .bizId(enter.getId())
+                    .belongId(enter.getUserId())
+                    .appId(AppIDEnums.SAAS_APP.getAppId())
+                    .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                    .pushType(PlatformTypeEnum.ANDROID.getValue())
+                    .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
+                    .mesageType(MesageTypeEnum.SITE.getValue())
+                    .build();
+            pushMsg(pushApp);
+
+            // 2 app----》web
+            PushMsgBo pushWeb = PushMsgBo.builder()
+                    .enter(enter)
+                    .status(ExpressOrderStatusEnums.REJECTED.getValue())
+                    .args(args)
+                    .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
+                    .bizId(enter.getId())
                     .belongId(corExpressDelivery.getCreateBy())
                     .appId(AppIDEnums.SAAS_WEB.getAppId())
                     .systemId(AppIDEnums.SAAS_WEB.getSystemId())
@@ -376,39 +369,60 @@ public class EdOrderServiceImpl implements EdOrderService {
                     .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
                     .mesageType(MesageTypeEnum.NONE.getValue())
                     .build();
-            pushMsg(taskPushWeb);
+            pushMsg(pushWeb);
+
+            // 判断大订单是否完成 完成进行大订单推送
+            if (taskPush) {
+                PushMsgBo taskPushWeb = PushMsgBo.builder()
+                        .enter(enter)
+                        .status(TaskStatusEnums.DELIVERED.getValue())
+                        .args(args)
+                        .bizType(MesageBizTypeEnum.EXPRESS_DELIVERY.getValue())
+                        .bizId(corExpressDelivery.getId())
+                        .belongId(corExpressDelivery.getCreateBy())
+                        .appId(AppIDEnums.SAAS_WEB.getAppId())
+                        .systemId(AppIDEnums.SAAS_WEB.getSystemId())
+                        .pushType(PlatformTypeEnum.PC.getValue())
+                        .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
+                        .mesageType(MesageTypeEnum.NONE.getValue())
+                        .build();
+                pushMsg(taskPushWeb);
+            }
+        } finally {
+            //解锁
+            jedisService.unlock(JedisConstant.JEDIS_KEY);
         }
         return new GeneralResult(enter.getRequestId());
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/6 15:41
      * @Param: enter
      * @Return: CompleteResult
      * @desc: 完成订单
-     * @param enter
      */
     @Transactional
     @Override
     public CompleteResult complete(CompleteEnter enter) {
         //验证订单是否存在
         CorExpressOrder corExpressOrder = corExpressOrderService.getById(enter.getId());
-        if (corExpressOrder==null){
-            throw new MobileBException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
+        if (corExpressOrder == null) {
+            throw new MobileBException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
         // 状态过滤
-        if (!StringUtils.equals(corExpressOrder.getStatus(),ExpressOrderStatusEnums.SHIPPING.getValue())){
-            throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
+        if (!StringUtils.equals(corExpressOrder.getStatus(), ExpressOrderStatusEnums.SHIPPING.getValue())) {
+            throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         // 拒绝订单
         // 查询expressDeliveryDetail订单
-        QueryWrapper<CorExpressDeliveryDetail> corExpressDeliveryDetailQueryWrapper=new QueryWrapper<>();
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_DR,0);
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_TENANT_ID,enter.getTenantId());
+        QueryWrapper<CorExpressDeliveryDetail> corExpressDeliveryDetailQueryWrapper = new QueryWrapper<>();
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_DR, 0);
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_TENANT_ID, enter.getTenantId());
         corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_STATUS, ExpressDeliveryDetailStatusEnums.SHIPPING.getValue());
-        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_EXPRESS_ORDER_ID,enter.getId());
+        corExpressDeliveryDetailQueryWrapper.eq(CorExpressDeliveryDetail.COL_EXPRESS_ORDER_ID, enter.getId());
         CorExpressDeliveryDetail deliveryDetail = corExpressDeliveryDetailService.getOne(corExpressDeliveryDetailQueryWrapper);
 
         deliveryDetail.setStatus(ExpressDeliveryDetailStatusEnums.COMPLETED.getValue());
@@ -425,11 +439,11 @@ public class EdOrderServiceImpl implements EdOrderService {
         corExpressOrderService.updateById(corExpressOrder);
 
         //维护delivery 中的 完成数量
-        CorExpressDelivery corExpressDelivery=corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
+        CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
         int time = DateUtil.timeComolete(deliveryDetail.getAta(), deliveryDetail.getAtd()).intValue();
         corExpressDelivery.setDrivenDuration(time);
         Boolean taskComplete = Boolean.FALSE;
-        corExpressDelivery.setOrderCompleteNum(corExpressDelivery.getOrderCompleteNum()+1);
+        corExpressDelivery.setOrderCompleteNum(corExpressDelivery.getOrderCompleteNum() + 1);
         if (corExpressDelivery.getOrderCompleteNum().equals(corExpressDelivery.getOrderSum())) {
             corExpressDelivery.setStatus(TaskStatusEnums.DELIVERED.getValue());
             corExpressDelivery.setDeliveryEndTime(new Date());
@@ -556,9 +570,9 @@ public class EdOrderServiceImpl implements EdOrderService {
         baseExpressOrderTraceEnter.setEvent(event);
         baseExpressOrderTraceEnter.setReason(reason);
         baseExpressOrderTraceEnter.setEventTime(new Date());
-        baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng)==true?lng:"0"));
-        baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat)==true?lat:"0"));
-        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lng)==true?lng:"0",StringUtils.isNotBlank(lat)==true?lat:"0"));
+        baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng) == true ? lng : "0"));
+        baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat) == true ? lat : "0"));
+        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lng) == true ? lng : "0", StringUtils.isNotBlank(lat) == true ? lat : "0"));
         baseExpressOrderTraceEnter.setScooterId(scooterId);
         baseExpressOrderTraceEnter.setScooterLatitude(scooterLat);
         baseExpressOrderTraceEnter.setScooterLongitude(scooterLng);

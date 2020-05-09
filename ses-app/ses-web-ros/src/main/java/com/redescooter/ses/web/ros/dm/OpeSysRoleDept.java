@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSysRoleDept")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysRoleDept")
 @Data
 @Builder
 @AllArgsConstructor
@@ -23,14 +23,14 @@ public class OpeSysRoleDept implements Serializable {
      * 角色ID
      */
     @TableId(value = "role_id", type = IdType.INPUT)
-    @ApiModelProperty(value="角色ID")
+    @ApiModelProperty(value = "角色ID")
     private Long roleId;
 
     /**
      * 部门ID
      */
     @TableId(value = "dept_id", type = IdType.INPUT)
-    @ApiModelProperty(value="部门ID")
+    @ApiModelProperty(value = "部门ID")
     private Long deptId;
 
     private static final long serialVersionUID = 1L;
@@ -38,4 +38,8 @@ public class OpeSysRoleDept implements Serializable {
     public static final String COL_ROLE_ID = "role_id";
 
     public static final String COL_DEPT_ID = "dept_id";
+
+    public static OpeSysRoleDeptBuilder builder() {
+        return new OpeSysRoleDeptBuilder();
+    }
 }

@@ -30,8 +30,10 @@ public class OpeSysMenuServiceImpl extends ServiceImpl<OpeSysMenuMapper, OpeSysM
     public int insertOrUpdate(OpeSysMenu record) {
         return baseMapper.insertOrUpdate(record);
     }
+
     @Override
     public int insertOrUpdateSelective(OpeSysMenu record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

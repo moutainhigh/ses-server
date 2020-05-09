@@ -6,8 +6,8 @@ import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
-import com.redescooter.ses.web.ros.service.PartsRosService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
@@ -16,7 +16,7 @@ import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.apache.dubbo.config.annotation.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -100,8 +100,8 @@ public class ExcelServiceImpl implements ExcelService {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_REPEAT.getCode(), ExceptionCodeEnums.PARTS_NUMBER_REPEAT.getMessage());
         }
 
-        //2.判断与数据库中是否有已存在的产品编号
-        List<String> usingProductNumList = bomRosServiceMapper.UsingProductNumList(enter);
+        //2.判断与数据库中部件草稿中是否有已存在的产品编号
+        List<String> usingProductNumList = bomRosServiceMapper.checkProductNums(enter);
         if (CollectionUtils.isNotEmpty(usingProductNumList)) {
             productNSet.forEach(item -> {
                 if (usingProductNumList.contains(item)) {

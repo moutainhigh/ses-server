@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
@@ -132,7 +133,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
                     .build();
             resultList.add(queryTenantNodeResult);
         });
-        return (ArrayList) resultList;
+        return resultList;
     }
 
     /**
@@ -252,8 +253,8 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             }
             tenantConfig.setStartWeek(TenantBussinessWeek.MON.getValue());
             tenantConfig.setEndWeek(TenantBussinessWeek.SUN.getValue());
-            tenantConfig.setBeginTime(DateUtil.parse(TenantDefaultValue.BEGIN_TIME, DateUtil.DEFAULT_DATETIME_FORMAT));
-            tenantConfig.setEndTime(DateUtil.parse(TenantDefaultValue.END_TIME, DateUtil.DEFAULT_DATETIME_FORMAT));
+            tenantConfig.setBeginTime(DateUtil.parse(TenantDefaultValue.BEGIN_TIME, DateConstant.DEFAULT_DATETIME_FORMAT));
+            tenantConfig.setEndTime(DateUtil.parse(TenantDefaultValue.END_TIME, DateConstant.DEFAULT_DATETIME_FORMAT));
             tenantConfig.setDistributionRange(TenantDefaultValue.DISTRIBUTION_RANGE);
             tenantConfig.setEstimatedDuration(TenantDefaultValue.ESTIMATED_DURATION);
             // 租户信息初始化
@@ -282,8 +283,8 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             }
             tenantConfig.setStartWeek(enter.getStartWeek());
             tenantConfig.setEndWeek(enter.getEndWeek());
-            tenantConfig.setBeginTime(DateUtil.parse(enter.getBeginTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
-            tenantConfig.setEndTime(DateUtil.parse(enter.getEndTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
+            tenantConfig.setBeginTime(DateUtil.parse(enter.getBeginTime(), DateConstant.DEFAULT_DATETIME_FORMAT));
+            tenantConfig.setEndTime(DateUtil.parse(enter.getEndTime(), DateConstant.DEFAULT_DATETIME_FORMAT));
             if (AccountTypeEnums.WEB_RESTAURANT.getAccountType().equals(queryUserResult.getUserType())) {
                 tenantConfig.setDistributionRange(enter.getDistributionRange());
                 tenantConfig.setEstimatedDuration(enter.getEstimatedDuration());

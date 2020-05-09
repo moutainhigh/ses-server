@@ -31,3 +31,4 @@ public class OpeSysDeptRelationServiceImpl extends ServiceImpl<OpeSysDeptRelatio
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

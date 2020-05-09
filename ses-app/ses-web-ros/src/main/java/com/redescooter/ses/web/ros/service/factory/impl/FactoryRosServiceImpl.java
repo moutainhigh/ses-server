@@ -23,7 +23,7 @@ import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -34,8 +34,10 @@ public class FactoryRosServiceImpl implements FactoryRosService {
 
     @Autowired
     private OpeFactoryService factoryService;
+
     @Autowired
     private FactoryServiceMapper factoryServiceMapper;
+
     @Autowired
     private OpeFactoryTraceService factoryTraceService;
 

@@ -28,7 +28,7 @@ public class DetailsPartsResult extends GeneralResult {
     @ApiModelProperty(value = "主键")
     private Long id;
 
-    @ApiModelProperty(value="用户ID")
+    @ApiModelProperty(value = "用户ID")
     private Long userId;
 
     @ApiModelProperty(value = "导入批次号")
@@ -55,6 +55,9 @@ public class DetailsPartsResult extends GeneralResult {
     @ApiModelProperty(value = "是否可销售,SC仅可采购，SSC可销售可采购")
     private String snClassFlag;
 
+    @ApiModelProperty(value = "是否有唯一编码")
+    private Boolean idClass;
+
     @ApiModelProperty(value = "生产周期")
     private String productionCycle;
 
@@ -66,6 +69,12 @@ public class DetailsPartsResult extends GeneralResult {
 
     @ApiModelProperty(value = "图纸")
     private String dwg;
+
+    @ApiModelProperty(value = "信息是否完善")
+    private Boolean perfectFlag;
+
+    @ApiModelProperty(value = "是否已同步")
+    private Boolean synchronizeFlag;
 
     @ApiModelProperty(value = "更新时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

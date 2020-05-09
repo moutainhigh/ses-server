@@ -30,8 +30,11 @@ public class OpeSysUserRoleServiceImpl extends ServiceImpl<OpeSysUserRoleMapper,
     public int insertOrUpdate(OpeSysUserRole record) {
         return baseMapper.insertOrUpdate(record);
     }
+
     @Override
     public int insertOrUpdateSelective(OpeSysUserRole record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+

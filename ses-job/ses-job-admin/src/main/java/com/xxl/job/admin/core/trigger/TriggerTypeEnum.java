@@ -15,7 +15,7 @@ public enum TriggerTypeEnum {
     PARENT(I18nUtil.getString("jobconf_trigger_type_parent")),
     API(I18nUtil.getString("jobconf_trigger_type_api"));
 
-    private TriggerTypeEnum(String title){
+    TriggerTypeEnum(String title){
         this.title = title;
     }
     private String title;

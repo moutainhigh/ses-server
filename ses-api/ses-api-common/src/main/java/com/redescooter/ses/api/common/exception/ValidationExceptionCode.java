@@ -23,6 +23,6 @@ public interface ValidationExceptionCode {
     int PICTURE_IS_EMPTY = 10006;
     // 邮箱为空
     int EMAIL_IS_EMPTY = 10007;
-    // id 为空
+    // id为空
     int ID_IS_EMPTY = 10008;
 }

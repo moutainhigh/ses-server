@@ -34,8 +34,8 @@ import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -126,6 +126,7 @@ public class RoleServiceImpl implements RoleService {
         if (CollectionUtils.isEmpty(opeSysDeptList)) {
             return new ArrayList<>();
         }
+        //查看所有角色
         List<RoleResult> roleList = roleServiceMapper.list(enter);
         if (CollectionUtils.isEmpty(roleList)) {
             return opeSysDeptList;
@@ -134,6 +135,8 @@ public class RoleServiceImpl implements RoleService {
             List<RoleResult> roleResultList = new ArrayList<>();
             roleList.forEach(role -> {
                 if (item.getDeptId().equals(role.getDeptId())) {
+                    //查询该部门岗位下的人员数量
+                    role.setCount(sysUserRoleService.count(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getRoleId, role.getId())));
                     roleResultList.add(role);
                 }
             });

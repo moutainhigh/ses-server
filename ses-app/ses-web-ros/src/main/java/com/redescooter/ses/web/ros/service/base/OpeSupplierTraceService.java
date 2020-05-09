@@ -19,3 +19,5 @@ public interface OpeSupplierTraceService extends IService<OpeSupplierTrace> {
     int insertOrUpdateSelective(OpeSupplierTrace record);
 
 }
+
+

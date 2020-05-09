@@ -8,24 +8,16 @@ package com.redescooter.ses.web.ros.exception;
 public interface ValidationExceptionCode {
 
     // ###############################10001~10030公共入参异常#######################################
-    // 经度为空
-    int LAT_IS_EMPTY = 10001;
-    // 纬度为空
-    int LNG_IS_EMPTY = 10002;
-    // 图片为空
-    int PICTURE_IS_EMPTY = 10003;
     //长度过长，长度为2-20字符
-    int CHARACTER_IS_TOO_LONG = 10004;
+    int CHARACTER_IS_TOO_LONG = 10010;
     //长度过短，长度为2-20字符
-    int CHARACTER_IS_TOO_SHORT = 10005;
-    // 邮箱为空
-    int EMAIL_IS_EMPTY = 10006;
-    // id 为空
-    int ID_IS_EMPTY = 10007;
+    int CHARACTER_IS_TOO_SHORT = 10011;
     //国家手机号编码不能为空
-    int COUNTRY_CODE_IS_EMPTY = 10008;
+    int COUNTRY_CODE_IS_EMPTY = 100012;
     //URL不能为空
-    int URL_IS_EMPTY = 10009;
+    int URL_IS_EMPTY = 10013;
+//    // id 为空
+//    int ID_IS_EMPTY = 10014;
 
     //###############################10030~100?? 业务入参异常#######################################
     // 地址信息为空
@@ -128,4 +120,36 @@ public interface ValidationExceptionCode {
     int DEPT_LEVEL_IS_EMPTY = 10078;
     // 职位名称为空
     int ROLE_NAME_IS_EMPTY = 10079;
+    // 收货人为空
+    int CONSIGNEE_ID__IS_EMPTY = 10080;
+    // 工厂Id为空
+    int FACTORY_ID_EMPTY = 10081;
+    // 部品为空
+    int PARTS_IS_EMPTY = 10082;
+    // 支付类型为空
+    int PAYMENT_TYPE_IS_EMPTY = 10083;
+    // 金额为空
+    int AMOUNT_IS_EMPTY = 10084;
+    // 实际付款时间为空
+    int ACTUAL_PAYMENT_DATE_IS_EMPTY = 10085;
+    // 发票为空
+    int INVOICE_IS_EMPTY = 10086;
+    // 发票号码为空
+    int INVOICE_NUM_IS_EMPTY = 10087;
+    // 附件为空
+    int ANNEX_IS_EMPTY = 10088;
+    // 价格为空
+    int PRICE_IS_EMPTY = 10089;
+    // 付款信息为空
+    int PAYMENTINFO_IS_EMPTY = 10090;
+    //状态为空
+    int STATUS_IS_EMPTY = 10091;
+    //类型为空
+    int TYPE_IS_EMPTY = 10092;
+    //产品为空
+    int PRODUCT_IS_EMPTY = 10093;
+    //加工费比例为空
+    int PROCESSCOST_RATIO_IS_EMPTY = 10094;
+    //质检模板为空
+    int QC_TEMPLATE_IS_EMPTY = 10095;
 }

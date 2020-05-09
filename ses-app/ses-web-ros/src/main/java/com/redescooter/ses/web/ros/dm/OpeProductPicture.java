@@ -151,7 +151,7 @@ public class OpeProductPicture implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpeProductPictureBuilder builder() {
-        return new OpeProductPictureBuilder();
+    public static com.redescooter.ses.web.ros.dm.OpeProductPicture.OpeProductPictureBuilder builder() {
+        return new com.redescooter.ses.web.ros.dm.OpeProductPicture.OpeProductPictureBuilder();
     }
 }

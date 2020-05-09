@@ -44,6 +44,9 @@
         <if test="deptId != null">
             and dept.id = #{deptId}
         </if>
+        <if test="entryStartDate != null and entryEndDate != null">
+            and profile.join_date between #{entryStartDate} and #{entryEndDate}
+        </if>
         <if test="keyword != null and keyword != ''">
             and (profile.first_name like concat("%",#{keyword},"%")
             or profile.last_name like concat("%",#{keyword},"%")

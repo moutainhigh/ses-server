@@ -22,7 +22,7 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "ope_sys_dept")
 public class OpeSysDept implements Serializable {
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "")
     private Long id;
 
@@ -30,6 +30,7 @@ public class OpeSysDept implements Serializable {
      * 逻辑删除
      */
     @TableField(value = "dr")
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除")
     private Integer dr;
 

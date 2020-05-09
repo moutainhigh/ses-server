@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 public class EditProductPriceEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id 产品主键Id", required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
     @ApiModelProperty(value = "价格类型，指（整车、部品、零部件），传值见TAPD", required = true)

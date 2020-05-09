@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://39.108.92.232:22181
+    address: zookeeper://39.108.92.232:32181
 
 # xxl-job config
 xxl:

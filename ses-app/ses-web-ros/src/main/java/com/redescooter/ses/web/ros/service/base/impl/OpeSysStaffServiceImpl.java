@@ -1,12 +1,17 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.web.ros.dao.base.OpeSysStaffMapper;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.redescooter.ses.web.ros.dao.base.OpeSysStaffMapper;
+
+import java.util.List;
+
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 
 @Service
 public class OpeSysStaffServiceImpl extends ServiceImpl<OpeSysStaffMapper, OpeSysStaff> implements OpeSysStaffService {
@@ -31,5 +36,4 @@ public class OpeSysStaffServiceImpl extends ServiceImpl<OpeSysStaffMapper, OpeSy
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
-
 

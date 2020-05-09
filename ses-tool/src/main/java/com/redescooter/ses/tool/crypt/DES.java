@@ -32,8 +32,8 @@ public class DES {
 	        //key的长度不能够小于8位字节
 	        Key secretKey = keyFactory.generateSecret(dks);
 	        Cipher cipher = Cipher.getInstance(ALGORITHM_DES);
-	        AlgorithmParameterSpec paramSpec = new IvParameterSpec(IV_PARAMS_BYTES);;
-	        cipher.init(Cipher.ENCRYPT_MODE, secretKey,paramSpec);           
+	        AlgorithmParameterSpec paramSpec = new IvParameterSpec(IV_PARAMS_BYTES);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey,paramSpec);
 	        byte[] bytes = cipher.doFinal(data.getBytes());            
 	        return byte2hex(bytes);
     	}catch(Exception e){

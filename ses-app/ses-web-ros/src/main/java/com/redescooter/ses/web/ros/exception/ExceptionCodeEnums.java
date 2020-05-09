@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -171,7 +172,76 @@ public enum ExceptionCodeEnums {
     THE_ROOT_NODE_MENU_CANNOT_BE_EDIT(10078, "根节点菜单不可编辑"),
 
     UNBUNDLING_OF_EMPLOYEES(10079, "请解绑该职位下的员工"),
+
+    PURCHAS_IS_NOT_EXIST(10080, "采购单不存在"),
+
+    FACTORY_IS_NOT_EXIST(10081, "代工厂不存在"),
+
+    PART_TOTAL_QTY_IS_NOT_MATCH(10082, "配件数量不匹配"),
+
+    PAYMENT_INFO_IS_WRONG(10083, "付款信息是错误的"),
+
+    PART_PRODUCT_IS_NOT_EXIST(10084, "采购商品不存在"),
+
+    FACTORY_ANNEX_IS_PERFECT(10085, "工厂附件不完善"),
+
+    OPEPURCHAS_PAYMENT_IS_NOT_EXIST(10086, "支付周期不存在"),
+
+    PAY_IN_INSTALLMENTS(10087, "请按照分期顺序支付"),
+
+    PAY_AMOUNT_IS_FALSE(10088, "支付金额是错误的"),
+
+    PARTS_ARE_NOT_QC_PASS(10089, "部件存在Qc未质检通过"),
+
+    PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES(10090, "部品没有供应商没有价格不可进行组装"),
+
+    SUPPLIER_IS_NOT_PART_OF_THE_CURRENT_DOCUMENT(10091, "供应商不属于当前单据"),
+
+    WAREHOUSE_IS_NOT_EXIST(10092, "仓库不存在"),
+
+    NODE_IS_NOT_EXIST(10093, "节点不存在"),
+
+    ALLOCATE_ORDER_IS_NOT_EXIST(10094, "调拨单不存在"),
+
+    STOCK_IS_NOT_EXIST(10095, "暂无库存"),
+
+    STOCK_IS_SHORTAGE(10096, "库存不足"),
+
+    STOCK_BILL_NOT_IS_EXIST(10097, "库存单据不存在"),
+
+    NO_NEED_TO_CHECK_AGAIN(10098, "无需再次质检"),
+
+    QC_PASS_WITHOUT_RETURN(10099, "Qc通过无需退货"),
+
+    QC_PASSED_WITHOUT_REPEATING_QUALITY_INSPECTION(10100, "无需重复质检"),
+
+    PAYMENT_INFO_IS_NOT_EXIST(10101, "付款信息不存在"),
+
+    ASSEMBLY_IS_NOT_EXIST(10102, "组装单不存在"),
+
+    NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION(10103, "未进行质检请先进行质检"),
+
+    DO_NOT_SET_THE_PRICE_REPEATEDLY(10104, "请不要重复设置价格"),
+
+    PLEASE_SCAN_THE_CODE_FIRST(10105, "请先扫码质检"),
+
+    TEMPLATE_QC_RESULT_IS_EMPTY(10106, "模板质检结果为空"),
+
+    TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY(10107, "模板上传图片标识为空"),
+
+    TEMPLATE_QC_ITEMNAME_IS_EMPTY(10108, "质检项名称为空"),
+
+    TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY(10109, "质检结果集排序为空"),
+
+    PART_IS_NOT_BIND_PRODUCT(10110, "部件未绑定产品"),
+
+    PART_IS_BIND_PRODUCT(10111, "部件绑定产品,请先解绑"),
+
+    CONVERT_TO_FORMAL_CUSTOMER_FIRST(10112, "请先转换为正式客户"),
+
+    CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG(10113,"客户分配车辆数量是错误的"),
     ;
+
 
     private int code;
 

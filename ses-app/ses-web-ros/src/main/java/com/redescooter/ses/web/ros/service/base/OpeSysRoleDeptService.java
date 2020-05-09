@@ -19,3 +19,6 @@ public interface OpeSysRoleDeptService extends IService<OpeSysRoleDept> {
     int insertOrUpdateSelective(OpeSysRoleDept record);
 
 }
+
+
+

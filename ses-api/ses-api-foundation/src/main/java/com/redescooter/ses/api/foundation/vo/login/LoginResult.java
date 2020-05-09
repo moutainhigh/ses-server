@@ -26,5 +26,5 @@ public class LoginResult extends GeneralResult {
 
     private Integer accountType;
 
-    List<AccountsDto> accountSelectionList;
+        List<AccountsDto> accountSelectionList;
 }

@@ -1,12 +1,18 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.util.List;
+
 import com.redescooter.ses.web.ros.dao.base.OpeSysRoleSalesCidyMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleSalesCidyService;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
 @Service
 public class OpeSysRoleSalesCidyServiceImpl extends ServiceImpl<OpeSysRoleSalesCidyMapper, OpeSysRoleSalesCidy> implements OpeSysRoleSalesCidyService {
 
@@ -25,3 +31,4 @@ public class OpeSysRoleSalesCidyServiceImpl extends ServiceImpl<OpeSysRoleSalesC
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

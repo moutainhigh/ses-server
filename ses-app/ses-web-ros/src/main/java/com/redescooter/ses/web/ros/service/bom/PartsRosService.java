@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service;
+package com.redescooter.ses.web.ros.service.bom;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
@@ -73,6 +73,22 @@ public interface PartsRosService {
     GeneralResult deletes(StringEnter enter);
 
     /**
+     * 查询部件是否绑定商品
+     *
+     * @param enter
+     * @return
+     */
+    List<DeletePartResult> queryPartBindProduct(StringEnter enter);
+
+    /**
+     * 部品解绑商品
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult partUnbind(PartUnbindEnter enter);
+
+    /**
      * 详情
      *
      * @param enter
@@ -102,7 +118,15 @@ public interface PartsRosService {
      *
      * @return
      */
-    GeneralResult partsSynchronize(GeneralEnter enter);
+    GeneralResult synchronizeParts(GeneralEnter enter);
+
+    /**
+     * 获取部件待同部数
+     *
+     * @param enter
+     * @return
+     */
+    IntResult synchronizeNum(GeneralEnter enter);
 
     /**
      * @desc: 详情部件列表查询
@@ -114,4 +138,9 @@ public interface PartsRosService {
      */
     PageResult<QueryPartListResult> partList(QueryPartListEnter enter);
 
+    /**
+     * @param enter
+     * @return
+     */
+    PageResult<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter);
 }

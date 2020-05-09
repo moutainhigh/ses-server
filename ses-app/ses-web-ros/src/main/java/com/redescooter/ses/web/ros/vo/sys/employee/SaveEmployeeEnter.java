@@ -68,7 +68,7 @@ public class SaveEmployeeEnter extends GeneralEnter {
     private String telephone;
 
     @ApiModelProperty(value = "邮箱", required = true)
-    @NotNull(code = ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱为空")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱为空")
     @MinimumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL, message = "地址字符长度不合法，2-20字符")
     @MaximumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL, message = "地址字符长度不合法，2-20字符")
     private String email;

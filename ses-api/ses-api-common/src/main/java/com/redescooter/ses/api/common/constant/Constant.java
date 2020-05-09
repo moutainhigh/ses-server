@@ -1,5 +1,7 @@
 package com.redescooter.ses.api.common.constant;
 
+import java.math.BigDecimal;
+
 /**
  * @description: Constant
  * @author: Darren
@@ -56,6 +58,12 @@ public interface Constant {
      * Excel批量导入车辆模板地址
      */
     String Import_Excel_Template = "https://rede.oss-cn-shanghai.aliyuncs.com/1567490261085.xlsx";
+    //admin id
+    Long ADMINUSERID = 1000000L;
+    //百分比
+    int AMOUNTP_ROPORTION = 100;
+    //默认经纬度
+    BigDecimal LONGITUDE = new BigDecimal("48.862868");
 
-    public static final Long ADMINUSERID = 1000000L;
+    BigDecimal LATITUDE=new BigDecimal("2.313960");
 }

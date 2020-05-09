@@ -16,10 +16,11 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.SaveScooterRecordEnter;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterIotServiceMapper;
-import com.redescooter.ses.service.scooter.dao.base.ScoScooterMapper;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterNavigationMapper;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooter;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterNavigation;
 import com.redescooter.ses.service.scooter.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.MapUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/*import com.redescooter.ses.api.scooter.service.IotAdminService;*/
+
 /**
  * @ClassName:IotScooterService
  * @description: IotScooterService
@@ -46,7 +49,7 @@ import java.util.List;
 public class ScooterIotServiceImpl implements ScooterIotService {
 
     @Autowired
-    private ScoScooterMapper scoScooterMapper;
+    private ScoScooterService scoScooterService;
 
     @Autowired
     private ScoScooterNavigationMapper scoScooterNavigationMapper;
@@ -60,6 +63,9 @@ public class ScooterIotServiceImpl implements ScooterIotService {
     @Autowired
     private ScooterService scooterService;
 
+/*    @Autowired
+    private IotAdminService iotAdminService;*/
+
     @Autowired
     private ScooterIotServiceMapper scooterIotServiceMapper;
 
@@ -67,7 +73,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
     @Transactional
     @Override
     public GeneralResult navigation(IotScooterEnter enter) {
-        checkIotScooterEnterParameter(enter);
+        ScoScooter scoScooter = checkIotScooterEnterParameter(enter);
 
         List<Long> idEnterList = new ArrayList<>();
         idEnterList.add(enter.getId());
@@ -93,7 +99,8 @@ public class ScooterIotServiceImpl implements ScooterIotService {
 
             saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.END_NAVIGATION.getValue());
             saveScooterRecordEnterList.add(saveScooterRecordEnter);
-            // todo 调用IOT 服务
+            //调用IOT 服务 关闭导航
+            //iotAdminService.finishNavigation(scoScooter.getScooterNo());
         }
 
         if (enter.getBluetoothCommunication()) {
@@ -102,6 +109,8 @@ public class ScooterIotServiceImpl implements ScooterIotService {
                     ScoScooterNavigation savaNaviation = buildScoScooterNavigation(enter, scooterList.get(0), NavigationStatus.START.getValue());
                     scoScooterNavigationMapper.insert(savaNaviation);
                     saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.START_NAVIGATION.getValue());
+                    //调用IOT 服务开启导航
+                    //iotAdminService.navigation(scoScooter.getScooterNo(),enter.getLongitude().toString(),enter.getLanguage().toString());
                     break;
                 case "2":
                     // 关闭导航 因为刚开始我已经关闭 导航了 所以关闭导航不必在调用
@@ -134,7 +143,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
      */
     @Override
     public GeneralResult lock(IotScooterEnter enter) {
-        checkIotScooterEnterParameter(enter);
+        ScoScooter scoScooter = checkIotScooterEnterParameter(enter);
 
         List<Long> idEnterList = new ArrayList<>();
         idEnterList.add(enter.getId());
@@ -155,6 +164,9 @@ public class ScooterIotServiceImpl implements ScooterIotService {
 
                 saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.LOCK.getValue());
                 saveScooterRecordEnterList.add(saveScooterRecordEnter);
+
+                //调用IOT 服务 主锁上锁
+                //iotAdminService.masterLock(scoScooter.getScooterNo(), Lock.MASTER);
             }
         } else {
             if (StringUtils.equals(scooterList.get(0).getStatus(), ScooterLockStatusEnums.UNLOCK.getValue())) {
@@ -165,6 +177,8 @@ public class ScooterIotServiceImpl implements ScooterIotService {
 
                 saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.UNLOCK.getValue());
                 saveScooterRecordEnterList.add(saveScooterRecordEnter);
+                //IOT服务主锁解锁
+                //iotAdminService.unMasterLocklock(scoScooter.getScooterNo(), Lock.MASTER);
             }
         }
 
@@ -189,13 +203,18 @@ public class ScooterIotServiceImpl implements ScooterIotService {
      *
      * @param enter
      */
-    private void checkIotScooterEnterParameter(IotScooterEnter enter) {
+    private ScoScooter checkIotScooterEnterParameter(IotScooterEnter enter) {
+        ScoScooter scoScooter = scoScooterService.getById(enter.getId());
+        if (scoScooter == null) {
+            throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
+        }
         if (StringUtils.isEmpty(enter.getEvent())) {
             throw new ScooterException(ExceptionCodeEnums.EVENT_IS_EMPTY.getCode(), ExceptionCodeEnums.EVENT_IS_EMPTY.getMessage());
         }
         if (enter.getLatitude() == null || enter.getLongitude() == null) {
             throw new ScooterException(ExceptionCodeEnums.POSITIONING_DATA_IS_EMPTY.getCode(), ExceptionCodeEnums.POSITIONING_DATA_IS_EMPTY.getMessage());
         }
+        return scoScooter;
     }
 
     private ScoScooterNavigation buildScoScooterNavigation(IotScooterEnter enter, BaseScooterResult scoScooter, String status) {

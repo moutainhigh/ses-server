@@ -8,7 +8,7 @@ log:
 # DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://172.16.0.205:12181?backup=172.16.0.205:22181,172.16.0.205:32181
+    address: zookeeper://172.16.0.205:2181
 
 spring:
   datasource:
@@ -20,17 +20,17 @@ spring:
           driver-class-name: com.mysql.cj.jdbc.Driver
           url: jdbc:mysql://172.16.0.205:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: root
-          password: 1qaz2wsx
+          password: rede,1qaz2wsx
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
           url: jdbc:mysql://172.16.0.205:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: root
-          password: 1qaz2wsx
+          password: rede,1qaz2wsx
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
           url: jdbc:mysql://172.16.0.205:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: root
-          password: 1qaz2wsx
+          password: rede,1qaz2wsx
   #REDIS集群配置
   redis:
     cluster:

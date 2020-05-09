@@ -1,5 +1,7 @@
 package com.redescooter.ses.tool.utils;
 
+import com.redescooter.ses.api.common.constant.DateConstant;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -444,10 +446,10 @@ public class DateUtil {
         }
 
         try {
-            Date dt1 = DateUtil.parse(DateUtil.getDateTime(date1, DateUtil.DEFAULT_DATETIME_FORMAT),
-                    DateUtil.DEFAULT_DATETIME_FORMAT);
-            Date dt2 = DateUtil.parse(DateUtil.getDateTime(date2, DateUtil.DEFAULT_DATETIME_FORMAT),
-                    DateUtil.DEFAULT_DATETIME_FORMAT);
+            Date dt1 = DateUtil.parse(DateUtil.getDateTime(date1, DateConstant.DEFAULT_DATETIME_FORMAT),
+                    DateConstant.DEFAULT_DATETIME_FORMAT);
+            Date dt2 = DateUtil.parse(DateUtil.getDateTime(date2, DateConstant.DEFAULT_DATETIME_FORMAT),
+                    DateConstant.DEFAULT_DATETIME_FORMAT);
             if (dt1.getTime() > dt2.getTime()) {
                 return 1;
             } else if (dt1.getTime() < dt2.getTime()) {

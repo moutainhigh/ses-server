@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionProductMapper">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionProduct">
+        <!--@mbg.generated-->
+        <!--@Table ope_production_product-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="product_id" jdbcType="BIGINT" property="productId"/>
+        <result column="import_id" jdbcType="BIGINT" property="importId"/>
+        <result column="production_delivery_id" jdbcType="BIGINT" property="productionDeliveryId"/>
+        <result column="product_type_code" jdbcType="VARCHAR" property="productTypeCode"/>
+        <result column="serial_number" jdbcType="VARCHAR" property="serialNumber"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="model" jdbcType="VARCHAR" property="model"/>
+        <result column="batch_no" jdbcType="VARCHAR" property="batchNo"/>
+        <result column="vin" jdbcType="VARCHAR" property="vin"/>
+        <result column="motor_no" jdbcType="VARCHAR" property="motorNo"/>
+        <result column="ecu_no" jdbcType="VARCHAR" property="ecuNo"/>
+        <result column="production_time" jdbcType="TIMESTAMP" property="productionTime"/>
+        <result column="factory" jdbcType="VARCHAR" property="factory"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="def1" jdbcType="VARCHAR" property="def1"/>
+        <result column="def2" jdbcType="VARCHAR" property="def2"/>
+        <result column="def3" jdbcType="VARCHAR" property="def3"/>
+        <result column="def5" jdbcType="VARCHAR" property="def5"/>
+        <result column="def6" jdbcType="DOUBLE" property="def6"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, dr, product_id, import_id, production_delivery_id, product_type_code, serial_number,
+        `status`, model, batch_no, vin, motor_no, ecu_no, production_time, factory, created_by,
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    </sql>
+    <update id="updateBatch" parameterType="java.util.List">
+        <!--@mbg.generated-->
+        update ope_production_product
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="dr = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.dr,jdbcType=INTEGER}
+                </foreach>
+            </trim>
+            <trim prefix="product_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.productId,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="import_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.importId,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="production_delivery_id = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.productionDeliveryId,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="product_type_code = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.productTypeCode,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="serial_number = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.serialNumber,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="`status` = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.status,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="model = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.model,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="batch_no = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.batchNo,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="vin = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.vin,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="motor_no = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.motorNo,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="ecu_no = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.ecuNo,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="production_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.productionTime,jdbcType=TIMESTAMP}
+                </foreach>
+            </trim>
+            <trim prefix="factory = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.factory,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="created_by = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.createdBy,jdbcType=INTEGER}
+                </foreach>
+            </trim>
+            <trim prefix="created_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.createdTime,jdbcType=TIMESTAMP}
+                </foreach>
+            </trim>
+            <trim prefix="updated_by = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.updatedBy,jdbcType=BIGINT}
+                </foreach>
+            </trim>
+            <trim prefix="updated_time = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.updatedTime,jdbcType=TIMESTAMP}
+                </foreach>
+            </trim>
+            <trim prefix="def1 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def1,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def2 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def2,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def3 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def3,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def5 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def5,jdbcType=VARCHAR}
+                </foreach>
+            </trim>
+            <trim prefix="def6 = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    when id = #{item.id,jdbcType=INTEGER} then #{item.def6,jdbcType=DOUBLE}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach close=")" collection="list" item="item" open="(" separator=", ">
+            #{item.id,jdbcType=INTEGER}
+        </foreach>
+    </update>
+    <insert id="batchInsert" parameterType="map">
+        <!--@mbg.generated-->
+        insert into ope_production_product
+        (id, dr, product_id, import_id, production_delivery_id, product_type_code, serial_number,
+        `status`, model, batch_no, vin, motor_no, ecu_no, production_time, factory, created_by,
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.productId,jdbcType=BIGINT},
+            #{item.importId,jdbcType=BIGINT}, #{item.productionDeliveryId,jdbcType=BIGINT},
+            #{item.productTypeCode,jdbcType=VARCHAR}, #{item.serialNumber,jdbcType=VARCHAR},
+            #{item.status,jdbcType=VARCHAR}, #{item.model,jdbcType=VARCHAR}, #{item.batchNo,jdbcType=VARCHAR},
+            #{item.vin,jdbcType=VARCHAR}, #{item.motorNo,jdbcType=VARCHAR}, #{item.ecuNo,jdbcType=VARCHAR},
+            #{item.productionTime,jdbcType=TIMESTAMP}, #{item.factory,jdbcType=VARCHAR},
+            #{item.createdBy,jdbcType=INTEGER},
+            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+            #{item.updatedTime,jdbcType=TIMESTAMP},
+            #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
+            #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+        </foreach>
+    </insert>
+    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionProduct">
+        <!--@mbg.generated-->
+        insert into ope_production_product
+        (id, dr, product_id, import_id, production_delivery_id, product_type_code, serial_number,
+        `status`, model, batch_no, vin, motor_no, ecu_no, production_time, factory, created_by,
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+        values
+        (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{productId,jdbcType=BIGINT}, #{importId,jdbcType=BIGINT},
+        #{productionDeliveryId,jdbcType=BIGINT}, #{productTypeCode,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR},
+        #{vin,jdbcType=VARCHAR}, #{motorNo,jdbcType=VARCHAR}, #{ecuNo,jdbcType=VARCHAR},
+        #{productionTime,jdbcType=TIMESTAMP}, #{factory,jdbcType=VARCHAR}, #{createdBy,jdbcType=INTEGER},
+        #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
+        #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR},
+        #{def6,jdbcType=DOUBLE})
+        on duplicate key update
+        id = #{id,jdbcType=INTEGER},
+        dr = #{dr,jdbcType=INTEGER},
+        product_id = #{productId,jdbcType=BIGINT},
+        import_id = #{importId,jdbcType=BIGINT},
+        production_delivery_id = #{productionDeliveryId,jdbcType=BIGINT},
+        product_type_code = #{productTypeCode,jdbcType=VARCHAR},
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+        `status` = #{status,jdbcType=VARCHAR},
+        model = #{model,jdbcType=VARCHAR},
+        batch_no = #{batchNo,jdbcType=VARCHAR},
+        vin = #{vin,jdbcType=VARCHAR},
+        motor_no = #{motorNo,jdbcType=VARCHAR},
+        ecu_no = #{ecuNo,jdbcType=VARCHAR},
+        production_time = #{productionTime,jdbcType=TIMESTAMP},
+        factory = #{factory,jdbcType=VARCHAR},
+        created_by = #{createdBy,jdbcType=INTEGER},
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+        def1 = #{def1,jdbcType=VARCHAR},
+        def2 = #{def2,jdbcType=VARCHAR},
+        def3 = #{def3,jdbcType=VARCHAR},
+        def5 = #{def5,jdbcType=VARCHAR},
+        def6 = #{def6,jdbcType=DOUBLE}
+    </insert>
+    <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionProduct">
+        <!--@mbg.generated-->
+        insert into ope_production_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="importId != null">
+                import_id,
+            </if>
+            <if test="productionDeliveryId != null">
+                production_delivery_id,
+            </if>
+            <if test="productTypeCode != null">
+                product_type_code,
+            </if>
+            <if test="serialNumber != null">
+                serial_number,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="model != null">
+                model,
+            </if>
+            <if test="batchNo != null">
+                batch_no,
+            </if>
+            <if test="vin != null">
+                vin,
+            </if>
+            <if test="motorNo != null">
+                motor_no,
+            </if>
+            <if test="ecuNo != null">
+                ecu_no,
+            </if>
+            <if test="productionTime != null">
+                production_time,
+            </if>
+            <if test="factory != null">
+                factory,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+            <if test="def1 != null">
+                def1,
+            </if>
+            <if test="def2 != null">
+                def2,
+            </if>
+            <if test="def3 != null">
+                def3,
+            </if>
+            <if test="def5 != null">
+                def5,
+            </if>
+            <if test="def6 != null">
+                def6,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="dr != null">
+                #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="importId != null">
+                #{importId,jdbcType=BIGINT},
+            </if>
+            <if test="productionDeliveryId != null">
+                #{productionDeliveryId,jdbcType=BIGINT},
+            </if>
+            <if test="productTypeCode != null">
+                #{productTypeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="serialNumber != null">
+                #{serialNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="model != null">
+                #{model,jdbcType=VARCHAR},
+            </if>
+            <if test="batchNo != null">
+                #{batchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="vin != null">
+                #{vin,jdbcType=VARCHAR},
+            </if>
+            <if test="motorNo != null">
+                #{motorNo,jdbcType=VARCHAR},
+            </if>
+            <if test="ecuNo != null">
+                #{ecuNo,jdbcType=VARCHAR},
+            </if>
+            <if test="productionTime != null">
+                #{productionTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="factory != null">
+                #{factory,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="def1 != null">
+                #{def1,jdbcType=VARCHAR},
+            </if>
+            <if test="def2 != null">
+                #{def2,jdbcType=VARCHAR},
+            </if>
+            <if test="def3 != null">
+                #{def3,jdbcType=VARCHAR},
+            </if>
+            <if test="def5 != null">
+                #{def5,jdbcType=VARCHAR},
+            </if>
+            <if test="def6 != null">
+                #{def6,jdbcType=DOUBLE},
+            </if>
+        </trim>
+        on duplicate key update
+        <trim suffixOverrides=",">
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER},
+            </if>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="importId != null">
+                import_id = #{importId,jdbcType=BIGINT},
+            </if>
+            <if test="productionDeliveryId != null">
+                production_delivery_id = #{productionDeliveryId,jdbcType=BIGINT},
+            </if>
+            <if test="productTypeCode != null">
+                product_type_code = #{productTypeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="serialNumber != null">
+                serial_number = #{serialNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="model != null">
+                model = #{model,jdbcType=VARCHAR},
+            </if>
+            <if test="batchNo != null">
+                batch_no = #{batchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="vin != null">
+                vin = #{vin,jdbcType=VARCHAR},
+            </if>
+            <if test="motorNo != null">
+                motor_no = #{motorNo,jdbcType=VARCHAR},
+            </if>
+            <if test="ecuNo != null">
+                ecu_no = #{ecuNo,jdbcType=VARCHAR},
+            </if>
+            <if test="productionTime != null">
+                production_time = #{productionTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="factory != null">
+                factory = #{factory,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="def1 != null">
+                def1 = #{def1,jdbcType=VARCHAR},
+            </if>
+            <if test="def2 != null">
+                def2 = #{def2,jdbcType=VARCHAR},
+            </if>
+            <if test="def3 != null">
+                def3 = #{def3,jdbcType=VARCHAR},
+            </if>
+            <if test="def5 != null">
+                def5 = #{def5,jdbcType=VARCHAR},
+            </if>
+            <if test="def6 != null">
+                def6 = #{def6,jdbcType=DOUBLE},
+            </if>
+        </trim>
+    </insert>
+</mapper>

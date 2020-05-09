@@ -4,33 +4,33 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheet">
         <!--@mbg.generated-->
         <!--@Table ope_regional_price_sheet-->
-        <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="dr" jdbcType="INTEGER" property="dr" />
-        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
-        <result column="user_id" jdbcType="BIGINT" property="userId" />
-        <result column="status" jdbcType="VARCHAR" property="status" />
-        <result column="parts_product_id" jdbcType="BIGINT" property="partsProductId" />
-        <result column="price_type" jdbcType="VARCHAR" property="priceType" />
-        <result column="sales_price" jdbcType="DECIMAL" property="salesPrice" />
-        <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
-        <result column="valid_flag" jdbcType="VARCHAR" property="validFlag" />
-        <result column="currency_type" jdbcType="VARCHAR" property="currencyType" />
-        <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit" />
-        <result column="standard_currency" jdbcType="VARCHAR" property="standardCurrency" />
-        <result column="exchange_rate" jdbcType="VARCHAR" property="exchangeRate" />
-        <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
-        <result column="country_city" jdbcType="VARCHAR" property="countryCity" />
-        <result column="country_language" jdbcType="VARCHAR" property="countryLanguage" />
-        <result column="revision" jdbcType="INTEGER" property="revision" />
-        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-        <result column="def1" jdbcType="VARCHAR" property="def1" />
-        <result column="def2" jdbcType="VARCHAR" property="def2" />
-        <result column="def3" jdbcType="VARCHAR" property="def3" />
-        <result column="def5" jdbcType="VARCHAR" property="def5" />
-        <result column="def6" jdbcType="DECIMAL" property="def6" />
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="parts_product_id" jdbcType="BIGINT" property="partsProductId"/>
+        <result column="price_type" jdbcType="VARCHAR" property="priceType"/>
+        <result column="sales_price" jdbcType="DECIMAL" property="salesPrice"/>
+        <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime"/>
+        <result column="valid_flag" jdbcType="VARCHAR" property="validFlag"/>
+        <result column="currency_type" jdbcType="VARCHAR" property="currencyType"/>
+        <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit"/>
+        <result column="standard_currency" jdbcType="VARCHAR" property="standardCurrency"/>
+        <result column="exchange_rate" jdbcType="VARCHAR" property="exchangeRate"/>
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
+        <result column="country_city" jdbcType="VARCHAR" property="countryCity"/>
+        <result column="country_language" jdbcType="VARCHAR" property="countryLanguage"/>
+        <result column="revision" jdbcType="INTEGER" property="revision"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="def1" jdbcType="VARCHAR" property="def1"/>
+        <result column="def2" jdbcType="VARCHAR" property="def2"/>
+        <result column="def3" jdbcType="VARCHAR" property="def3"/>
+        <result column="def5" jdbcType="VARCHAR" property="def5"/>
+        <result column="def6" jdbcType="DECIMAL" property="def6"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
@@ -190,11 +190,15 @@
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
             #{item.userId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, #{item.partsProductId,jdbcType=BIGINT},
-            #{item.priceType,jdbcType=VARCHAR}, #{item.salesPrice,jdbcType=DECIMAL}, #{item.effectiveTime,jdbcType=TIMESTAMP},
-            #{item.validFlag,jdbcType=VARCHAR}, #{item.currencyType,jdbcType=VARCHAR}, #{item.currencyUnit,jdbcType=VARCHAR},
+            #{item.priceType,jdbcType=VARCHAR}, #{item.salesPrice,jdbcType=DECIMAL},
+            #{item.effectiveTime,jdbcType=TIMESTAMP},
+            #{item.validFlag,jdbcType=VARCHAR}, #{item.currencyType,jdbcType=VARCHAR},
+            #{item.currencyUnit,jdbcType=VARCHAR},
             #{item.standardCurrency,jdbcType=VARCHAR}, #{item.exchangeRate,jdbcType=VARCHAR},
-            #{item.countryCode,jdbcType=VARCHAR}, #{item.countryCity,jdbcType=VARCHAR}, #{item.countryLanguage,jdbcType=VARCHAR},
-            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.countryCode,jdbcType=VARCHAR}, #{item.countryCity,jdbcType=VARCHAR},
+            #{item.countryLanguage,jdbcType=VARCHAR},
+            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createdTime,jdbcType=TIMESTAMP},
             #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
             #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
             #{item.def6,jdbcType=DECIMAL})

@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerCertificateTypeEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -61,9 +62,9 @@ import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
@@ -596,7 +597,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                         AccountNodeResult result = AccountNodeResult.builder()
                                 .id(node.getId())
                                 .event(node.getEvent())
-                                .eventTime(DateUtil.format(node.getEventTime(), DateUtil.DEFAULT_DATETIME_FORMAT))
+                                .eventTime(DateUtil.format(node.getEventTime(), DateConstant.DEFAULT_DATETIME_FORMAT))
                                 .createdBy(node.getCreateBy())
                                 .createdFirstName(sysUser.getFirstName())
                                 .createdLastName(sysUser.getLastName())
@@ -901,75 +902,173 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     }
 
     private Integer checkCustomerInformation(OpeCustomer customer) {
-        // 个人客户为 14个 基本字段
-        //企业客户为 16个基本字段
+        // 个人客户为 15个 基本字段(不包括经纬度、身份证件图片)
+        //企业客户为 16个基本字段（不包括经纬度、身份证图片）
 
-        int result = 14;
+        //修改
+        //个人客户为 17/16(身份证/其他证件) 个基本字段
+        //企业客户为 19/28(身份证/其他证件) 个基本字段
+
+        int result = 12;
         int count = 0;
 
-        if (customer.getCity() != null) {
-            count++;
-        }
-        if (customer.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
-            if (!StringUtils.isBlank(customer.getCustomerFirstName())) {
-                count++;
-            }
-            if (!StringUtils.isBlank(customer.getCustomerLastName())) {
-                count++;
-            }
-        } else {
-            // 企业 为16个字段 所以这里现加 2
-            result += 2;
-            if (!StringUtils.isBlank(customer.getCompanyName())) {
-                count++;
-            }
-            if (!StringUtils.isBlank(customer.getBusinessLicenseNum())) {
-                count++;
-            }
-            if (!StringUtils.isBlank(customer.getBusinessLicenseAnnex())) {
-                count++;
-            }
-        }
-        if (!StringUtils.isBlank(customer.getCustomerType())) {
-            count++;
-        }
-        if (!StringUtils.isBlank(customer.getIndustryType())) {
-            count++;
-        }
-        if (!StringUtils.isBlank(customer.getAddress())) {
-            count++;
-        }
-        if (!StringUtils.isAllBlank(String.valueOf(customer.getLongitude()), String.valueOf(customer.getLatitude()))) {
+        //一下信息时 个人、企都具有的信息
+        if (StringUtils.isNotEmpty(customer.getIndustryType()) && StringUtils.isNotEmpty(customer.getCustomerType())) {
             count += 2;
         }
-        if (!StringUtils.isBlank(customer.getTelephone())) {
+        if (StringUtils.isNotEmpty(customer.getEmail())) {
             count++;
         }
-        if (!StringUtils.isBlank(customer.getCertificateType())) {
+        if (customer.getCity() != null && customer.getCity() != 0) {
             count++;
         }
-        if (customer.getCertificateType().equals(CustomerCertificateTypeEnum.ID_CARD.getValue())) {
-            //如果 IdCard 所有的字段个数 +2 否则 +1
-            result += 2;
-            if (!StringUtils.isAllBlank(customer.getCertificatePositiveAnnex(), customer.getCertificateNegativeAnnex())) {
-                count += 2;
+        if (StringUtils.isNotEmpty(customer.getAddress())) {
+            count++;
+        }
+        if (StringUtils.isNotEmpty(customer.getCountryCode())) {
+            count++;
+        }
+        if (StringUtils.isNotEmpty(customer.getTelephone())) {
+            count++;
+        }
+        //比较证件类型 及证件图片
+        if (StringUtils.isNotEmpty(customer.getCertificateType())) {
+            count++;
+        }
+        if (StringUtils.equals(customer.getCertificateType(), CustomerCertificateTypeEnum.ID_CARD.getValue())) {
+            if (StringUtils.isNotEmpty(customer.getCertificateNegativeAnnex())) {
+                count++;
             }
-        } else {
+            if (StringUtils.isNotEmpty(customer.getCertificatePositiveAnnex())) {
+                count++;
+            }
+            result += 2;
+        }
+        if (StringUtils.equals(customer.getCertificateType(), CustomerCertificateTypeEnum.DRIVER_LICENSE.getValue()) ||
+                StringUtils.equals(customer.getCertificateType(), CustomerCertificateTypeEnum.PASSPORT.getValue())) {
+            if (StringUtils.isNotEmpty(customer.getCertificatePositiveAnnex())) {
+                count++;
+            }
             result++;
-            if (!StringUtils.isBlank(customer.getCertificatePositiveAnnex())) {
+        }
+
+        if (StringUtils.isNotEmpty(customer.getInvoiceNum())) {
+            count++;
+        }
+        if (StringUtils.isNotEmpty(customer.getInvoiceAnnex())) {
+            count++;
+        }
+        if (StringUtils.isNotEmpty(customer.getContractAnnex())) {
+            count++;
+        }
+        if (customer.getScooterQuantity() != null && customer.getScooterQuantity() != 0) {
+            count++;
+        }
+
+
+        //企业独有信息
+        if (StringUtils.equals(customer.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
+            result+=5;
+            if (StringUtils.isNotEmpty(customer.getCompanyName())) {
+                count++;
+            }
+            if (StringUtils.isNotEmpty(customer.getContactFirstName())) {
+                count++;
+            }
+            if (StringUtils.isNotEmpty(customer.getContactLastName())) {
+                count++;
+            }
+            if (StringUtils.isNotEmpty(customer.getBusinessLicenseNum())) {
+                count++;
+            }
+            if (StringUtils.isNotEmpty(customer.getBusinessLicenseAnnex())) {
                 count++;
             }
         }
-        if (!StringUtils.isBlank(customer.getInvoiceNum())) {
-            count++;
-        }
-        if (!StringUtils.isBlank(customer.getInvoiceAnnex())) {
-            count++;
-        }
-        if (!StringUtils.isBlank(customer.getContractAnnex())) {
-            count++;
+
+        //个人信息
+        if (StringUtils.equals(customer.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
+            result+=2;
+            if (StringUtils.isNotEmpty(customer.getCustomerFirstName())) {
+                count++;
+            }
+            if (StringUtils.isNotEmpty(customer.getCustomerLastName())) {
+                count++;
+            }
         }
         return Integer.valueOf(StatisticalUtil.percentageUtil(count, result, 0));
     }
+
+//    private Integer checkCustomerInformation(OpeCustomer customer) {
+//        // 个人客户为 14个 基本字段
+//        //企业客户为 16个基本字段
+//
+//        int result = 14;
+//        int count = 0;
+//
+//        if (customer.getCity() != null) {
+//            count++;
+//        }
+//        if (customer.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
+//            if (!StringUtils.isBlank(customer.getCustomerFirstName())) {
+//                count++;
+//            }
+//            if (!StringUtils.isBlank(customer.getCustomerLastName())) {
+//                count++;
+//            }
+//        } else {
+//            // 企业 为16个字段 所以这里现加 2
+//            result += 2;
+//            if (!StringUtils.isBlank(customer.getCompanyName())) {
+//                count++;
+//            }
+//            if (!StringUtils.isBlank(customer.getBusinessLicenseNum())) {
+//                count++;
+//            }
+//            if (!StringUtils.isBlank(customer.getBusinessLicenseAnnex())) {
+//                count++;
+//            }
+//        }
+//        if (!StringUtils.isBlank(customer.getCustomerType())) {
+//            count++;
+//        }
+//        if (!StringUtils.isBlank(customer.getIndustryType())) {
+//            count++;
+//        }
+//        if (!StringUtils.isBlank(customer.getAddress())) {
+//            count++;
+//        }
+//        if (!StringUtils.isAllBlank(String.valueOf(customer.getLongitude()), String.valueOf(customer.getLatitude()))) {
+//            count += 2;
+//        }
+//        if (!StringUtils.isBlank(customer.getTelephone())) {
+//            count++;
+//        }
+//        if (!StringUtils.isBlank(customer.getCertificateType())) {
+//            count++;
+//        }
+//        if (customer.getCertificateType().equals(CustomerCertificateTypeEnum.ID_CARD.getValue())) {
+//            //如果 IdCard 所有的字段个数 +2 否则 +1
+//            result += 2;
+//            if (!StringUtils.isAllBlank(customer.getCertificatePositiveAnnex(), customer.getCertificateNegativeAnnex())) {
+//                count += 2;
+//            }
+//        } else {
+//            result++;
+//            if (!StringUtils.isBlank(customer.getCertificatePositiveAnnex())) {
+//                count++;
+//            }
+//        }
+//        if (!StringUtils.isBlank(customer.getInvoiceNum())) {
+//            count++;
+//        }
+//        if (!StringUtils.isBlank(customer.getInvoiceAnnex())) {
+//            count++;
+//        }
+//        if (!StringUtils.isBlank(customer.getContractAnnex())) {
+//            count++;
+//        }
+//        return Integer.valueOf(StatisticalUtil.percentageUtil(count, result, 0));
+//    }
 
 }

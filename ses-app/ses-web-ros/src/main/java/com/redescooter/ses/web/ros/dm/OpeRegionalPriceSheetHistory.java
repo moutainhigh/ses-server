@@ -251,7 +251,7 @@ public class OpeRegionalPriceSheetHistory implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpeRegionalPriceSheetHistoryBuilder builder() {
-        return new OpeRegionalPriceSheetHistoryBuilder();
+    public static com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory.OpeRegionalPriceSheetHistoryBuilder builder() {
+        return new com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory.OpeRegionalPriceSheetHistoryBuilder();
     }
 }

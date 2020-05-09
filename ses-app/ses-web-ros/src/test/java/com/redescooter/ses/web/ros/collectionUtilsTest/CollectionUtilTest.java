@@ -1,9 +1,20 @@
 package com.redescooter.ses.web.ros.collectionUtilsTest;
 
-import com.redescooter.ses.api.common.enums.employee.AddressBureauEnums;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.RandomUtil;
+import com.redescooter.ses.api.common.constant.JedisConstant;
+import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
+import lombok.extern.log4j.Log4j;
+import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 /**
@@ -13,25 +24,17 @@ import java.util.stream.IntStream;
  * @ClassName: RedisOne
  * @Function: TODO
  */
-
+@Log4j
 public class CollectionUtilTest {
 
     @Test
     public void disjunction() {
-        String checkESC = ESCUtils.checkESC("90");
-        System.out.println(checkESC);
-    }
 
-    @Test
-    public void stream() {
-        IntStream.range(1, 10).forEach(System.out::println);
-    }
 
-    @Test
-    public void testStream() {
-        Long a = 1000000L;
-        System.out.println();
-        System.out.println(AddressBureauEnums.PAIRS.getCode());
-    }
+        System.out.println("Method one:" + Math.random() * 100);
 
+        Random random = new Random();
+        System.out.println("Method two:" + new Random().nextInt(100));
+
+    }
 }

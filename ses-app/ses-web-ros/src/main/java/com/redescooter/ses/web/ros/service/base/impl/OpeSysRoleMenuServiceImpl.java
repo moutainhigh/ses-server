@@ -31,3 +31,4 @@ public class OpeSysRoleMenuServiceImpl extends ServiceImpl<OpeSysRoleMenuMapper,
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

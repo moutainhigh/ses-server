@@ -187,7 +187,7 @@ public class OpeExcleImport implements Serializable {
 
     public static final String COL_DATA_JSON = "data_json";
 
-    public static OpeExcleImportBuilder builder() {
-        return new OpeExcleImportBuilder();
+    public static com.redescooter.ses.web.ros.dm.OpeExcleImport.OpeExcleImportBuilder builder() {
+        return new com.redescooter.ses.web.ros.dm.OpeExcleImport.OpeExcleImportBuilder();
     }
 }

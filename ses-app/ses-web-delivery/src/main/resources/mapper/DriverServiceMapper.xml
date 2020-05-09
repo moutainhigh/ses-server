@@ -99,9 +99,9 @@
         plateNumber,
         activatBoolean
         <choose>
-            <when test="map==false">
-                order by cdr.status asc
-            </when>
+<!--            <when test="map==false">-->
+<!--                order by cdr.status asc-->
+<!--            </when>-->
             <when test="map==true">
                 order by cdr.status desc, cdr.def1 desc
             </when>

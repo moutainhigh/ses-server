@@ -17,3 +17,5 @@ public interface OpeSysRoleMenuService extends IService<OpeSysRoleMenu> {
     int insertOrUpdateSelective(OpeSysRoleMenu record);
 
 }
+
+

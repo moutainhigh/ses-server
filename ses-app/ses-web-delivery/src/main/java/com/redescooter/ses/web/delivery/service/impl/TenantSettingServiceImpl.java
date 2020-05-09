@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.tenant.TenantBussinessWeek;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
@@ -81,8 +82,8 @@ public class TenantSettingServiceImpl implements TenantSettingService {
         tenantInforResult.setTenantConfigId(tenantConfigInfoResult.getId());
         tenantInforResult.setStartWeek(tenantConfigInfoResult.getStartWeek());
         tenantInforResult.setEndWeek(tenantConfigInfoResult.getEndWeek());
-        tenantInforResult.setBeginTime(DateUtil.getTimeStr(tenantConfigInfoResult.getBeginTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
-        tenantInforResult.setEndTime(DateUtil.getTimeStr(tenantConfigInfoResult.getEndTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
+        tenantInforResult.setBeginTime(DateUtil.getTimeStr(tenantConfigInfoResult.getBeginTime(), DateConstant.DEFAULT_DATETIME_FORMAT));
+        tenantInforResult.setEndTime(DateUtil.getTimeStr(tenantConfigInfoResult.getEndTime(), DateConstant.DEFAULT_DATETIME_FORMAT));
 
         if (null != tenantConfigInfoResult.getEstimatedDuration() && 0 != tenantConfigInfoResult.getEstimatedDuration()) {
             tenantInforResult.setDuration(tenantConfigInfoResult.getEstimatedDuration());

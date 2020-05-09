@@ -1,6 +1,5 @@
 package com.redescooter.ses.starter.swagger.autoconfig;
 
-import com.github.xiaoymin.swaggerbootstrapui.annotations.EnableSwaggerBootstrapUI;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.redescooter.ses.starter.swagger.properties.Swagger2GroupProperties;
@@ -31,7 +30,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 @EnableSwagger2
-@EnableSwaggerBootstrapUI
+//@EnableSwaggerBootstrapUI
 @SuppressWarnings("deprecation")
 public class Swagger2DocketConfiguration implements BeanFactoryPostProcessor, EnvironmentAware {
 
@@ -173,7 +172,7 @@ public class Swagger2DocketConfiguration implements BeanFactoryPostProcessor, En
         if (swagger2Properties.getGroup() != null && !swagger2Properties.getGroup().isEmpty()) {
             Iterator<Entry<String, Swagger2GroupProperties>> it = swagger2Properties.getGroup().entrySet().iterator();
             while (it.hasNext()) {
-                Entry<String, Swagger2GroupProperties> entry = (Entry<String, Swagger2GroupProperties>) it
+                Entry<String, Swagger2GroupProperties> entry = it
                         .next();
                 Docket swagger2Docket = this.getSwagger2Docket(entry.getValue(), pathUrls);
                 beanFactory.registerSingleton(entry.getKey(), swagger2Docket);

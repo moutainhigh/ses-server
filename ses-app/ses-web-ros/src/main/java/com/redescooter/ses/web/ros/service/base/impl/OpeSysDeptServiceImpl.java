@@ -1,12 +1,17 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.web.ros.dao.base.OpeSysDeptMapper;
-import com.redescooter.ses.web.ros.dm.OpeSysDept;
-import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.util.List;
+
+import com.redescooter.ses.web.ros.dm.OpeSysDept;
+import com.redescooter.ses.web.ros.dao.base.OpeSysDeptMapper;
+import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 
 @Service
 public class OpeSysDeptServiceImpl extends ServiceImpl<OpeSysDeptMapper, OpeSysDept> implements OpeSysDeptService {

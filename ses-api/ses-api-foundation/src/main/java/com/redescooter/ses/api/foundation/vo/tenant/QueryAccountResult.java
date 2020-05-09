@@ -23,6 +23,9 @@ public class QueryAccountResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "tenantId")
+    private Long tenantId;
+
     @ApiModelProperty(value = "邮箱")
     private String email;
 

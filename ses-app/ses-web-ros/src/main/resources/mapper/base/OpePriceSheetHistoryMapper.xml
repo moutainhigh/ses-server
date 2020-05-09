@@ -4,27 +4,27 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpePriceSheetHistory">
         <!--@mbg.generated-->
         <!--@Table ope_price_sheet_history-->
-        <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="dr" jdbcType="INTEGER" property="dr" />
-        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
-        <result column="user_id" jdbcType="BIGINT" property="userId" />
-        <result column="parts_id" jdbcType="BIGINT" property="partsId" />
-        <result column="price_sheet_id" jdbcType="BIGINT" property="priceSheetId" />
-        <result column="price" jdbcType="DECIMAL" property="price" />
-        <result column="currency_type" jdbcType="VARCHAR" property="currencyType" />
-        <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit" />
-        <result column="standard_currency" jdbcType="VARCHAR" property="standardCurrency" />
-        <result column="exchange_rate" jdbcType="VARCHAR" property="exchangeRate" />
-        <result column="revision" jdbcType="INTEGER" property="revision" />
-        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-        <result column="def1" jdbcType="VARCHAR" property="def1" />
-        <result column="def2" jdbcType="VARCHAR" property="def2" />
-        <result column="def3" jdbcType="VARCHAR" property="def3" />
-        <result column="def5" jdbcType="VARCHAR" property="def5" />
-        <result column="def6" jdbcType="DECIMAL" property="def6" />
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="dr" jdbcType="INTEGER" property="dr"/>
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="parts_id" jdbcType="BIGINT" property="partsId"/>
+        <result column="price_sheet_id" jdbcType="BIGINT" property="priceSheetId"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="currency_type" jdbcType="VARCHAR" property="currencyType"/>
+        <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit"/>
+        <result column="standard_currency" jdbcType="VARCHAR" property="standardCurrency"/>
+        <result column="exchange_rate" jdbcType="VARCHAR" property="exchangeRate"/>
+        <result column="revision" jdbcType="INTEGER" property="revision"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="def1" jdbcType="VARCHAR" property="def1"/>
+        <result column="def2" jdbcType="VARCHAR" property="def2"/>
+        <result column="def3" jdbcType="VARCHAR" property="def3"/>
+        <result column="def5" jdbcType="VARCHAR" property="def5"/>
+        <result column="def6" jdbcType="DECIMAL" property="def6"/>
     </resultMap>
     <sql id="Base_Column_List">
         <!--@mbg.generated-->
@@ -152,9 +152,11 @@
         <foreach collection="list" item="item" separator=",">
             (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
             #{item.userId,jdbcType=BIGINT}, #{item.partsId,jdbcType=BIGINT}, #{item.priceSheetId,jdbcType=BIGINT},
-            #{item.price,jdbcType=DECIMAL}, #{item.currencyType,jdbcType=VARCHAR}, #{item.currencyUnit,jdbcType=VARCHAR},
+            #{item.price,jdbcType=DECIMAL}, #{item.currencyType,jdbcType=VARCHAR},
+            #{item.currencyUnit,jdbcType=VARCHAR},
             #{item.standardCurrency,jdbcType=VARCHAR}, #{item.exchangeRate,jdbcType=VARCHAR},
-            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
+            #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT},
+            #{item.createdTime,jdbcType=TIMESTAMP},
             #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
             #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
             #{item.def6,jdbcType=DECIMAL})

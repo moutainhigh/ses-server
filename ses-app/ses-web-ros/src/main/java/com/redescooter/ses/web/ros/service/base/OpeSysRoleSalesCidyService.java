@@ -17,3 +17,5 @@ public interface OpeSysRoleSalesCidyService extends IService<OpeSysRoleSalesCidy
     int insertOrUpdateSelective(OpeSysRoleSalesCidy record);
 
 }
+
+

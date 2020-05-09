@@ -3,11 +3,13 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeCustomer">
     <!--@mbg.generated-->
+    <!--@Table ope_customer-->
     <id column="id" jdbcType="BIGINT" property="id"/>
     <result column="dr" jdbcType="INTEGER" property="dr"/>
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
     <result column="time_zone" jdbcType="VARCHAR" property="timeZone"/>
     <result column="country" jdbcType="BIGINT" property="country"/>
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
     <result column="city" jdbcType="BIGINT" property="city"/>
     <result column="distrust" jdbcType="BIGINT" property="distrust"/>
     <result column="status" jdbcType="VARCHAR" property="status"/>
@@ -28,7 +30,6 @@
     <result column="contact_first_name" jdbcType="VARCHAR" property="contactFirstName"/>
     <result column="contact_last_name" jdbcType="VARCHAR" property="contactLastName"/>
     <result column="contact_full_name" jdbcType="VARCHAR" property="contactFullName"/>
-    <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
     <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
     <result column="email" jdbcType="VARCHAR" property="email"/>
     <result column="memo" jdbcType="VARCHAR" property="memo"/>
@@ -54,11 +55,11 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, customer_code,
-    customer_first_name, customer_last_name, customer_full_name, company_name, picture,
-    customer_source, customer_type, industry_type, address, place_id, longitude, latitude,
-    contact_first_name, contact_last_name, contact_full_name, country_code, telephone,
-    email, memo, scooter_quantity, certificate_type, certificate_positive_annex, certificate_negative_annex,
+    id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id,
+    customer_code, customer_first_name, customer_last_name, customer_full_name, company_name,
+    picture, customer_source, customer_type, industry_type, address, place_id, longitude,
+    latitude, contact_first_name, contact_last_name, contact_full_name, telephone, email,
+    memo, scooter_quantity, certificate_type, certificate_positive_annex, certificate_negative_annex,
     business_license_num, business_license_annex, invoice_num, invoice_annex, contract_annex,
     account_flag, created_by, created_time, updated_by, updated_time, def1, def2, def3,
     def5, def6
@@ -85,6 +86,11 @@
       <trim prefix="country = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.country,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="city = case" suffix="end,">
@@ -185,11 +191,6 @@
       <trim prefix="contact_full_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.contactFullName,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="country_code = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="telephone = case" suffix="end,">
@@ -311,10 +312,10 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_customer
-    (id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, customer_code,
-    customer_first_name, customer_last_name, customer_full_name, company_name, picture,
-    customer_source, customer_type, industry_type, address, place_id, longitude, latitude,
-    contact_first_name, contact_last_name, contact_full_name, country_code, telephone,
+    (id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id,
+    customer_code, customer_first_name, customer_last_name, customer_full_name, company_name,
+    picture, customer_source, customer_type, industry_type, address, place_id, longitude,
+    latitude, contact_first_name, contact_last_name, contact_full_name, telephone,
     email, memo, scooter_quantity, certificate_type, certificate_positive_annex, certificate_negative_annex,
     business_license_num, business_license_annex, invoice_num, invoice_annex, contract_annex,
     account_flag, created_by, created_time, updated_by, updated_time, def1, def2, def3,
@@ -322,22 +323,26 @@
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
-      #{item.timeZone,jdbcType=VARCHAR}, #{item.country,jdbcType=BIGINT}, #{item.city,jdbcType=BIGINT},
-      #{item.distrust,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, #{item.salesId,jdbcType=BIGINT},
-      #{item.customerCode,jdbcType=VARCHAR}, #{item.customerFirstName,jdbcType=VARCHAR},
+      #{item.timeZone,jdbcType=VARCHAR}, #{item.country,jdbcType=BIGINT}, #{item.countryCode,jdbcType=VARCHAR},
+      #{item.city,jdbcType=BIGINT}, #{item.distrust,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR},
+      #{item.salesId,jdbcType=BIGINT}, #{item.customerCode,jdbcType=VARCHAR},
+      #{item.customerFirstName,jdbcType=VARCHAR},
       #{item.customerLastName,jdbcType=VARCHAR}, #{item.customerFullName,jdbcType=VARCHAR},
-      #{item.companyName,jdbcType=VARCHAR}, #{item.picture,jdbcType=VARCHAR}, #{item.customerSource,jdbcType=VARCHAR},
-      #{item.customerType,jdbcType=VARCHAR}, #{item.industryType,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR},
+      #{item.companyName,jdbcType=VARCHAR}, #{item.picture,jdbcType=VARCHAR},
+      #{item.customerSource,jdbcType=VARCHAR},
+      #{item.customerType,jdbcType=VARCHAR}, #{item.industryType,jdbcType=VARCHAR},
+      #{item.address,jdbcType=VARCHAR},
       #{item.placeId,jdbcType=VARCHAR}, #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL},
       #{item.contactFirstName,jdbcType=VARCHAR}, #{item.contactLastName,jdbcType=VARCHAR},
-      #{item.contactFullName,jdbcType=VARCHAR}, #{item.countryCode,jdbcType=VARCHAR},
-      #{item.telephone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, #{item.memo,jdbcType=VARCHAR},
-      #{item.scooterQuantity,jdbcType=INTEGER}, #{item.certificateType,jdbcType=VARCHAR},
+      #{item.contactFullName,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR},
+      #{item.memo,jdbcType=VARCHAR}, #{item.scooterQuantity,jdbcType=INTEGER},
+      #{item.certificateType,jdbcType=VARCHAR},
       #{item.certificatePositiveAnnex,jdbcType=VARCHAR}, #{item.certificateNegativeAnnex,jdbcType=VARCHAR},
       #{item.businessLicenseNum,jdbcType=VARCHAR}, #{item.businessLicenseAnnex,jdbcType=VARCHAR},
       #{item.invoiceNum,jdbcType=VARCHAR}, #{item.invoiceAnnex,jdbcType=VARCHAR},
       #{item.contractAnnex,jdbcType=VARCHAR},
-      #{item.accountFlag,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
+      #{item.accountFlag,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
+      #{item.createdTime,jdbcType=TIMESTAMP},
       #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
       #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
       #{item.def6,jdbcType=DOUBLE})
@@ -346,24 +351,24 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomer">
     <!--@mbg.generated-->
     insert into ope_customer
-    (id, dr, tenant_id, time_zone, country, city, distrust, `status`, sales_id, customer_code,
-    customer_first_name, customer_last_name, customer_full_name, company_name, picture,
-    customer_source, customer_type, industry_type, address, place_id, longitude, latitude,
-    contact_first_name, contact_last_name, contact_full_name, country_code, telephone,
+    (id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id,
+    customer_code, customer_first_name, customer_last_name, customer_full_name, company_name,
+    picture, customer_source, customer_type, industry_type, address, place_id, longitude,
+    latitude, contact_first_name, contact_last_name, contact_full_name, telephone,
     email, memo, scooter_quantity, certificate_type, certificate_positive_annex, certificate_negative_annex,
     business_license_num, business_license_annex, invoice_num, invoice_annex, contract_annex,
     account_flag, created_by, created_time, updated_by, updated_time, def1, def2, def3,
     def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{timeZone,jdbcType=VARCHAR},
-    #{country,jdbcType=BIGINT}, #{city,jdbcType=BIGINT}, #{distrust,jdbcType=BIGINT},
-    #{status,jdbcType=VARCHAR}, #{salesId,jdbcType=BIGINT}, #{customerCode,jdbcType=VARCHAR},
-    #{customerFirstName,jdbcType=VARCHAR}, #{customerLastName,jdbcType=VARCHAR}, #{customerFullName,jdbcType=VARCHAR},
-    #{companyName,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, #{customerSource,jdbcType=VARCHAR},
-    #{customerType,jdbcType=VARCHAR}, #{industryType,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
-    #{placeId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL},
-    #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR}, #{contactFullName,jdbcType=VARCHAR},
-    #{countryCode,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+    #{country,jdbcType=BIGINT}, #{countryCode,jdbcType=VARCHAR}, #{city,jdbcType=BIGINT},
+    #{distrust,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{salesId,jdbcType=BIGINT},
+    #{customerCode,jdbcType=VARCHAR}, #{customerFirstName,jdbcType=VARCHAR}, #{customerLastName,jdbcType=VARCHAR},
+    #{customerFullName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR},
+    #{customerSource,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, #{industryType,jdbcType=VARCHAR},
+    #{address,jdbcType=VARCHAR}, #{placeId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL},
+    #{latitude,jdbcType=DECIMAL}, #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR},
+    #{contactFullName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
     #{memo,jdbcType=VARCHAR}, #{scooterQuantity,jdbcType=INTEGER}, #{certificateType,jdbcType=VARCHAR},
     #{certificatePositiveAnnex,jdbcType=VARCHAR}, #{certificateNegativeAnnex,jdbcType=VARCHAR},
     #{businessLicenseNum,jdbcType=VARCHAR}, #{businessLicenseAnnex,jdbcType=VARCHAR},
@@ -378,6 +383,7 @@
     tenant_id = #{tenantId,jdbcType=BIGINT},
     time_zone = #{timeZone,jdbcType=VARCHAR},
     country = #{country,jdbcType=BIGINT},
+    country_code = #{countryCode,jdbcType=VARCHAR},
     city = #{city,jdbcType=BIGINT},
     distrust = #{distrust,jdbcType=BIGINT},
     `status` = #{status,jdbcType=VARCHAR},
@@ -398,7 +404,6 @@
     contact_first_name = #{contactFirstName,jdbcType=VARCHAR},
     contact_last_name = #{contactLastName,jdbcType=VARCHAR},
     contact_full_name = #{contactFullName,jdbcType=VARCHAR},
-    country_code = #{countryCode,jdbcType=VARCHAR},
     telephone = #{telephone,jdbcType=VARCHAR},
     email = #{email,jdbcType=VARCHAR},
     memo = #{memo,jdbcType=VARCHAR},
@@ -440,6 +445,9 @@
       </if>
       <if test="country != null">
         country,
+      </if>
+      <if test="countryCode != null">
+        country_code,
       </if>
       <if test="city != null">
         city,
@@ -500,9 +508,6 @@
       </if>
       <if test="contactFullName != null">
         contact_full_name,
-      </if>
-      <if test="countryCode != null">
-        country_code,
       </if>
       <if test="telephone != null">
         telephone,
@@ -588,6 +593,9 @@
       <if test="country != null">
         #{country,jdbcType=BIGINT},
       </if>
+      <if test="countryCode != null">
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
       <if test="city != null">
         #{city,jdbcType=BIGINT},
       </if>
@@ -647,9 +655,6 @@
       </if>
       <if test="contactFullName != null">
         #{contactFullName,jdbcType=VARCHAR},
-      </if>
-      <if test="countryCode != null">
-        #{countryCode,jdbcType=VARCHAR},
       </if>
       <if test="telephone != null">
         #{telephone,jdbcType=VARCHAR},
@@ -735,6 +740,9 @@
       <if test="country != null">
         country = #{country,jdbcType=BIGINT},
       </if>
+      <if test="countryCode != null">
+        country_code = #{countryCode,jdbcType=VARCHAR},
+      </if>
       <if test="city != null">
         city = #{city,jdbcType=BIGINT},
       </if>
@@ -794,9 +802,6 @@
       </if>
       <if test="contactFullName != null">
         contact_full_name = #{contactFullName,jdbcType=VARCHAR},
-      </if>
-      <if test="countryCode != null">
-        country_code = #{countryCode,jdbcType=VARCHAR},
       </if>
       <if test="telephone != null">
         telephone = #{telephone,jdbcType=VARCHAR},

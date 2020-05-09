@@ -188,15 +188,15 @@
         </foreach>
       </trim>
       <trim prefix="def6 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
-        </foreach>
+          <foreach collection="list" index="index" item="item">
+              when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+          </foreach>
       </trim>
     </trim>
-    where id in
-    <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id,jdbcType=BIGINT}
-    </foreach>
+      where id in
+      <foreach close=")" collection="list" item="item" open="(" separator=", ">
+          #{item.id,jdbcType=BIGINT}
+      </foreach>
   </update>
     <insert id="batchInsert" parameterType="map">
         <!--@mbg.generated-->
@@ -224,58 +224,58 @@
             #{item.def6,jdbcType=DOUBLE})
         </foreach>
     </insert>
-  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserProfile">
-    <!--@mbg.generated-->
-      insert into ope_sys_user_profile
-      (id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name,
-      email, country_code, tel_number, gender, birthday, place_birth, address_country_code,
-      address, address_bureau, certificate_type, certificate_negative_annex, certificate_positive_annex,
-      join_date, created_by, created_time, updated_by, updated_time, def1, def2, def3,
-      def5, def6)
-      values
-      (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{repairShopId,jdbcType=BIGINT},
-      #{sysUserId,jdbcType=BIGINT}, #{picture,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR},
-      #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
-      #{countryCode,jdbcType=VARCHAR}, #{telNumber,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR},
-      #{birthday,jdbcType=DATE}, #{placeBirth,jdbcType=VARCHAR}, #{addressCountryCode,jdbcType=VARCHAR},
-      #{address,jdbcType=VARCHAR}, #{addressBureau,jdbcType=VARCHAR}, #{certificateType,jdbcType=VARCHAR},
-      #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{certificatePositiveAnnex,jdbcType=VARCHAR},
-      #{joinDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
-      )
-      on duplicate key update
-      id = #{id,jdbcType=BIGINT},
-      dr = #{dr,jdbcType=INTEGER},
-      repair_shop_Id = #{repairShopId,jdbcType=BIGINT},
-      sys_user_id = #{sysUserId,jdbcType=BIGINT},
-      picture = #{picture,jdbcType=VARCHAR},
-      first_name = #{firstName,jdbcType=VARCHAR},
-      last_name = #{lastName,jdbcType=VARCHAR},
-      full_name = #{fullName,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      country_code = #{countryCode,jdbcType=VARCHAR},
-      tel_number = #{telNumber,jdbcType=VARCHAR},
-      gender = #{gender,jdbcType=VARCHAR},
-      birthday = #{birthday,jdbcType=DATE},
-      place_birth = #{placeBirth,jdbcType=VARCHAR},
-      address_country_code = #{addressCountryCode,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
-      address_bureau = #{addressBureau,jdbcType=VARCHAR},
-      certificate_type = #{certificateType,jdbcType=VARCHAR},
-      certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR},
-      certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR},
-      join_date = #{joinDate,jdbcType=TIMESTAMP},
-      created_by = #{createdBy,jdbcType=BIGINT},
-      created_time = #{createdTime,jdbcType=TIMESTAMP},
-      updated_by = #{updatedBy,jdbcType=BIGINT},
-      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-      def1 = #{def1,jdbcType=VARCHAR},
-      def2 = #{def2,jdbcType=VARCHAR},
-      def3 = #{def3,jdbcType=VARCHAR},
-      def5 = #{def5,jdbcType=VARCHAR},
-      def6 = #{def6,jdbcType=DOUBLE}
-  </insert>
+    <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserProfile">
+        <!--@mbg.generated-->
+        insert into ope_sys_user_profile
+        (id, dr, repair_shop_Id, sys_user_id, picture, first_name, last_name, full_name,
+        email, country_code, tel_number, gender, birthday, place_birth, address_country_code,
+        address, address_bureau, certificate_type, certificate_negative_annex, certificate_positive_annex,
+        join_date, created_by, created_time, updated_by, updated_time, def1, def2, def3,
+        def5, def6)
+        values
+        (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{repairShopId,jdbcType=BIGINT},
+        #{sysUserId,jdbcType=BIGINT}, #{picture,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR},
+        #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+        #{countryCode,jdbcType=VARCHAR}, #{telNumber,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR},
+        #{birthday,jdbcType=DATE}, #{placeBirth,jdbcType=VARCHAR}, #{addressCountryCode,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR}, #{addressBureau,jdbcType=VARCHAR}, #{certificateType,jdbcType=VARCHAR},
+        #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{certificatePositiveAnnex,jdbcType=VARCHAR},
+        #{joinDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+        #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
+        #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+        )
+        on duplicate key update
+        id = #{id,jdbcType=BIGINT},
+        dr = #{dr,jdbcType=INTEGER},
+        repair_shop_Id = #{repairShopId,jdbcType=BIGINT},
+        sys_user_id = #{sysUserId,jdbcType=BIGINT},
+        picture = #{picture,jdbcType=VARCHAR},
+        first_name = #{firstName,jdbcType=VARCHAR},
+        last_name = #{lastName,jdbcType=VARCHAR},
+        full_name = #{fullName,jdbcType=VARCHAR},
+        email = #{email,jdbcType=VARCHAR},
+        country_code = #{countryCode,jdbcType=VARCHAR},
+        tel_number = #{telNumber,jdbcType=VARCHAR},
+        gender = #{gender,jdbcType=VARCHAR},
+        birthday = #{birthday,jdbcType=DATE},
+        place_birth = #{placeBirth,jdbcType=VARCHAR},
+        address_country_code = #{addressCountryCode,jdbcType=VARCHAR},
+        address = #{address,jdbcType=VARCHAR},
+        address_bureau = #{addressBureau,jdbcType=VARCHAR},
+        certificate_type = #{certificateType,jdbcType=VARCHAR},
+        certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR},
+        certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR},
+        join_date = #{joinDate,jdbcType=TIMESTAMP},
+        created_by = #{createdBy,jdbcType=BIGINT},
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+        def1 = #{def1,jdbcType=VARCHAR},
+        def2 = #{def2,jdbcType=VARCHAR},
+        def3 = #{def3,jdbcType=VARCHAR},
+        def5 = #{def5,jdbcType=VARCHAR},
+        def6 = #{def6,jdbcType=DOUBLE}
+    </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysUserProfile">
     <!--@mbg.generated-->
     insert into ope_sys_user_profile
@@ -445,15 +445,15 @@
       <if test="updatedBy != null">
         #{updatedBy,jdbcType=BIGINT},
       </if>
-      <if test="updatedTime != null">
-        #{updatedTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="def1 != null">
-        #{def1,jdbcType=VARCHAR},
-      </if>
-      <if test="def2 != null">
-        #{def2,jdbcType=VARCHAR},
-      </if>
+        <if test="updatedTime != null">
+            #{updatedTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="def1 != null">
+            #{def1,jdbcType=VARCHAR},
+        </if>
+        <if test="def2 != null">
+            #{def2,jdbcType=VARCHAR},
+        </if>
         <if test="def3 != null">
             #{def3,jdbcType=VARCHAR},
         </if>
@@ -476,16 +476,16 @@
               repair_shop_Id = #{repairShopId,jdbcType=BIGINT},
           </if>
           <if test="sysUserId != null">
-        sys_user_id = #{sysUserId,jdbcType=BIGINT},
-      </if>
-      <if test="picture != null">
-        picture = #{picture,jdbcType=VARCHAR},
-      </if>
-      <if test="firstName != null">
-        first_name = #{firstName,jdbcType=VARCHAR},
-      </if>
-      <if test="lastName != null">
-        last_name = #{lastName,jdbcType=VARCHAR},
+              sys_user_id = #{sysUserId,jdbcType=BIGINT},
+          </if>
+          <if test="picture != null">
+              picture = #{picture,jdbcType=VARCHAR},
+          </if>
+          <if test="firstName != null">
+              first_name = #{firstName,jdbcType=VARCHAR},
+          </if>
+          <if test="lastName != null">
+              last_name = #{lastName,jdbcType=VARCHAR},
       </if>
       <if test="fullName != null">
         full_name = #{fullName,jdbcType=VARCHAR},

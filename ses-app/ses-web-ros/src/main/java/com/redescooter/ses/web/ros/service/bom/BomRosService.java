@@ -4,14 +4,17 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
+import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.SecResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.DeletePartEnter;
 import com.redescooter.ses.web.ros.vo.bom.combination.SaveCombinationEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
@@ -148,5 +151,42 @@ public interface BomRosService {
      */
     GeneralResult saveCombination(SaveCombinationEnter enter);
 
+    /**
+     * 部件质检模板保存
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult savePartsDraftQcTemplate(SaveQcTemplateEnter enter);
 
+    /**
+     * 部件质检模板详情
+     *
+     * @param enter
+     * @return
+     */
+    List<QcTemplateDetailResult> partsQcTemplateDetail(IdEnter enter);
+
+    /**
+     * 产品质检模板保存
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult saveProductQcTemplate(SaveQcTemplateEnter enter);
+
+    /**
+     * 产品质检模板详情
+     *
+     * @param enter
+     * @return
+     */
+    List<QcTemplateDetailResult> productQcTemplateDetail(IdEnter enter);
+
+
+    /**
+     * @param enter
+     * @return
+     */
+    PageResult<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter);
 }

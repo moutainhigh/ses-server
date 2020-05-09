@@ -19,7 +19,10 @@
        op.note,
        op.revision,
        op.created_time,
-       os.supplier_name
+       os.supplier_name,
+       op.perfect_flag,
+       op.synchronize_flag,
+       op.id_class
     </sql>
 
     <sql id="where_PartList">
@@ -57,10 +60,34 @@
                 or op.parts_number LIKE CONCAT("%",#{keyword},"%")
                 )
             </if>
+            <if test="ids != null and ids.size() != 0">
+                and op.id in
+                <foreach collection="ids" open="(" separator="," item="item" close=")">
+                    #{item}
+                </foreach>
+            </if>
         </where>
     </sql>
     <sql id="group_by_parts_list">
          op.id
+    </sql>
+
+    <sql id="saveProduct_List">
+        <where>
+            and parts.dr = 0
+            and parts.user_id=#{userId}
+            <if test="sec != null and sec != ''">
+                and parts.sec =#{sec}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (parts.cn_name like concat("%",#{keyword},"%")
+                or parts.en_name like concat("%",#{keyword},"%")
+                or parts.fr_name like concat("%",#{keyword},"%")
+                or os.supplier_name like concat("%",#{keyword},"%")
+                or parts.parts_number LIKE CONCAT("%",#{keyword},"%")
+                )
+            </if>
+        </where>
     </sql>
     <resultMap id="resultMap_query_parts_list" type="com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -78,7 +105,6 @@
         <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
         <result column="dwg" jdbcType="VARCHAR" property="dwg"/>
         <result column="note" jdbcType="VARCHAR" property="note"/>
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
         <collection property="historyHist"
                     javaType="java.util.ArrayList"
                     ofType="com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto"
@@ -87,27 +113,24 @@
     </resultMap>
     <select id="listCount" resultType="int">
         select count(*)
-        from ope_parts op
+        from ope_parts_draft op
         left join ope_supplier os on op.supplier_id = os.id and os.dr = 0
         <include refid="where_query_parts_list"/>
     </select>
     <select id="list" resultMap="resultMap_query_parts_list">
         select
         <include refid="field_query_parts_list"/>
-        from ope_parts op
+        from ope_parts_draft op
         left join ope_supplier os on op.supplier_id = os.id and os.dr = 0
         <include refid="where_query_parts_list"/>
-<!--        group by-->
-<!--        <include refid="group_by_parts_list"/>-->
         order by op.created_time desc
         limit #{startRow},#{pageSize}
     </select>
     <select id="historyList" resultType="com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto">
      select id,parts_number,created_time
-     from ope_parts_history_record
+     from ope_parts_draft_history_record
      where dr = 0
-       and event='2'
-       and parts_id =#{partsId}
+       and parts_draft_id =#{partsId}
        and user_id =#{userId}
     order by created_time desc
     </select>
@@ -128,6 +151,53 @@
         ifnull(parts.production_cycle, 0) as productionCycle
         from ope_parts parts
         <include refid="where_PartList"></include>
+        order by parts.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="synchronizeNum" resultType="com.redescooter.ses.api.common.vo.base.IntResult">
+        select sum(case
+        when (perfect_flag = true and synchronize_flag = false) then 1
+        else 0
+        end) as value
+        from ope_parts_draft opd
+        where opd.dr =0
+        and opd.user_id=#{userId}
+    </select>
+
+    <select id="saveProductPartListCount" resultType="int">
+        select count(*)
+        from ope_parts parts
+        left join ope_supplier os on parts.supplier_id = os.id and os.dr = 0
+        <include refid="saveProduct_List"/>
+    </select>
+
+    <select id="saveProductPartList" resultMap="resultMap_query_parts_list">
+        select
+        parts.id,
+        parts.user_id,
+        parts.Import_lot,
+        parts.parts_type,
+        parts.sec,
+        parts.parts_number,
+        parts.cn_name,
+        parts.fr_name,
+        parts.en_name,
+        case when (parts.sn_class='1') then 'SC' else 'SSC' end as snClassFlag,
+        parts.parts_qty,
+        parts.production_cycle,
+        parts.supplier_id,
+        parts.dwg,
+        parts.note,
+        parts.revision,
+        parts.created_time,
+        os.supplier_name,
+        parts.synchronize_flag,
+        parts.id_class
+        from ope_parts parts
+        left join ope_supplier os on parts.supplier_id = os.id and os.dr = 0
+        <include refid="saveProduct_List"/>
+        <!--        group by-->
+        <!--        <include refid="group_by_parts_list"/>-->
         order by parts.created_time desc
         limit #{startRow},#{pageSize}
     </select>

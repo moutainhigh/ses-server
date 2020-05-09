@@ -155,7 +155,7 @@ public class VerificationCodeImgUtil {
         VerificationCodeImgUtil vCode = new VerificationCodeImgUtil(160, 40, 5, 150);
         String path = "E:/" + new Date().getTime() + ".png";
         System.out.println(vCode.getCode() + " >" + path);
-        vCode.write();
+        write();
         System.out.println(VerificationCodeImgUtil.base64String);
 //        String path = "E:/" + new Date().getTime() + ".png";
 //        System.out.println(vCode.getCode() + " >" + path);
