@@ -38,4 +38,7 @@ public class SaveMaterialQcResult extends GeneralResult {
 
     @ApiModelProperty(value = "质检结果标识")
     private Boolean qcResult;
+
+    @ApiModelProperty(value = "主订单下所有部件剩余质检的数量")
+    private int laveQcTotal;
 }

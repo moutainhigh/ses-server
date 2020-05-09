@@ -482,7 +482,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
         opeAssemblyOrderService.updateById(opeAssemblyOrder);
 
         // 返回结果集
-        return ScooterQcResidueNumResult.builder().result(orderFlag ? Boolean.TRUE : Boolean.FALSE).build();
+        return ScooterQcResidueNumResult.builder().laveQcTotal(opeAssemblyOrder.getLaveWaitQcTotal()).result(orderFlag ? Boolean.TRUE : Boolean.FALSE).build();
     }
 
     /**
