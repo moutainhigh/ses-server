@@ -86,4 +86,12 @@ public interface MaterialService {
      * @return
      */
     SaveMaterialQcResult saveMaterialQc(SaveMaterialQcEnter enter);
+
+    /**
+     * 检查部品是否一已经通过校验
+     *
+     * @param enter
+     * @return
+     */
+    CheckPartQcBySerilaNResult checkPartQcBySerilaN(CheckPartQcBySerilaNEnter enter);
 }

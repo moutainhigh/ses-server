@@ -47,6 +47,12 @@ public class ScooterQcController {
         return new Response(scooterService.setScooterQcItem(enter));
     }
 
+    @PostMapping(value = "/checkScooterSerilaN")
+    @ApiOperation(value = "校验整车是否已经质检过", response = ScooterQcResidueNumResult.class)
+    public Response<ScooterQcResidueNumResult> checkScooterSerilaN(@ModelAttribute @ApiParam("请求参数") CheckScooterSerilaNEnter enter) {
+        return new Response(scooterService.checkScooterSerilaN(enter));
+    }
+
 }
 
 

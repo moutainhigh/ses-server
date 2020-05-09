@@ -39,4 +39,12 @@ public interface ScooterQcService {
      * @Param [enter]
      **/
     ScooterQcResidueNumResult setScooterQcItem(ScooterQcItemEnter enter);
+
+    /**
+     * 检查车辆是否已经质检过
+     *
+     * @param enter
+     * @return
+     */
+    CheckScooterSerilaNResult checkScooterSerilaN(CheckScooterSerilaNEnter enter);
 }
