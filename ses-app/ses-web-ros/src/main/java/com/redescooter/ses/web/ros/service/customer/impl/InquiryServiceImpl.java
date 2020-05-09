@@ -248,6 +248,9 @@ public class InquiryServiceImpl implements InquiryService {
             }
             opeCustomerInquiry.setCompanyName(enter.getCompanyName());
             opeCustomerInquiry.setScooterQuantity(enter.getScooterQuantity());
+            opeCustomerInquiry.setContactFirst(enter.getContactFirstName());
+            opeCustomerInquiry.setContactLast(enter.getContactLastName());
+            opeCustomerInquiry.setContantFullName(new StringBuilder(enter.getContactFirstName()).append(" ").append(enter.getContactLastName()).toString());
         }
         if (SesStringUtils.equals(enter.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
             if (SesStringUtils.isBlank(enter.getCustomerFirstName())) {
@@ -260,10 +263,10 @@ public class InquiryServiceImpl implements InquiryService {
             opeCustomerInquiry.setLastName(enter.getCustomerLastName());
             opeCustomerInquiry.setFullName(new StringBuilder(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
             opeCustomerInquiry.setScooterQuantity(1);
+            opeCustomerInquiry.setContactFirst(null);
+            opeCustomerInquiry.setContactLast(null);
+            opeCustomerInquiry.setContantFullName(null);
         }
-        opeCustomerInquiry.setContactFirst(enter.getContactFirstName());
-        opeCustomerInquiry.setContactLast(enter.getContactLastName());
-        opeCustomerInquiry.setContantFullName(new StringBuilder(enter.getContactFirstName()).append(" ").append(enter.getContactLastName()).toString());
         opeCustomerInquiry.setCountryCode(enter.getCountryCode());
         opeCustomerInquiry.setTelephone(enter.getTelephone());
         opeCustomerInquiry.setEmail(enter.getEmail());
