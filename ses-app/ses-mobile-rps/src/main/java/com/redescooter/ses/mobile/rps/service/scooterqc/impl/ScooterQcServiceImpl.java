@@ -38,6 +38,9 @@ import java.util.stream.Collectors;
 public class ScooterQcServiceImpl implements ScooterQcService {
 
     @Autowired
+    private OpePartsProductService opePartsProductService;
+
+    @Autowired
     private OpeAssemblyOrderService opeAssemblyOrderService;
 
     @Autowired
@@ -480,5 +483,24 @@ public class ScooterQcServiceImpl implements ScooterQcService {
 
         // 返回结果集
         return ScooterQcResidueNumResult.builder().result(orderFlag ? Boolean.TRUE : Boolean.FALSE).build();
+    }
+
+    /**
+     * 检查车辆是否已经质检过
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public CheckScooterSerilaNResult checkScooterSerilaN(CheckScooterSerilaNEnter enter) {
+        OpePartsProduct opePartsProduct = opePartsProductService.getById(enter.getProductId());
+        if (opePartsProduct == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+        OpeAssemblyQcItem opeAssemblyQcItem = opeAssemblyQcItemService.getOne(new LambdaQueryWrapper<OpeAssemblyQcItem>()
+                .eq(OpeAssemblyQcItem::getSerialNum, enter.getSerialN())
+                .eq(OpeAssemblyQcItem::getQcResult, QcStatusEnums.PASS.getValue())
+        );
+        return CheckScooterSerilaNResult.builder().whetherQc(opeAssemblyQcItem == null ? Boolean.TRUE:Boolean.FALSE).build();
     }
 }

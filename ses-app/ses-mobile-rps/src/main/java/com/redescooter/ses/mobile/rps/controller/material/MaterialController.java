@@ -8,6 +8,8 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.mobile.rps.service.material.MaterialService;
+import com.redescooter.ses.mobile.rps.vo.materialqc.CheckPartQcBySerilaNEnter;
+import com.redescooter.ses.mobile.rps.vo.materialqc.CheckPartQcBySerilaNResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcListResult;
@@ -97,5 +99,11 @@ public class MaterialController {
     @ApiOperation(value = "保存来料质检结果", response = SaveMaterialQcResult.class)
     public Response<SaveMaterialQcResult> saveMaterialQc(@ModelAttribute @ApiParam("请求参数") SaveMaterialQcEnter enter) {
         return new Response<>(materialService.saveMaterialQc(enter));
+    }
+
+    @PostMapping(value = "/checkPartQcBySerilaN")
+    @ApiOperation(value = "检查部件是否质检过", response = CheckPartQcBySerilaNResult.class)
+    public Response<CheckPartQcBySerilaNResult> checkPartQcBySerilaN(@ModelAttribute @ApiParam("请求参数") CheckPartQcBySerilaNEnter enter) {
+        return new Response<>(materialService.checkPartQcBySerilaN(enter));
     }
 }
