@@ -96,6 +96,10 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional
     @Override
     public GeneralResult saveInquiry(SaveInquiryEnter enter) {
+
+        //邮箱 去空格
+        enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
+
         // 查询已存在的email
         List<String> emailList = inquiryServiceMapper.usingEmailList();
         if (emailList.contains(enter.getEmail())) {

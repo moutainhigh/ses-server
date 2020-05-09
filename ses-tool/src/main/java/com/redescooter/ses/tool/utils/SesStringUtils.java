@@ -129,12 +129,14 @@ public class SesStringUtils extends StringUtils {
     /**
      * 手机号加密 （中间位数加密） 默认前二后四显示 并格式化输出 eg: 06 67 32 22 12 --->  06 ** ** 22 12
      *
-     * @param val
+     * @param val 目标字符转
      * @return
      */
-    public static String phoneEncrypt(String val, Integer digits) {
-        if (digits == null) {
-            digits = 0;
+    public static String phoneEncrypt(String val) {
+        //因为要前二后四展示 所以减去6
+        int digits = val.length() - 6;
+        if (digits < 0) {
+            digits=1;
         }
 
         StringBuilder asterisks = new StringBuilder();
@@ -154,19 +156,9 @@ public class SesStringUtils extends StringUtils {
      * @return
      */
     public static String getStrAddSpace(String val, Integer intervalsN, Integer spaceN) {
-        if (intervalsN == null) {
-            intervalsN = 0;
+        if (intervalsN==null || spaceN==null){
+            return val;
         }
-        if (spaceN == null) {
-            spaceN = 0;
-        }
-        return val.replaceAll("(.{" + intervalsN + "})", "$" + spaceN + " ");
-    }
-
-    public static void main(String[] args) {
-        String test = "0667322212";
-        String encrypt = phoneEncrypt(test, 4);
-        System.out.println(encrypt);
-
+        return stringTrim(val).replaceAll("(.{" + intervalsN + "})", "$" + spaceN + " ");
     }
 }

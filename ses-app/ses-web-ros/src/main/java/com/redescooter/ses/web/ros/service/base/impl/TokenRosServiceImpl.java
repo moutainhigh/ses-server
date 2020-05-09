@@ -18,6 +18,7 @@ import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
@@ -76,8 +77,8 @@ public class TokenRosServiceImpl implements TokenRosService {
     public TokenResult login(LoginEnter enter) {
 
         //用户名密码去除空格
-        enter.setLoginName(StringUtils.trim(enter.getLoginName()));
-        enter.setPassword(StringUtils.trim(enter.getPassword()));
+        enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
+        enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
 
         QueryWrapper<OpeSysUser> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getLoginName());

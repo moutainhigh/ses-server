@@ -31,6 +31,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -91,8 +92,8 @@ public class UserTokenServiceImpl implements UserTokenService {
     public LoginResult login(LoginEnter enter) {
 
         //用户名密码去除空格
-        enter.setLoginName(StringUtils.trim(enter.getLoginName()));
-        enter.setPassword(StringUtils.trim(enter.getPassword()));
+        enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
+        enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
 
         if (enter.getAppId().equals(AppIDEnums.SAAS_WEB.getValue())) {
             // ① PC端登录逻辑
@@ -543,10 +544,10 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         //密码去空格
         if (StringUtils.isNotEmpty(enter.getConfirmPassword())){
-            enter.setConfirmPassword(enter.getConfirmPassword().trim());
+            enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
         }
         if (StringUtils.isNotEmpty(enter.getNewPassword())){
-            enter.setNewPassword(enter.getNewPassword().trim());
+            enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         }
 
 
@@ -652,16 +653,16 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         //邮箱、密码去空格
         if (StringUtils.isNotEmpty(enter.getEmail())){
-            enter.setEmail(enter.getEmail().trim());
+            enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
         }
         if (StringUtils.isNotEmpty(enter.getNewPassword())){
-            enter.setNewPassword(enter.getNewPassword().trim());
+            enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         }
         if (StringUtils.isNotEmpty(enter.getOldPassword())){
-            enter.setOldPassword(enter.getOldPassword());
+            enter.setOldPassword(SesStringUtils.stringTrim(enter.getOldPassword()));
         }
         if (StringUtils.isNotEmpty(enter.getConfirmNewPassword())){
-            enter.setConfirmNewPassword(enter.getConfirmNewPassword().trim());
+            enter.setConfirmNewPassword(SesStringUtils.stringTrim(enter.getConfirmNewPassword()));
         }
 
 
@@ -714,7 +715,7 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         //邮箱去空格
         if (StringUtils.isNotEmpty(enter.getMail())){
-            enter.setMail(enter.getMail().trim());
+            enter.setMail(SesStringUtils.stringTrim(enter.getMail()));
         }
 
         GetUserEnter getUser = new GetUserEnter();
@@ -766,6 +767,10 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (StringUtils.isBlank(enter.getPassword())){
             throw new FoundationException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
+
+        //密码去空格
+        enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
+
 
         PlaUser plaUser = plaUserMapper.selectById(enter.getUserId());
         if (plaUser==null){

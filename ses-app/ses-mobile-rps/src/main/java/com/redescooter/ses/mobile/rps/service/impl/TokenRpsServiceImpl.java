@@ -24,6 +24,7 @@ import com.redescooter.ses.mobile.rps.service.TokenRpsService;
 import com.redescooter.ses.mobile.rps.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -66,12 +67,13 @@ public class TokenRpsServiceImpl implements TokenRpsService {
 
 
         //用户名密码去除空格
-        enter.setLoginName(StringUtils.trim(enter.getLoginName()));
-        enter.setPassword(StringUtils.trim(enter.getPassword()));
+        enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
+        enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
 
         QueryWrapper<OpeSysUser> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getLoginName());
         wrapper.eq(OpeSysUser.COL_DR, 0);
+        //todo 暂时为了后续业务是 写死的的需要修改
 //        wrapper.eq(OpeSysUser.COL_APP_ID, enter.getAppId());
 //        wrapper.eq(OpeSysUser.COL_SYSTEM_ID, enter.getSystemId());
         wrapper.eq(OpeSysUser.COL_APP_ID, 4);
