@@ -31,6 +31,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -89,6 +90,10 @@ public class UserTokenServiceImpl implements UserTokenService {
      */
     @Override
     public LoginResult login(LoginEnter enter) {
+
+        //用户名密码去除空格
+        enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
+        enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
 
         if (enter.getAppId().equals(AppIDEnums.SAAS_WEB.getValue())) {
             // ① PC端登录逻辑
@@ -536,6 +541,16 @@ public class UserTokenServiceImpl implements UserTokenService {
      */
     @Override
     public GeneralResult setPassword(SetPasswordEnter enter) {
+
+        //密码去空格
+        if (StringUtils.isNotEmpty(enter.getConfirmPassword())){
+            enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
+        }
+        if (StringUtils.isNotEmpty(enter.getNewPassword())){
+            enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
+        }
+
+
         /**
          * 系统内部进行设置密码
          */
@@ -635,6 +650,23 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Transactional
     @Override
     public GeneralResult chanagePassword(ChanagePasswordEnter enter) {
+
+        //邮箱、密码去空格
+        if (StringUtils.isNotEmpty(enter.getEmail())){
+            enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
+        }
+        if (StringUtils.isNotEmpty(enter.getNewPassword())){
+            enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
+        }
+        if (StringUtils.isNotEmpty(enter.getOldPassword())){
+            enter.setOldPassword(SesStringUtils.stringTrim(enter.getOldPassword()));
+        }
+        if (StringUtils.isNotEmpty(enter.getConfirmNewPassword())){
+            enter.setConfirmNewPassword(SesStringUtils.stringTrim(enter.getConfirmNewPassword()));
+        }
+
+
+
         //新密码判断是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmNewPassword())) {
             throw new FoundationException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
@@ -680,6 +712,11 @@ public class UserTokenServiceImpl implements UserTokenService {
      */
     @Override
     public GeneralResult sendEmail(BaseSendMailEnter enter) {
+
+        //邮箱去空格
+        if (StringUtils.isNotEmpty(enter.getMail())){
+            enter.setMail(SesStringUtils.stringTrim(enter.getMail()));
+        }
 
         GetUserEnter getUser = new GetUserEnter();
         BeanUtils.copyProperties(enter, getUser);
@@ -730,6 +767,10 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (StringUtils.isBlank(enter.getPassword())){
             throw new FoundationException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
+
+        //密码去空格
+        enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
+
 
         PlaUser plaUser = plaUserMapper.selectById(enter.getUserId());
         if (plaUser==null){

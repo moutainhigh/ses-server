@@ -17,6 +17,7 @@ import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.client.exception.SesMobileClientException;
 import com.redescooter.ses.mobile.client.service.TokenService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -93,6 +94,12 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public GeneralResult setPassword(SetPasswordEnter enter) {
+
+        //密码去空格
+        enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
+        enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
+        enter.setCode(SesStringUtils.stringTrim(enter.getCode()));
+
 
         Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
         if (map == null) {

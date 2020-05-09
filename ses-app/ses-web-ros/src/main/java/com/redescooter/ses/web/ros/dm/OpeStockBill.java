@@ -1,18 +1,13 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeStockBill")
 @Data
@@ -20,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_stock_bill")
-public class OpeStockBill implements Serializable {
+public class OpeStockBill {
     /**
      * 主键
      */
@@ -33,6 +28,7 @@ public class OpeStockBill implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "删除标识")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -174,8 +170,6 @@ public class OpeStockBill implements Serializable {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
-
-    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 

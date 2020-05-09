@@ -1,10 +1,10 @@
 package com.redescooter.ses.web.ros.service.production.assembly.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -19,6 +19,7 @@ import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.OpeAssemblyBStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
@@ -31,9 +32,11 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyBOrder;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyBQc;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrder;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPart;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyQcItem;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.dm.OpePartsProductB;
@@ -41,7 +44,9 @@ import com.redescooter.ses.web.ros.dm.OpeStock;
 import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
-import com.redescooter.ses.web.ros.dm.PartDetailDto;
+import com.redescooter.ses.web.ros.service.base.OpeAssemblyBQcService;
+import com.redescooter.ses.web.ros.service.base.OpeAssemblyQcItemService;
+import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeAssembiyOrderTraceService;
@@ -67,9 +72,16 @@ import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoItemEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.QcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
@@ -84,6 +96,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:AssemblyServiceImpl
@@ -136,6 +149,12 @@ public class AssemblyServiceImpl implements AssemblyService {
 
     @Autowired
     private OpeStockBillService opeStockBillService;
+
+    @Autowired
+    private OpeAssemblyBQcService opeAssemblyBQcService;
+
+    @Autowired
+    private OpeAssemblyQcItemService opeAssemblyQcItemService;
 
     @Reference
     private IdAppService idAppService;
@@ -605,7 +624,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         List<ConsigneeResult> consigneeResultlist = new ArrayList<>();
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
-        opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_SYS_USER_ID, Constant.ADMINUSERID);
+        opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_FIRST_NAME, Constant.ADMIN_USER_NAME);
         List<OpeSysUserProfile> opeSysUserProfileList = opeSysUserProfileService.list(opeSysUserProfileQueryWrapper);
         opeSysUserProfileList.forEach(item -> {
             consigneeResultlist.add(ConsigneeResult.builder()
@@ -770,6 +789,23 @@ public class AssemblyServiceImpl implements AssemblyService {
         return assemblyServiceMapper.ordinaryAssemblyNode(enter);
     }
 
+
+    /**
+     * 质检结果集合
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, String> qcResultList(GeneralEnter enter) {
+        Map<String, String> map = new HashMap<>();
+        for (QcStatusEnums item : QcStatusEnums.values()) {
+            map.put(item.getCode(), item.getValue());
+        }
+        map.remove(QcStatusEnums.QUALITY_INSPECTION);
+        return map;
+    }
+
     /**
      * 组装单信息导出
      *
@@ -835,8 +871,97 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @return
      */
     @Override
-    public List<AssemblyQcResult> assemblyQcTrces(AssemblyQcEnter enter) {
-        return null;
+    public List<AssemblyQcInfoResult> assemblyQcInfo(AssemblyQcInfoEnter enter) {
+        //校验组装单Id
+        checkAssembly(enter.getId(), null);
+        //分页时候放开就好了
+//        int count = assemblyServiceMapper.assemblyQcInfoCount(enter);
+//        if (count == 0) {
+//            return new ;
+//        }
+
+        //组装单 质检结果集
+        List<AssemblyQcInfoResult> assemblyQcInfoResultList = assemblyServiceMapper.assemblyQcInfoList(enter);
+
+        //查询子集
+        List<AssemblyQcItemResult> assemblyQcItemResultList = assemblyServiceMapper.assemblyQcInfoItemByIds(enter,
+                assemblyQcInfoResultList.stream().map(AssemblyQcInfoResult::getId).collect(Collectors.toList()));
+
+        //封装是否要查询的Boolean 字段
+        if (CollectionUtils.isNotEmpty(assemblyQcItemResultList)) {
+            List<Long> existIds = Lists.newArrayList();
+            for (AssemblyQcInfoResult result : assemblyQcInfoResultList) {
+                for (AssemblyQcItemResult item : assemblyQcItemResultList) {
+                    if (existIds.contains(result.getId())) {
+                        break;
+                    } else {
+                        if (item.getAssemblyBQcId().equals(result.getId())) {
+                            result.setHasChildDate(Boolean.TRUE);
+                            existIds.add(item.getAssemblyBQcId());
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            for (AssemblyQcInfoResult result : assemblyQcInfoResultList) {
+                result.setHasChildDate(Boolean.FALSE);
+            }
+        }
+        return assemblyQcInfoResultList;
+    }
+
+    /**
+     * 质检记录条目
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<AssemblyQcItemResult> assemblyQcInfoItem(AssemblyQcInfoItemEnter enter) {
+        //校验质检结果
+        OpeAssemblyBQc opeAssemblyBQc = opeAssemblyBQcService.getById(enter.getId());
+        if (opeAssemblyBQc == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_B_QC_RESULT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_B_QC_RESULT_IS_NOT_EXIST.getMessage());
+        }
+        return assemblyServiceMapper.assemblyQcInfoItem(enter);
+    }
+
+    /**
+     * 质检条目的质检项
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public AssemblyQcItemViewResult assemblyQcItemView(IdEnter enter) {
+        // 查询车辆质检信息
+        AssemblyQcItemViewResult result = assemblyServiceMapper.assemblyQcItemView(enter);
+        if (result == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getMessage());
+        }
+        //查询车辆对应的质检项
+        List<QcItemViewResult> qcItemViewResultList = assemblyServiceMapper.qcItemViewResult(result.getSerialN());
+        if (CollectionUtils.isEmpty(qcItemViewResultList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_RESULT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_QC_RESULT_IS_NOT_EXIST.getMessage());
+        }
+        result.setQcItemViewResultList(qcItemViewResultList);
+        return result;
+    }
+
+    /**
+     * 模板质检结果
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<AssemblyQcItemViewItemTemplateResult> viewItemTemplate(IdEnter enter) {
+        OpeAssemblyQcItem assemblyQcItem = opeAssemblyQcItemService.getById(enter.getId());
+        if (assemblyQcItem == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getMessage());
+        }
+        return assemblyServiceMapper.viewItemTemplate(enter.getId());
     }
 
     /**
@@ -1204,13 +1329,19 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public List<productItemResult> productItemList(IdEnter enter) {
-        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), null);
+        checkAssembly(enter.getId(), null);
         return assemblyServiceMapper.productItemList(enter);
     }
 
+    /**
+     * 组装单详情商品列表
+     *
+     * @param enter
+     * @return
+     */
     @Override
     public List<productItemResult> ordinaryProductItemList(IdEnter enter) {
-        OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), null);
+        checkAssembly(enter.getId(), null);
         List<productItemResult> list = assemblyServiceMapper.productItemList(enter);
 
         if (CollectionUtil.isEmpty(list)) {
@@ -1218,8 +1349,43 @@ public class AssemblyServiceImpl implements AssemblyService {
                 productItemResult.setPrice(null);
             });
         }
-
         return list;
+    }
+
+    /**
+     * 组装记录
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ProductAssemblyTraceResult> productAssemblyTrace(IdEnter enter) {
+        //组装单校验
+        checkAssembly(enter.getId(), null);
+        return assemblyServiceMapper.productAssemblyTrace(enter);
+    }
+
+    /**
+     * 组装记录条目
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ProductAssemblyTraceItemResult> productAssemblyTraceItem(IdEnter enter) {
+        OpeAssemblyBOrder assemblyBOrder = opeAssemblyOrderBService.getById(enter.getId());
+        if (assemblyBOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
+        }
+        OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(assemblyBOrder.getAssemblyId());
+        if (opeAssemblyOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
+        }
+        List<ProductAssemblyTraceItemResult> productAssemblyTraceItemResultList = assemblyServiceMapper.productAssemblyItemTrace(enter);
+        return productAssemblyTraceItemResultList.stream().filter(item -> {
+            item.setAssemblyTotal(assemblyBOrder.getAssemblyQty());
+            return true;
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -1445,6 +1611,10 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .status(AssemblyStatusEnums.PENDING.getValue())
                 .assemblyNumber("REDE" + RandomUtil.randomNumbers(7))
                 .totalQty(productTotal)
+                .waitPreparationTotal(productTotal)
+                .waitAssemblyTotal(productTotal)
+                .laveWaitQcTotal(productTotal)
+                .inWaitWhTotal(productTotal)
                 .totalPrice(null)
                 .processingFee(null)
                 .processingFeeRatio(null)
@@ -1530,6 +1700,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                                 .stockId(item.getId())
                                 .partId(item.getMaterielProductId())
                                 .assemblyId(assemblyId)
+                                .waitPreparationQty(partMap.get(item.getMaterielProductId()))
                                 .totalQty(partMap.get(item.getMaterielProductId()))
                                 .revision(0)
                                 .createdBy(enter.getUserId())
@@ -1563,7 +1734,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                             .tenantId(0L)
                             .assemblyId(assemblyId)
                             .productId(item.getId())
-                            .assemblyBNumber("REDE" + RandomUtil.randomNumbers(6))
+                            .assemblybNumber("REDE" + RandomUtil.randomNumbers(6))
                             .productNumber(item.getProductNumber())
                             .enName(item.getEnName())
                             .price(null)
@@ -1583,12 +1754,15 @@ public class AssemblyServiceImpl implements AssemblyService {
             for (ProductionPartsEnter product : productList) {
                 if (item.getProductId().equals(product.getId())) {
                     item.setAssemblyQty(product.getQty());
+                    item.setWaitAssemblyQty(product.getQty());
+                    item.setLaveWaitQcQty(product.getQty());
+                    item.setInWaitWhQty(product.getQty());
                 }
             }
         }
         saveOpeAssemblyBOrderList.forEach(item -> {
             if (productUnitPrice.containsKey(item.getProductId())) {
-                item.setAssemblyBNumber(item.getAssemblyBNumber() + new Random().nextInt(100));
+                item.setAssemblybNumber(item.getAssemblybNumber() + new Random().nextInt(100));
                 item.setPrice(productUnitPrice.get(item.getProductId()));
             }
         });

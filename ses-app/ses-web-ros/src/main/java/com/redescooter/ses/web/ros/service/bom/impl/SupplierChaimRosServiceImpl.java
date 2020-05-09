@@ -30,6 +30,7 @@ import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -199,11 +200,13 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         List<PriceUnitResult> list = new ArrayList<>();
         PriceUnitResult priceUnitResult = null;
         for (CurrencyUnitEnums item : CurrencyUnitEnums.values()) {
-            priceUnitResult = new PriceUnitResult();
-            priceUnitResult.setCode(item.getCode());
-            priceUnitResult.setVlue(item.getValue());
-            priceUnitResult.setUnit(item.getName());
-            list.add(priceUnitResult);
+            if (!StringUtils.equals(item.getValue(),CurrencyUnitEnums.CN.getValue())){
+                priceUnitResult = new PriceUnitResult();
+                priceUnitResult.setCode(item.getCode());
+                priceUnitResult.setVlue(item.getValue());
+                priceUnitResult.setUnit(item.getName());
+                list.add(priceUnitResult);
+            }
         }
         return list;
     }

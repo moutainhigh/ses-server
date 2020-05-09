@@ -13,9 +13,15 @@ import com.redescooter.ses.web.ros.vo.production.PaymentDetailResullt;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoItemEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
@@ -141,14 +147,48 @@ public interface AssemblyService {
     List<CommonNodeResult> ordinaryAssemblyNode(IdEnter enter);
 
     /**
-     * 质检记录
+     * 质检结果集合
      *
      * @param enter
      * @return
      */
-    List<AssemblyQcResult> assemblyQcTrces(AssemblyQcEnter enter);
+    Map<String, String> qcResultList(GeneralEnter enter);
 
-//    List<> assemblyQcItem(IdEnter);
+    /**
+     * 质检记录
+     * //todo ROS 新增
+     *
+     * @param enter
+     * @return
+     */
+    List<AssemblyQcInfoResult> assemblyQcInfo(AssemblyQcInfoEnter enter);
+
+    /**
+     * 质检记录条目
+     * //todo ROS 新增
+     *
+     * @param enter
+     * @return
+     */
+    List<AssemblyQcItemResult> assemblyQcInfoItem(AssemblyQcInfoItemEnter enter);
+
+    /**
+     * 质检条目的质检项
+     * //todo ROS 新增
+     *
+     * @param enter
+     * @return
+     */
+    AssemblyQcItemViewResult assemblyQcItemView(IdEnter enter);
+
+    /**
+     * 模板质检结果
+     *
+     * @param enter
+     * @return
+     */
+    List<AssemblyQcItemViewItemTemplateResult> viewItemTemplate(IdEnter enter);
+
 
     /**
      * 组装单信息导出
@@ -252,5 +292,21 @@ public interface AssemblyService {
      * @return
      */
     List<productItemResult> ordinaryProductItemList(IdEnter enter);
+
+    /**
+     * 组装记录
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductAssemblyTraceResult> productAssemblyTrace(IdEnter enter);
+
+    /**
+     * 组装记录条目
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductAssemblyTraceItemResult> productAssemblyTraceItem(IdEnter enter);
 
 }

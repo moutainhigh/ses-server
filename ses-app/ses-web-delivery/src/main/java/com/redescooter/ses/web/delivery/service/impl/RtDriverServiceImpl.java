@@ -25,6 +25,7 @@ import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
@@ -164,6 +165,19 @@ public class RtDriverServiceImpl implements RtDriverService {
      */
     @Override
     public GeneralResult save(SaveDriverEnter enter) {
+
+        //邮箱去空格
+        if (StringUtils.isNotEmpty(enter.getEmail())){
+            enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
+        }
+        //密码去空格
+        if (StringUtils.isNotEmpty(enter.getPassword())){
+            enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
+        }
+        if (StringUtils.isNotEmpty(enter.getPasswordAgain())){
+            enter.setPasswordAgain(SesStringUtils.stringTrim(enter.getPasswordAgain()));
+        }
+
 
         Boolean aBoolean = Boolean.FALSE;
         //驾照等级

@@ -1,14 +1,10 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.List;
-
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import java.util.List;
-
 import com.redescooter.ses.web.ros.dao.base.OpePriceSheetHistoryMapper;
 import com.redescooter.ses.web.ros.dm.OpePriceSheetHistory;
 import com.redescooter.ses.web.ros.service.base.OpePriceSheetHistoryService;
@@ -36,7 +32,4 @@ public class OpePriceSheetHistoryServiceImpl extends ServiceImpl<OpePriceSheetHi
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
-
-
-
 

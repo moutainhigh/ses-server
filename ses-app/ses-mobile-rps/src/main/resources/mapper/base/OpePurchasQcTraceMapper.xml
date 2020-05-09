@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpePurchasQcTraceMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpePurchasQcTrace">
+    <!--@mbg.generated-->
+    <!--@Table ope_purchas_qc_trace-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="part_id" jdbcType="BIGINT" property="partId" />
+    <result column="purchas_id" jdbcType="BIGINT" property="purchasId" />
+    <result column="purchas_b_qc_id" jdbcType="BIGINT" property="purchasBQcId" />
+    <result column="part_qc_template_id" jdbcType="BIGINT" property="partQcTemplateId" />
+    <result column="part_qc_template_name" jdbcType="VARCHAR" property="partQcTemplateName" />
+    <result column="part_qc_template_b_id" jdbcType="BIGINT" property="partQcTemplateBId" />
+    <result column="part_qc_template_b_name" jdbcType="VARCHAR" property="partQcTemplateBName" />
+    <result column="purchas_b_qc_item_id" jdbcType="BIGINT" property="purchasBQcItemId" />
+    <result column="part_qc_picture" jdbcType="VARCHAR" property="partQcPicture" />
+    <result column="revision" jdbcType="INTEGER" property="revision" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DOUBLE" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, part_id, purchas_id, purchas_b_qc_id, part_qc_template_id, part_qc_template_name, 
+    part_qc_template_b_id, part_qc_template_b_name, purchas_b_qc_item_id, part_qc_picture, 
+    revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
+    def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_purchas_qc_trace
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="part_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="purchas_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.purchasId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="purchas_b_qc_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.purchasBQcId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_template_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_template_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_template_b_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateBId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_template_b_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateBName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="purchas_b_qc_item_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.purchasBQcItemId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_picture = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partQcPicture,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_purchas_qc_trace
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="part_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.partId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.partId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="purchas_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.purchasId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.purchasId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="purchas_b_qc_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.purchasBQcId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.purchasBQcId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_template_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.partQcTemplateId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_template_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.partQcTemplateName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_template_b_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.partQcTemplateBId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateBId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_template_b_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.partQcTemplateBName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.partQcTemplateBName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="purchas_b_qc_item_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.purchasBQcItemId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.purchasBQcItemId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="part_qc_picture = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.partQcPicture != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.partQcPicture,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.revision != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+</mapper>

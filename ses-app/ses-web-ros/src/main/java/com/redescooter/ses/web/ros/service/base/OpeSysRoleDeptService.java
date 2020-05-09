@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleDept;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Transactional
-public interface OpeSysRoleDeptService extends IService<OpeSysRoleDept> {
+public interface OpeSysRoleDeptService extends IService<OpeSysRoleDept>{
 
 
     int updateBatch(List<OpeSysRoleDept> list);
@@ -19,6 +18,3 @@ public interface OpeSysRoleDeptService extends IService<OpeSysRoleDept> {
     int insertOrUpdateSelective(OpeSysRoleDept record);
 
 }
-
-
-

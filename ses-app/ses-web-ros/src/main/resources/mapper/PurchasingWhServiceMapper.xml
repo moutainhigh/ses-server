@@ -5,6 +5,7 @@
     <sql id="wher_availableList">
         where whse_id = #{whseId}
         and stock.dr=0
+        and stock.available_total <![CDATA[ > ]]>  0
         <if test="enter.type != null and enter.type != ''">
             and part.parts_type =#{enter.type}
         </if>
@@ -268,11 +269,16 @@
         group by id, partN, type, enName, cnName
         ) result
     </select>
-    <select id="countByTypeOutWhCount" resultType="int">
+    <select id="countByTypeOutWhCountAssembly" resultType="int">
         select count(*)
         from ope_stock stock
-        inner join ope_parts_product product
-        on stock.materiel_product_id = product.id and product.dr=0
+        left join ope_parts_product product on stock.materiel_product_id = product.id and product.dr=0
         where stock.dr=0
+    </select>
+    <select id="countByTypeOutWhCountAllocate" resultType="java.lang.Integer">
+        select count(*)
+        from ope_stock stock
+                 left join ope_stock_prod_part prodPart on stock.materiel_product_id = prodPart.id and prodPart.dr = 0
+        where stock.dr = 0
     </select>
 </mapper>

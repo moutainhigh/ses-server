@@ -21,9 +21,9 @@ import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
@@ -96,6 +96,10 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional
     @Override
     public GeneralResult saveInquiry(SaveInquiryEnter enter) {
+
+        //邮箱 去空格
+        enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
+
         // 查询已存在的email
         List<String> emailList = inquiryServiceMapper.usingEmailList();
         if (emailList.contains(enter.getEmail())) {
@@ -248,6 +252,9 @@ public class InquiryServiceImpl implements InquiryService {
             }
             opeCustomerInquiry.setCompanyName(enter.getCompanyName());
             opeCustomerInquiry.setScooterQuantity(enter.getScooterQuantity());
+            opeCustomerInquiry.setContactFirst(enter.getContactFirstName());
+            opeCustomerInquiry.setContactLast(enter.getContactLastName());
+            opeCustomerInquiry.setContantFullName(new StringBuilder(enter.getContactFirstName()).append(" ").append(enter.getContactLastName()).toString());
         }
         if (SesStringUtils.equals(enter.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
             if (SesStringUtils.isBlank(enter.getCustomerFirstName())) {
@@ -260,10 +267,10 @@ public class InquiryServiceImpl implements InquiryService {
             opeCustomerInquiry.setLastName(enter.getCustomerLastName());
             opeCustomerInquiry.setFullName(new StringBuilder(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
             opeCustomerInquiry.setScooterQuantity(1);
+            opeCustomerInquiry.setContactFirst(null);
+            opeCustomerInquiry.setContactLast(null);
+            opeCustomerInquiry.setContantFullName(null);
         }
-        opeCustomerInquiry.setContactFirst(enter.getContactFirstName());
-        opeCustomerInquiry.setContactLast(enter.getContactLastName());
-        opeCustomerInquiry.setContantFullName(new StringBuilder(enter.getContactFirstName()).append(" ").append(enter.getContactLastName()).toString());
         opeCustomerInquiry.setCountryCode(enter.getCountryCode());
         opeCustomerInquiry.setTelephone(enter.getTelephone());
         opeCustomerInquiry.setEmail(enter.getEmail());

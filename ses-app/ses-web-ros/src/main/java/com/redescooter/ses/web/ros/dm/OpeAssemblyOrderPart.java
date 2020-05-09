@@ -6,13 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAssemblyOrderPart")
 @Data
@@ -62,6 +61,13 @@ public class OpeAssemblyOrderPart implements Serializable {
     @TableField(value = "total_qty")
     @ApiModelProperty(value = "消耗部件数量")
     private Integer totalQty;
+
+    /**
+     * 待备料数量
+     */
+    @TableField(value = "wait_preparation_qty")
+    @ApiModelProperty(value = "待备料数量")
+    private Integer waitPreparationQty;
 
     /**
      * 乐观锁
@@ -146,6 +152,8 @@ public class OpeAssemblyOrderPart implements Serializable {
     public static final String COL_ASSEMBLY_ID = "assembly_id";
 
     public static final String COL_TOTAL_QTY = "total_qty";
+
+    public static final String COL_WAIT_PREPARATION_QTY = "wait_preparation_qty";
 
     public static final String COL_REVISION = "revision";
 

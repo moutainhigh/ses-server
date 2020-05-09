@@ -1,14 +1,10 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.List;
-
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import java.util.List;
-
 import com.redescooter.ses.web.ros.dao.base.OpePartsMapper;
 import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;

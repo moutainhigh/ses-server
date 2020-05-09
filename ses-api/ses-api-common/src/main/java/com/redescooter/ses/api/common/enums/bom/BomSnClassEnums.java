@@ -45,4 +45,13 @@ public enum BomSnClassEnums {
         return null;
     }
 
+    public static String checkValue(String value) {
+        for (BomSnClassEnums item : BomSnClassEnums.values()) {
+            if (item.getValue().equals(value)) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
+
 }

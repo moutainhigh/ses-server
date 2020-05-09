@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.preparematerial.PrepareMaterialServiceMapper">
+    <select id="detailAllocateListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_allocate_b allocateb
+                 inner join ope_parts parts on parts.id = allocateb.part_id
+        where allocateb.dr = 0
+          and allocateb.allocate_id=#{id}
+    </select>
+
+    <select id="detailAllocatelList"
+            resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult">
+        select allocateb.allocate_id          as id,
+        allocateb.id                   as childOrderId,
+        allocateb.part_id              as partId,
+        parts.id_class                 as idClass,
+        parts.parts_number             as partN,
+        parts.cn_name                  as partCnName,
+        allocateb.preparation_wait_qty as preparationWaitQty,
+        '2'                            as sourceType
+        from ope_allocate_b allocateb
+        inner join ope_parts parts on parts.id = allocateb.part_id
+        where allocateb.dr = 0
+        and allocateb.allocate_id=#{id}
+        order by allocateb.created_time asc
+    </select>
+    <select id="allocatListCount" resultType="int">
+        select count(*)
+        from ope_stock_bill bill
+                 inner join ope_allocate allocate on bill.source_id = allocate.id
+        where bill.dr = 0
+          and allocate.status = 1
+          and bill.source_type = 2
+    </select>
+
+    <select id="allocatList"
+            resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult">
+        select allocate.id                     as id,
+        2                               as sourceType,
+        allocate.allocate_num           as allocatN,
+        allocate.created_time           as createdTime,
+        allocate.preparation_wait_total as preparationWaitTotal
+        from  ope_allocate allocate
+        where  allocate.status = 1
+        order by allocate.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="assemblyListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_stock_bill bill
+                 inner join ope_assembly_order assem on bill.source_id = assem.id
+        where bill.dr = 0
+          and assem.status = 1
+          and bill.source_type = 3
+    </select>
+
+    <select id="assemblyList"
+            resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialListResult">
+        select assem.id                     as id,
+        3                            as sourceType,
+        assem.assembly_number        as allocatN,
+        assem.created_time           as createdTime,
+        assem.wait_preparation_total as preparationWaitTotal
+        from ope_assembly_order assem
+        where assem.status = 2
+        order by assem.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detailAssemblyListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_assembly_order_part opart
+        inner join ope_parts parts on parts.id = opart.part_id
+        where opart.dr = 0
+        and opart.assembly_id =#{id}
+        order by opart.created_time asc
+    </select>
+    <select id="detailAssemblyList"
+            resultType="com.redescooter.ses.mobile.rps.vo.preparematerial.PrepareMaterialDetailResult">
+        select opart.assembly_id          as id,
+        opart.id                   as childOrderId,
+        opart.part_id              as partId,
+        parts.id_class             as idClass,
+        parts.parts_number         as partN,
+        parts.cn_name              as partCnName,
+        opart.wait_preparation_qty as preparationWaitQty,
+        3                          as sourceType
+        from ope_assembly_order_part opart
+        inner join ope_parts parts on parts.id = opart.part_id
+        where opart.dr = 0
+        and opart.assembly_id =#{id}
+        order by opart.created_time asc
+    </select>
+
+    <select id="queryStockBillBySourceTypeId"
+            resultType="com.redescooter.ses.mobile.rps.vo.bo.QueryStockBillDto">
+        select stock.materiel_product_id as partId,
+        stockBill.id as stockBillId,
+        stockBill.source_type as sourceType,
+        stock.id as stockId
+        from ope_stock_bill stockBill
+        inner join ope_stock stock on stockBill.stock_id = stock.id
+        where stockBill.source_type = #{value}
+        and stockBill.source_id = #{id};
+    </select>
+
+    <select id="queryStockProductPartSerialNList" resultType="com.redescooter.ses.mobile.rps.dm.OpeStockProdPart">
+        select part.*
+        from ope_stock_prod_part part
+        left join ope_stock_bill bill on part.out_stock_bill_id = bill.id and bill.dr=0 and bill.dr=0
+        left join ope_assembly_order asso on asso.id=bill.source_id and asso.dr=0
+        where part.dr=0
+        and part.status=3
+        and bill.source_type=3
+        and part.id=#{id}
+    </select>
+    <select id="queryStockPurchasSerialNList" resultType="com.redescooter.ses.mobile.rps.dm.OpeStockPurchas">
+        select part.*
+        from ope_stock_purchas part
+        left join ope_stock_bill bill on part.out_stock_bill_id = bill.id and bill.dr=0 and bill.dr=0
+        left join ope_allocate allocate on allocate.id=bill.source_id and allocate.dr=0
+        where part.dr=0
+        and part.status=3
+        and bill.source_type=2
+        and part.id=#{id}
+    </select>
+</mapper>

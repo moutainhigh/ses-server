@@ -18,13 +18,13 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysDeptRelation">
     <!--@mbg.generated-->
-      insert into ope_sys_dept_relation
-      (ancestor, descendant)
-      values
-      (#{ancestor,jdbcType=BIGINT}, #{descendant,jdbcType=BIGINT})
-      on duplicate key update
-      ancestor = #{ancestor,jdbcType=BIGINT},
-      descendant = #{descendant,jdbcType=BIGINT}
+    insert into ope_sys_dept_relation
+    (ancestor, descendant)
+    values
+    (#{ancestor,jdbcType=BIGINT}, #{descendant,jdbcType=BIGINT})
+    on duplicate key update 
+    ancestor = #{ancestor,jdbcType=BIGINT}, 
+    descendant = #{descendant,jdbcType=BIGINT}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysDeptRelation">
     <!--@mbg.generated-->
@@ -46,8 +46,8 @@
         #{descendant,jdbcType=BIGINT},
       </if>
     </trim>
-      on duplicate key update
-      <trim suffixOverrides=",">
+    on duplicate key update 
+    <trim suffixOverrides=",">
       <if test="ancestor != null">
         ancestor = #{ancestor,jdbcType=BIGINT},
       </if>

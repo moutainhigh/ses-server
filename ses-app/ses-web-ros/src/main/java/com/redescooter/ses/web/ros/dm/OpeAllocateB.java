@@ -6,10 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +20,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "ope_allocate_b")
 public class OpeAllocateB implements Serializable {
-    public static final String COL_COUNT = "count";
     /**
      * 主键
      */
@@ -87,6 +84,20 @@ public class OpeAllocateB implements Serializable {
     private Integer total;
 
     /**
+     * 待备料总数
+     */
+    @TableField(value = "preparation_wait_qty")
+    @ApiModelProperty(value = "待备料总数")
+    private Integer preparationWaitQty;
+
+    /**
+     * 待入库数量
+     */
+    @TableField(value = "pending_storage_qty")
+    @ApiModelProperty(value = "待入库数量")
+    private Integer pendingStorageQty;
+
+    /**
      * 乐观锁
      */
     @TableField(value = "revision")
@@ -112,7 +123,7 @@ public class OpeAllocateB implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Long updatedBy;
+    private Integer updatedBy;
 
     /**
      * 更新时间
@@ -175,6 +186,10 @@ public class OpeAllocateB implements Serializable {
     public static final String COL_MATERIEL_PRODUCT_TYPE = "materiel_product_type";
 
     public static final String COL_TOTAL = "total";
+
+    public static final String COL_PREPARATION_WAIT_QTY = "preparation_wait_qty";
+
+    public static final String COL_PENDING_STORAGE_QTY = "pending_storage_qty";
 
     public static final String COL_REVISION = "revision";
 

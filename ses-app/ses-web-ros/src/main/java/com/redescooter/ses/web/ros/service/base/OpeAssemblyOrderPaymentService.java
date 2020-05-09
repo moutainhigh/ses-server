@@ -1,10 +1,9 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
+import com.redescooter.ses.web.ros.dm.OpeAssemblyOrderPayment;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface OpeAssemblyOrderPaymentService extends IService<OpeAssemblyOrderPayment> {
@@ -19,6 +18,4 @@ public interface OpeAssemblyOrderPaymentService extends IService<OpeAssemblyOrde
     int insertOrUpdateSelective(OpeAssemblyOrderPayment record);
 
 }
-
-
 

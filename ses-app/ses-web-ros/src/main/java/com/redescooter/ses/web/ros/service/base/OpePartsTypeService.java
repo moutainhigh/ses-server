@@ -1,14 +1,12 @@
 package com.redescooter.ses.web.ros.service.base;
 
 import java.util.List;
-
+import com.redescooter.ses.web.ros.dm.OpePartsType;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.redescooter.ses.web.ros.dm.OpePartsType;
-
 @Transactional
-public interface OpePartsTypeService extends IService<OpePartsType> {
+public interface OpePartsTypeService extends IService<OpePartsType>{
 
 
     int updateBatch(List<OpePartsType> list);
@@ -20,10 +18,3 @@ public interface OpePartsTypeService extends IService<OpePartsType> {
     int insertOrUpdateSelective(OpePartsType record);
 
 }
-
-
-
-
-
-
-

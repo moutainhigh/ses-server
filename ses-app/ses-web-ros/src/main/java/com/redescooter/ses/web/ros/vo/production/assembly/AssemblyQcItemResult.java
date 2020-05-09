@@ -32,6 +32,9 @@ public class AssemblyQcItemResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "质检信息Id")
+    private Long assemblyBQcId;
+
     @ApiModelProperty(value = "序列号")
     private String serialN;
 

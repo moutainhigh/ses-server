@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.productwaitinwh.ProductWaitInWhServiceMapper">
+
+
+    <select id="proWaitInWHListCount" resultType="int">
+        select count(*)
+        from ope_assembly_order
+    </select>
+    <select id="allocateDetaiList"
+            resultType="com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhItemResult">
+        select allocateB.id as id,
+        part.en_name as productName,
+        part.id as productId,
+        part.parts_number as productN,
+        allocateB.pending_storage_qty as productNum,
+        2 as sourceType
+        from ope_allocate_b allocateB
+        inner join ope_parts part on part.id=allocateB.part_id and part.dr=0
+        where allocateB.dr=0
+        and allocateB.allocate_id=#{id}
+        limit #{startRow},#{pageSize}
+    </select>
+    <select id="assemblyDetaiList"
+            resultType="com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhItemResult">
+        select assemblyB.id as id,
+        product.en_name as productName,
+        product.product_number as productN,
+        product.id as productId,
+        assemblyB.in_wait_wh_qty as productNum,
+        3 as sourceType
+        from ope_assembly_b_order assemblyB
+        inner join ope_parts_product product on product.id=assemblyB.product_id and product.dr=0
+        where assemblyB.dr=0
+        and assemblyB.assembly_id=#{id}
+        limit #{startRow},#{pageSize}
+    </select>
+</mapper>

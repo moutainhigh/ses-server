@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.production.purchasing.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
@@ -46,7 +45,7 @@ import com.redescooter.ses.web.ros.dm.OpeStockBill;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
-import com.redescooter.ses.web.ros.dm.PartDetailDto;
+import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
@@ -99,7 +98,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName:PurchasingServiceImpl
@@ -365,7 +363,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         List<ConsigneeResult> consigneeResultlist = new ArrayList<>();
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
-        opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_SYS_USER_ID, Constant.ADMINUSERID);
+        opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_FIRST_NAME, Constant.ADMIN_USER_NAME);
         List<OpeSysUserProfile> opeSysUserProfileList = opeSysUserProfileService.list(opeSysUserProfileQueryWrapper);
         opeSysUserProfileList.forEach(item -> {
             consigneeResultlist.add(ConsigneeResult.builder()
@@ -590,6 +588,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             scooterProductList.forEach(item -> {
                 productIds.add(item.getId());
             });
+            //查询产品所有部件
             List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
             if (CollectionUtils.isNotEmpty(partList)) {
 
@@ -1412,6 +1411,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                             .price(item.getPrice())
                             .totalPrice(item.getPrice().equals(BigDecimal.ZERO) ? BigDecimal.ZERO : item.getPrice().multiply(new BigDecimal(v)))
                             .totalCount(v)
+                            .laveWaitQcQty(v)
+                            .inWaitWhQty(v)
                             .createdBy(enter.getUserId())
                             .createdTime(new Date())
                             .updatedTime(new Date())
@@ -1436,6 +1437,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .factoryId(enter.getFactoryId())
                 .totalPrice(totalPrice)
                 .totalQty(totalCount)
+                .laveWaitQcTotal(totalCount)
+                .inWaitWhTotal(totalCount)
                 .revision(0)
                 .createdBy(enter.getUserId())
                 .createdTime(new Date())

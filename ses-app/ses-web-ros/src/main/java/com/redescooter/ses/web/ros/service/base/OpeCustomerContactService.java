@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeCustomerContact;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Transactional
-public interface OpeCustomerContactService extends IService<OpeCustomerContact> {
+public interface OpeCustomerContactService extends IService<OpeCustomerContact>{
 
 
     int updateBatch(List<OpeCustomerContact> list);
@@ -19,4 +18,3 @@ public interface OpeCustomerContactService extends IService<OpeCustomerContact> 
     int insertOrUpdateSelective(OpeCustomerContact record);
 
 }
-

@@ -1,16 +1,10 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_assembly_order_payment")
-public class OpeAssemblyOrderPayment implements Serializable {
+public class OpeAssemblyOrderPayment {
     /**
      * ID
      */
@@ -35,6 +29,7 @@ public class OpeAssemblyOrderPayment implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -204,8 +199,6 @@ public class OpeAssemblyOrderPayment implements Serializable {
     @TableField(value = "def6")
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
-
-    private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 

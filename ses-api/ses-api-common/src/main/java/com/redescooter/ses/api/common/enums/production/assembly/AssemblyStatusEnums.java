@@ -18,8 +18,8 @@ public enum AssemblyStatusEnums {
 
     PENDING("PENDING", "待处理", "1"),
     PREPARE_MATERIAL("PREPARE_MATERIAL", "组装备料", "2"),
-    ASSEMBLING("ASSEMBLING", "组装中", "3"),
-    QC("QC", "质检中", "4"),
+    ASSEMBLING("ASSEMBLING", "开始组装", "3"),
+    QC("QC", "开始质检", "4"),
     QC_PASSED("QC_PASSED", "质检通过", "5"),
     IN_PRODUCTION_WH("IN_PRODUCTION_WH", "入库", "6"),
     CANCELLED("CANCELLED", "取消", "7");

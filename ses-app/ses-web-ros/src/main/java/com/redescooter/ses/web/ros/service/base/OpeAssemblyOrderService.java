@@ -1,14 +1,15 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyOrder;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface OpeAssemblyOrderService extends IService<OpeAssemblyOrder> {
 
+
+    int updateBatch(List<OpeAssemblyOrder> list);
 
     int batchInsert(List<OpeAssemblyOrder> list);
 
@@ -16,14 +17,7 @@ public interface OpeAssemblyOrderService extends IService<OpeAssemblyOrder> {
 
     int insertOrUpdateSelective(OpeAssemblyOrder record);
 
-    int updateBatch(List<OpeAssemblyOrder> list);
 }
-
-
-
-
-
-
 
 
 

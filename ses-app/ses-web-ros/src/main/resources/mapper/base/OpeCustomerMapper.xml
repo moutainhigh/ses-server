@@ -4,65 +4,66 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeCustomer">
     <!--@mbg.generated-->
     <!--@Table ope_customer-->
-    <id column="id" jdbcType="BIGINT" property="id"/>
-    <result column="dr" jdbcType="INTEGER" property="dr"/>
-    <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>
-    <result column="time_zone" jdbcType="VARCHAR" property="timeZone"/>
-    <result column="country" jdbcType="BIGINT" property="country"/>
-    <result column="country_code" jdbcType="VARCHAR" property="countryCode"/>
-    <result column="city" jdbcType="BIGINT" property="city"/>
-    <result column="distrust" jdbcType="BIGINT" property="distrust"/>
-    <result column="status" jdbcType="VARCHAR" property="status"/>
-    <result column="sales_id" jdbcType="BIGINT" property="salesId"/>
-    <result column="customer_code" jdbcType="VARCHAR" property="customerCode"/>
-    <result column="customer_first_name" jdbcType="VARCHAR" property="customerFirstName"/>
-    <result column="customer_last_name" jdbcType="VARCHAR" property="customerLastName"/>
-    <result column="customer_full_name" jdbcType="VARCHAR" property="customerFullName"/>
-    <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
-    <result column="picture" jdbcType="VARCHAR" property="picture"/>
-    <result column="customer_source" jdbcType="VARCHAR" property="customerSource"/>
-    <result column="customer_type" jdbcType="VARCHAR" property="customerType"/>
-    <result column="industry_type" jdbcType="VARCHAR" property="industryType"/>
-    <result column="address" jdbcType="VARCHAR" property="address"/>
-    <result column="place_id" jdbcType="VARCHAR" property="placeId"/>
-    <result column="longitude" jdbcType="DECIMAL" property="longitude"/>
-    <result column="latitude" jdbcType="DECIMAL" property="latitude"/>
-    <result column="contact_first_name" jdbcType="VARCHAR" property="contactFirstName"/>
-    <result column="contact_last_name" jdbcType="VARCHAR" property="contactLastName"/>
-    <result column="contact_full_name" jdbcType="VARCHAR" property="contactFullName"/>
-    <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
-    <result column="email" jdbcType="VARCHAR" property="email"/>
-    <result column="memo" jdbcType="VARCHAR" property="memo"/>
-    <result column="scooter_quantity" jdbcType="INTEGER" property="scooterQuantity"/>
-    <result column="certificate_type" jdbcType="VARCHAR" property="certificateType"/>
-    <result column="certificate_positive_annex" jdbcType="VARCHAR" property="certificatePositiveAnnex"/>
-    <result column="certificate_negative_annex" jdbcType="VARCHAR" property="certificateNegativeAnnex"/>
-    <result column="business_license_num" jdbcType="VARCHAR" property="businessLicenseNum"/>
-    <result column="business_license_annex" jdbcType="VARCHAR" property="businessLicenseAnnex"/>
-    <result column="invoice_num" jdbcType="VARCHAR" property="invoiceNum"/>
-    <result column="invoice_annex" jdbcType="VARCHAR" property="invoiceAnnex"/>
-    <result column="contract_annex" jdbcType="VARCHAR" property="contractAnnex"/>
-    <result column="account_flag" jdbcType="VARCHAR" property="accountFlag"/>
-    <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
-    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
-    <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
-    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
-    <result column="def1" jdbcType="VARCHAR" property="def1"/>
-    <result column="def2" jdbcType="VARCHAR" property="def2"/>
-    <result column="def3" jdbcType="VARCHAR" property="def3"/>
-    <result column="def5" jdbcType="VARCHAR" property="def5"/>
-    <result column="def6" jdbcType="DOUBLE" property="def6"/>
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="time_zone" jdbcType="VARCHAR" property="timeZone" />
+    <result column="country" jdbcType="BIGINT" property="country" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+    <result column="city" jdbcType="BIGINT" property="city" />
+    <result column="distrust" jdbcType="BIGINT" property="distrust" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="sales_id" jdbcType="BIGINT" property="salesId" />
+    <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
+    <result column="customer_first_name" jdbcType="VARCHAR" property="customerFirstName" />
+    <result column="customer_last_name" jdbcType="VARCHAR" property="customerLastName" />
+    <result column="customer_full_name" jdbcType="VARCHAR" property="customerFullName" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="customer_source" jdbcType="VARCHAR" property="customerSource" />
+    <result column="customer_type" jdbcType="VARCHAR" property="customerType" />
+    <result column="industry_type" jdbcType="VARCHAR" property="industryType" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="place_id" jdbcType="VARCHAR" property="placeId" />
+    <result column="longitude" jdbcType="DECIMAL" property="longitude" />
+    <result column="latitude" jdbcType="DECIMAL" property="latitude" />
+    <result column="contact_first_name" jdbcType="VARCHAR" property="contactFirstName" />
+    <result column="contact_last_name" jdbcType="VARCHAR" property="contactLastName" />
+    <result column="contact_full_name" jdbcType="VARCHAR" property="contactFullName" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+    <result column="scooter_quantity" jdbcType="INTEGER" property="scooterQuantity" />
+    <result column="assignation_scooter_qty" jdbcType="INTEGER" property="assignationScooterQty" />
+    <result column="certificate_type" jdbcType="VARCHAR" property="certificateType" />
+    <result column="certificate_positive_annex" jdbcType="VARCHAR" property="certificatePositiveAnnex" />
+    <result column="certificate_negative_annex" jdbcType="VARCHAR" property="certificateNegativeAnnex" />
+    <result column="business_license_num" jdbcType="VARCHAR" property="businessLicenseNum" />
+    <result column="business_license_annex" jdbcType="VARCHAR" property="businessLicenseAnnex" />
+    <result column="invoice_num" jdbcType="VARCHAR" property="invoiceNum" />
+    <result column="invoice_annex" jdbcType="VARCHAR" property="invoiceAnnex" />
+    <result column="contract_annex" jdbcType="VARCHAR" property="contractAnnex" />
+    <result column="account_flag" jdbcType="VARCHAR" property="accountFlag" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DOUBLE" property="def6" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id,
-    customer_code, customer_first_name, customer_last_name, customer_full_name, company_name,
-    picture, customer_source, customer_type, industry_type, address, place_id, longitude,
-    latitude, contact_first_name, contact_last_name, contact_full_name, telephone, email,
-    memo, scooter_quantity, certificate_type, certificate_positive_annex, certificate_negative_annex,
-    business_license_num, business_license_annex, invoice_num, invoice_annex, contract_annex,
-    account_flag, created_by, created_time, updated_by, updated_time, def1, def2, def3,
-    def5, def6
+    id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id, 
+    customer_code, customer_first_name, customer_last_name, customer_full_name, company_name, 
+    picture, customer_source, customer_type, industry_type, address, place_id, longitude, 
+    latitude, contact_first_name, contact_last_name, contact_full_name, telephone, email, 
+    memo, scooter_quantity, assignation_scooter_qty, certificate_type, certificate_positive_annex, 
+    certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+    invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -213,6 +214,11 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.scooterQuantity,jdbcType=INTEGER}
         </foreach>
       </trim>
+      <trim prefix="assignation_scooter_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.assignationScooterQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
       <trim prefix="certificate_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=VARCHAR}
@@ -312,119 +318,115 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_customer
-    (id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id,
-    customer_code, customer_first_name, customer_last_name, customer_full_name, company_name,
-    picture, customer_source, customer_type, industry_type, address, place_id, longitude,
-    latitude, contact_first_name, contact_last_name, contact_full_name, telephone,
-    email, memo, scooter_quantity, certificate_type, certificate_positive_annex, certificate_negative_annex,
-    business_license_num, business_license_annex, invoice_num, invoice_annex, contract_annex,
-    account_flag, created_by, created_time, updated_by, updated_time, def1, def2, def3,
-    def5, def6)
+    (id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id, 
+      customer_code, customer_first_name, customer_last_name, customer_full_name, company_name, 
+      picture, customer_source, customer_type, industry_type, address, place_id, longitude, 
+      latitude, contact_first_name, contact_last_name, contact_full_name, telephone, 
+      email, memo, scooter_quantity, assignation_scooter_qty, certificate_type, certificate_positive_annex, 
+      certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+      invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
-      #{item.timeZone,jdbcType=VARCHAR}, #{item.country,jdbcType=BIGINT}, #{item.countryCode,jdbcType=VARCHAR},
-      #{item.city,jdbcType=BIGINT}, #{item.distrust,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR},
-      #{item.salesId,jdbcType=BIGINT}, #{item.customerCode,jdbcType=VARCHAR},
-      #{item.customerFirstName,jdbcType=VARCHAR},
-      #{item.customerLastName,jdbcType=VARCHAR}, #{item.customerFullName,jdbcType=VARCHAR},
-      #{item.companyName,jdbcType=VARCHAR}, #{item.picture,jdbcType=VARCHAR},
-      #{item.customerSource,jdbcType=VARCHAR},
-      #{item.customerType,jdbcType=VARCHAR}, #{item.industryType,jdbcType=VARCHAR},
-      #{item.address,jdbcType=VARCHAR},
-      #{item.placeId,jdbcType=VARCHAR}, #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL},
-      #{item.contactFirstName,jdbcType=VARCHAR}, #{item.contactLastName,jdbcType=VARCHAR},
-      #{item.contactFullName,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR},
-      #{item.memo,jdbcType=VARCHAR}, #{item.scooterQuantity,jdbcType=INTEGER},
-      #{item.certificateType,jdbcType=VARCHAR},
-      #{item.certificatePositiveAnnex,jdbcType=VARCHAR}, #{item.certificateNegativeAnnex,jdbcType=VARCHAR},
-      #{item.businessLicenseNum,jdbcType=VARCHAR}, #{item.businessLicenseAnnex,jdbcType=VARCHAR},
-      #{item.invoiceNum,jdbcType=VARCHAR}, #{item.invoiceAnnex,jdbcType=VARCHAR},
-      #{item.contractAnnex,jdbcType=VARCHAR},
-      #{item.accountFlag,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
-      #{item.createdTime,jdbcType=TIMESTAMP},
-      #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
-      #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR},
-      #{item.def6,jdbcType=DOUBLE})
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.timeZone,jdbcType=VARCHAR}, #{item.country,jdbcType=BIGINT}, #{item.countryCode,jdbcType=VARCHAR}, 
+        #{item.city,jdbcType=BIGINT}, #{item.distrust,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, 
+        #{item.salesId,jdbcType=BIGINT}, #{item.customerCode,jdbcType=VARCHAR}, #{item.customerFirstName,jdbcType=VARCHAR}, 
+        #{item.customerLastName,jdbcType=VARCHAR}, #{item.customerFullName,jdbcType=VARCHAR}, 
+        #{item.companyName,jdbcType=VARCHAR}, #{item.picture,jdbcType=VARCHAR}, #{item.customerSource,jdbcType=VARCHAR}, 
+        #{item.customerType,jdbcType=VARCHAR}, #{item.industryType,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, 
+        #{item.placeId,jdbcType=VARCHAR}, #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL}, 
+        #{item.contactFirstName,jdbcType=VARCHAR}, #{item.contactLastName,jdbcType=VARCHAR}, 
+        #{item.contactFullName,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 
+        #{item.memo,jdbcType=VARCHAR}, #{item.scooterQuantity,jdbcType=INTEGER}, #{item.assignationScooterQty,jdbcType=INTEGER}, 
+        #{item.certificateType,jdbcType=VARCHAR}, #{item.certificatePositiveAnnex,jdbcType=VARCHAR}, 
+        #{item.certificateNegativeAnnex,jdbcType=VARCHAR}, #{item.businessLicenseNum,jdbcType=VARCHAR}, 
+        #{item.businessLicenseAnnex,jdbcType=VARCHAR}, #{item.invoiceNum,jdbcType=VARCHAR}, 
+        #{item.invoiceAnnex,jdbcType=VARCHAR}, #{item.contractAnnex,jdbcType=VARCHAR}, 
+        #{item.accountFlag,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
+        #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomer">
     <!--@mbg.generated-->
     insert into ope_customer
-    (id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id,
-    customer_code, customer_first_name, customer_last_name, customer_full_name, company_name,
-    picture, customer_source, customer_type, industry_type, address, place_id, longitude,
-    latitude, contact_first_name, contact_last_name, contact_full_name, telephone,
-    email, memo, scooter_quantity, certificate_type, certificate_positive_annex, certificate_negative_annex,
-    business_license_num, business_license_annex, invoice_num, invoice_annex, contract_annex,
-    account_flag, created_by, created_time, updated_by, updated_time, def1, def2, def3,
-    def5, def6)
+    (id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id, 
+      customer_code, customer_first_name, customer_last_name, customer_full_name, company_name, 
+      picture, customer_source, customer_type, industry_type, address, place_id, longitude, 
+      latitude, contact_first_name, contact_last_name, contact_full_name, telephone, 
+      email, memo, scooter_quantity, assignation_scooter_qty, certificate_type, certificate_positive_annex, 
+      certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+      invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{timeZone,jdbcType=VARCHAR},
-    #{country,jdbcType=BIGINT}, #{countryCode,jdbcType=VARCHAR}, #{city,jdbcType=BIGINT},
-    #{distrust,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{salesId,jdbcType=BIGINT},
-    #{customerCode,jdbcType=VARCHAR}, #{customerFirstName,jdbcType=VARCHAR}, #{customerLastName,jdbcType=VARCHAR},
-    #{customerFullName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR},
-    #{customerSource,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, #{industryType,jdbcType=VARCHAR},
-    #{address,jdbcType=VARCHAR}, #{placeId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL},
-    #{latitude,jdbcType=DECIMAL}, #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR},
-    #{contactFullName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
-    #{memo,jdbcType=VARCHAR}, #{scooterQuantity,jdbcType=INTEGER}, #{certificateType,jdbcType=VARCHAR},
-    #{certificatePositiveAnnex,jdbcType=VARCHAR}, #{certificateNegativeAnnex,jdbcType=VARCHAR},
-    #{businessLicenseNum,jdbcType=VARCHAR}, #{businessLicenseAnnex,jdbcType=VARCHAR},
-    #{invoiceNum,jdbcType=VARCHAR}, #{invoiceAnnex,jdbcType=VARCHAR}, #{contractAnnex,jdbcType=VARCHAR},
-    #{accountFlag,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
-    #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
-    #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
-    )
-    on duplicate key update
-    id = #{id,jdbcType=BIGINT},
-    dr = #{dr,jdbcType=INTEGER},
-    tenant_id = #{tenantId,jdbcType=BIGINT},
-    time_zone = #{timeZone,jdbcType=VARCHAR},
-    country = #{country,jdbcType=BIGINT},
-    country_code = #{countryCode,jdbcType=VARCHAR},
-    city = #{city,jdbcType=BIGINT},
-    distrust = #{distrust,jdbcType=BIGINT},
-    `status` = #{status,jdbcType=VARCHAR},
-    sales_id = #{salesId,jdbcType=BIGINT},
-    customer_code = #{customerCode,jdbcType=VARCHAR},
-    customer_first_name = #{customerFirstName,jdbcType=VARCHAR},
-    customer_last_name = #{customerLastName,jdbcType=VARCHAR},
-    customer_full_name = #{customerFullName,jdbcType=VARCHAR},
-    company_name = #{companyName,jdbcType=VARCHAR},
-    picture = #{picture,jdbcType=VARCHAR},
-    customer_source = #{customerSource,jdbcType=VARCHAR},
-    customer_type = #{customerType,jdbcType=VARCHAR},
-    industry_type = #{industryType,jdbcType=VARCHAR},
-    address = #{address,jdbcType=VARCHAR},
-    place_id = #{placeId,jdbcType=VARCHAR},
-    longitude = #{longitude,jdbcType=DECIMAL},
-    latitude = #{latitude,jdbcType=DECIMAL},
-    contact_first_name = #{contactFirstName,jdbcType=VARCHAR},
-    contact_last_name = #{contactLastName,jdbcType=VARCHAR},
-    contact_full_name = #{contactFullName,jdbcType=VARCHAR},
-    telephone = #{telephone,jdbcType=VARCHAR},
-    email = #{email,jdbcType=VARCHAR},
-    memo = #{memo,jdbcType=VARCHAR},
-    scooter_quantity = #{scooterQuantity,jdbcType=INTEGER},
-    certificate_type = #{certificateType,jdbcType=VARCHAR},
-    certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR},
-    certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR},
-    business_license_num = #{businessLicenseNum,jdbcType=VARCHAR},
-    business_license_annex = #{businessLicenseAnnex,jdbcType=VARCHAR},
-    invoice_num = #{invoiceNum,jdbcType=VARCHAR},
-    invoice_annex = #{invoiceAnnex,jdbcType=VARCHAR},
-    contract_annex = #{contractAnnex,jdbcType=VARCHAR},
-    account_flag = #{accountFlag,jdbcType=VARCHAR},
-    created_by = #{createdBy,jdbcType=BIGINT},
-    created_time = #{createdTime,jdbcType=TIMESTAMP},
-    updated_by = #{updatedBy,jdbcType=BIGINT},
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-    def1 = #{def1,jdbcType=VARCHAR},
-    def2 = #{def2,jdbcType=VARCHAR},
-    def3 = #{def3,jdbcType=VARCHAR},
-    def5 = #{def5,jdbcType=VARCHAR},
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{timeZone,jdbcType=VARCHAR}, 
+      #{country,jdbcType=BIGINT}, #{countryCode,jdbcType=VARCHAR}, #{city,jdbcType=BIGINT}, 
+      #{distrust,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{salesId,jdbcType=BIGINT}, 
+      #{customerCode,jdbcType=VARCHAR}, #{customerFirstName,jdbcType=VARCHAR}, #{customerLastName,jdbcType=VARCHAR}, 
+      #{customerFullName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, 
+      #{customerSource,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, #{industryType,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{placeId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, 
+      #{latitude,jdbcType=DECIMAL}, #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR}, 
+      #{contactFullName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{memo,jdbcType=VARCHAR}, #{scooterQuantity,jdbcType=INTEGER}, #{assignationScooterQty,jdbcType=INTEGER}, 
+      #{certificateType,jdbcType=VARCHAR}, #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
+      #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{businessLicenseNum,jdbcType=VARCHAR}, 
+      #{businessLicenseAnnex,jdbcType=VARCHAR}, #{invoiceNum,jdbcType=VARCHAR}, #{invoiceAnnex,jdbcType=VARCHAR}, 
+      #{contractAnnex,jdbcType=VARCHAR}, #{accountFlag,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DOUBLE})
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    time_zone = #{timeZone,jdbcType=VARCHAR}, 
+    country = #{country,jdbcType=BIGINT}, 
+    country_code = #{countryCode,jdbcType=VARCHAR}, 
+    city = #{city,jdbcType=BIGINT}, 
+    distrust = #{distrust,jdbcType=BIGINT}, 
+    `status` = #{status,jdbcType=VARCHAR}, 
+    sales_id = #{salesId,jdbcType=BIGINT}, 
+    customer_code = #{customerCode,jdbcType=VARCHAR}, 
+    customer_first_name = #{customerFirstName,jdbcType=VARCHAR}, 
+    customer_last_name = #{customerLastName,jdbcType=VARCHAR}, 
+    customer_full_name = #{customerFullName,jdbcType=VARCHAR}, 
+    company_name = #{companyName,jdbcType=VARCHAR}, 
+    picture = #{picture,jdbcType=VARCHAR}, 
+    customer_source = #{customerSource,jdbcType=VARCHAR}, 
+    customer_type = #{customerType,jdbcType=VARCHAR}, 
+    industry_type = #{industryType,jdbcType=VARCHAR}, 
+    address = #{address,jdbcType=VARCHAR}, 
+    place_id = #{placeId,jdbcType=VARCHAR}, 
+    longitude = #{longitude,jdbcType=DECIMAL}, 
+    latitude = #{latitude,jdbcType=DECIMAL}, 
+    contact_first_name = #{contactFirstName,jdbcType=VARCHAR}, 
+    contact_last_name = #{contactLastName,jdbcType=VARCHAR}, 
+    contact_full_name = #{contactFullName,jdbcType=VARCHAR}, 
+    telephone = #{telephone,jdbcType=VARCHAR}, 
+    email = #{email,jdbcType=VARCHAR}, 
+    memo = #{memo,jdbcType=VARCHAR}, 
+    scooter_quantity = #{scooterQuantity,jdbcType=INTEGER}, 
+    assignation_scooter_qty = #{assignationScooterQty,jdbcType=INTEGER}, 
+    certificate_type = #{certificateType,jdbcType=VARCHAR}, 
+    certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
+    certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR}, 
+    business_license_num = #{businessLicenseNum,jdbcType=VARCHAR}, 
+    business_license_annex = #{businessLicenseAnnex,jdbcType=VARCHAR}, 
+    invoice_num = #{invoiceNum,jdbcType=VARCHAR}, 
+    invoice_annex = #{invoiceAnnex,jdbcType=VARCHAR}, 
+    contract_annex = #{contractAnnex,jdbcType=VARCHAR}, 
+    account_flag = #{accountFlag,jdbcType=VARCHAR}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
     def6 = #{def6,jdbcType=DOUBLE}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomer">
@@ -520,6 +522,9 @@
       </if>
       <if test="scooterQuantity != null">
         scooter_quantity,
+      </if>
+      <if test="assignationScooterQty != null">
+        assignation_scooter_qty,
       </if>
       <if test="certificateType != null">
         certificate_type,
@@ -668,6 +673,9 @@
       <if test="scooterQuantity != null">
         #{scooterQuantity,jdbcType=INTEGER},
       </if>
+      <if test="assignationScooterQty != null">
+        #{assignationScooterQty,jdbcType=INTEGER},
+      </if>
       <if test="certificateType != null">
         #{certificateType,jdbcType=VARCHAR},
       </if>
@@ -723,7 +731,7 @@
         #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
-    on duplicate key update
+    on duplicate key update 
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
@@ -814,6 +822,9 @@
       </if>
       <if test="scooterQuantity != null">
         scooter_quantity = #{scooterQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="assignationScooterQty != null">
+        assignation_scooter_qty = #{assignationScooterQty,jdbcType=INTEGER},
       </if>
       <if test="certificateType != null">
         certificate_type = #{certificateType,jdbcType=VARCHAR},

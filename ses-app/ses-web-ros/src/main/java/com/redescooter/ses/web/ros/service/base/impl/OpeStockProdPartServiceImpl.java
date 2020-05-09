@@ -1,12 +1,13 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.web.ros.dao.base.OpeStockProdPartMapper;
 import com.redescooter.ses.web.ros.dm.OpeStockProdPart;
-import com.redescooter.ses.web.ros.service.base.OpeStockProdPartService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.redescooter.ses.web.ros.dao.base.OpeStockProdPartMapper;
+
+import com.redescooter.ses.web.ros.service.base.OpeStockProdPartService;
 
 @Service
 public class OpeStockProdPartServiceImpl extends ServiceImpl<OpeStockProdPartMapper, OpeStockProdPart> implements OpeStockProdPartService {
@@ -31,4 +32,5 @@ public class OpeStockProdPartServiceImpl extends ServiceImpl<OpeStockProdPartMap
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
 

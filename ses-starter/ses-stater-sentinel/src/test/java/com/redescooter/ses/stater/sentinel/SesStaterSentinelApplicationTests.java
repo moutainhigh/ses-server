@@ -1,9 +1,8 @@
 package com.redescooter.ses.stater.sentinel;
 
-import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import org.junit.Test;
+
 class SesStaterSentinelApplicationTests {
 
 	@Test

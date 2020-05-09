@@ -1,12 +1,13 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
+import org.springframework.stereotype.Service;
+import javax.annotation.Resource;
+import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.util.List;
 import com.redescooter.ses.web.ros.dao.base.OpePartDraftQcTemplateBMapper;
 import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplateB;
 import com.redescooter.ses.web.ros.service.base.OpePartDraftQcTemplateBService;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class OpePartDraftQcTemplateBServiceImpl extends ServiceImpl<OpePartDraftQcTemplateBMapper, OpePartDraftQcTemplateB> implements OpePartDraftQcTemplateBService {
@@ -31,6 +32,9 @@ public class OpePartDraftQcTemplateBServiceImpl extends ServiceImpl<OpePartDraft
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+
+
 
 
 

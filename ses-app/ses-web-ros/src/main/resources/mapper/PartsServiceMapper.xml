@@ -11,7 +11,7 @@
        op.cn_name,
        op.fr_name,
        op.en_name,
-       case when (op.sn_class='1') then 'SC' else 'SSC' end as snClassFlag,
+       op.sn_class as snClassFlag,
        op.parts_qty,
        op.production_cycle,
        op.supplier_id,
@@ -22,7 +22,7 @@
        os.supplier_name,
        op.perfect_flag,
        op.synchronize_flag,
-       op.id_class
+       if(op.id_class = 0, 1, 2) as idClass
     </sql>
 
     <sql id="where_PartList">

@@ -223,7 +223,7 @@ public enum ExceptionCodeEnums {
 
     DO_NOT_SET_THE_PRICE_REPEATEDLY(10104, "请不要重复设置价格"),
 
-    PLEASE_SCAN_THE_CODE_FIRST(10105, "请先扫码质检"),
+    PLEASE_SCAN_THE_CODE_FIRST(10105, "请先进行质检"),
 
     TEMPLATE_QC_RESULT_IS_EMPTY(10106, "模板质检结果为空"),
 
@@ -237,9 +237,25 @@ public enum ExceptionCodeEnums {
 
     PART_IS_BIND_PRODUCT(10111, "部件绑定产品,请先解绑"),
 
-    CONVERT_TO_FORMAL_CUSTOMER_FIRST(10112, "请先转换为正式客户"),
+    QC_TEMPLATE_IS_NOT_EXIT(10112, "质检模板不存在"),
 
-    CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG(10113,"客户分配车辆数量是错误的"),
+    QC_PASS_RESULT_ONLY_ONE(10113, "质检项通过结果只能有一个"),
+
+    CONVERT_TO_FORMAL_CUSTOMER_FIRST(10114, "请先转换为正式客户"),
+
+    CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG(10115, "客户分配车辆数量是错误的"),
+
+    ASSEMBLY_B_QC_RESULT_IS_NOT_EXIST(10116, "质检结果集不存在"),
+
+    ASSEMBLY_QC_ITEM_IS_NOT_EXIST(10117, "质检条目不存在"),
+
+    ASSEMBLY_QC_RESULT_IS_NOT_EXIST(10118, "直接结果不存在"),
+
+    SCOOTER_PLATES_NOT_REPEATABLE(10119, "车牌号不可重复"),
+
+    SCOOTER_IS_ALREADY_EXIST(10120, "车牌号已经存在"),
+
+    CUSTOMER_IS_NOT_NEED_ALLOCATION_SCOOTER(10121,"客户无需分配车辆"),
     ;
 
 

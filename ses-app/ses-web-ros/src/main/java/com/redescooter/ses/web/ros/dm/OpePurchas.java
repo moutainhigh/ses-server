@@ -1,20 +1,14 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePurchas")
 @Data
@@ -22,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_purchas")
-public class OpePurchas implements Serializable {
+public class OpePurchas {
     /**
      * 主键 主键
      */
@@ -34,8 +28,8 @@ public class OpePurchas implements Serializable {
      * 逻辑删除标识 逻辑删除标识
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 逻辑删除标识")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -109,6 +103,20 @@ public class OpePurchas implements Serializable {
     private Integer totalQty;
 
     /**
+     * 待质检总数
+     */
+    @TableField(value = "lave_wait_qc_total")
+    @ApiModelProperty(value = "待质检总数")
+    private Integer laveWaitQcTotal;
+
+    /**
+     * 待入库总数
+     */
+    @TableField(value = "in_wait_wh_total")
+    @ApiModelProperty(value = "待入库总数")
+    private Integer inWaitWhTotal;
+
+    /**
      * 乐观锁
      */
     @TableField(value = "revision")
@@ -178,8 +186,6 @@ public class OpePurchas implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -204,6 +210,10 @@ public class OpePurchas implements Serializable {
 
     public static final String COL_TOTAL_QTY = "total_qty";
 
+    public static final String COL_LAVE_WAIT_QC_TOTAL = "lave_wait_qc_total";
+
+    public static final String COL_IN_WAIT_WH_TOTAL = "in_wait_wh_total";
+
     public static final String COL_REVISION = "revision";
 
     public static final String COL_CREATED_BY = "created_by";
@@ -223,4 +233,8 @@ public class OpePurchas implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpePurchasBuilder builder() {
+        return new OpePurchasBuilder();
+    }
 }

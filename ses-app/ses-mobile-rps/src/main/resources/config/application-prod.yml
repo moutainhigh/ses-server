@@ -1,0 +1,60 @@
+#日志路径
+log:
+  file:
+    path: ${log.path}@profile-active@
+    max-size: 128MB
+    max-history: 180
+
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://127.0.0.1:2181
+
+# swagger配置
+spring:
+  #上传配置
+  http:
+  servlet:
+    multipart:
+      max-request-size: 1000MB
+      max-file-size: 20MB
+      enabled: true
+  #数据库连接
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    username: rede
+    password: RedE2019!!
+    druid:
+      initial-size: 8
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+      # 监控页面的用户名和密码 以及页面地址
+      stat-view-servlet:
+        login-username: rede
+        login-password: admin
+        enabled: true
+        url-pattern: /druid/*
+  #REDIS集群配置
+  redis:
+    cluster:
+      nodes:
+        - 127.0.0.1:7000
+        - 127.0.0.1:7001
+        - 127.0.0.1:7002
+        - 127.0.0.1:7003
+        - 127.0.0.1:7004
+        - 127.0.0.1:7005        
+  # swagger在线文档配置
+  swagger:
+    enabled: false                                       # 是否启用swagger
+ 
+
+
+
+
+
+# 多注册中心配置
+#    reg2:
+#      group: hdg2
+#      address: zookeeper://zk1.d.xqcx.com:32181?backup=zk2.d.xqcx.com:32181,zk3.d.xqcx.com:32181
+

@@ -1,20 +1,15 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductQcTemplateB")
 @Data
@@ -51,6 +46,13 @@ public class OpeProductQcTemplateB implements Serializable {
     @TableField(value = "qc_result")
     @ApiModelProperty(value = "质检结果")
     private String qcResult;
+
+    /**
+     * 通过标记
+     */
+    @TableField(value = "pass_flag")
+    @ApiModelProperty(value = "通过标记")
+    private Boolean passFlag;
 
     /**
      * 是否允许上传图片
@@ -145,6 +147,8 @@ public class OpeProductQcTemplateB implements Serializable {
     public static final String COL_PRODUCT_QC_TEMPLATE_ID = "product_qc_template_id";
 
     public static final String COL_QC_RESULT = "qc_result";
+
+    public static final String COL_PASS_FLAG = "pass_flag";
 
     public static final String COL_UPLOAD_FLAG = "upload_flag";
 

@@ -1,21 +1,11 @@
 package com.redescooter.ses.web.ros.collectionUtilsTest;
 
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.RandomUtil;
-import com.redescooter.ses.api.common.constant.JedisConstant;
-import com.redescooter.ses.starter.redis.service.JedisService;
-import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import lombok.extern.log4j.Log4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.IntStream;
 
 /**
  * @author Mr.lijiating
@@ -37,4 +27,12 @@ public class CollectionUtilTest {
         System.out.println("Method two:" + new Random().nextInt(100));
 
     }
+
+    @Test
+    public void stream() {
+
+        System.out.println(DigestUtils.md5Hex("RedeScooter@2020" + 12727));
+    }
+
+
 }

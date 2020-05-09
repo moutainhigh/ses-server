@@ -134,7 +134,15 @@ public interface PurchasingWhServiceMapper {
      * @param enter
      * @return
      */
-    int countByTypeOutWhCount(GeneralEnter enter);
+    int countByTypeOutWhCountAssembly(GeneralEnter enter);
+
+//    /**
+//     * 调拨出库
+//     *
+//     * @param enter
+//     * @return
+//     */
+//    int countByTypeOutWhCountAllocate(GeneralEnter enter);
 
     /**
      * 调波 出库列表
@@ -153,4 +161,12 @@ public interface PurchasingWhServiceMapper {
      * @return
      */
     List<OutWhResult> outWhListAllocate(@Param("enter") WhEnter enter, @Param("whseIds") List<Long> whseIds);
+
+    /**
+     * 出库类型统计
+     *
+     * @param enter
+     * @return
+     */
+    int countByTypeOutWhCountAllocate(GeneralEnter enter);
 }

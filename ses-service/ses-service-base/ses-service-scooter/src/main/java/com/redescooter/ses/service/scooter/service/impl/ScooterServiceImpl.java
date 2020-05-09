@@ -77,7 +77,7 @@ public class ScooterServiceImpl implements ScooterService {
         //目前只有车辆新建业务
         List<ScoScooter> scoScooterList = scoScooterService.list(new LambdaQueryWrapper<ScoScooter>().in(ScoScooter::getScooterNo,
                 enter.stream().map(BaseScooterEnter::getScooterNo).collect(Collectors.toList())));
-        if (CollectionUtils.isEmpty(scoScooterList) || scoScooterList.size() != enter.size()) {
+        if (CollectionUtils.isNotEmpty(scoScooterList) && scoScooterList.size() != enter.size()) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_ALREADY_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_ALREADY_EXIST.getMessage());
         }
 
@@ -89,6 +89,8 @@ public class ScooterServiceImpl implements ScooterService {
             ScoScooter saveScooter = buildScooterSingle(item);
             //保存车辆状态
             ScoScooterStatus saveScooterStatus = buildScoScooterStatusSingle(item, saveScooter.getId());
+            saveScooterList.add(saveScooter);
+            saveScoScooterStatusList.add(saveScooterStatus);
         });
         if (CollectionUtils.isNotEmpty(saveScoScooterStatusList)){
             scoScooterStatusService.saveBatch(saveScoScooterStatusList);
@@ -123,8 +125,9 @@ public class ScooterServiceImpl implements ScooterService {
 
     private ScoScooter buildScooterSingle(BaseScooterEnter enter) {
         ScoScooter saveScooter = new ScoScooter();
-        saveScooter.setId(enter.getId());
+        saveScooter.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
         saveScooter.setDr(0);
+        saveScooter.setScooterNo(enter.getScooterNo());
         saveScooter.setPicture(null);
         saveScooter.setStatus(ScooterStatusEnums.AVAILABLE.getValue());
         saveScooter.setTotalMileage(BigDecimal.ZERO.longValue());
@@ -165,5 +168,16 @@ public class ScooterServiceImpl implements ScooterService {
         scoScooter.setUpdatedTime(new Date());
         scoScooterService.updateById(scoScooter);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public List<BaseScooterResult> scooterInforByPlates(List<String> enter) {
+        List<BaseScooterResult> scooterResultList = scooterServiceMapper.scooterInforByplates(enter);
+        scooterResultList.forEach(item -> {
+            Optional.ofNullable(item).ifPresent(it -> {
+                it.setNextMaintenanceKm(ScooterDefaultData.MAINTENANCE_KM.subtract(item.getTotalmileage()));
+            });
+        });
+        return scooterResultList;
     }
 }

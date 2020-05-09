@@ -95,7 +95,7 @@
         inner join ope_parts_product_b productb on product.id = productb.parts_product_id and productb.dr = 0
         inner join ope_parts part on part.id = productb.parts_id and part.dr = 0
         inner join ope_supplier supplier on supplier.id = part.supplier_id and supplier.dr = 0
-        left join ope_price_sheet sheet on sheet.parts_id = productb.parts_id and sheet.currency_unit = 1
+        inner join ope_price_sheet sheet on sheet.parts_id = productb.parts_id and sheet.currency_unit = 1
         <where>
             <if test="enter.supplierId != null">
                 and supplier.id=#{enter.supplierId}
@@ -245,7 +245,7 @@
         </if>
     </select>
 
-    <select id="partDetailById" resultType="com.redescooter.ses.web.ros.dm.PartDetailDto">
+    <select id="partDetailById" resultType="com.redescooter.ses.web.ros.vo.bo.PartDetailDto">
         select parts.id as partId,
         ifnull(sheet.price,0) as price,
         sheet.currency_unit as unit,

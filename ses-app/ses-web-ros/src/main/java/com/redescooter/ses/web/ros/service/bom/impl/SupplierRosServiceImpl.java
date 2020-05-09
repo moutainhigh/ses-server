@@ -24,6 +24,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.math.BigDecimal;
@@ -58,8 +59,13 @@ public class SupplierRosServiceImpl implements SupplierRosService {
         return map;
     }
 
+    @Transactional
     @Override
     public GeneralResult save(SupplierSaveEnter enter) {
+
+        //邮箱去空格
+        enter.setContactEmail(SesStringUtils.stringTrim(enter.getContactEmail()));
+
         OpeSupplier supplierSave = new OpeSupplier();
 
         BeanUtils.copyProperties(enter, supplierSave);
@@ -86,8 +92,12 @@ public class SupplierRosServiceImpl implements SupplierRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    @Transactional
     @Override
     public GeneralResult edit(SupplierEditEnter enter) {
+
+        //邮箱去空格
+        enter.setContactEmail(SesStringUtils.stringTrim(enter.getContactEmail()));
 
         OpeSupplier supplierEdit = new OpeSupplier();
         BeanUtils.copyProperties(enter, supplierEdit);

@@ -36,6 +36,7 @@ import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.StatisticalUtil;
 import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
@@ -137,11 +138,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public IntResult checkMailCount(StringEnter enter) {
+        //邮箱去空格
+        enter.setSt(SesStringUtils.stringTrim(enter.getSt()));
+
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, enter.getSt());
         wrapper.eq(OpeCustomer.COL_DR, 0);
         Integer count = opeCustomerMapper.selectCount(wrapper);
-
         return new IntResult(count);
     }
 
@@ -154,6 +157,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Transactional
     @Override
     public GeneralResult save(CreateCustomerEnter enter) {
+        //邮箱去空格
+        if (StringUtils.isNotEmpty(enter.getEmail())){
+            enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
+        }
+
 
         QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
@@ -202,6 +210,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotBlank(enter.getRemark())) {
             saveVo.setMemo(enter.getRemark());
         }
+        saveVo.setAssignationScooterQty(0);
         saveVo.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
         saveVo.setCreatedBy(enter.getUserId());
         saveVo.setCreatedTime(new Date());
@@ -221,6 +230,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Transactional
     @Override
     public GeneralResult edit(EditCustomerEnter enter) {
+
+        //邮箱去空格
+        if (StringUtils.isNotEmpty(enter.getEmail())){
+            enter.setEmail(StringUtils.trim(enter.getEmail()));
+        }
 
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         final Long tenantId = customer.getTenantId();
@@ -753,6 +767,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Transactional
     @Override
     public GeneralResult customerSetPassword(SetPasswordEnter enter) {
+
+        //密码去空格
+        if (StringUtils.isNotEmpty(enter.getNewPassword())){
+            enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
+        }
+        if (StringUtils.isNotEmpty(enter.getConfirmPassword())){
+            enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
+        }
+
         // 数据校验
         String code = jedisCluster.get(enter.getRequestId());
         if (!StringUtils.equals(code, enter.getCode())) {

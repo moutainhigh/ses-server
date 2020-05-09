@@ -166,23 +166,23 @@ public class PurchasingController {
         return new Response<>(purchasingService.saveFactoryAnnex(enter));
     }
 
-    @PostMapping(value = "/againQc")
-    @ApiOperation(value = "再次qc质检", response = GeneralResult.class)
-    public Response<GeneralResult> againQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(purchasingService.againQc(enter));
-    }
-
-    @PostMapping(value = "/completeQc")
-    @ApiOperation(value = "qc完成", response = GeneralResult.class)
-    public Response<GeneralResult> completeQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(purchasingService.completeQc(enter));
-    }
-
-    @PostMapping(value = "/purchasingInWh")
-    @ApiOperation(value = "入库", response = GeneralResult.class)
-    public Response<GeneralResult> purchasingInWh(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(purchasingService.purchasingInWh(enter));
-    }
+//    @PostMapping(value = "/againQc")
+//    @ApiOperation(value = "再次qc质检", response = GeneralResult.class)
+//    public Response<GeneralResult> againQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(purchasingService.againQc(enter));
+//    }
+//
+//    @PostMapping(value = "/completeQc")
+//    @ApiOperation(value = "qc完成", response = GeneralResult.class)
+//    public Response<GeneralResult> completeQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(purchasingService.completeQc(enter));
+//    }
+//
+//    @PostMapping(value = "/purchasingInWh")
+//    @ApiOperation(value = "入库", response = GeneralResult.class)
+//    public Response<GeneralResult> purchasingInWh(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(purchasingService.purchasingInWh(enter));
+//    }
 
     @PostMapping(value = "/qcCountByStatus")
     @ApiOperation(value = "qc状态", response = Map.class)
@@ -208,16 +208,16 @@ public class PurchasingController {
         return new Response<>(purchasingService.cancel(enter));
     }
 
-    @PostMapping(value = "/returnedPurchase")
-    @ApiOperation(value = "取消质检并完成", response = GeneralResult.class)
-    public Response<GeneralResult> returnedPurchase(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(purchasingService.returnedPurchase(enter));
-    }
-
-    @PostMapping(value = "/scanBarCode")
-    @ApiOperation(value = "模拟扫码枪质检", response = GeneralResult.class)
-    public Response<GeneralResult> scanBarCode(@ModelAttribute @ApiParam("请求参数") ScanBarCodeEnter enter) {
-        return new Response<>(rpsServvice.scanBarCode(enter));
-    }
+//    @PostMapping(value = "/returnedPurchase")
+//    @ApiOperation(value = "取消质检并完成", response = GeneralResult.class)
+//    public Response<GeneralResult> returnedPurchase(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(purchasingService.returnedPurchase(enter));
+//    }
+//
+//    @PostMapping(value = "/scanBarCode")
+//    @ApiOperation(value = "模拟扫码枪质检", response = GeneralResult.class)
+//    public Response<GeneralResult> scanBarCode(@ModelAttribute @ApiParam("请求参数") ScanBarCodeEnter enter) {
+//        return new Response<>(rpsServvice.scanBarCode(enter));
+//    }
 
 }

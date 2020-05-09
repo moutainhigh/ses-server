@@ -13,4 +13,6 @@ public interface OpeAssemblyBOrderMapper extends BaseMapper<OpeAssemblyBOrder> {
     int insertOrUpdate(OpeAssemblyBOrder record);
 
     int insertOrUpdateSelective(OpeAssemblyBOrder record);
+
+    int updateBatchSelective(List<OpeAssemblyBOrder> list);
 }

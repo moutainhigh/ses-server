@@ -27,6 +27,4 @@ public class ChooseScooterResult extends GeneralResult {
 
     @ApiModelProperty(value = "序列号")
     private String batchNum;
-
-
 }

@@ -4,10 +4,19 @@ import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.dm.PartDetailDto;
+import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoItemEnter;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.QcItemViewResult;
 import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
 import org.apache.ibatis.annotations.Param;
 
@@ -104,4 +113,78 @@ public interface AssemblyServiceMapper {
      * @return
      */
     List<productItemResult> productItemList(IdEnter enter);
+
+    /**
+     * 车辆组装记录
+     * ROS 1.4 补充的接口
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductAssemblyTraceResult> productAssemblyTrace(IdEnter enter);
+
+    /**
+     * 组装记录条目
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductAssemblyTraceItemResult> productAssemblyItemTrace(IdEnter enter);
+
+    /**
+     * 产品之间信息
+     *
+     * @param enter
+     * @return
+     */
+    List<AssemblyQcInfoResult> assemblyQcInfoList(AssemblyQcInfoEnter enter);
+
+    /**
+     * 产品之间信息统计
+     *
+     * @param enter
+     * @return
+     */
+    int assemblyQcInfoCount(AssemblyQcInfoEnter enter);
+
+    /**
+     * 质检结果下的质检条目
+     *
+     * @param enter
+     * @return
+     */
+    List<AssemblyQcItemResult> assemblyQcInfoItem(AssemblyQcInfoItemEnter enter);
+
+    /**
+     * 质检条目的质检项
+     *
+     * @param enter
+     * @return
+     */
+    AssemblyQcItemViewResult assemblyQcItemView(IdEnter enter);
+
+    /**
+     * 产品质检项条目
+     *
+     * @param serialN
+     * @return
+     */
+    List<QcItemViewResult> qcItemViewResult(String serialN);
+
+    /**
+     * 产品质检模板结果
+     *
+     * @param id
+     * @return
+     */
+    List<AssemblyQcItemViewItemTemplateResult> viewItemTemplate(Long id);
+
+    /**
+     * 查询质检条目信息
+     *
+     * @param enter
+     * @param ids
+     * @return
+     */
+    List<AssemblyQcItemResult> assemblyQcInfoItemByIds(@Param("enter") AssemblyQcInfoEnter enter, @Param("ids") List<Long> ids);
 }

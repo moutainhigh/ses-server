@@ -1,8 +1,11 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
 
+import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.redescooter.ses.api.common.constant.CacheConstants;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
@@ -15,15 +18,21 @@ import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
+import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
+import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -37,6 +46,7 @@ import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,9 +60,11 @@ public class TokenRosServiceImpl implements TokenRosService {
     private OpeSysUserMapper sysUserMapper;
     @Autowired
     private OpeSysUserProfileMapper sysUserProfileMapper;
-
+    @Autowired
+    private OpeSysUserRoleService sysUserRoleService;
     @Reference
     private IdAppService idAppService;
+
 
     /**
      * 用户登录
@@ -64,6 +76,10 @@ public class TokenRosServiceImpl implements TokenRosService {
     @Override
     public TokenResult login(LoginEnter enter) {
 
+        //用户名密码去除空格
+        enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
+        enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
+
         QueryWrapper<OpeSysUser> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getLoginName());
         wrapper.eq(OpeSysUser.COL_DR, 0);
@@ -74,6 +90,12 @@ public class TokenRosServiceImpl implements TokenRosService {
         //用户名验证，及根据用户名未查到改用户，则该用户不存在
         if (sysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        if (!enter.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+            List<OpeSysUserRole> roles = sysUserRoleService.list(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getUserId, sysUser.getId()));
+            if (!CollUtil.isNotEmpty(roles)) {
+                throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
+            }
         }
         //状态验证
         if (StringUtils.equals(sysUser.getStatus(), SysUserStatusEnum.LOCK.getCode())) {
@@ -95,9 +117,10 @@ public class TokenRosServiceImpl implements TokenRosService {
         if (StringUtils.isNotBlank(sysUser.getLastLoginToken())) {
             jedisCluster.del(sysUser.getLastLoginToken());
         }
-
         //将token及用户相关信息 放到Redis中
         UserToken userToken = setToken(enter, sysUser);
+        //获取用户角色,更新至缓存
+        //  setAuth(userRole.getRoleId());
 
         sysUser.setLastLoginToken(userToken.getToken());
         sysUser.setLastLoginTime(new Date(enter.getTimestamp()));
@@ -222,7 +245,6 @@ public class TokenRosServiceImpl implements TokenRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
-
     private OpeSysUser buildSysUserSingle(AddSysUserEnter enter, String password) {
         OpeSysUser sysUser = new OpeSysUser();
         int salt = RandomUtils.nextInt(10000, 99999);
@@ -313,5 +335,13 @@ public class TokenRosServiceImpl implements TokenRosService {
             log.error("setToken NoSuchMethodException userSession:" + userToken, e);
         }
         return userToken;
+    }
+
+    private void setAuth(long roleId) {
+
+        String key = new StringBuilder().append(roleId).append(":::").append(CacheConstants.MENU_DETAILS).toString();
+
+        Boolean aBoolean = jedisCluster.exists(key);
+
     }
 }
