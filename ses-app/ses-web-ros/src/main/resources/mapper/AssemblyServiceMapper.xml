@@ -364,10 +364,12 @@
         from ope_assembly_qc_item item
         left join ope_assembly_b_qc bqc on bqc.id = item.assembly_b_qc_id and bqc.dr = 0
         where item.dr = 0
-        and bqc.id in
-        <foreach collection="ids" open="(" close=")" item="item">
-            #{item}
-        </foreach>
+        <if test="ids != null and ids.size() != 0">
+            and bqc.id in
+            <foreach collection="ids" open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test="enter.status != null and enter.status != ''">
             and item.qc_result=#{enter.status}
         </if>

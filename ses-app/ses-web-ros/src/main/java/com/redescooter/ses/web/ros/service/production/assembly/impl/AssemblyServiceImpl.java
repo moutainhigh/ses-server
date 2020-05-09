@@ -882,10 +882,12 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //组装单 质检结果集
         List<AssemblyQcInfoResult> assemblyQcInfoResultList = assemblyServiceMapper.assemblyQcInfoList(enter);
+        if (CollectionUtils.isEmpty(assemblyQcInfoResultList)){
+            return new ArrayList<>();
+        }
 
         //查询子集
-        List<AssemblyQcItemResult> assemblyQcItemResultList = assemblyServiceMapper.assemblyQcInfoItemByIds(enter,
-                assemblyQcInfoResultList.stream().map(AssemblyQcInfoResult::getId).collect(Collectors.toList()));
+        List<AssemblyQcItemResult> assemblyQcItemResultList = assemblyServiceMapper.assemblyQcInfoItemByIds(enter,assemblyQcInfoResultList.stream().map(AssemblyQcInfoResult::getId).collect(Collectors.toList()));
 
         //封装是否要查询的Boolean 字段
         if (CollectionUtils.isNotEmpty(assemblyQcItemResultList)) {
