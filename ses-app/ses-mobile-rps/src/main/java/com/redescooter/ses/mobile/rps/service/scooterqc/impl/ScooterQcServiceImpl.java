@@ -409,7 +409,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                 .updatedBy(enter.getUserId())
                 .updatedTime(new Date())
                 .assemblyBQcId(opeAssemblyBQc.getId())
-                .assemblyLotId(opeAssemblyLotTrace.getId())
+                .assemblyLotId(qcOptionFlag ?opeAssemblyLotTrace.getId():null)
                 .productId(opeAssemblyBOrder.getProductId())
                 .qcResult(qcOptionFlag ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue())
                 .revision(0)

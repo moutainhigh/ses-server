@@ -102,14 +102,22 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         map.put(PurchasingWhTypeEnums.TO_BE_STORED.getValue(), tobeStoredCount);
 
         List<OpeWhse> opeWhseList = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
-        List<Long> whseIds = Lists.newArrayList();
-        opeWhseList.forEach(item -> {
-            whseIds.add(item.getId());
-        });
+
+        OpeWhse allocateWh = null;
+        OpeWhse assembleyWh = null;
+
+        for (OpeWhse whse : opeWhseList) {
+            if (StringUtils.equals(whse.getType(), WhseTypeEnums.ALLOCATE.getValue())) {
+                allocateWh = whse;
+            }
+            if (StringUtils.equals(whse.getType(), WhseTypeEnums.ASSEMBLY.getValue())) {
+                assembleyWh = whse;
+            }
+        }
 
         //出库列表统计 （调拨入库、组装入库）
-        int outWhCountAssembly = purchasingWhServiceMapper.countByTypeOutWhCountAssembly(enter);
-        int outWhCountAllocate = purchasingWhServiceMapper.countByTypeOutWhCountAllocate(enter);
+        int outWhCountAssembly = purchasingWhServiceMapper.countByTypeOutWhCountAssembly(enter, allocateWh.getId());
+        int outWhCountAllocate = purchasingWhServiceMapper.countByTypeOutWhCountAllocate(enter, assembleyWh.getId());
 
         map.put(PurchasingWhTypeEnums.OUT_WH.getValue(), outWhCountAssembly + outWhCountAllocate);
 
@@ -272,14 +280,14 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         if (StringUtils.isNotBlank(enter.getType())) {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }
-//        List<OpeWhse> assemblyWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ASSEMBLY.getValue()));
-//
-//        //组装仓库 数据
-//        int countAssembly = purchasingWhServiceMapper.outWhListAssemblyCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
-//
-//        List<OutWhResult> whResultListAssembly = purchasingWhServiceMapper.outWhListAssembly(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
-//
-//        //调拨仓库数据
+        List<OpeWhse> assemblyWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ASSEMBLY.getValue()));
+
+        //组装仓库 数据
+        int countAssembly = purchasingWhServiceMapper.outWhListAssemblyCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
+
+        List<OutWhResult> whResultListAssembly = purchasingWhServiceMapper.outWhListAssembly(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
+
+        //调拨仓库数据
         List<OpeWhse> allocateWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue()));
 
         int countAllocate = purchasingWhServiceMapper.outWhListAllocateCount(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
@@ -288,8 +296,9 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
             return PageResult.createZeroRowResult(enter);
         }
         List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
+        whResultListAllocate.addAll(whResultListAssembly);
 
-        return PageResult.create(enter, countAllocate, whResultListAllocate);
+        return PageResult.create(enter, countAllocate + countAssembly, whResultListAllocate);
     }
 
     /**

@@ -575,6 +575,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
             QueryWrapper<OpeAssemblyQcItem> opeAssemblyQcItemQueryWrapper = new QueryWrapper<>();
             opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_ASSEMBLY_B_ID, enter.getId());
             opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_ASSEMBLY_B_QC_ID, opeAssemblyBQc.getId());
+            opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_QC_RESULT,QcStatusEnums.PASS.getValue());
             opeAssemblyQcItem = opeAssemblyQcItemService.getOne(opeAssemblyQcItemQueryWrapper);
         }
 

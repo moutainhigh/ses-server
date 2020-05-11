@@ -184,7 +184,7 @@
     <select id="outWhListAssembly" resultType="com.redescooter.ses.web.ros.vo.production.wh.OutWhResult">
         select stock.id as id,
         product.product_number as partN,
-        product.product_type as type,
+        stock.materiel_product_type as type,
         product.en_name as enName,
         product.cn_name as cnName,
         stock.available_total as qty
@@ -274,11 +274,13 @@
         from ope_stock stock
         left join ope_parts_product product on stock.materiel_product_id = product.id and product.dr=0
         where stock.dr=0
+        and  stock.whse_id=#{whseId}
     </select>
     <select id="countByTypeOutWhCountAllocate" resultType="java.lang.Integer">
         select count(*)
         from ope_stock stock
                  left join ope_stock_prod_part prodPart on stock.materiel_product_id = prodPart.id and prodPart.dr = 0
         where stock.dr = 0
+        and  stock.whse_id=#{whseId}
     </select>
 </mapper>
