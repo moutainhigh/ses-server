@@ -132,9 +132,10 @@ public interface PurchasingWhServiceMapper {
      * 出库 状态统计
      *
      * @param enter
+     * @param whseId
      * @return
      */
-    int countByTypeOutWhCountAssembly(GeneralEnter enter);
+    int countByTypeOutWhCountAssembly(@Param("enter") GeneralEnter enter, @Param("whseId") Long whseId);
 
 //    /**
 //     * 调拨出库
@@ -168,5 +169,6 @@ public interface PurchasingWhServiceMapper {
      * @param enter
      * @return
      */
-    int countByTypeOutWhCountAllocate(GeneralEnter enter);
+
+    int countByTypeOutWhCountAllocate(@Param("enter") GeneralEnter enter, @Param("whseId") Long whseId);
 }

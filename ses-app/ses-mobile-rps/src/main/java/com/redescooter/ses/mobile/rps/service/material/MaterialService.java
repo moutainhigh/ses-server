@@ -46,7 +46,7 @@ public interface MaterialService {
      * @param enter
      * @return
      */
-    GeneralResult returnedCompleted(IdsEnter enter);
+    GeneralResult returnedCompleted(ReturnedCompletedEnter enter);
 
     /**
      * 继续质检
@@ -54,7 +54,7 @@ public interface MaterialService {
      * @param enter
      * @return
      */
-    GeneralResult againQc(IdsEnter enter);
+    GeneralResult againQc(ContinueQcEnter enter);
 
     /**
      * 来料质检详情
