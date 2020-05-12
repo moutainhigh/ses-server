@@ -14,7 +14,7 @@ import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
  * @Version：1.3
  * @create: 2020/05/12 11:59
  */
-public interface WebSiteService {
+public interface WebSiteTokenService {
     /**
      * 登录
      *

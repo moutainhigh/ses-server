@@ -1,7 +1,5 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
-import cn.hutool.core.util.RandomUtil;
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
@@ -12,20 +10,17 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
-import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
-import com.redescooter.ses.web.ros.service.website.WebSiteService;
+import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -48,7 +43,7 @@ import java.util.UUID;
  */
 @Slf4j
 @Service
-public class WebsiteServiceImpl implements WebSiteService {
+public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Autowired
     private OpeCustomerService opeCustomerService;

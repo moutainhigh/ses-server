@@ -150,4 +150,10 @@ public interface ValidationExceptionCode {
     int PROCESSCOST_RATIO_IS_EMPTY = 10094;
     //质检模板为空
     int QC_TEMPLATE_IS_EMPTY = 10095;
+    //颜色为空
+    int COLOR_IS_EMPTY = 10096;
+    //电池Id 为空
+    int BATTERY_ID = 10097;
+    //后备箱Id
+    int TOPCASE_ID=10098;
 }

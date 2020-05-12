@@ -26,6 +26,7 @@
     <result column="contact_first" jdbcType="VARCHAR" property="contactFirst" />
     <result column="contact_last" jdbcType="VARCHAR" property="contactLast" />
     <result column="contant_full_name" jdbcType="VARCHAR" property="contantFullName" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
     <result column="scooter_quantity" jdbcType="INTEGER" property="scooterQuantity" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
@@ -42,9 +43,9 @@
     <!--@mbg.generated-->
     id, dr, customer_id, country, city, district, customer_source, sales_id, `status`, 
     industry, customer_type, first_name, last_name, full_name, company_name, country_code, 
-    telephone, email, address, contact_first, contact_last, contant_full_name, scooter_quantity, 
-    remarks, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
-    def6
+    telephone, email, address, contact_first, contact_last, contant_full_name, product_id, 
+    scooter_quantity, remarks, created_by, created_time, updated_by, updated_time, def1, 
+    def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -155,6 +156,11 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.contantFullName,jdbcType=VARCHAR}
         </foreach>
       </trim>
+      <trim prefix="product_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
       <trim prefix="scooter_quantity = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.scooterQuantity,jdbcType=INTEGER}
@@ -221,9 +227,9 @@
     insert into ope_customer_inquiry
     (id, dr, customer_id, country, city, district, customer_source, sales_id, `status`, 
       industry, customer_type, first_name, last_name, full_name, company_name, country_code, 
-      telephone, email, address, contact_first, contact_last, contant_full_name, scooter_quantity, 
-      remarks, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def5, def6)
+      telephone, email, address, contact_first, contact_last, contant_full_name, product_id, 
+      scooter_quantity, remarks, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.customerId,jdbcType=BIGINT}, 
@@ -233,7 +239,7 @@
         #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR}, 
         #{item.countryCode,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 
         #{item.address,jdbcType=VARCHAR}, #{item.contactFirst,jdbcType=VARCHAR}, #{item.contactLast,jdbcType=VARCHAR}, 
-        #{item.contantFullName,jdbcType=VARCHAR}, #{item.scooterQuantity,jdbcType=INTEGER}, 
+        #{item.contantFullName,jdbcType=VARCHAR}, #{item.productId,jdbcType=BIGINT}, #{item.scooterQuantity,jdbcType=INTEGER}, 
         #{item.remarks,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
         #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
         #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
@@ -245,9 +251,9 @@
     insert into ope_customer_inquiry
     (id, dr, customer_id, country, city, district, customer_source, sales_id, `status`, 
       industry, customer_type, first_name, last_name, full_name, company_name, country_code, 
-      telephone, email, address, contact_first, contact_last, contant_full_name, scooter_quantity, 
-      remarks, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def5, def6)
+      telephone, email, address, contact_first, contact_last, contant_full_name, product_id, 
+      scooter_quantity, remarks, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{customerId,jdbcType=BIGINT}, #{country,jdbcType=BIGINT}, 
       #{city,jdbcType=BIGINT}, #{district,jdbcType=BIGINT}, #{customerSource,jdbcType=VARCHAR}, 
@@ -256,10 +262,10 @@
       #{fullName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR}, 
       #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{contactFirst,jdbcType=VARCHAR}, #{contactLast,jdbcType=VARCHAR}, #{contantFullName,jdbcType=VARCHAR}, 
-      #{scooterQuantity,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
-      #{def6,jdbcType=DOUBLE})
+      #{productId,jdbcType=BIGINT}, #{scooterQuantity,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -283,6 +289,7 @@
     contact_first = #{contactFirst,jdbcType=VARCHAR}, 
     contact_last = #{contactLast,jdbcType=VARCHAR}, 
     contant_full_name = #{contantFullName,jdbcType=VARCHAR}, 
+    product_id = #{productId,jdbcType=BIGINT}, 
     scooter_quantity = #{scooterQuantity,jdbcType=INTEGER}, 
     remarks = #{remarks,jdbcType=VARCHAR}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
@@ -364,6 +371,9 @@
       </if>
       <if test="contantFullName != null">
         contant_full_name,
+      </if>
+      <if test="productId != null">
+        product_id,
       </if>
       <if test="scooterQuantity != null">
         scooter_quantity,
@@ -467,6 +477,9 @@
       <if test="contantFullName != null">
         #{contantFullName,jdbcType=VARCHAR},
       </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
       <if test="scooterQuantity != null">
         #{scooterQuantity,jdbcType=INTEGER},
       </if>
@@ -568,6 +581,9 @@
       </if>
       <if test="contantFullName != null">
         contant_full_name = #{contantFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
       </if>
       <if test="scooterQuantity != null">
         scooter_quantity = #{scooterQuantity,jdbcType=INTEGER},

@@ -21,6 +21,7 @@ import com.redescooter.ses.api.common.enums.product.PartsProductEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.MapResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -582,6 +583,22 @@ public class PartsRosServiceImpl implements PartsRosService {
         historyPartsResult.setList(list);
 
         return historyPartsResult;
+    }
+
+    /**
+     * 删除部品号历史
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult deleteHistorys(IdsEnter enter) {
+        Collection<OpePartsDraftHistoryRecord> opePartsDraftHistoryRecordList = partsDraftHistoryRecordService.listByIds(enter.getIds());
+        if (CollectionUtils.isEmpty(opePartsDraftHistoryRecordList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_HISTROY_TRACE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_HISTROY_TRACE_IS_NOT_EXIST.getMessage());
+        }
+        partsDraftHistoryRecordService.removeByIds(enter.getIds());
+        return new GeneralResult(enter.getRequestId());
     }
 
     @Transactional

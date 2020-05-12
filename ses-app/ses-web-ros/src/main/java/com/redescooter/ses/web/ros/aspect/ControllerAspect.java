@@ -11,7 +11,7 @@ import com.redescooter.ses.tool.utils.ValidationUtil;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
-import com.redescooter.ses.web.ros.service.website.WebSiteService;
+import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.utils.SpringContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +47,7 @@ public class ControllerAspect {
     private TokenRosService tokenRosService;
 
     @Autowired
-    private WebSiteService webSiteService;
+    private WebSiteTokenService webSiteService;
 
     @Around("execution(* com.redescooter.ses.web.ros.controller..*.*(..))")
     public Object check(ProceedingJoinPoint point) throws Throwable {

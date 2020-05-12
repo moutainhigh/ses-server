@@ -4,23 +4,14 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
-import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
-import com.redescooter.ses.web.ros.service.website.WebSiteService;
-import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
-import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
+import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,14 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @create: 2020/05/12 11:58
  */
 @Log4j2
-@Api(tags = {"官网模块"})
+@Api(tags = {"官网登录模块"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/website")
-public class WebsiteController {
+public class WebsiteTokenController {
 
     @Autowired
-    private WebSiteService webSiteService;
+    private WebSiteTokenService webSiteService;
 
     @IgnoreLoginCheck
     @PostMapping(value = "/login")

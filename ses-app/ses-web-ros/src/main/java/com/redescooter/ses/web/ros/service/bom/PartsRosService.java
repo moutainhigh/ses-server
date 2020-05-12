@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.*;
+import org.thymeleaf.expression.Ids;
 
 import java.util.List;
 
@@ -111,6 +112,13 @@ public interface PartsRosService {
      * @return
      */
     HistoryPartsResult historys(IdEnter enter);
+
+    /**
+     * 删除部品号历史
+     * @param enter
+     * @return
+     */
+    GeneralResult deleteHistorys(IdsEnter enter);
 
     /**
      * 部品编辑完成进行同步
