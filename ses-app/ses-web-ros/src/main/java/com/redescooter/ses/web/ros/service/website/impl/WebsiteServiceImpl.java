@@ -1,16 +1,20 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -19,7 +23,10 @@ import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.website.WebSiteService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -46,9 +53,11 @@ public class WebsiteServiceImpl implements WebSiteService {
     @Autowired
     private OpeCustomerService opeCustomerService;
 
-
     @Autowired
     private JedisCluster jedisCluster;
+
+    @Reference
+    private IdAppService idAppService;
 
     /**
      * 登录
@@ -86,7 +95,7 @@ public class WebsiteServiceImpl implements WebSiteService {
         UserToken userToken = setToken(enter, opeCustomer);
 
         //登录信息更新
-        opeCustomer.setLastLoginToken(enter.getToken());
+        opeCustomer.setLastLoginToken(userToken.getToken());
         opeCustomer.setUpdatedBy(enter.getUserId());
         opeCustomer.setUpdatedTime(new Date());
         opeCustomerService.updateById(opeCustomer);
@@ -119,8 +128,38 @@ public class WebsiteServiceImpl implements WebSiteService {
      */
     @Override
     public GeneralResult signUp(SignUpEnter enter) {
+        //用户校验
+        QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
+        opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
+        opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, CustomerSourceEnum.WEBSITE.getValue());
+        OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
+        if (opeCustomer != null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
+        //密码校验
+        int salt= RandomUtils.nextInt(10000,99999);
+        String password = DigestUtils.md5Hex(enter.getPassword() + salt);
+        OpeCustomer saveCustomer= new OpeCustomer();
+        saveCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+        saveCustomer.setDr(0);
+        saveCustomer.setTenantId(enter.getTenantId());
+        saveCustomer.setTimeZone(enter.getTimeZone());
 
-        return null;
+        saveCustomer.setCustomerFirstName(enter.getFirstName());
+        saveCustomer.setCustomerLastName(enter.getLastName());
+        saveCustomer.setCustomerFullName(new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
+        saveCustomer.setEmail(enter.getEmail());
+        saveCustomer.setPassword(password);
+        saveCustomer.setSalt(String.valueOf(salt));
+        saveCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
+        saveCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
+        saveCustomer.setUpdatedBy(enter.getUserId());
+        saveCustomer.setUpdatedTime(new Date());
+        saveCustomer.setCreatedBy(enter.getUserId());
+        saveCustomer.setCreatedTime(new Date());
+        saveCustomer.setAccountFlag("0");
+        opeCustomerService.save(saveCustomer);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -131,7 +170,12 @@ public class WebsiteServiceImpl implements WebSiteService {
      */
     @Override
     public UserToken checkCustomerToken(GeneralEnter enter) {
-        return null;
+        UserToken userToken = getUserToken(enter.getToken());
+        if (!StringUtils.equals(userToken.getClientType(), enter.getClientType()) || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId()) || !StringUtils.equals(userToken.getAppId(),
+                enter.getAppId())) {
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        return userToken;
     }
 
     /**
@@ -168,6 +212,25 @@ public class WebsiteServiceImpl implements WebSiteService {
             log.error("setToken InvocationTargetException userSession:" + userToken, e);
         } catch (NoSuchMethodException e) {
             log.error("setToken NoSuchMethodException userSession:" + userToken, e);
+        }
+        return userToken;
+    }
+
+    private UserToken getUserToken(String token) {
+        if (StringUtils.isBlank(token)) {
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        Map<String, String> map = jedisCluster.hgetAll(token);
+        if (map == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        UserToken userToken = new UserToken();
+        try {
+            BeanUtils.populate(userToken, map);
+        } catch (IllegalAccessException e) {
+            log.error("checkToken IllegalAccessException sessionMap:" + map, e);
+        } catch (InvocationTargetException e) {
+            log.error("checkToken IllegalAccessException sessionMap:" + map, e);
         }
         return userToken;
     }

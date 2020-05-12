@@ -11,6 +11,7 @@ import com.redescooter.ses.tool.utils.ValidationUtil;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
+import com.redescooter.ses.web.ros.service.website.WebSiteService;
 import com.redescooter.ses.web.ros.utils.SpringContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +46,9 @@ public class ControllerAspect {
     @Autowired
     private TokenRosService tokenRosService;
 
+    @Autowired
+    private WebSiteService webSiteService;
+
     @Around("execution(* com.redescooter.ses.web.ros.controller..*.*(..))")
     public Object check(ProceedingJoinPoint point) throws Throwable {
         Object[] objs = point.getArgs();
@@ -55,8 +59,6 @@ public class ControllerAspect {
                     GeneralEnter enter = (GeneralEnter) obj;
                     checkEnterParameter(enter);
                     checkToken(point, enter);
-                    //接口权限验证
-                    checkPermission(point, enter);
                 }
                 ValidationUtil.validation(obj);
             }
@@ -112,16 +114,20 @@ public class ControllerAspect {
         } catch (NoSuchMethodException e) {
             log.error("get method failure:", e);
         }
-        if (method.getAnnotation(IgnoreLoginCheck.class) == null) {
+        //ros 内部系统登录
+        if (method.getAnnotation(IgnoreLoginCheck.class) == null  && method.getAnnotation(WebsiteSignIn.class) == null) {
             UserToken userToken = tokenRosService.checkToken(enter);
             enter.setUserId(userToken.getUserId());
             enter.setTenantId(userToken.getTenantId());
+
+            //接口权限验证
+            checkPermission(point, enter);
         }
-        //website 登陆时校验
-        if (method.getAnnotation(IgnoreLoginCheck.class) == null && method.getAnnotation(WebsiteSignIn.class) != null) {
-//            UserToken userToken = tokenRosService.checkToken(enter);
-//            enter.setUserId(userToken.getUserId());
-//            enter.setTenantId(userToken.getTenantId());
+        //website 登陆
+        if (method.getAnnotation(WebsiteSignIn.class) != null) {
+            UserToken userToken = webSiteService.checkCustomerToken(enter);
+            enter.setUserId(userToken.getUserId());
+            enter.setTenantId(userToken.getTenantId());
         }
 
     }
