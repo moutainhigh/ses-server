@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "ope_customer")
 public class OpeCustomer implements Serializable {
+    public static final String COL_LAST_TOKEN = "last_token";
     /**
      * id
      */
@@ -124,6 +125,24 @@ public class OpeCustomer implements Serializable {
     private String customerSource;
 
     /**
+     * 官网注册账户有客户密码
+     */
+    @TableField(value = "password")
+    private String password;
+
+    /**
+     * 盐
+     */
+    @TableField(value = "salt")
+    private String salt;
+
+    /**
+     * 上次登录token
+     */
+    @TableField(value = "last_login_token")
+    private String lastLoginToken;
+
+    /**
      * 客户类型 1企业/2个人
      */
     @TableField(value = "customer_type")
@@ -202,7 +221,7 @@ public class OpeCustomer implements Serializable {
     private Integer scooterQuantity;
 
     /**
-     * 已分配车辆的数量
+     * 已分配车辆数
      */
     @TableField(value = "assignation_scooter_qty")
     private Integer assignationScooterQty;
@@ -285,6 +304,9 @@ public class OpeCustomer implements Serializable {
     @TableField(value = "updated_time")
     private Date updatedTime;
 
+    /**
+     * 冗余字段
+     */
     @TableField(value = "def1")
     private String def1;
 
@@ -347,6 +369,12 @@ public class OpeCustomer implements Serializable {
     public static final String COL_PICTURE = "picture";
 
     public static final String COL_CUSTOMER_SOURCE = "customer_source";
+
+    public static final String COL_PASSWORD = "password";
+
+    public static final String COL_SALT = "salt";
+
+    public static final String COL_LAST_LOGIN_TOKEN = "last_login_token";
 
     public static final String COL_CUSTOMER_TYPE = "customer_type";
 

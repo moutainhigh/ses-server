@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.aspect;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.exception.BaseException;
 import com.redescooter.ses.api.common.exception.BusinessException;
@@ -55,7 +56,7 @@ public class ControllerAspect {
                     checkEnterParameter(enter);
                     checkToken(point, enter);
                     //接口权限验证
-                    checkPermission(point,enter);
+                    checkPermission(point, enter);
                 }
                 ValidationUtil.validation(obj);
             }
@@ -116,6 +117,13 @@ public class ControllerAspect {
             enter.setUserId(userToken.getUserId());
             enter.setTenantId(userToken.getTenantId());
         }
+        //website 登陆时校验
+        if (method.getAnnotation(IgnoreLoginCheck.class) == null && method.getAnnotation(WebsiteSignIn.class) != null) {
+//            UserToken userToken = tokenRosService.checkToken(enter);
+//            enter.setUserId(userToken.getUserId());
+//            enter.setTenantId(userToken.getTenantId());
+        }
+
     }
 
     /**
@@ -123,16 +131,12 @@ public class ControllerAspect {
      *
      * @param point
      */
-    private void checkPermission(ProceedingJoinPoint point,GeneralEnter enter) {
+    private void checkPermission(ProceedingJoinPoint point, GeneralEnter enter) {
         HttpServletRequest request = SpringContextUtils.getHttpServletRequest();
         String requestMethod = request.getMethod();
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         requestPath = filterUrl(requestPath);
         log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + requestMethod);
-
-
-
-
 
 
     }
