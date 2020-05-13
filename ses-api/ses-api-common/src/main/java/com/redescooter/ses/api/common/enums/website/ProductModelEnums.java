@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.common.enums.website;
 
+import com.redescooter.ses.api.common.enums.customer.CustomerCertificateTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,15 @@ public enum ProductModelEnums {
 
     SCOOTER_125_CC("SCOOTER_125_CC","125CC","1");
 
+
+    public static ProductModelEnums getProductModelEnumsByValue(String value) {
+        for (ProductModelEnums item : ProductModelEnums.values()) {
+            if (item.getValue().equals(value)) {
+                return item;
+            }
+        }
+        return null;
+    }
 
     private String code;
 

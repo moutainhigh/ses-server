@@ -6,9 +6,10 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
-import com.redescooter.ses.web.ros.vo.website.ProductColorResult;
+import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
 import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
+import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -39,22 +40,19 @@ public class WebsiteOrderFormController {
     @Autowired
     private WebsiteOrderFormService websiteOrderFormService;
 
-
-
-
     @WebsiteSignIn
     @PostMapping(value = "/scooters")
     @ApiOperation(value = "车辆列表", response = ProductResult.class)
-    public Response<List<ProductResult>> scooterList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(websiteOrderFormService.scooterList(enter));
+    public Response<List<ProductResult>> scooters(@ModelAttribute @ApiParam("请求参数") ScootersEnter enter) {
+        return new Response<>(websiteOrderFormService.scooters(enter));
     }
 
-//    @WebsiteSignIn
-//    @PostMapping(value = "/scooterColors")
-//    @ApiOperation(value = "车辆颜色", response = ProductColorResult.class)
-//    public Response<List<ProductColorResult>> scooterColors(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-//        return new Response<>(websiteOrderFormService.scooterColors(enter));
-//    }
+    @WebsiteSignIn
+    @PostMapping(value = "/productModels")
+    @ApiOperation(value = "车辆型号", response = ProductModelResult.class)
+    public Response<List<ProductModelResult>> productModels(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(websiteOrderFormService.productModels(enter));
+    }
 
     @WebsiteSignIn
     @PostMapping(value = "/accessoryBatterys")

@@ -13,8 +13,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
-    * 客户咨询管理
-    */
+ * 客户咨询管理
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -148,7 +148,7 @@ public class OpeCustomerInquiry implements Serializable {
     private String contantFullName;
 
     /**
-     * 产品Id 
+     * 产品Id
      */
     @TableField(value = "product_id")
     private Long productId;
@@ -172,10 +172,22 @@ public class OpeCustomerInquiry implements Serializable {
     private Integer scooterQuantity;
 
     /**
+     * 支付状态
+     */
+    @TableField(value = "pay_status")
+    private String payStatus;
+
+    /**
      * 备注
      */
     @TableField(value = "remarks")
     private String remarks;
+
+    /**
+     * 数据是否完整 完成第二次提交 才算是数据完整
+     */
+    @TableField(value = "date_complete")
+    private Boolean dateComplete;
 
     /**
      * 创建人
@@ -210,14 +222,14 @@ public class OpeCustomerInquiry implements Serializable {
     /**
      * 冗余字段
      */
-    @TableField(value = "def2")
-    private String def2;
+    @TableField(value = "def3")
+    private String def3;
 
     /**
      * 冗余字段
      */
-    @TableField(value = "def3")
-    private String def3;
+    @TableField(value = "def2")
+    private String def2;
 
     /**
      * 冗余字段
@@ -285,7 +297,11 @@ public class OpeCustomerInquiry implements Serializable {
 
     public static final String COL_SCOOTER_QUANTITY = "scooter_quantity";
 
+    public static final String COL_PAY_STATUS = "pay_status";
+
     public static final String COL_REMARKS = "remarks";
+
+    public static final String COL_DATE_COMPLETE = "date_complete";
 
     public static final String COL_CREATED_BY = "created_by";
 
@@ -297,11 +313,15 @@ public class OpeCustomerInquiry implements Serializable {
 
     public static final String COL_DEF1 = "def1";
 
-    public static final String COL_DEF2 = "def2";
-
     public static final String COL_DEF3 = "def3";
+
+    public static final String COL_DEF2 = "def2";
 
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeCustomerInquiryBuilder builder() {
+        return new OpeCustomerInquiryBuilder();
+    }
 }

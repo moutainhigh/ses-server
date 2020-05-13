@@ -1,12 +1,12 @@
 package com.redescooter.ses.web.ros.service.website;
 
-import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
+import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
 import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
-import com.redescooter.ses.web.ros.vo.website.ProductColorResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
+import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
 
 import java.util.List;
 
@@ -25,15 +25,18 @@ public interface WebsiteOrderFormService {
      * @param enter
      * @return
      */
-    List<ProductResult> scooterList(GeneralEnter enter);
+    List<ProductModelResult> productModels(GeneralEnter enter);
+
+
+
 
     /**
-     * 车辆颜色
+     * 车辆型号
      *
      * @param enter
      * @return
      */
-    List<ProductColorResult> scooterColors(GeneralEnter enter);
+    List<ProductResult> scooters(ScootersEnter enter);
 
     /**
      * 配件电池类型

@@ -12,7 +12,7 @@
         where acc.type = #{type}
     </select>
 
-    <select id="scooterList" resultType="com.redescooter.ses.web.ros.vo.website.ProductResult">
+    <select id="scooters" resultType="com.redescooter.ses.web.ros.vo.website.ProductResult">
         select product.id        as id,
                product.fr_name   as name,
                product.model     as productModel,
@@ -22,7 +22,7 @@
                  inner join ope_regional_price_sheet sheet
                             on sheet.parts_product_id = product.id and sheet.currency_unit = 1
         where product_type = 4
-        and product.model = 1
+        and product.model = #{modelCode}
     </select>
     <select id="queryProductById" resultType="com.redescooter.ses.web.ros.vo.website.ProductResult">
         select product.id        as id,

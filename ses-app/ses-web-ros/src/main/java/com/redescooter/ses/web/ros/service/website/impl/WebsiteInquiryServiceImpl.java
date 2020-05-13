@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
+import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -22,9 +23,10 @@ import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.impl.OpeCustomerAccessoriesService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
-import com.redescooter.ses.web.ros.vo.website.ProductColorResult;
+import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
 import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
+import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -67,6 +69,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Reference
     private IdAppService idAppService;
 
+
     /**
      * 车辆型号
      *
@@ -74,27 +77,29 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @return
      */
     @Override
-    public List<ProductResult> scooterList(GeneralEnter enter) {
-        return websiteInquiryServiceMapper.scooterList(enter);
+    public List<ProductModelResult> productModels(GeneralEnter enter) {
+        List<ProductModelResult> resultList = new ArrayList<>();
+
+        for (ProductModelEnums item : ProductModelEnums.values()) {
+            resultList.add(ProductModelResult.builder().modelCode(item.getValue()).name(item.getCode()).build());
+        }
+        return resultList;
     }
 
     /**
-     * 车辆颜色
+     * 车辆型号
      *
      * @param enter
      * @return
      */
     @Override
-    public List<ProductColorResult> scooterColors(GeneralEnter enter) {
-        List<ProductColorResult> resultList = new ArrayList<>();
-        for (ProductColorEnums item : ProductColorEnums.values()) {
-            resultList.add(ProductColorResult.builder()
-                    .id(Long.valueOf(item.getValue()))
-                    .color(item.getCode())
-                    .build());
+    public List<ProductResult> scooters(ScootersEnter enter) {
+        if (ProductModelEnums.getProductModelEnumsByValue(enter.getModelCode()) == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        return resultList;
+        return websiteInquiryServiceMapper.scooters(enter);
     }
+
 
     /**
      * 配件电池类型
@@ -168,6 +173,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setTotalPrice(totalPrice);
 
         opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
+        opeCustomerInquiry.setDateComplete(Boolean.FALSE);
+        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY.getValue());
         opeCustomerInquiry.setCreatedBy(enter.getUserId());
         opeCustomerInquiry.setCreatedTime(new Date());
         opeCustomerInquiry.setUpdatedBy(enter.getUserId());
@@ -195,10 +202,10 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiryB.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY_B));
         opeCustomerInquiryB.setDr(0);
         opeCustomerInquiryB.setInquiryId(id);
-        opeCustomerInquiryB.setAccessoryId(StringUtils.equals(type, AccessoryTypeEnums.TOP_CASE.getValue()) == true ? enter.getTopCaseId() : enter.getAccessoryBatteryId());
-        opeCustomerInquiryB.setAccessoryPrice(price);
-        opeCustomerInquiryB.setAccessoryQty(StringUtils.equals(type, AccessoryTypeEnums.TOP_CASE.getValue()) == true ? 1 : enter.getAccessoryBatteryQty());
-        opeCustomerInquiryB.setAccessoryType(type);
+        opeCustomerInquiryB.setProductId(StringUtils.equals(type, AccessoryTypeEnums.TOP_CASE.getValue()) == true ? enter.getTopCaseId() : enter.getAccessoryBatteryId());
+        opeCustomerInquiryB.setProductPrice(price);
+        opeCustomerInquiryB.setProductQty(StringUtils.equals(type, AccessoryTypeEnums.TOP_CASE.getValue()) == true ? 1 : enter.getAccessoryBatteryQty());
+        opeCustomerInquiryB.setProductType(type);
         opeCustomerInquiryB.setProductId(enter.getProductId());
         opeCustomerInquiryB.setCreatedBy(enter.getUserId());
         opeCustomerInquiryB.setCreatedTime(new Date());

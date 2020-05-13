@@ -19,6 +19,9 @@ public enum InquiryStatusEnums {
     UNPROCESSED("UNPROCESSED", "未处理", "1"),
     PROCESSED("PROCESSED", "已处理", "2"),
     DECLINE("DECLINE", "拒绝", "3"),
+
+    PAY("PAY","已支付","4"),
+    UNPAY("UNPAY","未支付","5"),
     ;
 
     private String code;

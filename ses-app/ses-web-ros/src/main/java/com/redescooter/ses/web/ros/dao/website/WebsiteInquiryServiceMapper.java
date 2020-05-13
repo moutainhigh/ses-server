@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.dao.website;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
+import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public interface WebsiteInquiryServiceMapper {
      * @param enter
      * @return
      */
-    List<ProductResult> scooterList(GeneralEnter enter);
+    List<ProductResult> scooters(ScootersEnter enter);
 
     /**
      * 产品信息

@@ -18,6 +18,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "ope_customer_inquiry_b")
 public class OpeCustomerInquiryB implements Serializable {
+    public static final String COL_ACCESSORY_ID = "accessory_id";
+    public static final String COL_ACCESSORY_PRICE = "accessory_price";
+    public static final String COL_ACCESSORY_TYPE = "accessory_type";
+    public static final String COL_ACCESSORY_QTY = "accessory_qty";
     /**
      * id
      */
@@ -37,34 +41,28 @@ public class OpeCustomerInquiryB implements Serializable {
     private Long inquiryId;
 
     /**
-     * 配件表
-     */
-    @TableField(value = "accessory_id")
-    private Long accessoryId;
-
-    /**
-     * 配件价格
-     */
-    @TableField(value = "accessory_price")
-    private BigDecimal accessoryPrice;
-
-    /**
-     * 配件类型
-     */
-    @TableField(value = "accessory_type")
-    private String accessoryType;
-
-    /**
-     * 配件数量
-     */
-    @TableField(value = "accessory_qty")
-    private Integer accessoryQty;
-
-    /**
      * 产品Id
      */
     @TableField(value = "product_id")
     private Long productId;
+
+    /**
+     * 产品价格
+     */
+    @TableField(value = "product_price")
+    private BigDecimal productPrice;
+
+    /**
+     * 产品数量
+     */
+    @TableField(value = "product_qty")
+    private Integer productQty;
+
+    /**
+     * 产品类型
+     */
+    @TableField(value = "product_type")
+    private String productType;
 
     /**
      * 创建人
@@ -85,16 +83,16 @@ public class OpeCustomerInquiryB implements Serializable {
     private Long updatedBy;
 
     /**
-     * 更新时间
-     */
-    @TableField(value = "updated_time")
-    private Date updatedTime;
-
-    /**
      * 冗余字段
      */
     @TableField(value = "def1")
     private String def1;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "updated_time")
+    private Date updatedTime;
 
     /**
      * 冗余字段
@@ -128,15 +126,13 @@ public class OpeCustomerInquiryB implements Serializable {
 
     public static final String COL_INQUIRY_ID = "inquiry_id";
 
-    public static final String COL_ACCESSORY_ID = "accessory_id";
-
-    public static final String COL_ACCESSORY_PRICE = "accessory_price";
-
-    public static final String COL_ACCESSORY_TYPE = "accessory_type";
-
-    public static final String COL_ACCESSORY_QTY = "accessory_qty";
-
     public static final String COL_PRODUCT_ID = "product_id";
+
+    public static final String COL_PRODUCT_PRICE = "product_price";
+
+    public static final String COL_PRODUCT_QTY = "product_qty";
+
+    public static final String COL_PRODUCT_TYPE = "product_type";
 
     public static final String COL_CREATED_BY = "created_by";
 
@@ -144,9 +140,9 @@ public class OpeCustomerInquiryB implements Serializable {
 
     public static final String COL_UPDATED_BY = "updated_by";
 
-    public static final String COL_UPDATED_TIME = "updated_time";
-
     public static final String COL_DEF1 = "def1";
+
+    public static final String COL_UPDATED_TIME = "updated_time";
 
     public static final String COL_DEF2 = "def2";
 

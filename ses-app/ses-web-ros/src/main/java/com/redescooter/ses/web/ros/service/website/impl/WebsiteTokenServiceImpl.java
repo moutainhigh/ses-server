@@ -147,7 +147,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         saveCustomer.setPassword(password);
         saveCustomer.setSalt(String.valueOf(salt));
         saveCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
-        saveCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
+        saveCustomer.setStatus(CustomerStatusEnum.PREDESTINATE_CUSTOMER.getValue());
         saveCustomer.setUpdatedBy(enter.getUserId());
         saveCustomer.setUpdatedTime(new Date());
         saveCustomer.setCreatedBy(enter.getUserId());

@@ -18,7 +18,11 @@ public enum CustomerStatusEnum {
 
     OFFICIAL_CUSTOMER("OFFICIAL_CUSTOMER", "正式客户", "2"),
 
-    TRASH_CUSTOMER("TRASH_CUSTOMER", "垃圾客户", "3");
+    TRASH_CUSTOMER("TRASH_CUSTOMER", "垃圾客户", "3"),
+
+    // 当询价单 被接受时 更新为潜在客户
+    PREDESTINATE_CUSTOMER("PREDESTINATE_CUSTOMER","预定客户","4"),
+    ;
 
 
     private String code;

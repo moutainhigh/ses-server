@@ -9,26 +9,24 @@ import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
 
-import java.math.BigDecimal;
-
 /**
- * @ClassName:ScooterColorResult
- * @description: ScooterColorResult
+ * @ClassName:ProductModelResult
+ * @description: ProductModelResult
  * @author: Alex
  * @Version：1.3
- * @create: 2020/05/12 16:00
+ * @create: 2020/05/13 15:42
  */
-@ApiModel(value = "车辆颜色集合", description = "车辆颜色集合")
+@ApiModel(value = "产品型号", description = "产品型号")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class ProductColorResult extends GeneralResult {
+public class ProductModelResult extends GeneralResult {
 
-    @ApiModelProperty(value = "id")
-    private Long id;
+    @ApiModelProperty(value = "型号编号")
+    private String modelCode;
 
-    @ApiModelProperty(value = "颜色")
-    private String color;
+    @ApiModelProperty(value = "型号名称")
+    private String name;
 }
