@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper">
+
+    <select id="accessoryList"
+            resultType="com.redescooter.ses.web.ros.vo.website.AccessoryResult">
+        select acc.id           as id,
+               acc.type         as accessoryType,
+               acc.product_name as accessoryName,
+               acc.price        as price
+        from ope_customer_accessories acc
+        where acc.type = #{type}
+    </select>
+
+    <select id="scooterList" resultType="com.redescooter.ses.web.ros.vo.website.ProductResult">
+        select product.id        as id,
+               product.fr_name   as name,
+               product.model     as productModel,
+               sheet.sales_price as price
+        from ope_parts_product product
+                 left join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1
+        where product_type = 4
+        limit 1
+    </select>
+</mapper>

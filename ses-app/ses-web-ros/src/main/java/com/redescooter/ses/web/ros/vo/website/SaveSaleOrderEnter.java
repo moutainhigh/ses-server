@@ -28,7 +28,7 @@ public class SaveSaleOrderEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "产品类型Id")
     @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "产品类型为空")
-    private Long productTypeId;
+    private Long productId;
 
     @ApiModelProperty(value = "产品数量")
     @NotNull(code = ValidationExceptionCode.QTY_IS_EMPTY, message = "产品数量为空")

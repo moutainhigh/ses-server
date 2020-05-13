@@ -14,9 +14,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum AccessoryBatteryEnums {
+public enum AccessoryTypeEnums {
 
-    BATTERY("BATTERY","BATTERY","1000000","100.00");
+    BATTERY("BATTERY", "BATTERY", "1"),
+    TOP_CASE("TOP_CASE", "TOP_CASE", "2");
 
 
     private String code;
@@ -24,6 +25,4 @@ public enum AccessoryBatteryEnums {
     private String message;
 
     private String value;
-
-    private String price;
 }

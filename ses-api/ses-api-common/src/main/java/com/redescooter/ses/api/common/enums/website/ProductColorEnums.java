@@ -16,15 +16,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum ProductColorEnums {
 
-    RED("RED","红色","1000000","99.00"),
-    BLACK("BLACK","黑色","1000001","99.00"),
-    YELLOW("YELLOW","黄色","1000002","99.00");
+    RED("RED","红色","1"),
+    BLACK("BLACK","黑色","2"),
+    YELLOW("YELLOW","黄色","3");
 
     private String code;
 
     private String message;
 
     private String value;
-
-    private String price;
 }

@@ -2,11 +2,10 @@ package com.redescooter.ses.web.ros.service.website;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.vo.website.AccessoryBatteryResult;
+import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
 import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
 import com.redescooter.ses.web.ros.vo.website.ProductColorResult;
-import com.redescooter.ses.web.ros.vo.website.ProductTypeResult;
-import com.redescooter.ses.web.ros.vo.website.TopClassResult;
+import com.redescooter.ses.web.ros.vo.website.ProductResult;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ public interface WebsiteInquiryService {
      * @param enter
      * @return
      */
-    List<ProductTypeResult> scooterType(GeneralEnter enter);
+    List<ProductResult> scooterList(GeneralEnter enter);
 
     /**
      * 车辆颜色
@@ -32,7 +31,7 @@ public interface WebsiteInquiryService {
      * @param enter
      * @return
      */
-    List<ProductColorResult> scooterColor(GeneralEnter enter);
+    List<ProductColorResult> scooterColors(GeneralEnter enter);
 
     /**
      * 配件电池类型
@@ -40,7 +39,7 @@ public interface WebsiteInquiryService {
      * @param enter
      * @return
      */
-    List<AccessoryBatteryResult> accessoryBatteryList(GeneralEnter enter);
+    List<AccessoryResult> accessoryBatteryList(GeneralEnter enter);
 
     /**
      * 后备箱
@@ -48,7 +47,7 @@ public interface WebsiteInquiryService {
      * @param enter
      * @return
      */
-    List<TopClassResult> topClass(GeneralEnter enter);
+    List<AccessoryResult> accessoryTopCaseList(GeneralEnter enter);
 
     /**
      * 保存 询价单
@@ -56,5 +55,5 @@ public interface WebsiteInquiryService {
      * @param enter
      * @return
      */
-    GeneralResult saveInquiry(SaveSaleOrderEnter enter);
+    GeneralResult saveOrderForm(SaveSaleOrderEnter enter);
 }

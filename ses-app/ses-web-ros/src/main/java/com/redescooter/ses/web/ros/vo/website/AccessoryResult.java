@@ -12,26 +12,29 @@ import io.swagger.annotations.*;
 import java.math.BigDecimal;
 
 /**
- * @ClassName:ScooterTypeResult
- * @description: ScooterTypeResult
+ * @ClassName:ScooterBatteryResult
+ * @description: ScooterBatteryResult
  * @author: Alex
  * @Version：1.3
- * @create: 2020/05/12 15:57
+ * @create: 2020/05/12 16:24
  */
-@ApiModel(value = "车辆型号", description = "车辆型号")
+@ApiModel(value = "电池配件出参", description = "电池配件出参")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class ProductTypeResult extends GeneralResult {
+public class AccessoryResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "型号")
-    private String productType;
+    @ApiModelProperty(value = "配件电池类型")
+    private String accessoryType;
 
-    @ApiModelProperty(value = "价格")
+    @ApiModelProperty(value = "配件电池名称")
+    private String accessoryName;
+
+    @ApiModelProperty(value = "配件电池价格")
     private BigDecimal price;
 }

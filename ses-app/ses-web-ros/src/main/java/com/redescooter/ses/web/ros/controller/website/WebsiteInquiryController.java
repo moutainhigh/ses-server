@@ -1,14 +1,14 @@
 package com.redescooter.ses.web.ros.controller.website;
 
+import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.website.WebsiteInquiryService;
-import com.redescooter.ses.web.ros.vo.website.AccessoryBatteryResult;
+import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
 import com.redescooter.ses.web.ros.vo.website.ProductColorResult;
-import com.redescooter.ses.web.ros.vo.website.ProductTypeResult;
+import com.redescooter.ses.web.ros.vo.website.ProductResult;
 import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
-import com.redescooter.ses.web.ros.vo.website.TopClassResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -37,36 +37,41 @@ import java.util.List;
 public class WebsiteInquiryController {
 
     @Autowired
-    private WebsiteInquiryService websiteInquiryService;
+    private WebsiteInquiryService websiteOrderFormService;
 
-    @PostMapping(value = "/scooterType")
-    @ApiOperation(value = "车辆类型", response = ProductTypeResult.class)
-    public Response<List<ProductTypeResult>> scooterType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(websiteInquiryService.scooterType(enter));
+    @WebsiteSignIn
+    @PostMapping(value = "/scooters")
+    @ApiOperation(value = "车辆列表", response = ProductResult.class)
+    public Response<List<ProductResult>> scooterList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(websiteOrderFormService.scooterList(enter));
     }
 
-    @PostMapping(value = "/scooterColor")
+    @WebsiteSignIn
+    @PostMapping(value = "/scooterColors")
     @ApiOperation(value = "车辆颜色", response = ProductColorResult.class)
-    public Response<List<ProductColorResult>> scooterColor(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(websiteInquiryService.scooterColor(enter));
+    public Response<List<ProductColorResult>> scooterColors(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(websiteOrderFormService.scooterColors(enter));
     }
 
-    @PostMapping(value = "/accessoryBatteryList")
-    @ApiOperation(value = "车辆电池配件列表", response = AccessoryBatteryResult.class)
-    public Response<List<AccessoryBatteryResult>> accessoryBatteryList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(websiteInquiryService.accessoryBatteryList(enter));
+    @WebsiteSignIn
+    @PostMapping(value = "/accessoryBatterys")
+    @ApiOperation(value = "车辆电池配件列表", response = AccessoryResult.class)
+    public Response<List<AccessoryResult>> accessoryBatteryList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(websiteOrderFormService.accessoryBatteryList(enter));
     }
 
-    @PostMapping(value = "/topClass")
-    @ApiOperation(value = "车辆后备箱配件列表", response = TopClassResult.class)
-    public Response<List<TopClassResult>> topClass(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(websiteInquiryService.topClass(enter));
+    @WebsiteSignIn
+    @PostMapping(value = "/accessoryTopCases")
+    @ApiOperation(value = "车辆后备箱配件列表", response = AccessoryResult.class)
+    public Response<List<AccessoryResult>> accessoryTopCaseList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(websiteOrderFormService.accessoryTopCaseList(enter));
     }
 
-    @PostMapping(value = "/saveInquiry")
-    @ApiOperation(value = "保存询价单", response = GeneralResult.class)
-    public Response<GeneralResult> saveInquiry(@ModelAttribute @ApiParam("请求参数") SaveSaleOrderEnter enter) {
-        return new Response<>(websiteInquiryService.saveInquiry(enter));
+    @WebsiteSignIn
+    @PostMapping(value = "/saveOrderForm")
+    @ApiOperation(value = "保存预订单", response = GeneralResult.class)
+    public Response<GeneralResult> saveOrderForm(@ModelAttribute @ApiParam("请求参数") SaveSaleOrderEnter enter) {
+        return new Response<>(websiteOrderFormService.saveOrderForm(enter));
     }
 
 }
