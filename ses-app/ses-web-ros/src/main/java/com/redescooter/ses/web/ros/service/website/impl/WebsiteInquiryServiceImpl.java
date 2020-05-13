@@ -1,11 +1,9 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
-import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
-import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
-import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -23,6 +21,8 @@ import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.impl.OpeCustomerAccessoriesService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
 import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
 import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
@@ -133,48 +133,44 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Transactional
     @Override
     public GeneralResult saveOrderForm(SaveSaleOrderEnter enter) {
+        //后备箱 校验
         OpeCustomerAccessories topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
         if (topCase == null) {
             throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
         }
 
+        //电池的校验
         OpeCustomerAccessories battery = opeCustomerAccessoriesService.getById(enter.getAccessoryBatteryId());
         if (battery == null) {
             throw new SesWebRosException(ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getMessage());
         }
 
+        //产品校验
         ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
-
+        //配件保存集合
+        List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
+        //总价格计算
         BigDecimal totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty())));
 
-        //电池、后备箱
         if (enter.getTopCaseId() != 0 && enter.getTopCaseId() != null) {
             totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty()))).add(topCase.getPrice());
         }
-
-        //配件保存集合
-        List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
         //生成主订单
+
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
         opeCustomerInquiry.setDr(0);
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPROCESSED.getValue());
-        //默认 客户类型 为个人、行业为 餐厅
-        opeCustomerInquiry.setIndustry(CustomerIndustryEnums.RESTAURANT.getValue());
-        opeCustomerInquiry.setCustomerType(CustomerTypeEnum.PERSONAL.getValue());
-
         opeCustomerInquiry.setProductId(enter.getProductId());
         opeCustomerInquiry.setProductPrice(product.getPrice());
         opeCustomerInquiry.setTotalPrice(totalPrice);
-
         opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
-        opeCustomerInquiry.setDateComplete(Boolean.FALSE);
-        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY.getValue());
+        opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setCreatedBy(enter.getUserId());
         opeCustomerInquiry.setCreatedTime(new Date());
         opeCustomerInquiry.setUpdatedBy(enter.getUserId());
@@ -182,19 +178,28 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiryService.save(opeCustomerInquiry);
 
         //生成子订单
-
         if (enter.getTopCaseId() != 0 && enter.getTopCaseId() != null) {
             //后备箱形成子表记录
             opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), topCase.getPrice(), AccessoryTypeEnums.TOP_CASE.getValue()));
         }
         //电池记录
         opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), battery.getPrice(), AccessoryTypeEnums.BATTERY.getValue()));
-
-        //子表数据
+        //子表数据 保存
         if (CollectionUtils.isNotEmpty(opeCustomerInquiryBList)) {
             opeCustomerInquiryBService.saveBatch(opeCustomerInquiryBList);
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 预订单列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<OrderFormResult> orderFormList(OrderFormsEnter enter) {
+        return null;
     }
 
     private OpeCustomerInquiryB buildAccessory(SaveSaleOrderEnter enter, Long id, BigDecimal price, String type) {

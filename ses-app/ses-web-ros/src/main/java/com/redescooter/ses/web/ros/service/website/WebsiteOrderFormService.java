@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.service.website;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
 import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
 import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
@@ -26,8 +28,6 @@ public interface WebsiteOrderFormService {
      * @return
      */
     List<ProductModelResult> productModels(GeneralEnter enter);
-
-
 
 
     /**
@@ -61,4 +61,13 @@ public interface WebsiteOrderFormService {
      * @return
      */
     GeneralResult saveOrderForm(SaveSaleOrderEnter enter);
+
+    /**
+     * 预订单列表
+     *
+     * @param enter
+     * @return
+     */
+    List<OrderFormResult> orderFormList(OrderFormsEnter enter);
+
 }

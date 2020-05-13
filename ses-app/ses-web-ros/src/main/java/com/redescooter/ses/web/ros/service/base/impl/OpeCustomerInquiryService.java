@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 
 public interface OpeCustomerInquiryService extends IService<OpeCustomerInquiry> {
 
@@ -16,4 +16,5 @@ public interface OpeCustomerInquiryService extends IService<OpeCustomerInquiry> 
     int insertOrUpdateSelective(OpeCustomerInquiry record);
 
 }
+
 

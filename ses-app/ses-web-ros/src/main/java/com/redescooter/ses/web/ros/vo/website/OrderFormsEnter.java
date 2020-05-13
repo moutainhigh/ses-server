@@ -1,8 +1,6 @@
 package com.redescooter.ses.web.ros.vo.website;
 
-import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,21 +10,20 @@ import lombok.NoArgsConstructor;
 import io.swagger.annotations.*;
 
 /**
- * @ClassName:ScooterListEnter
- * @description: ScooterListEnter
+ * @ClassName:OrderFormsEnter
+ * @description: OrderFormsEnter
  * @author: Alex
  * @Version：1.3
- * @create: 2020/05/13 15:47
+ * @create: 2020/05/13 19:24
  */
-@ApiModel(value = "车辆列表入参", description = "车辆列表入参")
+@ApiModel(value = "", description = "")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class ScootersEnter extends GeneralEnter {
+public class OrderFormsEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "车辆型号")
-    @NotNull(code = ValidationExceptionCode.MODEL_IS_EMPTY, message = "型号为空")
-    private String modelCode;
+    @ApiModelProperty(value = "支付状态")
+    private String type;
 }

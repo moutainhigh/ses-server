@@ -13,8 +13,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 客户咨询管理
- */
+    * 客户咨询管理
+    */
 @Data
 @Builder
 @AllArgsConstructor
@@ -148,7 +148,7 @@ public class OpeCustomerInquiry implements Serializable {
     private String contantFullName;
 
     /**
-     * 产品Id
+     * 产品Id 
      */
     @TableField(value = "product_id")
     private Long productId;
@@ -182,12 +182,6 @@ public class OpeCustomerInquiry implements Serializable {
      */
     @TableField(value = "remarks")
     private String remarks;
-
-    /**
-     * 数据是否完整 完成第二次提交 才算是数据完整
-     */
-    @TableField(value = "date_complete")
-    private Boolean dateComplete;
 
     /**
      * 创建人
@@ -301,8 +295,6 @@ public class OpeCustomerInquiry implements Serializable {
 
     public static final String COL_REMARKS = "remarks";
 
-    public static final String COL_DATE_COMPLETE = "date_complete";
-
     public static final String COL_CREATED_BY = "created_by";
 
     public static final String COL_CREATED_TIME = "created_time";
@@ -320,8 +312,4 @@ public class OpeCustomerInquiry implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpeCustomerInquiryBuilder builder() {
-        return new OpeCustomerInquiryBuilder();
-    }
 }
