@@ -36,7 +36,7 @@ public class SaveSaleOrderEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "产品颜色Id")
     @NotNull(code = ValidationExceptionCode.COLOR_IS_EMPTY, message = "颜色为空")
-    private Long productColorId;
+    private String productColor;
 
     @ApiModelProperty(value = "配件电池Id")
     @NotNull(code = ValidationExceptionCode.BATTERY_ID, message = "电池Id 为空")

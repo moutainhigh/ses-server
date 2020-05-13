@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.website;
 
+import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
@@ -16,7 +17,8 @@ import java.util.List;
  * @Version：1.3
  * @create: 2020/05/12 15:55
  */
-public interface WebsiteInquiryService {
+public interface WebsiteOrderFormService {
+
     /**
      * 车辆型号
      *

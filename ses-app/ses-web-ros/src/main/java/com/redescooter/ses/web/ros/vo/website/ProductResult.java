@@ -35,6 +35,9 @@ public class ProductResult extends GeneralResult {
     @ApiModelProperty(value = "型号")
     private String productModel;
 
+    @ApiModelProperty(value = "颜色")
+    private String color;
+
     @ApiModelProperty(value = "价格")
     private BigDecimal price;
 }

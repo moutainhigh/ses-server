@@ -4,7 +4,7 @@ import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.web.ros.service.website.WebsiteInquiryService;
+import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
 import com.redescooter.ses.web.ros.vo.website.ProductColorResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
@@ -34,10 +34,13 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/website")
-public class WebsiteInquiryController {
+public class WebsiteOrderFormController {
 
     @Autowired
-    private WebsiteInquiryService websiteOrderFormService;
+    private WebsiteOrderFormService websiteOrderFormService;
+
+
+
 
     @WebsiteSignIn
     @PostMapping(value = "/scooters")
@@ -46,12 +49,12 @@ public class WebsiteInquiryController {
         return new Response<>(websiteOrderFormService.scooterList(enter));
     }
 
-    @WebsiteSignIn
-    @PostMapping(value = "/scooterColors")
-    @ApiOperation(value = "车辆颜色", response = ProductColorResult.class)
-    public Response<List<ProductColorResult>> scooterColors(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(websiteOrderFormService.scooterColors(enter));
-    }
+//    @WebsiteSignIn
+//    @PostMapping(value = "/scooterColors")
+//    @ApiOperation(value = "车辆颜色", response = ProductColorResult.class)
+//    public Response<List<ProductColorResult>> scooterColors(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+//        return new Response<>(websiteOrderFormService.scooterColors(enter));
+//    }
 
     @WebsiteSignIn
     @PostMapping(value = "/accessoryBatterys")

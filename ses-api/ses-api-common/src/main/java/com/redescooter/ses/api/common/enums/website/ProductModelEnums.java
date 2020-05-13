@@ -16,9 +16,9 @@ import java.math.BigDecimal;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum ProductTypeEnums {
+public enum ProductModelEnums {
 
-    SCOOTER_125_CC("SCOOTER_125_CC","125CC","1000000","10000.00");
+    SCOOTER_125_CC("SCOOTER_125_CC","125CC","1");
 
 
     private String code;
@@ -27,5 +27,4 @@ public enum ProductTypeEnums {
 
     private String value;
 
-    private String price;
 }

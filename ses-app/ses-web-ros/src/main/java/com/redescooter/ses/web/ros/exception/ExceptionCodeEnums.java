@@ -258,6 +258,10 @@ public enum ExceptionCodeEnums {
     CUSTOMER_IS_NOT_NEED_ALLOCATION_SCOOTER(10121, "客户无需分配车辆"),
 
     PART_HISTROY_TRACE_IS_NOT_EXIST(10122, "部件记录不存在"),
+
+    TOP_CASE_IS_NOT_EXIST(10123, "后备箱不存在"),
+
+    BATTERY_IS_NOT_EXIST(10124, "电池不存在"),
     ;
 
 

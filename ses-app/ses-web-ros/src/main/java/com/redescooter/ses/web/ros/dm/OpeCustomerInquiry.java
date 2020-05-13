@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -153,6 +154,18 @@ public class OpeCustomerInquiry implements Serializable {
     private Long productId;
 
     /**
+     * 产品单价
+     */
+    @TableField(value = "product_price")
+    private BigDecimal productPrice;
+
+    /**
+     * 单据总价
+     */
+    @TableField(value = "total_price")
+    private BigDecimal totalPrice;
+
+    /**
      * 需求车辆数
      */
     @TableField(value = "scooter_quantity")
@@ -265,6 +278,10 @@ public class OpeCustomerInquiry implements Serializable {
     public static final String COL_CONTANT_FULL_NAME = "contant_full_name";
 
     public static final String COL_PRODUCT_ID = "product_id";
+
+    public static final String COL_PRODUCT_PRICE = "product_price";
+
+    public static final String COL_TOTAL_PRICE = "total_price";
 
     public static final String COL_SCOOTER_QUANTITY = "scooter_quantity";
 

@@ -30,4 +30,12 @@ public interface WebsiteInquiryServiceMapper {
      * @return
      */
     List<ProductResult> scooterList(GeneralEnter enter);
+
+    /**
+     * 产品信息
+     *
+     * @param productId
+     * @return
+     */
+    ProductResult queryProductById(Long productId);
 }
