@@ -120,7 +120,7 @@ public class ControllerAspect {
             enter.setUserId(userToken.getUserId());
             enter.setTenantId(userToken.getTenantId());
 
-            //接口权限验证
+            //TODO 接口权限验证
             checkPermission(point, enter);
         }
         //website 登陆
