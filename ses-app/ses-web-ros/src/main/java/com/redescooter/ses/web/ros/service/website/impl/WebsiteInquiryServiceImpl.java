@@ -12,9 +12,12 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerAccessories;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
@@ -22,6 +25,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.impl.OpeCustomerAccessoriesService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
@@ -38,6 +42,7 @@ import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +82,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private CustomerRosService customerRosService;
+
+    @Autowired
+    private OpeCustomerService opeCustomerService;
 
     @Reference
     private IdAppService idAppService;
@@ -173,7 +181,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
 
         //生成主订单
-        OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice,idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
+        OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
         opeCustomerInquiry.setCreatedBy(enter.getUserId());
         opeCustomerInquiry.setCreatedTime(new Date());
 
@@ -229,7 +237,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty()))).add(topCase.getPrice());
         }
         //生成主订单
-        OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice,enter.getId());
+        OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, enter.getId());
         opeCustomerInquiry.setCreatedBy(enter.getUserId());
         opeCustomerInquiry.setCreatedTime(new Date());
 
@@ -243,40 +251,53 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
         //子订单保存
         List<OpeCustomerInquiryB> inquiryBList = opeCustomerInquiryBService.list(new LambdaQueryWrapper<OpeCustomerInquiryB>().eq(OpeCustomerInquiryB::getInquiryId, enter.getId()));
-        if (CollectionUtils.isNotEmpty(inquiryBList)){
+        if (CollectionUtils.isNotEmpty(inquiryBList)) {
             opeCustomerInquiryBService.removeByIds(inquiryBList.stream().map(OpeCustomerInquiryB::getId).collect(Collectors.toList()));
         }
         opeCustomerInquiryBService.saveBatch(opeCustomerInquiryBList);
 
         //主订单保存
         opeCustomerInquiryService.save(opeCustomerInquiry);
-        return null;
+        return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
 
     /**
      * 询价单封装
+     *
      * @param enter
      * @param product
      * @param totalPrice
      * @return
      */
-    private OpeCustomerInquiry buildOpeCustomerInquiry(SaveSaleOrderEnter enter, ProductResult product, BigDecimal totalPrice,Long id) {
+    private OpeCustomerInquiry buildOpeCustomerInquiry(SaveSaleOrderEnter enter, ProductResult product, BigDecimal totalPrice, Long id) {
+
+        //查询客户个人信息
+        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(id);
         opeCustomerInquiry.setDr(0);
+        opeCustomerInquiry.setFirstName(opeCustomer.getCustomerFirstName());
+        opeCustomerInquiry.setLastName(opeCustomer.getCustomerLastName());
+        opeCustomerInquiry.setFullName(opeCustomer.getCustomerFullName());
+        opeCustomerInquiry.setEmail(opeCustomer.getEmail());
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPROCESSED.getValue());
         opeCustomerInquiry.setProductId(enter.getProductId());
+        opeCustomerInquiry.setProductModel(enter.getProductModel());
         opeCustomerInquiry.setProductPrice(product.getPrice());
         opeCustomerInquiry.setTotalPrice(totalPrice);
         opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
         opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setAddress(enter.getAddress());
         opeCustomerInquiry.setCountryCode(enter.getCountryCode());
-        opeCustomerInquiry.setTelephone(opeCustomerInquiry.getTelephone());
+        opeCustomerInquiry.setTelephone(enter.getPhone());
         opeCustomerInquiry.setBankCardName(enter.getBankCardName());
         opeCustomerInquiry.setCardNum(enter.getCardNum());
-        opeCustomerInquiry.setExpiredTime(enter.getExpiredTime());
+        opeCustomerInquiry.setExpiredTime(DateUtil.timeStampToDate(enter.getExpiredTime(),DateUtil.UTC));
         opeCustomerInquiry.setCvv(enter.getCvv());
         opeCustomerInquiry.setPostalCode(enter.getPostalCode());
         opeCustomerInquiry.setUpdatedBy(enter.getUserId());
@@ -375,7 +396,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public BooleanResult checkMail(StringEnter enter) {
         IntResult checkMailCount = customerRosService.checkMailCount(enter);
-        return BooleanResult.builder().success(checkMailCount.equals(0) ? Boolean.TRUE : Boolean.FALSE).build();
+        return BooleanResult.builder().success(checkMailCount.getValue() == 0 ? Boolean.TRUE : Boolean.FALSE).build();
     }
 
     private OpeCustomerInquiryB buildAccessory(SaveSaleOrderEnter enter, Long id, BigDecimal price, String type) {

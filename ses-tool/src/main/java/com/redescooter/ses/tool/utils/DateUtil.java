@@ -1,6 +1,7 @@
 package com.redescooter.ses.tool.utils;
 
 import com.redescooter.ses.api.common.constant.DateConstant;
+import lombok.SneakyThrows;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * description: DateUtil 时间工具类
@@ -866,5 +868,18 @@ public class DateUtil {
         SimpleDateFormat time2 = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
         String etime = time2.format(new Date(etime1));
         return etime;
+    }
+
+    /**
+     * 时间戳转Date
+     *
+     * @param timeStamp
+     * @return
+     */
+    public static Date timeStampToDate(Long timeStamp,String timeZone) {
+        TimeZone tz = TimeZone.getTimeZone(timeZone);
+        TimeZone.setDefault(tz);
+        long longTimeStamp = new Long(timeStamp * 1000);
+        return new Date(longTimeStamp);
     }
 }

@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.website;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import lombok.AllArgsConstructor;
@@ -10,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -40,9 +43,13 @@ public class SaveSaleOrderEnter extends GeneralEnter {
     @ApiModelProperty(value = "地址")
     private String address;
 
-    @ApiModelProperty(value = "产品类型Id")
+    @ApiModelProperty(value = "产品Id")
     @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "产品类型为空")
     private Long productId;
+
+    @ApiModelProperty(value = "产品Id")
+    @NotNull(code = ValidationExceptionCode.MODEL_IS_EMPTY, message = "产品类型为空")
+    private String productModel;
 
     @ApiModelProperty(value = "产品数量")
     @NotNull(code = ValidationExceptionCode.QTY_IS_EMPTY, message = "产品数量为空")
@@ -69,7 +76,7 @@ public class SaveSaleOrderEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "过期时间")
     @NotNull(code = ValidationExceptionCode.EXPIRED_TIME_IS_EMPTY, message = "过期时间为空")
-    private Date expiredTime;
+    private Long expiredTime;
 
     @ApiModelProperty(value = "cvv")
     @NotNull(code = ValidationExceptionCode.CVV_IS_EMPTY, message = "CVV为空")

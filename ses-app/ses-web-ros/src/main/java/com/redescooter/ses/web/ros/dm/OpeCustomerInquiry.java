@@ -13,14 +13,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
-    * 客户咨询管理
-    */
+ * 客户咨询管理
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_customer_inquiry")
 public class OpeCustomerInquiry implements Serializable {
+    public static final String COL_BANKCARDNAME = "bankCardName";
+    public static final String COL_CARDNUM = "cardNum";
+    public static final String COL_EXPIREDTIME = "expiredTime";
+    public static final String COL_POSTALCODE = "postalCode";
     /**
      * id
      */
@@ -32,6 +36,12 @@ public class OpeCustomerInquiry implements Serializable {
      */
     @TableField(value = "dr")
     private Integer dr;
+
+    /**
+     * 订单号
+     */
+    @TableField(value = "order_no")
+    private String orderNo;
 
     /**
      * 客户id
@@ -148,10 +158,16 @@ public class OpeCustomerInquiry implements Serializable {
     private String contantFullName;
 
     /**
-     * 产品Id 
+     * 产品Id
      */
     @TableField(value = "product_id")
     private Long productId;
+
+    /**
+     * 产品型号
+     */
+    @TableField(value = "product_model")
+    private String productModel;
 
     /**
      * 产品单价
@@ -196,52 +212,54 @@ public class OpeCustomerInquiry implements Serializable {
     private Date createdTime;
 
     /**
-     * 更新人
-     */
-    @TableField(value = "updated_by")
-    private Long updatedBy;
-
-    /**
      * 更新时间
      */
     @TableField(value = "updated_time")
     private Date updatedTime;
 
     /**
-     * 冗余字段
+     * 更新人
      */
-    @TableField(value = "def1")
-    private String def1;
+    @TableField(value = "updated_by")
+    private Long updatedBy;
 
     /**
-     * 冗余字段
+     * 银行卡上面名字
      */
-    @TableField(value = "def3")
-    private String def3;
+    @TableField(value = "bank_card_name")
+    private String bankCardName;
 
     /**
-     * 冗余字段
+     * cvv
      */
-    @TableField(value = "def2")
-    private String def2;
+    @TableField(value = "cvv")
+    private String cvv;
 
     /**
-     * 冗余字段
+     * 过期时间
      */
-    @TableField(value = "def5")
-    private String def5;
+    @TableField(value = "expired_time")
+    private Date expiredTime;
 
     /**
-     * 冗余字段
+     * 卡号
      */
-    @TableField(value = "def6")
-    private Double def6;
+    @TableField(value = "card_Num")
+    private String cardNum;
+
+    /**
+     * 安全码
+     */
+    @TableField(value = "postal_code")
+    private String postalCode;
 
     private static final long serialVersionUID = 1L;
 
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
+
+    public static final String COL_ORDER_NO = "order_no";
 
     public static final String COL_CUSTOMER_ID = "customer_id";
 
@@ -285,6 +303,8 @@ public class OpeCustomerInquiry implements Serializable {
 
     public static final String COL_PRODUCT_ID = "product_id";
 
+    public static final String COL_PRODUCT_MODEL = "product_model";
+
     public static final String COL_PRODUCT_PRICE = "product_price";
 
     public static final String COL_TOTAL_PRICE = "total_price";
@@ -299,17 +319,21 @@ public class OpeCustomerInquiry implements Serializable {
 
     public static final String COL_CREATED_TIME = "created_time";
 
-    public static final String COL_UPDATED_BY = "updated_by";
-
     public static final String COL_UPDATED_TIME = "updated_time";
 
-    public static final String COL_DEF1 = "def1";
+    public static final String COL_UPDATED_BY = "updated_by";
 
-    public static final String COL_DEF3 = "def3";
+    public static final String COL_BANK_CARD_NAME = "bank_card_name";
 
-    public static final String COL_DEF2 = "def2";
+    public static final String COL_CVV = "cvv";
 
-    public static final String COL_DEF5 = "def5";
+    public static final String COL_EXPIRED_TIME = "expired_time";
 
-    public static final String COL_DEF6 = "def6";
+    public static final String COL_CARD_NUM = "card_Num";
+
+    public static final String COL_POSTAL_CODE = "postal_code";
+
+    public static OpeCustomerInquiryBuilder builder() {
+        return new OpeCustomerInquiryBuilder();
+    }
 }

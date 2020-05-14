@@ -83,6 +83,13 @@ public class WebsiteOrderFormController {
     }
 
     @WebsiteSignIn
+    @PostMapping(value = "/editOrderForm")
+    @ApiOperation(value = "编辑预订单", response = SaveOrderFormResult.class)
+    public Response<SaveOrderFormResult> editOrderForm(@ModelAttribute @ApiParam("请求参数") SaveSaleOrderEnter enter) {
+        return new Response<>(websiteOrderFormService.editOrderForm(enter));
+    }
+
+    @WebsiteSignIn
     @PostMapping(value = "/payDeposit")
     @ApiOperation(value = "定金支付", response = GeneralResult.class)
     public Response<GeneralResult> payDeposit(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -91,14 +98,14 @@ public class WebsiteOrderFormController {
 
     @WebsiteSignIn
     @PostMapping(value = "/orderForms")
-    @ApiOperation(value = "询价单列表", response = OrderFormsResult.class)
+    @ApiOperation(value = "预订单列表", response = OrderFormsResult.class)
     public Response<List<OrderFormsResult>> orderForms(@ModelAttribute @ApiParam("请求参数") OrderFormsEnter enter) {
         return new Response<>(websiteOrderFormService.orderForms(enter));
     }
 
     @WebsiteSignIn
     @PostMapping(value = "/orderFormInfo")
-    @ApiOperation(value = "询价单详情", response = OrderFormInfoResult.class)
+    @ApiOperation(value = "预订单详情", response = OrderFormInfoResult.class)
     public Response<OrderFormInfoResult> orderFormInfo(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(websiteOrderFormService.orderFormInfo(enter));
     }
