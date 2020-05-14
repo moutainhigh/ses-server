@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
@@ -25,6 +26,7 @@ import com.redescooter.ses.web.ros.vo.website.OrderFormResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
 import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
+import com.redescooter.ses.web.ros.vo.website.SaveOrderFormResult;
 import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
 import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
 import lombok.extern.slf4j.Slf4j;
@@ -95,7 +97,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public List<ProductResult> scooters(ScootersEnter enter) {
         if (ProductModelEnums.getProductModelEnumsByValue(enter.getModelCode()) == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return websiteInquiryServiceMapper.scooters(enter);
     }
@@ -132,7 +134,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Transactional
     @Override
-    public GeneralResult saveOrderForm(SaveSaleOrderEnter enter) {
+    public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
         //后备箱 校验
         OpeCustomerAccessories topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
         if (topCase == null) {
@@ -188,7 +190,23 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (CollectionUtils.isNotEmpty(opeCustomerInquiryBList)) {
             opeCustomerInquiryBService.saveBatch(opeCustomerInquiryBList);
         }
-        return new GeneralResult(enter.getRequestId());
+        return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
+    }
+
+    /**
+     * 定金支付
+     *
+     * @param enter
+     * @return
+     *
+     * 1、定金支付
+     * 2、询价单 状态 未处理-----》已处理
+     * 3、判断当前是否存在 存在-- 车辆数量累加 不存在 客户状态 预定客户---》 潜在客户
+     *
+     */
+    @Override
+    public GeneralResult payDeposit(IdEnter enter) {
+        return null;
     }
 
     /**
@@ -199,6 +217,32 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public List<OrderFormResult> orderFormList(OrderFormsEnter enter) {
+        return null;
+    }
+
+    /**
+     * 订单详情
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public OrderFormResult orderForm(IdEnter enter) {
+        OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
+        if (customerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * 尾款支付
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult payLastParagraph(GeneralEnter enter) {
         return null;
     }
 

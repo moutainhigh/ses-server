@@ -8,6 +8,7 @@ import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
 import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
+import com.redescooter.ses.web.ros.vo.website.SaveOrderFormResult;
 import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
 import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
 import io.swagger.annotations.Api;
@@ -70,8 +71,8 @@ public class WebsiteOrderFormController {
 
     @WebsiteSignIn
     @PostMapping(value = "/saveOrderForm")
-    @ApiOperation(value = "保存预订单", response = GeneralResult.class)
-    public Response<GeneralResult> saveOrderForm(@ModelAttribute @ApiParam("请求参数") SaveSaleOrderEnter enter) {
+    @ApiOperation(value = "保存预订单", response = SaveOrderFormResult.class)
+    public Response<SaveOrderFormResult> saveOrderForm(@ModelAttribute @ApiParam("请求参数") SaveSaleOrderEnter enter) {
         return new Response<>(websiteOrderFormService.saveOrderForm(enter));
     }
 
