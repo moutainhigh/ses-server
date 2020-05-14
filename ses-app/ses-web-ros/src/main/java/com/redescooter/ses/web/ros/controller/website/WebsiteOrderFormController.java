@@ -9,7 +9,8 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormInfoResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
 import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
@@ -90,15 +91,15 @@ public class WebsiteOrderFormController {
 
     @WebsiteSignIn
     @PostMapping(value = "/orderForms")
-    @ApiOperation(value = "询价单列表", response = OrderFormResult.class)
-    public Response<List<OrderFormResult>> orderForms(@ModelAttribute @ApiParam("请求参数") OrderFormsEnter enter) {
+    @ApiOperation(value = "询价单列表", response = OrderFormsResult.class)
+    public Response<List<OrderFormsResult>> orderForms(@ModelAttribute @ApiParam("请求参数") OrderFormsEnter enter) {
         return new Response<>(websiteOrderFormService.orderForms(enter));
     }
 
     @WebsiteSignIn
     @PostMapping(value = "/orderFormInfo")
-    @ApiOperation(value = "询价单详情", response = OrderFormResult.class)
-    public Response<OrderFormResult> orderFormInfo(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    @ApiOperation(value = "询价单详情", response = OrderFormInfoResult.class)
+    public Response<OrderFormInfoResult> orderFormInfo(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(websiteOrderFormService.orderFormInfo(enter));
     }
 

@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.website;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -7,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * @ClassName:OrderFormResult
@@ -20,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class OrderFormResult extends GeneralResult {
+public class OrderFormInfoResult extends GeneralResult {
     @ApiModelProperty(value = "询价单id")
     private Long id;
 
@@ -33,8 +38,11 @@ public class OrderFormResult extends GeneralResult {
     @ApiModelProperty(value = "地址")
     private String address;
 
-    @ApiModelProperty(value = "产品类型Id")
+    @ApiModelProperty(value = "产品Id")
     private Long productId;
+
+    @ApiModelProperty(value = "产品类型")
+    private String produceModel;
 
     @ApiModelProperty(value = "产品数量")
     private Integer productQty;
@@ -54,11 +62,10 @@ public class OrderFormResult extends GeneralResult {
     @ApiModelProperty(value = "卡号")
     private String cardNum;
 
-    @ApiModelProperty(value = "过期月份")
-    private Integer expiredMonth;
-
     @ApiModelProperty(value = "过期年分")
-    private Integer expiredYear;
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    private Date expiredTime;
 
     @ApiModelProperty(value = "cvv")
     private String cvv;

@@ -25,5 +25,8 @@ import io.swagger.annotations.*;
 public class OrderFormsEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "支付状态")
-    private String type;
+    private String payStatus;
+
+    @ApiModelProperty(value = "产品型号")
+    private String productMdoel;
 }

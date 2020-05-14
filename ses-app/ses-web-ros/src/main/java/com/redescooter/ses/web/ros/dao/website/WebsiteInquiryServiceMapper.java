@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.dao.website;
 
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
 import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
 
@@ -38,4 +40,12 @@ public interface WebsiteInquiryServiceMapper {
      * @return
      */
     ProductResult queryProductById(Long productId);
+
+    /**
+     * 预订单列表
+     *
+     * @param enter
+     * @return
+     */
+    List<OrderFormsResult> orderForms(OrderFormsEnter enter);
 }

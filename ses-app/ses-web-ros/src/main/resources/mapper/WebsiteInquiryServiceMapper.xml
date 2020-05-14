@@ -34,4 +34,20 @@
         where product_type = 4
         and product.id=#{productId}
     </select>
+    <select id="orderForms" resultType="com.redescooter.ses.web.ros.vo.website.OrderFormsResult">
+        select inquiry.id as id,
+        inquiry.product_model as productModel,
+        inquiry.order_no as orderNo,
+        inquiry.pay_status as status,
+        inquiry.created_time as orderTime
+        from ope_customer_inquiry inquiry
+        where inquiry.dr = 0
+        and inquiry.created_by = #{userId}
+        <if test="productMdoel != null and productMdoel != ''">
+            and inquiry.product_model = #{productMdoel}
+        </if>
+        <if test="payStatus != null and payStatus != ''">
+            and inquiry.pay_status = #{payStatus}
+        </if>
+    </select>
 </mapper>

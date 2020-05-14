@@ -4,10 +4,10 @@ import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormInfoResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
 import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
 import com.redescooter.ses.web.ros.vo.website.SaveOrderFormResult;
@@ -68,6 +68,14 @@ public interface WebsiteOrderFormService {
     SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter);
 
     /**
+     * 修改 预订单
+     *
+     * @param enter
+     * @return
+     */
+    SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter);
+
+    /**
      * 定金支付
      *
      * @param enter
@@ -81,7 +89,7 @@ public interface WebsiteOrderFormService {
      * @param enter
      * @return
      */
-    List<OrderFormResult> orderForms(OrderFormsEnter enter);
+    List<OrderFormsResult> orderForms(OrderFormsEnter enter);
 
     /**
      * 订单详情
@@ -89,7 +97,7 @@ public interface WebsiteOrderFormService {
      * @param enter
      * @return
      */
-    OrderFormResult orderFormInfo(IdEnter enter);
+    OrderFormInfoResult orderFormInfo(IdEnter enter);
 
     /**
      * 尾款支付

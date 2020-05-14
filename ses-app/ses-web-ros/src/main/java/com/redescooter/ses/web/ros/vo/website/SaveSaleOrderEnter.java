@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
 
+import java.util.Date;
+
 /**
  * @ClassName:SaveInquiryEnter
  * @description: SaveInquiryEnter
@@ -18,13 +20,16 @@ import io.swagger.annotations.*;
  * @Version：1.3
  * @create: 2020/05/12 16:07
  */
-@ApiModel(value = "", description = "")
+@ApiModel(value = "保存预订单", description = "保存预订单")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class SaveSaleOrderEnter extends GeneralEnter {
+
+    @ApiModelProperty(value = "id")
+    private Long id;
 
     @ApiModelProperty(value = "国家电话代码")
     private String countryCode;
@@ -62,13 +67,9 @@ public class SaveSaleOrderEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.CARD_NUMBER_IS_EMPTY, message = "卡号为空")
     private String cardNum;
 
-    @ApiModelProperty(value = "过期月份")
+    @ApiModelProperty(value = "过期时间")
     @NotNull(code = ValidationExceptionCode.EXPIRED_TIME_IS_EMPTY, message = "过期时间为空")
-    private Integer expiredMonth;
-
-    @ApiModelProperty(value = "过期年分")
-    @NotNull(code = ValidationExceptionCode.EXPIRED_TIME_IS_EMPTY, message = "过期时间为空")
-    private Integer expiredYear;
+    private Date expiredTime;
 
     @ApiModelProperty(value = "cvv")
     @NotNull(code = ValidationExceptionCode.CVV_IS_EMPTY, message = "CVV为空")
