@@ -144,6 +144,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, enter.getSt());
         wrapper.eq(OpeCustomer.COL_DR, 0);
+        wrapper.ne(OpeCustomer.COL_STATUS,CustomerStatusEnum.TRASH_CUSTOMER.getValue());
         Integer count = opeCustomerMapper.selectCount(wrapper);
         return new IntResult(count);
     }

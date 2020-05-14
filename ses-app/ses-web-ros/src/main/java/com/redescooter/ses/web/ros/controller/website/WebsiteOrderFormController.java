@@ -1,11 +1,16 @@
 package com.redescooter.ses.web.ros.controller.website;
 
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
 import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
 import com.redescooter.ses.web.ros.vo.website.SaveOrderFormResult;
@@ -74,6 +79,41 @@ public class WebsiteOrderFormController {
     @ApiOperation(value = "保存预订单", response = SaveOrderFormResult.class)
     public Response<SaveOrderFormResult> saveOrderForm(@ModelAttribute @ApiParam("请求参数") SaveSaleOrderEnter enter) {
         return new Response<>(websiteOrderFormService.saveOrderForm(enter));
+    }
+
+    @WebsiteSignIn
+    @PostMapping(value = "/payDeposit")
+    @ApiOperation(value = "定金支付", response = GeneralResult.class)
+    public Response<GeneralResult> payDeposit(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(websiteOrderFormService.payDeposit(enter));
+    }
+
+    @WebsiteSignIn
+    @PostMapping(value = "/orderForms")
+    @ApiOperation(value = "询价单列表", response = OrderFormResult.class)
+    public Response<List<OrderFormResult>> orderForms(@ModelAttribute @ApiParam("请求参数") OrderFormsEnter enter) {
+        return new Response<>(websiteOrderFormService.orderForms(enter));
+    }
+
+    @WebsiteSignIn
+    @PostMapping(value = "/orderFormInfo")
+    @ApiOperation(value = "询价单详情", response = OrderFormResult.class)
+    public Response<OrderFormResult> orderFormInfo(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(websiteOrderFormService.orderFormInfo(enter));
+    }
+
+    @WebsiteSignIn
+    @PostMapping(value = "/payLastParagraph")
+    @ApiOperation(value = "支付尾款", response = GeneralResult.class)
+    public Response<GeneralResult> payLastParagraph(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(websiteOrderFormService.payLastParagraph(enter));
+    }
+
+    @WebsiteSignIn
+    @PostMapping(value = "/checkMail")
+    @ApiOperation(value = "邮箱校验", response = GeneralResult.class)
+    public Response<BooleanResult> checkMail(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+        return new Response<>(websiteOrderFormService.checkMail(enter));
     }
 
 }

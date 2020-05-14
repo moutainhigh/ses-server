@@ -1,16 +1,24 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerAccessories;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
@@ -20,6 +28,7 @@ import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.impl.OpeCustomerAccessoriesService;
+import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormResult;
@@ -67,6 +76,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private OpeCustomerInquiryBService opeCustomerInquiryBService;
+
+    @Autowired
+    private CustomerRosService customerRosService;
 
     @Reference
     private IdAppService idAppService;
@@ -197,12 +209,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * 定金支付
      *
      * @param enter
-     * @return
-     *
-     * 1、定金支付
+     * @return 1、定金支付
      * 2、询价单 状态 未处理-----》已处理
      * 3、判断当前是否存在 存在-- 车辆数量累加 不存在 客户状态 预定客户---》 潜在客户
-     *
      */
     @Override
     public GeneralResult payDeposit(IdEnter enter) {
@@ -216,7 +225,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @return
      */
     @Override
-    public List<OrderFormResult> orderFormList(OrderFormsEnter enter) {
+    public List<OrderFormResult> orderForms(OrderFormsEnter enter) {
         return null;
     }
 
@@ -227,7 +236,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @return
      */
     @Override
-    public OrderFormResult orderForm(IdEnter enter) {
+    public OrderFormResult orderFormInfo(IdEnter enter) {
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
         if (customerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
@@ -244,6 +253,18 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public GeneralResult payLastParagraph(GeneralEnter enter) {
         return null;
+    }
+
+    /**
+     * 邮箱验证
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public BooleanResult checkMail(StringEnter enter) {
+        IntResult checkMailCount = customerRosService.checkMailCount(enter);
+        return BooleanResult.builder().success(checkMailCount.equals(0) ? Boolean.TRUE : Boolean.FALSE).build();
     }
 
     private OpeCustomerInquiryB buildAccessory(SaveSaleOrderEnter enter, Long id, BigDecimal price, String type) {

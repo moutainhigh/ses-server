@@ -1,8 +1,11 @@
 package com.redescooter.ses.web.ros.service.website;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
@@ -78,7 +81,7 @@ public interface WebsiteOrderFormService {
      * @param enter
      * @return
      */
-    List<OrderFormResult> orderFormList(OrderFormsEnter enter);
+    List<OrderFormResult> orderForms(OrderFormsEnter enter);
 
     /**
      * 订单详情
@@ -86,7 +89,7 @@ public interface WebsiteOrderFormService {
      * @param enter
      * @return
      */
-    OrderFormResult orderForm(IdEnter enter);
+    OrderFormResult orderFormInfo(IdEnter enter);
 
     /**
      * 尾款支付
@@ -95,4 +98,12 @@ public interface WebsiteOrderFormService {
      * @return
      */
     GeneralResult payLastParagraph(GeneralEnter enter);
+
+    /**
+     * email 校验
+     *
+     * @param enter
+     * @return
+     */
+    BooleanResult checkMail(StringEnter enter);
 }

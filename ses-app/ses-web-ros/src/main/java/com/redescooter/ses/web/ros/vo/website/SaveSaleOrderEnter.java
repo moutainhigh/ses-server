@@ -26,9 +26,6 @@ import io.swagger.annotations.*;
 @Builder
 public class SaveSaleOrderEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "询价单id")
-    private Long id;
-
     @ApiModelProperty(value = "国家电话代码")
     private String countryCode;
 
