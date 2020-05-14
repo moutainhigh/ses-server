@@ -31,6 +31,15 @@ spring:
         - 192.168.2.200:7003
         - 192.168.2.200:7004
         - 192.168.2.200:7005
+
+  #rabbitmq配置
+  rabbitmq:
+    host: 192.168.2.200
+    port: 5672
+    username: rede
+    password: Rede@Scooter2019
+    virtual-host: /
+
   # 邮件配置
   mail:
     from: 761291381@qq.com
