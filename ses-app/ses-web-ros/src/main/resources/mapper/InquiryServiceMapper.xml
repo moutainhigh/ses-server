@@ -58,7 +58,8 @@
            inquiry.remarks                                    as remark,
            if(inquiry.status = 3, inquiry.updated_time, null) as acceptanceTime,
            inquiry.company_name                                as companyName,
-           inquiry.country_code                              as countryCode
+           inquiry.country_code                               as countryCode,
+           inquiry.source                                     as source
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">

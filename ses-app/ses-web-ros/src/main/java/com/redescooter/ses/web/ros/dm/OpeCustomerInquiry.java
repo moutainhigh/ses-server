@@ -13,18 +13,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 客户咨询管理
- */
+    * 客户咨询管理
+    */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_customer_inquiry")
 public class OpeCustomerInquiry implements Serializable {
-    public static final String COL_BANKCARDNAME = "bankCardName";
-    public static final String COL_CARDNUM = "cardNum";
-    public static final String COL_EXPIREDTIME = "expiredTime";
-    public static final String COL_POSTALCODE = "postalCode";
     /**
      * id
      */
@@ -158,7 +154,7 @@ public class OpeCustomerInquiry implements Serializable {
     private String contantFullName;
 
     /**
-     * 产品Id
+     * 产品Id 
      */
     @TableField(value = "product_id")
     private Long productId;
@@ -200,28 +196,10 @@ public class OpeCustomerInquiry implements Serializable {
     private String remarks;
 
     /**
-     * 创建人
+     * 来源1 询价单 2预订单
      */
-    @TableField(value = "created_by")
-    private Long createdBy;
-
-    /**
-     * 创建时间
-     */
-    @TableField(value = "created_time")
-    private Date createdTime;
-
-    /**
-     * 更新时间
-     */
-    @TableField(value = "updated_time")
-    private Date updatedTime;
-
-    /**
-     * 更新人
-     */
-    @TableField(value = "updated_by")
-    private Long updatedBy;
+    @TableField(value = "source")
+    private String source;
 
     /**
      * 银行卡上面名字
@@ -252,6 +230,30 @@ public class OpeCustomerInquiry implements Serializable {
      */
     @TableField(value = "postal_code")
     private String postalCode;
+
+    /**
+     * 创建人
+     */
+    @TableField(value = "created_by")
+    private Long createdBy;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "created_time")
+    private Date createdTime;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "updated_time")
+    private Date updatedTime;
+
+    /**
+     * 更新人
+     */
+    @TableField(value = "updated_by")
+    private Long updatedBy;
 
     private static final long serialVersionUID = 1L;
 
@@ -315,13 +317,7 @@ public class OpeCustomerInquiry implements Serializable {
 
     public static final String COL_REMARKS = "remarks";
 
-    public static final String COL_CREATED_BY = "created_by";
-
-    public static final String COL_CREATED_TIME = "created_time";
-
-    public static final String COL_UPDATED_TIME = "updated_time";
-
-    public static final String COL_UPDATED_BY = "updated_by";
+    public static final String COL_SOURCE = "source";
 
     public static final String COL_BANK_CARD_NAME = "bank_card_name";
 
@@ -333,7 +329,11 @@ public class OpeCustomerInquiry implements Serializable {
 
     public static final String COL_POSTAL_CODE = "postal_code";
 
-    public static OpeCustomerInquiryBuilder builder() {
-        return new OpeCustomerInquiryBuilder();
-    }
+    public static final String COL_CREATED_BY = "created_by";
+
+    public static final String COL_CREATED_TIME = "created_time";
+
+    public static final String COL_UPDATED_TIME = "updated_time";
+
+    public static final String COL_UPDATED_BY = "updated_by";
 }

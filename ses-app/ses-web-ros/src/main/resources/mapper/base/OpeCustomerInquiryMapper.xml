@@ -34,15 +34,16 @@
     <result column="scooter_quantity" jdbcType="INTEGER" property="scooterQuantity" />
     <result column="pay_status" jdbcType="VARCHAR" property="payStatus" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
-    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
     <result column="bank_card_name" jdbcType="VARCHAR" property="bankCardName" />
     <result column="cvv" jdbcType="VARCHAR" property="cvv" />
     <result column="expired_time" jdbcType="DATE" property="expiredTime" />
     <result column="card_Num" jdbcType="VARCHAR" property="cardNum" />
     <result column="postal_code" jdbcType="VARCHAR" property="postalCode" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
@@ -50,8 +51,8 @@
     `status`, industry, customer_type, first_name, last_name, full_name, company_name, 
     country_code, telephone, email, address, contact_first, contact_last, contant_full_name, 
     product_id, product_model, product_price, total_price, scooter_quantity, pay_status, 
-    remarks, created_by, created_time, updated_time, updated_by, bank_card_name, cvv, 
-    expired_time, card_Num, postal_code
+    remarks, `source`, bank_card_name, cvv, expired_time, card_Num, postal_code, created_by, 
+    created_time, updated_time, updated_by
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -202,24 +203,9 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.remarks,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="created_by = case" suffix="end,">
+      <trim prefix="`source` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="created_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
-        </foreach>
-      </trim>
-      <trim prefix="updated_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
-        </foreach>
-      </trim>
-      <trim prefix="updated_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.source,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="bank_card_name = case" suffix="end,">
@@ -247,6 +233,26 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.postalCode,jdbcType=VARCHAR}
         </foreach>
       </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
@@ -260,8 +266,8 @@
       `status`, industry, customer_type, first_name, last_name, full_name, company_name, 
       country_code, telephone, email, address, contact_first, contact_last, contant_full_name, 
       product_id, product_model, product_price, total_price, scooter_quantity, pay_status, 
-      remarks, created_by, created_time, updated_time, updated_by, bank_card_name, cvv, 
-      expired_time, card_Num, postal_code)
+      remarks, `source`, bank_card_name, cvv, expired_time, card_Num, postal_code, created_by, 
+      created_time, updated_time, updated_by)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.orderNo,jdbcType=VARCHAR}, 
@@ -274,11 +280,11 @@
         #{item.contactLast,jdbcType=VARCHAR}, #{item.contantFullName,jdbcType=VARCHAR}, 
         #{item.productId,jdbcType=BIGINT}, #{item.productModel,jdbcType=VARCHAR}, #{item.productPrice,jdbcType=DECIMAL}, 
         #{item.totalPrice,jdbcType=DECIMAL}, #{item.scooterQuantity,jdbcType=INTEGER}, 
-        #{item.payStatus,jdbcType=VARCHAR}, #{item.remarks,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.payStatus,jdbcType=VARCHAR}, #{item.remarks,jdbcType=VARCHAR}, #{item.source,jdbcType=VARCHAR}, 
+        #{item.bankCardName,jdbcType=VARCHAR}, #{item.cvv,jdbcType=VARCHAR}, #{item.expiredTime,jdbcType=DATE}, 
+        #{item.cardNum,jdbcType=VARCHAR}, #{item.postalCode,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT}, #{item.bankCardName,jdbcType=VARCHAR}, #{item.cvv,jdbcType=VARCHAR}, 
-        #{item.expiredTime,jdbcType=DATE}, #{item.cardNum,jdbcType=VARCHAR}, #{item.postalCode,jdbcType=VARCHAR}
-        )
+        #{item.updatedBy,jdbcType=BIGINT})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
@@ -288,8 +294,8 @@
       `status`, industry, customer_type, first_name, last_name, full_name, company_name, 
       country_code, telephone, email, address, contact_first, contact_last, contant_full_name, 
       product_id, product_model, product_price, total_price, scooter_quantity, pay_status, 
-      remarks, created_by, created_time, updated_time, updated_by, bank_card_name, cvv, 
-      expired_time, card_Num, postal_code)
+      remarks, `source`, bank_card_name, cvv, expired_time, card_Num, postal_code, created_by, 
+      created_time, updated_time, updated_by)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{customerId,jdbcType=BIGINT}, 
       #{country,jdbcType=BIGINT}, #{city,jdbcType=BIGINT}, #{district,jdbcType=BIGINT}, 
@@ -300,10 +306,11 @@
       #{address,jdbcType=VARCHAR}, #{contactFirst,jdbcType=VARCHAR}, #{contactLast,jdbcType=VARCHAR}, 
       #{contantFullName,jdbcType=VARCHAR}, #{productId,jdbcType=BIGINT}, #{productModel,jdbcType=VARCHAR}, 
       #{productPrice,jdbcType=DECIMAL}, #{totalPrice,jdbcType=DECIMAL}, #{scooterQuantity,jdbcType=INTEGER}, 
-      #{payStatus,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{payStatus,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, 
       #{bankCardName,jdbcType=VARCHAR}, #{cvv,jdbcType=VARCHAR}, #{expiredTime,jdbcType=DATE}, 
-      #{cardNum,jdbcType=VARCHAR}, #{postalCode,jdbcType=VARCHAR})
+      #{cardNum,jdbcType=VARCHAR}, #{postalCode,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}
+      )
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -335,15 +342,16 @@
     scooter_quantity = #{scooterQuantity,jdbcType=INTEGER}, 
     pay_status = #{payStatus,jdbcType=VARCHAR}, 
     remarks = #{remarks,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    `source` = #{source,jdbcType=VARCHAR}, 
     bank_card_name = #{bankCardName,jdbcType=VARCHAR}, 
     cvv = #{cvv,jdbcType=VARCHAR}, 
     expired_time = #{expiredTime,jdbcType=DATE}, 
     card_Num = #{cardNum,jdbcType=VARCHAR}, 
-    postal_code = #{postalCode,jdbcType=VARCHAR}
+    postal_code = #{postalCode,jdbcType=VARCHAR}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
     <!--@mbg.generated-->
@@ -439,17 +447,8 @@
       <if test="remarks != null">
         remarks,
       </if>
-      <if test="createdBy != null">
-        created_by,
-      </if>
-      <if test="createdTime != null">
-        created_time,
-      </if>
-      <if test="updatedTime != null">
-        updated_time,
-      </if>
-      <if test="updatedBy != null">
-        updated_by,
+      <if test="source != null">
+        `source`,
       </if>
       <if test="bankCardName != null">
         bank_card_name,
@@ -465,6 +464,18 @@
       </if>
       <if test="postalCode != null">
         postal_code,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
       </if>
     </trim>
     values
@@ -559,17 +570,8 @@
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
       </if>
-      <if test="createdBy != null">
-        #{createdBy,jdbcType=BIGINT},
-      </if>
-      <if test="createdTime != null">
-        #{createdTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedTime != null">
-        #{updatedTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedBy != null">
-        #{updatedBy,jdbcType=BIGINT},
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR},
       </if>
       <if test="bankCardName != null">
         #{bankCardName,jdbcType=VARCHAR},
@@ -585,6 +587,18 @@
       </if>
       <if test="postalCode != null">
         #{postalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
       </if>
     </trim>
     on duplicate key update 
@@ -679,17 +693,8 @@
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
-      <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=BIGINT},
-      </if>
-      <if test="createdTime != null">
-        created_time = #{createdTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedTime != null">
-        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=BIGINT},
+      <if test="source != null">
+        `source` = #{source,jdbcType=VARCHAR},
       </if>
       <if test="bankCardName != null">
         bank_card_name = #{bankCardName,jdbcType=VARCHAR},
@@ -705,6 +710,18 @@
       </if>
       <if test="postalCode != null">
         postal_code = #{postalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>

@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
+import com.redescooter.ses.web.ros.vo.website.CustomerInfoResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormInfoResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
@@ -114,4 +115,12 @@ public interface WebsiteOrderFormService {
      * @return
      */
     BooleanResult checkMail(StringEnter enter);
+
+    /**
+     * 客户信息
+     *
+     * @param enter
+     * @return
+     */
+    CustomerInfoResult customerInfo(GeneralEnter enter);
 }

@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.website.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
+import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
@@ -12,7 +13,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -31,6 +31,7 @@ import com.redescooter.ses.web.ros.service.base.impl.OpeCustomerAccessoriesServi
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
+import com.redescooter.ses.web.ros.vo.website.CustomerInfoResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormInfoResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
@@ -42,7 +43,6 @@ import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,9 +154,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
         //后备箱 校验
-        OpeCustomerAccessories topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
-        if (topCase == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
+        OpeCustomerAccessories topCase=null;
+        if (enter.getBuyTopCase()){
+             topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
+            if (topCase == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
+            }
         }
 
         //电池的校验
@@ -176,7 +179,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //总价格计算
         BigDecimal totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty())));
 
-        if (enter.getTopCaseId() != 0 && enter.getTopCaseId() != null) {
+        if (enter.getBuyTopCase()) {
             totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty()))).add(topCase.getPrice());
         }
 
@@ -186,7 +189,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setCreatedTime(new Date());
 
         //生成子订单
-        if (enter.getTopCaseId() != 0 && enter.getTopCaseId() != null) {
+        if (enter.getBuyTopCase()) {
             //后备箱形成子表记录
             opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), topCase.getPrice(), AccessoryTypeEnums.TOP_CASE.getValue()));
         }
@@ -211,9 +214,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter) {
         //后备箱 校验
-        OpeCustomerAccessories topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
-        if (topCase == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
+        OpeCustomerAccessories topCase=null;
+        if (enter.getBuyTopCase()){
+            topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
+            if (topCase == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
+            }
         }
 
         //电池的校验
@@ -233,7 +239,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //总价格计算
         BigDecimal totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty())));
 
-        if (enter.getTopCaseId() != 0 && enter.getTopCaseId() != null) {
+        if (enter.getBuyTopCase()) {
             totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty()))).add(topCase.getPrice());
         }
         //生成主订单
@@ -242,7 +248,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setCreatedTime(new Date());
 
         //生成子订单
-        if (enter.getTopCaseId() != 0 && enter.getTopCaseId() != null) {
+        if (enter.getBuyTopCase()) {
             //后备箱形成子表记录
             opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), topCase.getPrice(), AccessoryTypeEnums.TOP_CASE.getValue()));
         }
@@ -296,6 +302,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setCountryCode(enter.getCountryCode());
         opeCustomerInquiry.setTelephone(enter.getPhone());
         opeCustomerInquiry.setBankCardName(enter.getBankCardName());
+        opeCustomerInquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
         opeCustomerInquiry.setCardNum(enter.getCardNum());
         opeCustomerInquiry.setExpiredTime(DateUtil.timeStampToDate(enter.getExpiredTime(),DateUtil.UTC));
         opeCustomerInquiry.setCvv(enter.getCvv());
@@ -397,6 +404,26 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     public BooleanResult checkMail(StringEnter enter) {
         IntResult checkMailCount = customerRosService.checkMailCount(enter);
         return BooleanResult.builder().success(checkMailCount.getValue() == 0 ? Boolean.TRUE : Boolean.FALSE).build();
+    }
+
+    /**
+     * 客户信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public CustomerInfoResult customerInfo(GeneralEnter enter) {
+        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        if (opeCustomer==null){
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        return CustomerInfoResult.builder()
+                .id(opeCustomer.getId())
+                .email(opeCustomer.getEmail())
+                .firstName(opeCustomer.getCustomerFirstName())
+                .lastName(opeCustomer.getCustomerLastName())
+                .build();
     }
 
     private OpeCustomerInquiryB buildAccessory(SaveSaleOrderEnter enter, Long id, BigDecimal price, String type) {

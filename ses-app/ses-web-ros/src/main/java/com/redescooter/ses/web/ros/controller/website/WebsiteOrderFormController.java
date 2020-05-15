@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
+import com.redescooter.ses.web.ros.vo.website.CustomerInfoResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormInfoResult;
 import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
@@ -124,4 +125,10 @@ public class WebsiteOrderFormController {
         return new Response<>(websiteOrderFormService.checkMail(enter));
     }
 
+    @WebsiteSignIn
+    @PostMapping(value = "/customerInfo")
+    @ApiOperation(value = "客户信息", response = CustomerInfoResult.class)
+    public Response<CustomerInfoResult> customerInfo(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(websiteOrderFormService.customerInfo(enter));
+    }
 }

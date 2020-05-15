@@ -62,8 +62,10 @@ public class SaveSaleOrderEnter extends GeneralEnter {
     @ApiModelProperty(value = "配件数量")
     private Integer accessoryBatteryQty;
 
+    @ApiModelProperty(value = "是否购买后备箱")
+    private Boolean buyTopCase;
+
     @ApiModelProperty(value = "后备箱Id")
-    @NotNull(code = ValidationExceptionCode.TOPCASE_ID_IS_EMPTY, message = "后备箱Id 为空")
     private Long topCaseId;
 
     @ApiModelProperty(value = "银行卡名称")

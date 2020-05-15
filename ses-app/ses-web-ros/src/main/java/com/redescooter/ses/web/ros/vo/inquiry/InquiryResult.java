@@ -86,6 +86,9 @@ public class InquiryResult extends GeneralResult {
     @ApiModelProperty(value = "备注")
     private String remark;
 
+    @ApiModelProperty(value = "单据来源")
+    private String source;
+
     @ApiModelProperty(value = "接受时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
