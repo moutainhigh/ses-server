@@ -150,7 +150,7 @@ public interface ValidationExceptionCode {
     int PROCESSCOST_RATIO_IS_EMPTY = 10094;
     //质检模板为空
     int QC_TEMPLATE_IS_EMPTY = 10095;
-    //电池Id 为空
+    //电池Id为空
     int BATTERY_ID_IS_EMPTY = 10096;
     //后备箱Id
     int TOPCASE_ID_IS_EMPTY = 10097;
@@ -162,8 +162,8 @@ public interface ValidationExceptionCode {
     int CARD_NUMBER_IS_EMPTY = 10100;
     //过期时间
     int EXPIRED_TIME_IS_EMPTY = 10101;
-    //CVV 为空
+    //CVV为空
     int CVV_IS_EMPTY = 10102;
-    //安全码为空
+    //邮编为空
     int POSTAL_CODE_IS_EMPTY=10103;
 }

@@ -82,7 +82,7 @@ public class SaveSaleOrderEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.CVV_IS_EMPTY, message = "CVV为空")
     private String cvv;
 
-    @ApiModelProperty(value = "安全码")
-    @NotNull(code = ValidationExceptionCode.POSTAL_CODE_IS_EMPTY, message = "安全码为空")
+    @ApiModelProperty(value = "邮编")
+    @NotNull(code = ValidationExceptionCode.POSTAL_CODE_IS_EMPTY, message = "邮编为空")
     private String postalCode;
 }

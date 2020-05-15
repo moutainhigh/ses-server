@@ -70,6 +70,6 @@ public class OrderFormInfoResult extends GeneralResult {
     @ApiModelProperty(value = "cvv")
     private String cvv;
 
-    @ApiModelProperty(value = "安全码")
+    @ApiModelProperty(value = "邮编")
     private String postalCode;
 }
