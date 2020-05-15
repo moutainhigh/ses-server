@@ -73,18 +73,18 @@ public class SaveSaleOrderEnter extends GeneralEnter {
     private String bankCardName;
 
     @ApiModelProperty(value = "卡号")
-    @NotNull(code = ValidationExceptionCode.CARD_NUMBER_IS_EMPTY, message = "卡号为空")
+    //@NotNull(code = ValidationExceptionCode.CARD_NUMBER_IS_EMPTY, message = "卡号为空")
     private String cardNum;
 
     @ApiModelProperty(value = "过期时间")
-    @NotNull(code = ValidationExceptionCode.EXPIRED_TIME_IS_EMPTY, message = "过期时间为空")
+    //@NotNull(code = ValidationExceptionCode.EXPIRED_TIME_IS_EMPTY, message = "过期时间为空")
     private Long expiredTime;
 
     @ApiModelProperty(value = "cvv")
-    @NotNull(code = ValidationExceptionCode.CVV_IS_EMPTY, message = "CVV为空")
+    //@NotNull(code = ValidationExceptionCode.CVV_IS_EMPTY, message = "CVV为空")
     private String cvv;
 
     @ApiModelProperty(value = "邮编")
-    @NotNull(code = ValidationExceptionCode.POSTAL_CODE_IS_EMPTY, message = "邮编为空")
+    //@NotNull(code = ValidationExceptionCode.POSTAL_CODE_IS_EMPTY, message = "邮编为空")
     private String postalCode;
 }

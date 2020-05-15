@@ -154,9 +154,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
         //后备箱 校验
-        OpeCustomerAccessories topCase=null;
-        if (enter.getBuyTopCase()){
-             topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
+        OpeCustomerAccessories topCase = null;
+        if (enter.getBuyTopCase()) {
+            topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
             if (topCase == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
             }
@@ -214,8 +214,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter) {
         //后备箱 校验
-        OpeCustomerAccessories topCase=null;
-        if (enter.getBuyTopCase()){
+        OpeCustomerAccessories topCase = null;
+        if (enter.getBuyTopCase()) {
             topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
             if (topCase == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
@@ -303,10 +303,10 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setTelephone(enter.getPhone());
         opeCustomerInquiry.setBankCardName(enter.getBankCardName());
         opeCustomerInquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
-        opeCustomerInquiry.setCardNum(enter.getCardNum());
-        opeCustomerInquiry.setExpiredTime(DateUtil.timeStampToDate(enter.getExpiredTime(),DateUtil.UTC));
-        opeCustomerInquiry.setCvv(enter.getCvv());
-        opeCustomerInquiry.setPostalCode(enter.getPostalCode());
+        opeCustomerInquiry.setCardNum(StringUtils.isEmpty(enter.getCardNum()) ? null : enter.getCardNum());
+        opeCustomerInquiry.setExpiredTime(enter.getExpiredTime() != null && enter.getExpiredTime() != 0 ? DateUtil.timeStampToDate(enter.getExpiredTime(), DateUtil.UTC) : null);
+        opeCustomerInquiry.setCvv(StringUtils.isBlank(enter.getCvv()) ? null : enter.getCvv());
+        opeCustomerInquiry.setPostalCode(StringUtils.isBlank(enter.getPostalCode()) ? null : enter.getPostalCode());
         opeCustomerInquiry.setUpdatedBy(enter.getUserId());
         opeCustomerInquiry.setUpdatedTime(new Date());
         return opeCustomerInquiry;
@@ -415,8 +415,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public CustomerInfoResult customerInfo(GeneralEnter enter) {
         OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
-        if (opeCustomer==null){
-            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         return CustomerInfoResult.builder()
                 .id(opeCustomer.getId())
