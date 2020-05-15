@@ -879,7 +879,10 @@ public class DateUtil {
     public static Date timeStampToDate(Long timeStamp,String timeZone) {
         TimeZone tz = TimeZone.getTimeZone(timeZone);
         TimeZone.setDefault(tz);
-        long longTimeStamp = new Long(timeStamp * 1000);
-        return new Date(longTimeStamp);
+        return new Date(timeStamp);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(timeStampToDate(2553436800000L,UTC));
     }
 }

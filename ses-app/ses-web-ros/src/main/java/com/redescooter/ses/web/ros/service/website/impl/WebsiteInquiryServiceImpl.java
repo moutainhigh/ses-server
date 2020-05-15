@@ -304,7 +304,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setBankCardName(enter.getBankCardName());
         opeCustomerInquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
         opeCustomerInquiry.setCardNum(StringUtils.isEmpty(enter.getCardNum()) ? null : enter.getCardNum());
-        opeCustomerInquiry.setExpiredTime(enter.getExpiredTime() != null && enter.getExpiredTime() != 0 ? DateUtil.timeStampToDate(enter.getExpiredTime(), DateUtil.UTC) : null);
+        opeCustomerInquiry.setExpiredTime(enter.getExpiredTime() != null && enter.getExpiredTime() != 0 ? DateUtil.timeStampToDate(enter.getExpiredTime(),DateUtil.UTC) : null);
         opeCustomerInquiry.setCvv(StringUtils.isBlank(enter.getCvv()) ? null : enter.getCvv());
         opeCustomerInquiry.setPostalCode(StringUtils.isBlank(enter.getPostalCode()) ? null : enter.getPostalCode());
         opeCustomerInquiry.setUpdatedBy(enter.getUserId());
