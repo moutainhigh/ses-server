@@ -53,6 +53,14 @@ spring:
       force: true
       charset: UTF-8
       enabled: true
+
+  #rabbitmq配置
+  rabbitmq:
+    listener:
+      simple:
+        concurrency: 10
+        max-concurrency: 10
+        prefetch: 1
   #REDIS集群配置
   redis:
     cluster:
