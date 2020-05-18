@@ -107,7 +107,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     }
 
     /**
-     * 车辆型号
+     * 车辆列表
      *
      * @param enter
      * @return
@@ -174,6 +174,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
+        //电池要求过滤
+        checkBatteryQty(enter, product);
+
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
         //总价格计算
@@ -204,7 +207,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
 
-
     /**
      * 修改 预订单
      *
@@ -233,6 +235,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
+
+        //电池要求过滤
+        checkBatteryQty(enter, product);
 
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
@@ -306,7 +311,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setBankCardName(enter.getBankCardName());
         opeCustomerInquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
         opeCustomerInquiry.setCardNum(StringUtils.isEmpty(enter.getCardNum()) ? null : enter.getCardNum());
-        opeCustomerInquiry.setExpiredTime(enter.getExpiredTime() != null && enter.getExpiredTime() != 0 ? DateUtil.timeStampToDate(enter.getExpiredTime(),DateUtil.UTC) : null);
+        opeCustomerInquiry.setExpiredTime(enter.getExpiredTime() != null && enter.getExpiredTime() != 0 ? DateUtil.timeStampToDate(enter.getExpiredTime(), DateUtil.UTC) : null);
         opeCustomerInquiry.setCvv(StringUtils.isBlank(enter.getCvv()) ? null : enter.getCvv());
         opeCustomerInquiry.setPostalCode(StringUtils.isBlank(enter.getPostalCode()) ? null : enter.getPostalCode());
         opeCustomerInquiry.setUpdatedBy(enter.getUserId());
@@ -443,5 +448,31 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiryB.setUpdatedBy(enter.getUserId());
         opeCustomerInquiryB.setUpdatedTime(new Date());
         return opeCustomerInquiryB;
+    }
+
+    /**
+     * 校验电池数量
+     *
+     * @param enter
+     * @param product
+     */
+    private void checkBatteryQty(SaveSaleOrderEnter enter, ProductResult product) {
+        switch (product.getProductModel()) {
+            case "1":
+                if (enter.getAccessoryBatteryQty() < 1) {
+                    throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
+                }
+                break;
+            case "2":
+                if (enter.getAccessoryBatteryQty() < 2) {
+                    throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
+                }
+                break;
+            case "3":
+                if (enter.getAccessoryBatteryQty() < 4) {
+                    throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
+                }
+                break;
+        }
     }
 }
