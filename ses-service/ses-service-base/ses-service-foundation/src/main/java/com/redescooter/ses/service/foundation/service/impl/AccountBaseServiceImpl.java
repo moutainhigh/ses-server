@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.MaggessConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
@@ -26,6 +27,7 @@ import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
+import com.redescooter.ses.api.foundation.vo.account.CheckOpenAccountEnter;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
@@ -955,6 +957,22 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public QueryAccountResult customerAccountDeatil(String email) {
         return accountBaseServiceMapper.customerAccountDeatil(email, customerTypeList());
+    }
+
+    /**
+     * 校验账户是否已经激活
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public BooleanResult checkOpenAccount(CheckOpenAccountEnter enter) {
+
+        PlaUser plaUser = plaUserMapper.selectOne(new LambdaQueryWrapper<PlaUser>().eq(PlaUser::getUserType, enter.getAccountType()).eq(PlaUser::getLoginName, enter.getEmail()));
+        if (plaUser == null) {
+            return BooleanResult.builder().success(Boolean.FALSE).build();
+        }
+        return BooleanResult.builder().success(plaUser.getActivationTime()==null ? Boolean.FALSE:Boolean.TRUE).build();
     }
 
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {

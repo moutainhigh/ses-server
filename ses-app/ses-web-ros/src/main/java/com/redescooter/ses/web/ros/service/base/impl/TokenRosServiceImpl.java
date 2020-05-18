@@ -29,6 +29,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
@@ -62,6 +63,9 @@ public class TokenRosServiceImpl implements TokenRosService {
     private OpeSysUserProfileMapper sysUserProfileMapper;
     @Autowired
     private OpeSysUserRoleService sysUserRoleService;
+
+    @Autowired
+    private OpeSysUserService opeSysUserService;
     @Reference
     private IdAppService idAppService;
 
@@ -174,6 +178,10 @@ public class TokenRosServiceImpl implements TokenRosService {
         if (!StringUtils.equals(userToken.getClientType(), enter.getClientType()) || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId()) || !StringUtils.equals(userToken.getAppId(),
                 enter.getAppId())) {
             throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        OpeSysUser opeSysUser = opeSysUserService.getById(userToken.getUserId());
+        if (opeSysUser == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         return userToken;
     }

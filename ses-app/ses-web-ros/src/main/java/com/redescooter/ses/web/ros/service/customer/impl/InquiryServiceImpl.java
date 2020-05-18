@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -236,6 +237,7 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setDistrict(enter.getDistrustId());
         opeCustomerInquiry.setCustomerSource("");
         opeCustomerInquiry.setSalesId(0L);
+        opeCustomerInquiry.setSource(InquirySourceEnums.INQUIRY.getValue());
         opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPROCESSED.getValue());
         if (CustomerIndustryEnums.getIndustryEnumByValue(enter.getIndustryType()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());

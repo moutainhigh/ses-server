@@ -18,3 +18,4 @@ public interface OpeStockProdProductService extends IService<OpeStockProdProduct
     int insertOrUpdateSelective(OpeStockProdProduct record);
 
 }
+

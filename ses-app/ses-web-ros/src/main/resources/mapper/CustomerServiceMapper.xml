@@ -58,6 +58,7 @@
         select count(*)
         from ope_customer
         where dr = 0
+        and status!=4
         <if test="customerType != null and customerType != ''">
             and customer_type =#{customerType}
         </if>
@@ -93,6 +94,7 @@
         industry_type as industryType
         from ope_customer
         where dr = 0
+        and status!=4
         <if test="customerType != null and customerType != ''">
             and customer_type =#{customerType}
         </if>

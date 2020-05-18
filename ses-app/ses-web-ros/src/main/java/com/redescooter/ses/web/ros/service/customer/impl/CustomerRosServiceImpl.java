@@ -26,6 +26,7 @@ import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
+import com.redescooter.ses.api.foundation.vo.account.CheckOpenAccountEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
@@ -144,6 +145,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, enter.getSt());
         wrapper.eq(OpeCustomer.COL_DR, 0);
+        wrapper.ne(OpeCustomer.COL_STATUS, CustomerStatusEnum.TRASH_CUSTOMER.getValue());
         Integer count = opeCustomerMapper.selectCount(wrapper);
         return new IntResult(count);
     }
@@ -158,7 +160,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult save(CreateCustomerEnter enter) {
         //邮箱去空格
-        if (StringUtils.isNotEmpty(enter.getEmail())){
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
             enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
         }
 
@@ -232,7 +234,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public GeneralResult edit(EditCustomerEnter enter) {
 
         //邮箱去空格
-        if (StringUtils.isNotEmpty(enter.getEmail())){
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
             enter.setEmail(StringUtils.trim(enter.getEmail()));
         }
 
@@ -323,14 +325,22 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             }
         }
 
-        //验证是否可以再次发生邮件
-        Boolean exists = jedisCluster.exists(new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString());
-        if (exists) {
-            Long ttl = jedisCluster.ttl(new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString());
-            result.setTtl(ttl);
+        Integer accountType = AccountTypeUtils.getAccountType(opeCustomer.getCustomerType(), opeCustomer.getIndustryType());
+        BooleanResult booleanResult = accountBaseService.checkOpenAccount(CheckOpenAccountEnter.builder().accountType(accountType).email(opeCustomer.getEmail()).build());
+        //账号已激活 不在发送邮件
+        if (booleanResult.isSuccess()) {
+            result.setTtl(null);
         } else {
-            result.setTtl(new Long(0));
+            //验证是否可以再次发生邮件
+            Boolean exists = jedisCluster.exists(new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString());
+            if (exists) {
+                Long ttl = jedisCluster.ttl(new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString());
+                result.setTtl(ttl);
+            } else {
+                result.setTtl(new Long(0));
+            }
         }
+
 
         // 信息完善度 计算
         result.setInformationPerfectionNum(checkCustomerInformation(opeCustomer));
@@ -769,10 +779,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public GeneralResult customerSetPassword(SetPasswordEnter enter) {
 
         //密码去空格
-        if (StringUtils.isNotEmpty(enter.getNewPassword())){
+        if (StringUtils.isNotEmpty(enter.getNewPassword())) {
             enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         }
-        if (StringUtils.isNotEmpty(enter.getConfirmPassword())){
+        if (StringUtils.isNotEmpty(enter.getConfirmPassword())) {
             enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
         }
 
@@ -816,12 +826,17 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (userList == null || userList.size() == 0) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
+        //获取账户类型
+        Integer accountType = AccountTypeUtils.getAccountType(customer.getCustomerType(), customer.getIndustryType());
+        BooleanResult booleanResult = accountBaseService.checkOpenAccount(CheckOpenAccountEnter.builder().accountType(accountType).email(customer.getEmail()).build());
+        if (booleanResult.isSuccess()){
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_ALRADY_ACTIVATION.getCode(),ExceptionCodeEnums.ACCOUNT_IS_ALRADY_ACTIVATION.getMessage());
+        }
+
         //验证是否可以再次发生邮件
         if (jedisCluster.exists(new StringBuffer().append("send::").append(customer.getEmail()).toString())) {
             return new BooleanResult(true);
         }
-        //获取账户类型
-        Integer accountType = AccountTypeUtils.getAccountType(customer.getCustomerType(), customer.getIndustryType());
         long userId = 0;
         for (BaseUserResult userResult : userList) {
             if (userResult.getUserType().equals(accountType)) {
@@ -991,7 +1006,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         //企业独有信息
         if (StringUtils.equals(customer.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
-            result+=5;
+            result += 5;
             if (StringUtils.isNotEmpty(customer.getCompanyName())) {
                 count++;
             }
@@ -1011,7 +1026,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         //个人信息
         if (StringUtils.equals(customer.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
-            result+=2;
+            result += 2;
             if (StringUtils.isNotEmpty(customer.getCustomerFirstName())) {
                 count++;
             }

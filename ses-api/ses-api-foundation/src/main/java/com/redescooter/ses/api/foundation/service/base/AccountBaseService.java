@@ -2,11 +2,13 @@ package com.redescooter.ses.api.foundation.service.base;
 
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.foundation.vo.account.CheckOpenAccountEnter;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
@@ -34,6 +36,7 @@ public interface AccountBaseService {
 
     /**
      * 用户昵称验证
+     *
      * @param nickname
      * @return
      */
@@ -156,4 +159,12 @@ public interface AccountBaseService {
      * @return
      */
     QueryAccountResult customerAccountDeatil(String email);
+
+    /**
+     * 校验账户是否已经激活
+     *
+     * @param enter
+     * @return
+     */
+    BooleanResult checkOpenAccount(CheckOpenAccountEnter enter);
 }

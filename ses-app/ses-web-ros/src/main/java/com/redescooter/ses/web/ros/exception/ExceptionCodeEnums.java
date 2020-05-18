@@ -72,6 +72,8 @@ public enum ExceptionCodeEnums {
 
     DATA_EXCEPTION(10027, "参数数据异常或格式错误"),
 
+    ACCOUNT_IS_ALRADY_ACTIVATION(10028,"账户已经激活不可重复激活"),
+
     //30之后是业务错误码
     FIRST_NAME_CANNOT_EMPTY(10030, "名字不能为空"),
 
@@ -255,7 +257,13 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_IS_ALREADY_EXIST(10120, "车牌号已经存在"),
 
-    CUSTOMER_IS_NOT_NEED_ALLOCATION_SCOOTER(10121,"客户无需分配车辆"),
+    CUSTOMER_IS_NOT_NEED_ALLOCATION_SCOOTER(10121, "客户无需分配车辆"),
+
+    PART_HISTROY_TRACE_IS_NOT_EXIST(10122, "部件记录不存在"),
+
+    TOP_CASE_IS_NOT_EXIST(10123, "后备箱不存在"),
+
+    BATTERY_IS_NOT_EXIST(10124, "电池不存在"),
     ;
 
 

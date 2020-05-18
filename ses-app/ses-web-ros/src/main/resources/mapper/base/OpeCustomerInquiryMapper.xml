@@ -6,6 +6,7 @@
     <!--@Table ope_customer_inquiry-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="country" jdbcType="BIGINT" property="country" />
     <result column="city" jdbcType="BIGINT" property="city" />
@@ -26,25 +27,32 @@
     <result column="contact_first" jdbcType="VARCHAR" property="contactFirst" />
     <result column="contact_last" jdbcType="VARCHAR" property="contactLast" />
     <result column="contant_full_name" jdbcType="VARCHAR" property="contantFullName" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
     <result column="scooter_quantity" jdbcType="INTEGER" property="scooterQuantity" />
+    <result column="pay_status" jdbcType="VARCHAR" property="payStatus" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="bank_card_name" jdbcType="VARCHAR" property="bankCardName" />
+    <result column="cvv" jdbcType="VARCHAR" property="cvv" />
+    <result column="expired_time" jdbcType="DATE" property="expiredTime" />
+    <result column="card_Num" jdbcType="VARCHAR" property="cardNum" />
+    <result column="postal_code" jdbcType="VARCHAR" property="postalCode" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-    <result column="def1" jdbcType="VARCHAR" property="def1" />
-    <result column="def2" jdbcType="VARCHAR" property="def2" />
-    <result column="def3" jdbcType="VARCHAR" property="def3" />
-    <result column="def5" jdbcType="VARCHAR" property="def5" />
-    <result column="def6" jdbcType="DOUBLE" property="def6" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, customer_id, country, city, district, customer_source, sales_id, `status`, 
-    industry, customer_type, first_name, last_name, full_name, company_name, country_code, 
-    telephone, email, address, contact_first, contact_last, contant_full_name, scooter_quantity, 
-    remarks, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
-    def6
+    id, dr, order_no, customer_id, country, city, district, customer_source, sales_id, 
+    `status`, industry, customer_type, first_name, last_name, full_name, company_name, 
+    country_code, telephone, email, address, contact_first, contact_last, contant_full_name, 
+    product_id, product_model, product_price, total_price, scooter_quantity, pay_status, 
+    remarks, `source`, bank_card_name, cvv, expired_time, card_Num, postal_code, created_by, 
+    created_time, updated_time, updated_by
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -53,6 +61,11 @@
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="order_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.orderNo,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="customer_id = case" suffix="end,">
@@ -155,14 +168,69 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.contantFullName,jdbcType=VARCHAR}
         </foreach>
       </trim>
+      <trim prefix="product_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="product_model = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productModel,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="product_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productPrice,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="total_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.totalPrice,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
       <trim prefix="scooter_quantity = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.scooterQuantity,jdbcType=INTEGER}
         </foreach>
       </trim>
+      <trim prefix="pay_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.payStatus,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
       <trim prefix="remarks = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.remarks,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`source` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.source,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="bank_card_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.bankCardName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="cvv = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.cvv,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="expired_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.expiredTime,jdbcType=DATE}
+        </foreach>
+      </trim>
+      <trim prefix="card_Num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.cardNum,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="postal_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.postalCode,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
@@ -175,39 +243,14 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
-      <trim prefix="updated_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
-        </foreach>
-      </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
-      <trim prefix="def1 = case" suffix="end,">
+      <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def2 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def3 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def5 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def6 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
     </trim>
@@ -219,50 +262,59 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_customer_inquiry
-    (id, dr, customer_id, country, city, district, customer_source, sales_id, `status`, 
-      industry, customer_type, first_name, last_name, full_name, company_name, country_code, 
-      telephone, email, address, contact_first, contact_last, contant_full_name, scooter_quantity, 
-      remarks, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def5, def6)
+    (id, dr, order_no, customer_id, country, city, district, customer_source, sales_id, 
+      `status`, industry, customer_type, first_name, last_name, full_name, company_name, 
+      country_code, telephone, email, address, contact_first, contact_last, contant_full_name, 
+      product_id, product_model, product_price, total_price, scooter_quantity, pay_status, 
+      remarks, `source`, bank_card_name, cvv, expired_time, card_Num, postal_code, created_by, 
+      created_time, updated_time, updated_by)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.customerId,jdbcType=BIGINT}, 
-        #{item.country,jdbcType=BIGINT}, #{item.city,jdbcType=BIGINT}, #{item.district,jdbcType=BIGINT}, 
-        #{item.customerSource,jdbcType=VARCHAR}, #{item.salesId,jdbcType=BIGINT}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.industry,jdbcType=VARCHAR}, #{item.customerType,jdbcType=VARCHAR}, #{item.firstName,jdbcType=VARCHAR}, 
-        #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR}, 
-        #{item.countryCode,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 
-        #{item.address,jdbcType=VARCHAR}, #{item.contactFirst,jdbcType=VARCHAR}, #{item.contactLast,jdbcType=VARCHAR}, 
-        #{item.contantFullName,jdbcType=VARCHAR}, #{item.scooterQuantity,jdbcType=INTEGER}, 
-        #{item.remarks,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
-        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
-        #{item.def6,jdbcType=DOUBLE})
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.orderNo,jdbcType=VARCHAR}, 
+        #{item.customerId,jdbcType=BIGINT}, #{item.country,jdbcType=BIGINT}, #{item.city,jdbcType=BIGINT}, 
+        #{item.district,jdbcType=BIGINT}, #{item.customerSource,jdbcType=VARCHAR}, #{item.salesId,jdbcType=BIGINT}, 
+        #{item.status,jdbcType=VARCHAR}, #{item.industry,jdbcType=VARCHAR}, #{item.customerType,jdbcType=VARCHAR}, 
+        #{item.firstName,jdbcType=VARCHAR}, #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, 
+        #{item.companyName,jdbcType=VARCHAR}, #{item.countryCode,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, 
+        #{item.email,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, #{item.contactFirst,jdbcType=VARCHAR}, 
+        #{item.contactLast,jdbcType=VARCHAR}, #{item.contantFullName,jdbcType=VARCHAR}, 
+        #{item.productId,jdbcType=BIGINT}, #{item.productModel,jdbcType=VARCHAR}, #{item.productPrice,jdbcType=DECIMAL}, 
+        #{item.totalPrice,jdbcType=DECIMAL}, #{item.scooterQuantity,jdbcType=INTEGER}, 
+        #{item.payStatus,jdbcType=VARCHAR}, #{item.remarks,jdbcType=VARCHAR}, #{item.source,jdbcType=VARCHAR}, 
+        #{item.bankCardName,jdbcType=VARCHAR}, #{item.cvv,jdbcType=VARCHAR}, #{item.expiredTime,jdbcType=DATE}, 
+        #{item.cardNum,jdbcType=VARCHAR}, #{item.postalCode,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
     <!--@mbg.generated-->
     insert into ope_customer_inquiry
-    (id, dr, customer_id, country, city, district, customer_source, sales_id, `status`, 
-      industry, customer_type, first_name, last_name, full_name, company_name, country_code, 
-      telephone, email, address, contact_first, contact_last, contant_full_name, scooter_quantity, 
-      remarks, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def5, def6)
+    (id, dr, order_no, customer_id, country, city, district, customer_source, sales_id, 
+      `status`, industry, customer_type, first_name, last_name, full_name, company_name, 
+      country_code, telephone, email, address, contact_first, contact_last, contant_full_name, 
+      product_id, product_model, product_price, total_price, scooter_quantity, pay_status, 
+      remarks, `source`, bank_card_name, cvv, expired_time, card_Num, postal_code, created_by, 
+      created_time, updated_time, updated_by)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{customerId,jdbcType=BIGINT}, #{country,jdbcType=BIGINT}, 
-      #{city,jdbcType=BIGINT}, #{district,jdbcType=BIGINT}, #{customerSource,jdbcType=VARCHAR}, 
-      #{salesId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{industry,jdbcType=VARCHAR}, 
-      #{customerType,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR}, #{lastName,jdbcType=VARCHAR}, 
-      #{fullName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR}, 
-      #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{contactFirst,jdbcType=VARCHAR}, #{contactLast,jdbcType=VARCHAR}, #{contantFullName,jdbcType=VARCHAR}, 
-      #{scooterQuantity,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
-      #{def6,jdbcType=DOUBLE})
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{customerId,jdbcType=BIGINT}, 
+      #{country,jdbcType=BIGINT}, #{city,jdbcType=BIGINT}, #{district,jdbcType=BIGINT}, 
+      #{customerSource,jdbcType=VARCHAR}, #{salesId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, 
+      #{industry,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR}, 
+      #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{countryCode,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{contactFirst,jdbcType=VARCHAR}, #{contactLast,jdbcType=VARCHAR}, 
+      #{contantFullName,jdbcType=VARCHAR}, #{productId,jdbcType=BIGINT}, #{productModel,jdbcType=VARCHAR}, 
+      #{productPrice,jdbcType=DECIMAL}, #{totalPrice,jdbcType=DECIMAL}, #{scooterQuantity,jdbcType=INTEGER}, 
+      #{payStatus,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, 
+      #{bankCardName,jdbcType=VARCHAR}, #{cvv,jdbcType=VARCHAR}, #{expiredTime,jdbcType=DATE}, 
+      #{cardNum,jdbcType=VARCHAR}, #{postalCode,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}
+      )
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
+    order_no = #{orderNo,jdbcType=VARCHAR}, 
     customer_id = #{customerId,jdbcType=BIGINT}, 
     country = #{country,jdbcType=BIGINT}, 
     city = #{city,jdbcType=BIGINT}, 
@@ -283,17 +335,23 @@
     contact_first = #{contactFirst,jdbcType=VARCHAR}, 
     contact_last = #{contactLast,jdbcType=VARCHAR}, 
     contant_full_name = #{contantFullName,jdbcType=VARCHAR}, 
+    product_id = #{productId,jdbcType=BIGINT}, 
+    product_model = #{productModel,jdbcType=VARCHAR}, 
+    product_price = #{productPrice,jdbcType=DECIMAL}, 
+    total_price = #{totalPrice,jdbcType=DECIMAL}, 
     scooter_quantity = #{scooterQuantity,jdbcType=INTEGER}, 
+    pay_status = #{payStatus,jdbcType=VARCHAR}, 
     remarks = #{remarks,jdbcType=VARCHAR}, 
+    `source` = #{source,jdbcType=VARCHAR}, 
+    bank_card_name = #{bankCardName,jdbcType=VARCHAR}, 
+    cvv = #{cvv,jdbcType=VARCHAR}, 
+    expired_time = #{expiredTime,jdbcType=DATE}, 
+    card_Num = #{cardNum,jdbcType=VARCHAR}, 
+    postal_code = #{postalCode,jdbcType=VARCHAR}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
     updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def5 = #{def5,jdbcType=VARCHAR}, 
-    def6 = #{def6,jdbcType=DOUBLE}
+    updated_by = #{updatedBy,jdbcType=BIGINT}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
     <!--@mbg.generated-->
@@ -304,6 +362,9 @@
       </if>
       <if test="dr != null">
         dr,
+      </if>
+      <if test="orderNo != null">
+        order_no,
       </if>
       <if test="customerId != null">
         customer_id,
@@ -365,11 +426,44 @@
       <if test="contantFullName != null">
         contant_full_name,
       </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productModel != null">
+        product_model,
+      </if>
+      <if test="productPrice != null">
+        product_price,
+      </if>
+      <if test="totalPrice != null">
+        total_price,
+      </if>
       <if test="scooterQuantity != null">
         scooter_quantity,
       </if>
+      <if test="payStatus != null">
+        pay_status,
+      </if>
       <if test="remarks != null">
         remarks,
+      </if>
+      <if test="source != null">
+        `source`,
+      </if>
+      <if test="bankCardName != null">
+        bank_card_name,
+      </if>
+      <if test="cvv != null">
+        cvv,
+      </if>
+      <if test="expiredTime != null">
+        expired_time,
+      </if>
+      <if test="cardNum != null">
+        card_Num,
+      </if>
+      <if test="postalCode != null">
+        postal_code,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -377,26 +471,11 @@
       <if test="createdTime != null">
         created_time,
       </if>
-      <if test="updatedBy != null">
-        updated_by,
-      </if>
       <if test="updatedTime != null">
         updated_time,
       </if>
-      <if test="def1 != null">
-        def1,
-      </if>
-      <if test="def2 != null">
-        def2,
-      </if>
-      <if test="def3 != null">
-        def3,
-      </if>
-      <if test="def5 != null">
-        def5,
-      </if>
-      <if test="def6 != null">
-        def6,
+      <if test="updatedBy != null">
+        updated_by,
       </if>
     </trim>
     values
@@ -406,6 +485,9 @@
       </if>
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
       </if>
       <if test="customerId != null">
         #{customerId,jdbcType=BIGINT},
@@ -467,11 +549,44 @@
       <if test="contantFullName != null">
         #{contantFullName,jdbcType=VARCHAR},
       </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productModel != null">
+        #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="productPrice != null">
+        #{productPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="totalPrice != null">
+        #{totalPrice,jdbcType=DECIMAL},
+      </if>
       <if test="scooterQuantity != null">
         #{scooterQuantity,jdbcType=INTEGER},
       </if>
+      <if test="payStatus != null">
+        #{payStatus,jdbcType=VARCHAR},
+      </if>
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCardName != null">
+        #{bankCardName,jdbcType=VARCHAR},
+      </if>
+      <if test="cvv != null">
+        #{cvv,jdbcType=VARCHAR},
+      </if>
+      <if test="expiredTime != null">
+        #{expiredTime,jdbcType=DATE},
+      </if>
+      <if test="cardNum != null">
+        #{cardNum,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null">
+        #{postalCode,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
@@ -479,26 +594,11 @@
       <if test="createdTime != null">
         #{createdTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updatedBy != null">
-        #{updatedBy,jdbcType=BIGINT},
-      </if>
       <if test="updatedTime != null">
         #{updatedTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="def1 != null">
-        #{def1,jdbcType=VARCHAR},
-      </if>
-      <if test="def2 != null">
-        #{def2,jdbcType=VARCHAR},
-      </if>
-      <if test="def3 != null">
-        #{def3,jdbcType=VARCHAR},
-      </if>
-      <if test="def5 != null">
-        #{def5,jdbcType=VARCHAR},
-      </if>
-      <if test="def6 != null">
-        #{def6,jdbcType=DOUBLE},
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
       </if>
     </trim>
     on duplicate key update 
@@ -508,6 +608,9 @@
       </if>
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
       </if>
       <if test="customerId != null">
         customer_id = #{customerId,jdbcType=BIGINT},
@@ -569,11 +672,44 @@
       <if test="contantFullName != null">
         contant_full_name = #{contantFullName,jdbcType=VARCHAR},
       </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productModel != null">
+        product_model = #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="productPrice != null">
+        product_price = #{productPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="totalPrice != null">
+        total_price = #{totalPrice,jdbcType=DECIMAL},
+      </if>
       <if test="scooterQuantity != null">
         scooter_quantity = #{scooterQuantity,jdbcType=INTEGER},
       </if>
+      <if test="payStatus != null">
+        pay_status = #{payStatus,jdbcType=VARCHAR},
+      </if>
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        `source` = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCardName != null">
+        bank_card_name = #{bankCardName,jdbcType=VARCHAR},
+      </if>
+      <if test="cvv != null">
+        cvv = #{cvv,jdbcType=VARCHAR},
+      </if>
+      <if test="expiredTime != null">
+        expired_time = #{expiredTime,jdbcType=DATE},
+      </if>
+      <if test="cardNum != null">
+        card_Num = #{cardNum,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null">
+        postal_code = #{postalCode,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},
@@ -581,26 +717,11 @@
       <if test="createdTime != null">
         created_time = #{createdTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=BIGINT},
-      </if>
       <if test="updatedTime != null">
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="def1 != null">
-        def1 = #{def1,jdbcType=VARCHAR},
-      </if>
-      <if test="def2 != null">
-        def2 = #{def2,jdbcType=VARCHAR},
-      </if>
-      <if test="def3 != null">
-        def3 = #{def3,jdbcType=VARCHAR},
-      </if>
-      <if test="def5 != null">
-        def5 = #{def5,jdbcType=VARCHAR},
-      </if>
-      <if test="def6 != null">
-        def6 = #{def6,jdbcType=DOUBLE},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>

@@ -22,8 +22,11 @@ public interface CustomerServiceMapper {
     List<DetailsCustomerResult> customerList(ListCustomerEnter enter);
 
     int customerAccountCount(AccountListEnter enter);
+
     List<AccountListResult> queryAccountRecord(AccountListEnter enter);
+
     List<ScooterCustomerResult> scooterCustomerResult(PageEnter enter);
+
     int scooterCustomerCount(PageEnter enter);
 
 }

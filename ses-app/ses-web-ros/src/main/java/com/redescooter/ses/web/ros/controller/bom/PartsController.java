@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.controller.bom;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.MapResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -123,6 +124,13 @@ public class PartsController {
     public Response<HistoryPartsResult> historys(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(partsRosService.historys(enter));
     }
+
+    @PostMapping(value = "/deleteHistorys")
+    @ApiOperation(value = "删除历史记录", response = GeneralResult.class)
+    public Response<GeneralResult> deleteHistorys(@ModelAttribute @ApiParam("请求参数") IdsEnter enter) {
+        return new Response<>(partsRosService.deleteHistorys(enter));
+    }
+
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "列表展示", response = DetailsPartsResult.class)

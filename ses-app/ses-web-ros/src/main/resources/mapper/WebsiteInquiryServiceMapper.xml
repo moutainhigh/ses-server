@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper">
+
+    <select id="accessoryList"
+            resultType="com.redescooter.ses.web.ros.vo.website.AccessoryResult">
+        select acc.id           as id,
+               acc.type         as accessoryType,
+               acc.product_name as accessoryName,
+               acc.price        as price
+        from ope_customer_accessories acc
+        where acc.type = #{type}
+    </select>
+
+    <select id="scooters" resultType="com.redescooter.ses.web.ros.vo.website.ProductResult">
+        select product.id        as id,
+               product.fr_name   as name,
+               product.model     as productModel,
+               sheet.sales_price as price,
+               product.color     as color
+        from ope_parts_product product
+                 inner join ope_regional_price_sheet sheet
+                            on sheet.parts_product_id = product.id and sheet.currency_unit = 1
+        where product_type = 4
+        and product.model = #{modelCode}
+    </select>
+    <select id="queryProductById" resultType="com.redescooter.ses.web.ros.vo.website.ProductResult">
+        select product.id        as id,
+               product.fr_name   as name,
+               product.model     as productModel,
+               sheet.sales_price as price
+        from ope_parts_product product
+                 left join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1
+        where product_type = 4
+        and product.id=#{productId}
+    </select>
+    <select id="orderForms" resultType="com.redescooter.ses.web.ros.vo.website.OrderFormsResult">
+        select inquiry.id as id,
+        inquiry.product_model as productModel,
+        inquiry.order_no as orderNo,
+        inquiry.pay_status as status,
+        inquiry.created_time as orderTime
+        from ope_customer_inquiry inquiry
+        where inquiry.dr = 0
+        and inquiry.created_by = #{userId}
+        <if test="productMdoel != null and productMdoel != ''">
+            and inquiry.product_model = #{productMdoel}
+        </if>
+        <if test="payStatus != null and payStatus != ''">
+            and inquiry.pay_status = #{payStatus}
+        </if>
+    </select>
+</mapper>
