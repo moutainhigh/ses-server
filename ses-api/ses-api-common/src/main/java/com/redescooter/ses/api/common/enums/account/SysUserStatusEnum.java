@@ -22,7 +22,7 @@ public enum SysUserStatusEnum {
     //取消
     CANCEL("CANCEL", "POTENTIAL_CUSTOMERS", "3"),
 
-    // 取消
+    //过期
     EXPIRED("EXPIRED", "过期", "4");
 
     private String code;

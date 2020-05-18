@@ -159,11 +159,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Transactional
     @Override
     public GeneralResult save(CreateCustomerEnter enter) {
+
         //邮箱去空格
         if (StringUtils.isNotEmpty(enter.getEmail())) {
             enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
         }
-
 
         QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
@@ -260,6 +260,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             editUserProfileEnter.setEmail(customer.getEmail());
             editUserProfileEnter.setFirstName(enter.getCustomerFirstName());
             editUserProfileEnter.setLastName(enter.getCustomerLastName());
+
             // 已创建的是web 账户
             if (customer.getTenantId() != 0) {
                 // saas 更新个人信息
