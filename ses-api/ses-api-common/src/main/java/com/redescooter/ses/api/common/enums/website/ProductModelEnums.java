@@ -19,7 +19,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public enum ProductModelEnums {
 
-    SCOOTER_125_CC("SCOOTER_125_CC","125CC","1");
+    SCOOTER_50_CC("SCOOTER_50_CC", "50CC", "1"),
+    SCOOTER_100_CC("SCOOTER_100_CC", "100CC", "2"),
+    SCOOTER_125_CC("SCOOTER_125_CC", "125CC", "3"),
+    ;
 
 
     public static ProductModelEnums getProductModelEnumsByValue(String value) {

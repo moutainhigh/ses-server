@@ -72,7 +72,7 @@ public enum ExceptionCodeEnums {
 
     DATA_EXCEPTION(10027, "参数数据异常或格式错误"),
 
-    ACCOUNT_IS_ALRADY_ACTIVATION(10028,"账户已经激活不可重复激活"),
+    ACCOUNT_IS_ALRADY_ACTIVATION(10028, "账户已经激活不可重复激活"),
 
     //30之后是业务错误码
     FIRST_NAME_CANNOT_EMPTY(10030, "名字不能为空"),
@@ -264,6 +264,8 @@ public enum ExceptionCodeEnums {
     TOP_CASE_IS_NOT_EXIST(10123, "后备箱不存在"),
 
     BATTERY_IS_NOT_EXIST(10124, "电池不存在"),
+
+    BATTERIES_DOES_NOT_MEET_THE_STANDARD(10125, "电池数量不符合标准"),
     ;
 
 

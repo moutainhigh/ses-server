@@ -37,7 +37,7 @@ public interface WebsiteOrderFormService {
 
 
     /**
-     * 车辆型号
+     * 车辆列表（颜色） 暂存
      *
      * @param enter
      * @return
