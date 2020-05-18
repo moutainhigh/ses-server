@@ -296,7 +296,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setProductModel(enter.getProductModel());
         opeCustomerInquiry.setProductPrice(product.getPrice());
         opeCustomerInquiry.setTotalPrice(totalPrice);
-        opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
+        //todo 目前暂做个人端 默认车辆数量为一
+//        opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
+        opeCustomerInquiry.setScooterQuantity(1);
         opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setAddress(enter.getAddress());
         opeCustomerInquiry.setCountryCode(enter.getCountryCode());
