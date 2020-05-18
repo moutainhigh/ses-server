@@ -488,10 +488,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             parmEnter.setStartDateTime(DateUtil.stringToDate(enter.getStartActivationTime()));
             parmEnter.setEndDateTime(DateUtil.stringToDate(enter.getEndActivationTime()));
             parmEnter.setT(baseCustomer);
+/*
+            userResult = accountBaseService.open(parmEnter);*/
 
-            userResult = accountBaseService.open(parmEnter);
-            rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_OPEN_ACCOUNT,parmEnter);
-
+              rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_OPEN_ACCOUNT,parmEnter);
+          System.out.println("=====================发送开通账号 foundtion");
             opeCustomer.setTenantId(userResult.getTenantId());
             opeCustomer.setAccountFlag(CustomerAccountFlagEnum.INACTIVATED.getValue());
             opeCustomer.setUpdatedBy(enter.getUserId());

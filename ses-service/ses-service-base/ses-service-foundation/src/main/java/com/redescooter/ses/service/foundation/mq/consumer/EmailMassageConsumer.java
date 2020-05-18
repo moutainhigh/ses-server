@@ -2,7 +2,6 @@ package com.redescooter.ses.service.foundation.mq.consumer;
 
 import com.rabbitmq.client.Channel;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
-import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
 import com.redescooter.ses.starter.rabbitmq.constants.QueueName;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;

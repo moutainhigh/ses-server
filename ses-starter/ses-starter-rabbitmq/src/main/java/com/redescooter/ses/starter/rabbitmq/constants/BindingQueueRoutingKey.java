@@ -14,4 +14,6 @@ public interface BindingQueueRoutingKey {
     String BINDING_QUEUE_INFORM_EMAIL = "inform.#.email.#";
 
     String BINDING_QUEUE_INFORM_CUSTOMER_ACCOUNT="inform.#.customer.account.#";
+
+    String BINDING_QUEUE_INFORM_SAVE_USER="inform.#.account.user.#";
 }

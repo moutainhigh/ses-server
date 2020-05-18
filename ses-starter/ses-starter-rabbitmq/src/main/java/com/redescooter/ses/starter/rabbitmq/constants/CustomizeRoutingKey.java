@@ -12,4 +12,6 @@ public interface CustomizeRoutingKey {
     String CUSTOMER_OPEN_ACCOUNT_EMAIL ="inform.customer.email.account.open";
     //customer 账户开通
     String CUSTOMER_OPEN_ACCOUNT="inform.customer.account.open";
+    //保存用户个人资料 foundation
+    String CUSTOMER_SAVE_USER_PROFILE="inform.save.account.user.profile";
 }
