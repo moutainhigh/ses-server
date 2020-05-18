@@ -493,7 +493,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         jedisCluster.expire(key, seconds);
         //MQ邮件的发送
 
-        emailMassageProducerMq.SendEmailMassage(IdEnter.builder()
+        emailMassageProducerMq.sendEmailMassage(IdEnter.builder()
                 .id(mailTask.getId())
                 .build());
 

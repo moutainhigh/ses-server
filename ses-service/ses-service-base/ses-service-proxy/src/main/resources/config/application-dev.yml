@@ -8,12 +8,12 @@ log:
 # DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://172.16.0.205:2181
+    address: zookeeper://47.105.215.239:2181?backup=47.105.215.239:2182,47.105.215.239:2183
 
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://172.16.0.205:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://172.31.8.126:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: rede,1qaz2wsx
     druid:
@@ -25,12 +25,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 172.16.0.205:7000
-        - 172.16.0.205:7001
-        - 172.16.0.205:7002
-        - 172.16.0.205:7003
-        - 172.16.0.205:7004
-        - 172.16.0.205:7005
+        - 172.31.8.126:7000
+        - 172.31.8.126:7001
+        - 172.31.8.126:7002
+        - 172.31.8.126:7003
+        - 172.31.8.126:7004
+        - 172.31.8.126:7005
 
   # 邮件配置
   mail:

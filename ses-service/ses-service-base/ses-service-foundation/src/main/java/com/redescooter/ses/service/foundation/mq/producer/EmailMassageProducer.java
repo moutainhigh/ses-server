@@ -2,10 +2,8 @@ package com.redescooter.ses.service.foundation.mq.producer;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.mq.EmailMassageProducerMq;
-import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
 import com.redescooter.ses.starter.rabbitmq.constants.CustomizeRoutingKey;
 import com.redescooter.ses.starter.rabbitmq.constants.ExchangeName;
-import com.redescooter.ses.starter.rabbitmq.constants.QueueName;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -40,10 +38,10 @@ public class EmailMassageProducer implements EmailMassageProducerMq {
     };
 
     @Override
-    public void SendEmailMassage(IdEnter idEnter) {
+    public void sendEmailMassage(IdEnter idEnter) {
             rabbitTemplate.setConfirmCallback(confirmCallback);
             CorrelationData correlationData = new CorrelationData(String.valueOf(idEnter.getId()));
-            rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_OPEN_ACCOUNT, idEnter.getId(), correlationData);
+            rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_OPEN_ACCOUNT_EMAIL, idEnter.getId(), correlationData);
             System.out.println("发送的邮件消息:'" + idEnter.getId() + "'");
     }
 }
