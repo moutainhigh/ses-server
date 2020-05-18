@@ -42,9 +42,9 @@ spring:                                                                         
         - 192.168.2.200:7005
   #rabbitmq配置
   rabbitmq:
-    host: 192.168.2.200
+    host: 192.168.2.220
     port: 5672
-    username: rede
+    username: alex
     password: alex!rede2020
     virtual-host: /
 
