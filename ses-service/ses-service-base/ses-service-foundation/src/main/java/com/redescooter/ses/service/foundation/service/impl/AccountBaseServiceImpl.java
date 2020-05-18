@@ -54,6 +54,9 @@ import com.redescooter.ses.service.foundation.service.base.PlaTenantNodeService;
 import com.redescooter.ses.service.foundation.service.base.PlaUserNodeService;
 import com.redescooter.ses.service.foundation.service.base.PlaUserPasswordService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
+import com.redescooter.ses.starter.rabbitmq.constants.CustomizeRoutingKey;
+import com.redescooter.ses.starter.rabbitmq.constants.ExchangeName;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
@@ -64,6 +67,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,6 +143,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
     @Autowired
     private PlaTenantConfigService plaTenantConfigService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+    @Reference
+    private RabbitConfig rabbitConfig;
 
     /**
      * 账号开通
@@ -181,8 +189,14 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         if (StringUtils.equals(enter.getT().getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
             userProfileService.saveUserProfile2C(saveUserProfileHubEnter);
+/*            //hub 调用生产者
+          rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_SAVE_USER_PROFILE,saveUserProfileHubEnter);
+          System.out.println("发送 open 保存用户个人资料2 c");*/
         } else {
+    /*      rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_SAVE_USER_PROFILE,saveUserProfileHubEnter);
+          System.out.println("发送 open 保存用户个人资料2 B");*/
             userProfileService.saveUserProfile2B(saveUserProfileHubEnter);
+
         }
         // 创建邮件任务
         BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();

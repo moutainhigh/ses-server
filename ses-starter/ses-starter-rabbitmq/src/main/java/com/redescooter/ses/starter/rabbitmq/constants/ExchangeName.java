@@ -10,5 +10,4 @@ package com.redescooter.ses.starter.rabbitmq.constants;
 public interface ExchangeName {
 
     String EXCHANGE_TOPICS_INFORM = "exchange_topics_inform";
-
 }
