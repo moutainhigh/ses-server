@@ -191,9 +191,6 @@ public class InquiryServiceImpl implements InquiryService {
         if (!SesStringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPROCESSED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        if (){
-
-        }
         opeCustomerInquiry.setStatus(InquiryStatusEnums.PROCESSED.getValue());
         opeCustomerInquiry.setUpdatedBy(enter.getUserId());
         opeCustomerInquiry.setUpdatedTime(new Date());
