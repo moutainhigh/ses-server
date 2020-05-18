@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.annotation.Reference;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +31,7 @@ public class OpenConsumerAccount {
 
   // 监听email队列
   @RabbitListener(queues = {QueueName.QUEUE_INFORM_CUSOTMER_ACCOUNT})
-  public void open_consumer(DateTimeParmEnter<BaseCustomerResult> message, @Headers Map<String, Object> headers, Channel channel) {
+  public void openConsumer(DateTimeParmEnter<BaseCustomerResult> message, @Headers Map<String, Object> headers, Channel channel) {
 
     System.out.println("接收到的email队列；" + message);
     /**

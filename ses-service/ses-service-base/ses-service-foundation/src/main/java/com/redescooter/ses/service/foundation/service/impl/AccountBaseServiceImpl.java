@@ -55,8 +55,6 @@ import com.redescooter.ses.service.foundation.service.base.PlaUserNodeService;
 import com.redescooter.ses.service.foundation.service.base.PlaUserPasswordService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
-import com.redescooter.ses.starter.rabbitmq.constants.CustomizeRoutingKey;
-import com.redescooter.ses.starter.rabbitmq.constants.ExchangeName;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
@@ -143,10 +141,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
     @Autowired
     private PlaTenantConfigService plaTenantConfigService;
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-    @Reference
-    private RabbitConfig rabbitConfig;
 
     /**
      * 账号开通
