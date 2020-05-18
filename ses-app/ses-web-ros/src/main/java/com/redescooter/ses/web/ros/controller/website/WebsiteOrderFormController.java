@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.website;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -48,32 +49,39 @@ public class WebsiteOrderFormController {
     @Autowired
     private WebsiteOrderFormService websiteOrderFormService;
 
-    @WebsiteSignIn
+    @IgnoreLoginCheck
     @PostMapping(value = "/scooters")
     @ApiOperation(value = "车辆列表", response = ProductResult.class)
     public Response<List<ProductResult>> scooters(@ModelAttribute @ApiParam("请求参数") ScootersEnter enter) {
         return new Response<>(websiteOrderFormService.scooters(enter));
     }
 
-    @WebsiteSignIn
+    @IgnoreLoginCheck
     @PostMapping(value = "/productModels")
     @ApiOperation(value = "车辆型号", response = ProductModelResult.class)
     public Response<List<ProductModelResult>> productModels(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(websiteOrderFormService.productModels(enter));
     }
 
-    @WebsiteSignIn
+    @IgnoreLoginCheck
     @PostMapping(value = "/accessoryBatterys")
     @ApiOperation(value = "车辆电池配件列表", response = AccessoryResult.class)
     public Response<List<AccessoryResult>> accessoryBatteryList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(websiteOrderFormService.accessoryBatteryList(enter));
     }
 
-    @WebsiteSignIn
+    @IgnoreLoginCheck
     @PostMapping(value = "/accessoryTopCases")
     @ApiOperation(value = "车辆后备箱配件列表", response = AccessoryResult.class)
     public Response<List<AccessoryResult>> accessoryTopCaseList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(websiteOrderFormService.accessoryTopCaseList(enter));
+    }
+
+    @IgnoreLoginCheck
+    @PostMapping(value = "/checkMail")
+    @ApiOperation(value = "邮箱校验", response = GeneralResult.class)
+    public Response<BooleanResult> checkMail(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+        return new Response<>(websiteOrderFormService.checkMail(enter));
     }
 
     @WebsiteSignIn
@@ -116,13 +124,6 @@ public class WebsiteOrderFormController {
     @ApiOperation(value = "支付尾款", response = GeneralResult.class)
     public Response<GeneralResult> payLastParagraph(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(websiteOrderFormService.payLastParagraph(enter));
-    }
-
-    @WebsiteSignIn
-    @PostMapping(value = "/checkMail")
-    @ApiOperation(value = "邮箱校验", response = GeneralResult.class)
-    public Response<BooleanResult> checkMail(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
-        return new Response<>(websiteOrderFormService.checkMail(enter));
     }
 
     @WebsiteSignIn
