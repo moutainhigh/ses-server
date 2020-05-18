@@ -3,6 +3,7 @@ package com.redescooter.ses.service.foundation.mq.consumer;
 import com.rabbitmq.client.Channel;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
+import com.redescooter.ses.starter.rabbitmq.constants.QueueName;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class EmailMassageConsumer{
    @Autowired
   private MailMultiTaskService mailMultiTaskService;
     // 监听email队列
-    @RabbitListener(queues = {RabbitConfig.QUEUE_INFORM_EMAIL})
+    @RabbitListener(queues = {QueueName.QUEUE_INFORM_EMAIL})
     public void receive_email(long message, @Headers Map<String,Object> headers, Channel channel){
         if (message>0L){
             System.out.println("接收到的email队列；" + message);

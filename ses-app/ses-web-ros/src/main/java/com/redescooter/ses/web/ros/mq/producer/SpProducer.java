@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.mq.producer;
 
 import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
+import com.redescooter.ses.starter.rabbitmq.constants.ExchangeName;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class SpProducer {
     public void sendByTopics() {
         for (int i = 0; i < 5; i++) {
             String message = "sms email inform to user" + i;
-            rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_TOPICS_INFORM, "inform.sms.email", message);
+            rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, "test.email", message);
             System.out.println("发送的消息:'" + message + "'");
         }
     }

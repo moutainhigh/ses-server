@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.mq.consumer;
 
 import com.rabbitmq.client.Channel;
 import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
+import com.redescooter.ses.starter.rabbitmq.constants.QueueName;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ public class SpConsumer {
 */
 
     // 监听sms队列
-    @RabbitListener(queues = {RabbitConfig.QUEUE_INFORM_SMS})
+    @RabbitListener(queues = {QueueName.QUEUE_INFORM_SMS})
     public void receive_sms(String msg, Message message, Channel channel) {
         System.out.println("接收到的sms；" + msg);
     }

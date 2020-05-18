@@ -1,5 +1,8 @@
 package com.redescooter.ses.starter.rabbitmq.config;
 
+import com.redescooter.ses.starter.rabbitmq.constants.BindingQueueRoutingKey;
+import com.redescooter.ses.starter.rabbitmq.constants.ExchangeName;
+import com.redescooter.ses.starter.rabbitmq.constants.QueueName;
 import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -17,10 +20,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    public static final String QUEUE_INFORM_EMAIL = "inform.#.email.#";
-    public static final String QUEUE_INFORM_SMS = "queue_inform_sms";
-    public static final String EXCHANGE_TOPICS_INFORM = "exchange_topics_inform";
-
     /**
      * 此处以topic交换机为例
      * 交换机配置
@@ -28,23 +27,24 @@ public class RabbitConfig {
      *
      * @return the exchange
      */
-    @Bean(EXCHANGE_TOPICS_INFORM)
+    @Bean(ExchangeName.EXCHANGE_TOPICS_INFORM)
     public Exchange EXCHANGE_TOPICS_INFORM() {
         // durable(true)持久化，消息队列重启后交换机仍然存在
-        return ExchangeBuilder.topicExchange(EXCHANGE_TOPICS_INFORM).durable(true).build();
+        return ExchangeBuilder.topicExchange(ExchangeName.EXCHANGE_TOPICS_INFORM).durable(true).build();
     }
 
     //声明队列
-    @Bean(QUEUE_INFORM_SMS)
+    @Bean(QueueName.QUEUE_INFORM_SMS)
     public Queue QUEUE_INFORM_SMS() {
-        Queue queue = new Queue(QUEUE_INFORM_SMS);
+        // new Queue 默认为 durable(true)可持久化、exclusive（true）独占队列，由 autoDelete（true） 无消息时自动删除
+        Queue queue = new Queue(QueueName.QUEUE_INFORM_SMS);
         return queue;
     }
 
     //声明队列
-    @Bean(QUEUE_INFORM_EMAIL)
+    @Bean(QueueName.QUEUE_INFORM_EMAIL)
     public Queue QUEUE_INFORM_EMAIL() {
-        Queue queue = new Queue(QUEUE_INFORM_EMAIL);
+        Queue queue = new Queue(QueueName.QUEUE_INFORM_EMAIL);
         return queue;
     }
 
@@ -57,12 +57,12 @@ public class RabbitConfig {
      * @return the binding
      */
     @Bean
-    public Binding BINDING_QUEUE_INFORM_SMS(@Qualifier(QUEUE_INFORM_SMS) Queue queue, @Qualifier(EXCHANGE_TOPICS_INFORM) Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("inform.#.sms.#").noargs();
+    public Binding BINDING_QUEUE_INFORM_SMS(@Qualifier(QueueName.QUEUE_INFORM_SMS) Queue queue, @Qualifier(ExchangeName.EXCHANGE_TOPICS_INFORM) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(BindingQueueRoutingKey.BINDING_QUEUE_INFORM_SMS).noargs();
     }
 
     @Bean
-    public Binding BINDING_QUEUE_INFORM_EMAIL(@Qualifier(QUEUE_INFORM_EMAIL) Queue queue, @Qualifier(EXCHANGE_TOPICS_INFORM) Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("inform.#.email.#").noargs();
+    public Binding BINDING_QUEUE_INFORM_EMAIL(@Qualifier(QueueName.QUEUE_INFORM_EMAIL) Queue queue, @Qualifier(ExchangeName.EXCHANGE_TOPICS_INFORM) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(BindingQueueRoutingKey.BINDING_QUEUE_INFORM_EMAIL).noargs();
     }
 }

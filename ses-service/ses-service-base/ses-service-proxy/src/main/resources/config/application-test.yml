@@ -37,7 +37,7 @@ spring:
     host: 192.168.2.200
     port: 5672
     username: rede
-    password: Rede@Scooter2019
+    password: alex!rede2020
     virtual-host: /
 
   # 邮件配置
