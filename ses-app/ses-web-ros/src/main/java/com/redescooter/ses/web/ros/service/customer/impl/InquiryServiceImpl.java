@@ -183,12 +183,16 @@ public class InquiryServiceImpl implements InquiryService {
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
         opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_DR, 0);
         opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_ID, enter.getId());
+        opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_SOURCE,InquirySourceEnums.INQUIRY.getValue());
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(opeCustomerInquiryQueryWrapper);
         if (opeCustomerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         if (!SesStringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPROCESSED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        if (){
+
         }
         opeCustomerInquiry.setStatus(InquiryStatusEnums.PROCESSED.getValue());
         opeCustomerInquiry.setUpdatedBy(enter.getUserId());
