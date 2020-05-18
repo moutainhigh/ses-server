@@ -12,4 +12,6 @@ public interface QueueName {
     String QUEUE_INFORM_EMAIL = "queue_inform_email";
 
     String QUEUE_INFORM_SMS = "queue_inform_sms";
+
+    String QUEUE_INFORM_CUSOTMER_ACCOUNT="queue_inform_cusotmer_account";
 }

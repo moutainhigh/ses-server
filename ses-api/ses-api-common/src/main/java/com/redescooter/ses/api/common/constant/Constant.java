@@ -65,4 +65,6 @@ public interface Constant {
     BigDecimal LONGITUDE = new BigDecimal("48.862868");
 
     BigDecimal LATITUDE=new BigDecimal("2.313960");
+
+    String EMAIL_SPLITTER=":::";
 }

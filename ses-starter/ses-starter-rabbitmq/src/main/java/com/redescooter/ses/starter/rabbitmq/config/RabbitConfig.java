@@ -48,6 +48,13 @@ public class RabbitConfig {
         return queue;
     }
 
+    //声明队列 客户账户创建队列
+    @Bean(QueueName.QUEUE_INFORM_CUSOTMER_ACCOUNT)
+    public Queue QUEUE_INFORM_CUSOTMER_ACCOUNT() {
+        Queue queue = new Queue(QueueName.QUEUE_INFORM_CUSOTMER_ACCOUNT);
+        return queue;
+    }
+
     /**
      * channel.queueBind(INFORM_QUEUE_SMS,"inform_exchange_topic","inform.#.sms.#");
      * 绑定队列到交换机 .
@@ -63,6 +70,11 @@ public class RabbitConfig {
 
     @Bean
     public Binding BINDING_QUEUE_INFORM_EMAIL(@Qualifier(QueueName.QUEUE_INFORM_EMAIL) Queue queue, @Qualifier(ExchangeName.EXCHANGE_TOPICS_INFORM) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(BindingQueueRoutingKey.BINDING_QUEUE_INFORM_EMAIL).noargs();
+    }
+
+    @Bean
+    public Binding BINDING_QUEUE_INFORM_EMAIL_ACCOUNT(@Qualifier(QueueName.QUEUE_INFORM_CUSOTMER_ACCOUNT) Queue queue, @Qualifier(ExchangeName.EXCHANGE_TOPICS_INFORM) Exchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(BindingQueueRoutingKey.BINDING_QUEUE_INFORM_EMAIL).noargs();
     }
 }

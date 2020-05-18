@@ -11,5 +11,5 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
  **/
 public interface EmailMassageProducerMq {
   //MQ发送激活邮件
-  void SendEmailMassage(IdEnter idEnter);
+  void sendEmailMassage(IdEnter idEnter);
 }

@@ -9,5 +9,7 @@ package com.redescooter.ses.starter.rabbitmq.constants;
  */
 public interface CustomizeRoutingKey {
     //客户开通账户时 路由建
-    String CUSTOMER_OPEN_ACCOUNT="inform.customer.email.account.open";
+    String CUSTOMER_OPEN_ACCOUNT_EMAIL ="inform.customer.email.account.open";
+    //customer 账户开通
+    String CUSTOMER_OPEN_ACCOUNT="inform.customer.account.open";
 }
