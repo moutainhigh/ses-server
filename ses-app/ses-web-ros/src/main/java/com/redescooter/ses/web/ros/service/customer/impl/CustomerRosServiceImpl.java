@@ -34,6 +34,9 @@ import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
+import com.redescooter.ses.starter.rabbitmq.constants.CustomizeRoutingKey;
+import com.redescooter.ses.starter.rabbitmq.constants.ExchangeName;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.StatisticalUtil;
@@ -63,6 +66,7 @@ import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,7 +113,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private UserBaseService userBaseService;
     @Reference
     private UserProfileService userProfileService;
-
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+    @Reference
+    private RabbitConfig rabbitConfig;
 
     /**
      * 邮箱验证
@@ -483,6 +490,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             parmEnter.setT(baseCustomer);
 
             userResult = accountBaseService.open(parmEnter);
+            rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_OPEN_ACCOUNT,parmEnter);
 
             opeCustomer.setTenantId(userResult.getTenantId());
             opeCustomer.setAccountFlag(CustomerAccountFlagEnum.INACTIVATED.getValue());
