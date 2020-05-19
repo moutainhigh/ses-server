@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
+import com.redescooter.ses.web.ros.vo.inquiry.NewSaveInquiryEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 
 import java.util.Map;
@@ -31,6 +32,16 @@ public interface InquiryService {
      * @Version: Ros 1.3
      */
     GeneralResult saveInquiry(SaveInquiryEnter enter);
+
+    /**
+     * @desc: 保存询价单
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/3/5 15:03
+     * @Version: Ros 1.3
+     */
+    GeneralResult newSaveInquiry(NewSaveInquiryEnter enter);
 
     /**
      * @desc: 询价单列表

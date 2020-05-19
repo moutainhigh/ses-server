@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -11,6 +12,7 @@ import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.service.foundation.dao.base.PlaCityMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaCity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,5 +132,26 @@ public class CityBaseServiceImpl implements CityBaseService {
             resultlist.add(result);
         }
         return resultlist;
+    }
+
+    /**
+     * 根据名字查询 城市信息
+     *
+     * @param name
+     * @return
+     */
+    @Override
+    public CityResult queryCityDetailByName(String name) {
+        if (StringUtils.isEmpty(name)) {
+            return new CityResult();
+        }
+
+        PlaCity city = cityMapper.selectOne(new LambdaQueryWrapper<PlaCity>().eq(PlaCity::getName,name));
+
+        CityResult result = new CityResult();
+        if (city != null) {
+            BeanUtils.copyProperties(city, result);
+        }
+        return result;
     }
 }

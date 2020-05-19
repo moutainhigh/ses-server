@@ -96,4 +96,7 @@ public class InquiryResult extends GeneralResult {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date acceptanceTime;
+
+    @ApiModelProperty(value = "剩余时间")
+    private Integer ttl=0;
 }

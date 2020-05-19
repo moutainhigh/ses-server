@@ -20,6 +20,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -33,6 +34,7 @@ import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
+import com.redescooter.ses.web.ros.vo.inquiry.NewSaveInquiryEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -117,6 +119,70 @@ public class InquiryServiceImpl implements InquiryService {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquirySingle(enter);
+        opeCustomerInquiryService.save(opeCustomerInquiry);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * @param enter
+     * @desc: 保存询价单
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/3/5 15:03
+     * @Version: Ros 1.3
+     */
+    @Override
+    public GeneralResult newSaveInquiry(NewSaveInquiryEnter enter) {
+
+        //邮箱 去空格
+        enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
+
+        // 查询已存在的email
+        List<String> emailList = inquiryServiceMapper.usingEmailList();
+        if (emailList.contains(enter.getEmail())) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
+        CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
+        if (cityResult == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
+        }
+
+        OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
+        opeCustomerInquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
+        opeCustomerInquiry.setDr(0);
+        opeCustomerInquiry.setCustomerId(0L);
+        opeCustomerInquiry.setCountry(null);
+        opeCustomerInquiry.setCity(null);
+        opeCustomerInquiry.setDistrict(cityResult.getId());
+        opeCustomerInquiry.setCustomerSource("");
+        opeCustomerInquiry.setSalesId(0L);
+        opeCustomerInquiry.setSource(InquirySourceEnums.INQUIRY.getValue());
+        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPROCESSED.getValue());
+
+        //默认为个人餐厅
+        opeCustomerInquiry.setIndustry(CustomerIndustryEnums.RESTAURANT.getValue());
+        opeCustomerInquiry.setCustomerType(CustomerTypeEnum.PERSONAL.getValue());
+
+        opeCustomerInquiry.setCompanyName(null);
+        opeCustomerInquiry.setFirstName(enter.getFirstName());
+        opeCustomerInquiry.setLastName(enter.getLastName());
+        opeCustomerInquiry.setFullName(new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
+        opeCustomerInquiry.setScooterQuantity(1);
+        opeCustomerInquiry.setContactFirst(null);
+        opeCustomerInquiry.setContactLast(null);
+        opeCustomerInquiry.setContantFullName(null);
+        opeCustomerInquiry.setCountryCode(enter.getCountryCode());
+        opeCustomerInquiry.setTelephone(enter.getTelephone());
+        opeCustomerInquiry.setEmail(enter.getEmail());
+        opeCustomerInquiry.setAddress("");
+        opeCustomerInquiry.setRemarks(enter.getRemark());
+        opeCustomerInquiry.setCreatedBy(0L);
+        opeCustomerInquiry.setUpdatedBy(0L);
+        opeCustomerInquiry.setCreatedTime(new Date());
+        opeCustomerInquiry.setUpdatedTime(new Date());
+
+
         opeCustomerInquiryService.save(opeCustomerInquiry);
         return new GeneralResult(enter.getRequestId());
     }
