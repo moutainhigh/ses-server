@@ -38,11 +38,12 @@ spring:
         - 192.168.2.200:7005
   #rabbitmq配置
   rabbitmq:
-    host: 192.168.2.200
+    host: 127.0.0.1
     port: 5672
-    username: rede
-    password: alex!rede2020
+    username: guest
+    password: guest
     virtual-host: /
+    default-requeue-rejected: false
 # DUBBO 配置
 dubbo:
   registry: #注册中心

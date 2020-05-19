@@ -58,9 +58,9 @@ public class RabbitConfig {
 
 
   //声明队列 保存用户个人资料
-  @Bean(QueueName.QUEUE_INFORM_SAVE_USER_PROFILE)
+  @Bean(QueueName.QUEUE_INFORM_CUSOTMER_USER)
   public Queue QUEUE_INFORM_SAVE_USER_PROFILE() {
-    Queue queue = new Queue(QueueName.QUEUE_INFORM_SAVE_USER_PROFILE);
+    Queue queue = new Queue(QueueName.QUEUE_INFORM_CUSOTMER_USER);
     return queue;
   }
     /**
@@ -82,11 +82,11 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Binding BINDING_QUEUE_INFORM_EMAIL_ACCOUNT(@Qualifier(QueueName.QUEUE_INFORM_CUSOTMER_ACCOUNT) Queue queue, @Qualifier(ExchangeName.EXCHANGE_TOPICS_INFORM) Exchange exchange) {
+    public Binding BINDING_QUEUE_INFORM_CUSTOMER_ACCOUNT(@Qualifier(QueueName.QUEUE_INFORM_CUSOTMER_ACCOUNT) Queue queue, @Qualifier(ExchangeName.EXCHANGE_TOPICS_INFORM) Exchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(BindingQueueRoutingKey.BINDING_QUEUE_INFORM_CUSTOMER_ACCOUNT).noargs();
     }
   @Bean
-  public Binding QUEUE_INFORM_SAVE_USER_PROFILE(@Qualifier(QueueName.QUEUE_INFORM_SAVE_USER_PROFILE) Queue queue, @Qualifier(ExchangeName.EXCHANGE_TOPICS_INFORM) Exchange exchange) {
+  public Binding BINDING_QUEUE_INFORM_SAVE_USER(@Qualifier(QueueName.QUEUE_INFORM_CUSOTMER_USER) Queue queue, @Qualifier(ExchangeName.EXCHANGE_TOPICS_INFORM) Exchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(BindingQueueRoutingKey.BINDING_QUEUE_INFORM_SAVE_USER).noargs();
   }
 

@@ -25,7 +25,7 @@ public class EmailMassageConsumer{
   private MailMultiTaskService mailMultiTaskService;
     // 监听email队列
     @RabbitListener(queues = {QueueName.QUEUE_INFORM_EMAIL})
-    public void receive_email(long message, @Headers Map<String,Object> headers, Channel channel){
+    public void receive_email(long message, @Headers Map<String,Object> headers, Channel channel) throws IOException {
         if (message>0L){
             System.out.println("接收到的email队列；" + message);
             /**
@@ -45,6 +45,7 @@ public class EmailMassageConsumer{
             try {
                 channel.basicAck(deliveryTag,multiple);
             } catch (IOException e) {
+              channel.basicNack(deliveryTag,multiple,false);
                 e.printStackTrace();
             }
         }

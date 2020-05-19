@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.MaggessConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
@@ -49,15 +50,19 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUserNode;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.foundation.mq.producer.OpenConsumerProducer;
 import com.redescooter.ses.service.foundation.service.base.PlaTenantConfigService;
 import com.redescooter.ses.service.foundation.service.base.PlaTenantNodeService;
 import com.redescooter.ses.service.foundation.service.base.PlaUserNodeService;
 import com.redescooter.ses.service.foundation.service.base.PlaUserPasswordService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.starter.rabbitmq.config.RabbitConfig;
+import com.redescooter.ses.starter.rabbitmq.constants.CustomizeRoutingKey;
+import com.redescooter.ses.starter.rabbitmq.constants.ExchangeName;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
+import io.micrometer.core.instrument.step.StepCounter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -68,7 +73,9 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
@@ -142,6 +149,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Autowired
     private PlaTenantConfigService plaTenantConfigService;
 
+    @Autowired
+    private  RabbitTemplate rabbitTemplate;
+    @Autowired
+    private OpenConsumerProducer openConsumerProducer;
     /**
      * 账号开通
      *
@@ -160,12 +171,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         // 开通账户
         // 1、 创建租户
         Long tenantId = TenantDefaultValue.DEFAULT_MOBILEC_TENANTID;
+        System.out.println("===============tenantid"+tenantId);
         if (StringUtils.equals(enter.getT().getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
             tenantId = tenantBaseService.saveTenant(enter);
         }
         // 2、 创建账户
         Long userId = saveUserSingle(enter, tenantId);
-
         result.setId(userId);
         result.setTenantId(tenantId);
         // 3、 创建个人信息
@@ -177,24 +188,17 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                         .address(enter.getT().getAddress()).certificateType(enter.getT().getCertificateType())
                         .certificateNegativeAnnex(enter.getT().getCertificateNegativeAnnex())
                         .certificatePositiveAnnex(enter.getT().getCertificatePositiveAnnex())
-                        .telNumber1(enter.getT().getTelephone()).email1(enter.getT().getEmail()).countryCode1(enter.getT().getCountryCode()).build();
+                        .telNumber1(enter.getT().getTelephone()).email1(enter.getT().getEmail()).countryCode1(enter.getT().getCountryCode())
+                        .userType(enter.getT().getCustomerType())
+                  .build();
         saveUserProfileHubEnter.setUserId(userId);
         saveUserProfileHubEnter.setTenantId(tenantId);
 
-        if (StringUtils.equals(enter.getT().getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
-            userProfileService.saveUserProfile2C(saveUserProfileHubEnter);
-/*            //hub 调用生产者
-          rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_SAVE_USER_PROFILE,saveUserProfileHubEnter);
-          System.out.println("发送 open 保存用户个人资料2 c");*/
-        } else {
-    /*      rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_SAVE_USER_PROFILE,saveUserProfileHubEnter);
-          System.out.println("发送 open 保存用户个人资料2 B");*/
-            userProfileService.saveUserProfile2B(saveUserProfileHubEnter);
 
-        }
+           /* userProfileService.saveUserProfile2C(saveUserProfileHubEnter);*/
+            openConsumerProducer.sendOpenAccount(saveUserProfileHubEnter);
         // 创建邮件任务
         BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
-        baseMailTaskEnter.setName(enter.getT().getCustomerFullName());
         baseMailTaskEnter.setToMail(enter.getT().getEmail());
         baseMailTaskEnter.setToUserId(userId);
         baseMailTaskEnter.setUserRequestId(enter.getRequestId());
@@ -204,14 +208,23 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
             baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getValue());
             baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
+            baseMailTaskEnter.setName(enter.getT().getCustomerFullName());
         }
         if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), enter.getT().getCustomerType())) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
             baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getValue());
             baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_WEB.getSystemId());
+            baseMailTaskEnter.setName(enter.getT().getContactFullName());
         }
         mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
-        return result;
+      Map<String, String> map = new HashMap<>();
+      map.put("id",result.getId().toString());
+      map.put("tenantId",result.getTenantId().toString());
+      jedisCluster.hmset(enter.getRequestId()+"account",map);
+      System.out.println("===============result tenantid"+result);
+      System.out.println("===============JSON.toJSONString(result) tenantid"+JSON.toJSONString(result));
+
+      return result;
     }
 
     @Override

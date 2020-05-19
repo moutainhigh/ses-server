@@ -28,6 +28,10 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-service-common</artifactId>
         </dependency>
+      <dependency>
+        <groupId>com.redescooter.ses</groupId>
+        <artifactId>ses-starter-rabbitmq</artifactId>
+      </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>

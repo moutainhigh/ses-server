@@ -63,6 +63,7 @@ import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
+import io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -115,8 +116,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private UserProfileService userProfileService;
     @Autowired
     private RabbitTemplate rabbitTemplate;
-    @Reference
-    private RabbitConfig rabbitConfig;
 
     /**
      * 邮箱验证
@@ -478,7 +477,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         // todo 存在漏洞 先创建 Driver 账户 ---》 web或者TOC 账户是能够通过校验的
         BooleanResult checkMail = checkMail(opeCustomer.getEmail());
-        BaseUserResult userResult = null;
+        /*BaseUserResult userResult = null;*/
         if (checkMail.isSuccess()) {
             BaseCustomerResult baseCustomer = new BaseCustomerResult();
             BeanUtils.copyProperties(opeCustomer, baseCustomer);
@@ -488,12 +487,17 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             parmEnter.setStartDateTime(DateUtil.stringToDate(enter.getStartActivationTime()));
             parmEnter.setEndDateTime(DateUtil.stringToDate(enter.getEndActivationTime()));
             parmEnter.setT(baseCustomer);
-/*
-            userResult = accountBaseService.open(parmEnter);*/
 
-              rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_OPEN_ACCOUNT,parmEnter);
+        /*    userResult = accountBaseService.open(parmEnter);*/
+
+          rabbitTemplate.convertAndSend(ExchangeName.EXCHANGE_TOPICS_INFORM, CustomizeRoutingKey.CUSTOMER_OPEN_ACCOUNT,parmEnter);
+
           System.out.println("=====================发送开通账号 foundtion");
-            opeCustomer.setTenantId(userResult.getTenantId());
+          Map<String, String> map = jedisCluster.hgetAll(parmEnter.getRequestId()+"account");
+          if (map == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+          }
+            opeCustomer.setTenantId(Long.valueOf(map.get("tenantId")));
             opeCustomer.setAccountFlag(CustomerAccountFlagEnum.INACTIVATED.getValue());
             opeCustomer.setUpdatedBy(enter.getUserId());
             opeCustomer.setUpdatedTime(new Date());
