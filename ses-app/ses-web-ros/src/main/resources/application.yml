@@ -118,3 +118,12 @@ oss:                                                                            
   publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
   maxFileSize: 10485760
 
+## stripe pay
+stripe:
+  test:
+    publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
+    secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
+  live:
+    publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
+    secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
+
