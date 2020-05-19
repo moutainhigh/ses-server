@@ -47,4 +47,12 @@ public interface CityBaseService {
      * @return
      */
     List<CityResult> list(GeneralEnter enter);
+
+    /**
+     * 根据名字查询 城市信息
+     *
+     * @param name
+     * @return
+     */
+    CityResult queryCityDetailByName(String name);
 }

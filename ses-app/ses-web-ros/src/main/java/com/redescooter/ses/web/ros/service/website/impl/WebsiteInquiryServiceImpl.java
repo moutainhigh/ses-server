@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.website.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
@@ -153,6 +154,15 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Transactional
     @Override
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
+        //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
+        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        if (StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getMessage());
+        }
+
         //后备箱 校验
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
@@ -215,6 +225,13 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter) {
+
+        OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
+        if (customerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        //状态过滤
+
         //后备箱 校验
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
@@ -291,12 +308,13 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(id);
         opeCustomerInquiry.setDr(0);
+        opeCustomerInquiry.setCustomerId(enter.getUserId());
         opeCustomerInquiry.setFirstName(opeCustomer.getCustomerFirstName());
         opeCustomerInquiry.setLastName(opeCustomer.getCustomerLastName());
         opeCustomerInquiry.setFullName(opeCustomer.getCustomerFullName());
         opeCustomerInquiry.setEmail(opeCustomer.getEmail());
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
-        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPROCESSED.getValue());
+        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setProductId(enter.getProductId());
         opeCustomerInquiry.setProductModel(enter.getProductModel());
         opeCustomerInquiry.setProductPrice(product.getPrice());

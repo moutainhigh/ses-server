@@ -266,6 +266,10 @@ public enum ExceptionCodeEnums {
     BATTERY_IS_NOT_EXIST(10124, "电池不存在"),
 
     BATTERIES_DOES_NOT_MEET_THE_STANDARD(10125, "电池数量不符合标准"),
+
+    CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY(10126, "正式客户不允许添加询价单，请与销售人员联系"),
+
+    DISTRUST_IS_NOT_EXIST(10127, "区域不存在，请重新输入"),
     ;
 
 

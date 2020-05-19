@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -8,13 +10,19 @@ import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.InquiryServiceMapper;
@@ -27,6 +35,7 @@ import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
+import com.redescooter.ses.web.ros.vo.inquiry.NewSaveInquiryEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +43,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -56,10 +66,16 @@ public class InquiryServiceImpl implements InquiryService {
     private OpeCustomerInquiryService opeCustomerInquiryService;
 
     @Autowired
+    private JedisCluster jedisCluster;
+
+    @Autowired
     private InquiryServiceMapper inquiryServiceMapper;
 
     @Autowired
     private OpeCustomerService opeCustomerService;
+
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
 
     @Reference
     private CityBaseService cityBaseService;
@@ -82,6 +98,7 @@ public class InquiryServiceImpl implements InquiryService {
             }
         }
         map.remove(InquiryStatusEnums.PROCESSED.getValue());
+        map.remove(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
         return map;
     }
 
@@ -107,6 +124,70 @@ public class InquiryServiceImpl implements InquiryService {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquirySingle(enter);
+        opeCustomerInquiryService.save(opeCustomerInquiry);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * @param enter
+     * @desc: 保存询价单
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/3/5 15:03
+     * @Version: Ros 1.3
+     */
+    @Override
+    public GeneralResult newSaveInquiry(NewSaveInquiryEnter enter) {
+
+        //邮箱 去空格
+        enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
+
+        // 查询已存在的email
+        List<String> emailList = inquiryServiceMapper.usingEmailList();
+        if (emailList.contains(enter.getEmail())) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
+        CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
+        if (cityResult == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
+        }
+
+        OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
+        opeCustomerInquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
+        opeCustomerInquiry.setDr(0);
+        opeCustomerInquiry.setCustomerId(0L);
+        opeCustomerInquiry.setCountry(null);
+        opeCustomerInquiry.setCity(null);
+        opeCustomerInquiry.setDistrict(cityResult.getId());
+        opeCustomerInquiry.setCustomerSource("");
+        opeCustomerInquiry.setSalesId(0L);
+        opeCustomerInquiry.setSource(InquirySourceEnums.INQUIRY.getValue());
+        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPROCESSED.getValue());
+
+        //默认为个人餐厅
+        opeCustomerInquiry.setIndustry(CustomerIndustryEnums.RESTAURANT.getValue());
+        opeCustomerInquiry.setCustomerType(CustomerTypeEnum.PERSONAL.getValue());
+
+        opeCustomerInquiry.setCompanyName(null);
+        opeCustomerInquiry.setFirstName(enter.getFirstName());
+        opeCustomerInquiry.setLastName(enter.getLastName());
+        opeCustomerInquiry.setFullName(new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
+        opeCustomerInquiry.setScooterQuantity(1);
+        opeCustomerInquiry.setContactFirst(null);
+        opeCustomerInquiry.setContactLast(null);
+        opeCustomerInquiry.setContantFullName(null);
+        opeCustomerInquiry.setCountryCode(enter.getCountryCode());
+        opeCustomerInquiry.setTelephone(enter.getTelephone());
+        opeCustomerInquiry.setEmail(enter.getEmail());
+        opeCustomerInquiry.setAddress("");
+        opeCustomerInquiry.setRemarks(enter.getRemark());
+        opeCustomerInquiry.setCreatedBy(0L);
+        opeCustomerInquiry.setUpdatedBy(0L);
+        opeCustomerInquiry.setCreatedTime(new Date());
+        opeCustomerInquiry.setUpdatedTime(new Date());
+
+
         opeCustomerInquiryService.save(opeCustomerInquiry);
         return new GeneralResult(enter.getRequestId());
     }
@@ -168,7 +249,96 @@ public class InquiryServiceImpl implements InquiryService {
         }
         inquiryResult.setCityName(city);
         inquiryResult.setDistrustName(distrust);
+
+        if (StringUtils.equals(inquiryResult.getStatus(),InquiryStatusEnums.UNPAY_DEPOSIT.getValue()) || StringUtils.equals(inquiryResult.getStatus(),InquiryStatusEnums.PAY_DEPOSIT.getValue())){
+            //验证是否可以再次发生邮件
+            Boolean exists = jedisCluster.exists(new StringBuffer(inquiryResult.getId().toString()).append("send::").append(inquiryResult.getEmail()).toString());
+            if (exists) {
+                Long ttl = jedisCluster.ttl(new StringBuffer(inquiryResult.getId().toString()).append("send::").append(inquiryResult.getEmail()).toString());
+                inquiryResult.setTtl(ttl);
+            } else {
+                inquiryResult.setTtl(new Long(0));
+            }
+        }
         return inquiryResult;
+    }
+
+    /**
+     * 定金支付邮件
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult depositPaymentEmail(IdEnter enter) {
+        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(new LambdaQueryWrapper<OpeCustomerInquiry>()
+                .eq(OpeCustomerInquiry::getId, enter.getId())
+                .eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue()));
+        //询价单校验
+        if (opeCustomerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPAY_DEPOSIT.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+
+        // 创建邮件任务
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setName(opeCustomerInquiry.getFullName());
+        baseMailTaskEnter.setToMail(opeCustomerInquiry.getEmail());
+        baseMailTaskEnter.setToUserId(opeCustomerInquiry.getCustomerId());
+        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+        baseMailTaskEnter.setRequestId(enter.getRequestId());
+        //暂时为个人端预定
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.CUSTOMER_INQUIRY_PAY_DEPOSIT.getEvent());
+        baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getValue());
+        baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
+        mailMultiTaskService.addCustomerInquiryPayDepositTask(baseMailTaskEnter);
+
+        //设置邮箱发送有效时间
+        String key = new StringBuffer(opeCustomerInquiry.getId().toString()).append("send::").append(opeCustomerInquiry.getEmail()).toString();
+        jedisCluster.set(key, DateUtil.getDate());
+        jedisCluster.expire(key, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 尾款支付邮件
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult lastParagraphEmail(IdEnter enter) {
+        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(new LambdaQueryWrapper<OpeCustomerInquiry>()
+                .eq(OpeCustomerInquiry::getId, enter.getId())
+                .eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue()));
+        //询价单校验
+        if (opeCustomerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.PAY_DEPOSIT.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+
+        // 创建邮件任务
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setName(opeCustomerInquiry.getFullName());
+        baseMailTaskEnter.setToMail(opeCustomerInquiry.getEmail());
+        baseMailTaskEnter.setToUserId(opeCustomerInquiry.getCustomerId());
+        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+        baseMailTaskEnter.setRequestId(enter.getRequestId());
+        //暂时为个人端预定
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.CUSTOMER_INQUIRY_PAY_DEPOSIT.getEvent());
+        baseMailTaskEnter.setMailAppId(AppIDEnums.SES_ROS.getValue());
+        baseMailTaskEnter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
+        mailMultiTaskService.addCustomerInquiryPayLastParagraphTask(baseMailTaskEnter);
+
+        //设置邮箱发送有效时间
+        String key = new StringBuffer(opeCustomerInquiry.getId().toString()).append("send::").append(opeCustomerInquiry.getEmail()).toString();
+        jedisCluster.set(key, DateUtil.getDate());
+        jedisCluster.expire(key, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -247,7 +417,7 @@ public class InquiryServiceImpl implements InquiryService {
         if (CustomerTypeEnum.getEnumByValue(enter.getCustomerType()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        opeCustomerInquiry.setCustomerType(enter.getCustomerType());
+        opeCustomerInquiry.setCustomerType(CustomerTypeEnum.PERSONAL.getValue());
 
         if (SesStringUtils.equals(enter.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
             if (SesStringUtils.isBlank(enter.getCompanyName())) {
