@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.service.stripe.impl;
 
+import com.google.gson.JsonSyntaxException;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
@@ -8,7 +10,9 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import com.stripe.Stripe;
-import com.stripe.model.PaymentIntent;
+import com.stripe.exception.SignatureVerificationException;
+import com.stripe.model.*;
+import com.stripe.net.Webhook;
 import com.stripe.param.PaymentIntentCreateParams;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.stripe.net.ApiResource;
+import spark.Request;
+import spark.Response;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.redescooter.ses.tool.utils.http.HttpUtils.post;
 
 @Slf4j
 @Service
@@ -83,11 +93,109 @@ public class StripeServiceImpl implements StripeService {
         return result;
     }
 
-//    @Override
-//    public void webhookPaymentIntent(Request request, Response response) {
-////        String payload = request.body();
-////        String sigHeader = request.headers("Stripe-Signature");
-////        String endpointSecret = dotenv.get("STRIPE_WEBHOOK_SECRET");
-//
-//    }
+    @Override
+    public GeneralResult hooks(Request request, Response response) {
+        String payload = request.body();
+
+        log.info("网络钩子数据回调===={}", payload);
+
+        Event event = null;
+
+        try {
+            event = ApiResource.GSON.fromJson(payload, Event.class);
+        } catch (JsonSyntaxException e) {
+            // Invalid payload
+            response.status(400);
+            return new GeneralResult();
+        }
+
+        // Deserialize the nested object inside the event
+        EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
+        StripeObject stripeObject = null;
+        if (dataObjectDeserializer.getObject().isPresent()) {
+            stripeObject = dataObjectDeserializer.getObject().get();
+        } else {
+            // Deserialization failed, probably due to an API version mismatch.
+            // Refer to the Javadoc documentation on `EventDataObjectDeserializer` for
+            // instructions on how to handle this case, or return an error here.
+        }
+
+        /*************************************************************************************/
+        PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
+        log.info(payResponseBody.toString());
+        /*************************************************************************************/
+
+        // Handle the event
+        switch (event.getType()) {
+            case "payment_intent.succeeded":
+                PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
+                // Then define and call a method to handle the successful payment intent.
+                // handlePaymentIntentSucceeded(paymentIntent);
+                break;
+            case "payment_method.attached":
+                PaymentMethod paymentMethod = (PaymentMethod) stripeObject;
+                // Then define and call a method to handle the successful attachment of a PaymentMethod.
+                // handlePaymentMethodAttached(paymentMethod);
+                break;
+            // ... handle other event types
+            default:
+                // Unexpected event type
+                response.status(400);
+                return new GeneralResult();
+        }
+
+        response.status(200);
+        return new GeneralResult();
+    }
+
+
+    static PayResponseBody generateResponse(PaymentIntent intent, PayResponseBody response) {
+        switch (intent.getStatus()) {
+            case "requires_action":
+            case "requires_source_action":
+                // Card requires authentication
+                response.setClientSecret(intent.getClientSecret());
+                response.setRequiresAction(true);
+                break;
+            case "requires_payment_method":
+            case "requires_source":
+                // Card was not properly authenticated, suggest a new payment method
+                response.setError("Your card was denied, please provide a new payment method");
+                break;
+            case "succeeded":
+                System.out.println("💰 Payment received!");
+                // Payment is complete, authentication not required
+                // To cancel the payment you will need to issue a Refund
+                // (https://stripe.com/docs/api/refunds)
+                response.setClientSecret(intent.getClientSecret());
+                break;
+            default:
+                response.setError("Unrecognized status");
+        }
+        return response;
+    }
+
+    static class PayResponseBody {
+        private String clientSecret;
+        private Boolean requiresAction;
+        private String error;
+
+        public PayResponseBody() {
+
+        }
+
+        public void setClientSecret(String clientSecret) {
+            this.clientSecret = clientSecret;
+        }
+
+        public void setRequiresAction(Boolean requiresAction) {
+            this.requiresAction = requiresAction;
+        }
+
+        public void setError(String error) {
+            this.error = error;
+        }
+    }
+
 }
+

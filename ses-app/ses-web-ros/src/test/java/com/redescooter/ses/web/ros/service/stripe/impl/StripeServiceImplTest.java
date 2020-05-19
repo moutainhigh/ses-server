@@ -40,27 +40,7 @@ public class StripeServiceImplTest extends SesWebRosApplicationTests {
 
     }
 
-    @Test
-    public void testPaymentMethod() {
 
-        Stripe.apiKey = API_SECRET_KEY;
 
-        Map<String, Object> card = new HashMap<>();
-        card.put("number", "4242424242424242");
-        card.put("exp_month", 5);
-        card.put("exp_year", 2021);
-        card.put("cvc", "314");
-        Map<String, Object> params = new HashMap<>();
-        params.put("type", "card");
-        params.put("card", card);
 
-        try {
-            PaymentMethod paymentMethod =
-                    PaymentMethod.create(params);
-
-            log.info(paymentMethod.getId());
-        } catch (StripeException e) {
-            e.printStackTrace();
-        }
-    }
 }

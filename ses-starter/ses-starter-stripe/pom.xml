@@ -20,6 +20,11 @@
             <artifactId>stripe-java</artifactId>
             <version>${stripe-java.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>${spark-core.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

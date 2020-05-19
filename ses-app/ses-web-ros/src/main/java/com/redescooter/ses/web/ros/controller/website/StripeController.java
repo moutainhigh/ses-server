@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.website;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import io.swagger.annotations.Api;
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import spark.Request;
 
 
 @Log4j2
@@ -26,10 +28,18 @@ public class StripeController {
         return new Response<>(stripeService.paymentIntent(enter));
     }
 
-//    @PostMapping(value = "/webhookPaymentIntent")
-//    @ApiOperation(value = "结果验证", response = ProductResult.class)
-//    public void webhookPaymentIntent(Request request, Response response) {
-//        stripeService.webhookPaymentIntent(request, response);
-//    }
+    @IgnoreLoginCheck
+    @PostMapping(value = "/succeeHooks")
+    @ApiOperation(value = "成功钩子")
+    public Response<GeneralResult> succeeHooks(Request request, spark.Response response) {
+        return new Response<>(stripeService.hooks(request, response));
+    }
+
+    @IgnoreLoginCheck
+    @PostMapping(value = "/failHooks")
+    @ApiOperation(value = "成功钩子")
+    public Response<GeneralResult> failHooks(Request request, spark.Response response) {
+        return new Response<>(stripeService.hooks(request, response));
+    }
 
 }

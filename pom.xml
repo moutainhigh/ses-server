@@ -39,12 +39,14 @@
         <sentinel.version>1.7.0</sentinel.version>
         <!--swagger start-->
         <springfox.version>2.8.0</springfox.version>
-        <stripe-java.version>18.16.0</stripe-java.version>
-        <swagger.version>2.8.0</swagger.version>
-        <swagger.bootstrap.ui.version>1.9.6</swagger.bootstrap.ui.version>
-        <knife4j-spring-boot-starter.version>2.0.2</knife4j-spring-boot-starter.version>
+        <!--stripe支付相关-->
+       <stripe-java.version>18.16.0</stripe-java.version>
+       <spark-core.version>2.8.0</spark-core.version>
+       <swagger.version>2.8.0</swagger.version>
+       <swagger.bootstrap.ui.version>1.9.6</swagger.bootstrap.ui.version>
+       <knife4j-spring-boot-starter.version>2.0.2</knife4j-spring-boot-starter.version>
 
-        <!--swagger end-->
+       <!--swagger end-->
         <hibernate.validator.version>6.0.8.Final</hibernate.validator.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <commons-codec.version>1.12</commons-codec.version>
