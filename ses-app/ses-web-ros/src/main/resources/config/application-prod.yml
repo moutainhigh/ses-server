@@ -47,14 +47,12 @@ spring:
   # swagger在线文档配置
   swagger:
     enabled: false                                       # 是否启用swagger
- 
 
-
-
-
-
-# 多注册中心配置
-#    reg2:
-#      group: hdg2
-#      address: zookeeper://zk1.d.xqcx.com:32181?backup=zk2.d.xqcx.com:32181,zk3.d.xqcx.com:32181
-
+## stripe pay
+stripe:
+  currency: usd
+  payment_method_types: card
+  payment_event: accept_a_payment
+  publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
+  secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
+  receipt_email: etienne@redescooter.fr
