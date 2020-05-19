@@ -325,7 +325,7 @@ public class InquiryServiceImpl implements InquiryService {
         if (CustomerTypeEnum.getEnumByValue(enter.getCustomerType()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        opeCustomerInquiry.setCustomerType(enter.getCustomerType());
+        opeCustomerInquiry.setCustomerType(CustomerTypeEnum.PERSONAL.getValue());
 
         if (SesStringUtils.equals(enter.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
             if (SesStringUtils.isBlank(enter.getCompanyName())) {
