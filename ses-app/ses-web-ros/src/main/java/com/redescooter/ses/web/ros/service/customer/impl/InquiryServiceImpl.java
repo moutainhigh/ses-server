@@ -8,7 +8,6 @@ import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
-import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
@@ -22,6 +21,8 @@ import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.InquiryServiceMapper;
@@ -42,6 +43,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -62,6 +64,9 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Autowired
     private OpeCustomerInquiryService opeCustomerInquiryService;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
     @Autowired
     private InquiryServiceMapper inquiryServiceMapper;
@@ -244,6 +249,17 @@ public class InquiryServiceImpl implements InquiryService {
         }
         inquiryResult.setCityName(city);
         inquiryResult.setDistrustName(distrust);
+
+        if (StringUtils.equals(inquiryResult.getStatus(),InquiryStatusEnums.UNPAY_DEPOSIT.getValue()) || StringUtils.equals(inquiryResult.getStatus(),InquiryStatusEnums.PAY_DEPOSIT.getValue())){
+            //验证是否可以再次发生邮件
+            Boolean exists = jedisCluster.exists(new StringBuffer(inquiryResult.getId().toString()).append("send::").append(inquiryResult.getEmail()).toString());
+            if (exists) {
+                Long ttl = jedisCluster.ttl(new StringBuffer(inquiryResult.getId().toString()).append("send::").append(inquiryResult.getEmail()).toString());
+                inquiryResult.setTtl(ttl);
+            } else {
+                inquiryResult.setTtl(new Long(0));
+            }
+        }
         return inquiryResult;
     }
 
@@ -279,6 +295,10 @@ public class InquiryServiceImpl implements InquiryService {
         baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
         mailMultiTaskService.addCustomerInquiryPayDepositTask(baseMailTaskEnter);
 
+        //设置邮箱发送有效时间
+        String key = new StringBuffer(opeCustomerInquiry.getId().toString()).append("send::").append(opeCustomerInquiry.getEmail()).toString();
+        jedisCluster.set(key, DateUtil.getDate());
+        jedisCluster.expire(key, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -313,6 +333,11 @@ public class InquiryServiceImpl implements InquiryService {
         baseMailTaskEnter.setMailAppId(AppIDEnums.SES_ROS.getValue());
         baseMailTaskEnter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
         mailMultiTaskService.addCustomerInquiryPayLastParagraphTask(baseMailTaskEnter);
+
+        //设置邮箱发送有效时间
+        String key = new StringBuffer(opeCustomerInquiry.getId().toString()).append("send::").append(opeCustomerInquiry.getEmail()).toString();
+        jedisCluster.set(key, DateUtil.getDate());
+        jedisCluster.expire(key, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());
         return new GeneralResult(enter.getRequestId());
     }
 

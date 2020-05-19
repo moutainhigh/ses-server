@@ -45,8 +45,6 @@ import com.redescooter.ses.service.mobile.b.service.base.CorExpressOrderService;
 import com.redescooter.ses.service.mobile.b.service.base.CorTenantScooterService;
 import com.redescooter.ses.service.mobile.b.service.base.CorUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.starter.redis.RedisKeyUtil;
-import com.redescooter.ses.starter.redis.RedisLock;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.DateUtil;

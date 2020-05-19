@@ -98,5 +98,5 @@ public class InquiryResult extends GeneralResult {
     private Date acceptanceTime;
 
     @ApiModelProperty(value = "剩余时间")
-    private Integer ttl=0;
+    private Long ttl;
 }
