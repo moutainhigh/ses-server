@@ -53,6 +53,22 @@ public interface InquiryService {
     InquiryResult inquiryDetail(IdEnter enter);
 
     /**
+     * 定金支付邮件
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult depositPaymentEmail(IdEnter enter);
+
+    /**
+     * 尾款支付邮件
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult lastParagraphEmail(IdEnter enter);
+
+    /**
      * 接受询价单 转化为潜在客户
      *
      * @param enter

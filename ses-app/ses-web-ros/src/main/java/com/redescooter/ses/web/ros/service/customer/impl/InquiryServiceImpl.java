@@ -1,18 +1,24 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -62,6 +68,9 @@ public class InquiryServiceImpl implements InquiryService {
     private OpeCustomerService opeCustomerService;
 
     @Reference
+    private MailMultiTaskService mailMultiTaskService;
+
+    @Reference
     private CityBaseService cityBaseService;
 
     @Reference
@@ -82,6 +91,7 @@ public class InquiryServiceImpl implements InquiryService {
             }
         }
         map.remove(InquiryStatusEnums.PROCESSED.getValue());
+        map.remove(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
         return map;
     }
 
@@ -169,6 +179,75 @@ public class InquiryServiceImpl implements InquiryService {
         inquiryResult.setCityName(city);
         inquiryResult.setDistrustName(distrust);
         return inquiryResult;
+    }
+
+    /**
+     * 定金支付邮件
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult depositPaymentEmail(IdEnter enter) {
+        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(new LambdaQueryWrapper<OpeCustomerInquiry>()
+                .eq(OpeCustomerInquiry::getId, enter.getId())
+                .eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue()));
+        //询价单校验
+        if (opeCustomerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPAY_DEPOSIT.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+
+        // 创建邮件任务
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setName(opeCustomerInquiry.getFullName());
+        baseMailTaskEnter.setToMail(opeCustomerInquiry.getEmail());
+        baseMailTaskEnter.setToUserId(opeCustomerInquiry.getCustomerId());
+        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+        baseMailTaskEnter.setRequestId(enter.getRequestId());
+        //暂时为个人端预定
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.CUSTOMER_INQUIRY_PAY_DEPOSIT.getEvent());
+        baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getValue());
+        baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
+        mailMultiTaskService.addCustomerInquiryPayDepositTask(baseMailTaskEnter);
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 尾款支付邮件
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult lastParagraphEmail(IdEnter enter) {
+        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(new LambdaQueryWrapper<OpeCustomerInquiry>()
+                .eq(OpeCustomerInquiry::getId, enter.getId())
+                .eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue()));
+        //询价单校验
+        if (opeCustomerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.PAY_DEPOSIT.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+
+        // 创建邮件任务
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setName(opeCustomerInquiry.getFullName());
+        baseMailTaskEnter.setToMail(opeCustomerInquiry.getEmail());
+        baseMailTaskEnter.setToUserId(opeCustomerInquiry.getCustomerId());
+        baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+        baseMailTaskEnter.setRequestId(enter.getRequestId());
+        //暂时为个人端预定
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.CUSTOMER_INQUIRY_PAY_DEPOSIT.getEvent());
+        baseMailTaskEnter.setMailAppId(AppIDEnums.SES_ROS.getValue());
+        baseMailTaskEnter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
+        mailMultiTaskService.addCustomerInquiryPayLastParagraphTask(baseMailTaskEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**

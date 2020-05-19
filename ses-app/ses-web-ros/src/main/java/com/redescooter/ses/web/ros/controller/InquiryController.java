@@ -64,6 +64,18 @@ public class InquiryController {
         return new Response<>(inquiryService.inquiryDetail(enter));
     }
 
+    @PostMapping(value = "/depositPaymentEmail")
+    @ApiOperation(value = "询价单定金支付邮件", response = InquiryResult.class)
+    public Response<GeneralResult> depositPaymentEmail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(inquiryService.depositPaymentEmail(enter));
+    }
+
+    @PostMapping(value = "/lastParagraphEmail")
+    @ApiOperation(value = "询价单尾款支付邮件", response = GeneralResult.class)
+    public Response<GeneralResult> lastParagraphEmail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(inquiryService.lastParagraphEmail(enter));
+    }
+
     @PostMapping(value = "/accept")
     @ApiOperation(value = "接受询价单", response = GeneralResult.class)
     public Response<GeneralResult> acceptInquiry(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
