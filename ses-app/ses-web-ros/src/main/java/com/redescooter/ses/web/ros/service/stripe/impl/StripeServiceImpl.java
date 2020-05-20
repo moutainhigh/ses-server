@@ -27,7 +27,6 @@ import spark.Response;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.redescooter.ses.tool.utils.http.HttpUtils.post;
 
 @Slf4j
 @Service
