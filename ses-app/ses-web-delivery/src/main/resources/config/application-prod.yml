@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://127.0.0.1:2181
+    address: zookeeper://172.31.3.48:2181
 
 # swagger配置
 spring:
@@ -20,7 +20,7 @@ spring:
       enabled: true
   #数据库连接
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+    url: jdbc:mysql://172.31.3.48:3306/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
     username: rede
     password: RedE2019!!
     druid:
@@ -38,12 +38,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 127.0.0.1:7000
-        - 127.0.0.1:7001
-        - 127.0.0.1:7002
-        - 127.0.0.1:7003
-        - 127.0.0.1:7004
-        - 127.0.0.1:7005
+        - 172.31.3.48:7000
+        - 172.31.3.48:7001
+        - 172.31.3.48:7002
+        - 172.31.3.48:7003
+        - 172.31.3.48:7004
+        - 172.31.3.48:7005
   # swagger在线文档配置
   swagger:
     enabled: false                                       # 是否启用swagger
