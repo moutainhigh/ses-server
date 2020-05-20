@@ -33,8 +33,8 @@ spring:
         - 192.168.2.200:7005
   # 邮件配置
   mail:
-    from: 761291381@qq.com
-    username: 761291381@qq.com
-    host: smtp.qq.com
-    password: mkkebysfusumbbce
-    port: 587
+    from: support@redescooter.com
+    username: support@redescooter.com
+    host: smtp.exmail.qq.com
+    password: RedE2019.scooter
+    port: 465
