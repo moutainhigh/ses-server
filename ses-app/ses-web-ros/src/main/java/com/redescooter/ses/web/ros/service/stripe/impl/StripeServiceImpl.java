@@ -141,7 +141,7 @@ public class StripeServiceImpl implements StripeService {
 
     @Override
     public GeneralResult failHooks(Request request, Response response) {
-        String payload = request.body();
+        String payload = response.body();
 
         log.info("网络钩子数据回调===={}", payload);
 
