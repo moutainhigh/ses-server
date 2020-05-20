@@ -73,6 +73,8 @@ public class StripeServiceImpl implements StripeService {
             throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
         }
 
+        log.info("金额==={}",payOrder.getTotalPrice().longValue());
+
         Map<String, String> map = new HashMap<>();
         map.put(integrationCheck, PaymentEvent);
         map.put("order_id", String.valueOf(payOrder.getId()));
@@ -88,6 +90,9 @@ public class StripeServiceImpl implements StripeService {
                         .build();
 
         PaymentIntent intent = PaymentIntent.create(params);
+
+        log.info("======{}=====",intent);
+
         result.setValue(intent.getClientSecret());
         return result;
     }
@@ -130,26 +135,7 @@ public class StripeServiceImpl implements StripeService {
         log.info(payResponseBody.toString());
         /*************************************************************************************/
 
-        // Handle the event
-        switch (event.getType()) {
-            case "payment_intent.succeeded":
-                PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
-                // Then define and call a method to handle the successful payment intent.
-                // handlePaymentIntentSucceeded(paymentIntent);
-                break;
-            case "payment_method.attached":
-                PaymentMethod paymentMethod = (PaymentMethod) stripeObject;
-                // Then define and call a method to handle the successful attachment of a PaymentMethod.
-                // handlePaymentMethodAttached(paymentMethod);
-                break;
-            // ... handle other event types
-            default:
-                // Unexpected event type
-                response.status(400);
-                return new GeneralResult();
-        }
 
-        response.status(200);
         return new GeneralResult();
     }
 
@@ -185,26 +171,7 @@ public class StripeServiceImpl implements StripeService {
         log.info(payResponseBody.toString());
         /*************************************************************************************/
 
-        // Handle the event
-        switch (event.getType()) {
-            case "payment_intent.succeeded":
-                PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
-                // Then define and call a method to handle the successful payment intent.
-                // handlePaymentIntentSucceeded(paymentIntent);
-                break;
-            case "payment_method.attached":
-                PaymentMethod paymentMethod = (PaymentMethod) stripeObject;
-                // Then define and call a method to handle the successful attachment of a PaymentMethod.
-                // handlePaymentMethodAttached(paymentMethod);
-                break;
-            // ... handle other event types
-            default:
-                // Unexpected event type
-                response.status(400);
-                return new GeneralResult();
-        }
 
-        response.status(200);
         return new GeneralResult();
     }
 
@@ -226,6 +193,7 @@ public class StripeServiceImpl implements StripeService {
                 // Payment is complete, authentication not required
                 // To cancel the payment you will need to issue a Refund
                 // (https://stripe.com/docs/api/refunds)
+                //支付后续业务
                 response.setClientSecret(intent.getClientSecret());
                 break;
             default:
@@ -233,6 +201,8 @@ public class StripeServiceImpl implements StripeService {
         }
         return response;
     }
+
+
 
     static class PayResponseBody {
         private String clientSecret;
