@@ -498,6 +498,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 break;
         }
 
-        return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty)));
+        //todo 目前是优惠价 减500欧元
+        return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty))).subtract(new BigDecimal(500));
     }
 }
