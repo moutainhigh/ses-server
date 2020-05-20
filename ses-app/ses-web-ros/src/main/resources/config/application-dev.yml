@@ -189,9 +189,9 @@ spring:                                                                         
 
 ## stripe pay
 stripe:
-  currency: usd
+  currency: eur
   payment_method_types: card
-  payment_event: accept_a_payment
+  payment_event: payment_intent.succeeded
   publishable_key: pk_live_Pze51XBNr8tI4pThesU7DEHD00a8pjUbmi
   secret_key: sk_live_XI5FWzDuNst1L19NoOjgHypE00VEtFd8kO
   receipt_email: etienne@redescooter.fr

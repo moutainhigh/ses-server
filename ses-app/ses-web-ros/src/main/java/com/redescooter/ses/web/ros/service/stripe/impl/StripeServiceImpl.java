@@ -1,6 +1,9 @@
 package com.redescooter.ses.web.ros.service.stripe.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.gson.JsonSyntaxException;
+import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringResult;
@@ -24,6 +27,7 @@ import com.stripe.net.ApiResource;
 import spark.Request;
 import spark.Response;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,7 +77,7 @@ public class StripeServiceImpl implements StripeService {
             throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
         }
 
-        log.info("金额==={}",payOrder.getTotalPrice().longValue());
+        log.info("金额==={}", payOrder.getTotalPrice().longValue());
 
         Map<String, String> map = new HashMap<>();
         map.put(integrationCheck, PaymentEvent);
@@ -91,7 +95,7 @@ public class StripeServiceImpl implements StripeService {
 
         PaymentIntent intent = PaymentIntent.create(params);
 
-        log.info("======{}=====",intent);
+        log.info("======{}=====", intent);
 
         result.setValue(intent.getClientSecret());
         return result;
@@ -99,6 +103,7 @@ public class StripeServiceImpl implements StripeService {
 
     /**
      * 收款成功
+     *
      * @param request
      * @param response
      * @return
@@ -119,6 +124,8 @@ public class StripeServiceImpl implements StripeService {
             return new GeneralResult();
         }
 
+        log.info("___________________________________________________________________________");
+
         // Deserialize the nested object inside the event
         EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
         StripeObject stripeObject = null;
@@ -132,9 +139,11 @@ public class StripeServiceImpl implements StripeService {
 
         /*************************************************************************************/
         PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
-        log.info(payResponseBody.toString());
+        log.info(payResponseBody.toString()+"________________________");
         /*************************************************************************************/
 
+
+        paymentSuccess(payload);
 
         return new GeneralResult();
     }
@@ -202,6 +211,32 @@ public class StripeServiceImpl implements StripeService {
         return response;
     }
 
+    /**
+     * 支付成功进行订单数据保存
+     *
+     * @param payload
+     */
+    private void paymentSuccess(String payload) {
+
+        //钩子返回时string 需要进行两层的json格式化
+        //第一层结构
+        HashMap hashMap = JSON.parseObject(payload, HashMap.class);
+
+        //第二层结构
+        HashMap mapType = JSON.parseObject(hashMap.get("metadata").toString(), HashMap.class);
+        //订单Id
+        Long orderId = Long.valueOf(mapType.get("order_id").toString());
+
+        OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(orderId);
+        if (customerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        //订单数据保存
+        customerInquiry.setPayStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
+        customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
+        customerInquiry.setUpdatedTime(new Date());
+        opeCustomerInquiryService.updateById(customerInquiry);
+    }
 
 
     static class PayResponseBody {
