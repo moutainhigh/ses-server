@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.constant.EamilConstant;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
@@ -31,16 +32,7 @@ import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.base.impl.OpeCustomerAccessoriesService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
-import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
-import com.redescooter.ses.web.ros.vo.website.CustomerInfoResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormInfoResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
-import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
-import com.redescooter.ses.web.ros.vo.website.ProductResult;
-import com.redescooter.ses.web.ros.vo.website.SaveOrderFormResult;
-import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
-import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
+import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +40,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -90,6 +83,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Reference
     private IdAppService idAppService;
 
+    @Autowired
+    private JedisCluster jedisCluster;
 
     /**
      * 车辆型号
@@ -445,6 +440,19 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .firstName(opeCustomer.getCustomerFirstName())
                 .lastName(opeCustomer.getCustomerLastName())
                 .build();
+    }
+    /**
+     * 存储邮箱
+     *
+     * @param enter
+     */
+    @Override
+    public GeneralResult email(StorageEamilEnter enter) {
+      if (enter.getEmail().isEmpty()) {
+        throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
+      }
+      jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL+enter.getRequestId(), enter.getEmail());
+      return new GeneralResult(enter.getRequestId());
     }
 
     private OpeCustomerInquiryB buildAccessory(SaveSaleOrderEnter enter, Long id, BigDecimal price, String type) {

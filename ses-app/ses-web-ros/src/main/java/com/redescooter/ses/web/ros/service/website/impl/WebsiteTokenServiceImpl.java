@@ -176,19 +176,6 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     return userToken;
   }
 
-  /**
-   * 用户注册
-   *
-   * @param enter
-   */
-  @Override
-  public GeneralResult email(StorageEamilEnter enter) {
-    if (enter.getEmail().isEmpty()) {
-      throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
-    }
-    jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL+enter.getRequestId(), enter.getEmail());
-    return new GeneralResult(enter.getRequestId());
-  }
 
   /**
    * 设置登录的token

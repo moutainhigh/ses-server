@@ -48,10 +48,5 @@ public interface WebSiteTokenService {
      */
     UserToken checkCustomerToken(GeneralEnter enter);
 
-  /**
-   * 用户注册
-   *
-   * @param enter
-   */
-  GeneralResult email(StorageEamilEnter enter);
+
 }
