@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.time;
 
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.tool.utils.DateUtil;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 
 import java.util.Date;
@@ -20,5 +21,12 @@ public class TimeTest {
         Date endRenewAccountTime = DateUtil.parse("2020-03-18 15:59:59", DateConstant.DEFAULT_DATETIME_FORMAT);
 
         System.out.println(DateUtil.timeComolete(endRenewAccountTime, startRenewAccountTime));
+    }
+    @Test
+    public void test(){
+
+        for (int i = 0; i < 1000; i++) {
+            System.out.println(RandomUtils.nextInt(10000,99999));
+        }
     }
 }
