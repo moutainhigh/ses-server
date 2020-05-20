@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
+import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -57,5 +58,13 @@ public class WebsiteTokenController {
     public Response<GeneralResult> signUp(@ModelAttribute @ApiParam("请求参数") SignUpEnter enter) {
         return new Response<>(webSiteService.signUp(enter));
     }
+
+
+      @IgnoreLoginCheck
+      @PostMapping(value = "/email")
+      @ApiOperation(value = "存储邮箱", response = GeneralResult.class)
+      public Response<GeneralResult> email(@ModelAttribute @ApiParam("请求参数") StorageEamilEnter enter) {
+        return new Response<>(webSiteService.email(enter));
+      }
 
 }
