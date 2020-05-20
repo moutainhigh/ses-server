@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
+import com.redescooter.ses.web.ros.vo.inquiry.NewSaveInquiryEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -48,8 +49,8 @@ public class InquiryController {
     @IgnoreLoginCheck
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存询价单", response = GeneralResult.class)
-    public Response<GeneralResult> saveInquiry(@ModelAttribute @ApiParam("请求参数") SaveInquiryEnter enter) {
-        return new Response<>(inquiryService.saveInquiry(enter));
+    public Response<GeneralResult> newSaveInquiry(@ModelAttribute @ApiParam("请求参数") NewSaveInquiryEnter enter) {
+        return new Response<>(inquiryService.newSaveInquiry(enter));
     }
 
     @PostMapping(value = "/list")
@@ -62,6 +63,18 @@ public class InquiryController {
     @ApiOperation(value = "询价单详情", response = InquiryResult.class)
     public Response<InquiryResult> inquiryDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(inquiryService.inquiryDetail(enter));
+    }
+
+    @PostMapping(value = "/depositPaymentEmail")
+    @ApiOperation(value = "询价单定金支付邮件", response = InquiryResult.class)
+    public Response<GeneralResult> depositPaymentEmail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(inquiryService.depositPaymentEmail(enter));
+    }
+
+    @PostMapping(value = "/lastParagraphEmail")
+    @ApiOperation(value = "询价单尾款支付邮件", response = GeneralResult.class)
+    public Response<GeneralResult> lastParagraphEmail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(inquiryService.lastParagraphEmail(enter));
     }
 
     @PostMapping(value = "/accept")

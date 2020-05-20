@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
+import com.redescooter.ses.web.ros.vo.inquiry.NewSaveInquiryEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 
 import java.util.Map;
@@ -33,6 +34,16 @@ public interface InquiryService {
     GeneralResult saveInquiry(SaveInquiryEnter enter);
 
     /**
+     * @desc: 保存询价单
+     * @param: enter
+     * @retrn: GeneralResult
+     * @auther: alex
+     * @date: 2020/3/5 15:03
+     * @Version: Ros 1.3
+     */
+    GeneralResult newSaveInquiry(NewSaveInquiryEnter enter);
+
+    /**
      * @desc: 询价单列表
      * @param: enter
      * @retrn: InquiryResult
@@ -51,6 +62,22 @@ public interface InquiryService {
      * @Version: Ros 1.3
      */
     InquiryResult inquiryDetail(IdEnter enter);
+
+    /**
+     * 定金支付邮件
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult depositPaymentEmail(IdEnter enter);
+
+    /**
+     * 尾款支付邮件
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult lastParagraphEmail(IdEnter enter);
 
     /**
      * 接受询价单 转化为潜在客户

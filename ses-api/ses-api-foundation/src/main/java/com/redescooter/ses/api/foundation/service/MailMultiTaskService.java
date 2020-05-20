@@ -90,6 +90,21 @@ public interface MailMultiTaskService {
     GeneralResult addExpiredWarnWebTask(BaseMailTaskEnter enter);
 
     /**
+     * 客户询价单定金支付
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult addCustomerInquiryPayDepositTask(BaseMailTaskEnter enter);
+
+    /**
+     * 客户询价单尾款支付
+     * @param enter 尾款
+     * @return
+     */
+    GeneralResult addCustomerInquiryPayLastParagraphTask(BaseMailTaskEnter enter);
+
+    /**
      * 多系统多维度添加邮件任务
      *
      * @return

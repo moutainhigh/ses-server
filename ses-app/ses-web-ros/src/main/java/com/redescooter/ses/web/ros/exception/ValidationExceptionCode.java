@@ -165,5 +165,7 @@ public interface ValidationExceptionCode {
     //CVV为空
     int CVV_IS_EMPTY = 10102;
     //邮编为空
-    int POSTAL_CODE_IS_EMPTY=10103;
+    int POSTAL_CODE_IS_EMPTY = 10103;
+    //区域为空
+    int REGION_IS_EMPTY = 10104;
 }

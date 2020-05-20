@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.website.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
@@ -153,6 +154,15 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Transactional
     @Override
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
+        //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
+        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        if (StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getMessage());
+        }
+
         //后备箱 校验
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
@@ -175,15 +185,13 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
 
         //电池要求过滤
-        checkBatteryQty(enter, product);
+        BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
 
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
         //总价格计算
-        BigDecimal totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty())));
-
         if (enter.getBuyTopCase()) {
-            totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty()))).add(topCase.getPrice());
+            totalPrice = totalPrice.add(topCase.getPrice());
         }
 
         //生成主订单
@@ -215,6 +223,13 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter) {
+
+        OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
+        if (customerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        //状态过滤
+
         //后备箱 校验
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
@@ -236,16 +251,14 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
-        //电池要求过滤
-        checkBatteryQty(enter, product);
+        //电池要求过滤 并计算价格
+        BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
 
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
-        //总价格计算
-        BigDecimal totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty())));
 
         if (enter.getBuyTopCase()) {
-            totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty()))).add(topCase.getPrice());
+            totalPrice = totalPrice.add(topCase.getPrice());
         }
         //生成主订单
         OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, enter.getId());
@@ -291,12 +304,13 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(id);
         opeCustomerInquiry.setDr(0);
+        opeCustomerInquiry.setCustomerId(enter.getUserId());
         opeCustomerInquiry.setFirstName(opeCustomer.getCustomerFirstName());
         opeCustomerInquiry.setLastName(opeCustomer.getCustomerLastName());
         opeCustomerInquiry.setFullName(opeCustomer.getCustomerFullName());
         opeCustomerInquiry.setEmail(opeCustomer.getEmail());
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
-        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPROCESSED.getValue());
+        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setProductId(enter.getProductId());
         opeCustomerInquiry.setProductModel(enter.getProductModel());
         opeCustomerInquiry.setProductPrice(product.getPrice());
@@ -456,23 +470,35 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @param enter
      * @param product
      */
-    private void checkBatteryQty(SaveSaleOrderEnter enter, ProductResult product) {
+    private BigDecimal checkBatteryQty(SaveSaleOrderEnter enter, ProductResult product, BigDecimal batteryPrice) {
+        int qty = 0;
+
         switch (product.getProductModel()) {
             case "1":
+                //50CC 默认配置 一组电池
                 if (enter.getAccessoryBatteryQty() < 1) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
+
+                qty = enter.getAccessoryBatteryQty() - 1;
                 break;
             case "2":
+                //100CC 默认配置 两组电池
                 if (enter.getAccessoryBatteryQty() < 2) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
+                qty = enter.getAccessoryBatteryQty() - 2;
+
                 break;
             case "3":
+                //125CC 默认配置 配置四组电池
                 if (enter.getAccessoryBatteryQty() < 4) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
                 break;
         }
+
+        //todo 目前是优惠价 减500欧元
+        return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty))).subtract(new BigDecimal(500));
     }
 }

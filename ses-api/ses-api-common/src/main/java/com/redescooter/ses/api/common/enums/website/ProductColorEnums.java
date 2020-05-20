@@ -17,9 +17,10 @@ import lombok.NoArgsConstructor;
 public enum ProductColorEnums {
 
     RED("RED", "红色", "1"),
-    BLACK("BLACK", "黑色", "2"),
-    YELLOW("YELLOW", "黄色", "3"),
-    WHITE("WHITE", "白色", "4"),
+    BLUE("BLUE", "蓝色", "2"),
+    CHAMPAGNE("CHAMPAGNE", "香槟色", "3"),
+    CARBON("CARBON", "炭灰色", "4"),
+    BLACK("BLACK","黑色","5"),
     ;
 
     private String code;
