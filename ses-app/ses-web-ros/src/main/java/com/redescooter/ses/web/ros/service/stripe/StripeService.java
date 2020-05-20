@@ -18,9 +18,20 @@ public interface StripeService {
 
     /**
      * 网络钩子
+     * 成功时
      *
      * @param request
      * @param response
      */
-    GeneralResult hooks(Request request, Response response);
+    GeneralResult succeeHooks(Request request, Response response);
+
+    /**
+     * 网络钩子
+     * 失败时
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    GeneralResult failHooks(Request request, Response response);
 }

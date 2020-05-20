@@ -32,14 +32,14 @@ public class StripeController {
     @PostMapping(value = "/succeeHooks")
     @ApiOperation(value = "成功钩子")
     public Response<GeneralResult> succeeHooks(Request request, spark.Response response) {
-        return new Response<>(stripeService.hooks(request, response));
+        return new Response<>(stripeService.succeeHooks(request, response));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/failHooks")
-    @ApiOperation(value = "成功钩子")
+    @ApiOperation(value = "失败钩子")
     public Response<GeneralResult> failHooks(Request request, spark.Response response) {
-        return new Response<>(stripeService.hooks(request, response));
+        return new Response<>(stripeService.failHooks(request, response));
     }
 
 }
