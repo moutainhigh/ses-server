@@ -185,15 +185,14 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
 
         //电池要求过滤
-        checkBatteryQty(enter, product);
+        BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
 
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
         //总价格计算
-        BigDecimal totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty())));
 
         if (enter.getBuyTopCase()) {
-            totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty()))).add(topCase.getPrice());
+            totalPrice = totalPrice.add(topCase.getPrice());
         }
 
         //生成主订单
@@ -254,15 +253,14 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
 
         //电池要求过滤
-        checkBatteryQty(enter, product);
+        BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
 
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
         //总价格计算
-        BigDecimal totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty())));
 
         if (enter.getBuyTopCase()) {
-            totalPrice = product.getPrice().add(battery.getPrice().multiply(new BigDecimal(enter.getAccessoryBatteryQty()))).add(topCase.getPrice());
+            totalPrice = totalPrice.add(topCase.getPrice());
         }
         //生成主订单
         OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, enter.getId());
@@ -474,23 +472,34 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @param enter
      * @param product
      */
-    private void checkBatteryQty(SaveSaleOrderEnter enter, ProductResult product) {
+    private BigDecimal checkBatteryQty(SaveSaleOrderEnter enter, ProductResult product, BigDecimal batteryPrice) {
+        int qty = 0;
+
         switch (product.getProductModel()) {
             case "1":
+                //50CC 默认配置 一组电池
                 if (enter.getAccessoryBatteryQty() < 1) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
+
+                qty = enter.getAccessoryBatteryQty() - 1;
                 break;
             case "2":
+                //100CC 默认配置 两组电池
                 if (enter.getAccessoryBatteryQty() < 2) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
+                qty = enter.getAccessoryBatteryQty() - 2;
+
                 break;
             case "3":
+                //125CC 默认配置 配置四组电池
                 if (enter.getAccessoryBatteryQty() < 4) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
                 break;
         }
+
+        return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty)));
     }
 }
