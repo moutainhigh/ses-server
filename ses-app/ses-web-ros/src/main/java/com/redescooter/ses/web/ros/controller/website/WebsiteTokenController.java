@@ -59,12 +59,4 @@ public class WebsiteTokenController {
         return new Response<>(webSiteService.signUp(enter));
     }
 
-
-    @IgnoreLoginCheck
-    @PostMapping(value = "/email")
-    @ApiOperation(value = "存储邮箱", response = GeneralResult.class)
-    public Response<GeneralResult> email(@ModelAttribute @ApiParam("请求参数") StorageEamilEnter enter) {
-      return new Response<>(webSiteService.email(enter));
-    }
-
 }

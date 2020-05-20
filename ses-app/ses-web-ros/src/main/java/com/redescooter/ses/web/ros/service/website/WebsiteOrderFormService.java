@@ -5,16 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
-import com.redescooter.ses.web.ros.vo.website.CustomerInfoResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormInfoResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
-import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
-import com.redescooter.ses.web.ros.vo.website.SaveOrderFormResult;
-import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
-import com.redescooter.ses.web.ros.vo.website.ProductResult;
-import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
+import com.redescooter.ses.web.ros.vo.website.*;
 
 import java.util.List;
 
@@ -123,4 +114,10 @@ public interface WebsiteOrderFormService {
      * @return
      */
     CustomerInfoResult customerInfo(GeneralEnter enter);
+    /**
+     * 存储邮箱
+     *
+     * @param enter
+     */
+    GeneralResult email(StorageEamilEnter enter);
 }

@@ -9,16 +9,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
-import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
-import com.redescooter.ses.web.ros.vo.website.CustomerInfoResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormInfoResult;
-import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
-import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
-import com.redescooter.ses.web.ros.vo.website.ProductResult;
-import com.redescooter.ses.web.ros.vo.website.SaveOrderFormResult;
-import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
-import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
+import com.redescooter.ses.web.ros.vo.website.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -133,4 +124,10 @@ public class WebsiteOrderFormController {
     public Response<CustomerInfoResult> customerInfo(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(websiteOrderFormService.customerInfo(enter));
     }
+    @IgnoreLoginCheck
+    @PostMapping(value = "/email")
+    @ApiOperation(value = "存储邮箱", response = GeneralResult.class)
+    public Response<GeneralResult> email(@ModelAttribute @ApiParam("请求参数") StorageEamilEnter enter) {
+      return new Response<>(websiteOrderFormService.email(enter));
+  }
 }
