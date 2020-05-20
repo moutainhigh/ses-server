@@ -190,7 +190,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
         //总价格计算
-
         if (enter.getBuyTopCase()) {
             totalPrice = totalPrice.add(topCase.getPrice());
         }
