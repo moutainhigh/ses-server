@@ -1,8 +1,10 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.EamilConstant;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
@@ -184,7 +186,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     if (enter.getEmail().isEmpty()) {
       throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
     }
-    jedisCluster.set(enter.getRequestId(), enter.getEmail());
+    jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL+enter.getRequestId(), enter.getEmail());
     return new GeneralResult(enter.getRequestId());
   }
 
