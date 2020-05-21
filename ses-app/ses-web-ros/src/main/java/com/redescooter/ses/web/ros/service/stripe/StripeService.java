@@ -4,7 +4,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringResult;
 import spark.Request;
-import spark.Response;
 
 public interface StripeService {
 
@@ -23,7 +22,7 @@ public interface StripeService {
      * @param request
      * @param response
      */
-    GeneralResult succeeHooks(Request request, Response response);
+    GeneralResult succeeHooks(Request request, spark.Response response);
 
     /**
      * 网络钩子
@@ -33,5 +32,5 @@ public interface StripeService {
      * @param response
      * @return
      */
-    GeneralResult failHooks(Request request, Response response);
+    GeneralResult failHooks(Request request, spark.Response response);
 }

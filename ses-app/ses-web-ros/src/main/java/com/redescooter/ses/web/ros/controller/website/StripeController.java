@@ -40,7 +40,7 @@ public class StripeController {
     @IgnoreLoginCheck
     @PostMapping(value = "/failHooks")
     @ApiOperation(value = "失败钩子")
-    public Response<GeneralResult> failHooks(Request request, spark.Response response) {
+    public Response<GeneralResult>  failHooks(Request request,spark.Response response) {
         return new Response<>(stripeService.failHooks(request, response));
     }
 

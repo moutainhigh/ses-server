@@ -155,7 +155,7 @@ public class AllocateServiceImpl implements AllocateService {
     @Override
     public PageResult<AllocateOrderResult> list(AllocateOrderEnter enter) {
 
-        List<String> statusList = Lists.newArrayList();
+        List<String> statusList = new ArrayList();
         if (StringUtils.equals(ProductionTypeEnums.TODO.getValue(), enter.getClassType())) {
             for (AllocateOrderStatusEnums item : AllocateOrderStatusEnums.values()) {
                 statusList.add(item.getValue());

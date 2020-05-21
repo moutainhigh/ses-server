@@ -39,6 +39,7 @@ public class WebsiteTokenController {
     private WebSiteTokenService webSiteService;
 
     @IgnoreLoginCheck
+    @WebsiteSignIn
     @PostMapping(value = "/login")
     @ApiOperation(value = "官网登录", response = TokenResult.class)
     public Response<TokenResult> login(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {

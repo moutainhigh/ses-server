@@ -15,16 +15,20 @@
     <description>stripe支付</description>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.stripe/stripe-java -->
         <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
-            <version>${stripe-java.version}</version>
+            <version>${stripe.version}</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.sparkjava/spark-core -->
         <dependency>
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
-            <version>${spark-core.version}</version>
+            <version>${spark.version}</version>
         </dependency>
+
     </dependencies>
 
 </project>

@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.exception;
 
-import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
