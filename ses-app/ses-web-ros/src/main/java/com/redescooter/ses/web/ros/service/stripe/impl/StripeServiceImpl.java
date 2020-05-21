@@ -1,36 +1,41 @@
 package com.redescooter.ses.web.ros.service.stripe.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.gson.JsonSyntaxException;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringResult;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import com.stripe.Stripe;
-import com.stripe.exception.SignatureVerificationException;
-import com.stripe.model.*;
-import com.stripe.net.Webhook;
+import com.stripe.model.Event;
+import com.stripe.model.EventDataObjectDeserializer;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.StripeObject;
+import com.stripe.net.ApiResource;
 import com.stripe.param.PaymentIntentCreateParams;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.poi.extractor.OLE2ExtractorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.stripe.net.ApiResource;
 import spark.Request;
 import spark.Response;
 
-import java.util.ArrayList;
+import javax.validation.constraints.Email;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -57,8 +62,11 @@ public class StripeServiceImpl implements StripeService {
 
     @Autowired
     private OpeCustomerInquiryService opeCustomerInquiryService;
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
 
-    @SneakyThrows
+
+  @SneakyThrows
     @Override
     public StringResult paymentIntent(IdEnter enter) {
 
@@ -240,6 +248,25 @@ public class StripeServiceImpl implements StripeService {
         opeCustomerInquiryService.updateById(customerInquiry);
     }
 
+    /*
+    *  发送邮件
+    *
+    * */
+    private void sendmail(String eamil){
+      String name = eamil.substring(0, eamil.indexOf("@"));
+      BaseMailTaskEnter enter = new BaseMailTaskEnter();
+      enter.setName(name);
+      enter.setEvent(MailTemplateEventEnums.SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL.getName());
+      enter.setMailAppId(AppIDEnums.SES_ROS.getSystemId());
+      enter.setMailSystemId(SystemIDEnums.REDE_SES.getValue());
+      enter.setToMail(eamil);
+      enter.setCode("0");
+      enter.setRequestId("0");
+      enter.setUserRequestId("0");
+      enter.setToUserId(0L);
+      enter.setUserId(0L);
+      mailMultiTaskService.subscriptionPaySucceedSendmail(enter);
+    }
 
     static class PayResponseBody {
         private String clientSecret;
