@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.controller.website;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import io.swagger.annotations.Api;
@@ -22,6 +23,7 @@ public class StripeController {
     @Autowired
     private StripeService stripeService;
 
+    @WebsiteSignIn
     @PostMapping(value = "/paymentIntent")
     @ApiOperation(value = "获取client_secret", response = StringResult.class)
     public Response<StringResult> paymentIntent(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
