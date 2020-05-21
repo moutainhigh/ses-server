@@ -110,7 +110,7 @@ public class StripeServiceImpl implements StripeService {
      */
     @Override
     public GeneralResult succeeHooks(Request request, Response response) {
-        if(response==null){
+        if (response == null) {
             return new GeneralResult(String.valueOf(UUID.randomUUID()));
         }
 
@@ -127,7 +127,7 @@ public class StripeServiceImpl implements StripeService {
             return new GeneralResult(String.valueOf(UUID.randomUUID()));
         }
         EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
-        StripeObject stripeObject = dataObjectDeserializer.getObject().get();;
+        StripeObject stripeObject = dataObjectDeserializer.getObject().get();
 
         PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
 
@@ -140,7 +140,7 @@ public class StripeServiceImpl implements StripeService {
     @Override
     public GeneralResult failHooks(Request request, Response response) {
 
-        if(response==null){
+        if (response == null) {
             return new GeneralResult(String.valueOf(UUID.randomUUID()));
         }
 
@@ -157,7 +157,7 @@ public class StripeServiceImpl implements StripeService {
             return new GeneralResult(String.valueOf(UUID.randomUUID()));
         }
         EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
-        StripeObject stripeObject = dataObjectDeserializer.getObject().get();;
+        StripeObject stripeObject = dataObjectDeserializer.getObject().get();
 
         PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
 
@@ -168,7 +168,7 @@ public class StripeServiceImpl implements StripeService {
         return new GeneralResult(String.valueOf(UUID.randomUUID()));
     }
 
-    static PayResponseBody generateResponse(PaymentIntent intent, PayResponseBody response) {
+    private PayResponseBody generateResponse(PaymentIntent intent, PayResponseBody response) {
         switch (intent.getStatus()) {
             case "requires_action":
             case "requires_source_action":
@@ -182,13 +182,17 @@ public class StripeServiceImpl implements StripeService {
                 response.setError("Your card was denied, please provide a new payment method");
                 break;
             case "succeeded":
-                System.out.println("💰 Payment received!");
-
-                // Payment is complete, authentication not required
-                // To cancel the payment you will need to issue a Refund
-                // (https://stripe.com/docs/api/refunds)
                 //支付后续业务
                 response.setClientSecret(intent.getClientSecret());
+
+                Map<String, String> metadata = intent.getMetadata();
+                metadata.forEach((k, v) -> {
+                    log.info("====={}=================={}======", k, v);
+                });
+
+                paymentSuccess(metadata.get("order_id"));
+                System.out.println("💰 Payment received!");
+
                 break;
             default:
                 response.setError("Unrecognized status");
@@ -199,18 +203,11 @@ public class StripeServiceImpl implements StripeService {
     /**
      * 支付成功进行订单数据保存
      *
-     * @param payload
+     * @param id
      */
-    private void paymentSuccess(String payload) {
-
-        //钩子返回时string 需要进行两层的json格式化
-        //第一层结构
-        HashMap hashMap = JSON.parseObject(payload, HashMap.class);
-
-        //第二层结构
-        HashMap mapType = JSON.parseObject(hashMap.get("metadata").toString(), HashMap.class);
+    private void paymentSuccess(String id) {
         //订单Id
-        Long orderId = Long.valueOf(mapType.get("order_id").toString());
+        Long orderId = Long.valueOf(id);
 
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(orderId);
         if (customerInquiry == null) {
@@ -221,6 +218,8 @@ public class StripeServiceImpl implements StripeService {
         customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setUpdatedTime(new Date());
         opeCustomerInquiryService.updateById(customerInquiry);
+
+        sendmail(customerInquiry.getEmail());
     }
 
     /*
