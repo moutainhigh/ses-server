@@ -66,9 +66,8 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
   @Transactional
   @Override
   public TokenResult login(LoginEnter enter) {
-    //登录信息 去空格
-    SesStringUtils.stringTrim(enter.getLoginName());
-    SesStringUtils.stringTrim(enter.getPassword());
+    //入参对象去空格
+    SesStringUtils.objStringTrim(enter);
 
     //用户校验
     QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
@@ -126,6 +125,10 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
    */
   @Override
   public GeneralResult signUp(SignUpEnter enter) {
+
+    //入参对象去空格
+    SesStringUtils.objStringTrim(enter);
+
     //用户校验
     QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
     opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());

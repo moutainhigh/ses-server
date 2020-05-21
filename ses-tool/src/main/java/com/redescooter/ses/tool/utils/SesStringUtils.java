@@ -1,9 +1,9 @@
 package com.redescooter.ses.tool.utils;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -160,5 +160,35 @@ public class SesStringUtils extends StringUtils {
             return val;
         }
         return stringTrim(val).replaceAll("(.{" + intervalsN + "})", "$" + spaceN + " ");
+    }
+
+    /**
+     * 首位去空格  可接受任意对象
+     * @param t
+     * @param <T>
+     * @return
+     */
+    public static <T extends Object> T objStringTrim(T t) {
+        //如果时一个字符串 直接返回
+        if (t instanceof String) {
+            return (T) ((String) t).trim();
+        }
+
+        try {
+            //获取所有字段
+            Field[] declaredFields = t.getClass().getDeclaredFields();
+            for (Field item : declaredFields) {
+                // 如果时String 类型 的字段 前后去空格
+                if (item.getGenericType().toString().equals(stringFullName)) {
+                    // 设置属性可以直接的进行访问
+                    item.setAccessible(true);
+                    //属性值前后去空格返回
+                    item.set(t,String.valueOf(item.get(t)).trim());
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return t;
     }
 }
