@@ -1,5 +1,6 @@
 package com.redescooter.ses.tool.utils;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -8,6 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SesStringUtils extends StringUtils {
+
+    private static final String stringFullName="class java.lang.String";
+
 
     public static String lowerFirst(String str) {
         if (SesStringUtils.isBlank(str)) {
@@ -182,6 +186,12 @@ public class SesStringUtils extends StringUtils {
                 if (item.getGenericType().toString().equals(stringFullName)) {
                     // 设置属性可以直接的进行访问
                     item.setAccessible(true);
+
+                    //当前字段值为空 就终止此次循环
+                    if (org.springframework.util.StringUtils.isEmpty(item.get(t))){
+                        continue;
+                    }
+
                     //属性值前后去空格返回
                     item.set(t,String.valueOf(item.get(t)).trim());
                 }

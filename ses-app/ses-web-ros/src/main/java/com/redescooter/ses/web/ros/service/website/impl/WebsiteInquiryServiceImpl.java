@@ -17,6 +17,7 @@ import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -149,6 +150,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Transactional
     @Override
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
+        //入参对象去空格
+        SesStringUtils.objStringTrim(enter);
+
         //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
         OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
         if (opeCustomer == null) {
@@ -222,6 +226,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter) {
+
+        //入参对象去空格
+        SesStringUtils.objStringTrim(enter);
 
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
         if (customerInquiry == null) {
