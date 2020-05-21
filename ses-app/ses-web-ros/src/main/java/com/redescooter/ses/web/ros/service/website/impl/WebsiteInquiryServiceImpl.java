@@ -39,6 +39,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.zookeeper.server.quorum.LeaderMXBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
@@ -162,6 +163,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getMessage());
         }
 
+        //订单校验客户订单校验 一个客户只允许存在一个订单
+        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, opeCustomer.getEmail()));
+        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
+        }
+
         //后备箱 校验
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
@@ -234,7 +241,15 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (customerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
-        //状态过滤
+
+        //订单校验客户订单校验 一个客户只允许存在一个订单
+        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>()
+                .eq(OpeCustomerInquiry::getEmail, customerInquiry.getEmail())
+        .gt(OpeCustomerInquiry::getId,customerInquiry.getId())
+        );
+        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
+        }
 
         //后备箱 校验
         OpeCustomerAccessories topCase = null;
@@ -458,6 +473,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .lastName(opeCustomer.getCustomerLastName())
                 .build();
     }
+
     /**
      * 存储邮箱
      *
@@ -465,11 +481,11 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public GeneralResult email(StorageEamilEnter enter) {
-      if (enter.getEmail().isEmpty()) {
-        throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
-      }
-      jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL+enter.getRequestId(), enter.getEmail());
-      return new GeneralResult(enter.getRequestId());
+        if (enter.getEmail().isEmpty()) {
+            throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
+        }
+        jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(), enter.getEmail());
+        return new GeneralResult(enter.getRequestId());
     }
 
     private OpeCustomerInquiryB buildAccessory(SaveSaleOrderEnter enter, Long id, BigDecimal price, String type) {

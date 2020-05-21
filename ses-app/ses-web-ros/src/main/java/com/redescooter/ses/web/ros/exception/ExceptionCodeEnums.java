@@ -270,6 +270,9 @@ public enum ExceptionCodeEnums {
     CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY(10126, "正式客户不允许添加询价单，请与销售人员联系"),
 
     DISTRUST_IS_NOT_EXIST(10127, "区域不存在，请重新输入"),
+
+     CUSTOMER_ALREADY_EXIST_ORDER_FORM (10128, "客户已存在预订单不允许添加预订单，请与销售人员联系"),
+
     ;
 
 
