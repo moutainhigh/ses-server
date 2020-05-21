@@ -31,13 +31,12 @@ spring:
         - 172.31.8.126:7003
         - 172.31.8.126:7004
         - 172.31.8.126:7005
-
   # 邮件配置
   mail:
-    from: support@redescooter.com
-    username: support@redescooter.com
-    host: smtp.exmail.qq.com
-    password: RedE2019.scooter
+    from: support@redelectric.fr
+    username: support@redelectric.fr
+    host: smtp.ionos.fr
+    password: RedE@Scooter54
     port: 465
 
 # 多注册中心配置
