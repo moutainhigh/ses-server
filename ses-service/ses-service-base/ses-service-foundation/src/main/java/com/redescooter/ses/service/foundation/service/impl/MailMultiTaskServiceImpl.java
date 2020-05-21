@@ -3,7 +3,11 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTaskStatusEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
@@ -334,15 +338,16 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    /**
-     * 客户询价单尾款支付
-     *
-     * @param enter 尾款
-     * @return
-     */
+
+  /**
+   * 客户询价单尾款支付
+   * @param enter 尾款
+   * @return
+   */
     @Override
-    public GeneralResult addCustomerInquiryPayLastParagraphTask(BaseMailTaskEnter enter) {
-        PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
+    public GeneralResult addCustomerInquiryPayLastParagraphTask(BaseMailTaskEnter enter){
+
+      PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
         Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
 
         PlaMailTask mailTask = new PlaMailTask();
@@ -357,7 +362,30 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    /**
+  /**
+   * 支付
+   *
+   * @param enter@return
+   */
+  @Override
+  public GeneralResult subscriptionPaySucceedSendmail(BaseMailTaskEnter enter) {
+
+    PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
+    Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
+    PlaMailTask mailTask = new PlaMailTask();
+    mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
+    mailTask.setSubject(mailtemplate.getSubject());
+    mailTask.setParameter(JSON.toJSONString(map));
+    mailTask.setContent(mailtemplate.getContent());
+
+    mailTask = saveTask(mailTask, enter);
+    pullResdis(mailTask, mailtemplate.getExpire());
+
+    return new GeneralResult(enter.getRequestId());
+  }
+
+  /**
      * 多系统多维度添加邮件任务
      *
      * @return

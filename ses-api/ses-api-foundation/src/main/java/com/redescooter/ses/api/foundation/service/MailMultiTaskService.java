@@ -104,10 +104,17 @@ public interface MailMultiTaskService {
      */
     GeneralResult addCustomerInquiryPayLastParagraphTask(BaseMailTaskEnter enter);
 
+
+  /**
+   * 定金支付成功发送邮件
+   * @param
+   * @return
+   */
+  GeneralResult subscriptionPaySucceedSendmail( BaseMailTaskEnter enter);
+
     /**
      * 多系统多维度添加邮件任务
-     *
-     * @return
+     subscriptionsubscriptionsubscriptionsubscription     * @return
      */
     GeneralResult addMultiMailTask(String jsonStr);
 
@@ -125,4 +132,7 @@ public interface MailMultiTaskService {
      * @return
      */
     void runTaskById(long id);
+
+
+
 }
