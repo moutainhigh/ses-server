@@ -7,17 +7,14 @@ import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import spark.Request;
 
-
-@Log4j2
 @Api(tags = {"Stripe支付"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/stripe")
+@RequestMapping(value = "/stripe",method = RequestMethod.POST)
 public class StripeController {
 
     @Autowired
