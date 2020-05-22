@@ -192,7 +192,7 @@ stripe:
   currency: eur
   payment_method_types: card
   payment_event: payment_intent.succeeded
-  publishable_key: pk_live_Pze51XBNr8tI4pThesU7DEHD00a8pjUbmi
-  secret_key: sk_live_XI5FWzDuNst1L19NoOjgHypE00VEtFd8kO
+  publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
+  secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
   receipt_email: etienne@redescooter.fr
 
