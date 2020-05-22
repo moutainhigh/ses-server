@@ -9,12 +9,15 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import spark.Request;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 @Api(tags = {"Stripe支付"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/stripe",method = RequestMethod.POST)
+@RequestMapping(value = "/stripe", method = RequestMethod.POST)
 public class StripeController {
 
     @Autowired
@@ -30,14 +33,16 @@ public class StripeController {
     @IgnoreLoginCheck
     @PostMapping(value = "/succeeHooks")
     @ApiOperation(value = "成功钩子")
-    public Response<GeneralResult> succeeHooks(Request request, spark.Response response) {
-        return new Response<>(stripeService.succeeHooks(request, response));
+    @ResponseBody
+    public Response<GeneralResult> succeeHooks(spark.Request request, spark.Response response, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        return new Response<>(stripeService.succeeHooks(request, response,httpServletResponse,httpServletRequest));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/failHooks")
     @ApiOperation(value = "失败钩子")
-    public Response<GeneralResult>  failHooks(Request request,spark.Response response) {
+    @ResponseBody
+    public Response<GeneralResult> failHooks(spark.Request request, spark.Response response) {
         return new Response<>(stripeService.failHooks(request, response));
     }
 

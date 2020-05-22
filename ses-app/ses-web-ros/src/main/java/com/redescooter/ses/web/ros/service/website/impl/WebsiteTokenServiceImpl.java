@@ -170,7 +170,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
    * @return
    */
   @Override
-  public UserToken checkCustomerToken(GeneralEnter enter) {
+  public UserToken  checkCustomerToken(GeneralEnter enter) {
     UserToken userToken = getUserToken(enter.getToken());
     if (!StringUtils.equals(userToken.getClientType(), enter.getClientType()) ||
             !StringUtils.equals(userToken.getSystemId(), enter.getSystemId()) ||
