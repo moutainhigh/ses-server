@@ -174,9 +174,11 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
    * @return
    */
   @Override
-  public UserToken checkCustomerToken(GeneralEnter enter) {
+  public UserToken  checkCustomerToken(GeneralEnter enter) {
     UserToken userToken = getUserToken(enter.getToken());
-    if (!StringUtils.equals(userToken.getClientType(), enter.getClientType()) || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId()) || !StringUtils.equals(userToken.getAppId(),
+    if (!StringUtils.equals(userToken.getClientType(), enter.getClientType()) ||
+            !StringUtils.equals(userToken.getSystemId(), enter.getSystemId()) ||
+            !StringUtils.equals(userToken.getAppId(),
       enter.getAppId())) {
       throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
     }

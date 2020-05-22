@@ -53,6 +53,6 @@ stripe:
   payment_method_types: card
   payment_event: payment_intent.succeeded
   publishable_key: pk_live_Pze51XBNr8tI4pThesU7DEHD00a8pjUbmi
-  secret_key: sk_live_XI5FWzDuNst1L19NoOjgHypE00VEtFd8kO
+  secret_key: rk_live_Ea5zybiHwnLnY7bn98jaoRJQ00OPG1gEBe
   receipt_email: etienne@redescooter.fr
 
