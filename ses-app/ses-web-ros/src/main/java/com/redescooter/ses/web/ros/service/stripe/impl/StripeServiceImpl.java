@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.stripe.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonSyntaxException;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
@@ -10,6 +11,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
+import com.redescooter.ses.tool.utils.json.JsonUtils;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -28,6 +30,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import spark.Request;
 import spark.Response;
 
@@ -103,26 +106,26 @@ public class StripeServiceImpl implements StripeService {
     /**
      * 收款成功
      *
-     * @param request
-     * @param response
      * @return
      */
     @Override
-    public GeneralResult succeeHooks(Request request, Response response) {
+    public GeneralResult succeeHooks(String enter) {
 
-        if (response == null || response.body()==null) {
+        if (StringUtils.isEmpty(enter)) {
             return new GeneralResult(String.valueOf(UUID.randomUUID()));
         }
-        String payload = response.body();
+        String payload = enter;
         log.info("=============================");
         log.info("网络钩子数据回调===={}", payload);
         log.info("=============================");
+
         Event event = null;
+
         try {
             event = ApiResource.GSON.fromJson(payload, Event.class);
         } catch (JsonSyntaxException e) {
             // Invalid payload
-            response.status(400);
+            log.error("===支付失败===", e.getMessage());
             return new GeneralResult(String.valueOf(UUID.randomUUID()));
         }
         EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
@@ -130,16 +133,16 @@ public class StripeServiceImpl implements StripeService {
 
         PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
 
-        log.info("=============================");
-        log.info(payResponseBody.toString());
-        log.info("=============================");
+        log.info("===============结果==============");
+        log.info(JSONObject.toJSONString(payResponseBody));
+        log.info("===============结果==============");
         return new GeneralResult(String.valueOf(UUID.randomUUID()));
     }
 
     @Override
     public GeneralResult failHooks(Request request, Response response) {
 
-        if (response == null || response.body()==null) {
+        if (response == null || response.body() == null) {
             return new GeneralResult(String.valueOf(UUID.randomUUID()));
         }
 

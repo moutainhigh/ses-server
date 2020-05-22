@@ -10,10 +10,12 @@ import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+@Slf4j
 @Api(tags = {"Stripe支付"})
 @CrossOrigin
 @RestController
@@ -33,8 +35,8 @@ public class StripeController {
     @IgnoreLoginCheck
     @PostMapping(value = "/succeeHooks")
     @ApiOperation(value = "成功钩子")
-    public Response<GeneralResult> succeeHooks(spark.Request request, spark.Response response) {
-        return new Response<>(stripeService.succeeHooks(request, response));
+    public Response<GeneralResult> succeeHooks(@RequestBody  String enter) {
+        return new Response<>(stripeService.succeeHooks(enter));
     }
 
     @IgnoreLoginCheck

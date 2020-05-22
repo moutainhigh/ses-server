@@ -22,7 +22,7 @@ public interface StripeService {
      * @param request
      * @param response
      */
-    GeneralResult succeeHooks(Request request, spark.Response response);
+    GeneralResult succeeHooks(String enter);
 
     /**
      * 网络钩子

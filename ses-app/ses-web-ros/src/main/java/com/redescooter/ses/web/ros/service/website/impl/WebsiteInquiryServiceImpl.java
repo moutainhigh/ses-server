@@ -201,7 +201,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
 
         //todo 测试暂定为0.5 之后要改掉 默认100美分
-        //totalPrice = new BigDecimal("100");
+//        totalPrice = new BigDecimal("100");
         totalPrice = new BigDecimal("19000");
 
         //生成主订单
@@ -286,7 +286,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
 
         //todo 测试暂定为0.5 之后要改掉 100美分
-        totalPrice = new BigDecimal("100");
+//        totalPrice = new BigDecimal("100");
         //生成主订单
         OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, enter.getId());
         opeCustomerInquiry.setCreatedBy(enter.getUserId());
