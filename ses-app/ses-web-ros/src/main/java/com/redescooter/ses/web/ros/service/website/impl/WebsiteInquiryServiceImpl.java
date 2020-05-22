@@ -473,7 +473,20 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
       .build();
   }
 
- /* *//**
+  /**
+   * 存储邮箱
+   *
+   * @param enter
+   */
+  @Override
+  public GeneralResult email(StorageEamilEnter enter) {
+    if (enter.getEmail().isEmpty()) {
+      throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
+    }
+    return  new GeneralResult();
+  }
+
+  /* *//**
    * 存储邮箱
    *
    * @param enter
