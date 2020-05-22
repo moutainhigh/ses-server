@@ -129,6 +129,10 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     //入参对象去空格
     SesStringUtils.objStringTrim(enter);
 
+    if (StringUtils.isEmpty(enter.getPassword())){
+      throw new SesWebRosException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
+    }
+
     //用户校验
     QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
     opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
