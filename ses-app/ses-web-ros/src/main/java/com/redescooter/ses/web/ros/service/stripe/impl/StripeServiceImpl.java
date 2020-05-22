@@ -16,13 +16,11 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import com.stripe.Stripe;
-import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
 import com.stripe.net.ApiResource;
-import com.stripe.net.Webhook;
 import com.stripe.param.PaymentIntentCreateParams;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -33,14 +31,10 @@ import org.springframework.stereotype.Service;
 import spark.Request;
 import spark.Response;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static spark.Spark.post;
 
 
 @Slf4j
@@ -114,7 +108,7 @@ public class StripeServiceImpl implements StripeService {
      * @return
      */
     @Override
-    public GeneralResult succeeHooks(Request request, Response response, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+    public GeneralResult succeeHooks(Request request, Response response) {
 
         if (response == null || response.body()==null) {
             return new GeneralResult(String.valueOf(UUID.randomUUID()));

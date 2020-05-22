@@ -2,16 +2,16 @@ package com.redescooter.ses.web.ros.controller.website;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 @Api(tags = {"Stripe支付"})
@@ -33,8 +33,8 @@ public class StripeController {
     @IgnoreLoginCheck
     @PostMapping(value = "/succeeHooks")
     @ApiOperation(value = "成功钩子")
-    public Response<GeneralResult> succeeHooks(@RequestBody spark.Request request, spark.Response response, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        return new Response<>(stripeService.succeeHooks(request, response, httpServletResponse, httpServletRequest));
+    public Response<GeneralResult> succeeHooks(spark.Request request, spark.Response response) {
+        return new Response<>(stripeService.succeeHooks(request, response));
     }
 
     @IgnoreLoginCheck
