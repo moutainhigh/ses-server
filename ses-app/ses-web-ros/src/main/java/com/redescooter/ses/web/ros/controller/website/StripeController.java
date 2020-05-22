@@ -33,9 +33,8 @@ public class StripeController {
     @IgnoreLoginCheck
     @PostMapping(value = "/succeeHooks")
     @ApiOperation(value = "成功钩子")
-    @ResponseBody
-    public Response<GeneralResult> succeeHooks(spark.Request request, spark.Response response, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        return new Response<>(stripeService.succeeHooks(request, response,httpServletResponse,httpServletRequest));
+    public Response<GeneralResult> succeeHooks(@RequestBody spark.Request request, spark.Response response, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        return new Response<>(stripeService.succeeHooks(request, response, httpServletResponse, httpServletRequest));
     }
 
     @IgnoreLoginCheck
