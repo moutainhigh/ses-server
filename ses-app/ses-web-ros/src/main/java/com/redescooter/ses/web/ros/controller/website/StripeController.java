@@ -43,8 +43,16 @@ public class StripeController {
     @PostMapping(value = "/failHooks")
     @ApiOperation(value = "失败钩子")
     @ResponseBody
-    public Response<GeneralResult> failHooks(spark.Request request, spark.Response response) {
-        return new Response<>(stripeService.failHooks(request, response));
+    public Response<GeneralResult> failHooks(@RequestBody String enter) {
+        return new Response<>(stripeService.failHooks(enter));
+    }
+
+    @IgnoreLoginCheck
+    @PostMapping(value = "/canceledHooks")
+    @ApiOperation(value = "取消钩子")
+    @ResponseBody
+    public Response<GeneralResult> canceledHooks(@RequestBody String enter) {
+        return new Response<>(stripeService.cancelledPaymentIntent(enter));
     }
 
 }
