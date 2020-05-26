@@ -286,6 +286,20 @@ public class PartsRosServiceImpl implements PartsRosService {
             });
         }
 
+        //不管是 插入还是编辑
+        ArrayList<OpePartsDraft> opePartsDrafts = Lists.newArrayList(insters);
+        opePartsDrafts.addAll(updates);
+
+        if (CollectionUtils.isNotEmpty(opePartsDrafts)) {
+            opePartsDrafts.forEach(item -> {
+                //校验部件信息是否完整
+                if (StringUtils.isAnyEmpty(item.getSec(), item.getCnName(), item.getEnName(), item.getFrName(),
+                        item.getSnClass(), item.getProductionCycle(), String.valueOf(item.getSupplierId()))) {
+                    throw new SesWebRosException(ExceptionCodeEnums.PARTS_BASE_IS_NOT_COMPLETE_INFORMATION.getCode(), ExceptionCodeEnums.PARTS_BASE_IS_NOT_COMPLETE_INFORMATION.getMessage());
+                }
+            });
+        }
+
         if (insters.size() > 0) {
             opePartsDraftService.saveBatch(insters);
         }
@@ -625,7 +639,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         //1.进行查询需要同步的部件
         List<OpePartsDraft> partsDrafts =
-                opePartsDraftService.list(new LambdaQueryWrapper<OpePartsDraft>().eq(OpePartsDraft::getDr, 0).eq(OpePartsDraft::getPerfectFlag, Boolean.TRUE).eq(OpePartsDraft::getSynchronizeFlag,
+                opePartsDraftService.list(new LambdaQueryWrapper<OpePartsDraft>().eq(OpePartsDraft::getPerfectFlag, Boolean.TRUE).eq(OpePartsDraft::getSynchronizeFlag,
                         Boolean.FALSE).eq(OpePartsDraft::getUserId, enter.getUserId()));
         //2.将待同步的部件进行安装是否可进行销售，区分为生产部件及产品
 

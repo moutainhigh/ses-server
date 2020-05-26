@@ -11,6 +11,7 @@ import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.GetAccountKeyResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -19,6 +20,7 @@ import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
@@ -111,7 +113,11 @@ public class TokenRosServiceImpl implements TokenRosService {
         if (StringUtils.equals(sysUser.getStatus(), SysUserStatusEnum.EXPIRED.getCode())) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_EXPIRED.getCode(), ExceptionCodeEnums.ACCOUNT_EXPIRED.getMessage());
         }
-        String password = DigestUtils.md5Hex(enter.getPassword() + sysUser.getSalt());
+        String decryptPassword = checkPassWord(enter);
+
+
+        //密码MD5 加密
+        String password = DigestUtils.md5Hex(decryptPassword + sysUser.getSalt());
 
         if (!password.equals(sysUser.getPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
@@ -120,6 +126,11 @@ public class TokenRosServiceImpl implements TokenRosService {
         //清除上次登录token信息
         if (StringUtils.isNotBlank(sysUser.getLastLoginToken())) {
             jedisCluster.del(sysUser.getLastLoginToken());
+
+            //第一次登录成功后 替换私钥的key值
+            jedisCluster.del(new StringBuilder(enter.getRequestId()).append(":::").append(RsaUtils.PRIVATE_KEY).toString());
+            String key = new StringBuilder(enter.getLoginName()).append(":::").append("LOGIN").toString();
+            jedisCluster.setex(key, (int) RedisExpireEnum.getSeconds(RedisExpireEnum.DAY_1.getTime()), key);
         }
         //将token及用户相关信息 放到Redis中
         UserToken userToken = setToken(enter, sysUser);
@@ -140,6 +151,57 @@ public class TokenRosServiceImpl implements TokenRosService {
         result.setToken(userToken.getToken());
         result.setRequestId(enter.getRequestId());
         return result;
+    }
+
+    /**
+     * Rsa 解密校验
+     *
+     * @param enter
+     * @return
+     */
+    private String checkPassWord(LoginEnter enter) {
+        //获取私钥
+        String privateKey = "";
+        if (jedisCluster.exists(new StringBuilder(enter.getRequestId()).append(":::").append(RsaUtils.PRIVATE_KEY).toString())) {
+            privateKey = jedisCluster.get(new StringBuilder(enter.getRequestId()).append(":::").append(RsaUtils.PRIVATE_KEY).toString());
+
+        } else {
+            privateKey = jedisCluster.get(new StringBuilder(enter.getLoginName()).append(":::").append("LOGIN").toString());
+        }
+
+        //获取不到密钥 就密码错误
+        if (StringUtils.isEmpty(privateKey)) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+
+        //密码解密 无法解密时 就是提示密码错误
+        String decryptPassword = "";
+        try {
+            decryptPassword = RsaUtils.decrypt(enter.getPassword(), privateKey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+        return decryptPassword;
+    }
+
+    /**
+     * 获取密钥
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GetAccountKeyResult getAccountKey(GeneralEnter enter) {
+        Map<String, String> stringStringMap = RsaUtils.generateRsaKey(RsaUtils.DEFAULT_RSA_KEY_SIZE);
+
+        //设置缓存
+        String key = new StringBuilder(enter.getRequestId()).append(":::").append(RsaUtils.PRIVATE_KEY).toString();
+        jedisCluster.setex(key, (int) RedisExpireEnum.getSeconds(RedisExpireEnum.DAY_1.getTime()), stringStringMap.get(RsaUtils.PRIVATE_KEY));
+
+        GetAccountKeyResult getAccountKeyResult = new GetAccountKeyResult();
+        getAccountKeyResult.setPublicKey(stringStringMap.get(RsaUtils.PUBLIC_KEY));
+        getAccountKeyResult.setRequestId(enter.getRequestId());
+        return getAccountKeyResult;
     }
 
     /**
@@ -181,7 +243,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         }
         OpeSysUser opeSysUser = opeSysUserService.getById(userToken.getUserId());
         if (opeSysUser == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         return userToken;
     }

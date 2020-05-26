@@ -24,6 +24,14 @@ public interface TokenRosService {
     TokenResult login(LoginEnter enter);
 
     /**
+     * 获取密钥
+     *
+     * @param enter
+     * @return
+     */
+    GetAccountKeyResult getAccountKey(GeneralEnter enter);
+
+    /**
      * 用户注销
      *
      * @param enter

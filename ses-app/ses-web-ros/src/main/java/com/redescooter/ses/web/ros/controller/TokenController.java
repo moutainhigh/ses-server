@@ -31,6 +31,14 @@ public class TokenController {
     private TokenRosService tokenRosService;
 
     @IgnoreLoginCheck
+    @ApiOperation(value = "获取密钥", response = GetAccountKeyResult.class)
+    @PostMapping(value = "/getAccountKey")
+    public Response<GetAccountKeyResult> getAccountKey(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(tokenRosService.getAccountKey(enter));
+    }
+
+
+    @IgnoreLoginCheck
     @ApiOperation(value = "登录", response = TokenResult.class)
     @PostMapping(value = "/login")
     public Response<TokenResult> login(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {

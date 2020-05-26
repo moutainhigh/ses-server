@@ -118,7 +118,6 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult delete(IdEnter enter) {
         //不可删除根基部门（公司）
-
         List<OpeSysDept> sysDeptList = opeSysDeptService.list();
         List<Long> ids = new ArrayList<>();
         sysDeptList.forEach(item -> {
