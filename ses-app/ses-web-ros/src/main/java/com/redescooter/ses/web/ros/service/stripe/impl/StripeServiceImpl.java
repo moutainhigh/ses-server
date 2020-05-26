@@ -12,7 +12,9 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpePayOrder;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
@@ -246,7 +248,7 @@ public class StripeServiceImpl implements StripeService {
 
                 break;
             // 付款失败
-            case "Faild":
+            case "faild":
                 break;
             // 取消付款
             case "canceled":
@@ -303,9 +305,30 @@ public class StripeServiceImpl implements StripeService {
     /**
      * 支付数据保存
      */
-    public void savePayemntData() {
+    public void savePayemntData(PaymentIntent intent) {
         // // 支付订单表
-        // opePayOrderService.save();
+        OpePayOrder opePayOrder = new OpePayOrder();
+        opePayOrder.setId(idAppService.getId(SequenceName.OPE_PAY_ORDER));
+        opePayOrder.setDr(0);
+        opePayOrder.setUserId(0L);
+        opePayOrder.setTenantId(0L);
+        // 预订单Id
+        opePayOrder.setPayOrderId(Long.valueOf(intent.getMetadata().get("order_id")));
+        if (org.apache.commons.lang3.StringUtils.equals(intent.getStatus(), "succeeded")) {
+            opePayOrder.setPaySucceedTime(intent.getCreated());
+        }
+        opePayOrder.setPayFailTime(intent.getCreated());
+        opePayOrder.setAmount(intent.getAmount());
+        opePayOrder.setQty(1);
+        opePayOrder.setCountry(intent.getPaymentMethodObject().getCard().getCountry());
+        opePayOrder.setCurrency(intent.getCurrency());
+        // opePayOrder.set
+        // opePayOrder.set
+        opePayOrder.setCreatedBy(0L);
+        opePayOrder.setCreatedTime(new Date());
+        opePayOrder.setUpdatedBy(0L);
+        opePayOrder.setUpdatedTime(new Date());
+        opePayOrderService.save(opePayOrder);
         // // 商户支付通知表
         // opePayMchNotifyService.save();
         // // 支付凭据表
