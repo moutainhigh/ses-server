@@ -42,4 +42,10 @@ public class DeptTreeReslt extends TreeNode {
 
     @ApiModelProperty(value = "是否展开")
     private boolean spread = false;
+
+    @ApiModelProperty(value = "员工头像,逗号分隔")
+    private String employeePictures;
+
+    @ApiModelProperty(value = "员工数量")
+    private int employeeCount;
 }

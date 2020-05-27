@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.sys.dept;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationException;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -25,18 +26,19 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class SaveDeptEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "父级部门id")
+    @ApiModelProperty(value = "父级部门id", required = true)
     @NotNull(code = ValidationExceptionCode.PID_IS_EMPTY, message = "父级Id为空")
     private Long pId;
 
-    @ApiModelProperty(value = "负责人")
+    @ApiModelProperty(value = "负责人", required = true)
+    @NotNull(code = ValidationExceptionCode.PRINCIPAL_ID_IS_EXIST, message = "负责人为空")
     private Integer principal;
 
-    @ApiModelProperty(value = "级别0公司，1部门")
+    @ApiModelProperty(value = "级别0公司，1部门", required = true)
     @NotNull(code = ValidationExceptionCode.DEPT_LEVEL_IS_EMPTY, message = "部门层级为空")
     private Integer level;
 
-    @ApiModelProperty(value = "部门名称")
+    @ApiModelProperty(value = "部门名称", required = true)
     @NotNull(code = ValidationExceptionCode.DEPT_NAME_IS_EMPTY, message = "部门名字为空")
     private String name;
 

@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
@@ -25,5 +26,20 @@ public interface DeptServiceMapper {
      * @param level
      * @return
      */
-    DeptTreeReslt topDeptartment(@Param("enter") IdEnter enter,@Param("level") String level);
+    DeptTreeReslt topDeptartment(@Param("enter") IdEnter enter, @Param("level") String level);
+
+    /**
+     * 获取部门信息
+     *
+     * @return
+     */
+    List<DeptTreeReslt> deptList();
+
+    /**
+     * 员工信息
+     *
+     * @param deptIds
+     * @return
+     */
+    List<OpeSysUserProfile> employeeListByDeptId(@Param("deptIds") List<Long> deptIds);
 }

@@ -13,5 +13,32 @@
           group by dept.p_id) pdept
              inner join ope_sys_dept osd on pdept.p_id = osd.id
     where osd.level = #{level}
+
     </select>
+
+    <select id="deptList" resultType="com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt">
+    select dept.id
+         , dept.dr
+         , dept.p_id
+         , dept.tenant_id
+         , dept.principal
+         , dept.level
+         , dept.name
+         , dept.code
+         , dept.sort
+         , count(user.dept_id) as employeeCount
+    from ope_sys_dept dept
+             left join ope_sys_user user on dept.id = user.dept_id and user.dr = 0
+    where dept.dr = 0
+    group by dept.id, dept.dr, dept.p_id, dept.tenant_id, dept.principal, dept.level, dept.name, dept.code, dept.sort
+    </select>
+    <select id="employeeListByDeptId" resultType="com.redescooter.ses.web.ros.dm.OpeSysUserProfile">
+        select profile.*
+        from ope_sys_user_profile profile
+                 left join ope_sys_user user on profile.sys_user_id = user.id and user.dr = 0
+        where profile.dr = 0
+     </select>
+
+
+
 </mapper>

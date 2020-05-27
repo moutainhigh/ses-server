@@ -14,10 +14,12 @@ import com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleDept;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
@@ -35,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName SysDeptServiceImpl
@@ -58,6 +61,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     private OpeSysDeptService opeSysDeptService;
     @Autowired
     private DeptServiceMapper deptServiceMapper;
+
     @Autowired
     private IdAppService idAppService;
 
@@ -86,16 +90,14 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public List<DeptTreeReslt> trees(GeneralEnter enter) {
+        //查询部门信息
+        List<DeptTreeReslt> list = deptServiceMapper.deptList();
 
-        List<OpeSysDept> list = sysDeptService.list();
-
+        //查询员工信息
+       List<OpeSysUserProfile> opeSysUserProfileList=deptServiceMapper.employeeListByDeptId(list.stream().map(DeptTreeReslt::getId).collect(Collectors.toList()));
         List<DeptTreeReslt> trees = new ArrayList<>();
         if (CollUtil.isNotEmpty(list)) {
-            list.forEach(ls -> {
-                DeptTreeReslt dept = new DeptTreeReslt();
-                BeanUtils.copyProperties(ls, dept);
-                trees.add(dept);
-            });
+            trees.addAll(trees);
         }
         return TreeUtil.build(trees, Constant.DEPT_TREE_ROOT_ID);
     }
