@@ -33,7 +33,7 @@
     group by dept.id, dept.dr, dept.p_id, dept.tenant_id, dept.principal, dept.level, dept.name, dept.code, dept.sort
     </select>
 
-    <select id="employeeListByDeptId" resultType="com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileByDeptIdResult">
+    <select id="employeeList" resultType="com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult">
         select profile.sys_user_id as id,
                user.dept_id        as deptId,
                profile.first_name  as employeeFirstName,
@@ -46,11 +46,5 @@
                  inner join ope_sys_user_role osur on user.id = osur.user_id
                  inner join ope_sys_role role on osur.role_id = role.id and role.dr = 0
         where profile.dr = 0
-        <if test="deptIds !=null and deptIds.size !=0">
-            and user.dept_id in
-            <foreach collection="deptIds" open="(" close=")" item="item">
-                #{item}
-            </foreach>
-        </if>
     </select>
 </mapper>

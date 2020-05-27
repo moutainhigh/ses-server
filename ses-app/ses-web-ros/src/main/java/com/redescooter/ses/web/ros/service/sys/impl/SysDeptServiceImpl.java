@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
@@ -14,31 +15,31 @@ import com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleDept;
-import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileByDeptIdResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName SysDeptServiceImpl
@@ -89,34 +90,66 @@ public class SysDeptServiceImpl implements SysDeptService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 树形结构
+     *
+     * @param enter
+     * @return
+     */
     @Override
     public List<DeptTreeReslt> trees(GeneralEnter enter) {
+        List<DeptTreeReslt> deptTreeReslts = deptList(enter);
+        return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
+    }
+
+    /**
+     * 部门列表 平行结构
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<DeptTreeReslt> deptList(GeneralEnter enter) {
         //查询部门信息
         List<DeptTreeReslt> list = deptServiceMapper.deptList();
 
         //查询员工信息
-        List<EmployeeProfileByDeptIdResult> employeeList = deptServiceMapper.employeeListByDeptId(list.stream().map(DeptTreeReslt::getId).collect(Collectors.toList()));
-        List<DeptTreeReslt> trees = new ArrayList<>();
-        if (CollUtil.isNotEmpty(list)) {
+        List<EmployeeProfileResult> employeeList = deptServiceMapper.employeeList();
+        if (CollectionUtils.isNotEmpty(list)) {
             if (CollectionUtils.isNotEmpty(employeeList)) {
                 list.forEach(item -> {
-                    for (EmployeeProfileByDeptIdResult user : employeeList) {
+                    for (EmployeeProfileResult user : employeeList) {
                         if (item.getId() == user.getDeptId()) {
                             //如果部门人员大于4人 就不进行 头像拼接
-                            if (item.getEmployeePictures().split(",").length > 3) {
-                                break;
+                            if (StringUtils.isNotEmpty(item.getEmployeePictures())){
+                                if (item.getEmployeePictures().split(",").length > 3) {
+                                    break;
+                                }
+                                item.setEmployeePictures(new StringBuilder(item.getEmployeePictures()).append(user.getEmployeePicture()).toString());
                             }
-                            item.setEmployeePictures(new StringBuilder(item.getEmployeePictures()).append(user.getEmployeePicture()).toString());
                         }
                     }
                 });
             }
-            trees.addAll(trees);
         }
 
-        List<DeptTreeReslt> reslts = TreeUtil.build(trees, Constant.DEPT_TREE_ROOT_ID);
-        return reslts;
+        //进行人数 累加
+
+        //buildTree(list);
+        return list;
     }
+
+//    private void buildTree(List<DeptTreeReslt> list) {
+//        for (DeptTreeReslt item : list) {
+//            DeptTreeReslt children = TreeUtil.findChildren(item, list);
+//            //有子集继续循环
+//            List<TreeNode> childrenList = children.getChildren();
+//            if (CollectionUtils.isNotEmpty(childrenList)) {
+//                buildTree(childrenList);
+//            }
+//            //进行人数 头像拼接
+//        }
+//    }
 
     @Override
     public GeneralResult edit(EditDeptEnter enter) {

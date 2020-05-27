@@ -27,7 +27,7 @@ public enum MailTemplateEventEnums {
     MOBILE_PERMISSION_WARN("MOBILE权限通知", 9, "mobile_permission_warn", "MOBILE_PERMISSION_WARN"),
     CUSTOMER_INQUIRY_PAY_DEPOSIT("客户询价单支付定金",10,"customer_inquiry_pay_deposit","CUSTOMER_INQUIRY_PAY_DEPOSIT"),
     CUSTOMER_INQUIRY_LAST_PARAGRAPH("客户询价单支付尾款",11,"customer_inquiry_last_paragraph","CUSTOMER_INQUIRY_LAST_PARAGRAPH"),
-    SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL("订金支付成功发送邮箱",11,"subscription_pay_succeed_send_eamil","SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL"),
+    SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL("订金支付成功发送邮箱",12,"subscription_pay_succeed_send_eamil","SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL"),
     ;
     private String mome;
 

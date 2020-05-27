@@ -33,6 +33,13 @@ public interface SysDeptService {
     List<DeptTreeReslt> trees(GeneralEnter enter);
 
     /**
+     * 部门列表 平行结构
+     * @param enter
+     * @return
+     */
+    List<DeptTreeReslt> deptList(GeneralEnter enter);
+
+    /**
      * 部门编辑
      *
      * @param enter

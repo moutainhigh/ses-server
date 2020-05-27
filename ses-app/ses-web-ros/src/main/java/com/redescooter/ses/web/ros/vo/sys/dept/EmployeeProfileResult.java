@@ -24,7 +24,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class EmployeeProfileByDeptIdResult extends GeneralResult {
+public class EmployeeProfileResult extends GeneralResult {
 
     @ApiModelProperty(value = "Id")
     private Long id;

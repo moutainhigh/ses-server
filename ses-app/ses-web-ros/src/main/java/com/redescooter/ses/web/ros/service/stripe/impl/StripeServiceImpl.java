@@ -278,7 +278,6 @@ public class StripeServiceImpl implements StripeService {
         customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setUpdatedTime(new Date());
         opeCustomerInquiryService.updateById(customerInquiry);
-
         sendmail(customerInquiry.getEmail());
     }
 

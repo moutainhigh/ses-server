@@ -59,6 +59,12 @@ public class SysDeptController {
         return new Response<>(deptService.trees(enter));
     }
 
+    @PostMapping(value = "/deptList")
+    @ApiOperation(value = "部门列表（平行结构）", response = GeneralResult.class)
+    public Response<List<DeptTreeReslt>> deptList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(deptService.deptList(enter));
+    }
+
     @PostMapping(value = "/delete")
     @ApiOperation(value = "部门删除", response = GeneralResult.class)
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {

@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.utils;
 
 import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.api.common.vo.tree.TreeNode;
+import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
