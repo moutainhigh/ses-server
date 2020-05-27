@@ -1,26 +1,29 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import cn.hutool.json.JSONObject;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.constant.EamilConstant;
+import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
-import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
-import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -56,6 +59,12 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
   @Reference
   private IdAppService idAppService;
+
+  @Autowired
+  private OpeCustomerMapper opeCustomerMapper;
+
+  @Reference
+  private MailMultiTaskService mailMultiTaskService;
 
   /**
    * 登录
@@ -185,6 +194,23 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     return userToken;
   }
 
+  @Override
+  public GeneralResult sendEmail(BaseSendMailEnter baseSendMailEnter) {
+    String name = baseSendMailEnter.getMail().substring(0, baseSendMailEnter.getMail().indexOf("@"));
+    BaseMailTaskEnter enter = new BaseMailTaskEnter();
+    enter.setName(name);
+    enter.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getName());
+    enter.setSystemId(SystemIDEnums.REDE_SES.getValue());
+    enter.setAppId(AppIDEnums.SES_ROS.getSystemId());
+//    enter.setToMail(baseSendMailEnter.getMail());
+    enter.setEmail(baseSendMailEnter.getMail());
+    enter.setRequestId("0");
+    enter.setUserId(0L);
+    mailMultiTaskService.addMultiMailTask(JSON.toJSONString(enter));
+//    mailMultiTaskService.subscriptionPaySucceedSendmail(enter);
+    return new GeneralResult(baseSendMailEnter.getRequestId());
+  }
+
 
   /**
    * 设置登录的token
@@ -242,4 +268,37 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     }
     return userToken;
   }
+
+
+  @Override
+  public GeneralResult resetPassword(WebResetPasswordEnter enter) {
+    OpeCustomer customer = opeCustomerMapper.selectById(enter.getUserId());
+    if(customer == null){
+      throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode());
+    }
+    int salt = RandomUtils.nextInt(10000, 99999);
+    String newPassword = DigestUtils.md5Hex(enter.getNewPassword() + salt);
+    customer.setPassword(newPassword);
+    customer.setSalt(String.valueOf(salt));
+    opeCustomerMapper.updateById(customer);
+    return new GeneralResult(enter.getRequestId());
+  }
+
+
+    @Override
+    public GeneralResult editCustomer(WebEditCustomerEnter enter) {
+      OpeCustomer customer = opeCustomerMapper.selectById(enter.getUserId());
+      if(customer == null){
+        throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode());
+      }
+      customer.setAddress(enter.getAddress());
+      customer.setTelephone(enter.getTelephone());
+      customer.setCustomerFirstName(enter.getFirstName());
+      customer.setCustomerLastName(enter.getLastName());
+      customer.setCustomerFullName(customer.getContactFirstName()+" "+customer.getCustomerLastName());
+      opeCustomerMapper.updateById(customer);
+      return new GeneralResult(enter.getRequestId());
+    }
+
+
 }
