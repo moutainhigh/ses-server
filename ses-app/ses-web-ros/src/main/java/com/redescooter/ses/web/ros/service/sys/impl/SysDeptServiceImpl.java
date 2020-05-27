@@ -24,6 +24,7 @@ import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileByDeptIdResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
@@ -94,12 +95,27 @@ public class SysDeptServiceImpl implements SysDeptService {
         List<DeptTreeReslt> list = deptServiceMapper.deptList();
 
         //查询员工信息
-       List<OpeSysUserProfile> opeSysUserProfileList=deptServiceMapper.employeeListByDeptId(list.stream().map(DeptTreeReslt::getId).collect(Collectors.toList()));
+        List<EmployeeProfileByDeptIdResult> employeeList = deptServiceMapper.employeeListByDeptId(list.stream().map(DeptTreeReslt::getId).collect(Collectors.toList()));
         List<DeptTreeReslt> trees = new ArrayList<>();
         if (CollUtil.isNotEmpty(list)) {
+            if (CollectionUtils.isNotEmpty(employeeList)) {
+                list.forEach(item -> {
+                    for (EmployeeProfileByDeptIdResult user : employeeList) {
+                        if (item.getId() == user.getDeptId()) {
+                            //如果部门人员大于4人 就不进行 头像拼接
+                            if (item.getEmployeePictures().split(",").length > 3) {
+                                break;
+                            }
+                            item.setEmployeePictures(new StringBuilder(item.getEmployeePictures()).append(user.getEmployeePicture()).toString());
+                        }
+                    }
+                });
+            }
             trees.addAll(trees);
         }
-        return TreeUtil.build(trees, Constant.DEPT_TREE_ROOT_ID);
+
+        List<DeptTreeReslt> reslts = TreeUtil.build(trees, Constant.DEPT_TREE_ROOT_ID);
+        return reslts;
     }
 
     @Override
