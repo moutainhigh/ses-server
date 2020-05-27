@@ -7,7 +7,7 @@ log:
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://192.168.2.200:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
     druid:
@@ -28,4 +28,4 @@ spring:
 ## DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://192.168.2.200:22181
+    address: zookeeper://localhost:22181

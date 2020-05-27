@@ -9,17 +9,11 @@ import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.web.ros.SesWebRosApplicationTests;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
-import com.stripe.Stripe;
-import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Slf4j
@@ -62,7 +56,6 @@ public class StripeServiceImplTest extends SesWebRosApplicationTests {
     enter.setToUserId(0L);
     enter.setUserId(0L);
     mailMultiTaskService.subscriptionPaySucceedSendmail(enter);  }
-
 
 
 }

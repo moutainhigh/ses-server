@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation;
 
 import com.redescooter.ses.api.foundation.service.PushService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,4 +22,10 @@ public class SesServiceFoundationApplicationTests {
 
     @Reference
     private PushService pushService;
+
+    @Test
+    public void test(){
+        String test="RedEScooter2019";
+        System.out.println(DigestUtils.md5Hex(test+ "40382"));
+    }
 }
