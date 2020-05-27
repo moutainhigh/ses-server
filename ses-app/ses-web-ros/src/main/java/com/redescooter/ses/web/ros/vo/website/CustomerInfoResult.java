@@ -35,4 +35,10 @@ public class CustomerInfoResult extends GeneralResult {
 
     @ApiModelProperty(value = "邮箱")
     private String email;
+
+    @ApiModelProperty(value = "电话")
+    private String telephone;
+
+    @ApiModelProperty(value = "地址")
+    private String address;
 }

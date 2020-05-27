@@ -1,12 +1,9 @@
 package com.redescooter.ses.web.ros.service.website;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
-import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 
 /**
  * @ClassName:WebSiteService
@@ -47,6 +44,37 @@ public interface WebSiteTokenService {
      * @return
      */
     UserToken checkCustomerToken(GeneralEnter enter);
+
+
+    /**
+     * 邮件发送
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult sendEmail(BaseSendMailEnter enter);
+
+
+
+
+    /**
+     * 官网上修改密码
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult resetPassword( WebResetPasswordEnter enter);
+
+
+    /**
+     * 官网修改用户的信息
+     *
+     * @return
+     * @Author Aleks
+     * @Date 2020/5/26 15:31
+     * @Param
+     **/
+    GeneralResult editCustomer(WebEditCustomerEnter enter);
 
 
 }
