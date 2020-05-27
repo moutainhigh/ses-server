@@ -1,6 +1,9 @@
 package com.redescooter.ses.web.ros;
 
+import com.redescooter.ses.api.common.constant.JedisConstant;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
+import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.After;
@@ -31,10 +34,21 @@ public class SesWebRosApplicationTests {
     @Autowired
     private JedisService jedisService;
 
+    @Autowired
+    private WebSiteTokenService webSiteService;
+
     @Test
     public void stream() {
         String test="RedEScooter2019";
         System.out.println(DigestUtils.md5Hex(test+ "40382"));
+    }
+
+
+    @Test
+    public void testSendMail(){
+        BaseSendMailEnter enter = new BaseSendMailEnter();
+        enter.setMail("aleks@redescooter.com");
+        webSiteService.sendEmail(enter);
     }
 
 }

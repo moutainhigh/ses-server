@@ -2,24 +2,16 @@ package com.redescooter.ses.web.ros.controller.website;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
-import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @ClassName:Website
@@ -59,4 +51,35 @@ public class WebsiteTokenController {
         return new Response<>(webSiteService.signUp(enter));
     }
 
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "邮件发送", response = GeneralResult.class)
+    @PostMapping(value = "/sendEmail")
+    public Response<GeneralResult> sendEmail(@RequestBody BaseSendMailEnter enter) {
+        return new Response(webSiteService.sendEmail(enter));
+    }
+
+
+    @IgnoreLoginCheck
+    @PostMapping(value = "/forgetPassword")
+    @ApiOperation(value = "官网上面忘记密码", response = GeneralResult.class)
+    public Response<GeneralResult> forgetPassword(@ModelAttribute @ApiParam("请求参数") WebResetPasswordEnter enter) {
+        return new Response<>(webSiteService.resetPassword(enter));
+    }
+
+
+    @WebsiteSignIn
+    @PostMapping(value = "/resetPassword")
+    @ApiOperation(value = "官网上面修改密码", response = GeneralResult.class)
+    public Response<GeneralResult> resetPassword(@ModelAttribute @ApiParam("请求参数") WebResetPasswordEnter enter) {
+        return new Response(webSiteService.resetPassword(enter));
+    }
+
+
+    @WebsiteSignIn
+    @PostMapping(value = "/editCustomer")
+    @ApiOperation(value = "官网上面修改用户信息", response = GeneralResult.class)
+    public Response<GeneralResult> editCustomer(@ModelAttribute @ApiParam("请求参数") WebEditCustomerEnter enter) {
+        return new Response(webSiteService.editCustomer(enter));
+    }
 }

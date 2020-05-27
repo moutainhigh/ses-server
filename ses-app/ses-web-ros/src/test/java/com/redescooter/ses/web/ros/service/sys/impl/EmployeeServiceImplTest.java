@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 import com.redescooter.ses.web.ros.SesWebRosApplicationTests;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,5 +39,11 @@ public class EmployeeServiceImplTest extends SesWebRosApplicationTests {
         save.setTenantId(0L);
 
         employeeService.saveEmployee(save);
+    }
+
+    @Test
+    public void  passWord(){
+        String test="RedEScooter2019";
+        System.out.println(DigestUtils.md5Hex(test+ "40382"));
     }
 }
