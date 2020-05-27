@@ -72,7 +72,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     //用户校验
     QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
     opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getLoginName());
-    opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, CustomerSourceEnum.WEBSITE.getValue());
+    opeCustomerQueryWrapper.isNotNull(OpeCustomer.COL_PASSWORD);
     OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
     if (opeCustomer == null) {
       throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
