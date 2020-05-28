@@ -369,10 +369,16 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
    */
   @Override
   public GeneralResult subscriptionPaySucceedSendmail(BaseMailTaskEnter enter) {
-
+    //获取模板
     PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-    Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
-
+    //将模板赋值
+    List<PlaMailConfig> configList = getPayTemplateById(mailtemplate.getMailTemplateNo());
+    Map<String, String> map = new HashMap();
+    if (configList != null && configList.size() > 0) {
+      map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
+    }
+    map.put("name", enter.getName());
+    //保存邮箱任务
     PlaMailTask mailTask = new PlaMailTask();
     mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
     mailTask.setSubject(mailtemplate.getSubject());
@@ -380,7 +386,8 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     mailTask.setContent(mailtemplate.getContent());
 
     mailTask = saveTask(mailTask, enter);
-    pullResdis(mailTask, mailtemplate.getExpire());
+    //触发该邮件的发送
+    runTaskById(mailTask.getId());
 
     return new GeneralResult(enter.getRequestId());
   }
@@ -491,6 +498,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         return map;
     }
 
+
     private PlaMailTemplate getTemplateByEvent(String event) {
         QueryWrapper<PlaMailTemplate> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaMailTemplate.COL_EVENT, event);
@@ -510,6 +518,11 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         wrapper.eq(PlaMailConfig.COL_APP_ID, appId);
         return mailConfigMapper.selectList(wrapper);
     }
+  private List<PlaMailConfig> getPayTemplateById(Integer mailTemplateNo) {
+    QueryWrapper<PlaMailConfig> wrapper = new QueryWrapper<>();
+    wrapper.eq(PlaMailConfig.COL_MAIL_TEMPLATE_NO, mailTemplateNo);
+    return mailConfigMapper.selectList(wrapper);
+  }
 
     private String getContent(Map map, PlaMailTemplate mailTemplate) {
         if (map == null) {
@@ -544,7 +557,6 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         mailTaskMapper.insert(mailTask);
         return mailTask;
     }
-
     /**
      * 验证数据到缓存中
      *
