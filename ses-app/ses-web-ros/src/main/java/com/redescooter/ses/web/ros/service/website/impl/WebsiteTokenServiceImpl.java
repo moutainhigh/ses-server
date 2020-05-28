@@ -280,7 +280,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             enter.setConfirmPassword(enter.getNewPassword().trim());
         }
         //比较两个密码是否一致
-        if (StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
+        if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getUserId());
