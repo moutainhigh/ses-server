@@ -111,7 +111,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         List<DeptTreeReslt> list = deptServiceMapper.deptList();
 
         //查询员工信息
-        List<EmployeeProfileResult> employeeList = deptServiceMapper.employeeList(null);
+        List<EmployeeProfileResult> employeeList = deptServiceMapper.employeeList(null,null);
         if (CollectionUtils.isNotEmpty(list)) {
             if (CollectionUtils.isNotEmpty(employeeList)) {
                 list.forEach(item -> {
