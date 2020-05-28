@@ -120,4 +120,5 @@ public interface WebsiteOrderFormService {
      * @param enter
      */
     GeneralResult email(StorageEamilEnter enter);
+
 }

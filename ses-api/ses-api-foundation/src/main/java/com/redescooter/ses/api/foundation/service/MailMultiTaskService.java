@@ -116,7 +116,7 @@ public interface MailMultiTaskService {
      * 多系统多维度添加邮件任务
      subscriptionsubscriptionsubscriptionsubscription     * @return
      */
-    GeneralResult addMultiMailTask(String jsonStr);
+    GeneralResult addMultiMailTask(BaseMailTaskEnter enter);
 
     /**
      * 执行所有任务

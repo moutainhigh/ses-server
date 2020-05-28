@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasLotTrace;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public interface OpePurchasLotTraceService extends IService<OpePurchasLotTrace> {
 
 

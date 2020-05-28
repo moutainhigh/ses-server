@@ -55,8 +55,8 @@ public class WebsiteTokenController {
     @IgnoreLoginCheck
     @ApiOperation(value = "邮件发送", response = GeneralResult.class)
     @PostMapping(value = "/sendEmail")
-    public Response<GeneralResult> sendEmail(@RequestBody BaseSendMailEnter enter) {
-        return new Response(webSiteService.sendEmail(enter));
+    public Response<GeneralResult> sendEmail(@ModelAttribute BaseSendMailEnter enter) {
+        return new Response<>(webSiteService.sendEmail(enter));
     }
 
 
@@ -64,7 +64,7 @@ public class WebsiteTokenController {
     @PostMapping(value = "/forgetPassword")
     @ApiOperation(value = "官网上面忘记密码", response = GeneralResult.class)
     public Response<GeneralResult> forgetPassword(@ModelAttribute @ApiParam("请求参数") WebResetPasswordEnter enter) {
-        return new Response<>(webSiteService.resetPassword(enter));
+        return new Response<>(webSiteService.forgetPassword(enter));
     }
 
 
@@ -72,7 +72,7 @@ public class WebsiteTokenController {
     @PostMapping(value = "/resetPassword")
     @ApiOperation(value = "官网上面修改密码", response = GeneralResult.class)
     public Response<GeneralResult> resetPassword(@ModelAttribute @ApiParam("请求参数") WebResetPasswordEnter enter) {
-        return new Response(webSiteService.resetPassword(enter));
+        return new Response<>(webSiteService.resetPassword(enter));
     }
 
 
@@ -80,6 +80,6 @@ public class WebsiteTokenController {
     @PostMapping(value = "/editCustomer")
     @ApiOperation(value = "官网上面修改用户信息", response = GeneralResult.class)
     public Response<GeneralResult> editCustomer(@ModelAttribute @ApiParam("请求参数") WebEditCustomerEnter enter) {
-        return new Response(webSiteService.editCustomer(enter));
+        return new Response<>(webSiteService.editCustomer(enter));
     }
 }

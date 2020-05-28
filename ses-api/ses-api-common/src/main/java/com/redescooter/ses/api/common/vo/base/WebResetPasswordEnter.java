@@ -17,4 +17,7 @@ public class WebResetPasswordEnter extends GeneralEnter {
     @ApiModelProperty(value = "密码")
     private String newPassword;
 
+    @ApiModelProperty(value = "密码")
+    private String confirmPassword;
+
 }
