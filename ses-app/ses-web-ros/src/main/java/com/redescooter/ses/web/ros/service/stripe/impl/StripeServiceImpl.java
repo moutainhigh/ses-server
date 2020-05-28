@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonSyntaxException;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
@@ -13,6 +14,7 @@ import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpePayOrder;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -81,6 +83,9 @@ public class StripeServiceImpl implements StripeService {
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
+
+    @Autowired
+    private OpeCustomerService opeCustomerService;
 
     @Reference
     private IdAppService idAppService;
@@ -279,6 +284,16 @@ public class StripeServiceImpl implements StripeService {
         customerInquiry.setUpdatedTime(new Date());
         opeCustomerInquiryService.updateById(customerInquiry);
 
+        //将预定客户转化为潜在客户
+        OpeCustomer opeCustomer = opeCustomerService.getById(customerInquiry.getCustomerId());
+        if (!org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(),CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue()) ||
+                !org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(),CustomerStatusEnum.TRASH_CUSTOMER.getValue())
+        ){
+            opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
+            opeCustomer.setUpdatedTime(new Date());
+            opeCustomerService.updateById(opeCustomer);
+        }
+        //邮件发送
         sendmail(customerInquiry.getEmail());
     }
 
