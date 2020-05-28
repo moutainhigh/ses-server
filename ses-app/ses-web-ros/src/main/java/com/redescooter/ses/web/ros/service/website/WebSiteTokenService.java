@@ -63,6 +63,16 @@ public interface WebSiteTokenService {
      * @param enter
      * @return
      */
+    GeneralResult forgetPassword( WebResetPasswordEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description //
+     * @Date  2020/5/28 14:07
+     * @Param [enter]
+     * @return
+     **/
     GeneralResult resetPassword( WebResetPasswordEnter enter);
 
 

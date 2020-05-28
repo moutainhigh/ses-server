@@ -55,7 +55,7 @@ public class WebsiteTokenController {
     @IgnoreLoginCheck
     @ApiOperation(value = "邮件发送", response = GeneralResult.class)
     @PostMapping(value = "/sendEmail")
-    public Response<GeneralResult> sendEmail(@RequestBody BaseSendMailEnter enter) {
+    public Response<GeneralResult> sendEmail(@ModelAttribute BaseSendMailEnter enter) {
         return new Response<>(webSiteService.sendEmail(enter));
     }
 
@@ -64,7 +64,7 @@ public class WebsiteTokenController {
     @PostMapping(value = "/forgetPassword")
     @ApiOperation(value = "官网上面忘记密码", response = GeneralResult.class)
     public Response<GeneralResult> forgetPassword(@ModelAttribute @ApiParam("请求参数") WebResetPasswordEnter enter) {
-        return new Response<>(webSiteService.resetPassword(enter));
+        return new Response<>(webSiteService.forgetPassword(enter));
     }
 
 

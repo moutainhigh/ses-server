@@ -391,8 +391,8 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
      * @return
      */
     @Override
-    public GeneralResult addMultiMailTask(String jsonStr) {
-        Map<String, String> map = JSON.parseObject(jsonStr, Map.class);
+    public GeneralResult addMultiMailTask(BaseMailTaskEnter enter) {
+        Map<String, String> map = JSON.parseObject(JSON.toJSONString(enter), Map.class);
         if (!map.containsKey("event") ||
                 !map.containsKey("requestId") ||
                 !map.containsKey("systemId") ||
@@ -410,7 +410,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         String appId = map.get("appId");
         String requestId = map.get("requestId");
         String email = map.get("email");
-        Long userId = 0L;
+        Long userId = enter.getUserId();
         String name = map.get("name");
 
         PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));

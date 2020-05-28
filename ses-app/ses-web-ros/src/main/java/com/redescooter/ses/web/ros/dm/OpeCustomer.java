@@ -1,9 +1,7 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -32,6 +30,7 @@ public class OpeCustomer implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
+    @TableLogic
     private Integer dr;
 
     /**

@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.website.impl;
 
 import cn.hutool.json.JSONObject;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -196,18 +197,28 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Override
     public GeneralResult sendEmail(BaseSendMailEnter baseSendMailEnter) {
+        if(Strings.isNullOrEmpty(baseSendMailEnter.getMail())){
+            throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
+        }
         String name = baseSendMailEnter.getMail().substring(0, baseSendMailEnter.getMail().indexOf("@"));
+        //先判断邮箱是否存在、
+        QueryWrapper<OpeCustomer> qw = new QueryWrapper<>();
+        qw.eq("email",baseSendMailEnter.getMail());
+        qw.eq("dr",0);
+        qw.last("limit 1");
+        OpeCustomer customer = opeCustomerMapper.selectOne(qw);
+        if(null == customer){
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
         enter.setName(name);
         enter.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getName());
-        enter.setSystemId(SystemIDEnums.REDE_SES.getValue());
-        enter.setAppId(AppIDEnums.SES_ROS.getSystemId());
-//    enter.setToMail(baseSendMailEnter.getMail());
+        enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        enter.setAppId(AppIDEnums.SES_ROS.getValue());
         enter.setEmail(baseSendMailEnter.getMail());
-        enter.setRequestId("0");
-        enter.setUserId(0L);
-        mailMultiTaskService.addMultiMailTask(JSON.toJSONString(enter));
-//    mailMultiTaskService.subscriptionPaySucceedSendmail(enter);
+        enter.setRequestId(baseSendMailEnter.getRequestId());
+        enter.setUserId(customer.getId());
+        mailMultiTaskService.addMultiMailTask(enter);
         return new GeneralResult(baseSendMailEnter.getRequestId());
     }
 
@@ -271,13 +282,40 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
 
     @Override
+    public GeneralResult forgetPassword(WebResetPasswordEnter enter) {
+        //先给两个密码去空格（这个事应该前端就要做的）
+        if (!Strings.isNullOrEmpty(enter.getNewPassword())) {
+            enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
+        }
+        if (!Strings.isNullOrEmpty(enter.getConfirmPassword())) {
+            enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
+        }
+        //比较两个密码是否一致
+        if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+        }
+        //发邮件的时候  把用户的信息放在缓存里了  现在拿出来
+        Map<String,String> map = jedisCluster.hgetAll(enter.getRequestId());
+        OpeCustomer customer = opeCustomerMapper.selectById(map.get("userId").toString());
+        if (customer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        int salt = RandomUtils.nextInt(10000, 99999);
+        String newPassword = DigestUtils.md5Hex(enter.getNewPassword() + salt);
+        customer.setPassword(newPassword);
+        customer.setSalt(String.valueOf(salt));
+        opeCustomerMapper.updateById(customer);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
     public GeneralResult resetPassword(WebResetPasswordEnter enter) {
         //先给两个密码去空格（这个事应该前端就要做的）
         if (!Strings.isNullOrEmpty(enter.getNewPassword())) {
-            enter.setNewPassword(enter.getNewPassword().trim());
+            enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         }
-        if (!Strings.isNullOrEmpty(enter.getNewPassword())) {
-            enter.setConfirmPassword(enter.getNewPassword().trim());
+        if (!Strings.isNullOrEmpty(enter.getConfirmPassword())) {
+            enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
         }
         //比较两个密码是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
