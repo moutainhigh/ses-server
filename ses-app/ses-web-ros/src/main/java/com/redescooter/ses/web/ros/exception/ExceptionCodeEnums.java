@@ -272,6 +272,8 @@ public enum ExceptionCodeEnums {
 
      CUSTOMER_ALREADY_EXIST_ORDER_FORM (10128, "客户已存在预订单不允许添加预订单，请与销售人员联系"),
 
+    PARTS_BASE_IS_NOT_COMPLETE_INFORMATION(10059, "部品基础信息不完整，如partsNumber,ImportLot,snClassFlag,partsType,sec等"),
+
     ;
 
 

@@ -2,22 +2,24 @@ package com.redescooter.ses.web.ros.controller.website;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import spark.Request;
 
 
-@Log4j2
+@Slf4j
 @Api(tags = {"Stripe支付"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/stripe")
+@RequestMapping(value = "/stripe", method = RequestMethod.POST)
 public class StripeController {
 
     @Autowired
@@ -33,15 +35,24 @@ public class StripeController {
     @IgnoreLoginCheck
     @PostMapping(value = "/succeeHooks")
     @ApiOperation(value = "成功钩子")
-    public Response<GeneralResult> succeeHooks(Request request, spark.Response response) {
-        return new Response<>(stripeService.succeeHooks(request, response));
+    public Response<GeneralResult> succeeHooks(@RequestBody  String enter) {
+        return new Response<>(stripeService.succeeHooks(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/failHooks")
     @ApiOperation(value = "失败钩子")
-    public Response<GeneralResult>  failHooks(Request request,spark.Response response) {
-        return new Response<>(stripeService.failHooks(request, response));
+    @ResponseBody
+    public Response<GeneralResult> failHooks(@RequestBody String enter) {
+        return new Response<>(stripeService.failHooks(enter));
+    }
+
+    @IgnoreLoginCheck
+    @PostMapping(value = "/canceledHooks")
+    @ApiOperation(value = "取消钩子")
+    @ResponseBody
+    public Response<GeneralResult> canceledHooks(@RequestBody String enter) {
+        return new Response<>(stripeService.cancelledPaymentIntent(enter));
     }
 
 }

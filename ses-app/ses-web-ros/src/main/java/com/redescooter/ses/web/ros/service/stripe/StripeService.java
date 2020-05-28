@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.service.stripe;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringResult;
-import spark.Request;
 
 public interface StripeService {
 
@@ -16,21 +15,25 @@ public interface StripeService {
     StringResult paymentIntent(IdEnter enter);
 
     /**
-     * 网络钩子
-     * 成功时
+     * 网络钩子 成功时
      *
-     * @param request
-     * @param response
+     * @param enter
      */
-    GeneralResult succeeHooks(Request request, spark.Response response);
+    GeneralResult succeeHooks(String enter);
 
     /**
-     * 网络钩子
-     * 失败时
+     * 取消支付的勾子
      *
-     * @param request
-     * @param response
+     * @param enter
      * @return
      */
-    GeneralResult failHooks(Request request, spark.Response response);
+    GeneralResult cancelledPaymentIntent(String enter);
+
+    /**
+     * 网络钩子 失败时
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult failHooks(String enter);
 }

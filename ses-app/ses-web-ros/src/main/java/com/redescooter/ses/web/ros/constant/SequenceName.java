@@ -102,4 +102,6 @@ public interface SequenceName {
     String OPE_STOCK_PROD_PRODUCT = "OPE_STOCK_PROD_PRODUCT";
 
     String OPE_CUSTOMER_INQUIRY_B = "OPE_CUSTOMER_INQUIRY_B";
+
+    String OPE_PAY_ORDER = "OPE_PAY_ORDER";
 }

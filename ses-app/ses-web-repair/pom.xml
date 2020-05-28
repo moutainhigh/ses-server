@@ -23,21 +23,14 @@
 	<!--环境配置-->
 	<profiles>
 		<profile>
-			<id>jerry</id>
-			<properties>
-				<profile-active>jerry</profile-active>
-				<log.path>logs/</log.path>
-			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-		<profile>
 			<id>local</id>
 			<properties>
 				<profile-active>local</profile-active>
 				<log.path>logs/</log.path>
 			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 		</profile>
 		<profile>
 			<id>dev</id>

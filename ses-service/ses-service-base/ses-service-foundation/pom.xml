@@ -16,13 +16,6 @@
     <!--环境配置-->
     <profiles>
         <profile>
-            <id>jerry</id>
-            <properties>
-                <profile-active>jerry</profile-active>
-                <log.path>logs/</log.path>
-            </properties>
-        </profile>
-        <profile>
             <id>local</id>
             <properties>
                 <profile-active>local</profile-active>
@@ -88,13 +81,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build-info</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

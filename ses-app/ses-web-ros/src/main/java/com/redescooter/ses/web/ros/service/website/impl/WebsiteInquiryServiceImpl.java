@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.constant.EamilConstant;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
@@ -8,7 +9,12 @@ import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -33,16 +39,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.hibernate.validator.internal.util.privilegedactions.GetMethod;
+import org.apache.zookeeper.server.quorum.LeaderMXBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,460 +61,434 @@ import java.util.stream.Collectors;
 @Service
 public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
-  @Autowired
-  private OpeCustomerInquiryService opeCustomerInquiryService;
+    @Autowired
+    private OpeCustomerInquiryService opeCustomerInquiryService;
 
-  @Autowired
-  private WebsiteInquiryServiceMapper websiteInquiryServiceMapper;
+    @Autowired
+    private WebsiteInquiryServiceMapper websiteInquiryServiceMapper;
 
-  @Autowired
-  private OpeCustomerAccessoriesService opeCustomerAccessoriesService;
+    @Autowired
+    private OpeCustomerAccessoriesService opeCustomerAccessoriesService;
 
-  @Autowired
-  private OpePartsProductService opePartsProductService;
+    @Autowired
+    private OpePartsProductService opePartsProductService;
 
-  @Autowired
-  private OpeCustomerInquiryBService opeCustomerInquiryBService;
+    @Autowired
+    private OpeCustomerInquiryBService opeCustomerInquiryBService;
 
-  @Autowired
-  private CustomerRosService customerRosService;
+    @Autowired
+    private CustomerRosService customerRosService;
 
-  @Autowired
-  private OpeCustomerService opeCustomerService;
+    @Autowired
+    private OpeCustomerService opeCustomerService;
 
-  @Reference
-  private IdAppService idAppService;
+    @Reference
+    private IdAppService idAppService;
 
-  @Autowired
-  private JedisCluster jedisCluster;
+    @Autowired
+    private JedisCluster jedisCluster;
 
-  /**
-   * 车辆型号
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public List<ProductModelResult> productModels(GeneralEnter enter) {
-    List<ProductModelResult> resultList = new ArrayList<>();
+    /**
+     * 车辆型号
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ProductModelResult> productModels(GeneralEnter enter) {
+        List<ProductModelResult> resultList = new ArrayList<>();
 
-    for (ProductModelEnums item : ProductModelEnums.values()) {
-      resultList.add(ProductModelResult.builder().modelCode(item.getValue()).name(item.getCode()).build());
-    }
-    return resultList;
-  }
-
-  /**
-   * 车辆列表
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public List<ProductResult> scooters(ScootersEnter enter) {
-    if (ProductModelEnums.getProductModelEnumsByValue(enter.getModelCode()) == null) {
-      throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-    }
-    return websiteInquiryServiceMapper.scooters(enter);
-  }
-
-
-  /**
-   * 配件电池类型
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public List<AccessoryResult> accessoryBatteryList(GeneralEnter enter) {
-    return websiteInquiryServiceMapper.accessoryList(AccessoryTypeEnums.BATTERY.getValue());
-  }
-
-
-  /**
-   * 后备箱
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public List<AccessoryResult> accessoryTopCaseList(GeneralEnter enter) {
-    return websiteInquiryServiceMapper.accessoryList(AccessoryTypeEnums.TOP_CASE.getValue());
-  }
-
-  /**
-   * 保存 询价单
-   *
-   * @param enter
-   * @return
-   */
-  @Transactional
-  @Override
-  public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
-    //入参对象去空格
-    SesStringUtils.objStringTrim(enter);
-
-    //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
-    OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
-    if (opeCustomer == null) {
-      throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
-    }
-    if (StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
-      throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getMessage());
+        for (ProductModelEnums item : ProductModelEnums.values()) {
+            resultList.add(ProductModelResult.builder().modelCode(item.getValue()).name(item.getCode()).build());
+        }
+        return resultList;
     }
 
-    //订单校验客户订单校验 一个客户只允许存在一个订单
-    List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, opeCustomer.getEmail()));
-    if (CollectionUtils.isNotEmpty(customerInquiryList)) {
-      throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
+    /**
+     * 车辆列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ProductResult> scooters(ScootersEnter enter) {
+        if (ProductModelEnums.getProductModelEnumsByValue(enter.getModelCode()) == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        return websiteInquiryServiceMapper.scooters(enter);
     }
 
-    //后备箱 校验
-    OpeCustomerAccessories topCase = null;
-    if (enter.getBuyTopCase()) {
-      topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
-      if (topCase == null) {
-        throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
-      }
+
+    /**
+     * 配件电池类型
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<AccessoryResult> accessoryBatteryList(GeneralEnter enter) {
+        return websiteInquiryServiceMapper.accessoryList(AccessoryTypeEnums.BATTERY.getValue());
     }
 
-    //电池的校验
-    OpeCustomerAccessories battery = opeCustomerAccessoriesService.getById(enter.getAccessoryBatteryId());
-    if (battery == null) {
-      throw new SesWebRosException(ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getMessage());
+
+    /**
+     * 后备箱
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<AccessoryResult> accessoryTopCaseList(GeneralEnter enter) {
+        return websiteInquiryServiceMapper.accessoryList(AccessoryTypeEnums.TOP_CASE.getValue());
     }
 
-    //产品校验
-    ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
-    if (product == null) {
-      throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
+    /**
+     * 保存 询价单
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
+        //入参对象去空格
+        SesStringUtils.objStringTrim(enter);
+
+        //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
+        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        if (StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getMessage());
+        }
+
+        //订单校验客户订单校验 一个客户只允许存在一个订单
+//        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, opeCustomer.getEmail()));
+//        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
+//            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
+//        }
+
+        //后备箱 校验
+        OpeCustomerAccessories topCase = null;
+        if (enter.getBuyTopCase()) {
+            topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
+            if (topCase == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
+            }
+        }
+
+        //电池的校验
+        OpeCustomerAccessories battery = opeCustomerAccessoriesService.getById(enter.getAccessoryBatteryId());
+        if (battery == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getMessage());
+        }
+
+        //产品校验
+        ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
+        if (product == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+
+        //电池要求过滤
+        BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
+
+        //配件保存集合
+        List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
+        //总价格计算
+        if (enter.getBuyTopCase()) {
+            totalPrice = totalPrice.add(topCase.getPrice());
+        }
+
+        //todo 测试暂定为0.5 之后要改掉 默认100美分
+//        totalPrice = new BigDecimal("100");
+        totalPrice = new BigDecimal("19000");
+
+        //生成主订单
+        OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
+        opeCustomerInquiry.setCreatedBy(enter.getUserId());
+        opeCustomerInquiry.setCreatedTime(new Date());
+
+        //生成子订单
+        if (enter.getBuyTopCase()) {
+            //后备箱形成子表记录
+            opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), topCase.getPrice(), AccessoryTypeEnums.TOP_CASE.getValue()));
+        }
+        //电池记录
+        opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), battery.getPrice(), AccessoryTypeEnums.BATTERY.getValue()));
+        //子表数据 保存
+        if (CollectionUtils.isNotEmpty(opeCustomerInquiryBList)) {
+            opeCustomerInquiryBService.saveBatch(opeCustomerInquiryBList);
+        }
+        //主订单保存
+        opeCustomerInquiryService.save(opeCustomerInquiry);
+        return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
 
-    //电池要求过滤
-    BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
+    /**
+     * 修改 预订单
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter) {
 
-    //配件保存集合
-    List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
-    //总价格计算
-    if (enter.getBuyTopCase()) {
-      totalPrice = totalPrice.add(topCase.getPrice());
+        //入参对象去空格
+        SesStringUtils.objStringTrim(enter);
+
+        OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
+        if (customerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+
+        //订单校验客户订单校验 一个客户只允许存在一个订单
+//        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>()
+//                .eq(OpeCustomerInquiry::getEmail, customerInquiry.getEmail())
+//        .gt(OpeCustomerInquiry::getId,customerInquiry.getId())
+//        );
+//        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
+//            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
+//        }
+
+        //后备箱 校验
+        OpeCustomerAccessories topCase = null;
+        if (enter.getBuyTopCase()) {
+            topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
+            if (topCase == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
+            }
+        }
+
+        //电池的校验
+        OpeCustomerAccessories battery = opeCustomerAccessoriesService.getById(enter.getAccessoryBatteryId());
+        if (battery == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getMessage());
+        }
+
+        //产品校验
+        ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
+        if (product == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+
+        //电池要求过滤
+        BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
+
+        //配件保存集合
+        List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
+        //总价格计算
+
+        if (enter.getBuyTopCase()) {
+            totalPrice = totalPrice.add(topCase.getPrice());
+        }
+        totalPrice = new BigDecimal("19000");
+
+
+        //todo 测试暂定为0.5 之后要改掉 100美分
+//        totalPrice = new BigDecimal("100");
+        //生成主订单
+        OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, enter.getId());
+        opeCustomerInquiry.setCreatedBy(enter.getUserId());
+        opeCustomerInquiry.setCreatedTime(new Date());
+
+        //生成子订单
+        if (enter.getBuyTopCase()) {
+            //后备箱形成子表记录
+            opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), topCase.getPrice(), AccessoryTypeEnums.TOP_CASE.getValue()));
+        }
+        //电池记录
+        opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), battery.getPrice(), AccessoryTypeEnums.BATTERY.getValue()));
+
+        //子订单保存
+        List<OpeCustomerInquiryB> inquiryBList = opeCustomerInquiryBService.list(new LambdaQueryWrapper<OpeCustomerInquiryB>().eq(OpeCustomerInquiryB::getInquiryId, enter.getId()));
+        if (CollectionUtils.isNotEmpty(inquiryBList)) {
+            opeCustomerInquiryBService.removeByIds(inquiryBList.stream().map(OpeCustomerInquiryB::getId).collect(Collectors.toList()));
+        }
+        opeCustomerInquiryBService.saveBatch(opeCustomerInquiryBList);
+
+        //主订单保存
+        opeCustomerInquiryService.save(opeCustomerInquiry);
+        return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
 
-    //todo 测试暂定为0.5 之后要改掉 默认100美分
-    //totalPrice = new BigDecimal("100");
-    totalPrice = new BigDecimal("19000");
+    /**
+     * 询价单封装
+     *
+     * @param enter
+     * @param product
+     * @param totalPrice
+     * @return
+     */
+    private OpeCustomerInquiry buildOpeCustomerInquiry(SaveSaleOrderEnter enter, ProductResult product, BigDecimal totalPrice, Long id) {
 
-    //生成主订单
-    OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
-    opeCustomerInquiry.setCreatedBy(enter.getUserId());
-    opeCustomerInquiry.setCreatedTime(new Date());
+        //查询客户个人信息
+        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
 
-    //生成子订单
-    if (enter.getBuyTopCase()) {
-      //后备箱形成子表记录
-      opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), topCase.getPrice(), AccessoryTypeEnums.TOP_CASE.getValue()));
-    }
-    //电池记录
-    opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), battery.getPrice(), AccessoryTypeEnums.BATTERY.getValue()));
-    //子表数据 保存
-    if (CollectionUtils.isNotEmpty(opeCustomerInquiryBList)) {
-      opeCustomerInquiryBService.saveBatch(opeCustomerInquiryBList);
-    }
-    //主订单保存
-    opeCustomerInquiryService.save(opeCustomerInquiry);
-    return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
-  }
-
-  /**
-   * 修改 预订单
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter) {
-
-    //入参对象去空格
-    SesStringUtils.objStringTrim(enter);
-
-    OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
-    if (customerInquiry == null) {
-      throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
-    }
-
-    //订单校验客户订单校验 一个客户只允许存在一个订单
-    List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>()
-      .eq(OpeCustomerInquiry::getEmail, customerInquiry.getEmail())
-      .gt(OpeCustomerInquiry::getId, customerInquiry.getId())
-    );
-    if (CollectionUtils.isNotEmpty(customerInquiryList)) {
-      throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
-    }
-
-    //后备箱 校验
-    OpeCustomerAccessories topCase = null;
-    if (enter.getBuyTopCase()) {
-      topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
-      if (topCase == null) {
-        throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
-      }
-    }
-
-    //电池的校验
-    OpeCustomerAccessories battery = opeCustomerAccessoriesService.getById(enter.getAccessoryBatteryId());
-    if (battery == null) {
-      throw new SesWebRosException(ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getMessage());
-    }
-
-    //产品校验
-    ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
-    if (product == null) {
-      throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
-    }
-
-    //电池要求过滤
-    BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
-
-    //配件保存集合
-    List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
-    //总价格计算
-
-    if (enter.getBuyTopCase()) {
-      totalPrice = totalPrice.add(topCase.getPrice());
-    }
-    totalPrice = new BigDecimal("19000");
-
-
-    //todo 测试暂定为0.5 之后要改掉 100美分
-    totalPrice = new BigDecimal("100");
-    //生成主订单
-    OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, enter.getId());
-    opeCustomerInquiry.setCreatedBy(enter.getUserId());
-    opeCustomerInquiry.setCreatedTime(new Date());
-
-    //生成子订单
-    if (enter.getBuyTopCase()) {
-      //后备箱形成子表记录
-      opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), topCase.getPrice(), AccessoryTypeEnums.TOP_CASE.getValue()));
-    }
-    //电池记录
-    opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), battery.getPrice(), AccessoryTypeEnums.BATTERY.getValue()));
-
-    //子订单保存
-    List<OpeCustomerInquiryB> inquiryBList = opeCustomerInquiryBService.list(new LambdaQueryWrapper<OpeCustomerInquiryB>().eq(OpeCustomerInquiryB::getInquiryId, enter.getId()));
-    if (CollectionUtils.isNotEmpty(inquiryBList)) {
-      opeCustomerInquiryBService.removeByIds(inquiryBList.stream().map(OpeCustomerInquiryB::getId).collect(Collectors.toList()));
-    }
-    opeCustomerInquiryBService.saveBatch(opeCustomerInquiryBList);
-
-    //主订单保存
-    opeCustomerInquiryService.save(opeCustomerInquiry);
-    return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
-  }
-
-  /**
-   * 询价单封装
-   *
-   * @param enter
-   * @param product
-   * @param totalPrice
-   * @return
-   */
-  private OpeCustomerInquiry buildOpeCustomerInquiry(SaveSaleOrderEnter enter, ProductResult product, BigDecimal totalPrice, Long id) {
-
-    //查询客户个人信息
-    OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
-    if (opeCustomer == null) {
-      throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
-    }
-
-    OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
-    opeCustomerInquiry.setId(id);
-    opeCustomerInquiry.setDr(0);
-    opeCustomerInquiry.setCustomerId(enter.getUserId());
-    opeCustomerInquiry.setFirstName(opeCustomer.getCustomerFirstName());
-    opeCustomerInquiry.setLastName(opeCustomer.getCustomerLastName());
-    opeCustomerInquiry.setFullName(opeCustomer.getCustomerFullName());
-    opeCustomerInquiry.setEmail(opeCustomer.getEmail());
-    opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
-    opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
-    opeCustomerInquiry.setProductId(enter.getProductId());
-    opeCustomerInquiry.setProductModel(enter.getProductModel());
-    opeCustomerInquiry.setProductPrice(product.getPrice());
-    opeCustomerInquiry.setTotalPrice(totalPrice);
-    //todo 目前暂做个人端 默认车辆数量为一
+        OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
+        opeCustomerInquiry.setId(id);
+        opeCustomerInquiry.setDr(0);
+        opeCustomerInquiry.setCustomerId(enter.getUserId());
+        opeCustomerInquiry.setFirstName(opeCustomer.getCustomerFirstName());
+        opeCustomerInquiry.setLastName(opeCustomer.getCustomerLastName());
+        opeCustomerInquiry.setFullName(opeCustomer.getCustomerFullName());
+        opeCustomerInquiry.setEmail(opeCustomer.getEmail());
+        opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
+        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
+        opeCustomerInquiry.setProductId(enter.getProductId());
+        opeCustomerInquiry.setProductModel(enter.getProductModel());
+        opeCustomerInquiry.setProductPrice(product.getPrice());
+        opeCustomerInquiry.setTotalPrice(totalPrice);
+        //todo 目前暂做个人端 默认车辆数量为一
 //        opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
-    opeCustomerInquiry.setScooterQuantity(1);
-    opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
-    opeCustomerInquiry.setAddress(enter.getAddress());
-    opeCustomerInquiry.setCountryCode(enter.getCountryCode());
-    opeCustomerInquiry.setTelephone(enter.getPhone());
-    opeCustomerInquiry.setBankCardName(enter.getBankCardName());
-    opeCustomerInquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
-    opeCustomerInquiry.setCardNum(StringUtils.isEmpty(enter.getCardNum()) ? null : enter.getCardNum());
-    opeCustomerInquiry.setExpiredTime(enter.getExpiredTime() != null && enter.getExpiredTime() != 0 ? DateUtil.timeStampToDate(enter.getExpiredTime(), DateUtil.UTC) : null);
-    opeCustomerInquiry.setCvv(StringUtils.isBlank(enter.getCvv()) ? null : enter.getCvv());
-    opeCustomerInquiry.setPostalCode(StringUtils.isBlank(enter.getPostalCode()) ? null : enter.getPostalCode());
-    opeCustomerInquiry.setUpdatedBy(enter.getUserId());
-    opeCustomerInquiry.setUpdatedTime(new Date());
-    return opeCustomerInquiry;
-  }
-
-  /**
-   * 定金支付
-   *
-   * @param enter
-   * @return 1、定金支付
-   * 2、询价单 状态 未处理-----》已处理
-   * 3、判断当前是否存在 存在-- 车辆数量累加 不存在 客户状态 预定客户---》 潜在客户
-   */
-  @Override
-  public GeneralResult payDeposit(IdEnter enter) {
-    return null;
-  }
-
-  /**
-   * 预订单列表
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public List<OrderFormsResult> orderForms(OrderFormsEnter enter) {
-    return websiteInquiryServiceMapper.orderForms(enter);
-  }
-
-  /**
-   * 订单详情
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public OrderFormInfoResult orderFormInfo(IdEnter enter) {
-    OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
-    if (customerInquiry == null) {
-      throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        opeCustomerInquiry.setScooterQuantity(1);
+        opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
+        opeCustomerInquiry.setAddress(enter.getAddress());
+        opeCustomerInquiry.setCountryCode(enter.getCountryCode());
+        opeCustomerInquiry.setTelephone(enter.getPhone());
+        opeCustomerInquiry.setBankCardName(enter.getBankCardName());
+        opeCustomerInquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
+        opeCustomerInquiry.setCardNum(StringUtils.isEmpty(enter.getCardNum()) ? null : enter.getCardNum());
+        opeCustomerInquiry.setExpiredTime(enter.getExpiredTime() != null && enter.getExpiredTime() != 0 ? DateUtil.timeStampToDate(enter.getExpiredTime(), DateUtil.UTC) : null);
+        opeCustomerInquiry.setCvv(StringUtils.isBlank(enter.getCvv()) ? null : enter.getCvv());
+        opeCustomerInquiry.setPostalCode(StringUtils.isBlank(enter.getPostalCode()) ? null : enter.getPostalCode());
+        opeCustomerInquiry.setUpdatedBy(enter.getUserId());
+        opeCustomerInquiry.setUpdatedTime(new Date());
+        return opeCustomerInquiry;
     }
 
-    //查询子订单
-    List<OpeCustomerInquiryB> inquiryBList = opeCustomerInquiryBService.list(new LambdaQueryWrapper<OpeCustomerInquiryB>().eq(OpeCustomerInquiryB::getInquiryId, customerInquiry.getId()));
-    if (CollectionUtils.isEmpty(inquiryBList)) {
-      return null;
-    }
-    //反参对象
-    OrderFormInfoResult result = OrderFormInfoResult.builder()
-      .id(customerInquiry.getId())
-      .address(customerInquiry.getAddress())
-      .countryCode(customerInquiry.getCountryCode())
-      .phone(customerInquiry.getTelephone())
-      .productId(customerInquiry.getProductId())
-      .produceModel(customerInquiry.getProductModel())
-      .productQty(customerInquiry.getScooterQuantity())
-      .bankCardName(customerInquiry.getBankCardName())
-      .cardNum(customerInquiry.getCardNum())
-      .expiredTime(customerInquiry.getExpiredTime())
-      .cvv(customerInquiry.getCvv())
-      .postalCode(customerInquiry.getPostalCode())
-      .build();
-
-    //封装配件数量
-    inquiryBList.forEach(item -> {
-      if (item.getProductType().equals(AccessoryTypeEnums.BATTERY.getValue())) {
-        result.setAccessoryBatteryId(item.getProductId());
-        result.setAccessoryBatteryQty(item.getProductQty());
-      }
-      if (item.getProductType().equals(AccessoryTypeEnums.TOP_CASE.getValue())) {
-        result.setTopCaseId(item.getProductId());
-      }
-    });
-    return result;
-  }
-
-  /**
-   * 尾款支付
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public GeneralResult payLastParagraph(GeneralEnter enter) {
-    return null;
-  }
-
-  /**
-   * 邮箱验证
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public BooleanResult checkMail(StringEnter enter) {
-    IntResult checkMailCount = customerRosService.checkMailCount(enter);
-    return BooleanResult.builder().success(checkMailCount.getValue() == 0 ? Boolean.TRUE : Boolean.FALSE).build();
-  }
-
-  /**
-   * 客户信息
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public CustomerInfoResult customerInfo(GeneralEnter enter) {
-    OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
-    if (opeCustomer == null) {
-      throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
-    }
-    return CustomerInfoResult.builder()
-      .id(opeCustomer.getId())
-      .email(opeCustomer.getEmail())
-      .firstName(opeCustomer.getCustomerFirstName())
-      .lastName(opeCustomer.getCustomerLastName())
-      .build();
-  }
-
-  /**
-   * 存储邮箱
-   *
-   * @param enter
-   */
-  @Override
-  public GeneralResult email(StorageEamilEnter enter) {
-    if (enter.getEmail().isEmpty()) {
-      throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
-    }
-    return  new GeneralResult();
-  }
-
-  /* *//**
-   * 存储邮箱
-   *
-   * @param enter
-   *//*
-  @Override
-  public GeneralResult email(StorageEamilEnter enter) {
-    if (enter.getEmail().isEmpty()) {
-      throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
+    /**
+     * 定金支付
+     *
+     * @param enter
+     * @return 1、定金支付
+     * 2、询价单 状态 未处理-----》已处理
+     * 3、判断当前是否存在 存在-- 车辆数量累加 不存在 客户状态 预定客户---》 潜在客户
+     */
+    @Override
+    public GeneralResult payDeposit(IdEnter enter) {
+        return null;
     }
 
-    CloseableHttpClient httpCilent = HttpClients.createDefault();//Creates CloseableHttpClient instance with default configuration.
-    HttpGet httpGet = new HttpGet("https://api.sendinblue.com/v3/emailCampaigns?eamil"+enter.getEmail());
-    try {
-      httpCilent.execute(httpGet);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }finally {
-      try {
-        httpCilent.close();//释放资源
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+    /**
+     * 预订单列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<OrderFormsResult> orderForms(OrderFormsEnter enter) {
+        return websiteInquiryServiceMapper.orderForms(enter);
     }
-    return new GeneralResult();
-  }*/
 
-  private OpeCustomerInquiryB buildAccessory(SaveSaleOrderEnter enter, Long id, BigDecimal price, String type) {
+    /**
+     * 订单详情
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public OrderFormInfoResult orderFormInfo(IdEnter enter) {
+        OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
+        if (customerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+
+        //查询子订单
+        List<OpeCustomerInquiryB> inquiryBList = opeCustomerInquiryBService.list(new LambdaQueryWrapper<OpeCustomerInquiryB>().eq(OpeCustomerInquiryB::getInquiryId, customerInquiry.getId()));
+        if (CollectionUtils.isEmpty(inquiryBList)) {
+            return null;
+        }
+        //反参对象
+        OrderFormInfoResult result = OrderFormInfoResult.builder()
+                .id(customerInquiry.getId())
+                .address(customerInquiry.getAddress())
+                .countryCode(customerInquiry.getCountryCode())
+                .phone(customerInquiry.getTelephone())
+                .productId(customerInquiry.getProductId())
+                .produceModel(customerInquiry.getProductModel())
+                .productQty(customerInquiry.getScooterQuantity())
+                .bankCardName(customerInquiry.getBankCardName())
+                .cardNum(customerInquiry.getCardNum())
+                .expiredTime(customerInquiry.getExpiredTime())
+                .cvv(customerInquiry.getCvv())
+                .postalCode(customerInquiry.getPostalCode())
+                .build();
+
+        //封装配件数量
+        inquiryBList.forEach(item -> {
+            if (item.getProductType().equals(AccessoryTypeEnums.BATTERY.getValue())) {
+                result.setAccessoryBatteryId(item.getProductId());
+                result.setAccessoryBatteryQty(item.getProductQty());
+            }
+            if (item.getProductType().equals(AccessoryTypeEnums.TOP_CASE.getValue())) {
+                result.setTopCaseId(item.getProductId());
+            }
+        });
+        return result;
+    }
+
+    /**
+     * 尾款支付
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult payLastParagraph(GeneralEnter enter) {
+        return null;
+    }
+
+    /**
+     * 邮箱验证
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public BooleanResult checkMail(StringEnter enter) {
+        IntResult checkMailCount = customerRosService.checkMailCount(enter);
+        return BooleanResult.builder().success(checkMailCount.getValue() == 0 ? Boolean.TRUE : Boolean.FALSE).build();
+    }
+
+    /**
+     * 客户信息
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public CustomerInfoResult customerInfo(GeneralEnter enter) {
+        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        return CustomerInfoResult.builder()
+                .id(opeCustomer.getId())
+                .email(opeCustomer.getEmail())
+                .firstName(opeCustomer.getCustomerFirstName())
+                .lastName(opeCustomer.getCustomerLastName())
+                .build();
+    }
+
+    /**
+     * 存储邮箱
+     *
+     * @param enter
+     */
+    @Override
+    public GeneralResult email(StorageEamilEnter enter) {
+        if (enter.getEmail().isEmpty()) {
+            throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
+        }
+        jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(), enter.getEmail());
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    private OpeCustomerInquiryB buildAccessory(SaveSaleOrderEnter enter, Long id, BigDecimal price, String type) {
         OpeCustomerInquiryB opeCustomerInquiryB = new OpeCustomerInquiryB();
         opeCustomerInquiryB.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY_B));
         opeCustomerInquiryB.setDr(0);

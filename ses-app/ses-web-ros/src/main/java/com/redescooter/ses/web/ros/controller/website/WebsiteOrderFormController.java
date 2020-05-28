@@ -124,6 +124,7 @@ public class WebsiteOrderFormController {
     public Response<CustomerInfoResult> customerInfo(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(websiteOrderFormService.customerInfo(enter));
     }
+
     @IgnoreLoginCheck
     @PostMapping(value = "/email")
     @ApiOperation(value = "存储邮箱", response = GeneralResult.class)

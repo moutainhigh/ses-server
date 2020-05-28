@@ -417,7 +417,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         String appId = map.get("appId");
         String requestId = map.get("requestId");
         String email = map.get("email");
-        Long userId = Long.parseLong(map.get("userId"));
+        Long userId = 0L;
         String name = map.get("name");
 
         PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));

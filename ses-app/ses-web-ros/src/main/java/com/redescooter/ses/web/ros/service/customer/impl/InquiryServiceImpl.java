@@ -143,11 +143,11 @@ public class InquiryServiceImpl implements InquiryService {
         //邮箱 去空格
         enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
 
-        // 查询已存在的email
-        List<String> emailList = inquiryServiceMapper.usingEmailList();
-        if (emailList.contains(enter.getEmail())) {
-            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
-        }
+        // 查询已存在的email 暂时注释掉 邮箱过滤
+//        List<String> emailList = inquiryServiceMapper.usingEmailList();
+//        if (emailList.contains(enter.getEmail())) {
+//            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+//        }
         CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
         if (cityResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
@@ -358,8 +358,9 @@ public class InquiryServiceImpl implements InquiryService {
         if (opeCustomerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
-        if (!SesStringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPROCESSED.getValue())) {
-            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        //已经为潜在可乎 直接返回
+        if (SesStringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPROCESSED.getValue())) {
+            return new GeneralResult();
         }
         opeCustomerInquiry.setStatus(InquiryStatusEnums.PROCESSED.getValue());
         opeCustomerInquiry.setUpdatedBy(enter.getUserId());
