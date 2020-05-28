@@ -37,5 +37,5 @@ public interface DeptServiceMapper {
      *
      * @return
      */
-    List<EmployeeProfileResult> employeeList();
+    List<EmployeeProfileResult> employeeList(@Param("deptIds") List<Long> deptIds, @Param("keyword") String keyword);
 }

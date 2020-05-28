@@ -7,7 +7,6 @@ import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
@@ -23,21 +22,19 @@ import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -114,42 +111,58 @@ public class SysDeptServiceImpl implements SysDeptService {
         List<DeptTreeReslt> list = deptServiceMapper.deptList();
 
         //查询员工信息
-        List<EmployeeProfileResult> employeeList = deptServiceMapper.employeeList();
+        List<EmployeeProfileResult> employeeList = deptServiceMapper.employeeList(null);
         if (CollectionUtils.isNotEmpty(list)) {
             if (CollectionUtils.isNotEmpty(employeeList)) {
                 list.forEach(item -> {
                     for (EmployeeProfileResult user : employeeList) {
                         if (item.getId() == user.getDeptId()) {
                             //如果部门人员大于4人 就不进行 头像拼接
-                            if (StringUtils.isNotEmpty(item.getEmployeePictures())){
+                            if (StringUtils.isNotEmpty(item.getEmployeePictures())) {
                                 if (item.getEmployeePictures().split(",").length > 3) {
                                     break;
                                 }
                                 item.setEmployeePictures(new StringBuilder(item.getEmployeePictures()).append(user.getEmployeePicture()).toString());
                             }
                         }
+                        employeeCount(list,item);
                     }
                 });
             }
         }
-
-        //进行人数 累加
-
-        //buildTree(list);
         return list;
     }
 
-//    private void buildTree(List<DeptTreeReslt> list) {
-//        for (DeptTreeReslt item : list) {
-//            DeptTreeReslt children = TreeUtil.findChildren(item, list);
-//            //有子集继续循环
-//            List<TreeNode> childrenList = children.getChildren();
-//            if (CollectionUtils.isNotEmpty(childrenList)) {
-//                buildTree(childrenList);
-//            }
-//            //进行人数 头像拼接
-//        }
-//    }
+
+    private void employeeCount(List<DeptTreeReslt> list, DeptTreeReslt deptTree) {
+
+        DeptTreeReslt children = TreeUtil.findChildren(deptTree, list);
+
+        if (CollectionUtils.isNotEmpty(children.getChildren())){
+            children.getChildren().forEach(item->{
+                children.setEmployeeCount(children.getEmployeeCount()+1);
+            });
+        }
+    }
+
+
+    /**
+     * 员工列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<EmployeeProfileResult> employeeListByDeptId(EmployeeListByDeptIdEnter enter) {
+        OpeSysDept dept = sysDeptService.getById(enter.getId());
+        if (dept == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
+        }
+
+        //查询 部门下员工
+        List<Long> deptIds=new ArrayList<>();
+        return deptServiceMapper.employeeList(deptIds,enter.getKeyword());
+    }
 
     @Override
     public GeneralResult edit(EditDeptEnter enter) {

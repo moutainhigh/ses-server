@@ -4,6 +4,9 @@ import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.apache.poi.ss.formula.functions.T;
+
+import java.util.List;
 
 /**
  * @ClassName DeptTreeReslt
@@ -17,7 +20,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class DeptTreeReslt extends TreeNode {
+public class DeptTreeReslt extends TreeNode{
 
     @ApiModelProperty(value = "负责人")
     private Integer principal;

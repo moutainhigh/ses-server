@@ -35,16 +35,29 @@
 
     <select id="employeeList" resultType="com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult">
         select profile.sys_user_id as id,
-               user.dept_id        as deptId,
-               profile.first_name  as employeeFirstName,
-               profile.last_name   as employeeLastName,
-               profile.picture     as employeePicture,
-               role.id             as employeePositionId,
-               role.role_name      as employeePositionName
+        user.dept_id as deptId,
+        profile.first_name as employeeFirstName,
+        profile.last_name as employeeLastName,
+        profile.picture as employeePicture,
+        role.id as employeePositionId,
+        role.role_name as employeePositionName
         from ope_sys_user_profile profile
-                 inner join ope_sys_user user on profile.sys_user_id = user.id and user.dr = 0
-                 inner join ope_sys_user_role osur on user.id = osur.user_id
-                 inner join ope_sys_role role on osur.role_id = role.id and role.dr = 0
+        inner join ope_sys_user user on profile.sys_user_id = user.id and user.dr = 0
+        inner join ope_sys_user_role osur on user.id = osur.user_id
+        inner join ope_sys_role role on osur.role_id = role.id and role.dr = 0
         where profile.dr = 0
+        <if test="deptIds !=null and  deptIds.size!=0">
+            and user.dept_id in
+            <foreach collection="deptIds" open="(" close=")" item="item" >
+                #{item}
+            </foreach>
+        </if>
+        <if test="keyword !=null and  keyword !=''">
+           and(
+            profile.email like concat ('%',keyword,'%') or
+            profile.first_name like concat ('%',keyword,'%') or
+            profile.last_name like concat ('%',keyword,'%') or
+            )
+        </if>
     </select>
 </mapper>

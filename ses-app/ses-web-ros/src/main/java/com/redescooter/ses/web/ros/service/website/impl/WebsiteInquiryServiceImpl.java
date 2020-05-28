@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.EamilConstant;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -36,6 +37,7 @@ import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -331,6 +333,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(id);
         opeCustomerInquiry.setDr(0);
+        opeCustomerInquiry.setOrderNo(RandomStringUtils.randomAlphabetic(8));
         opeCustomerInquiry.setCustomerId(enter.getUserId());
         opeCustomerInquiry.setFirstName(opeCustomer.getCustomerFirstName());
         opeCustomerInquiry.setLastName(opeCustomer.getCustomerLastName());
@@ -405,6 +408,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //反参对象
         OrderFormInfoResult result = OrderFormInfoResult.builder()
                 .id(customerInquiry.getId())
+                .orderNo(customerInquiry.getOrderNo())
                 .address(customerInquiry.getAddress())
                 .countryCode(customerInquiry.getCountryCode())
                 .phone(customerInquiry.getTelephone())
@@ -416,6 +420,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .expiredTime(customerInquiry.getExpiredTime())
                 .cvv(customerInquiry.getCvv())
                 .postalCode(customerInquiry.getPostalCode())
+                .totalPrice(customerInquiry.getTotalPrice())
+                .remainingPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("190")))
                 .build();
 
         //封装配件数量
