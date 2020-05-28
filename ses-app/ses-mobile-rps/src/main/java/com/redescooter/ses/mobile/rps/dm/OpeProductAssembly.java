@@ -1,9 +1,7 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -30,6 +28,7 @@ public class OpeProductAssembly implements Serializable {
      * 删除标识
      */
     @TableField(value = "dr")
+    @TableLogic
     private Integer dr;
 
     /**

@@ -1,12 +1,12 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +31,8 @@ public class OpeCustomer implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
+    @ApiModelProperty(value = "删除标识")
+    @TableLogic
     private Integer dr;
 
     /**
