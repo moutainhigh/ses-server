@@ -14,6 +14,10 @@ import lombok.Data;
 @Data
 public class WebResetPasswordEnter extends GeneralEnter {
 
+
+    @ApiModelProperty(value = "原始密码")
+    private String oldPassword;
+
     @ApiModelProperty(value = "密码")
     private String newPassword;
 

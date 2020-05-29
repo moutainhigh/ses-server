@@ -274,6 +274,8 @@ public enum ExceptionCodeEnums {
 
     PARTS_BASE_IS_NOT_COMPLETE_INFORMATION(10059, "部品基础信息不完整，如partsNumber,ImportLot,snClassFlag,partsType,sec等"),
 
+    OLDPASSWORD_ERROR(10060, "部品基础信息不完整，如partsNumber,ImportLot,snClassFlag,partsType,sec等"),
+
     ;
 
 
