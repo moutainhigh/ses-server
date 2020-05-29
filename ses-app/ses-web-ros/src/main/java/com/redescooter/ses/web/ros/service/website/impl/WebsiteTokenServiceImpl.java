@@ -87,14 +87,14 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
         //用户密码解密
         String decryptPassword = "";
-        String loginName = "";
+
         try {
-            loginName = RsaUtils.decrypt(enter.getLoginName(), privatekey);
+
             decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
-        enter.setLoginName(loginName);
+        enter.setLoginName(enter.getLoginName());
         enter.setPassword(decryptPassword);
 
         //用户校验
