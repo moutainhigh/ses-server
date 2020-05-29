@@ -431,20 +431,20 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (CollectionUtils.isEmpty(inquiryBList)) {
             return null;
         }
-      String decryptTelephone =null;
+    /*  String decryptTelephone =null;
       try {
 
          decryptTelephone = RsaUtils.encryptByPrivateKey(customerInquiry.getTelephone(), privatekey);
       }catch (Exception e){
         throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-      }
+      }*/
         //反参对象
         OrderFormInfoResult result = OrderFormInfoResult.builder()
                 .id(customerInquiry.getId())
                 .orderNo(customerInquiry.getOrderNo())
                 .address(customerInquiry.getAddress())
                 .countryCode(customerInquiry.getCountryCode())
-                .phone(decryptTelephone)
+                .phone(customerInquiry.getTelephone())
                 .productId(customerInquiry.getProductId())
                 .produceModel(customerInquiry.getProductModel())
                 .productQty(customerInquiry.getScooterQuantity())
@@ -515,16 +515,16 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
-      String decrypt =null;
+     /* String decrypt =null;
       try {
 
         decrypt = RsaUtils.encryptByPrivateKey(opeCustomer.getEmail(),privatekey);
       }catch (Exception e){
         throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-      }
+      }*/
         return CustomerInfoResult.builder()
                 .id(opeCustomer.getId())
-                .email(decrypt)
+                .email(opeCustomer.getEmail())
                 .firstName(opeCustomer.getCustomerFirstName())
                 .lastName(opeCustomer.getCustomerLastName())
                 .build();
