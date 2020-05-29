@@ -111,7 +111,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         List<DeptTreeReslt> list = deptServiceMapper.deptList();
 
         //查询员工信息
-        List<EmployeeProfileResult> employeeList = deptServiceMapper.employeeList(null,null);
+        List<EmployeeProfileResult> employeeList = deptServiceMapper.employeeList(null, null);
         if (CollectionUtils.isNotEmpty(list)) {
             if (CollectionUtils.isNotEmpty(employeeList)) {
                 list.forEach(item -> {
@@ -125,7 +125,7 @@ public class SysDeptServiceImpl implements SysDeptService {
                                 item.setEmployeePictures(new StringBuilder(item.getEmployeePictures()).append(user.getEmployeePicture()).toString());
                             }
                         }
-                        employeeCount(list,item);
+                        //employeeCount(list,item);
                     }
                 });
             }
@@ -138,9 +138,9 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         DeptTreeReslt children = TreeUtil.findChildren(deptTree, list);
 
-        if (CollectionUtils.isNotEmpty(children.getChildren())){
-            children.getChildren().forEach(item->{
-                children.setEmployeeCount(children.getEmployeeCount()+1);
+        if (CollectionUtils.isNotEmpty(children.getChildren())) {
+            children.getChildren().forEach(item -> {
+                children.setEmployeeCount(children.getEmployeeCount() + 1);
             });
         }
     }
@@ -160,8 +160,8 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
 
         //查询 部门下员工
-        List<Long> deptIds=new ArrayList<>();
-        return deptServiceMapper.employeeList(deptIds,enter.getKeyword());
+        List<Long> deptIds = new ArrayList<>();
+        return deptServiceMapper.employeeList(deptIds, enter.getKeyword());
     }
 
     @Override
