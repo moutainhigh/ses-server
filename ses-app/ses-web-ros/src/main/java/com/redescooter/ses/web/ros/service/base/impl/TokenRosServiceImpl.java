@@ -42,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
@@ -66,8 +67,12 @@ public class TokenRosServiceImpl implements TokenRosService {
 
     @Autowired
     private OpeSysUserService opeSysUserService;
+
     @Reference
     private IdAppService idAppService;
+
+    @Value("${Request.privateKey}")
+    private  String privateKey;
 
 
     /**
@@ -111,8 +116,8 @@ public class TokenRosServiceImpl implements TokenRosService {
         if (StringUtils.equals(sysUser.getStatus(), SysUserStatusEnum.EXPIRED.getCode())) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_EXPIRED.getCode(), ExceptionCodeEnums.ACCOUNT_EXPIRED.getMessage());
         }
+        //密码解密
         String decryptPassword = checkPassWord(enter);
-
 
         //密码MD5 加密
         String password = DigestUtils.md5Hex(decryptPassword + sysUser.getSalt());
@@ -158,20 +163,6 @@ public class TokenRosServiceImpl implements TokenRosService {
      * @return
      */
     private String checkPassWord(LoginEnter enter) {
-        //获取私钥
-        String privateKey = "";
-        if (jedisCluster.exists(new StringBuilder(enter.getRequestId()).append(":::").append(RsaUtils.PRIVATE_KEY).toString())) {
-            privateKey = jedisCluster.get(new StringBuilder(enter.getRequestId()).append(":::").append(RsaUtils.PRIVATE_KEY).toString());
-
-        } else {
-            privateKey = jedisCluster.get(new StringBuilder(enter.getLoginName()).append(":::").append("LOGIN").toString());
-        }
-
-        //获取不到密钥 就密码错误
-        if (StringUtils.isEmpty(privateKey)) {
-            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
-        }
-
         //密码解密 无法解密时 就是提示密码错误
         String decryptPassword = "";
         try {
