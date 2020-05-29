@@ -69,6 +69,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
+
     @Value("${Request.privateKey}")
     private String privatekey;
     /**
@@ -93,7 +94,12 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
 
         if (enter.getPassword()!=null){
-          String decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
+            String decryptPassword ="";
+            try {
+                decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
+            }catch (Exception e){
+                throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
 
           //密码校验
         String password = DigestUtils.md5Hex(decryptPassword + opeCustomer.getSalt());
