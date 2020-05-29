@@ -169,4 +169,32 @@ public class RsaUtils {
             throw new RuntimeException();
         }
     }
+
+    @SneakyThrows
+    public static void main(String[] args) {
+
+        Map<String, String> stringStringMap = generateRsaKey(2048);
+        System.out.println(stringStringMap.get(PRIVATE_KEY));
+
+        System.out.println(stringStringMap.get(PUBLIC_KEY));
+
+        String password = "RedeScooter2019";
+
+        //公钥加密
+        String encryptPwd = encrypt(password, stringStringMap.get(PUBLIC_KEY));
+        System.out.println(encryptPwd);
+
+        //私钥解密
+        String decryptPwd = decrypt(encryptPwd, stringStringMap.get(PRIVATE_KEY));
+        System.out.println(decryptPwd);
+
+        //私钥加密
+        String encryptByPrivateKeyPwd = encryptByPrivateKey(password, privateKey_sa);
+        System.out.println(encryptByPrivateKeyPwd);
+
+        //公钥解密
+        String decryptByPublicKey = decryptByPublicKey(encryptByPrivateKeyPwd, publicKey_sa);
+        System.out.println(decryptByPublicKey);
+    }
+
 }
