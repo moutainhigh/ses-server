@@ -90,6 +90,8 @@ public class StripeServiceImpl implements StripeService {
 
     @Reference
     private IdAppService idAppService;
+    @Value("${Request.privateKey}")
+    private String privatekey;
 
     @SneakyThrows
     @Override
@@ -114,7 +116,7 @@ public class StripeServiceImpl implements StripeService {
                 .setAmount(payOrder.getTotalPrice().longValue()).putAllMetadata(map).build();
 
             PaymentIntent intent = PaymentIntent.create(params);
-            result.setValue(intent.getClientSecret());
+            result.setValue(RsaUtils.decryptByPublicKey(intent.getClientSecret(),privatekey));
 
         } catch (Exception e) {
             log.info(e.getMessage());

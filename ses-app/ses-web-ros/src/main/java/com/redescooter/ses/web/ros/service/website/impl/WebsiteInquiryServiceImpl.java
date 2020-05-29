@@ -91,7 +91,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private JedisCluster jedisCluster;
-    @Value("Request.privateKey")
+    @Value("${Request.privateKey}")
     private String privatekey;
 
     /**
@@ -195,6 +195,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
+        if (enter.getPhone()!=null){
+          enter.setPhone(RsaUtils.decrypt(enter.getPhone(),privatekey));
+        }
 
         //电池要求过滤
         BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
@@ -277,6 +280,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
+      if (enter.getPhone()!=null){
+        enter.setPhone(RsaUtils.decrypt(enter.getPhone(),privatekey));
+      }
 
         //电池要求过滤
         BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
@@ -415,7 +421,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .orderNo(customerInquiry.getOrderNo())
                 .address(customerInquiry.getAddress())
                 .countryCode(customerInquiry.getCountryCode())
-                .phone(customerInquiry.getTelephone())
+                .phone(RsaUtils.decryptByPublicKey(customerInquiry.getTelephone(),privatekey))
                 .productId(customerInquiry.getProductId())
                 .produceModel(customerInquiry.getProductModel())
                 .productQty(customerInquiry.getScooterQuantity())
@@ -460,6 +466,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public BooleanResult checkMail(StringEnter enter) {
+      if (enter.getSt()!=null){
+        enter.setSt(RsaUtils.decrypt(enter.getSt(),privatekey));
+      }
         IntResult checkMailCount = customerRosService.checkMailCount(enter);
         return BooleanResult.builder().success(checkMailCount.getValue() == 0 ? Boolean.TRUE : Boolean.FALSE).build();
     }
@@ -478,7 +487,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
         return CustomerInfoResult.builder()
                 .id(opeCustomer.getId())
-                .email(opeCustomer.getEmail())
+                .email(RsaUtils.decryptByPublicKey(opeCustomer.getEmail(),privatekey))
                 .firstName(opeCustomer.getCustomerFirstName())
                 .lastName(opeCustomer.getCustomerLastName())
                 .build();
