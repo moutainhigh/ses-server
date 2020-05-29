@@ -196,7 +196,14 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
         if (enter.getPhone()!=null){
-          enter.setPhone(RsaUtils.decrypt(enter.getPhone(),privatekey));
+          String decrypt =null;
+          try {
+
+            decrypt =  RsaUtils.decrypt(enter.getPhone(),privatekey);
+          }catch (Exception e){
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+          }
+          enter.setPhone(decrypt);
         }
 
         //电池要求过滤
@@ -281,7 +288,16 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
       if (enter.getPhone()!=null){
-        enter.setPhone(RsaUtils.decrypt(enter.getPhone(),privatekey));
+        if (enter.getPhone()!=null){
+          String decrypt =null;
+          try {
+
+            decrypt =  RsaUtils.decrypt(enter.getPhone(),privatekey);
+          }catch (Exception e){
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+          }
+          enter.setPhone(decrypt);
+        }
       }
 
         //电池要求过滤
@@ -415,13 +431,20 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (CollectionUtils.isEmpty(inquiryBList)) {
             return null;
         }
+      String decryptTelephone =null;
+      try {
+
+         decryptTelephone = RsaUtils.encryptByPrivateKey(customerInquiry.getTelephone(), privatekey);
+      }catch (Exception e){
+        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+      }
         //反参对象
         OrderFormInfoResult result = OrderFormInfoResult.builder()
                 .id(customerInquiry.getId())
                 .orderNo(customerInquiry.getOrderNo())
                 .address(customerInquiry.getAddress())
                 .countryCode(customerInquiry.getCountryCode())
-                .phone(RsaUtils.decryptByPublicKey(customerInquiry.getTelephone(),privatekey))
+                .phone(decryptTelephone)
                 .productId(customerInquiry.getProductId())
                 .produceModel(customerInquiry.getProductModel())
                 .productQty(customerInquiry.getScooterQuantity())
@@ -467,7 +490,14 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public BooleanResult checkMail(StringEnter enter) {
       if (enter.getSt()!=null){
-        enter.setSt(RsaUtils.decrypt(enter.getSt(),privatekey));
+        String decrypt =null;
+        try {
+
+          decrypt =RsaUtils.decrypt(enter.getSt(),privatekey);
+        }catch (Exception e){
+          throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        enter.setSt(decrypt);
       }
         IntResult checkMailCount = customerRosService.checkMailCount(enter);
         return BooleanResult.builder().success(checkMailCount.getValue() == 0 ? Boolean.TRUE : Boolean.FALSE).build();
@@ -485,9 +515,16 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
+      String decrypt =null;
+      try {
+
+        decrypt = RsaUtils.encryptByPrivateKey(opeCustomer.getEmail(),privatekey);
+      }catch (Exception e){
+        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+      }
         return CustomerInfoResult.builder()
                 .id(opeCustomer.getId())
-                .email(RsaUtils.encryptByPrivateKey(opeCustomer.getEmail(),privatekey))
+                .email(decrypt)
                 .firstName(opeCustomer.getCustomerFirstName())
                 .lastName(opeCustomer.getCustomerLastName())
                 .build();
@@ -503,7 +540,13 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
       if (enter.getEmail().isEmpty()) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
         }
-      String eamil = RsaUtils.decrypt(enter.getEmail(), privatekey);
+      String eamil=null;
+      try {
+
+         eamil = RsaUtils.decrypt(enter.getEmail(), privatekey);
+      }catch (Exception e){
+        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+      }
       jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(),eamil);
         return new GeneralResult(enter.getRequestId());
     }
