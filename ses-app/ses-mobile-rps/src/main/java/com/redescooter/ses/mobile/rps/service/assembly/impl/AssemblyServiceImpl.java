@@ -101,7 +101,8 @@ public class AssemblyServiceImpl implements AssemblyService {
             throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
         }
 
-        int count = opeAssemblyBOrderService.count(new LambdaQueryWrapper<OpeAssemblyBOrder>().ne(OpeAssemblyBOrder::getWaitAssemblyQty, 0));
+        int count = opeAssemblyBOrderService.count(new LambdaQueryWrapper<OpeAssemblyBOrder>().eq(OpeAssemblyBOrder::getAssemblyId,opeAssemblyOrder.getId()).ne(OpeAssemblyBOrder::getWaitAssemblyQty,
+                0));
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }

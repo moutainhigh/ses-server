@@ -487,7 +487,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
         return CustomerInfoResult.builder()
                 .id(opeCustomer.getId())
-                .email(RsaUtils.decryptByPublicKey(opeCustomer.getEmail(),privatekey))
+                .email(RsaUtils.encryptByPrivateKey(opeCustomer.getEmail(),privatekey))
                 .firstName(opeCustomer.getCustomerFirstName())
                 .lastName(opeCustomer.getCustomerLastName())
                 .build();
