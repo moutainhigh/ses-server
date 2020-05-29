@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.EamilConstant;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -10,12 +9,7 @@ import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IntResult;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -28,11 +22,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerAccessoriesService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.*;
@@ -42,7 +32,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -489,16 +478,17 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public BooleanResult checkMail(StringEnter enter) {
-      if (enter.getSt()!=null){
-        String decrypt =null;
-        try {
-
-          decrypt =RsaUtils.decrypt(enter.getSt(),privatekey);
-        }catch (Exception e){
-          throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
-        enter.setSt(decrypt);
-      }
+        // if (enter.getSt()!=null){
+        // String decrypt =null;
+        // try {
+        //
+        // decrypt =RsaUtils.decrypt(enter.getSt(),privatekey);
+        // }catch (Exception e){
+        // throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+        // ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        // }
+        // enter.setSt(decrypt);
+        // }
         IntResult checkMailCount = customerRosService.checkMailCount(enter);
         return BooleanResult.builder().success(checkMailCount.getValue() == 0 ? Boolean.TRUE : Boolean.FALSE).build();
     }

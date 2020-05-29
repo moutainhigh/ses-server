@@ -1,8 +1,5 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
-import cn.hutool.json.JSONObject;
-import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -16,7 +13,6 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
-import com.redescooter.ses.tool.crypt.RSA;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -234,20 +230,21 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     if (Strings.isNullOrEmpty(baseSendMailEnter.getMail())) {
       throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
     }
-    String decryptMail = null;
-    if (StringUtils.isNotEmpty(baseSendMailEnter.getMail())) {
-      try {
-        //邮箱解密
-        decryptMail = RsaUtils.decrypt(baseSendMailEnter.getMail(), privatekey);
-      } catch (Exception e) {
-        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-      }
-
-    }
-    String name = baseSendMailEnter.getMail().substring(0, decryptMail.indexOf("@"));
+        // String decryptMail = null;
+        // if (StringUtils.isNotEmpty(baseSendMailEnter.getMail())) {
+        // try {
+        // //邮箱解密
+        // decryptMail = RsaUtils.decrypt(baseSendMailEnter.getMail(), privatekey);
+        // } catch (Exception e) {
+        // throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+        // ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        // }
+        // baseSendMailEnter.setMail(decryptMail);
+        // }
+        String name = baseSendMailEnter.getMail().substring(0, baseSendMailEnter.getMail().indexOf("@"));
     //先判断邮箱是否存在、
     QueryWrapper<OpeCustomer> qw = new QueryWrapper<>();
-    qw.eq("email", decryptMail);
+        qw.eq("email", baseSendMailEnter.getMail());
     qw.eq("dr", 0);
     qw.last("limit 1");
     OpeCustomer customer = opeCustomerMapper.selectOne(qw);
@@ -259,7 +256,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     enter.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getName());
     enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
     enter.setAppId(AppIDEnums.SES_ROS.getValue());
-    enter.setEmail(decryptMail);
+        enter.setEmail(baseSendMailEnter.getMail());
     enter.setRequestId(baseSendMailEnter.getRequestId());
     enter.setUserId(customer.getId());
     mailMultiTaskService.addMultiMailTask(enter);
