@@ -16,7 +16,9 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.crypt.RSA;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -33,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
@@ -66,7 +69,8 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
-
+    @Value("Request.privateKey")
+    private String privatekey;
     /**
      * 登录
      *
@@ -88,10 +92,14 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
-        //密码校验
-        String password = DigestUtils.md5Hex(enter.getPassword() + opeCustomer.getSalt());
+        if (enter.getPassword()!=null){
+          String decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
+
+          //密码校验
+        String password = DigestUtils.md5Hex(decryptPassword + opeCustomer.getSalt());
         if (!StringUtils.equals(password, opeCustomer.getPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
         }
 
         //清楚上次的token

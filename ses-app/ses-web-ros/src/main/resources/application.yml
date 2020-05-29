@@ -118,4 +118,6 @@ oss:                                                                            
   publicEndpointDomain: oss-accelerate.aliyuncs.com
   maxFileSize: 10485760
 
-
+#前端请求私钥
+Request:
+  privateKey: sdasdasdasdddsadasdas
