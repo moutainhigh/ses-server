@@ -19,6 +19,7 @@ import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -41,7 +42,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
@@ -88,6 +91,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private JedisCluster jedisCluster;
+    @Value("${Request.privateKey}")
+    private String privatekey;
 
     /**
      * 车辆型号
@@ -190,6 +195,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
+        if (enter.getPhone()!=null){
+          enter.setPhone(RsaUtils.decrypt(enter.getPhone(),privatekey));
+        }
 
         //电池要求过滤
         BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
@@ -272,6 +280,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
+      if (enter.getPhone()!=null){
+        enter.setPhone(RsaUtils.decrypt(enter.getPhone(),privatekey));
+      }
 
         //电池要求过滤
         BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
@@ -410,7 +421,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .orderNo(customerInquiry.getOrderNo())
                 .address(customerInquiry.getAddress())
                 .countryCode(customerInquiry.getCountryCode())
-                .phone(customerInquiry.getTelephone())
+                .phone(RsaUtils.decryptByPublicKey(customerInquiry.getTelephone(),privatekey))
                 .productId(customerInquiry.getProductId())
                 .produceModel(customerInquiry.getProductModel())
                 .productQty(customerInquiry.getScooterQuantity())
@@ -455,6 +466,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public BooleanResult checkMail(StringEnter enter) {
+      if (enter.getSt()!=null){
+        enter.setSt(RsaUtils.decrypt(enter.getSt(),privatekey));
+      }
         IntResult checkMailCount = customerRosService.checkMailCount(enter);
         return BooleanResult.builder().success(checkMailCount.getValue() == 0 ? Boolean.TRUE : Boolean.FALSE).build();
     }
@@ -473,7 +487,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
         return CustomerInfoResult.builder()
                 .id(opeCustomer.getId())
-                .email(opeCustomer.getEmail())
+                .email(RsaUtils.decryptByPublicKey(opeCustomer.getEmail(),privatekey))
                 .firstName(opeCustomer.getCustomerFirstName())
                 .lastName(opeCustomer.getCustomerLastName())
                 .build();
@@ -486,10 +500,11 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public GeneralResult email(StorageEamilEnter enter) {
-        if (enter.getEmail().isEmpty()) {
+      if (enter.getEmail().isEmpty()) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
         }
-        jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(), enter.getEmail());
+      String eamil = RsaUtils.decrypt(enter.getEmail(), privatekey);
+      jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(),eamil);
         return new GeneralResult(enter.getRequestId());
     }
 

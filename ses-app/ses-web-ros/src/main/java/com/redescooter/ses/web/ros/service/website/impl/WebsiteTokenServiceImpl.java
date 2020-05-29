@@ -16,7 +16,9 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.crypt.RSA;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -33,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
@@ -66,7 +69,8 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
-
+    @Value("${Request.privateKey}")
+    private String privatekey;
     /**
      * 登录
      *
@@ -88,10 +92,14 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
-        //密码校验
-        String password = DigestUtils.md5Hex(enter.getPassword() + opeCustomer.getSalt());
+        if (enter.getPassword()!=null){
+          String decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
+
+          //密码校验
+        String password = DigestUtils.md5Hex(decryptPassword + opeCustomer.getSalt());
         if (!StringUtils.equals(password, opeCustomer.getPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
         }
 
         //清楚上次的token
@@ -142,18 +150,22 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (StringUtils.isEmpty(enter.getPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(), ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
         }
-
+       String decryptEamil =null;
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
+           decryptEamil = RsaUtils.decrypt(enter.getEmail(), privatekey);
+        }
         //用户校验
         QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
-        opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
+        opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL,decryptEamil);
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, CustomerSourceEnum.WEBSITE.getValue());
         OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
         if (opeCustomer != null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         //密码校验
-        int salt = RandomUtils.nextInt(10000, 99999);
-        String password = DigestUtils.md5Hex(enter.getPassword() + salt);
+      String decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
+      int salt = RandomUtils.nextInt(10000, 99999);
+        String password = DigestUtils.md5Hex(decryptPassword + salt);
         OpeCustomer saveCustomer = new OpeCustomer();
         saveCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
         saveCustomer.setDr(0);
@@ -163,7 +175,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         saveCustomer.setCustomerFirstName(enter.getFirstName());
         saveCustomer.setCustomerLastName(enter.getLastName());
         saveCustomer.setCustomerFullName(new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
-        saveCustomer.setEmail(enter.getEmail());
+        saveCustomer.setEmail(decryptEamil);
         saveCustomer.setPassword(password);
         saveCustomer.setSalt(String.valueOf(salt));
         saveCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
@@ -197,13 +209,15 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Override
     public GeneralResult sendEmail(BaseSendMailEnter baseSendMailEnter) {
+
         if(Strings.isNullOrEmpty(baseSendMailEnter.getMail())){
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
         }
-        String name = baseSendMailEnter.getMail().substring(0, baseSendMailEnter.getMail().indexOf("@"));
+      String decryptMail = RsaUtils.decrypt(baseSendMailEnter.getMail(), privatekey);
+        String name = baseSendMailEnter.getMail().substring(0, decryptMail.indexOf("@"));
         //先判断邮箱是否存在、
         QueryWrapper<OpeCustomer> qw = new QueryWrapper<>();
-        qw.eq("email",baseSendMailEnter.getMail());
+        qw.eq("email",decryptMail);
         qw.eq("dr",0);
         qw.last("limit 1");
         OpeCustomer customer = opeCustomerMapper.selectOne(qw);
@@ -215,7 +229,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         enter.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getName());
         enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
         enter.setAppId(AppIDEnums.SES_ROS.getValue());
-        enter.setEmail(baseSendMailEnter.getMail());
+        enter.setEmail(decryptMail);
         enter.setRequestId(baseSendMailEnter.getRequestId());
         enter.setUserId(customer.getId());
         mailMultiTaskService.addMultiMailTask(enter);
@@ -283,12 +297,12 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Override
     public GeneralResult forgetPassword(WebResetPasswordEnter enter) {
-        //先给两个密码去空格（这个事应该前端就要做的）
+      //先给两个密码去空格（这个事应该前端就要做的）
         if (!Strings.isNullOrEmpty(enter.getNewPassword())) {
-            enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
+            enter.setNewPassword(RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), privatekey));
         }
         if (!Strings.isNullOrEmpty(enter.getConfirmPassword())) {
-            enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
+            enter.setConfirmPassword(RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getConfirmPassword()), privatekey));
         }
         //比较两个密码是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
@@ -312,10 +326,10 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     public GeneralResult resetPassword(WebResetPasswordEnter enter) {
         //先给两个密码去空格（这个事应该前端就要做的）
         if (!Strings.isNullOrEmpty(enter.getNewPassword())) {
-            enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
+          enter.setNewPassword(RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), privatekey));
         }
         if (!Strings.isNullOrEmpty(enter.getConfirmPassword())) {
-            enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
+          enter.setConfirmPassword(RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getConfirmPassword()), privatekey));
         }
         //比较两个密码是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
@@ -341,7 +355,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         customer.setAddress(enter.getAddress());
-        customer.setTelephone(enter.getTelephone());
+        customer.setTelephone(RsaUtils.decrypt(enter.getTelephone(), privatekey));
         customer.setCustomerFirstName(enter.getFirstName());
         customer.setCustomerLastName(enter.getLastName());
         customer.setCustomerFullName(customer.getContactFirstName() + " " + customer.getCustomerLastName());
