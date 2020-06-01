@@ -7,9 +7,16 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://localhost:22181
-  metadata-report:
-    address:  zookeeper://localhost:22181
+    address: zookeeper://192.168.2.200:62181
+#  metadata-report:
+#    address:  zookeeper://192.168.2.200:62181
+
+jasypt:
+  encryptor:
+    property:
+      prefix: RedE(   # 加密前缀
+      suffix: )            # 加密后缀
+    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
 
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
@@ -19,9 +26,10 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://192.168.2.200:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 1qaz2wsx
+    url: RedE(+xA0J+wEWz4ZZRqskmzzm7X96KWtE+T+Xbhzg4ai/Ep4VGrri/KtE39cbwwJfBGV/swnJvt1t4d51O5MgV44fZ96gxpWCPg5PJgylytMVX98NcJ+3lUEu0rfIXi43GWvfiuEjtDfadtXZ+5mvMeTZsbw7f/Ko0t7RaP+uf/lW1NWbnmW8MToxyPMT2wgGeMi9uzGnxd3XoaPNKvOstmPB/NdiywUxWIIbCGSpCumB1nFk/vuz+w6fFtrLNXiA+VbogJ6hpmyoaDB+WrIv3MojEkBJNO4rDj02e+Zs93tYoiwT3+aB+sQ/NV7YBA6bgp9eJbTzdwbTYM2Yc9lmi5eRprTf3QPMwFCdf+WdTcqRRs=)
+    username: RedE(PUCVDfaGX5+GHC5sLQUkaw==)
+    password: RedE(h4FTPWlTMiyjC3ibuv4QhvreAET9QoNL)
+
     druid:
       initial-size: 8
       min-idle: 1
