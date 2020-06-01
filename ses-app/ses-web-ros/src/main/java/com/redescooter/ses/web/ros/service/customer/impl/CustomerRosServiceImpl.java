@@ -310,13 +310,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         QueryWrapper<OpeSysUserProfile> created = new QueryWrapper<>();
         created.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getCreatedBy());
         created.eq(OpeSysUserProfile.COL_DR, 0);
-        result.setCreatedName(sysUserProfileMapper.selectOne(created).getFullName());
+        result.setCreatedName(sysUserProfileMapper.selectOne(created) == null ? null : sysUserProfileMapper.selectOne(created).getFullName());
         result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
 
         QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
         updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
         updated.eq(OpeSysUserProfile.COL_DR, 0);
-        result.setUpdatedName(sysUserProfileMapper.selectOne(updated).getFullName());
+        result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
 
         result.setRequestId(enter.getRequestId());
         if (opeCustomer.getCity() != null) {
@@ -830,8 +830,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         //获取账户类型
         Integer accountType = AccountTypeUtils.getAccountType(customer.getCustomerType(), customer.getIndustryType());
         BooleanResult booleanResult = accountBaseService.checkOpenAccount(CheckOpenAccountEnter.builder().accountType(accountType).email(customer.getEmail()).build());
-        if (booleanResult.isSuccess()){
-            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_ALRADY_ACTIVATION.getCode(),ExceptionCodeEnums.ACCOUNT_IS_ALRADY_ACTIVATION.getMessage());
+        if (booleanResult.isSuccess()) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_ALRADY_ACTIVATION.getCode(), ExceptionCodeEnums.ACCOUNT_IS_ALRADY_ACTIVATION.getMessage());
         }
 
         //验证是否可以再次发生邮件

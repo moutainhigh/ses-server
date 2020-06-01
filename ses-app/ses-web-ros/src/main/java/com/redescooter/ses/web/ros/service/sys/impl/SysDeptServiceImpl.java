@@ -162,6 +162,7 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         //查询 部门下员工
         List<Long> deptIds = new ArrayList<>();
+        deptIds.add(enter.getId());
         return deptServiceMapper.employeeList(deptIds, enter.getKeyword());
     }
 

@@ -570,7 +570,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         //String key = new StringBuffer().append("activation:::").append(map.get("email")).append("systemId").toString();
         String key = map.get("requestId");
         jedisCluster.hmset(key, map);
-        //默认为72小时
+        //默认为5分钟
         jedisCluster.expire(key, seconds);
         //触发该邮件的发送
         runTaskById(mailTask.getId());

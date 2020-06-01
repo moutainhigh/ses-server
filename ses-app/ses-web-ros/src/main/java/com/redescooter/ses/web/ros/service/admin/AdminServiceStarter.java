@@ -14,23 +14,20 @@ public interface AdminServiceStarter {
     /**
      * 检查admin 是否存在
      *
-     * @param enter
      * @return
      */
-    Boolean checkAdmin(GeneralEnter enter);
+    Boolean checkAdmin();
 
     /**
      * 保存admin 用户
      *
-     * @param enter
      * @return
      */
-    GeneralResult saveAdmin(GeneralEnter enter);
+    GeneralResult saveAdmin();
 
     /**
      * 校验admin 的数据是否完整
-     * @param enter
      * @return
      */
-    GeneralResult checkAdminDate(GeneralEnter enter);
+    GeneralResult checkAdminDate();
 }
