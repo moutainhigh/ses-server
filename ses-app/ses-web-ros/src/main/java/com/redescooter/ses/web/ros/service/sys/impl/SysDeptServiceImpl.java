@@ -24,6 +24,7 @@ import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
@@ -253,6 +254,16 @@ public class SysDeptServiceImpl implements SysDeptService {
         return deptTreeReslt;
     }
 
+    /**
+     * 负责人列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<PrincipalResult> principals(GeneralEnter enter) {
+        return deptServiceMapper.principals();
+    }
 
     private OpeSysDept buildDept(SaveDeptEnter enter) {
 

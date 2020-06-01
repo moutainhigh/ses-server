@@ -1,10 +1,10 @@
 package com.redescooter.ses.web.ros.service.website;
 
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.CheckEmailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.website.*;
 
 import java.util.List;
@@ -105,7 +105,7 @@ public interface WebsiteOrderFormService {
      * @param enter
      * @return
      */
-    BooleanResult checkMail(StringEnter enter);
+    BooleanResult checkMail(CheckEmailEnter enter);
 
     /**
      * 客户信息

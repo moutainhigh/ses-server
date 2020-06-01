@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 
@@ -36,6 +37,7 @@ public interface SysDeptService {
 
     /**
      * 部门列表 平行结构
+     *
      * @param enter
      * @return
      */
@@ -43,10 +45,11 @@ public interface SysDeptService {
 
     /**
      * 员工列表
+     *
      * @param enter
      * @return
      */
-   List<EmployeeProfileResult> employeeListByDeptId(EmployeeListByDeptIdEnter enter);
+    List<EmployeeProfileResult> employeeListByDeptId(EmployeeListByDeptIdEnter enter);
 
     /**
      * 部门编辑
@@ -89,4 +92,11 @@ public interface SysDeptService {
      */
     DeptTreeReslt topDeptartment(IdEnter enter, String level);
 
+    /**
+     * 负责人列表
+     *
+     * @param enter
+     * @return
+     */
+    List<PrincipalResult> principals(GeneralEnter enter);
 }

@@ -48,16 +48,27 @@
         where profile.dr = 0
         <if test="deptIds !=null and  deptIds.size!=0">
             and user.dept_id in
-            <foreach collection="deptIds" open="(" close=")" item="item" >
+            <foreach collection="deptIds" open="(" close=")" item="item">
                 #{item}
             </foreach>
         </if>
         <if test="keyword !=null and  keyword !=''">
-           and(
+            and(
             profile.email like concat ('%',keyword,'%') or
             profile.first_name like concat ('%',keyword,'%') or
             profile.last_name like concat ('%',keyword,'%') or
             )
         </if>
+    </select>
+
+    <select id="principals" resultType="com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult">
+        select staff.id,
+               profile.first_name   as fitstName,
+               profile.last_name    as lastName,
+               profile.country_code as countryCode,
+               profile.tel_number   as telphone
+        from ope_sys_staff staff
+                 inner join ope_sys_user_profile profile on staff.sys_user_id = profile.sys_user_id and profile.dr=0
+        where staff.dr=0
     </select>
 </mapper>

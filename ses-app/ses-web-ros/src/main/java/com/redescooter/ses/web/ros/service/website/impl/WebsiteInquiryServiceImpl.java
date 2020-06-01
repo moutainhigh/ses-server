@@ -184,15 +184,15 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        if (enter.getPhone()!=null){
-          String decrypt =null;
-          try {
+        if (enter.getPhone() != null) {
+            String decrypt = null;
+            try {
 
-            decrypt =  RsaUtils.decrypt(enter.getPhone(),privatekey);
-          }catch (Exception e){
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-          }
-          enter.setPhone(decrypt);
+                decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
+            } catch (Exception e) {
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setPhone(decrypt);
         }
 
         //电池要求过滤
@@ -276,18 +276,18 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
-      if (enter.getPhone()!=null){
-        if (enter.getPhone()!=null){
-          String decrypt =null;
-          try {
+        if (enter.getPhone() != null) {
+            if (enter.getPhone() != null) {
+                String decrypt = null;
+                try {
 
-            decrypt =  RsaUtils.decrypt(enter.getPhone(),privatekey);
-          }catch (Exception e){
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-          }
-          enter.setPhone(decrypt);
+                    decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
+                } catch (Exception e) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+                enter.setPhone(decrypt);
+            }
         }
-      }
 
         //电池要求过滤
         BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
@@ -477,19 +477,20 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @return
      */
     @Override
-    public BooleanResult checkMail(StringEnter enter) {
-        // if (enter.getSt()!=null){
-        // String decrypt =null;
-        // try {
-        //
-        // decrypt =RsaUtils.decrypt(enter.getSt(),privatekey);
-        // }catch (Exception e){
-        // throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
-        // ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        // }
-        // enter.setSt(decrypt);
-        // }
-        IntResult checkMailCount = customerRosService.checkMailCount(enter);
+    public BooleanResult checkMail(CheckEmailEnter enter) {
+        String decrypt = null;
+        try {
+
+            decrypt = RsaUtils.decrypt(enter.getEmail(), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+                    ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        enter.setEmail(decrypt);
+
+        StringEnter stringEnter = new StringEnter(enter.getEmail());
+        //邮箱校验
+        IntResult checkMailCount = customerRosService.checkMailCount(stringEnter);
         return BooleanResult.builder().success(checkMailCount.getValue() == 0 ? Boolean.TRUE : Boolean.FALSE).build();
     }
 
@@ -527,17 +528,17 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public GeneralResult email(StorageEamilEnter enter) {
-      if (enter.getEmail().isEmpty()) {
+        if (enter.getEmail().isEmpty()) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
         }
-      String eamil=null;
-      try {
+        String eamil = null;
+        try {
 
-         eamil = RsaUtils.decrypt(enter.getEmail(), privatekey);
-      }catch (Exception e){
-        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-      }
-      jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(),eamil);
+            eamil = RsaUtils.decrypt(enter.getEmail(), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(), eamil);
         return new GeneralResult(enter.getRequestId());
     }
 
