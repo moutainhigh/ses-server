@@ -98,21 +98,20 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
             enter.setPassword(decryptPassword);
             enter.setLoginName(email);
+        }
+        //用户校验
+        QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
+        opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getLoginName());
+        opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, CustomerSourceEnum.WEBSITE.getValue());
+        OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
+        if (opeCustomer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
 
-            //用户校验
-            QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
-            opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getLoginName());
-            opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, CustomerSourceEnum.WEBSITE.getValue());
-            OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
-            if (opeCustomer == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
-            }
-
-            //密码校验
-            String password = DigestUtils.md5Hex(decryptPassword + opeCustomer.getSalt());
-            if (!StringUtils.equals(password, opeCustomer.getPassword())) {
-                throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
-            }
+        //密码校验
+        String password = DigestUtils.md5Hex(enter.getPassword() + opeCustomer.getSalt());
+        if (!StringUtils.equals(password, opeCustomer.getPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
 
         //清楚上次的token
