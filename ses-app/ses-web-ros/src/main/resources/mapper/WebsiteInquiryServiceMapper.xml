@@ -49,5 +49,6 @@
         <if test="payStatus != null and payStatus != ''">
             and inquiry.pay_status = #{payStatus}
         </if>
+        order by inquiry.created_time desc
     </select>
 </mapper>

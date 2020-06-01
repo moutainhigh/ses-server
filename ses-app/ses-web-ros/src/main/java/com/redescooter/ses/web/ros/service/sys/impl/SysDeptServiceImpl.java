@@ -22,6 +22,9 @@ import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +61,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     private OpeSysDeptService opeSysDeptService;
     @Autowired
     private DeptServiceMapper deptServiceMapper;
+
     @Autowired
     private IdAppService idAppService;
 
@@ -84,20 +88,81 @@ public class SysDeptServiceImpl implements SysDeptService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 树形结构
+     *
+     * @param enter
+     * @return
+     */
     @Override
     public List<DeptTreeReslt> trees(GeneralEnter enter) {
+        List<DeptTreeReslt> deptTreeReslts = deptList(enter);
+        return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
+    }
 
-        List<OpeSysDept> list = sysDeptService.list();
+    /**
+     * 部门列表 平行结构
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<DeptTreeReslt> deptList(GeneralEnter enter) {
+        //查询部门信息
+        List<DeptTreeReslt> list = deptServiceMapper.deptList();
 
-        List<DeptTreeReslt> trees = new ArrayList<>();
-        if (CollUtil.isNotEmpty(list)) {
-            list.forEach(ls -> {
-                DeptTreeReslt dept = new DeptTreeReslt();
-                BeanUtils.copyProperties(ls, dept);
-                trees.add(dept);
+        //查询员工信息
+        List<EmployeeProfileResult> employeeList = deptServiceMapper.employeeList(null, null);
+        if (CollectionUtils.isNotEmpty(list)) {
+            if (CollectionUtils.isNotEmpty(employeeList)) {
+                list.forEach(item -> {
+                    for (EmployeeProfileResult user : employeeList) {
+                        if (item.getId() == user.getDeptId()) {
+                            //如果部门人员大于4人 就不进行 头像拼接
+                            if (StringUtils.isNotEmpty(item.getEmployeePictures())) {
+                                if (item.getEmployeePictures().split(",").length > 3) {
+                                    break;
+                                }
+                                item.setEmployeePictures(new StringBuilder(item.getEmployeePictures()).append(user.getEmployeePicture()).toString());
+                            }
+                        }
+                        //employeeCount(list,item);
+                    }
+                });
+            }
+        }
+        return list;
+    }
+
+
+    private void employeeCount(List<DeptTreeReslt> list, DeptTreeReslt deptTree) {
+
+        DeptTreeReslt children = TreeUtil.findChildren(deptTree, list);
+
+        if (CollectionUtils.isNotEmpty(children.getChildren())) {
+            children.getChildren().forEach(item -> {
+                children.setEmployeeCount(children.getEmployeeCount() + 1);
             });
         }
-        return TreeUtil.build(trees, Constant.DEPT_TREE_ROOT_ID);
+    }
+
+
+    /**
+     * 员工列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<EmployeeProfileResult> employeeListByDeptId(EmployeeListByDeptIdEnter enter) {
+        OpeSysDept dept = sysDeptService.getById(enter.getId());
+        if (dept == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
+        }
+
+        //查询 部门下员工
+        List<Long> deptIds = new ArrayList<>();
+        return deptServiceMapper.employeeList(deptIds, enter.getKeyword());
     }
 
     @Override
@@ -189,6 +254,16 @@ public class SysDeptServiceImpl implements SysDeptService {
         return deptTreeReslt;
     }
 
+    /**
+     * 负责人列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<PrincipalResult> principals(GeneralEnter enter) {
+        return deptServiceMapper.principals();
+    }
 
     private OpeSysDept buildDept(SaveDeptEnter enter) {
 

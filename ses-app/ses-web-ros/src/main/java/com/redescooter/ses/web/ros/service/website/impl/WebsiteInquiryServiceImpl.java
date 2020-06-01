@@ -9,15 +9,11 @@ import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IntResult;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -26,20 +22,18 @@ import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerAccessoriesService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
@@ -86,6 +80,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private JedisCluster jedisCluster;
+    @Value("${Request.privateKey}")
+    private String privatekey;
 
     /**
      * 车辆型号
@@ -188,6 +184,16 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
+        if (enter.getPhone() != null) {
+            String decrypt = null;
+            try {
+
+                decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
+            } catch (Exception e) {
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setPhone(decrypt);
+        }
 
         //电池要求过滤
         BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
@@ -201,7 +207,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
         //todo 测试暂定为0.5 之后要改掉 默认100美分
 //        totalPrice = new BigDecimal("100");
-        totalPrice = new BigDecimal("19000");
+//        totalPrice = new BigDecimal("19000");
 
         //生成主订单
         OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
@@ -270,6 +276,18 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
+        if (enter.getPhone() != null) {
+            if (enter.getPhone() != null) {
+                String decrypt = null;
+                try {
+
+                    decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
+                } catch (Exception e) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+                enter.setPhone(decrypt);
+            }
+        }
 
         //电池要求过滤
         BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
@@ -281,7 +299,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (enter.getBuyTopCase()) {
             totalPrice = totalPrice.add(topCase.getPrice());
         }
-        totalPrice = new BigDecimal("19000");
+//        totalPrice = new BigDecimal("19000");
 
 
         //todo 测试暂定为0.5 之后要改掉 100美分
@@ -330,6 +348,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(id);
         opeCustomerInquiry.setDr(0);
+        opeCustomerInquiry.setOrderNo(RandomStringUtils.randomAlphabetic(8));
         opeCustomerInquiry.setCustomerId(enter.getUserId());
         opeCustomerInquiry.setFirstName(opeCustomer.getCustomerFirstName());
         opeCustomerInquiry.setLastName(opeCustomer.getCustomerLastName());
@@ -401,9 +420,17 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (CollectionUtils.isEmpty(inquiryBList)) {
             return null;
         }
+    /*  String decryptTelephone =null;
+      try {
+
+         decryptTelephone = RsaUtils.encryptByPrivateKey(customerInquiry.getTelephone(), privatekey);
+      }catch (Exception e){
+        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+      }*/
         //反参对象
         OrderFormInfoResult result = OrderFormInfoResult.builder()
                 .id(customerInquiry.getId())
+                .orderNo(customerInquiry.getOrderNo())
                 .address(customerInquiry.getAddress())
                 .countryCode(customerInquiry.getCountryCode())
                 .phone(customerInquiry.getTelephone())
@@ -415,6 +442,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .expiredTime(customerInquiry.getExpiredTime())
                 .cvv(customerInquiry.getCvv())
                 .postalCode(customerInquiry.getPostalCode())
+                .totalPrice(customerInquiry.getTotalPrice())
+                .remainingPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("190")))
                 .build();
 
         //封装配件数量
@@ -448,8 +477,20 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @return
      */
     @Override
-    public BooleanResult checkMail(StringEnter enter) {
-        IntResult checkMailCount = customerRosService.checkMailCount(enter);
+    public BooleanResult checkMail(CheckEmailEnter enter) {
+        String decrypt = null;
+        try {
+
+            decrypt = RsaUtils.decrypt(enter.getEmail(), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+                    ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        enter.setEmail(decrypt);
+
+        StringEnter stringEnter = new StringEnter(enter.getEmail());
+        //邮箱校验
+        IntResult checkMailCount = customerRosService.checkMailCount(stringEnter);
         return BooleanResult.builder().success(checkMailCount.getValue() == 0 ? Boolean.TRUE : Boolean.FALSE).build();
     }
 
@@ -465,6 +506,13 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
+     /* String decrypt =null;
+      try {
+
+        decrypt = RsaUtils.encryptByPrivateKey(opeCustomer.getEmail(),privatekey);
+      }catch (Exception e){
+        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+      }*/
         return CustomerInfoResult.builder()
                 .id(opeCustomer.getId())
                 .email(opeCustomer.getEmail())
@@ -483,7 +531,14 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (enter.getEmail().isEmpty()) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
         }
-        jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(), enter.getEmail());
+        String eamil = null;
+        try {
+
+            eamil = RsaUtils.decrypt(enter.getEmail(), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(), eamil);
         return new GeneralResult(enter.getRequestId());
     }
 

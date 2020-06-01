@@ -1,9 +1,8 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
-import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
-import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,5 +24,27 @@ public interface DeptServiceMapper {
      * @param level
      * @return
      */
-    DeptTreeReslt topDeptartment(@Param("enter") IdEnter enter,@Param("level") String level);
+    DeptTreeReslt topDeptartment(@Param("enter") IdEnter enter, @Param("level") String level);
+
+    /**
+     * 获取部门信息
+     *
+     * @return
+     */
+    List<DeptTreeReslt> deptList();
+
+    /**
+     * 根据部门查询员工信息
+     *
+     * @return
+     */
+    List<EmployeeProfileResult> employeeList(@Param("deptIds") List<Long> deptIds, @Param("keyword") String keyword);
+
+    /**
+     * 负责人列表
+     *
+     * @return
+     */
+    List<PrincipalResult> principals();
+
 }

@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -28,6 +29,9 @@ import java.util.Date;
 public class OrderFormInfoResult extends GeneralResult {
     @ApiModelProperty(value = "询价单id")
     private Long id;
+
+    @ApiModelProperty(value = "订单号")
+    private String orderNo;
 
     @ApiModelProperty(value = "国家电话代码")
     private String countryCode;
@@ -72,4 +76,10 @@ public class OrderFormInfoResult extends GeneralResult {
 
     @ApiModelProperty(value = "邮编")
     private String postalCode;
+
+    @ApiModelProperty(value = "总价格")
+    private BigDecimal totalPrice;
+
+    @ApiModelProperty(value = "剩余价格")
+    private BigDecimal remainingPrice;
 }

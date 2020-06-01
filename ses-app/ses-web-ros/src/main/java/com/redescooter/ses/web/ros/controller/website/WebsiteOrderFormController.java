@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.controller.website;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.CheckEmailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -72,7 +73,7 @@ public class WebsiteOrderFormController {
     @IgnoreLoginCheck
     @PostMapping(value = "/checkMail")
     @ApiOperation(value = "邮箱校验", response = GeneralResult.class)
-    public Response<BooleanResult> checkMail(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+    public Response<BooleanResult> checkMail(@ModelAttribute @ApiParam("请求参数") CheckEmailEnter enter) {
         return new Response<>(websiteOrderFormService.checkMail(enter));
     }
 

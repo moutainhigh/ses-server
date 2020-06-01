@@ -671,33 +671,34 @@ public class PartsRosServiceImpl implements PartsRosService {
                     p.setId(oneParts.getId());
                     partsUpdate.add(p);
                 }
-                if (p.getSnClass().equals(BomSnClassEnums.SSC.getValue())) {
-                    OpePartsProduct product = new OpePartsProduct();
-                    product.setDr(0);
-                    product.setTenantId(p.getTenantId());
-                    product.setUserId(p.getUserId());
-                    product.setStatus(PartsProductEnums.DOWN.getValue());
-                    product.setSnClass(BomSnClassEnums.SSC.getValue());
-                    product.setProductType(Integer.parseInt(BomCommonTypeEnums.getValueByCode(p.getPartsType())));
-                    product.setProductCode(p.getEnName());
-                    product.setProductNumber(p.getPartsNumber());
-                    product.setCnName(p.getCnName());
-                    product.setFrName(p.getFrName());
-                    product.setEnName(p.getEnName());
-                    product.setProductionCycle(p.getProductionCycle());
-                    product.setSumPartsQty(1);
-                    product.setModel(p.getPartsNumber());
-                    product.setPictures(p.getDwg());
-                    product.setAfterSalesFlag(false);
-                    product.setAddedServicesFlag(false);
-                    product.setRevision(0);
-                    product.setCreatedBy(enter.getUserId());
-                    product.setCreatedTime(new Date());
-                    product.setUpdatedBy(enter.getUserId());
-                    product.setUpdatedTime(new Date());
-                    product.setDef1(String.valueOf(p.getId()));
-                    productSave.add(product);
-                }
+                //无论是SCC 还是SC 都是产品 都需要进行部件
+//                if (p.getSnClass().equals(BomSnClassEnums.SSC.getValue())) {
+                OpePartsProduct product = new OpePartsProduct();
+                product.setDr(0);
+                product.setTenantId(p.getTenantId());
+                product.setUserId(p.getUserId());
+                product.setStatus(PartsProductEnums.DOWN.getValue());
+                product.setSnClass(p.getSnClass());
+                product.setProductType(Integer.parseInt(BomCommonTypeEnums.getValueByCode(p.getPartsType())));
+                product.setProductCode(p.getEnName());
+                product.setProductNumber(p.getPartsNumber());
+                product.setCnName(p.getCnName());
+                product.setFrName(p.getFrName());
+                product.setEnName(p.getEnName());
+                product.setProductionCycle(p.getProductionCycle());
+                product.setSumPartsQty(1);
+                product.setModel(p.getPartsNumber());
+                product.setPictures(p.getDwg());
+                product.setAfterSalesFlag(false);
+                product.setAddedServicesFlag(false);
+                product.setRevision(0);
+                product.setCreatedBy(enter.getUserId());
+                product.setCreatedTime(new Date());
+                product.setUpdatedBy(enter.getUserId());
+                product.setUpdatedTime(new Date());
+                product.setDef1(String.valueOf(p.getId()));
+                productSave.add(product);
+//                }
                 partDraftMap.put(p.getPartsDraftId(), p.getId());
             });
             if (CollectionUtils.isNotEmpty(partsInsert)) {

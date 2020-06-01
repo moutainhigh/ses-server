@@ -168,4 +168,6 @@ public interface ValidationExceptionCode {
     int POSTAL_CODE_IS_EMPTY = 10103;
     //区域为空
     int REGION_IS_EMPTY = 10104;
+    //负责人为空
+    int PRINCIPAL_ID_IS_EXIST = 10105;
 }

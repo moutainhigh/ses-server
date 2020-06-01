@@ -4,6 +4,9 @@ import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.apache.poi.ss.formula.functions.T;
+
+import java.util.List;
 
 /**
  * @ClassName DeptTreeReslt
@@ -17,7 +20,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class DeptTreeReslt extends TreeNode {
+public class DeptTreeReslt extends TreeNode{
 
     @ApiModelProperty(value = "负责人")
     private Integer principal;
@@ -42,4 +45,10 @@ public class DeptTreeReslt extends TreeNode {
 
     @ApiModelProperty(value = "是否展开")
     private boolean spread = false;
+
+    @ApiModelProperty(value = "员工头像,逗号分隔")
+    private String employeePictures;
+
+    @ApiModelProperty(value = "员工数量")
+    private int employeeCount;
 }

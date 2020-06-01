@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import io.swagger.annotations.Api;
@@ -59,6 +60,12 @@ public class SysDeptController {
         return new Response<>(deptService.trees(enter));
     }
 
+    @PostMapping(value = "/deptList")
+    @ApiOperation(value = "部门列表（平行结构）", response = GeneralResult.class)
+    public Response<List<DeptTreeReslt>> deptList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(deptService.deptList(enter));
+    }
+
     @PostMapping(value = "/delete")
     @ApiOperation(value = "部门删除", response = GeneralResult.class)
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -75,5 +82,11 @@ public class SysDeptController {
     @ApiOperation(value = "顶级部门", response = GeneralResult.class)
     public Response<DeptTreeReslt> TopDepartment(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.topDeptartment(enter, null));
+    }
+
+    @PostMapping(value = "/principals")
+    @ApiOperation(value = "负责人列表", response = GeneralResult.class)
+    public Response<List<PrincipalResult>> principals(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(deptService.principals(enter));
     }
 }

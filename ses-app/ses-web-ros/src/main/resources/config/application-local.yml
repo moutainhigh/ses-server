@@ -50,6 +50,21 @@ spring:                                                                         
         - 192.168.2.200:7003
         - 192.168.2.200:7004
         - 192.168.2.200:7005
+  #rabbitmq配置
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    default-requeue-rejected: false
+    # 开启消息发送确认机制（生产者--》交换机）
+    publisher-confirms: true
+    listener:
+      simple:
+        # 开启消息手动确认
+        acknowledge-mode: MANUAL #（NONE：不确认 AUTO：自动确认 MANUAL：手动确认）
+      #消息确认包含 发送确认、接受确认
 
   swagger:                                                                                                              #swagger在线文档配置
     enabled: true                                                                                                       #是否启用swagger
