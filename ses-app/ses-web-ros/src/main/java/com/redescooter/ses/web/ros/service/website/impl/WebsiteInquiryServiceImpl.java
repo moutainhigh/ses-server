@@ -20,6 +20,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerAccessories;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
@@ -187,7 +188,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (enter.getPhone() != null) {
             String decrypt = null;
             try {
-
                 decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
             } catch (Exception e) {
                 throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
@@ -414,6 +414,11 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (customerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
+        //查询产品
+        OpePartsProduct opePartsProduct = opePartsProductService.getById(customerInquiry.getProductId());
+        if (opePartsProduct == null) {
+            throw  new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
 
         //查询子订单
         List<OpeCustomerInquiryB> inquiryBList = opeCustomerInquiryBService.list(new LambdaQueryWrapper<OpeCustomerInquiryB>().eq(OpeCustomerInquiryB::getInquiryId, customerInquiry.getId()));
@@ -444,6 +449,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .postalCode(customerInquiry.getPostalCode())
                 .totalPrice(customerInquiry.getTotalPrice())
                 .remainingPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("190")))
+                .color(opePartsProduct.getColor())
                 .build();
 
         //封装配件数量

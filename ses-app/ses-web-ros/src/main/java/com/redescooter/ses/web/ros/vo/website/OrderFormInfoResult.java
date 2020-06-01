@@ -82,4 +82,7 @@ public class OrderFormInfoResult extends GeneralResult {
 
     @ApiModelProperty(value = "剩余价格")
     private BigDecimal remainingPrice;
+
+    @ApiModelProperty(value = "颜色")
+    private String color;
 }

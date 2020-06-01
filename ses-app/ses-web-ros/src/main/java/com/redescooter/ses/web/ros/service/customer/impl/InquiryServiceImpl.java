@@ -24,6 +24,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.InquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -42,6 +43,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
@@ -82,6 +84,9 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Reference
     private IdAppService idAppService;
+
+    @Value("${Request.privateKey}")
+    private String privateKey;
 
 
     @Override
@@ -142,6 +147,17 @@ public class InquiryServiceImpl implements InquiryService {
 
         //邮箱 去空格
         enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
+        //邮箱解密
+        //电话解密
+        if (!StringUtils.isAllBlank(enter.getTelephone(), enter.getEmail())) {
+            try {
+                enter.setEmail(RsaUtils.decrypt(enter.getEmail(), privateKey));
+                enter.setTelephone(RsaUtils.decrypt(enter.getTelephone(), privateKey));
+            } catch (Exception e) {
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+        }
+
 
         // 查询已存在的email 暂时注释掉 邮箱过滤
 //        List<String> emailList = inquiryServiceMapper.usingEmailList();
@@ -150,7 +166,7 @@ public class InquiryServiceImpl implements InquiryService {
 //        }
         CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
         if (cityResult == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
         }
 
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
@@ -250,7 +266,7 @@ public class InquiryServiceImpl implements InquiryService {
         inquiryResult.setCityName(city);
         inquiryResult.setDistrustName(distrust);
 
-        if (StringUtils.equals(inquiryResult.getStatus(),InquiryStatusEnums.UNPAY_DEPOSIT.getValue()) || StringUtils.equals(inquiryResult.getStatus(),InquiryStatusEnums.PAY_DEPOSIT.getValue())){
+        if (StringUtils.equals(inquiryResult.getStatus(), InquiryStatusEnums.UNPAY_DEPOSIT.getValue()) || StringUtils.equals(inquiryResult.getStatus(), InquiryStatusEnums.PAY_DEPOSIT.getValue())) {
             //验证是否可以再次发生邮件
             Boolean exists = jedisCluster.exists(new StringBuffer(inquiryResult.getId().toString()).append("send::").append(inquiryResult.getEmail()).toString());
             if (exists) {
@@ -353,7 +369,7 @@ public class InquiryServiceImpl implements InquiryService {
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
         opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_DR, 0);
         opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_ID, enter.getId());
-        opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_SOURCE,InquirySourceEnums.INQUIRY.getValue());
+        opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_SOURCE, InquirySourceEnums.INQUIRY.getValue());
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(opeCustomerInquiryQueryWrapper);
         if (opeCustomerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());

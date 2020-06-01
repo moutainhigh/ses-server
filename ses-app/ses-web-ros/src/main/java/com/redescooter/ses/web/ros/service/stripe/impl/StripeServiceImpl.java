@@ -284,8 +284,7 @@ public class StripeServiceImpl implements StripeService {
 
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(orderId);
         if (customerInquiry == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         // 订单数据保存
         customerInquiry.setPayStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());

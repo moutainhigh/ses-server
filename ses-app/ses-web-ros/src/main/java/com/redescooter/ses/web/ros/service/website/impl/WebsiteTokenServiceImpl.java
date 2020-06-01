@@ -26,6 +26,7 @@ import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -243,12 +244,11 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             } catch (Exception e) {
                 throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
-
+            baseSendMailEnter.setMail(decryptMail);
         }
-        String name = baseSendMailEnter.getMail().substring(0, decryptMail.indexOf("@"));
         //先判断邮箱是否存在、
         QueryWrapper<OpeCustomer> qw = new QueryWrapper<>();
-        qw.eq("email", decryptMail);
+        qw.eq("email", baseSendMailEnter.getMail());
         qw.eq("dr", 0);
         qw.last("limit 1");
         OpeCustomer customer = opeCustomerMapper.selectOne(qw);
@@ -256,7 +256,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
-        enter.setName(name);
+        enter.setName(baseSendMailEnter.getMail().substring(0, decryptMail.indexOf("@")));
         enter.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getName());
         enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
         enter.setAppId(AppIDEnums.SES_ROS.getValue());
@@ -348,6 +348,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         //发邮件的时候  把用户的信息放在缓存里了  现在拿出来
         Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
+        if (map == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+        }
         OpeCustomer customer = opeCustomerMapper.selectById(map.get("userId").toString());
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());

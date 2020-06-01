@@ -41,6 +41,9 @@ public class OrderFormsResult extends GeneralResult {
     @ApiModelProperty(value = "状态")
     private String status;
 
+    @ApiModelProperty(value = "颜色")
+    private String color;
+
     @ApiModelProperty(value = "下单时间")
     @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
