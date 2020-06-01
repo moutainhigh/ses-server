@@ -97,6 +97,15 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public List<DeptTreeReslt> trees(GeneralEnter enter) {
         List<DeptTreeReslt> deptTreeReslts = deptList(enter);
+
+        //删除 pid 为-1 的部门数据
+        for (DeptTreeReslt item : deptTreeReslts) {
+            if (item.getPId() == Constant.DEPT_TREE_ROOT_ID) {
+                DeptTreeReslt deptTreeReslt = new DeptTreeReslt();
+                deptTreeReslt.setPId(Constant.DEPT_TREE_ROOT_ID);
+                item=deptTreeReslt;
+            }
+        }
         return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
     }
 
@@ -129,6 +138,15 @@ public class SysDeptServiceImpl implements SysDeptService {
                         //employeeCount(list,item);
                     }
                 });
+            }
+        }
+
+        //删除 pid 为-1 的部门数据
+        for (DeptTreeReslt item : list) {
+            if (item.getPId() == Constant.DEPT_TREE_ROOT_ID) {
+                DeptTreeReslt deptTreeReslt = new DeptTreeReslt();
+                deptTreeReslt.setPId(Constant.DEPT_TREE_ROOT_ID);
+                item=deptTreeReslt;
             }
         }
         return list;
