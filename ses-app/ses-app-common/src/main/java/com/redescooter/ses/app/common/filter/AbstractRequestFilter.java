@@ -36,6 +36,9 @@ public abstract class AbstractRequestFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
+//        log.info("--------------------------------------------"+        request.getRequestURI()
+//        );
+
         HashMap parameterMap = new HashMap(request.getParameterMap());
         parameterMap.put("requestId", request.getAttribute("requestId"));
         //String clientIp = getClientIp(request, true, "x-forwarded-for");

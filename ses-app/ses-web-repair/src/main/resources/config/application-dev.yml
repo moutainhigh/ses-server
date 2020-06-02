@@ -7,21 +7,19 @@ log:
 
 # secuity-component config
 rede.security.appName: rede_@project.artifactId@
-dubbo.security.register: zookeeper://192.168.2.200:32181
+dubbo.security.register: zookeeper://172.31.8.126:2181?backup=172.31.8.126:2182,172.31.8.126:2183
 # secuity-component config
 
 # swagger配置
-spring:
-  #上传配置
-  http:
+spring:                                                                                                                 #spring config
+  http:                                                                                                                 #上传配置
   servlet:
     multipart:
       max-request-size: 1000MB
       max-file-size: 20MB
       enabled: true
-  #数据库连接
-  datasource:
-    url: jdbc:mysql://192.168.2.200:3306/consumer_test?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+  datasource:                                                                                                           #数据库连接
+    url: jdbc:mysql://172.31.8.126:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: rede,1qaz2wsx
     druid:
@@ -59,16 +57,12 @@ spring:
           email: jerry@redescooter.com                     # 联系人邮箱
           url: https://github.com/mrjerryli             # 联系地址
 
-#REDIS配置
-redis:
-  redis-address: 192.168.2.200:7000;192.168.2.200:7001;192.168.2.200:7002;192.168.2.200:7003;192.168.2.200:7004;192.168.2.200:7005
-
 # DUBBO 配置
 dubbo:
   registries:
     ses:
       group: ses
-      address: zookeeper://192.168.2.200:32181
+      address: zookeeper://172.31.8.126:2181?backup=172.31.8.126:2182,172.31.8.126:2183
 # 多注册中心配置
 #    reg2:
 #      group: hdg2
