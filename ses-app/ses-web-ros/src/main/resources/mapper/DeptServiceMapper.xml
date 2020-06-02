@@ -55,9 +55,9 @@
         </if>
         <if test="keyword !=null and  keyword !=''">
             and(
-            profile.email like concat ('%',keyword,'%') or
-            profile.first_name like concat ('%',keyword,'%') or
-            profile.last_name like concat ('%',keyword,'%') or
+            profile.email like concat ('%',#{keyword},'%') or
+            profile.first_name like concat ('%',#{keyword},'%') or
+            profile.last_name like concat ('%',#{keyword},'%')
             )
         </if>
     </select>

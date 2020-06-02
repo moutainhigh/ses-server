@@ -73,6 +73,8 @@ public enum ExceptionCodeEnums {
 
     ACCOUNT_IS_ALRADY_ACTIVATION(10028, "账户已经激活不可重复激活"),
 
+    TOKEN_IS_EXPIRED(10029,"数据已过期"),
+
     //30之后是业务错误码
     FIRST_NAME_CANNOT_EMPTY(10030, "名字不能为空"),
 
