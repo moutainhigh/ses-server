@@ -347,9 +347,12 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
         //发邮件的时候  把用户的信息放在缓存里了  现在拿出来
+        if (!jedisCluster.exists(enter.getRequestId())){
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(),ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
+        }
         Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
         if (map == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(),ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
         }
         OpeCustomer customer = opeCustomerMapper.selectById(map.get("userId").toString());
         if (customer == null) {

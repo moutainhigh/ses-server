@@ -111,12 +111,13 @@ mybatis-plus:                                                                   
     cache-enabled: true
 
 oss:                                                                                                                    #阿里oss上传
-  internalEndpoint: rede.oss-cn-shanghai.aliyuncs.com
+  internalEndpoint: oss-accelerate.aliyuncs.com
   accessKeyId: LTAIDUpZRjkFVCze
   secretAccesskey: lVM6XOqSdrdgJ3brHRcdSUOAVdxcS5
   defaultBucketName: rede
-  publicEndpointDomain: rede.oss-cn-shanghai.aliyuncs.com
+  publicEndpointDomain: oss-accelerate.aliyuncs.com
   maxFileSize: 104857600
+  supportCname: true
   #调整最大文件大小为10M 默认单位为字节
 
 
