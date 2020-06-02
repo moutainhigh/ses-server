@@ -35,12 +35,13 @@
 
     <select id="employeeList" resultType="com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult">
         select profile.sys_user_id as id,
-        user.dept_id as deptId,
-        profile.first_name as employeeFirstName,
-        profile.last_name as employeeLastName,
-        profile.picture as employeePicture,
-        role.id as employeePositionId,
-        role.role_name as employeePositionName
+            user.dept_id        as deptId,
+            profile.first_name  as employeeFirstName,
+            profile.last_name   as employeeLastName,
+            profile.picture     as employeePicture,
+            role.id             as employeePositionId,
+            role.role_name      as employeePositionName,
+            profile.email       as email
         from ope_sys_user_profile profile
         inner join ope_sys_user user on profile.sys_user_id = user.id and user.dr = 0
         inner join ope_sys_user_role osur on user.id = osur.user_id

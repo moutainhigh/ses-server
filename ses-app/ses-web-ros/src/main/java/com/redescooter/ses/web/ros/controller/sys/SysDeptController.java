@@ -6,6 +6,8 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
@@ -64,6 +66,12 @@ public class SysDeptController {
     @ApiOperation(value = "部门列表（平行结构）", response = GeneralResult.class)
     public Response<List<DeptTreeReslt>> deptList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(deptService.deptList(enter));
+    }
+
+    @PostMapping(value = "/employeeList")
+    @ApiOperation(value = "员工列表", response = EmployeeProfileResult.class)
+    public Response<List<EmployeeProfileResult>> employeeList(@ModelAttribute @ApiParam("请求参数") EmployeeListByDeptIdEnter enter) {
+        return new Response<>(deptService.employeeListByDeptId(enter));
     }
 
     @PostMapping(value = "/delete")

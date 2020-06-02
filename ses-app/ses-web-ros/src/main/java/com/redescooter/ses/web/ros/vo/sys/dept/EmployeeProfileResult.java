@@ -46,4 +46,7 @@ public class EmployeeProfileResult extends GeneralResult {
 
     @ApiModelProperty(value = "职位名称")
     private String employeePositionName;
+
+    @ApiModelProperty(value = "email")
+    private String email;
 }

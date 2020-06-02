@@ -98,8 +98,7 @@ public class SesWebRosApplicationTests {
         System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://192.168.2.200:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true"));
         System.out.println("解密的登录名： " + stringEncryptor.decrypt("V1yrV6NRTPV7Qiuik4Ngsg=="));
         System.out.println("解密的密码： " + stringEncryptor.decrypt("h4FTPWlTMiyjC3ibuv4QhvreAET9QoNL"));
-//        System.out.println("加密后的数据库密码： " + stringEncryptor.encrypt("1qaz2wsx"));
-//        System.out.println("解密的数据库密码： " + stringEncryptor.decrypt("N/+f2B9SznK4MUDSp24Upw=="));
+        System.out.println("url： " + stringEncryptor.decrypt("2M1l/PCpkVqJEEnbVQTysqYLoiQHHARchswPpnoDRyXq3Metj7RNPGmvDH1pzgXOrUzNrjppkQf0eBAQkDOkwlBtVIrkkvvM+bwr1fsu31ax7Trr8TAjyaDuD1eS5piFJWwTWlf4ziuKEt+mNZkbOy8bcqnSlVaP11WYtcRxS7+PgeTfDEfrBSiyo7NBmqYUe2XAtqumXe6M8oc9RyhMSaSB+vIn47LTq0/PfSFQ9y2wt/HEGudRZ8WO234DetSt+h6iHtSM1XSf5VaXG/vwaCUUEXMSblQqx2NuoMvgjHMvedQ1YolMBYPTx2xqTKy8GVahohR1FSAQQ58kLkce14i+iLOgnnrHwsyQSwzKWNg="));
     }
 
     @Test

@@ -30,6 +30,7 @@ public class LocalSettingsEnvironmentPostProcessor implements EnvironmentPostPro
     public void postProcessEnvironment(ConfigurableEnvironment configurableEnvironment, SpringApplication springApplication) {
         String osName = System.getProperty("os.name");
         if(osName.startsWith("Mac OS")){
+            //如果是Mac电脑，用下面的这个(Mac没有所谓的C盘D盘，而且路劲的写法也不一样)
             LOCATIONS  = new String[]{"/root/java_service/keyFile/jasypt.properties", "/Users/jasypt.properties"};
         }
         for(String fileLocation :  LOCATIONS){

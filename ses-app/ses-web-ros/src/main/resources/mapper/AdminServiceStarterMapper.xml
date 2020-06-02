@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.admin.AdminServiceStarterMapper">
+
+    <select id="checkAdmin" resultType="com.redescooter.ses.web.ros.dm.OpeSysUser">
+        select *
+        from ope_sys_user user
+        where user.login_name = 'sysAdmin'
+    </select>
+
+    <select id="topDept" resultType="com.redescooter.ses.web.ros.dm.OpeSysDept">
+      select * from ope_sys_dept dept where dept.p_id=#{deptTreeRootId}
+    </select>
+</mapper>

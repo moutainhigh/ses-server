@@ -35,12 +35,14 @@
         and product.id=#{productId}
     </select>
     <select id="orderForms" resultType="com.redescooter.ses.web.ros.vo.website.OrderFormsResult">
-        select inquiry.id as id,
+        select inquiry.id            as id,
         inquiry.product_model as productModel,
-        inquiry.order_no as orderNo,
-        inquiry.pay_status as status,
-        inquiry.created_time as orderTime
+        inquiry.order_no      as orderNo,
+        inquiry.pay_status    as status,
+        inquiry.created_time  as orderTime,
+        product.color         as color
         from ope_customer_inquiry inquiry
+        left join ope_parts_product product on product.id = inquiry.product_id and product.dr=0
         where inquiry.dr = 0
         and inquiry.created_by = #{userId}
         <if test="productMdoel != null and productMdoel != ''">
