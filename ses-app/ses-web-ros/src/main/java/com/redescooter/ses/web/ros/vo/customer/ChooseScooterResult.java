@@ -25,6 +25,9 @@ public class ChooseScooterResult extends GeneralResult {
     @ApiModelProperty(value = "主键")
     private Long id;
 
-    @ApiModelProperty(value = "序列号")
+    @ApiModelProperty(value = "批次号")
     private String batchNum;
+
+    @ApiModelProperty(value = "序列号")
+    private String serilNum;
 }

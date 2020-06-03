@@ -450,6 +450,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .totalPrice(customerInquiry.getTotalPrice())
                 .remainingPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("190")))
                 .color(opePartsProduct.getColor())
+                .status(customerInquiry.getStatus())
                 .build();
 
         //封装配件数量
