@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
@@ -16,8 +17,10 @@ import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
@@ -37,9 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @ClassName:WebsiteServiceImpl
@@ -66,6 +67,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
+
+    @Autowired
+    private OpeCustomerInquiryMapper opeCustomerInquiryMapper;
 
     @Value("${Request.privateKey}")
     private String privatekey;
@@ -433,6 +437,22 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         customer.setCustomerLastName(enter.getLastName());
         customer.setCustomerFullName(customer.getContactFirstName() + " " + customer.getCustomerLastName());
         opeCustomerMapper.updateById(customer);
+        QueryWrapper<OpeCustomerInquiry> qw = new QueryWrapper<>();
+        qw.eq("customer_id",customer.getId());
+        qw.eq("status",InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
+        qw.eq("customer_source",CustomerSourceEnum.WEBSITE.getValue());
+        List<OpeCustomerInquiry> list = opeCustomerInquiryMapper.selectList(qw);
+        if(CollectionUtils.isNotEmpty(list)){
+            List<OpeCustomerInquiry> update = new ArrayList<>();
+            for (OpeCustomerInquiry inquiry : list) {
+                inquiry.setFirstName(customer.getCustomerFirstName());
+                inquiry.setLastName(customer.getCustomerLastName());
+                inquiry.setFullName(customer.getCustomerFullName());
+                inquiry.setTelephone(customer.getTelephone());
+                update.add(inquiry);
+            }
+            opeCustomerInquiryMapper.updateBatch(update);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
