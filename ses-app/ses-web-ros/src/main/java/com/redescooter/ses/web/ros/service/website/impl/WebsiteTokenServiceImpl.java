@@ -402,7 +402,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
         }
         if(!DigestUtils.md5Hex(enter.getOldPassword()+customer.getSalt()).equals(customer.getPassword())){
-            throw new SesWebRosException(ExceptionCodeEnums.OLDPASSWORD_ERROR.getCode(),ExceptionCodeEnums.OLDPASSWORD_ERROR.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(),ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
         int salt = RandomUtils.nextInt(10000, 99999);
         String newPassword = DigestUtils.md5Hex(enter.getNewPassword() + salt);

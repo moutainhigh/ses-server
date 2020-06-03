@@ -85,4 +85,7 @@ public class OrderFormInfoResult extends GeneralResult {
 
     @ApiModelProperty(value = "颜色")
     private String color;
+
+    @ApiModelProperty(value = "状态")
+    private String status;
 }

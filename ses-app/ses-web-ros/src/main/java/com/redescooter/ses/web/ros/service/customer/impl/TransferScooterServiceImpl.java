@@ -156,6 +156,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
                         ChooseScooterResult.builder()
                                 .id(item.getId())
                                 .batchNum(item.getLot())
+                                .serilNum(item.getSerialNumber())
                                 .build()
                 );
             });
@@ -319,6 +320,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         transferScooterListEnterList.forEach(item -> {
             BaseScooterEnter baseScooterEnter = buildScooter(item, opeStockProdProductList);
             BeanUtils.copyProperties(enter, baseScooterEnter);
+            baseScooterEnter.setId(item.getId());
             savBaseScooterEnterList.add(baseScooterEnter);
         });
 
@@ -333,6 +335,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
                 BeanUtils.copyProperties(enter, scooterEnter);
                 scooterEnter.setUserId(queryAccountResult.getId());
                 scooterEnter.setTenantId(queryAccountResult.getTenantId());
+                scooterEnter.setScooterId(item.getId());
                 saveScooterEnterList.add(scooterEnter);
             });
             corporateScooterService.saveScooter(saveScooterEnterList);
@@ -344,6 +347,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
                 BeanUtils.copyProperties(enter, scooterEnter);
                 scooterEnter.setUserId(queryAccountResult.getId());
                 scooterEnter.setTenantId(queryAccountResult.getTenantId());
+                scooterEnter.setScooterId(item.getId());
                 saveScooterEnterList.add(scooterEnter);
             });
             cusotmerScooterService.saveScooter(saveScooterEnterList);
