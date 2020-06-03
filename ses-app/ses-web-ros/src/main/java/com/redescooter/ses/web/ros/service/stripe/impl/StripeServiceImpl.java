@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -316,14 +317,15 @@ public class StripeServiceImpl implements StripeService {
             opeCustomerService.updateById(opeCustomer);
         }
         //邮件发送
-        sendmail(customerInquiry.getEmail());
+        sendmail(customerInquiry);
     }
 
     /*
      *  发送邮件
      *
      * */
-    private void sendmail(String eamil) {
+    private void sendmail(OpeCustomerInquiry customerInquiry) {
+        String eamil = customerInquiry.getEmail();
         String name = eamil.substring(0, eamil.indexOf("@"));
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
         enter.setName(name);
@@ -336,6 +338,8 @@ public class StripeServiceImpl implements StripeService {
         enter.setUserRequestId("0");
         enter.setToUserId(0L);
         enter.setUserId(0L);
+        enter.setFullName(customerInquiry.getFullName());
+        enter.setModel(ProductModelEnums.getProductModelEnumsByValue(customerInquiry.getProductModel()).getMessage());
         mailMultiTaskService.subscriptionPaySucceedSendmail(enter);
     }
 

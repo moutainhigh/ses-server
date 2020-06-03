@@ -377,7 +377,8 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     if (configList != null && configList.size() > 0) {
       map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
     }
-    map.put("name", enter.getName());
+    map.put("name", enter.getFullName());
+    map.put("model", enter.getModel());
     //保存邮箱任务
     PlaMailTask mailTask = new PlaMailTask();
     mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());

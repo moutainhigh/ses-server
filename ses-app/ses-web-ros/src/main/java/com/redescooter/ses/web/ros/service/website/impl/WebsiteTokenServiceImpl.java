@@ -372,15 +372,18 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getConfirmPassword())) {
             String decrypt = null;
             String confirmDecrypt = null;
+            String oldPsd = "";
             try {
                 //密码校验
                 decrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), privatekey);
                 confirmDecrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getConfirmPassword()), privatekey);
+                oldPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), privatekey);
             } catch (Exception e) {
                 throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
             enter.setNewPassword(decrypt);
             enter.setConfirmPassword(confirmDecrypt);
+            enter.setConfirmPassword(oldPsd);
         }
         //比较两个密码是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
