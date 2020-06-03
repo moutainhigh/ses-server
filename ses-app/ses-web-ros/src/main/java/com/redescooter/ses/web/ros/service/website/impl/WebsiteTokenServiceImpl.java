@@ -370,20 +370,20 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     public GeneralResult resetPassword(WebResetPasswordEnter enter) {
         //先给两个密码去空格（这个事应该前端就要做的）
         if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getConfirmPassword())) {
-            String decrypt = null;
+            String newPassword = null;
             String confirmDecrypt = null;
             String oldPsd = "";
             try {
                 //密码校验
-                decrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), privatekey);
+                newPassword = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), privatekey);
                 confirmDecrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getConfirmPassword()), privatekey);
                 oldPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), privatekey);
             } catch (Exception e) {
                 throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
-            enter.setNewPassword(decrypt);
+            enter.setNewPassword(newPassword);
             enter.setConfirmPassword(confirmDecrypt);
-            enter.setConfirmPassword(oldPsd);
+            enter.setOldPassword(oldPsd);
         }
         //比较两个密码是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
