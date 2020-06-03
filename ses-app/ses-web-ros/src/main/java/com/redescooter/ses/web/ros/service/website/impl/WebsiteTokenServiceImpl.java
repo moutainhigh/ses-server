@@ -386,9 +386,16 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
-        OpeCustomer customer = opeCustomerMapper.selectById(enter.getUserId());
+        Map<String, String> stringStringMap = jedisCluster.hgetAll(enter.getToken());
+        OpeCustomer customer = opeCustomerMapper.selectById(stringStringMap.get("userId"));
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        if(Strings.isNullOrEmpty(enter.getOldPassword())){
+            throw new SesWebRosException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
+        }
+        if(!DigestUtils.md5Hex(enter.getOldPassword()+customer.getSalt()).equals(customer.getPassword())){
+            throw new SesWebRosException(ExceptionCodeEnums.OLDPASSWORD_ERROR.getCode(),ExceptionCodeEnums.OLDPASSWORD_ERROR.getMessage());
         }
         int salt = RandomUtils.nextInt(10000, 99999);
         String newPassword = DigestUtils.md5Hex(enter.getNewPassword() + salt);
@@ -401,7 +408,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Override
     public GeneralResult editCustomer(WebEditCustomerEnter enter) {
-        OpeCustomer customer = opeCustomerMapper.selectById(enter.getUserId());
+        // 登录的时候  是把这些东西放在缓存里  直接获取
+        Map<String, String> stringStringMap = jedisCluster.hgetAll(enter.getToken());
+        OpeCustomer customer = opeCustomerMapper.selectById(stringStringMap.get("userId"));
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
