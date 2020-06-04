@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.inquiry;
 
+import com.redescooter.ses.api.common.annotation.MaximumLength;
+import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
@@ -28,17 +30,23 @@ public class NewSaveInquiryEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "邮箱")
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
+    //@MinimumLength(value = "2", code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "长度过短")
+    //@MaximumLength(value = "50", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "长度过长")
     private String email;
 
     @NotNull(code = ValidationExceptionCode.REGION_IS_EMPTY, message = "区域为空")
     private String distrust;
 
     @ApiModelProperty(value = "客户名字")
-    @NotNull(code = ValidationExceptionCode.FIRST_NAME_IS_EMPTY,message = "姓名为空")
+    @NotNull(code = ValidationExceptionCode.FIRST_NAME_IS_EMPTY, message = "姓名为空")
+    @MinimumLength(value = "2", code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "长度过短")
+    @MaximumLength(value = "20", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "长度过长")
     private String firstName;
 
     @ApiModelProperty(value = "客户姓氏")
-    @NotNull(code = ValidationExceptionCode.LAST_NAME_IS_EMPTY,message = "姓名为空")
+    @NotNull(code = ValidationExceptionCode.LAST_NAME_IS_EMPTY, message = "姓名为空")
+    @MinimumLength(value = "2", code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "长度过短")
+    @MaximumLength(value = "20", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "长度过长")
     private String lastName;
 
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
@@ -47,6 +55,7 @@ public class NewSaveInquiryEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "电话")
     @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY, message = "邮箱不能为空")
+    //@MaximumLength(value = "10", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "长度过长")
     private String telephone;
 
     @ApiModelProperty(value = "备注")
