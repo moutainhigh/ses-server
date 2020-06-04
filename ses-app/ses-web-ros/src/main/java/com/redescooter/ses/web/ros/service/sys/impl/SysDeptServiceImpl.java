@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName SysDeptServiceImpl
@@ -131,7 +132,39 @@ public class SysDeptServiceImpl implements SysDeptService {
                 });
             }
         }
+        // 到这只是统计出每个部门多少人，还需要把子部门的人数统计到父级部门
+        deptEmployeeCount(list);
         return list;
+    }
+
+    public List<DeptTreeReslt> deptEmployeeCount(List<DeptTreeReslt> list){
+        for (DeptTreeReslt treeReslt : list) {
+            treeReslt.setEmployeeCount(recurCount(treeReslt.getEmployeeCount(),treeReslt,list));
+        }
+        return list;
+    }
+
+
+    public int recurCount(int count,DeptTreeReslt deptTreeReslt,List<DeptTreeReslt> list){
+
+        List<DeptTreeReslt> parent = new ArrayList<>();
+        List<DeptTreeReslt> child = new ArrayList<>();
+        for (DeptTreeReslt treeReslt : list) {
+            if (treeReslt.getPId() == deptTreeReslt.getId()) {
+                parent.add(treeReslt);
+            }else {
+                child.add(treeReslt);
+            }
+        }
+        // 找到当前部门的所有子部门
+        if(CollectionUtils.isNotEmpty(parent)){
+            // 统计当前部门和所有子部门人数
+            count = count + parent.stream().collect(Collectors.summingInt(DeptTreeReslt::getEmployeeCount));
+        }
+        for (DeptTreeReslt reslt : parent) {
+            count = recurCount(count,reslt,child);
+        }
+        return count;
     }
 
 
