@@ -118,6 +118,8 @@ oss:                                                                            
   publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
   maxFileSize: 104857600
   #调整最大文件大小为10M 默认单位为字节
+  #oss 使用HTTPS、HTTP请求方式
+  protocol: HTTPS
 
 
 #前端请求私钥

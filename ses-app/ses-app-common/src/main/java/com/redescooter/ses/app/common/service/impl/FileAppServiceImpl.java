@@ -1,8 +1,11 @@
 package com.redescooter.ses.app.common.service.impl;
 
+import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.common.comm.Protocol;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PutObjectResult;
+import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.exception.BaseException;
 import com.redescooter.ses.app.common.service.FileAppService;
 import com.redescooter.ses.starter.common.config.OssConfig;
@@ -40,8 +43,13 @@ public class FileAppServiceImpl implements FileAppService {
             if (StringUtils.isEmpty(bucket)) {
                 bucket = ossConfig.getDefaultBucketName();
             }
+
+            //oss 开启https 上传
+            ClientConfiguration conf = new ClientConfiguration();
+            conf.setProtocol(ProtocolEnums.getProtocol(ossConfig.getProtocol()));
+
             ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(),
-                    ossConfig.getSecretAccesskey());
+                    ossConfig.getSecretAccesskey(), conf);
 
             PutObjectResult result = ossClient.putObject(ossConfig.getDefaultBucketName(), fileName,
                     file.getInputStream());

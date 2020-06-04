@@ -118,4 +118,7 @@ oss:                                                                            
   secretAccesskey: lVM6XOqSdrdgJ3brHRcdSUOAVdxcS5
   defaultBucketName: rede
   publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
-  maxFileSize: 5242880
+  maxFileSize: 104857600
+  #调整最大文件大小为10M 默认单位为字节
+  #oss 使用http、https请求方式
+  protocol: HTTPS

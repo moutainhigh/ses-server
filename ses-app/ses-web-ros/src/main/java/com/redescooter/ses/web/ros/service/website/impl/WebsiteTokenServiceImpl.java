@@ -369,6 +369,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         customer.setPassword(newPassword);
         customer.setSalt(String.valueOf(salt));
         opeCustomerMapper.updateById(customer);
+
+        //清楚缓存（一封邮件只允许设置一次密码）
+        jedisCluster.del(enter.getRequestId());
         return new GeneralResult(enter.getRequestId());
     }
 

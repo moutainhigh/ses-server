@@ -15,4 +15,5 @@ public class OssConfig {
     private String defaultBucketName;
     private String publicEndpointDomain;
     private int maxFileSize;
+    private String protocol;
 }

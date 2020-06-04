@@ -53,7 +53,7 @@
            inquiry.district                                   as distrustId,
            inquiry.status                                     as status,
            inquiry.customer_type                              as customerType,
-           inquiry.industry                                   as industyType,
+           inquiry.industry                                   as industryType,
            inquiry.scooter_quantity                           as scooterQty,
            inquiry.remarks                                    as remark,
            if(inquiry.status = 3, inquiry.updated_time, null) as acceptanceTime,

@@ -78,7 +78,7 @@ public class InquiryResult extends GeneralResult {
     private String customerType;
 
     @ApiModelProperty(value = "行业类型")
-    private String industyType;
+    private String industryType;
 
     @ApiModelProperty(value = "车辆数量")
     private Integer scooterQty;
