@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.config;
+package com.redescooter.ses.service.foundation.config;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;

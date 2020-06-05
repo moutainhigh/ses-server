@@ -10,6 +10,14 @@ dubbo:                                                                          
     address: zookeeper://172.31.3.48:2181?backup=172.31.3.48:2182,172.31.3.48:2183
 
 # swagger配置
+
+jasypt:
+  encryptor:
+    property:
+      prefix: RedE(   # 加密前缀
+      suffix: )            # 加密后缀
+    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
+
 spring:
   #上传配置
   http:
@@ -20,9 +28,9 @@ spring:
       enabled: true
   #数据库连接
   datasource:
-    url: jdbc:mysql://172.31.3.48:3306/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-    username: rede
-    password: RedE2019!!
+    url: RedE(F1Q2JN3cQrlrbfQsZsj48j8q2QftYwq/Xz2jpAEShI1UMVWQNRQeBV0dEicdNSa9cejE53tG9edqpIE7XdMwRFF5rdG5W1ViPMKG/ubOdOE4XdENUGyjvp5XM7MEwUw5yQxKASdO2onhTg6MygCRRfodbln5j9QmVrpfcwMio79mITlfvMmpP/zBUa4fSdAEmU99s0odFwvJoYBsPQmyIbPbit1ZpNwzWpRGnrab1YAUaf4D4vhpVSnEV9MfOAAyTUdNq3x0oRx5z1s7sLtBwTJD3HQqzO5dfGxnhfheXOxV+0qoUOrIMc9VZg965DQQ0A8ZIPT3y8bN8GoqEES1QQ==)
+    username: RedE(NqQr1ppQnSUFwW3C88oKrA==)
+    password: RedE(bH6R75pS0stRNmMwnN8eMS5papPsmLksEPyTlJkaMvKYy3mnEzxS6mOtAQfBt/oh)
     druid:
       initial-size: 8
       min-idle: 1
