@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -121,9 +122,10 @@ public class SysDeptServiceImpl implements SysDeptService {
                         if (item.getId() == user.getDeptId()) {
                             //如果部门人员大于4人 就不进行 头像拼接
                             if (StringUtils.isNotEmpty(item.getEmployeePictures())) {
-                                if (item.getEmployeePictures().split(",").length > 3) {
+                                if (item.getEmployeePictures().split(",").length > 5) {
                                     break;
                                 }
+                                item.setEmployeePictures(!Strings.isNullOrEmpty(item.getEmployeePictures())?item.getEmployeePictures()+",":item.getEmployeePictures());
                                 item.setEmployeePictures(new StringBuilder(item.getEmployeePictures()).append(user.getEmployeePicture()).toString());
                             }
                         }
@@ -131,9 +133,9 @@ public class SysDeptServiceImpl implements SysDeptService {
                     }
                 });
             }
+            // 到这只是统计出每个部门多少人，还需要把子部门的人数统计到父级部门
+            deptEmployeeCount(list);
         }
-        // 到这只是统计出每个部门多少人，还需要把子部门的人数统计到父级部门
-        deptEmployeeCount(list);
         return list;
     }
 
@@ -196,6 +198,8 @@ public class SysDeptServiceImpl implements SysDeptService {
         //查询 部门下员工
         List<Long> deptIds = new ArrayList<>();
         deptIds.add(enter.getId());
+        // 找到当前部门的所有子部门的部门id
+//        deptServiceMapper.
         return deptServiceMapper.employeeList(deptIds, enter.getKeyword());
     }
 
