@@ -72,4 +72,21 @@
                  inner join ope_sys_user_profile profile on staff.sys_user_id = profile.sys_user_id and profile.dr=0
         where staff.dr=0
     </select>
+
+    <select id="getChildDeptIds" resultType="java.lang.Long">
+        SELECT
+	      id
+       FROM
+            (
+            SELECT
+                t1.id,
+            IF
+                ( find_in_set( p_id, @pids ) > 0, @pids := concat( @pids, ',', id ), 0 ) AS ischild
+            FROM
+                ( SELECT id, p_id FROM ope_sys_dept t ) t1,
+                ( SELECT @pids := #{deptId}) t2
+            ) t3
+        WHERE
+	ischild != 0
+    </select>
 </mapper>
