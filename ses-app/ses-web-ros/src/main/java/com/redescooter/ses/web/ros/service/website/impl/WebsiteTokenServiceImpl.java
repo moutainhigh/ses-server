@@ -26,6 +26,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
+import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;

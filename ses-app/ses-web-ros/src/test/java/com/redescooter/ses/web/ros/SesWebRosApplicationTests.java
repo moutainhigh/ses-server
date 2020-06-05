@@ -1,8 +1,7 @@
 package com.redescooter.ses.web.ros;
 
-import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.WebEditCustomerEnter;
+import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
@@ -10,7 +9,6 @@ import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jasypt.encryption.StringEncryptor;
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
