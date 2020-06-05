@@ -199,7 +199,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         List<Long> deptIds = new ArrayList<>();
         deptIds.add(enter.getId());
         // 找到当前部门的所有子部门的部门id
-//        deptServiceMapper.
+        deptIds.addAll(deptServiceMapper.getChildDeptIds(enter.getId()));
         return deptServiceMapper.employeeList(deptIds, enter.getKeyword());
     }
 

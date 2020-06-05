@@ -41,6 +41,15 @@ public interface DeptServiceMapper {
     List<EmployeeProfileResult> employeeList(@Param("deptIds") List<Long> deptIds, @Param("keyword") String keyword);
 
     /**
+     * @Author Aleks
+     * @Description
+     * @Date  2020/6/5 10:18
+     * @Param [deptId]
+     * @return
+     **/
+    List<Long> getChildDeptIds(@Param("deptId")  Long deptId);
+
+    /**
      * 负责人列表
      *
      * @return
