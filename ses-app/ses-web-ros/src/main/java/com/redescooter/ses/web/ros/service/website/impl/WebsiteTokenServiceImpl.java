@@ -349,22 +349,29 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             enter.setNewPassword(decrypt);
             enter.setConfirmPassword(confirmDecrypt);
         }
+
         //比较两个密码是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
         //发邮件的时候  把用户的信息放在缓存里了  现在拿出来
-        if (!jedisCluster.exists(enter.getRequestId())){
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(),ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
+        if (!jedisCluster.exists(enter.getRequestId())) {
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(), ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
         }
         Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
         if (map == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(),ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(), ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
         }
         OpeCustomer customer = opeCustomerMapper.selectById(map.get("userId").toString());
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
+
+        //新旧密码一致 不可以
+        if (StringUtils.equals(DigestUtils.md5Hex(enter.getNewPassword() + customer.getSalt()), customer.getPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
+        }
+
         int salt = RandomUtils.nextInt(10000, 99999);
         String newPassword = DigestUtils.md5Hex(enter.getNewPassword() + salt);
         customer.setPassword(newPassword);
@@ -396,6 +403,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             enter.setOldPassword(oldPsd);
         }
         //比较两个密码是否一致
+        if (StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
+        }
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
@@ -404,11 +414,11 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if(Strings.isNullOrEmpty(enter.getOldPassword())){
-            throw new SesWebRosException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
+        if (Strings.isNullOrEmpty(enter.getOldPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(), ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
         }
-        if(!DigestUtils.md5Hex(enter.getOldPassword()+customer.getSalt()).equals(customer.getPassword())){
-            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(),ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        if (!DigestUtils.md5Hex(enter.getOldPassword() + customer.getSalt()).equals(customer.getPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
         int salt = RandomUtils.nextInt(10000, 99999);
         String newPassword = DigestUtils.md5Hex(enter.getNewPassword() + salt);
@@ -422,8 +432,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     @Override
     public GeneralResult editCustomer(WebEditCustomerEnter enter) {
         // 登录的时候  是把这些东西放在缓存里  直接获取
-        Map<String, String> stringStringMap = jedisCluster.hgetAll(enter.getToken());
-        OpeCustomer customer = opeCustomerMapper.selectById(stringStringMap.get("userId"));
+        OpeCustomer customer = opeCustomerMapper.selectById(enter.getUserId());
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -441,14 +450,14 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         customer.setTelephone(decrypt);
         customer.setCustomerFirstName(enter.getFirstName());
         customer.setCustomerLastName(enter.getLastName());
-        customer.setCustomerFullName(customer.getContactFirstName() + " " + customer.getCustomerLastName());
+        customer.setCustomerFullName(customer.getCustomerFirstName() + " " + customer.getCustomerLastName());
         opeCustomerMapper.updateById(customer);
         QueryWrapper<OpeCustomerInquiry> qw = new QueryWrapper<>();
-        qw.eq("customer_id",customer.getId());
-        qw.eq("status",InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
-        qw.eq("customer_source",CustomerSourceEnum.WEBSITE.getValue());
+        qw.eq("customer_id", customer.getId());
+        qw.eq("status", InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
+        qw.eq("customer_source", CustomerSourceEnum.WEBSITE.getValue());
         List<OpeCustomerInquiry> list = opeCustomerInquiryMapper.selectList(qw);
-        if(CollectionUtils.isNotEmpty(list)){
+        if (CollectionUtils.isNotEmpty(list)) {
             List<OpeCustomerInquiry> update = new ArrayList<>();
             for (OpeCustomerInquiry inquiry : list) {
                 inquiry.setFirstName(customer.getCustomerFirstName());
