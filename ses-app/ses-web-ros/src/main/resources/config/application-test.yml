@@ -18,7 +18,7 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://172.31.8.126:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://172.31.8.126:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: rede,1qaz2wsx
     druid:
@@ -194,3 +194,14 @@ stripe:
   publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
   secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
   receipt_email: etienne@redescooter.fr
+
+oss:                                                                                                                    #阿里oss上传
+  internalEndpoint: oss-cn-shanghai.aliyuncs.com
+  accessKeyId: LTAIDUpZRjkFVCze
+  secretAccesskey: lVM6XOqSdrdgJ3brHRcdSUOAVdxcS5
+  defaultBucketName: rede
+  publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
+  maxFileSize: 104857600
+  #调整最大文件大小为10M 默认单位为字节
+  #oss 使用HTTPS、HTTP请求方式
+  protocol: HTTPS

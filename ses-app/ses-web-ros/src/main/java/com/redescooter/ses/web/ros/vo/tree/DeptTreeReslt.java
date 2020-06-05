@@ -23,7 +23,7 @@ import java.util.List;
 public class DeptTreeReslt extends TreeNode{
 
     @ApiModelProperty(value = "负责人")
-    private Integer principal;
+    private Long principal;
 
     @ApiModelProperty(value = "级别0公司，1部门")
     private Integer level;

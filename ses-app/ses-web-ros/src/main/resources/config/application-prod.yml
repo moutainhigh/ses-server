@@ -56,3 +56,14 @@ stripe:
   secret_key: rk_live_Ea5zybiHwnLnY7bn98jaoRJQ00OPG1gEBe
   receipt_email: etienne@redescooter.fr
 
+oss:                                                                                                                    #阿里oss上传
+  internalEndpoint: oss-cn-shanghai.aliyuncs.com
+  accessKeyId: LTAIDUpZRjkFVCze
+  secretAccesskey: lVM6XOqSdrdgJ3brHRcdSUOAVdxcS5
+  defaultBucketName: rede
+  publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
+  maxFileSize: 104857600
+  #调整最大文件大小为10M 默认单位为字节
+  #oss 使用HTTPS、HTTP请求方式
+  protocol: HTTPS
+
