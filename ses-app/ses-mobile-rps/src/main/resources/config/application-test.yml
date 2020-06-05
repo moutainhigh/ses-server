@@ -59,3 +59,7 @@ spring:                                                                         
           name: 李加廷                                                                                                   #联系人名字
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
+
+oss:                                                                                                                    #阿里oss上传
+  #oss 使用http、https请求方式
+  protocol: HTTPS

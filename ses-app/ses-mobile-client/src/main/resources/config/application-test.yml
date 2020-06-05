@@ -119,3 +119,7 @@ spring:                                                                         
           name: Jerry
           email: Jerry@redescooter.com
           url: https://github.com/mrjerryli#联系地址
+
+oss:                                                                                                                    #阿里oss上传
+  #oss 使用http、https请求方式
+  protocol: HTTPS

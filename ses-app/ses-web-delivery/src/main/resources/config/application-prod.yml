@@ -48,6 +48,9 @@ spring:
   swagger:
     enabled: false                                       # 是否启用swagger
 
+oss:                                                                                                                    #阿里oss上传
+  #oss 使用http、https请求方式
+  protocol: HTTPS
 
 
 
