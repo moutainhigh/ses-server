@@ -127,7 +127,6 @@ public class SysDeptServiceImpl implements SysDeptService {
                                 item.setEmployeePictures(new StringBuilder(item.getEmployeePictures()).append(user.getEmployeePicture()).toString());
                             }
                         }
-                        //employeeCount(list,item);
                     }
                 });
             }
@@ -165,18 +164,6 @@ public class SysDeptServiceImpl implements SysDeptService {
             count = recurCount(count,reslt,child);
         }
         return count;
-    }
-
-
-    private void employeeCount(List<DeptTreeReslt> list, DeptTreeReslt deptTree) {
-
-        DeptTreeReslt children = TreeUtil.findChildren(deptTree, list);
-
-        if (CollectionUtils.isNotEmpty(children.getChildren())) {
-            children.getChildren().forEach(item -> {
-                children.setEmployeeCount(children.getEmployeeCount() + 1);
-            });
-        }
     }
 
 
