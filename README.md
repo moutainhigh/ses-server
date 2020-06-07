@@ -1,5 +1,8 @@
-![RedEScooter](https://rede-other.oss-cn-beijing.aliyuncs.com/redescooter.png)           
-<h1 align="center"><a href="https://github.com/mrjerryli/ses-server" target="_blank">RedE Scooter</a></h1>
+<h1 align="center">
+
+ ![RedEScooter](https://rede-other.oss-cn-beijing.aliyuncs.com/RED.png)  
+ 
+</h1> <h1 align="center"><a href="https://github.com/mrjerryli/ses-server" target="_blank">RedE Scooter</a></h1>
      
 ###### <div align=right>2019~2020
 
