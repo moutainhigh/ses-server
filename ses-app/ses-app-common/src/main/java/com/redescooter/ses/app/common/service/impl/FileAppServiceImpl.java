@@ -44,7 +44,7 @@ public class FileAppServiceImpl implements FileAppService {
                 bucket = ossConfig.getDefaultBucketName();
             }
 
-            //oss 开启https 上传
+            //oss 开启https 上传 添加其他配置 参看 ClientConfiguration 对象
             ClientConfiguration conf = new ClientConfiguration();
             conf.setProtocol(ProtocolEnums.getProtocol(ossConfig.getProtocol()));
 
@@ -66,7 +66,7 @@ public class FileAppServiceImpl implements FileAppService {
     @Override
     public InputStream download(String url) {
         InputStream input = null;
-        //oss 开启https 下载
+        //oss 开启https 下载 添加其他配置 参看 ClientConfiguration 对象
         ClientConfiguration conf = new ClientConfiguration();
         conf.setProtocol(ProtocolEnums.getProtocol(ossConfig.getProtocol()));
 
