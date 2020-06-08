@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.EamilConstant;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -10,6 +11,7 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.starter.common.config.SendinBlueConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -28,20 +30,29 @@ import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -81,8 +92,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private JedisCluster jedisCluster;
+
     @Value("${Request.privateKey}")
     private String privatekey;
+
+    @Autowired
+    private SendinBlueConfig sendinBlueConfig;
 
     /**
      * 车辆型号
@@ -546,6 +561,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+        adPush(eamil);
         jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(), eamil);
         return new GeneralResult(enter.getRequestId());
     }
@@ -603,5 +619,30 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
         //todo 目前是优惠价 减500欧元
         return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty))).subtract(new BigDecimal(500));
+    }
+
+    private void adPush(String email){
+        OkHttpClient client = new OkHttpClient();
+
+        MediaType mediaType = MediaType.parse(sendinBlueConfig.getMediaType());
+
+        Map<String,String> map=new HashMap<>();
+        map.put("updateEnabled",sendinBlueConfig.getUpdateEnabled());
+        map.put("email",email);
+
+        RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(map));
+        Request request = new Request.Builder()
+                .url(sendinBlueConfig.getUrl())
+                .post(body)
+                .addHeader("accept", sendinBlueConfig.getAccept())
+                .addHeader("content-type",sendinBlueConfig.getContentType() )
+                .addHeader("api-key", sendinBlueConfig.getApiKey())
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            System.out.println("response"+response.message());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

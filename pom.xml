@@ -42,6 +42,8 @@
         <!--stripe支付相关-->
         <stripe.version>19.13.0</stripe.version>
         <spark.version>2.9.1</spark.version>
+        <okhttp.version>3.3.0</okhttp.version>
+
 
        <swagger.version>2.8.0</swagger.version>
        <swagger.bootstrap.ui.version>1.9.6</swagger.bootstrap.ui.version>
@@ -216,6 +218,12 @@
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
                 <version>${aliyun-sdk-oss.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
