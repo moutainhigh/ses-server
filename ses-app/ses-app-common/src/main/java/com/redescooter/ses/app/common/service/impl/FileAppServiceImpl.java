@@ -66,8 +66,12 @@ public class FileAppServiceImpl implements FileAppService {
     @Override
     public InputStream download(String url) {
         InputStream input = null;
+        //oss 开启https 下载
+        ClientConfiguration conf = new ClientConfiguration();
+        conf.setProtocol(ProtocolEnums.getProtocol(ossConfig.getProtocol()));
+
         OSSClient ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(),
-                ossConfig.getSecretAccesskey());
+                ossConfig.getSecretAccesskey(),conf);
         if (url.indexOf("//") >= 0) {
             url = url.split("//")[1];
         }
