@@ -192,6 +192,11 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
 
+        //密码长度校验
+        checkString(decryptPassword,2,20);
+        //邮箱长度校验
+        checkString(enter.getEmail(),2,50);
+
         int salt = RandomUtils.nextInt(10000, 99999);
         String password = DigestUtils.md5Hex(decryptPassword + salt);
         OpeCustomer saveCustomer = new OpeCustomer();
@@ -252,6 +257,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                 throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
             baseSendMailEnter.setMail(decryptMail);
+
+            //邮箱长度校验
+            checkString(baseSendMailEnter.getMail(),2,50);
         }
         //先判断邮箱是否存在、
         QueryWrapper<OpeCustomer> qw = new QueryWrapper<>();
@@ -350,6 +358,14 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             enter.setConfirmPassword(confirmDecrypt);
         }
 
+        //密码长度校验
+        checkString(enter.getOldPassword(),2,18);
+        //密码长度校验
+        checkString(enter.getNewPassword(),2,18);
+        //密码长度校验
+        checkString(enter.getConfirmPassword(),2,18);
+
+
         //比较两个密码是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
@@ -402,6 +418,13 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             enter.setConfirmPassword(confirmDecrypt);
             enter.setOldPassword(oldPsd);
         }
+        //密码长度校验
+        checkString(enter.getOldPassword(),2,18);
+        //密码长度校验
+        checkString(enter.getNewPassword(),2,18);
+        //密码长度校验
+        checkString(enter.getConfirmPassword(),2,18);
+
         //比较两个密码是否一致
         if (StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
@@ -447,6 +470,11 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             }
         }
 
+        //邮箱长度校验
+        checkString(enter.getEmail(),2,50);
+        //电话长度校验
+        checkString(enter.getTelephone(),2,10);
+
         customer.setTelephone(decrypt);
         customer.setCustomerFirstName(enter.getFirstName());
         customer.setCustomerLastName(enter.getLastName());
@@ -472,4 +500,12 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     }
 
 
+    private void checkString(String str, int min, int max) {
+        if (StringUtils.isEmpty(str)) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        if (str.length() < min || str.length() > max) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+    }
 }

@@ -45,5 +45,6 @@ public class SignUpEnter extends GeneralEnter {
     private String email;
 
     @ApiModelProperty(value = "密码")
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.PASSWORD_IS_EMPTY,message = "密码为空")
     private String password;
 }

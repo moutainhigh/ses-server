@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.website;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.annotation.MaximumLength;
+import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -38,9 +40,14 @@ public class SaveSaleOrderEnter extends GeneralEnter {
     private String countryCode;
 
     @ApiModelProperty(value = "电话")
+    @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY,message = "电话为空")
+    @MinimumLength(value = "2",code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT,message = "字符过短")
     private String phone;
 
     @ApiModelProperty(value = "地址")
+    @NotNull(code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "地址为空")
+    @MinimumLength(value = "2",code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT,message = "字符过短")
+    @MaximumLength(value = "120",code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG,message = "字符过长")
     private String address;
 
     @ApiModelProperty(value = "产品Id")

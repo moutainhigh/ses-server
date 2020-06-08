@@ -1,5 +1,7 @@
 package com.redescooter.ses.api.common.vo.base;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -22,6 +24,7 @@ import lombok.NoArgsConstructor;
 public class BaseSendMailEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "邮箱账户")
+    @NotNull(code = ValidationExceptionCode.EMAIL_IS_EMPTY,message = "邮箱为空")
     private String mail;
 
 }

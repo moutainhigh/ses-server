@@ -1,5 +1,7 @@
 package com.redescooter.ses.api.foundation.vo.login;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 
 import io.swagger.annotations.ApiModel;
@@ -25,6 +27,7 @@ public class LoginEnter extends GeneralEnter {
     private int loginType = 1;
 
     @ApiModelProperty(value = "登录名")
+    @NotNull(code = ValidationExceptionCode.EMAIL_IS_EMPTY,message = "用户名为空")
     private String loginName;
 
     @ApiModelProperty(value = "密码")
