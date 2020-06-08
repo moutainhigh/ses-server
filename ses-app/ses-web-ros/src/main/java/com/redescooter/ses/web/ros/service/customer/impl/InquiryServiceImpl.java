@@ -182,8 +182,8 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPROCESSED.getValue());
 
         //默认为个人餐厅
-        opeCustomerInquiry.setIndustry(CustomerIndustryEnums.RESTAURANT.getValue());
-        opeCustomerInquiry.setCustomerType(CustomerTypeEnum.PERSONAL.getValue());
+//        opeCustomerInquiry.setIndustry(CustomerIndustryEnums.RESTAURANT.getValue());
+//        opeCustomerInquiry.setCustomerType(CustomerTypeEnum.PERSONAL.getValue());
 
         opeCustomerInquiry.setCompanyName(null);
         opeCustomerInquiry.setFirstName(enter.getFirstName());
