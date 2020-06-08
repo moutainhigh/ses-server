@@ -9,6 +9,13 @@ dubbo:
   registry: #注册中心
     address: zookeeper://172.31.3.48:2181?backup=172.31.3.48:2182,172.31.3.48:2183
 
+jasypt:
+  encryptor:
+    property:
+      prefix: RedE(   # 加密前缀
+      suffix: )            # 加密后缀
+    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
+
 spring:
   datasource:
     dynamic:
@@ -17,19 +24,19 @@ spring:
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://172.31.3.48:3306/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: rede
-          password: RedE2019!!
+          url: RedE(oBSNiGrJNk7a5TcQoJjd2FZoxqxmkEyHCrK1OA2v28Ee5rDtfvPomKdSfYM/YPS8GVn07IA0PY0r+3iPdZ0FpuImgtIblx1r5lmgb/vPyCDnqvZzrfHV3vXaz7gJV4bsN2QFqAKY632OK2fONgbTA3PFrlrmDILaGbV/lpqa5AVk8JJ+MmpnWUiw7BbZ1DcX2A7/Sh51tu6nw+/b2BNZTMUVGrYqxPiwO+sUuIpNu405DRrRP9fMI4f587GU1HQTyIxXOSVuj4N9i3q6gv7stDRfYji6wxE/i8zZoOsRNqc5hjFmi5gZOG6m2IezAus4)
+          username: RedE(Yr0vWxWbNSSkjlTHm4//fA==)
+          password: RedE(cfEFXZfdGfZHyT8KdMVRyzN7OcA/nX3Zo/iNQUcCdOl6KuPa9FMTHFoLmki5Sz32)
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://172.31.3.48:3306/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: rede
-          password: RedE2019!!
+          url: RedE(oBSNiGrJNk7a5TcQoJjd2FZoxqxmkEyHCrK1OA2v28Ee5rDtfvPomKdSfYM/YPS8GVn07IA0PY0r+3iPdZ0FpuImgtIblx1r5lmgb/vPyCDnqvZzrfHV3vXaz7gJV4bsN2QFqAKY632OK2fONgbTA3PFrlrmDILaGbV/lpqa5AVk8JJ+MmpnWUiw7BbZ1DcX2A7/Sh51tu6nw+/b2BNZTMUVGrYqxPiwO+sUuIpNu405DRrRP9fMI4f587GU1HQTyIxXOSVuj4N9i3q6gv7stDRfYji6wxE/i8zZoOsRNqc5hjFmi5gZOG6m2IezAus4)
+          username: RedE(Yr0vWxWbNSSkjlTHm4//fA==)
+          password: RedE(cfEFXZfdGfZHyT8KdMVRyzN7OcA/nX3Zo/iNQUcCdOl6KuPa9FMTHFoLmki5Sz32)
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://172.31.3.48:3306/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: rede
-          password: RedE2019!!
+          url: RedE(oBSNiGrJNk7a5TcQoJjd2FZoxqxmkEyHCrK1OA2v28Ee5rDtfvPomKdSfYM/YPS8GVn07IA0PY0r+3iPdZ0FpuImgtIblx1r5lmgb/vPyCDnqvZzrfHV3vXaz7gJV4bsN2QFqAKY632OK2fONgbTA3PFrlrmDILaGbV/lpqa5AVk8JJ+MmpnWUiw7BbZ1DcX2A7/Sh51tu6nw+/b2BNZTMUVGrYqxPiwO+sUuIpNu405DRrRP9fMI4f587GU1HQTyIxXOSVuj4N9i3q6gv7stDRfYji6wxE/i8zZoOsRNqc5hjFmi5gZOG6m2IezAus4)
+          username: RedE(Yr0vWxWbNSSkjlTHm4//fA==)
+          password: RedE(cfEFXZfdGfZHyT8KdMVRyzN7OcA/nX3Zo/iNQUcCdOl6KuPa9FMTHFoLmki5Sz32)
   #REDIS集群配置
   redis:
     cluster:

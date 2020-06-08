@@ -89,9 +89,9 @@ public class SesWebRosApplicationTests {
         // 对应配置文件中配置的加密密钥
         System.setProperty("jasypt.encryptor.password", "RedE");
         StringEncryptor stringEncryptor = new DefaultLazyEncryptor(new StandardEnvironment());
-        System.out.println("加密后的登录名： " + stringEncryptor.encrypt("root"));
-        System.out.println("加密后的密码： " + stringEncryptor.encrypt("1qaz2wsx"));
-        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://192.168.2.200:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true"));
+        System.out.println("加密后的登录名： " + stringEncryptor.encrypt("rede"));
+        System.out.println("加密后的密码： " + stringEncryptor.encrypt("5&oouy!s$i5XFkvQ7gToHHG7nCpN9oGJsZEe"));
+        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://172.31.3.48:4269/xxl_job_prod?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true"));
         System.out.println("解密的登录名： " + stringEncryptor.decrypt("V1yrV6NRTPV7Qiuik4Ngsg=="));
         System.out.println("解密的密码： " + stringEncryptor.decrypt("h4FTPWlTMiyjC3ibuv4QhvreAET9QoNL"));
         System.out.println("url： " + stringEncryptor.decrypt("2M1l/PCpkVqJEEnbVQTysqYLoiQHHARchswPpnoDRyXq3Metj7RNPGmvDH1pzgXOrUzNrjppkQf0eBAQkDOkwlBtVIrkkvvM+bwr1fsu31ax7Trr8TAjyaDuD1eS5piFJWwTWlf4ziuKEt+mNZkbOy8bcqnSlVaP11WYtcRxS7+PgeTfDEfrBSiyo7NBmqYUe2XAtqumXe6M8oc9RyhMSaSB+vIn47LTq0/PfSFQ9y2wt/HEGudRZ8WO234DetSt+h6iHtSM1XSf5VaXG/vwaCUUEXMSblQqx2NuoMvgjHMvedQ1YolMBYPTx2xqTKy8GVahohR1FSAQQ58kLkce14i+iLOgnnrHwsyQSwzKWNg="));

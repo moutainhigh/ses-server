@@ -10,12 +10,19 @@ dubbo:
   registry: #注册中心
     address: zookeeper://172.31.3.48:2181?backup=172.31.3.48:2182,172.31.3.48:2183
 
+jasypt:
+  encryptor:
+    property:
+      prefix: RedE(   # 加密前缀
+      suffix: )            # 加密后缀
+    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
+
 spring:
   #数据库连接
-  datasource:
-    url: jdbc:mysql://172.31.3.48:3306/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-    username: rede
-    password: RedE2019!!
+  datasource:                                                                                                           #数据库连接
+    url: RedE(JXU/gps3UE5uRwZ1OCZJDiPi5Chr/d6ytrtHEdo/N6qjR48Pn9b4GtnpA/dp6tgIjXoFZlMWer6u+15aNGWTZRR+14ngiplTm17Gf3Wl2jFWX9Fltfafq14dABLOmAFTTsfbk/pz4CbX568uc33NIIUobDujTGG3lGWGqgMzG7us0xD0xqD3rRyUPTn0Uv0SYSMkc8slDjTDrukcLS1uwFLy5A7zXzoDuYErMyViZjPl0IoYdlge2AbDVWGe+ZQ6y4KYBkHIBxb4es+HMMwc63KWqpIep6tgm+pZMwtsQwCNsqVTvAqfi/2SkmTxWB2a)
+    username: RedE(Iwkdtl5vHRu4yp//nI36SA==)
+    password: RedE(y0jh9YjayhLACExUtMkmgqbPFubjOpMXpAyX5wlDtqAiJ8MGvouJt/L8SasnIHRH)
     druid:
       initial-size: 8
       min-idle: 1

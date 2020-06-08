@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.config;
+package com.xxl.job.admin.config;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
