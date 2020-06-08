@@ -27,6 +27,7 @@
         left join ope_sys_role_dept drole on dept.id = drole.dept_id
         left join ope_sys_role role on role.id = drole.role_id
         where dept.level != 0
+        and dept.dr=0
         <if test="deptId != null">
             and dept.id=#{deptId}
         </if>
