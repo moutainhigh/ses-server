@@ -172,7 +172,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             } catch (Exception e) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
             }
-
+            enter.setEmail(decryptEamil);
         }
 
         //用户校验
@@ -191,9 +191,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
-
+        enter.setPassword(decryptPassword);
         //密码长度校验
-        checkString(decryptPassword,2,20);
+        checkString(enter.getPassword(),2,20);
         //邮箱长度校验
         checkString(enter.getEmail(),2,50);
 
@@ -205,9 +205,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         saveCustomer.setTenantId(enter.getTenantId());
         saveCustomer.setTimeZone(enter.getTimeZone());
 
-        saveCustomer.setCustomerFirstName(enter.getFirstName());
-        saveCustomer.setCustomerLastName(enter.getLastName());
-        saveCustomer.setCustomerFullName(new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
+        saveCustomer.setCustomerFirstName(SesStringUtils.upperCaseString(enter.getFirstName()));
+        saveCustomer.setCustomerLastName(SesStringUtils.upperCaseString(enter.getLastName()));
+        saveCustomer.setCustomerFullName(new StringBuilder(SesStringUtils.upperCaseString(enter.getFirstName())).append(" ").append(SesStringUtils.upperCaseString(enter.getLastName())).toString());
         saveCustomer.setEmail(decryptEamil);
         saveCustomer.setPassword(password);
         saveCustomer.setSalt(String.valueOf(salt));
@@ -356,14 +356,12 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             }
             enter.setNewPassword(decrypt);
             enter.setConfirmPassword(confirmDecrypt);
-        }
 
-        //密码长度校验
-        checkString(enter.getOldPassword(),2,18);
-        //密码长度校验
-        checkString(enter.getNewPassword(),2,18);
-        //密码长度校验
-        checkString(enter.getConfirmPassword(),2,18);
+            //密码长度校验
+            checkString(enter.getNewPassword(),2,18);
+            //密码长度校验
+            checkString(enter.getConfirmPassword(),2,18);
+        }
 
 
         //比较两个密码是否一致
@@ -417,13 +415,13 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             enter.setNewPassword(newPassword);
             enter.setConfirmPassword(confirmDecrypt);
             enter.setOldPassword(oldPsd);
+            //密码长度校验
+            checkString(enter.getOldPassword(),2,18);
+            //密码长度校验
+            checkString(enter.getNewPassword(),2,18);
+            //密码长度校验
+            checkString(enter.getConfirmPassword(),2,18);
         }
-        //密码长度校验
-        checkString(enter.getOldPassword(),2,18);
-        //密码长度校验
-        checkString(enter.getNewPassword(),2,18);
-        //密码长度校验
-        checkString(enter.getConfirmPassword(),2,18);
 
         //比较两个密码是否一致
         if (StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
@@ -459,26 +457,25 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        customer.setAddress(enter.getAddress());
+        if(StringUtils.isNotEmpty(enter.getAddress())){
+            customer.setAddress(enter.getAddress());
+        }
         String decrypt = null;
         if (enter.getTelephone() != null) {
             try {
                 //密码校验
                 decrypt = RsaUtils.decrypt(enter.getTelephone(), privatekey);
             } catch (Exception e) {
-                throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
+            enter.setTelephone(decrypt);
+            //电话长度校验
+            checkString(enter.getTelephone(),2,10);
         }
-
-        //邮箱长度校验
-        checkString(enter.getEmail(),2,50);
-        //电话长度校验
-        checkString(enter.getTelephone(),2,10);
-
         customer.setTelephone(decrypt);
-        customer.setCustomerFirstName(enter.getFirstName());
-        customer.setCustomerLastName(enter.getLastName());
-        customer.setCustomerFullName(customer.getCustomerFirstName() + " " + customer.getCustomerLastName());
+        customer.setCustomerFirstName(SesStringUtils.upperCaseString(enter.getFirstName()));
+        customer.setCustomerLastName(SesStringUtils.upperCaseString(enter.getLastName()));
+        customer.setCustomerFullName(new StringBuilder(SesStringUtils.upperCaseString(enter.getFirstName())).append(" ").append(SesStringUtils.upperCaseString(enter.getLastName())).toString());
         opeCustomerMapper.updateById(customer);
         QueryWrapper<OpeCustomerInquiry> qw = new QueryWrapper<>();
         qw.eq("customer_id", customer.getId());

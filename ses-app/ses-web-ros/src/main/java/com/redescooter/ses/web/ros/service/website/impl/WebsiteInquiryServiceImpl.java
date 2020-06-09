@@ -366,9 +366,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setDr(0);
         opeCustomerInquiry.setOrderNo(RandomStringUtils.randomAlphabetic(8));
         opeCustomerInquiry.setCustomerId(enter.getUserId());
-        opeCustomerInquiry.setFirstName(opeCustomer.getCustomerFirstName());
-        opeCustomerInquiry.setLastName(opeCustomer.getCustomerLastName());
-        opeCustomerInquiry.setFullName(opeCustomer.getCustomerFullName());
+        opeCustomerInquiry.setFirstName(SesStringUtils.upperCaseString(opeCustomer.getCustomerFirstName()));
+        opeCustomerInquiry.setLastName(SesStringUtils.upperCaseString(opeCustomer.getCustomerLastName()));
+        opeCustomerInquiry.setFullName(SesStringUtils.upperCaseString(opeCustomer.getCustomerFirstName()) + SesStringUtils.upperCaseString(opeCustomer.getCustomerLastName()));
         opeCustomerInquiry.setEmail(opeCustomer.getEmail());
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
@@ -433,7 +433,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //查询产品
         OpePartsProduct opePartsProduct = opePartsProductService.getById(customerInquiry.getProductId());
         if (opePartsProduct == null) {
-            throw  new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
         //查询子订单
@@ -621,26 +621,26 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty))).subtract(new BigDecimal(500));
     }
 
-    private void adPush(String email){
+    private void adPush(String email) {
         OkHttpClient client = new OkHttpClient();
 
         MediaType mediaType = MediaType.parse(sendinBlueConfig.getMediaType());
 
-        Map<String,String> map=new HashMap<>();
-        map.put("updateEnabled",sendinBlueConfig.getUpdateEnabled());
-        map.put("email",email);
+        Map<String, String> map = new HashMap<>();
+        map.put("updateEnabled", sendinBlueConfig.getUpdateEnabled());
+        map.put("email", email);
 
         RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(map));
         Request request = new Request.Builder()
                 .url(sendinBlueConfig.getUrl())
                 .post(body)
                 .addHeader("accept", sendinBlueConfig.getAccept())
-                .addHeader("content-type",sendinBlueConfig.getContentType() )
+                .addHeader("content-type", sendinBlueConfig.getContentType())
                 .addHeader("api-key", sendinBlueConfig.getApiKey())
                 .build();
         try {
             Response response = client.newCall(request).execute();
-            System.out.println("response"+response.message());
+            System.out.println("response" + response.message());
         } catch (IOException e) {
             e.printStackTrace();
         }

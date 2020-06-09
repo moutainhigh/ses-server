@@ -20,28 +20,24 @@ import lombok.Data;
 public class WebEditCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "姓名")
+    @NotNull(code = ValidationExceptionCode.FIRST_NAME_IS_EMPTY,message = "名字为空")
     @MaximumLength(value ="60", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG,message = "字符过长")
     @MinimumLength(value = "2",code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT,message = "字符过短")
     private String firstName;
 
     @ApiModelProperty(value = "姓名")
+    @NotNull(code = ValidationExceptionCode.LAST_NAME_IS_EMPTY,message = "名字为空")
     @MaximumLength(value ="60", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG,message = "字符过长")
     @MinimumLength(value = "2",code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT,message = "字符过短")
     private String lastName;
 
     @ApiModelProperty(value = "邮箱")
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY,message = "邮箱为空")
-    @MinimumLength(value = "2",code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT,message = "字符过短")
     private String email;
 
     @ApiModelProperty(value = "电话")
-    @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY,message = "电话为空")
     private String telephone;
 
     @ApiModelProperty(value = "地址")
-    @MaximumLength(value ="120", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG,message = "字符过长")
-    @MinimumLength(value = "2",code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT,message = "字符过短")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY,message = "地址为空")
     private String address;
 
 }

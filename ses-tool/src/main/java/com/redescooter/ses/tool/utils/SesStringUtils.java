@@ -201,4 +201,19 @@ public class SesStringUtils extends StringUtils {
         }
         return t;
     }
+
+    /**
+     *  字符串首字母大写
+     *  先将字符串转为字符数组，然后将数组的第一个元素，即字符串首字母，
+     *  进行ASCII 码前移，ASCII 中大写字母从65开始，小写字母从97开始，所以这里减去32
+     * @param str
+     * @return
+     */
+    public static String upperCaseString(String str) {
+        char[] ch = str.toCharArray();
+        if (ch[0] >= 'a' && ch[0] <= 'z') {
+            ch[0] = (char) (ch[0] - 32);
+        }
+        return new String(ch);
+    }
 }

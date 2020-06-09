@@ -18,7 +18,6 @@ public class WebResetPasswordEnter extends GeneralEnter {
 
 
     @ApiModelProperty(value = "原始密码")
-    @NotNull(code = ValidationExceptionCode.PASSWORD_IS_EMPTY,message = "密码为空")
     private String oldPassword;
 
     @ApiModelProperty(value = "密码")
