@@ -183,6 +183,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             if (StringUtils.isBlank(enter.getCompanyName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COMPANY_NAME_CANNOT_EMPTY.getMessage());
             }
+            //名称校验
+            filedCheck(enter.getContactFirstName(),2,20);
+            filedCheck(enter.getContactLastName(),2,20);
+            filedCheck(enter.getCompanyName(),2,20);
+
         } else {
             if (StringUtils.isBlank(enter.getCustomerFirstName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getMessage());
@@ -190,11 +195,29 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             if (StringUtils.isBlank(enter.getCustomerLastName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getMessage());
             }
+            //名称校验
+            filedCheck(enter.getCustomerFirstName(),2,20);
+            filedCheck(enter.getCustomerLastName(),2,20);
             enter.setScooterQuantity(1);
         }
         if (StringUtils.isBlank(enter.getEmail())) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
         }
+        //邮箱校验
+        filedCheck(enter.getCustomerLastName(),2,50);
+        if (StringUtils.isNotEmpty(enter.getInvoiceNum())){
+            //发票号
+            filedCheck(enter.getInvoiceNum(),2,30);
+        }
+        if (StringUtils.isNotEmpty(enter.getBusinessLicenseNum())){
+            //营业执照编号 校验
+            filedCheck(enter.getBusinessLicenseNum(),2,30);
+        }
+        if (enter.getScooterQuantity()!=null){
+            filedCheck(String.valueOf(enter.getScooterQuantity()),1,6);
+        }
+
+
         OpeCustomer saveVo = new OpeCustomer();
         BeanUtils.copyProperties(enter, saveVo);
         saveVo.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
@@ -211,6 +234,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         if (StringUtils.isNotBlank(enter.getRemark())) {
             saveVo.setMemo(enter.getRemark());
+            filedCheck(enter.getRemark(),0,200);
         }
         saveVo.setAssignationScooterQty(0);
         saveVo.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
@@ -237,6 +261,37 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotEmpty(enter.getEmail())) {
             enter.setEmail(StringUtils.trim(enter.getEmail()));
         }
+        //字段校验
+        if (enter.getCustomerType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
+            //名称校验
+            filedCheck(enter.getContactFirstName(),2,20);
+            filedCheck(enter.getContactLastName(),2,20);
+            filedCheck(enter.getCompanyName(),2,20);
+        } else {
+            //名称校验
+            filedCheck(enter.getCustomerFirstName(),2,20);
+            filedCheck(enter.getCustomerLastName(),2,20);
+            enter.setScooterQuantity(1);
+        }
+        //邮箱校验
+        if (StringUtils.isNotEmpty(enter.getEmail())){
+            filedCheck(enter.getEmail(),2,50);
+        }
+        if (StringUtils.isNotEmpty(enter.getRemark())){
+            filedCheck(enter.getRemark(),2,200);
+        }
+        if (StringUtils.isNotEmpty(enter.getInvoiceNum())){
+            //发票号
+            filedCheck(enter.getInvoiceNum(),2,30);
+        }
+        if (StringUtils.isNotEmpty(enter.getBusinessLicenseNum())){
+            //营业执照编号 校验
+            filedCheck(enter.getBusinessLicenseNum(),2,30);
+        }
+        if (enter.getScooterQuantity()!=null){
+            filedCheck(String.valueOf(enter.getScooterQuantity()),1,6);
+        }
+
 
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         final Long tenantId = customer.getTenantId();
@@ -1038,76 +1093,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         return Integer.valueOf(StatisticalUtil.percentageUtil(count, result, 0));
     }
 
-//    private Integer checkCustomerInformation(OpeCustomer customer) {
-//        // 个人客户为 14个 基本字段
-//        //企业客户为 16个基本字段
-//
-//        int result = 14;
-//        int count = 0;
-//
-//        if (customer.getCity() != null) {
-//            count++;
-//        }
-//        if (customer.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
-//            if (!StringUtils.isBlank(customer.getCustomerFirstName())) {
-//                count++;
-//            }
-//            if (!StringUtils.isBlank(customer.getCustomerLastName())) {
-//                count++;
-//            }
-//        } else {
-//            // 企业 为16个字段 所以这里现加 2
-//            result += 2;
-//            if (!StringUtils.isBlank(customer.getCompanyName())) {
-//                count++;
-//            }
-//            if (!StringUtils.isBlank(customer.getBusinessLicenseNum())) {
-//                count++;
-//            }
-//            if (!StringUtils.isBlank(customer.getBusinessLicenseAnnex())) {
-//                count++;
-//            }
-//        }
-//        if (!StringUtils.isBlank(customer.getCustomerType())) {
-//            count++;
-//        }
-//        if (!StringUtils.isBlank(customer.getIndustryType())) {
-//            count++;
-//        }
-//        if (!StringUtils.isBlank(customer.getAddress())) {
-//            count++;
-//        }
-//        if (!StringUtils.isAllBlank(String.valueOf(customer.getLongitude()), String.valueOf(customer.getLatitude()))) {
-//            count += 2;
-//        }
-//        if (!StringUtils.isBlank(customer.getTelephone())) {
-//            count++;
-//        }
-//        if (!StringUtils.isBlank(customer.getCertificateType())) {
-//            count++;
-//        }
-//        if (customer.getCertificateType().equals(CustomerCertificateTypeEnum.ID_CARD.getValue())) {
-//            //如果 IdCard 所有的字段个数 +2 否则 +1
-//            result += 2;
-//            if (!StringUtils.isAllBlank(customer.getCertificatePositiveAnnex(), customer.getCertificateNegativeAnnex())) {
-//                count += 2;
-//            }
-//        } else {
-//            result++;
-//            if (!StringUtils.isBlank(customer.getCertificatePositiveAnnex())) {
-//                count++;
-//            }
-//        }
-//        if (!StringUtils.isBlank(customer.getInvoiceNum())) {
-//            count++;
-//        }
-//        if (!StringUtils.isBlank(customer.getInvoiceAnnex())) {
-//            count++;
-//        }
-//        if (!StringUtils.isBlank(customer.getContractAnnex())) {
-//            count++;
-//        }
-//        return Integer.valueOf(StatisticalUtil.percentageUtil(count, result, 0));
-//    }
+    private void filedCheck(String filed, int min, int max) {
+        if (StringUtils.isNotEmpty(filed)) {
+            if (filed.length() < min) {
+                throw new SesWebRosException(ExceptionCodeEnums.CHARACTER_IS_TOO_SHORT.getCode(), ExceptionCodeEnums.CHARACTER_IS_TOO_SHORT.getMessage());
+            }
 
+            if (filed.length() > max) {
+                throw new SesWebRosException(ExceptionCodeEnums.CHARACTER_IS_TOO_LONG.getCode(), ExceptionCodeEnums.CHARACTER_IS_TOO_LONG.getMessage());
+            }
+        }
+    }
 }

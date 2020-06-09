@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
+import com.redescooter.ses.api.common.annotation.MaximumLength;
+import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
@@ -40,14 +42,14 @@ public class EditCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "邮箱")
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
+    @MinimumLength(value = "2",code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮件非法")
+    @MaximumLength(value = "50",code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮件非法")
     private String email;
 
     @ApiModelProperty(value = "客户名字")
-    @NotNull(code = ValidationExceptionCode.CUSTOMER_INFO_IS_EMPTY, message = "客户基本信息不能为空")
     private String customerFirstName;
 
     @ApiModelProperty(value = "客户姓氏")
-    @NotNull(code = ValidationExceptionCode.CUSTOMER_INFO_IS_EMPTY, message = "客户基本信息不能为空")
     private String customerLastName;
 
     @ApiModelProperty(value = "客户全名")
@@ -122,6 +124,4 @@ public class EditCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "备注")
     private String remark;
-
-
 }

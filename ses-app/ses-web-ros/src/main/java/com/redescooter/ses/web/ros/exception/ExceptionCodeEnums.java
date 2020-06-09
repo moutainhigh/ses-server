@@ -73,7 +73,7 @@ public enum ExceptionCodeEnums {
 
     ACCOUNT_IS_ALRADY_ACTIVATION(10028, "账户已经激活不可重复激活"),
 
-    TOKEN_IS_EXPIRED(10029,"数据已过期"),
+    TOKEN_IS_EXPIRED(10029, "数据已过期"),
 
     //30之后是业务错误码
     FIRST_NAME_CANNOT_EMPTY(10030, "名字不能为空"),
@@ -272,11 +272,15 @@ public enum ExceptionCodeEnums {
 
     DISTRUST_IS_NOT_EXIST(10127, "区域不存在，请重新输入"),
 
-     CUSTOMER_ALREADY_EXIST_ORDER_FORM (10128, "客户已存在预订单不允许添加预订单，请与销售人员联系"),
+    CUSTOMER_ALREADY_EXIST_ORDER_FORM(10128, "客户已存在预订单不允许添加预订单，请与销售人员联系"),
 
     PARTS_BASE_IS_NOT_COMPLETE_INFORMATION(10129, "部品基础信息不完整，如partsNumber,ImportLot,snClassFlag,partsType,sec等"),
 
-    NEW_AND_OLD_PASSWORDS_ARE_THE_SAME(10130,"新旧密码一致");
+    NEW_AND_OLD_PASSWORDS_ARE_THE_SAME(10130, "新旧密码一致"),
+
+    CHARACTER_IS_TOO_LONG(10131, "字符过长"),
+
+    CHARACTER_IS_TOO_SHORT(10132,"字符过短"),
 
     ;
 
@@ -285,4 +289,4 @@ public enum ExceptionCodeEnums {
 
     private String message;
 
-}
+    }

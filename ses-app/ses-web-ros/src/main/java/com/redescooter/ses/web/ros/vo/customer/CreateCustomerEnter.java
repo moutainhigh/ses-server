@@ -1,6 +1,9 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
+import com.redescooter.ses.api.common.annotation.MaximumLength;
+import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -86,9 +89,11 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String countryCode;
 
     @ApiModelProperty(value = "电话")
+    @MaximumLength(value = "10",code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG,message = "字符过长")
     private String telephone;
 
     @ApiModelProperty(value = "邮件")
+    @MaximumLength(value = "50",code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮件非法")
     private String email;
 
     @ApiModelProperty(value = "车辆数量")
@@ -104,12 +109,14 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String certificateNegativeAnnex;
 
     @ApiModelProperty(value = "营业执照编号")
+    @MaximumLength(value = "30",code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG,message = "字符过长")
     private String businessLicenseNum;
 
     @ApiModelProperty(value = "营业执照附件")
     private String businessLicenseAnnex;
 
     @ApiModelProperty(value = "发票编号")
+    @MaximumLength(value = "30",code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG,message = "字符过长")
     private String invoiceNum;
 
     @ApiModelProperty(value = "发票附件")
@@ -119,6 +126,7 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String contractAnnex;
 
     @ApiModelProperty(value = "备注")
+    @MaximumLength(value = "200",code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG,message = "字符过长")
     private String remark;
 
 

@@ -186,9 +186,9 @@ public class InquiryServiceImpl implements InquiryService {
 //        opeCustomerInquiry.setCustomerType(CustomerTypeEnum.PERSONAL.getValue());
 
         opeCustomerInquiry.setCompanyName(null);
-        opeCustomerInquiry.setFirstName(enter.getFirstName());
-        opeCustomerInquiry.setLastName(enter.getLastName());
-        opeCustomerInquiry.setFullName(new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
+        opeCustomerInquiry.setFirstName(SesStringUtils.upperCaseString(enter.getFirstName()));
+        opeCustomerInquiry.setLastName(SesStringUtils.upperCaseString(enter.getLastName()));
+        opeCustomerInquiry.setFullName(new StringBuilder(SesStringUtils.upperCaseString(enter.getFirstName())).append(" ").append(SesStringUtils.upperCaseString(enter.getLastName())).toString());
         opeCustomerInquiry.setScooterQuantity(1);
         opeCustomerInquiry.setContactFirst(null);
         opeCustomerInquiry.setContactLast(null);
@@ -375,7 +375,7 @@ public class InquiryServiceImpl implements InquiryService {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         //已经为潜在可乎 直接返回
-        if (SesStringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.UNPROCESSED.getValue())) {
+        if (SesStringUtils.equals(opeCustomerInquiry.getStatus(), InquiryStatusEnums.PROCESSED.getValue())) {
             return new GeneralResult();
         }
         opeCustomerInquiry.setStatus(InquiryStatusEnums.PROCESSED.getValue());
@@ -501,19 +501,31 @@ public class InquiryServiceImpl implements InquiryService {
         if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
             opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
             opeCustomer.setCustomerLastName(opeCustomerInquiry.getLastName());
-            opeCustomer.setContactFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
+            opeCustomer.setCustomerFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
         }
         opeCustomer.setCertificateType("0");
         opeCustomer.setScooterQuantity(opeCustomerInquiry.getScooterQuantity());
         opeCustomer.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
         opeCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
-        opeCustomer.setContactFirstName(opeCustomerInquiry.getContactFirst());
-        opeCustomer.setContactLastName(opeCustomerInquiry.getContactLast());
-        opeCustomer.setContactFullName(new StringBuilder(opeCustomerInquiry.getContactFirst()).append(" ").append(opeCustomerInquiry.getContactLast()).toString());
+        if (StringUtils.isNotEmpty(opeCustomerInquiry.getContactFirst())) {
+            opeCustomer.setContactFirstName(opeCustomerInquiry.getContactFirst());
+        }
+        if (StringUtils.isNotEmpty(opeCustomerInquiry.getContactLast())) {
+            opeCustomer.setContactLastName(opeCustomerInquiry.getContactLast());
+        }
+        if (!StringUtils.isAllBlank(opeCustomerInquiry.getContactFirst(), opeCustomerInquiry.getContactLast())) {
+            opeCustomer.setContactFullName(new StringBuilder(opeCustomerInquiry.getContactFirst()).append(" ").append(opeCustomerInquiry.getContactLast()).toString());
+        }
+        if (StringUtils.isNotEmpty(opeCustomerInquiry.getTelephone())) {
+            opeCustomer.setTelephone(opeCustomerInquiry.getTelephone());
+        }
+        if (StringUtils.isNotEmpty(opeCustomerInquiry.getRemarks())) {
+            opeCustomer.setMemo(opeCustomerInquiry.getRemarks());
+        }
+        if (StringUtils.isNotEmpty(opeCustomerInquiry.getAddress())) {
+            opeCustomer.setAddress(opeCustomerInquiry.getAddress());
+        }
         opeCustomer.setEmail(opeCustomerInquiry.getEmail());
-        opeCustomer.setTelephone(opeCustomerInquiry.getTelephone());
-        opeCustomer.setMemo(opeCustomerInquiry.getRemarks());
-        opeCustomer.setAddress("");
         opeCustomer.setCreatedBy(enter.getUserId());
         opeCustomer.setCreatedTime(new Date());
         opeCustomer.setUpdatedBy(enter.getUserId());
