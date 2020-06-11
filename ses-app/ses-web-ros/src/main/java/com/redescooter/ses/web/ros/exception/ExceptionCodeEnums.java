@@ -296,6 +296,10 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_QTY_IS_NOT_ILLEGAL(10139,"车辆数量不合法"),
 
+    PHONE_IS_NOT_ILLEGAL(10140,"电话不合法"),
+
+    EMAIL_IS_ILLEGAL(10141,"邮箱不合法"),
+
 
     ;
 

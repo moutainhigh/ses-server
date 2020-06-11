@@ -26,9 +26,9 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: RedE(+xA0J+wEWz4ZZRqskmzzm7X96KWtE+T+Xbhzg4ai/Ep4VGrri/KtE39cbwwJfBGV/swnJvt1t4d51O5MgV44fZ96gxpWCPg5PJgylytMVX98NcJ+3lUEu0rfIXi43GWvfiuEjtDfadtXZ+5mvMeTZsbw7f/Ko0t7RaP+uf/lW1NWbnmW8MToxyPMT2wgGeMi9uzGnxd3XoaPNKvOstmPB/NdiywUxWIIbCGSpCumB1nFk/vuz+w6fFtrLNXiA+VbogJ6hpmyoaDB+WrIv3MojEkBJNO4rDj02e+Zs93tYoiwT3+aB+sQ/NV7YBA6bgp9eJbTzdwbTYM2Yc9lmi5eRprTf3QPMwFCdf+WdTcqRRs=)
-    username: RedE(PUCVDfaGX5+GHC5sLQUkaw==)
-    password: RedE(h4FTPWlTMiyjC3ibuv4QhvreAET9QoNL)
+    url: RedE(5KdTQlJkto9xiRd0GOnIPPOFXjpOhg7b4jAzhyDKacKc5HEMC5cuco8t/kxfNUhazjzFwP7xJ5U+1XJiJg2dDbl7/vQeXArSbeH9m5+2XuIc4keoyAgZxIMsW/lPum+2rgS3P8Pq6lDwbpv9B/67NAdHqq6EHBEpjWhXnNe9KtK8V4lamUN63Pk5HtKpcECN15Flv3Y5q99fmJsLcZlSKMtLVqV5bevqypxb2g6VegWdwMtsTcs5ODrHdZ4TXQk+lX1rYt+9X3JWCahjTF6CHUy7SjniHlWMXtvbCUWhlKLvg51YuZBVP/yI5Abk2ODxy8b53sFb/SIq3u+MFJFVCNwbUN/122dp)
+    username: RedE(KxYC7YmxKsSC7MaMsnGI6w==)
+    password: RedE(fGUHvqNyAxYC32MUsWxiSXrJ+feA9dxR)
 
     druid:
       initial-size: 8

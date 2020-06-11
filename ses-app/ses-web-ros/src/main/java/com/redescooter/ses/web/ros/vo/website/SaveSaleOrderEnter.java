@@ -41,13 +41,12 @@ public class SaveSaleOrderEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "电话")
     @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY,message = "电话为空")
-    @MinimumLength(value = "2",code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT,message = "字符过短")
     private String phone;
 
     @ApiModelProperty(value = "地址")
     @NotNull(code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "地址为空")
-    @MinimumLength(value = "2",code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT,message = "字符过短")
-    @MaximumLength(value = "120",code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG,message = "字符过长")
+    @MinimumLength(value = "2",code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "字符过短")
+    @MaximumLength(value = "120",code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "字符过长")
     private String address;
 
     @ApiModelProperty(value = "产品Id")
@@ -77,6 +76,8 @@ public class SaveSaleOrderEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "银行卡名称")
     @NotNull(code = ValidationExceptionCode.BANKCARD_NAME_IS_EMPTY, message = "银行卡上姓名为空")
+    @MinimumLength(value = "2",code = ValidationExceptionCode.BANKCARDNAME_IS_NOT_ILLEGAL,message = "银行卡上姓名不合法")
+    @MaximumLength(value = "20",code = ValidationExceptionCode.BANKCARDNAME_IS_NOT_ILLEGAL,message = "银行卡上姓名不合法")
     private String bankCardName;
 
     @ApiModelProperty(value = "卡号")

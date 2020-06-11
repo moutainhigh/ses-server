@@ -278,26 +278,31 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
     private void checkEditCustomerFiledSingle(EditCustomerEnter enter) {
         //字段校验
-        if (enter.getCustomerType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
-            //名称校验
+        if (StringUtils.isNotEmpty(enter.getContactFirstName())) {
             if (enter.getContactFirstName().length() < 2 || enter.getContactFirstName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
+        }
+        if (StringUtils.isNotEmpty(enter.getContactLastName())) {
             if (enter.getContactLastName().length() < 2 || enter.getContactLastName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
+        }
+        if (StringUtils.isNotEmpty(enter.getCompanyName())) {
             if (enter.getCompanyName().length() < 2 || enter.getCompanyName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getMessage());
             }
-        } else {
-            //名称校验
+        }
+        //名称校验
+        if (StringUtils.isNotEmpty(enter.getCustomerFirstName())) {
             if (enter.getCustomerFirstName().length() < 2 || enter.getCustomerFirstName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
+        }
+        if (StringUtils.isNotEmpty(enter.getCustomerLastName())) {
             if (enter.getCustomerLastName().length() < 2 || enter.getCustomerLastName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
-            enter.setScooterQuantity(1);
         }
         if (StringUtils.isNotEmpty(enter.getRemark())) {
             if (enter.getRemark().length() < 2 || enter.getRemark().length() > 200) {
@@ -339,28 +344,28 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         DetailsCustomerResult result = new DetailsCustomerResult();
         BeanUtils.copyProperties(opeCustomer, result);
         result.setRemark(opeCustomer.getMemo());
-        if (opeCustomer.getCustomerSource().equals(CustomerSourceEnum.WEBSITE.getValue())){
-          if (opeCustomer.getId().equals(opeCustomer.getUpdatedBy())){
-            result.setUpdatedName(opeCustomer.getCustomerFullName());
-          }else {
+        if (opeCustomer.getCustomerSource().equals(CustomerSourceEnum.WEBSITE.getValue())) {
+            if (opeCustomer.getId().equals(opeCustomer.getUpdatedBy())) {
+                result.setUpdatedName(opeCustomer.getCustomerFullName());
+            } else {
+                QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
+                updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
+                updated.eq(OpeSysUserProfile.COL_DR, 0);
+                result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
+            }
+            result.setCreatedName(opeCustomer.getCustomerFullName());
+            result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
+        } else {
+            QueryWrapper<OpeSysUserProfile> created = new QueryWrapper<>();
+            created.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getCreatedBy());
+            created.eq(OpeSysUserProfile.COL_DR, 0);
+            result.setCreatedName(sysUserProfileMapper.selectOne(created) == null ? null : sysUserProfileMapper.selectOne(created).getFullName());
+            result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
+
             QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
             updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
             updated.eq(OpeSysUserProfile.COL_DR, 0);
             result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
-          }
-          result.setCreatedName(opeCustomer.getCustomerFullName());
-          result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
-        }else{
-          QueryWrapper<OpeSysUserProfile> created = new QueryWrapper<>();
-          created.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getCreatedBy());
-          created.eq(OpeSysUserProfile.COL_DR, 0);
-          result.setCreatedName(sysUserProfileMapper.selectOne(created) == null ? null : sysUserProfileMapper.selectOne(created).getFullName());
-          result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
-
-          QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
-          updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
-          updated.eq(OpeSysUserProfile.COL_DR, 0);
-          result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
         }
 
 
@@ -1098,45 +1103,31 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      */
     private void checkSaveCustomerFiledSingle(CreateCustomerEnter enter) {
-        if (enter.getCustomerType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
-            if (StringUtils.isBlank(enter.getContactFirstName())) {
-                throw new SesWebRosException(ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getMessage());
-            }
-            if (StringUtils.isBlank(enter.getContactLastName())) {
-                throw new SesWebRosException(ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getMessage());
-            }
-            if (StringUtils.isBlank(enter.getCompanyName())) {
-                throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COMPANY_NAME_CANNOT_EMPTY.getMessage());
-            }
-        } else {
-            if (StringUtils.isBlank(enter.getCustomerFirstName())) {
-                throw new SesWebRosException(ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getMessage());
-            }
-            if (StringUtils.isBlank(enter.getCustomerLastName())) {
-                throw new SesWebRosException(ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getMessage());
-            }
-        }
-
-        if (enter.getCustomerType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
-            //名称校验
+        if (StringUtils.isNotEmpty(enter.getContactFirstName())) {
             if (enter.getContactFirstName().length() < 2 || enter.getContactFirstName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
+        }
+        if (StringUtils.isNotEmpty(enter.getContactLastName())) {
             if (enter.getContactLastName().length() < 2 || enter.getContactLastName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
+        }
+        if (StringUtils.isNotEmpty(enter.getCompanyName())) {
             if (enter.getCompanyName().length() < 2 || enter.getCompanyName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getMessage());
             }
-        } else {
-            //名称校验
+        }
+        //名称校验
+        if (StringUtils.isNotEmpty(enter.getCustomerFirstName())) {
             if (enter.getCustomerFirstName().length() < 2 || enter.getCustomerFirstName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
+        }
+        if (StringUtils.isNotEmpty(enter.getCustomerLastName())) {
             if (enter.getCustomerLastName().length() < 2 || enter.getCustomerLastName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
-            enter.setScooterQuantity(1);
         }
         if (StringUtils.isNotEmpty(enter.getRemark())) {
             if (enter.getRemark().length() < 2 || enter.getRemark().length() > 200) {
