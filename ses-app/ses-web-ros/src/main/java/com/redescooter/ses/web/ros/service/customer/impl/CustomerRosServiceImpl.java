@@ -269,7 +269,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         update.setUpdatedBy(enter.getUserId());
         update.setUpdatedTime(new Date());
-        update.setCustomerFullName(new StringBuilder().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerFirstName()).toString());
+        update.setCustomerFullName(new StringBuilder().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
         update.setContactFullName(new StringBuilder().append(enter.getContactFirstName()).append(" ").append(enter.getContactLastName()).toString());
         opeCustomerMapper.updateById(update);
 
