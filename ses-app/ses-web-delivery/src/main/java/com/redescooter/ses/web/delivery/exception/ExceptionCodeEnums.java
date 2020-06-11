@@ -121,6 +121,8 @@ public enum ExceptionCodeEnums {
 
     FILE_TEMPLATE_IS_INVALID(10053, "文件模板不合法，请重新下载文件模板"),
 
+    PASSOWRD_IS_ILLEGAL(10054,"密码不合法"),
+
 
     ;
 
