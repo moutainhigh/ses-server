@@ -125,6 +125,9 @@ public class SupplierRosServiceImpl implements SupplierRosService {
 
     @Override
     public PageResult<SupplierResult> list(SupplierPage page) {
+      if (page.getKeyword()!=null && page.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(page);
+      }
         int count = supplierServiceMapper.listCount(page);
         if (count == 0) {
             return PageResult.createZeroRowResult(page);

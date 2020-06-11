@@ -208,6 +208,9 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public PageResult<PurchasingResult> list(PurchasingListEnter enter) {
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(enter);
+      }
         List<String> statusList = Lists.newArrayList();
         if (StringUtils.equals(ProductionTypeEnums.checkCode(enter.getClassType()), ProductionTypeEnums.TODO.getValue())) {
             for (PurchasingStatusEnums item : PurchasingStatusEnums.values()) {

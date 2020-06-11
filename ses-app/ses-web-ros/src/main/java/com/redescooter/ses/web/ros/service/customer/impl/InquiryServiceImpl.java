@@ -219,6 +219,9 @@ public class InquiryServiceImpl implements InquiryService {
      */
     @Override
     public PageResult<InquiryResult> inquiryList(InquiryListEnter enter) {
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(enter);
+      }
         int count = inquiryServiceMapper.inquiryListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);

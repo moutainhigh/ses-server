@@ -154,7 +154,9 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public PageResult<AllocateOrderResult> list(AllocateOrderEnter enter) {
-
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(enter);
+      }
         List<String> statusList = new ArrayList();
         if (StringUtils.equals(ProductionTypeEnums.TODO.getValue(), enter.getClassType())) {
             for (AllocateOrderStatusEnums item : AllocateOrderStatusEnums.values()) {

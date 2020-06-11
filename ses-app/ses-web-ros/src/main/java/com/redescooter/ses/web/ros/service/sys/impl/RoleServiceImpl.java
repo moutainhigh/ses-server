@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -121,6 +122,9 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public List<DeptRoleListResult> list(RoleListEnter enter) {
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return new ArrayList<>();
+      }
         //查询所有部门
         List<DeptRoleListResult> opeSysDeptList = roleServiceMapper.roleDeptlist(enter);
         if (CollectionUtils.isEmpty(opeSysDeptList)) {

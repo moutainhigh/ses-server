@@ -10,6 +10,7 @@ import com.redescooter.ses.api.common.enums.employee.EmployeeDeptTypeEnums;
 import com.redescooter.ses.api.common.enums.employee.EmployeeStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -101,6 +102,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public List<DeptEmployeeListResult> employeeList(EmployeeListEnter enter) {
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+            return new ArrayList<>();
+      }
         // 拿到所有部门
         List<DeptEmployeeListResult> deptList = employeeServiceMapper.deptList(enter);
         if (CollectionUtils.isEmpty(deptList)) {
