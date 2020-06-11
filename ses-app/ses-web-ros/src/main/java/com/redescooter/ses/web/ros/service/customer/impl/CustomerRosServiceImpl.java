@@ -855,6 +855,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
+
         BaseCustomerResult baseCustomerResult = new BaseCustomerResult();
         BeanUtils.copyProperties(opeCustomer, baseCustomerResult);
         enter.setT(baseCustomerResult);

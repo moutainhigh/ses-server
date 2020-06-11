@@ -94,6 +94,8 @@ public enum ExceptionCodeEnums {
 
     MESSAGE_ABNORMAL_PARAMETER(10041, "消息参数不完整"),
 
+    NEW_AND_OLD_PASSWORDS_ARE_THE_SAME(10042,"新旧密码不能一致"),
+
     ;
 
     private int code;

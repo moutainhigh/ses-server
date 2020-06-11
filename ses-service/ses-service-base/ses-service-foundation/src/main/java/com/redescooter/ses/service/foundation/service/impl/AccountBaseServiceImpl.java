@@ -188,7 +188,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         }
         // 创建邮件任务
         BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
-        baseMailTaskEnter.setName(enter.getT().getCustomerFullName());
         baseMailTaskEnter.setToMail(enter.getT().getEmail());
         baseMailTaskEnter.setToUserId(userId);
         baseMailTaskEnter.setUserRequestId(enter.getRequestId());
@@ -198,11 +197,13 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
             baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getValue());
             baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
+            baseMailTaskEnter.setName(enter.getT().getCustomerFullName());
         }
         if (StringUtils.equals(CustomerTypeEnum.ENTERPRISE.getValue(), enter.getT().getCustomerType())) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
             baseMailTaskEnter.setMailAppId(AppIDEnums.SAAS_WEB.getValue());
             baseMailTaskEnter.setMailSystemId(AppIDEnums.SAAS_WEB.getSystemId());
+            baseMailTaskEnter.setName(enter.getT().getContactFullName());
         }
         mailMultiTaskService.addActivateMobileUserTask(baseMailTaskEnter);
         return result;
@@ -602,7 +603,13 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                     ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
 
-        plaUserPassword.setPassword(DigestUtils.md5Hex(enter.getConfirmPassword() + plaUserPassword.getSalt()));
+        String newPassword = DigestUtils.md5Hex(enter.getConfirmPassword() + plaUserPassword.getSalt());
+        //新旧密码不能一致
+        if (StringUtils.equals(newPassword, plaUserPassword.getPassword())) {
+            throw new FoundationException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
+        }
+
+        plaUserPassword.setPassword(newPassword);
         plaUserPassword.setUpdatedBy(enter.getUserId());
         plaUserPassword.setUpdatedTime(new Date());
         userPasswordMapper.updateById(plaUserPassword);
@@ -972,7 +979,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (plaUser == null) {
             return BooleanResult.builder().success(Boolean.FALSE).build();
         }
-        return BooleanResult.builder().success(plaUser.getActivationTime()==null ? Boolean.FALSE:Boolean.TRUE).build();
+        return BooleanResult.builder().success(plaUser.getActivationTime() == null ? Boolean.FALSE : Boolean.TRUE).build();
     }
 
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {

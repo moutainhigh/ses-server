@@ -86,15 +86,23 @@ public class SesWebRosApplicationTests {
 
     @Test
     public void test() {
-        // 对应配置文件中配置的加密密钥
+//        // 对应配置文件中配置的加密密钥
         System.setProperty("jasypt.encryptor.password", "RedE");
         StringEncryptor stringEncryptor = new DefaultLazyEncryptor(new StandardEnvironment());
-        System.out.println("加密后的登录名： " + stringEncryptor.encrypt("rede"));
-        System.out.println("加密后的密码： " + stringEncryptor.encrypt("5&oouy!s$i5XFkvQ7gToHHG7nCpN9oGJsZEe"));
-        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://172.31.3.48:4269/xxl_job_prod?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true"));
-        System.out.println("解密的登录名： " + stringEncryptor.decrypt("V1yrV6NRTPV7Qiuik4Ngsg=="));
-        System.out.println("解密的密码： " + stringEncryptor.decrypt("h4FTPWlTMiyjC3ibuv4QhvreAET9QoNL"));
-        System.out.println("url： " + stringEncryptor.decrypt("2M1l/PCpkVqJEEnbVQTysqYLoiQHHARchswPpnoDRyXq3Metj7RNPGmvDH1pzgXOrUzNrjppkQf0eBAQkDOkwlBtVIrkkvvM+bwr1fsu31ax7Trr8TAjyaDuD1eS5piFJWwTWlf4ziuKEt+mNZkbOy8bcqnSlVaP11WYtcRxS7+PgeTfDEfrBSiyo7NBmqYUe2XAtqumXe6M8oc9RyhMSaSB+vIn47LTq0/PfSFQ9y2wt/HEGudRZ8WO234DetSt+h6iHtSM1XSf5VaXG/vwaCUUEXMSblQqx2NuoMvgjHMvedQ1YolMBYPTx2xqTKy8GVahohR1FSAQQ58kLkce14i+iLOgnnrHwsyQSwzKWNg="));
+//        System.out.println("加密后的登录名： " + stringEncryptor.encrypt("rede"));
+//        System.out.println("加密后的密码： " + stringEncryptor.encrypt("5&oouy!s$i5XFkvQ7gToHHG7nCpN9oGJsZEe"));
+//        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://172.31.3.48:4269/xxl_job_prod?useUnicode=true&amp;characterEncoding=UTF8&amp;allowMultiQueries=true&amp;rewriteBatchedStatements=true&amp;zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true"));
+
+
+        String url="+xA0J+wEWz4ZZRqskmzzm7X96KWtE+T+Xbhzg4ai/Ep4VGrri/KtE39cbwwJfBGV/swnJvt1t4d51O5MgV44fZ96gxpWCPg5PJgylytMVX98NcJ+3lUEu0rfIXi43GWvfiuEjtDfadtXZ+5mvMeTZsbw7f/Ko0t7RaP+uf/lW1NWbnmW8MToxyPMT2wgGeMi9uzGnxd3XoaPNKvOstmPB/NdiywUxWIIbCGSpCumB1nFk/vuz+w6fFtrLNXiA+VbogJ6hpmyoaDB+WrIv3MojEkBJNO4rDj02e+Zs93tYoiwT3+aB+sQ/NV7YBA6bgp9eJbTzdwbTYM2Yc9lmi5eRprTf3QPMwFCdf+WdTcqRRs=";
+
+        String userName="PUCVDfaGX5+GHC5sLQUkaw==";
+
+        String password="h4FTPWlTMiyjC3ibuv4QhvreAET9QoNL";
+
+        System.out.println("解密的登录名： " + stringEncryptor.decrypt(userName));
+        System.out.println("解密的密码： " + stringEncryptor.decrypt(password));
+        System.out.println("url： " + stringEncryptor.decrypt(url));
     }
 
     @Test
