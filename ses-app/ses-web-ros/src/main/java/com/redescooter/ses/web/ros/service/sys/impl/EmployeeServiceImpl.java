@@ -382,7 +382,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         opeSysUser.setDr(0);
         opeSysUser.setStatus(SysUserStatusEnum.NORMAL.getCode());
         opeSysUser.setAppId(AppIDEnums.SES_ROS.getValue());
-        opeSysUser.setSystemId(AppIDEnums.SES_ROS.getSystemId());
+        opeSysUser.setSystemId(AppIDEnums.SES_ROS.getValue());
         opeSysUser.setDeptId(enter.getDeptId());
         opeSysUser.setLoginName(enter.getEmail());
         opeSysUser.setSalt(String.valueOf(RandomUtils.nextInt(10000, 99999)));

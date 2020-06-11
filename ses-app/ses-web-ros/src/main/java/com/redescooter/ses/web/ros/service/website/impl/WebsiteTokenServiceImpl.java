@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -219,11 +220,11 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                     .dr(0)
                     .deptId(0L)
                     .orgStaffId(0L)
-                    .appId(AppIDEnums.SES_ROS.getAppId())
+                    .appId(AppIDEnums.SES_ROS.getValue())
                     .systemId(AppIDEnums.SES_ROS.getSystemId())
                     .password(DigestUtils.md5Hex(decryptPassword + salt))
                     .salt(String.valueOf(salt))
-                    .status(SysUserStatusEnum.NORMAL.getValue())
+                    .status(SysUserStatusEnum.NORMAL.getCode())
                     .loginName(decryptEamil)
                     .lastLoginToken(null)
                     .lastLoginIp(null)
