@@ -312,6 +312,8 @@ public class StripeServiceImpl implements StripeService {
         if (!org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(),CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue()) ||
                 !org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(),CustomerStatusEnum.TRASH_CUSTOMER.getValue())
         ){
+            opeCustomer.setTelephone(customerInquiry.getTelephone());
+            opeCustomer.setAddress(customerInquiry.getAddress());
             opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
             opeCustomer.setUpdatedTime(new Date());
             opeCustomerService.updateById(opeCustomer);
