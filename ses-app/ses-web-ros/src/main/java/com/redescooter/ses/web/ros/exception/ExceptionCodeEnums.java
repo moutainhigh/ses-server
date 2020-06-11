@@ -282,6 +282,21 @@ public enum ExceptionCodeEnums {
 
     CHARACTER_IS_TOO_SHORT(10132,"字符过短"),
 
+    CONSTANT_NAME_IS_NOT_ILLEGAL(10133,"联系人名字不合法"),
+
+    COMPANY_NAME_IS_NOT_ILLEGAL(10134,"公司名称不合法"),
+
+    CUSTOMER_NAME_IS_NOT_ILLEGAL(10135,"客户名称不合法"),
+
+    REMARK_IS_NOT_ILLEGAL(10136,"备注不合法"),
+
+    INVOICE_NUM_IS_NOT_ILLEGAL(10137,"发票号不合法"),
+
+    BUSSINESS_NUM_IS_NOT_ILLEGAL(10138,"发票编号不合法"),
+
+    SCOOTER_QTY_IS_NOT_ILLEGAL(10139,"车辆数量不合法"),
+
+
     ;
 
 
