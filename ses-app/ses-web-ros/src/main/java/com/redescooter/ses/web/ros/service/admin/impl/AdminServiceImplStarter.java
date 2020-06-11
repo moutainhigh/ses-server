@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -204,7 +205,8 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
             log.info("---------------------ROOT部门不存在保存ROOT 部门--------------------------");
         }
 
-        OpeSysUser sysUserServiceOne = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, Constant.ADMIN_USER_NAME));
+        OpeSysUser sysUserServiceOne = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, Constant.ADMIN_USER_NAME).eq(OpeSysUser::getDef1,
+        SysUserSourceEnum.SYSTEM.getValue()));
         if (sysUserServiceOne == null) {
             //账号信息创建
             saveAdmin();
@@ -334,6 +336,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .createdTime(new Date())
                 .updatedBy(0L)
                 .updatedTime(new Date())
+                .def1(SysUserSourceEnum.SYSTEM.getValue())
                 .build();
     }
 

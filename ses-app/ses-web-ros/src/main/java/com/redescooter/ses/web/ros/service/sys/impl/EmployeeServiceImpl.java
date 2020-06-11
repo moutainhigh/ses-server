@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
@@ -188,6 +189,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         //邮箱去重校验
         QueryWrapper<OpeSysUser> checkSysUserQueryWrapper = new QueryWrapper<>();
         checkSysUserQueryWrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getEmail());
+        checkSysUserQueryWrapper.eq(OpeSysUser.COL_DEF1, SysUserSourceEnum.SYSTEM.getValue());
         OpeSysUser checkMail = opeSysUserService.getOne(checkSysUserQueryWrapper);
 
         // 构建employee 对象
@@ -220,6 +222,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             QueryWrapper<OpeSysUser> opeSysUserQueryWrapper = new QueryWrapper<>();
             opeSysUserQueryWrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getEmail());
             opeSysUserQueryWrapper.eq(OpeSysUser.COL_DR, 0);
+            opeSysUserQueryWrapper.eq(OpeSysUser.COL_DEF1,SysUserSourceEnum.SYSTEM.getValue());
             opeSysUser = opeSysUserService.getOne(opeSysUserQueryWrapper);
             if (opeSysUser == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
@@ -379,7 +382,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         opeSysUser.setDr(0);
         opeSysUser.setStatus(SysUserStatusEnum.NORMAL.getCode());
         opeSysUser.setAppId(AppIDEnums.SES_ROS.getValue());
-        opeSysUser.setSystemId(AppIDEnums.SES_ROS.getSystemId());
+        opeSysUser.setSystemId(AppIDEnums.SES_ROS.getValue());
         opeSysUser.setDeptId(enter.getDeptId());
         opeSysUser.setLoginName(enter.getEmail());
         opeSysUser.setSalt(String.valueOf(RandomUtils.nextInt(10000, 99999)));
