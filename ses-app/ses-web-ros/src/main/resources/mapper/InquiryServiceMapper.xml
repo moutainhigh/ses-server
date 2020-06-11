@@ -34,7 +34,6 @@
             or inquiry.contant_full_name like concat("%",#{keyword},"%")
             or inquiry.first_name like concat("%",#{keyword},"%")
             or inquiry.last_name like concat("%",#{keyword},"%")
-            or inquiry.company_name like concat("%",#{keyword},"%")
             )
         </if>
     </sql>
