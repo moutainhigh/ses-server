@@ -267,6 +267,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotBlank(enter.getRemark())) {
             update.setMemo(enter.getRemark());
         }
+        update.setUpdatedBy(enter.getUserId());
+        update.setUpdatedTime(new Date());
         update.setCustomerFullName(new StringBuilder().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerFirstName()).toString());
         update.setContactFullName(new StringBuilder().append(enter.getContactFirstName()).append(" ").append(enter.getContactLastName()).toString());
         opeCustomerMapper.updateById(update);
@@ -337,16 +339,30 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         DetailsCustomerResult result = new DetailsCustomerResult();
         BeanUtils.copyProperties(opeCustomer, result);
         result.setRemark(opeCustomer.getMemo());
-        QueryWrapper<OpeSysUserProfile> created = new QueryWrapper<>();
-        created.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getCreatedBy());
-        created.eq(OpeSysUserProfile.COL_DR, 0);
-        result.setCreatedName(sysUserProfileMapper.selectOne(created) == null ? null : sysUserProfileMapper.selectOne(created).getFullName());
-        result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
+        if (opeCustomer.getCustomerSource().equals(CustomerSourceEnum.WEBSITE.getValue())){
+          if (opeCustomer.getId().equals(opeCustomer.getUpdatedBy())){
+            result.setUpdatedName(opeCustomer.getCustomerFullName());
+          }else {
+            QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
+            updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
+            updated.eq(OpeSysUserProfile.COL_DR, 0);
+            result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
+          }
+          result.setCreatedName(opeCustomer.getCustomerFullName());
+          result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
+        }else{
+          QueryWrapper<OpeSysUserProfile> created = new QueryWrapper<>();
+          created.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getCreatedBy());
+          created.eq(OpeSysUserProfile.COL_DR, 0);
+          result.setCreatedName(sysUserProfileMapper.selectOne(created) == null ? null : sysUserProfileMapper.selectOne(created).getFullName());
+          result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
 
-        QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
-        updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
-        updated.eq(OpeSysUserProfile.COL_DR, 0);
-        result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
+          QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
+          updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
+          updated.eq(OpeSysUserProfile.COL_DR, 0);
+          result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
+        }
+
 
         result.setRequestId(enter.getRequestId());
         if (opeCustomer.getCity() != null) {
