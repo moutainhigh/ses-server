@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:62181
+    address: zookeeper://localhost:22181
 #  metadata-report:
 #    address:  zookeeper://192.168.2.200:62181
 

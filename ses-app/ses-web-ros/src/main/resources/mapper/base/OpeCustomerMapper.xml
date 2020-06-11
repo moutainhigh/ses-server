@@ -21,9 +21,6 @@
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="picture" jdbcType="VARCHAR" property="picture" />
     <result column="customer_source" jdbcType="VARCHAR" property="customerSource" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="salt" jdbcType="VARCHAR" property="salt" />
-    <result column="last_login_token" jdbcType="VARCHAR" property="lastLoginToken" />
     <result column="customer_type" jdbcType="VARCHAR" property="customerType" />
     <result column="industry_type" jdbcType="VARCHAR" property="industryType" />
     <result column="address" jdbcType="VARCHAR" property="address" />
@@ -61,12 +58,12 @@
     <!--@mbg.generated-->
     id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id, 
     customer_code, customer_first_name, customer_last_name, customer_full_name, company_name, 
-    picture, customer_source, `password`, salt, last_login_token, customer_type, industry_type, 
-    address, place_id, longitude, latitude, contact_first_name, contact_last_name, contact_full_name, 
-    telephone, email, memo, scooter_quantity, assignation_scooter_qty, certificate_type, 
-    certificate_positive_annex, certificate_negative_annex, business_license_num, business_license_annex, 
-    invoice_num, invoice_annex, contract_annex, account_flag, created_by, created_time, 
-    updated_by, updated_time, def1, def2, def3, def5, def6
+    picture, customer_source, customer_type, industry_type, address, place_id, longitude, 
+    latitude, contact_first_name, contact_last_name, contact_full_name, telephone, email, 
+    memo, scooter_quantity, assignation_scooter_qty, certificate_type, certificate_positive_annex, 
+    certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+    invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -150,21 +147,6 @@
       <trim prefix="customer_source = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.customerSource,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="`password` = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.password,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="salt = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.salt,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="last_login_token = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.lastLoginToken,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="customer_type = case" suffix="end,">
@@ -338,13 +320,12 @@
     insert into ope_customer
     (id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id, 
       customer_code, customer_first_name, customer_last_name, customer_full_name, company_name, 
-      picture, customer_source, `password`, salt, last_login_token, customer_type, industry_type, 
-      address, place_id, longitude, latitude, contact_first_name, contact_last_name, 
-      contact_full_name, telephone, email, memo, scooter_quantity, assignation_scooter_qty, 
-      certificate_type, certificate_positive_annex, certificate_negative_annex, business_license_num, 
-      business_license_annex, invoice_num, invoice_annex, contract_annex, account_flag, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-      )
+      picture, customer_source, customer_type, industry_type, address, place_id, longitude, 
+      latitude, contact_first_name, contact_last_name, contact_full_name, telephone, 
+      email, memo, scooter_quantity, assignation_scooter_qty, certificate_type, certificate_positive_annex, 
+      certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+      invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
@@ -353,7 +334,6 @@
         #{item.salesId,jdbcType=BIGINT}, #{item.customerCode,jdbcType=VARCHAR}, #{item.customerFirstName,jdbcType=VARCHAR}, 
         #{item.customerLastName,jdbcType=VARCHAR}, #{item.customerFullName,jdbcType=VARCHAR}, 
         #{item.companyName,jdbcType=VARCHAR}, #{item.picture,jdbcType=VARCHAR}, #{item.customerSource,jdbcType=VARCHAR}, 
-        #{item.password,jdbcType=VARCHAR}, #{item.salt,jdbcType=VARCHAR}, #{item.lastLoginToken,jdbcType=VARCHAR}, 
         #{item.customerType,jdbcType=VARCHAR}, #{item.industryType,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, 
         #{item.placeId,jdbcType=VARCHAR}, #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL}, 
         #{item.contactFirstName,jdbcType=VARCHAR}, #{item.contactLastName,jdbcType=VARCHAR}, 
@@ -374,21 +354,19 @@
     insert into ope_customer
     (id, dr, tenant_id, time_zone, country, country_code, city, distrust, `status`, sales_id, 
       customer_code, customer_first_name, customer_last_name, customer_full_name, company_name, 
-      picture, customer_source, `password`, salt, last_login_token, customer_type, industry_type, 
-      address, place_id, longitude, latitude, contact_first_name, contact_last_name, 
-      contact_full_name, telephone, email, memo, scooter_quantity, assignation_scooter_qty, 
-      certificate_type, certificate_positive_annex, certificate_negative_annex, business_license_num, 
-      business_license_annex, invoice_num, invoice_annex, contract_annex, account_flag, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-      )
+      picture, customer_source, customer_type, industry_type, address, place_id, longitude, 
+      latitude, contact_first_name, contact_last_name, contact_full_name, telephone, 
+      email, memo, scooter_quantity, assignation_scooter_qty, certificate_type, certificate_positive_annex, 
+      certificate_negative_annex, business_license_num, business_license_annex, invoice_num, 
+      invoice_annex, contract_annex, account_flag, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{timeZone,jdbcType=VARCHAR}, 
       #{country,jdbcType=BIGINT}, #{countryCode,jdbcType=VARCHAR}, #{city,jdbcType=BIGINT}, 
       #{distrust,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, #{salesId,jdbcType=BIGINT}, 
       #{customerCode,jdbcType=VARCHAR}, #{customerFirstName,jdbcType=VARCHAR}, #{customerLastName,jdbcType=VARCHAR}, 
       #{customerFullName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, 
-      #{customerSource,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, 
-      #{lastLoginToken,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, #{industryType,jdbcType=VARCHAR}, 
+      #{customerSource,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, #{industryType,jdbcType=VARCHAR}, 
       #{address,jdbcType=VARCHAR}, #{placeId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, 
       #{latitude,jdbcType=DECIMAL}, #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR}, 
       #{contactFullName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
@@ -418,9 +396,6 @@
     company_name = #{companyName,jdbcType=VARCHAR}, 
     picture = #{picture,jdbcType=VARCHAR}, 
     customer_source = #{customerSource,jdbcType=VARCHAR}, 
-    `password` = #{password,jdbcType=VARCHAR}, 
-    salt = #{salt,jdbcType=VARCHAR}, 
-    last_login_token = #{lastLoginToken,jdbcType=VARCHAR}, 
     customer_type = #{customerType,jdbcType=VARCHAR}, 
     industry_type = #{industryType,jdbcType=VARCHAR}, 
     address = #{address,jdbcType=VARCHAR}, 
@@ -508,15 +483,6 @@
       </if>
       <if test="customerSource != null">
         customer_source,
-      </if>
-      <if test="password != null">
-        `password`,
-      </if>
-      <if test="salt != null">
-        salt,
-      </if>
-      <if test="lastLoginToken != null">
-        last_login_token,
       </if>
       <if test="customerType != null">
         customer_type,
@@ -668,15 +634,6 @@
       <if test="customerSource != null">
         #{customerSource,jdbcType=VARCHAR},
       </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="salt != null">
-        #{salt,jdbcType=VARCHAR},
-      </if>
-      <if test="lastLoginToken != null">
-        #{lastLoginToken,jdbcType=VARCHAR},
-      </if>
       <if test="customerType != null">
         #{customerType,jdbcType=VARCHAR},
       </if>
@@ -826,15 +783,6 @@
       </if>
       <if test="customerSource != null">
         customer_source = #{customerSource,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        `password` = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="salt != null">
-        salt = #{salt,jdbcType=VARCHAR},
-      </if>
-      <if test="lastLoginToken != null">
-        last_login_token = #{lastLoginToken,jdbcType=VARCHAR},
       </if>
       <if test="customerType != null">
         customer_type = #{customerType,jdbcType=VARCHAR},
