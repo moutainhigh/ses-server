@@ -665,7 +665,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         if (CollectionUtil.isNotEmpty(partsSave)) {
             partsSave.forEach(p -> {
 
-                OpeParts oneParts = partsService.getOne(new LambdaQueryWrapper<OpeParts>().eq(OpeParts::getPartsDraftId, p.getPartsDraftId()));
+                OpeParts oneParts = partsService.getOne(new LambdaQueryWrapper<OpeParts>().eq(OpeParts::getPartsDraftId, p.getPartsDraftId()).last("limit 1"));
                 if (oneParts == null) {
                     p.setId(idAppService.getId(SequenceName.OPE_PARTS));
                     partsInsert.add(p);
@@ -717,7 +717,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         if (CollectionUtil.isNotEmpty(productSave)) {
 
             for (OpePartsProduct p : productSave) {
-                OpePartsProduct oneProduct = partsProductService.getOne(new LambdaQueryWrapper<OpePartsProduct>().eq(OpePartsProduct::getDr, 0).eq(OpePartsProduct::getDef1, p.getDef1()));
+                OpePartsProduct oneProduct = partsProductService.getOne(new LambdaQueryWrapper<OpePartsProduct>().eq(OpePartsProduct::getDr, 0).eq(OpePartsProduct::getDef1, p.getDef1()).last("limit 1"));
 
                 if (oneProduct == null) {
                     p.setId(idAppService.getId(SequenceName.OPE_PARTS_PRODUCT));
@@ -740,6 +740,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                 QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
                 opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, product.getId());
                 opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_ID, Long.valueOf(product.getDef1()));
+                opePartsProductBQueryWrapper.last("limit 1");
                 OpePartsProductB partsProductB = opePartsProductBService.getOne(opePartsProductBQueryWrapper);
                 //保存子表数据
                 if (partsProductB == null) {

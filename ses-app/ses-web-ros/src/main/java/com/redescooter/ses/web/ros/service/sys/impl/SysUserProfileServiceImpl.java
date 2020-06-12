@@ -35,6 +35,7 @@ public class SysUserProfileServiceImpl implements SysUserProfileService {
 
         QueryWrapper<OpeSysUserProfile> queryWrapper = new QueryWrapper();
         queryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID,enter.getUserId());
+        queryWrapper.last("limit 1");
         OpeSysUserProfile user = opeSysUserProfileService.getOne(queryWrapper);
         if (user==null){
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());

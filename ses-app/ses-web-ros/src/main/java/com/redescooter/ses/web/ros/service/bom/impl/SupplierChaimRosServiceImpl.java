@@ -139,6 +139,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_DR, 0);
         opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_PARTS_ID, enter.getId());
         opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_USER_ID, enter.getUserId());
+        opePriceSheetQueryWrapper.last("limit 1");
         OpePriceSheet queryOpePriceSheet = opePriceSheetService.getOne(opePriceSheetQueryWrapper);
         if (queryOpePriceSheet == null) {
             // 第一次修改直接保存
@@ -178,6 +179,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_PARTS_ID, enter.getId());
         opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_DR, 0);
         opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_USER_ID, enter.getUserId());
+        opePriceSheetQueryWrapper.last("limit 1");
         OpePriceSheet opePriceSheet = opePriceSheetService.getOne(opePriceSheetQueryWrapper);
         if (opePriceSheet == null) {
             return new SccPriceResult();

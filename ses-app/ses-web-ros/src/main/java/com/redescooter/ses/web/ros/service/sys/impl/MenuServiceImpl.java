@@ -143,7 +143,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuTreeResult> roleMenuAuthTree(GeneralEnter enter) {
 
-        OpeSysUser admin = sysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getId, enter.getUserId()).eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue()));
+        OpeSysUser admin = sysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getId, enter.getUserId()).eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
         if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
             return this.buildMenuTree(sysMenuService.list(), null,Constant.MENU_TREE_ROOT_ID,Boolean.TRUE);
         }else{
@@ -174,7 +174,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuTreeResult> roleMenuAuthParallel(GeneralEnter enter) {
 
-        OpeSysUser admin = sysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getId, enter.getUserId()).eq(OpeSysUser::getDef1,SysUserSourceEnum.SYSTEM.getValue()));
+        OpeSysUser admin = sysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getId, enter.getUserId()).eq(OpeSysUser::getDef1,SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
 
         if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
             return this.buildMenuParallel(sysMenuService.list(), null,Boolean.TRUE);

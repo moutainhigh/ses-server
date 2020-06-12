@@ -365,6 +365,7 @@ public class AllocateServiceImpl implements AllocateService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
@@ -444,6 +445,7 @@ public class AllocateServiceImpl implements AllocateService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
@@ -547,6 +549,7 @@ public class AllocateServiceImpl implements AllocateService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());

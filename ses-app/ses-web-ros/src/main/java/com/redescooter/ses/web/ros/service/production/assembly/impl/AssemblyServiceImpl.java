@@ -410,6 +410,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
@@ -456,6 +457,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, enter.getConsigneeId());
+        opeSysUserProfileQueryWrapper.last("limit 1");
         if (opeSysUserProfileService.getOne(opeSysUserProfileQueryWrapper) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -515,6 +517,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
@@ -1140,6 +1143,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ASSEMBLY.getValue());
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
@@ -1436,6 +1440,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
