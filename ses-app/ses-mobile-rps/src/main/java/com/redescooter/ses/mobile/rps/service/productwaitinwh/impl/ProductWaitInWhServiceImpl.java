@@ -183,7 +183,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 allocateAndProductResultList.add(
                         allocateAndProductResult = AllocateAndProductResult.builder()
                                 .id(opeAllocate.getId())
-                                .waitInWHNum(opeAllocate.getCount())
+                                .waitInWHNum(opeAllocate.getPendingStorageTotal())
                                 .waitInWHStr(opeAllocate.getAllocateNum())
                                 .inWHTListTime(new Date())
                                 .sourceType(SourceTypeEnums.ALLOCATE.getValue())//单据类型
@@ -231,32 +231,32 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         if (!org.apache.commons.lang3.StringUtils.equals(opeAllocate.getStatus(), AllocateOrderStatusEnums.ALLOCATE.getValue())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
-        int count = opeAllocateBService.count(new LambdaQueryWrapper<OpeAllocateB>().eq(OpeAllocateB::getAllocateId, enter.getId()));
+        int count = opeAllocateBService.count(new LambdaQueryWrapper<OpeAllocateB>().eq(OpeAllocateB::getAllocateId, enter.getId()).gt(OpeAllocateB::getPendingStorageQty,0));
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
 
         List<ProductWaitInWhItemResult> result = productWaitInWhServiceMapper.allocateDetaiList(enter);
 
-        //查询满足条件的序列号
-        List<OpeStockPurchas> opeStockPurchasList =
-                opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
-                        .in(OpeStockPurchas::getPartId, result.stream().map(ProductWaitInWhItemResult::getProductId).collect(Collectors.toList()))
-                        .eq(OpeStockPurchas::getStatus, StockProductPartStatusEnums.OUT_WH.getValue()));
-        if (CollectionUtils.isEmpty(opeStockPurchasList)) {
-            return PageResult.create(enter, count, result);
-        }
+//        //查询满足条件的序列号
+//        List<OpeStockPurchas> opeStockPurchasList =
+//                opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
+//                        .in(OpeStockPurchas::getPartId, result.stream().map(ProductWaitInWhItemResult::getProductId).collect(Collectors.toList()))
+//                        .eq(OpeStockPurchas::getStatus, StockProductPartStatusEnums.OUT_WH.getValue()));
+//        if (CollectionUtils.isEmpty(opeStockPurchasList)) {
+//            return PageResult.create(enter, count, result);
+//        }
 
-        //封装到反残对象中
-        result.forEach(item -> {
-            List<String> serialList = Lists.newArrayList();
-            opeStockPurchasList.forEach(stock -> {
-                if (item.getProductId().equals(stock.getPartId())) {
-                    serialList.add(stock.getSerialNumber());
-                }
-            });
-            item.setSerialNumList(serialList);
-        });
+//        //封装到反残对象中
+//        result.forEach(item -> {
+//            List<String> serialList = Lists.newArrayList();
+//            opeStockPurchasList.forEach(stock -> {
+//                if (item.getProductId().equals(stock.getPartId())) {
+//                    serialList.add(stock.getSerialNumber());
+//                }
+//            });
+//            item.setSerialNumList(serialList);
+//        });
 
         return PageResult.create(enter, count, result);
     }

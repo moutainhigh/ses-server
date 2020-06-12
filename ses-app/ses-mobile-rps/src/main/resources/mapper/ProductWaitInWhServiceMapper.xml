@@ -19,6 +19,7 @@
         inner join ope_parts part on part.id=allocateB.part_id and part.dr=0
         where allocateB.dr=0
         and allocateB.allocate_id=#{id}
+        and allocateB.pending_storage_qty >0
         limit #{startRow},#{pageSize}
     </select>
     <select id="assemblyDetaiList"

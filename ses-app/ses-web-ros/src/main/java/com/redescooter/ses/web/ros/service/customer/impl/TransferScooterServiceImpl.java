@@ -218,7 +218,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
         //验证前端输入的车辆数量
         if (opeCustomer.getAssignationScooterQty() != null && opeCustomer.getAssignationScooterQty() != 0) {
-            if (opeCustomer.getAssignationScooterQty() < transferScooterListEnterList.size()) {
+            if ((opeCustomer.getScooterQuantity()-opeCustomer.getAssignationScooterQty()) < transferScooterListEnterList.size()) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getMessage());
             }
         }

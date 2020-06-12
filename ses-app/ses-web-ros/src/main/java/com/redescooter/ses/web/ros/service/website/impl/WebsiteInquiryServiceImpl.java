@@ -182,7 +182,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
 
         //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
-        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
+        if (opeSysUser == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail,opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
+                CustomerSourceEnum.WEBSITE.getValue()));
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
@@ -361,7 +366,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     private OpeCustomerInquiry buildOpeCustomerInquiry(SaveSaleOrderEnter enter, ProductResult product, BigDecimal totalPrice, Long id) {
 
         //查询客户个人信息
-        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
+        if (opeSysUser == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail,opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
+                CustomerSourceEnum.WEBSITE.getValue()));
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
