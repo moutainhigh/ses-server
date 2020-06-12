@@ -23,6 +23,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomerAccessories;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
@@ -91,6 +92,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private JedisCluster jedisCluster;
+
+    @Autowired
+    private OpeSysUserService opeSysUserService;
 
     @Value("${Request.privateKey}")
     private String privatekey;
@@ -171,8 +175,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        if (decrypt.length()!=10){
-            throw new SesWebRosException(ExceptionCodeEnums.PHONE_IS_NOT_ILLEGAL.getCode(),ExceptionCodeEnums.PHONE_IS_NOT_ILLEGAL.getMessage());
+        if (decrypt.length() != 10) {
+            throw new SesWebRosException(ExceptionCodeEnums.PHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.PHONE_IS_NOT_ILLEGAL.getMessage());
         }
         enter.setPhone(decrypt);
 
@@ -526,7 +530,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public CustomerInfoResult customerInfo(GeneralEnter enter) {
-        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
+        if (opeSysUser == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail,opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
+                CustomerSourceEnum.WEBSITE.getValue()));
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }

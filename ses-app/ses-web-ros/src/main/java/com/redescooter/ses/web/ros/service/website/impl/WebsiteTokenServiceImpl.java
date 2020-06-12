@@ -112,7 +112,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         //用户校验
         OpeSysUser opeSysUser =
-                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getPassword, enter.getPassword()).eq(OpeSysUser::getDef1,SysUserSourceEnum.WEBSITE.getValue()));
+                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1,SysUserSourceEnum.WEBSITE.getValue()));
         if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -471,9 +471,14 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     @Override
     public GeneralResult editCustomer(WebEditCustomerEnter enter) {
         // 登录的时候  是把这些东西放在缓存里  直接获取
-        OpeCustomer customer = opeCustomerMapper.selectById(enter.getUserId());
-        if (customer == null) {
+        OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
+        if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        OpeCustomer customer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail,opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
+                CustomerSourceEnum.WEBSITE.getValue()));
+        if (customer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         if(StringUtils.isNotEmpty(enter.getAddress())){
             customer.setAddress(enter.getAddress());
