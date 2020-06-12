@@ -13,9 +13,12 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.SupplierServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
 import com.redescooter.ses.web.ros.dm.OpeSupplierTrace;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.bom.SupplierRosService;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierTraceService;
+import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierEditEnter;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierPage;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierResult;
@@ -61,8 +64,17 @@ public class SupplierRosServiceImpl implements SupplierRosService {
 
     @Transactional
     @Override
-    public GeneralResult save(SupplierSaveEnter enter) {
-
+    public GeneralResult save(SupplierSaveEnter supplierSaveEnter) {
+      checkSaveSupplierParameter(supplierSaveEnter);
+      //supplierSaveEnter参数值去空格
+      SupplierSaveEnter enter = SesStringUtils.objStringTrim(supplierSaveEnter);
+      //员工名称首位大写
+      String factoryName = SesStringUtils.upperCaseString(enter.getSupplierName());
+      String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
+      String lastName = SesStringUtils.upperCaseString(enter.getContactFirstName());
+      enter.setSupplierName(factoryName);
+      enter.setContactFirstName(firstName);
+      enter.setContactLastName(lastName);
         //邮箱去空格
         enter.setContactEmail(SesStringUtils.stringTrim(enter.getContactEmail()));
 
@@ -94,8 +106,17 @@ public class SupplierRosServiceImpl implements SupplierRosService {
 
     @Transactional
     @Override
-    public GeneralResult edit(SupplierEditEnter enter) {
-
+    public GeneralResult edit(SupplierEditEnter supplierSaveEnter) {
+      checkSaveSupplierParameter(supplierSaveEnter);
+      //supplierSaveEnter参数值去空格
+      SupplierSaveEnter enter = SesStringUtils.objStringTrim(supplierSaveEnter);
+      //员工名称首位大写
+      String factoryName = SesStringUtils.upperCaseString(enter.getSupplierName());
+      String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
+      String lastName = SesStringUtils.upperCaseString(enter.getContactFirstName());
+      enter.setSupplierName(factoryName);
+      enter.setContactFirstName(firstName);
+      enter.setContactLastName(lastName);
         //邮箱去空格
         enter.setContactEmail(SesStringUtils.stringTrim(enter.getContactEmail()));
 
@@ -125,6 +146,9 @@ public class SupplierRosServiceImpl implements SupplierRosService {
 
     @Override
     public PageResult<SupplierResult> list(SupplierPage page) {
+      if (page.getKeyword()!=null && page.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(page);
+      }
         int count = supplierServiceMapper.listCount(page);
         if (count == 0) {
             return PageResult.createZeroRowResult(page);
@@ -154,4 +178,27 @@ public class SupplierRosServiceImpl implements SupplierRosService {
         supplierTraceService.save(trace);
         return new GeneralResult();
     }
+  private void   checkSaveSupplierParameter(SupplierSaveEnter enter){
+    if (enter.getSupplierName().length() < 2 || enter.getSupplierName().length() > 40){
+      throw new SesWebRosException(ExceptionCodeEnums.SUPPLIER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SUPPLIER_NAME_IS_NOT_ILLEGAL.getMessage());
+    }
+    if (enter.getSupplierAddress().length() < 2 || enter.getSupplierAddress().length() > 40){
+      throw new SesWebRosException(ExceptionCodeEnums.SUPPLIER_ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SUPPLIER_ADDRESS_IS_NOT_ILLEGAL.getMessage());
+    }
+    if (enter.getContactFullName().length() < 2 || enter.getContactFullName().length() > 20){
+      throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
+    }
+    if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 30 || !enter.getContactEmail().contains("@")){
+      throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
+    }
+    if (enter.getContactPhone().length() < 2 || enter.getContactPhone().length() > 20){
+      throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
+    }
+    if (enter.getSupplierTag().length() < 2 || enter.getSupplierTag().length() > 20){
+      throw new SesWebRosException(ExceptionCodeEnums.SUPPLIER_TAG_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SUPPLIER_TAG_IS_NOT_ILLEGAL.getMessage());
+    }
+    if (enter.getBusinessNumber().length() < 2 || enter.getBusinessNumber().length() > 20){
+      throw new SesWebRosException(ExceptionCodeEnums.ILLEGAL_BUSINESS_LICENSE_NUMBER.getCode(), ExceptionCodeEnums.ILLEGAL_BUSINESS_LICENSE_NUMBER.getMessage());
+    }
+  }
 }

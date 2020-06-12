@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -25,6 +26,7 @@ import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
@@ -73,8 +75,15 @@ public class RoleServiceImpl implements RoleService {
     private CityBaseService ctiyBaseService;
 
     @Override
-    public GeneralResult save(RoleEnter enter) {
-        //保存岗位角色
+    public GeneralResult save(RoleEnter roleEnter) {
+      if (roleEnter.getRoleName().length()<2||roleEnter.getRoleName().length()>20){
+        throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
+      }
+      //employeeListEnter参数值去空格
+      RoleEnter enter = SesStringUtils.objStringTrim(roleEnter);
+      String roleName = SesStringUtils.upperCaseString(enter.getRoleName());
+      enter.setRoleName(roleName);
+      //保存岗位角色
         OpeSysRole role = this.builderRole(null, enter);
         sysRoleService.save(role);
 
@@ -85,7 +94,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public GeneralResult edit(RoleEnter enter) {
+    public GeneralResult edit(RoleEnter roleEnter) {
+      if (roleEnter.getRoleName().length()<2||roleEnter.getRoleName().length()>20){
+        throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
+      }
+      //employeeListEnter参数值去空格
+      RoleEnter enter = SesStringUtils.objStringTrim(roleEnter);
+      String roleName = SesStringUtils.upperCaseString(enter.getRoleName());
+      enter.setRoleName(roleName);
         OpeSysRole role = this.builderRole(enter.getRoleId(), enter);
         sysRoleService.updateById(role);
         this.updateRoleAouth(enter);
@@ -121,6 +137,9 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public List<DeptRoleListResult> list(RoleListEnter enter) {
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return new ArrayList<>();
+      }
         //查询所有部门
         List<DeptRoleListResult> opeSysDeptList = roleServiceMapper.roleDeptlist(enter);
         if (CollectionUtils.isEmpty(opeSysDeptList)) {
