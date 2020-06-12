@@ -277,12 +277,10 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             checkString(baseSendMailEnter.getMail(),2,50);
         }
         //先判断邮箱是否存在、
-        QueryWrapper<OpeCustomer> qw = new QueryWrapper<>();
-        qw.eq("email", baseSendMailEnter.getMail());
-        qw.eq("dr", 0);
-        qw.last("limit 1");
-        OpeCustomer customer = opeCustomerMapper.selectOne(qw);
-        if (null == customer) {
+        QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
+        OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).eq(OpeSysUser::getLoginName,
+                baseSendMailEnter.getMail()));
+        if (null == opeSysUser) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
@@ -292,7 +290,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         enter.setAppId(AppIDEnums.SES_ROS.getValue());
         enter.setEmail(decryptMail);
         enter.setRequestId(baseSendMailEnter.getRequestId());
-        enter.setUserId(customer.getId());
+        enter.setUserId(opeSysUser.getId());
         mailMultiTaskService.addMultiMailTask(enter);
         return new GeneralResult(baseSendMailEnter.getRequestId());
     }
