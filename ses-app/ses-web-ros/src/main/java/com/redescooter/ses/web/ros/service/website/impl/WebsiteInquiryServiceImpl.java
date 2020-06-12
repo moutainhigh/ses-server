@@ -176,7 +176,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (decrypt.length() != 10) {
-            throw new SesWebRosException(ExceptionCodeEnums.PHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.PHONE_IS_NOT_ILLEGAL.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
         }
         enter.setPhone(decrypt);
 
