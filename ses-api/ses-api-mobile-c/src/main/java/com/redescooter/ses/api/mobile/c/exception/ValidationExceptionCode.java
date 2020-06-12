@@ -1,5 +1,7 @@
 package com.redescooter.ses.api.mobile.c.exception;
 
+import java.util.Date;
+
 /**
  * @description: ValidationExceptionCode
  * @author: Darren
@@ -28,4 +30,6 @@ public interface ValidationExceptionCode {
 
     // 距离为空
     int MILEAGE_IS_EMPTY = 10031;
+    //数据非法
+    int DATA_IS_ILLEGAL=10032;
 }

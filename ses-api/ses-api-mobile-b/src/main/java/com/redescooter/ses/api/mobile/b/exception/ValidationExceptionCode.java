@@ -28,4 +28,7 @@ public interface ValidationExceptionCode {
 
     // 距离为空
     int MILEAGE_IS_EMPTY = 10031;
+
+    //数据非法
+    int DATA_IS_ILLEGLE=10032;
 }

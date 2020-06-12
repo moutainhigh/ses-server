@@ -1,5 +1,7 @@
 package com.redescooter.ses.api.common.annotation;
 
+import com.redescooter.ses.api.common.constant.RegexpConstant;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -10,8 +12,8 @@ import java.lang.annotation.Target;
 @Target({java.lang.annotation.ElementType.TYPE, java.lang.annotation.ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Regexp {
-
-    String value() default "";
+    // 默认不能输入非法字符
+    String value() default RegexpConstant.specialCharacters;
 
     int code() default 1;
 

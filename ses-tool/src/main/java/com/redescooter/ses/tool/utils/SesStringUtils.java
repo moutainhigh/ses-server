@@ -246,7 +246,7 @@ public class SesStringUtils extends StringUtils {
      * @param source
      * @return
      */
-    public Boolean checkString(String source, String regularExpression) {
+    public static Boolean checkString(String source, String regularExpression) {
         return source.matches(regularExpression);
     }
 }

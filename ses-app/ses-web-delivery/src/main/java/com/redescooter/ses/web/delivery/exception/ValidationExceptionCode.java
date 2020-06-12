@@ -80,4 +80,6 @@ public interface ValidationExceptionCode {
     int JSON_TIME = 10055;
     // 司机Id 为空
     int DRIVER_ID_IS_EMPTY = 10056;
+    //数据非法
+    int DATE_IS_ILLEGAL=10057;
 }
