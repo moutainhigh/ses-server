@@ -295,7 +295,8 @@ public class InquiryServiceImpl implements InquiryService {
     public GeneralResult depositPaymentEmail(IdEnter enter) {
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(new LambdaQueryWrapper<OpeCustomerInquiry>()
                 .eq(OpeCustomerInquiry::getId, enter.getId())
-                .eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue()));
+                .eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue())
+                .last("limit 1"));
         //询价单校验
         if (opeCustomerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
@@ -334,7 +335,8 @@ public class InquiryServiceImpl implements InquiryService {
     public GeneralResult lastParagraphEmail(IdEnter enter) {
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(new LambdaQueryWrapper<OpeCustomerInquiry>()
                 .eq(OpeCustomerInquiry::getId, enter.getId())
-                .eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue()));
+                .eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue())
+                .last("limit 1"));
         //询价单校验
         if (opeCustomerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
@@ -376,6 +378,7 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_DR, 0);
         opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_ID, enter.getId());
         opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_SOURCE, InquirySourceEnums.INQUIRY.getValue());
+        opeCustomerInquiryQueryWrapper.last("limit 1");
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(opeCustomerInquiryQueryWrapper);
         if (opeCustomerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
@@ -407,6 +410,7 @@ public class InquiryServiceImpl implements InquiryService {
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
         opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_DR, 0);
         opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_ID, enter.getId());
+        opeCustomerInquiryQueryWrapper.last("limit 1");
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(opeCustomerInquiryQueryWrapper);
         if (opeCustomerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());

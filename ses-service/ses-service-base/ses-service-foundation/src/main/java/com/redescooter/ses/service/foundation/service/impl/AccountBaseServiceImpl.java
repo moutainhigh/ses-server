@@ -305,6 +305,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             plaUserQueryWrapper.eq(PlaUser.COL_DR, 0);
             plaUserQueryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getT().getEmail());
             plaUserQueryWrapper.in(PlaUser.COL_USER_TYPE, customerTypeList());
+            plaUserQueryWrapper.last("limit 1");
             PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
             plaUserList.add(plaUser);
         }

@@ -112,7 +112,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         //用户校验
         OpeSysUser opeSysUser =
-                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1,SysUserSourceEnum.WEBSITE.getValue()));
+                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getPassword, enter.getPassword()).eq(OpeSysUser::getDef1,SysUserSourceEnum.WEBSITE.getValue()).last("limit 1"));
         if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -186,6 +186,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, decryptEamil);
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, CustomerSourceEnum.WEBSITE.getValue());
+        opeCustomerQueryWrapper.last("limit 1");
         OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
         if (opeCustomer != null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
@@ -279,7 +280,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         //先判断邮箱是否存在、
         QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
         OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).eq(OpeSysUser::getLoginName,
-                baseSendMailEnter.getMail()));
+                baseSendMailEnter.getMail()).last("limit 1"));
         if (null == opeSysUser) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
