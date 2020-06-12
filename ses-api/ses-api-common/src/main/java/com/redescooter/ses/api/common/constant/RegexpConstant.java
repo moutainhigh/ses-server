@@ -28,5 +28,16 @@ public interface RegexpConstant {
     //空格 首尾空白字符的正则表达式
      String space="^\\s*|\\s*$";
 
+     //名称校验 英文姓名由字母和空格组成
+     //不校验首字母大写
+     //比如：Jack、Jack Chan、Donald Trump
+    // 校验首字母 大写 /^[A-Z][a-z]*(\s[A-Z][a-z]*)*$/
+     String name="/^[A-Za-z]*(\\s[A-Za-z]*)*$/";
+
+     //限制两位数字 ^\d{n}$ 两位
+     String twoNumber ="^\\d{2}$";
+
+     String number="^[0-9]*$";
+
     //表达式 原帖地址：https://blog.csdn.net/gdhck123/article/details/86703978
 }

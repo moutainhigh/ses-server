@@ -123,6 +123,8 @@ public enum ExceptionCodeEnums {
 
     PASSOWRD_IS_ILLEGAL(10054,"密码不合法"),
 
+    EMAIL_IS_ILLEGAL(10055,"邮件非法");
+
 
     ;
 
