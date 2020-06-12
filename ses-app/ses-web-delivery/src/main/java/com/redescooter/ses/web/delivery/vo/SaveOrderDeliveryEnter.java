@@ -74,6 +74,7 @@ public class SaveOrderDeliveryEnter extends GeneralEnter {
     private String houseInfo;
 
     @ApiModelProperty(value = "包裹数量")
+    @Regexp(value=RegexpConstant.positiveNumber,code = ValidationExceptionCode.DATE_IS_ILLEGAL,message = "数据非法")
     private Integer parcelQuantity = 1;
 
     @ApiModelProperty(value = "商品清单")

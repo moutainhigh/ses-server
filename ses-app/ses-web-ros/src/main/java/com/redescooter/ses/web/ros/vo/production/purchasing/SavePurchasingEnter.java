@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.production.purchasing;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.annotation.MaximumLength;
+import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -64,6 +66,7 @@ public class SavePurchasingEnter extends GeneralEnter {
     private Integer days;
 
     @ApiModelProperty(value = "备注")
+    @MaximumLength(value = "200",code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG,message = "字符过长")
     private String remark;
 
     @ApiModelProperty(value = "付款周期，格式：estimatedPaymentDate：2020-3-2 00：00：00，paymentRatio:20.2，price:20.1,remark:123")
