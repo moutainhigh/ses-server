@@ -334,10 +334,10 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         if (CollectionUtils.isEmpty(partsProductList)) {
             return new ArrayList<>();
         }
-        List<Long> productIds = Lists.newArrayList();
-        partsProductList.forEach(item -> {
-            productIds.add(item.getId());
-        });
+        List<Long> productIds = partsProductList.stream().map(OpePartsProduct::getId).collect(Collectors.toList());
+//        partsProductList.forEach(item -> {
+//            productIds.add(item.getId());
+//        });
 
         //查询bom 规则
         QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
@@ -347,21 +347,23 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
             return new ArrayList<>();
         }
         //过滤出map 产品结构
-        Set<Long> partIds = Sets.newHashSet();
-        partsProductBList.forEach(item -> {
-            if (!productPartMap.containsKey(item.getPartsProductId())) {
-                productPartMap.put(item.getPartsProductId(), Lists.newArrayList(item));
-            } else {
-                List<OpePartsProductB> opePartsProductBList = productPartMap.get(item.getPartsProductId());
-                opePartsProductBList.add(item);
-                productPartMap.put(item.getPartsProductId(), opePartsProductBList);
-            }
-            partIds.add(item.getPartsId());
-        });
+        Set<Long> partIds = partsProductBList.stream().map(OpePartsProductB::getPartsId).collect(Collectors.toSet());
+        productPartMap = partsProductBList.stream().collect(Collectors.groupingBy(OpePartsProductB::getPartsProductId));
+//        partsProductBList.forEach(item -> {
+//            if (!productPartMap.containsKey(item.getPartsProductId())) {
+//                productPartMap.put(item.getPartsProductId(), Lists.newArrayList(item));
+//            } else {
+//                List<OpePartsProductB> opePartsProductBList = productPartMap.get(item.getPartsProductId());
+//                opePartsProductBList.add(item);
+//                productPartMap.put(item.getPartsProductId(), opePartsProductBList);
+//            }
+//            partIds.add(item.getPartsId());
+//        });
 
         //查询采购仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());

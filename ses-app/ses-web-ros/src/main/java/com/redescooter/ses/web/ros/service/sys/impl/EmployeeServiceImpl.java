@@ -190,6 +190,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         QueryWrapper<OpeSysUser> checkSysUserQueryWrapper = new QueryWrapper<>();
         checkSysUserQueryWrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getEmail());
         checkSysUserQueryWrapper.eq(OpeSysUser.COL_DEF1, SysUserSourceEnum.SYSTEM.getValue());
+        checkSysUserQueryWrapper.last("limit 1");
         OpeSysUser checkMail = opeSysUserService.getOne(checkSysUserQueryWrapper);
 
         // 构建employee 对象
@@ -223,6 +224,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             opeSysUserQueryWrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getEmail());
             opeSysUserQueryWrapper.eq(OpeSysUser.COL_DR, 0);
             opeSysUserQueryWrapper.eq(OpeSysUser.COL_DEF1,SysUserSourceEnum.SYSTEM.getValue());
+            opeSysUserQueryWrapper.last("limit 1");
             opeSysUser = opeSysUserService.getOne(opeSysUserQueryWrapper);
             if (opeSysUser == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
@@ -234,6 +236,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
             opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, opeSysUser.getId());
             opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+            opeSysUserProfileQueryWrapper.last("limit 1");
             OpeSysUserProfile sysUserProfile = opeSysUserProfileService.getOne(opeSysUserProfileQueryWrapper);
             // 个人信息更新
             opeSysUserProfile.setId(sysUserProfile.getId());
@@ -241,6 +244,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             // 用户角色关系没改变不更新
             QueryWrapper<OpeSysUserRole> opeSysUserRoleQueryWrapper = new QueryWrapper<>();
             opeSysUserRoleQueryWrapper.eq(OpeSysUserRole.COL_USER_ID, opeSysUser.getId());
+            opeSysUserRoleQueryWrapper.last("limit 1");
             opeSysUserRole = opeSysUserRoleService.getOne(opeSysUserRoleQueryWrapper);
             if (opeSysUserRole == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_BING_POSITION.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_BING_POSITION.getMessage());
