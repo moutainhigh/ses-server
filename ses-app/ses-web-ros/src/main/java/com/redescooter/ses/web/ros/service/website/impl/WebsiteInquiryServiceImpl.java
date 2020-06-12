@@ -23,6 +23,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomerAccessories;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
@@ -40,7 +41,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,6 +92,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private JedisCluster jedisCluster;
+
+    @Autowired
+    private OpeSysUserService opeSysUserService;
 
     @Value("${Request.privateKey}")
     private String privatekey;
@@ -165,6 +168,19 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //入参对象去空格
         SesStringUtils.objStringTrim(enter);
 
+        //电话解密
+        String decrypt = null;
+        try {
+            decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        if (decrypt.length() != 10) {
+            throw new SesWebRosException(ExceptionCodeEnums.PHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.PHONE_IS_NOT_ILLEGAL.getMessage());
+        }
+        enter.setPhone(decrypt);
+
+
         //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
         OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
         if (opeCustomer == null) {
@@ -173,13 +189,11 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getMessage());
         }
-
         //订单校验客户订单校验 一个客户只允许存在一个订单
 //        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, opeCustomer.getEmail()));
 //        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
 //            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
 //        }
-
         //后备箱 校验
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
@@ -199,15 +213,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
-        }
-        if (enter.getPhone() != null) {
-            String decrypt = null;
-            try {
-                decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
-            } catch (Exception e) {
-                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-            }
-            enter.setPhone(decrypt);
         }
 
         //电池要求过滤
@@ -525,7 +530,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public CustomerInfoResult customerInfo(GeneralEnter enter) {
-        OpeCustomer opeCustomer = opeCustomerService.getById(enter.getUserId());
+        OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
+        if (opeSysUser == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail,opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
+                CustomerSourceEnum.WEBSITE.getValue()));
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }

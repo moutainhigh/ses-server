@@ -170,4 +170,8 @@ public interface ValidationExceptionCode {
     int REGION_IS_EMPTY = 10104;
     //负责人为空
     int PRINCIPAL_ID_IS_EXIST = 10105;
+    //持卡人姓名不合法
+    int BANKCARDNAME_IS_NOT_ILLEGAL=10106;
+    //名字非法
+    int NAME_IS_ILLEGAL=10107;
 }

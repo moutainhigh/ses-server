@@ -167,17 +167,22 @@ public class RtDriverServiceImpl implements RtDriverService {
     public GeneralResult save(SaveDriverEnter enter) {
 
         //邮箱去空格
-        if (StringUtils.isNotEmpty(enter.getEmail())){
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
             enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
         }
         //密码去空格
-        if (StringUtils.isNotEmpty(enter.getPassword())){
+        if (StringUtils.isNotEmpty(enter.getPassword())) {
             enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
+            if (enter.getPassword().length() < 2 || enter.getPassword().length() > 20) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.PASSOWRD_IS_ILLEGAL.getCode(),ExceptionCodeEnums.PASSOWRD_IS_ILLEGAL.getMessage());
+            }
         }
-        if (StringUtils.isNotEmpty(enter.getPasswordAgain())){
+        if (StringUtils.isNotEmpty(enter.getPasswordAgain())) {
             enter.setPasswordAgain(SesStringUtils.stringTrim(enter.getPasswordAgain()));
+            if (enter.getPasswordAgain().length() < 2 || enter.getPasswordAgain().length() > 20) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.PASSOWRD_IS_ILLEGAL.getCode(),ExceptionCodeEnums.PASSOWRD_IS_ILLEGAL.getMessage());
+            }
         }
-
 
         Boolean aBoolean = Boolean.FALSE;
         //驾照等级
@@ -522,7 +527,7 @@ public class RtDriverServiceImpl implements RtDriverService {
 
         List<ListScooterResult> resultList = new ArrayList<>();
         scooterService.scooterInfor(scooterIdList).forEach(scooter -> {
-            Optional.ofNullable(scooter).ifPresent(it->{
+            Optional.ofNullable(scooter).ifPresent(it -> {
                 ListScooterResult scooterResult = ListScooterResult.builder()
                         .id(scooter.getId())
                         .battery(scooter.getBattery())

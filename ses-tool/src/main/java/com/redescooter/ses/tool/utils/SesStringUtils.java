@@ -1,5 +1,7 @@
 package com.redescooter.ses.tool.utils;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,7 +12,29 @@ import java.util.regex.Pattern;
 
 public class SesStringUtils extends StringUtils {
 
+    //
     private static final String stringFullName="class java.lang.String";
+
+    //特殊字符 正则表达式
+    private static final String specialCharacters="[~!@#$%^&*()=+[\\]{}''\";:/?.,><`|！·￥…—（）\\-、；：。，》《]";
+
+    //邮箱地址
+    private static final String email="^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
+
+    //用户名校验
+    //帐号是否合法(字母开头，允许5-16字节，允许字母数字下划线)
+    private static final String loginName="^[a-zA-Z][a-zA-Z0-9_]{4,15}$";
+
+    //密码(以字母开头，长度在6~18之间，只能包含字母、数字和下划线)
+    private static final String password="^[a-zA-Z][a-zA-Z0-9_]{4,15}$";
+
+    //强密码(必须包含大小写字母和数字的组合，不能使用特殊字符，长度在8-10之间)
+    private static final String passwordStrength="^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,10}$";
+
+    //空格 首尾空白字符的正则表达式
+    private static final String space="^\\s*|\\s*$";
+
+    //表达式 原帖地址：https://blog.csdn.net/gdhck123/article/details/86703978
 
 
     public static String lowerFirst(String str) {
@@ -215,5 +239,14 @@ public class SesStringUtils extends StringUtils {
             ch[0] = (char) (ch[0] - 32);
         }
         return new String(ch);
+    }
+
+    /**
+     * 根据正则表达式，校验字符串是否符合规则
+     * @param source
+     * @return
+     */
+    public Boolean checkString(String source, String regularExpression) {
+        return source.matches(regularExpression);
     }
 }

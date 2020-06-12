@@ -1,7 +1,11 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
+import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -21,9 +25,11 @@ import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
@@ -72,6 +78,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     @Autowired
     private OpeCustomerInquiryMapper opeCustomerInquiryMapper;
 
+    @Autowired
+    private OpeSysUserService opeSysUserService;
+
     @Value("${Request.privateKey}")
     private String privatekey;
 
@@ -102,32 +111,30 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             enter.setLoginName(email);
         }
         //用户校验
-        QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
-        opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getLoginName());
-        opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, CustomerSourceEnum.WEBSITE.getValue());
-        OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
-        if (opeCustomer == null) {
+        OpeSysUser opeSysUser =
+                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1,SysUserSourceEnum.WEBSITE.getValue()));
+        if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
         //密码校验
-        String password = DigestUtils.md5Hex(enter.getPassword() + opeCustomer.getSalt());
-        if (!StringUtils.equals(password, opeCustomer.getPassword())) {
+        String password = DigestUtils.md5Hex(enter.getPassword() + opeSysUser.getSalt());
+        if (!StringUtils.equals(password, opeSysUser.getPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
 
         //清楚上次的token
-        if (StringUtils.isNotEmpty(opeCustomer.getLastLoginToken())) {
-            jedisCluster.del(opeCustomer.getLastLoginToken());
+        if (StringUtils.isNotEmpty(opeSysUser.getLastLoginToken())) {
+            jedisCluster.del(opeSysUser.getLastLoginToken());
         }
         //设置token
-        UserToken userToken = setToken(enter, opeCustomer);
+        UserToken userToken = setToken(enter, opeSysUser);
 
         //登录信息更新
-        opeCustomer.setLastLoginToken(userToken.getToken());
-        opeCustomer.setUpdatedBy(enter.getUserId());
-        opeCustomer.setUpdatedTime(new Date());
-        opeCustomerService.updateById(opeCustomer);
+        opeSysUser.setLastLoginToken(userToken.getToken());
+        opeSysUser.setUpdatedBy(enter.getUserId());
+        opeSysUser.setUpdatedTime(new Date());
+        opeSysUserService.updateById(opeSysUser);
 
         TokenResult result = new TokenResult();
         result.setToken(userToken.getToken());
@@ -198,30 +205,38 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         checkString(enter.getEmail(),2,50);
 
         int salt = RandomUtils.nextInt(10000, 99999);
-        String password = DigestUtils.md5Hex(decryptPassword + salt);
-        OpeCustomer saveCustomer = new OpeCustomer();
-        saveCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
-        saveCustomer.setDr(0);
-        saveCustomer.setTenantId(enter.getTenantId());
-        saveCustomer.setTimeZone(enter.getTimeZone());
 
-        saveCustomer.setCustomerFirstName(SesStringUtils.upperCaseString(enter.getFirstName()));
-        saveCustomer.setCustomerLastName(SesStringUtils.upperCaseString(enter.getLastName()));
-        saveCustomer.setCustomerFullName(new StringBuilder(SesStringUtils.upperCaseString(enter.getFirstName())).append(" ").append(SesStringUtils.upperCaseString(enter.getLastName())).toString());
-        saveCustomer.setEmail(decryptEamil);
-        saveCustomer.setPassword(password);
-        saveCustomer.setSalt(String.valueOf(salt));
-        saveCustomer.setScooterQuantity(1);
-        saveCustomer.setAssignationScooterQty(0);
-        saveCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
-        saveCustomer.setStatus(CustomerStatusEnum.PREDESTINATE_CUSTOMER.getValue());
-        saveCustomer.setUpdatedBy(saveCustomer.getId());
-        saveCustomer.setUpdatedTime(new Date());
-        saveCustomer.setCreatedBy(saveCustomer.getId());
-        saveCustomer.setCreatedTime(new Date());
-        saveCustomer.setAccountFlag("0");
-        opeCustomerService.save(saveCustomer);
+        opeCustomerService.save(buildCustomerSingle(enter, decryptEamil));
+
+        //创建账户
+        OpeSysUser opeSysUser = buildOpeSysUser(decryptEamil, decryptPassword, salt);
+        opeSysUserService.save(opeSysUser);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    private OpeSysUser buildOpeSysUser(String decryptEamil, String decryptPassword, int salt) {
+        return OpeSysUser.builder()
+                    .id(idAppService.getId(SequenceName.OPE_SYS_USER))
+                    .dr(0)
+                    .deptId(0L)
+                    .orgStaffId(0L)
+                    .appId(AppIDEnums.SES_ROS.getValue())
+                    .systemId(AppIDEnums.SES_ROS.getSystemId())
+                    .password(DigestUtils.md5Hex(decryptPassword + salt))
+                    .salt(String.valueOf(salt))
+                    .status(SysUserStatusEnum.NORMAL.getCode())
+                    .loginName(decryptEamil)
+                    .lastLoginToken(null)
+                    .lastLoginIp(null)
+                    .lastLoginTime(null)
+                    .activationTime(new Date())
+                    .expireDate(null)
+                    .createdBy(0L)
+                    .createdTime(new Date())
+                    .updatedBy(0L)
+                    .updatedTime(new Date())
+                    .def1(SysUserSourceEnum.WEBSITE.getValue())
+                    .build();
     }
 
     /**
@@ -287,14 +302,14 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * 设置登录的token
      *
      * @param enter
-     * @param opeCustomer
+     * @param opeSysUser
      * @return
      */
-    private UserToken setToken(LoginEnter enter, OpeCustomer opeCustomer) {
+    private UserToken setToken(LoginEnter enter, OpeSysUser opeSysUser) {
         String token = UUID.randomUUID().toString().replaceAll("-", "");
         UserToken userToken = new UserToken();
         userToken.setToken(token);
-        userToken.setUserId(opeCustomer.getId());
+        userToken.setUserId(opeSysUser.getId());
         userToken.setTenantId(new Long("0"));
         userToken.setSystemId(enter.getSystemId());
         userToken.setAppId(enter.getAppId());
@@ -376,21 +391,22 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (map == null) {
             throw new SesWebRosException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(), ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
         }
-        OpeCustomer customer = opeCustomerMapper.selectById(map.get("userId").toString());
-        if (customer == null) {
+
+        OpeSysUser opeSysUser = opeSysUserService.getById(map.get("userId"));
+        if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
         //新旧密码一致 不可以
-        if (StringUtils.equals(DigestUtils.md5Hex(enter.getNewPassword() + customer.getSalt()), customer.getPassword())) {
+        if (StringUtils.equals(DigestUtils.md5Hex(enter.getNewPassword() + opeSysUser.getSalt()), opeSysUser.getPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
         }
 
         int salt = RandomUtils.nextInt(10000, 99999);
         String newPassword = DigestUtils.md5Hex(enter.getNewPassword() + salt);
-        customer.setPassword(newPassword);
-        customer.setSalt(String.valueOf(salt));
-        opeCustomerMapper.updateById(customer);
+        opeSysUser.setPassword(newPassword);
+        opeSysUser.setSalt(String.valueOf(salt));
+        opeSysUserService.updateById(opeSysUser);
 
         //清楚缓存（一封邮件只允许设置一次密码）
         jedisCluster.del(enter.getRequestId());
@@ -431,21 +447,23 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
         Map<String, String> stringStringMap = jedisCluster.hgetAll(enter.getToken());
-        OpeCustomer customer = opeCustomerMapper.selectById(stringStringMap.get("userId"));
-        if (customer == null) {
+
+        OpeSysUser opeSysUser = opeSysUserService.getById(stringStringMap.get("userId"));
+        if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (Strings.isNullOrEmpty(enter.getOldPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(), ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
         }
-        if (!DigestUtils.md5Hex(enter.getOldPassword() + customer.getSalt()).equals(customer.getPassword())) {
+        if (!DigestUtils.md5Hex(enter.getOldPassword() + opeSysUser.getSalt()).equals(opeSysUser.getPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
         int salt = RandomUtils.nextInt(10000, 99999);
         String newPassword = DigestUtils.md5Hex(enter.getNewPassword() + salt);
-        customer.setPassword(newPassword);
-        customer.setSalt(String.valueOf(salt));
-        opeCustomerMapper.updateById(customer);
+        opeSysUser.setPassword(newPassword);
+        opeSysUser.setSalt(String.valueOf(salt));
+        opeSysUser.setUpdatedTime(new Date());
+        opeSysUserService.updateById(opeSysUser);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -453,9 +471,14 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     @Override
     public GeneralResult editCustomer(WebEditCustomerEnter enter) {
         // 登录的时候  是把这些东西放在缓存里  直接获取
-        OpeCustomer customer = opeCustomerMapper.selectById(enter.getUserId());
-        if (customer == null) {
+        OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
+        if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        OpeCustomer customer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail,opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
+                CustomerSourceEnum.WEBSITE.getValue()));
+        if (customer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         if(StringUtils.isNotEmpty(enter.getAddress())){
             customer.setAddress(enter.getAddress());
@@ -495,6 +518,29 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         return new GeneralResult(enter.getRequestId());
     }
+
+    private OpeCustomer buildCustomerSingle(SignUpEnter enter, String decryptEamil) {
+        OpeCustomer saveCustomer = new OpeCustomer();
+        saveCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+        saveCustomer.setDr(0);
+        saveCustomer.setTenantId(enter.getTenantId());
+        saveCustomer.setTimeZone(enter.getTimeZone());
+        saveCustomer.setCustomerFirstName(SesStringUtils.upperCaseString(enter.getFirstName()));
+        saveCustomer.setCustomerLastName(SesStringUtils.upperCaseString(enter.getLastName()));
+        saveCustomer.setCustomerFullName(new StringBuilder(SesStringUtils.upperCaseString(enter.getFirstName())).append(" ").append(SesStringUtils.upperCaseString(enter.getLastName())).toString());
+        saveCustomer.setEmail(decryptEamil);
+        saveCustomer.setScooterQuantity(1);
+        saveCustomer.setAssignationScooterQty(0);
+        saveCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
+        saveCustomer.setStatus(CustomerStatusEnum.PREDESTINATE_CUSTOMER.getValue());
+        saveCustomer.setUpdatedBy(saveCustomer.getId());
+        saveCustomer.setUpdatedTime(new Date());
+        saveCustomer.setCreatedBy(saveCustomer.getId());
+        saveCustomer.setCreatedTime(new Date());
+        saveCustomer.setAccountFlag("0");
+        return saveCustomer;
+    }
+
 
 
     private void checkString(String str, int min, int max) {

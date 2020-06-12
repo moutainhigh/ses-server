@@ -14,7 +14,6 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
@@ -312,6 +311,8 @@ public class StripeServiceImpl implements StripeService {
         if (!org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(),CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue()) ||
                 !org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(),CustomerStatusEnum.TRASH_CUSTOMER.getValue())
         ){
+            opeCustomer.setTelephone(customerInquiry.getTelephone());
+            opeCustomer.setAddress(customerInquiry.getAddress());
             opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
             opeCustomer.setUpdatedTime(new Date());
             opeCustomerService.updateById(opeCustomer);

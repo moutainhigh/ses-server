@@ -39,14 +39,14 @@ public class NewSaveInquiryEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "客户名字")
     @NotNull(code = ValidationExceptionCode.FIRST_NAME_IS_EMPTY, message = "姓名为空")
-    @MinimumLength(value = "2", code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "长度过短")
-    @MaximumLength(value = "20", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "长度过长")
+    @MinimumLength(value = "2", code = ValidationExceptionCode.NAME_IS_ILLEGAL, message = "长度过短")
+    @MaximumLength(value = "20", code = ValidationExceptionCode.NAME_IS_ILLEGAL, message = "长度过长")
     private String firstName;
 
     @ApiModelProperty(value = "客户姓氏")
     @NotNull(code = ValidationExceptionCode.LAST_NAME_IS_EMPTY, message = "姓名为空")
-    @MinimumLength(value = "2", code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "长度过短")
-    @MaximumLength(value = "20", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "长度过长")
+    @MinimumLength(value = "2", code = ValidationExceptionCode.NAME_IS_ILLEGAL, message = "长度过短")
+    @MaximumLength(value = "20", code = ValidationExceptionCode.NAME_IS_ILLEGAL, message = "长度过长")
     private String lastName;
 
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
