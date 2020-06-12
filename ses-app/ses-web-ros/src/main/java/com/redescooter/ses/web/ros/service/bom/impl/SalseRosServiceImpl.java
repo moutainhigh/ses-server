@@ -109,6 +109,9 @@ public class SalseRosServiceImpl implements SalseRosService {
      */
     @Override
     public PageResult<ProductListResult> productList(ProductListEnter enter) {
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(enter);
+      }
         int count = salseRosServiceMapper.productListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);

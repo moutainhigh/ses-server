@@ -110,6 +110,9 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
      */
     @Override
     public PageResult<SupplierChaimListResult> supplierChaimList(SupplierChaimListEnter enter) {
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(enter);
+      }
         int count = supplierChaimRosServiceMapper.supplierChaimListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);

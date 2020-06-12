@@ -1,10 +1,11 @@
 package com.redescooter.ses.service.hub.source.operation.dao.base;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
-
+@DS("operation")
 public interface OpeCustomerMapper extends BaseMapper<OpeCustomer> {
     int updateBatch(List<OpeCustomer> list);
 
@@ -13,6 +14,4 @@ public interface OpeCustomerMapper extends BaseMapper<OpeCustomer> {
     int insertOrUpdate(OpeCustomer record);
 
     int insertOrUpdateSelective(OpeCustomer record);
-
-    int updateBatchSelective(List<OpeCustomer> list);
 }

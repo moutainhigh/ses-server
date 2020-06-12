@@ -278,12 +278,10 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             checkString(baseSendMailEnter.getMail(),2,50);
         }
         //先判断邮箱是否存在、
-        QueryWrapper<OpeCustomer> qw = new QueryWrapper<>();
-        qw.eq("email", baseSendMailEnter.getMail());
-        qw.eq("dr", 0);
-        qw.last("limit 1");
-        OpeCustomer customer = opeCustomerMapper.selectOne(qw);
-        if (null == customer) {
+        QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
+        OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).eq(OpeSysUser::getLoginName,
+                baseSendMailEnter.getMail()).last("limit 1"));
+        if (null == opeSysUser) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
@@ -293,7 +291,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         enter.setAppId(AppIDEnums.SES_ROS.getValue());
         enter.setEmail(decryptMail);
         enter.setRequestId(baseSendMailEnter.getRequestId());
-        enter.setUserId(customer.getId());
+        enter.setUserId(opeSysUser.getId());
         mailMultiTaskService.addMultiMailTask(enter);
         return new GeneralResult(baseSendMailEnter.getRequestId());
     }
@@ -472,9 +470,14 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     @Override
     public GeneralResult editCustomer(WebEditCustomerEnter enter) {
         // 登录的时候  是把这些东西放在缓存里  直接获取
-        OpeCustomer customer = opeCustomerMapper.selectById(enter.getUserId());
-        if (customer == null) {
+        OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
+        if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        OpeCustomer customer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail,opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
+                CustomerSourceEnum.WEBSITE.getValue()));
+        if (customer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         if(StringUtils.isNotEmpty(enter.getAddress())){
             customer.setAddress(enter.getAddress());

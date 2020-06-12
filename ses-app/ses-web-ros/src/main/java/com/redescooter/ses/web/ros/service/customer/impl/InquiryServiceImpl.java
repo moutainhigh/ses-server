@@ -157,7 +157,7 @@ public class InquiryServiceImpl implements InquiryService {
                 throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
             if (enter.getEmail().length() < 2 || enter.getEmail().length() > 20) {
-                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_ILLEGAL.getCode(),ExceptionCodeEnums.EMAIL_IS_ILLEGAL.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(),ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
             }
         }
 
@@ -222,6 +222,9 @@ public class InquiryServiceImpl implements InquiryService {
      */
     @Override
     public PageResult<InquiryResult> inquiryList(InquiryListEnter enter) {
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(enter);
+      }
         int count = inquiryServiceMapper.inquiryListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);

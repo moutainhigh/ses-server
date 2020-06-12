@@ -679,6 +679,9 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public PageResult<AssemblyResult> list(AssemblyListEnter enter) {
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(enter);
+      }
         //对type 进行拆分 组装statusList
         List<String> statusList = Lists.newArrayList();
         if (StringUtils.equals(enter.getType(), ProductionTypeEnums.TODO.getValue())) {

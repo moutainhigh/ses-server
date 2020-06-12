@@ -432,9 +432,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public PageResult<DetailsCustomerResult> list(ListCustomerEnter page) {
-
+        if (page.getKeyword()!=null && page.getKeyword().length()>50){
+           return PageResult.createZeroRowResult(page);
+        }
         int totalRows = customerServiceMapper.customerListCount(page);
-
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(page);
         }
@@ -585,6 +586,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public PageResult<AccountListResult> accountList(AccountListEnter enter) {
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(enter);
+      }
         //TODO ROS1.0.0 账户列表去除个人端账户查询
 //        enter.setCustomerType(CustomerTypeEnum.ENTERPRISE.getValue());
         int countCustomer = customerServiceMapper.customerAccountCount(enter);

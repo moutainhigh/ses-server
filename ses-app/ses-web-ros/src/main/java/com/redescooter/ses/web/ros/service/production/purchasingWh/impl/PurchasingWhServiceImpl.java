@@ -154,6 +154,9 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public PageResult<AvailableListResult> availableList(WhEnter enter) {
+        if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+          return PageResult.createZeroRowResult(enter);
+        }
         if (StringUtils.isNotEmpty(enter.getType())) {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }

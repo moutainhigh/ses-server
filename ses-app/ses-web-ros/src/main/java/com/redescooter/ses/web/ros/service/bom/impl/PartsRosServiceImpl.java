@@ -553,7 +553,9 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Override
     public PageResult<DetailsPartsResult> list(PartListEnter enter) {
-
+      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        return PageResult.createZeroRowResult(enter);
+      }
         int count = partsServiceMapper.listCount(enter);
 
         if (count == 0) {
