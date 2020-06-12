@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.vo.website;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import lombok.AllArgsConstructor;
@@ -41,6 +43,7 @@ public class SignUpEnter extends GeneralEnter {
     private String lastName;
 
     @ApiModelProperty(value = "邮箱")
+    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮箱非法")
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY,message = "邮箱为空")
     private String email;
 
