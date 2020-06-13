@@ -34,7 +34,7 @@ public class SaveDeptEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "负责人", required = true)
     @NotNull(code = ValidationExceptionCode.PRINCIPAL_ID_IS_EXIST, message = "负责人为空")
-    private Integer principal;
+    private Long principal;
 
     @ApiModelProperty(value = "级别0公司，1部门", required = true)
     @NotNull(code = ValidationExceptionCode.DEPT_LEVEL_IS_EMPTY, message = "部门层级为空")

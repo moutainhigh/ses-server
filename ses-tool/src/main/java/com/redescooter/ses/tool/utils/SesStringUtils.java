@@ -1,7 +1,5 @@
 package com.redescooter.ses.tool.utils;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
