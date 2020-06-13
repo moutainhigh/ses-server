@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.sys.role;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,6 +34,7 @@ public class RoleEnter extends PermissionEnter {
     private String roleCode;
 
     @ApiModelProperty(value = "岗位描述")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.BUSINESS_LICENSE_NUM_illegal_CHARACTER,message = "营业执照存在非法字符")
     private String description;
 
 }

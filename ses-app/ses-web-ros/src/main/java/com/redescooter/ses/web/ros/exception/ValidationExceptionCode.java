@@ -101,7 +101,7 @@ public interface ValidationExceptionCode {
     //地址字符不合法
     int ADDRESS_CHAR_IS_NOT_ILLEGAL = 10070;
     // 邮箱长度不合法
-    int EMAIL_CHAR_IS_NOT_ILLEGAL = 10071;
+    int EMAIL_CHAR_IS_ILLEGAL = 10071;
     // 公司为空
     int COMPANY_IS_EMPTY = 10072;
     // 父级Id为空

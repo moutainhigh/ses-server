@@ -74,9 +74,9 @@ public class SaveEmployeeEnter extends GeneralEnter {
     @ApiModelProperty(value = "邮箱", required = true)
 
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱为空")
-    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮箱非法")
-    @MinimumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL, message = "地址字符长度不合法，2-20字符")
-    @MaximumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL, message = "地址字符长度不合法，2-20字符")
+    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮箱非法")
+    @MinimumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "地址字符长度不合法，2-20字符")
+    @MaximumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "地址字符长度不合法，2-20字符")
     private String email;
 
     @ApiModelProperty(value = "生日", required = true)

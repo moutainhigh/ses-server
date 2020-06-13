@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.vo.factory;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
@@ -107,14 +106,13 @@ public class FactorySaveEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.CONTACT_EMAIL_IS_EMPTY, message = "联系人邮箱不能为空")
     @MinimumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "名字字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "名字符长度为2-20字符")
-    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮箱非法")
+    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮箱非法")
     private String contactEmail;
     /**
      * 国家编码，如手机号 中国 +86
      */
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
     @NotNull(code = ValidationExceptionCode.COUNTRY_CODE_IS_EMPTY, message = "国家手机号编码不能为空")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String contactPhoneCountryCode;
 
     /**
