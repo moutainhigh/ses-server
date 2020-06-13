@@ -57,6 +57,7 @@ import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
+import com.redescooter.ses.web.ros.vo.production.allocate.SaveAllocateEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -135,7 +136,7 @@ public class BomRosServiceImpl implements BomRosService {
     }
 
     /**
-     * @param enter
+     * @param saveScooterEnter
      * @desc: 保存整车
      * @param: enter
      * @eturn: GeneralResult
@@ -145,7 +146,9 @@ public class BomRosServiceImpl implements BomRosService {
      */
     @Transactional
     @Override
-    public GeneralResult saveScooter(SaveScooterEnter enter) {
+    public GeneralResult saveScooter(SaveScooterEnter saveScooterEnter) {
+      //SaveScooterEnter参数值去空格
+      SaveScooterEnter enter = SesStringUtils.objStringTrim(saveScooterEnter);
         // json 转换
         List<ProdoctPartListEnter> partList = null;
         try {

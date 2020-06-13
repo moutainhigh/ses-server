@@ -69,6 +69,7 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String industryType;
 
     @ApiModelProperty(value = "地址")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.ADDRESS_ILLEGAL_CHARACTER,message = "地址存在非法字符")
     private String address;
 
     @ApiModelProperty(value = "地点编号")
@@ -98,13 +99,14 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String countryCode;
 
     @ApiModelProperty(value = "电话")
+    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.QTY_IS_NUMBER,message = "数量必须为数字")
     private String telephone;
 
     @ApiModelProperty(value = "邮件")
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
-    @MinimumLength(value = "2",code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮件非法")
-    @MaximumLength(value = "50",code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮件非法")
-    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮件非法")
+    @MinimumLength(value = "2",code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮件非法")
+    @MaximumLength(value = "50",code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮件非法")
+    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮件非法")
     private String email;
 
     @ApiModelProperty(value = "车辆数量")

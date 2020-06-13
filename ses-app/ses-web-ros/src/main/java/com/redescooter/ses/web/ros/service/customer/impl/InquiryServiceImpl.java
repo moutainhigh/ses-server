@@ -34,6 +34,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.NewSaveInquiryEnter;
@@ -134,7 +135,7 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     /**
-     * @param enter
+     * @param newSaveInquiryEnter
      * @desc: 保存询价单
      * @param: enter
      * @retrn: GeneralResult
@@ -143,8 +144,8 @@ public class InquiryServiceImpl implements InquiryService {
      * @Version: Ros 1.3
      */
     @Override
-    public GeneralResult newSaveInquiry(NewSaveInquiryEnter enter) {
-
+    public GeneralResult newSaveInquiry(NewSaveInquiryEnter newSaveInquiryEnter) {
+      NewSaveInquiryEnter enter = SesStringUtils.objStringTrim(newSaveInquiryEnter);
         //邮箱 去空格
         enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
         //邮箱解密

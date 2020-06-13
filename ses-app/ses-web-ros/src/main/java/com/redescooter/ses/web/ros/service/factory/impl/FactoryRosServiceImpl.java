@@ -68,9 +68,10 @@ public class FactoryRosServiceImpl implements FactoryRosService {
     @Transactional
     @Override
     public GeneralResult save(FactorySaveEnter factorySaveEnter) {
-        checkSaveFactoryParameter(factorySaveEnter);
-      //factorySaveEnter参数值去空格
+      //employeeListEnter参数值去空格
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
+        checkSaveFactoryParameter(enter);
+
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
       String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
@@ -107,9 +108,10 @@ public class FactoryRosServiceImpl implements FactoryRosService {
     @Transactional
     @Override
     public GeneralResult edit(FactoryEditEnter factorySaveEnter) {
-      checkSaveFactoryParameter(factorySaveEnter);
       //employeeListEnter参数值去空格
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
+      checkSaveFactoryParameter(enter);
+
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
       String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());

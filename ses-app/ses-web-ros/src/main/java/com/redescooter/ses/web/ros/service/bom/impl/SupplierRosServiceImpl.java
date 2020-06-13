@@ -65,9 +65,9 @@ public class SupplierRosServiceImpl implements SupplierRosService {
     @Transactional
     @Override
     public GeneralResult save(SupplierSaveEnter supplierSaveEnter) {
-      checkSaveSupplierParameter(supplierSaveEnter);
       //supplierSaveEnter参数值去空格
       SupplierSaveEnter enter = SesStringUtils.objStringTrim(supplierSaveEnter);
+      checkSaveSupplierParameter(enter);
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getSupplierName());
       String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
@@ -107,9 +107,9 @@ public class SupplierRosServiceImpl implements SupplierRosService {
     @Transactional
     @Override
     public GeneralResult edit(SupplierEditEnter supplierSaveEnter) {
-      checkSaveSupplierParameter(supplierSaveEnter);
       //supplierSaveEnter参数值去空格
       SupplierSaveEnter enter = SesStringUtils.objStringTrim(supplierSaveEnter);
+      checkSaveSupplierParameter(enter);
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getSupplierName());
       String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());

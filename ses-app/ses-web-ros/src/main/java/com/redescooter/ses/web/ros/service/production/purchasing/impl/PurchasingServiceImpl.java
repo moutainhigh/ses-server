@@ -28,6 +28,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.poi.EasyPoiUtils;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
@@ -84,6 +85,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -278,12 +280,14 @@ public class PurchasingServiceImpl implements PurchasingService {
      * 3、配件过滤
      * 4、支付信息过滤
      *
-     * @param enter
+     * @param savePurchasingEnter
      * @return
      */
     @Transactional
     @Override
-    public GeneralResult save(SavePurchasingEnter enter) {
+    public GeneralResult save(SavePurchasingEnter savePurchasingEnter) {
+      //savePurchasingEnter参数值去空格
+      SavePurchasingEnter enter = SesStringUtils.objStringTrim(savePurchasingEnter);
         //配件、付款信息转换
         List<ProductionPartsEnter> productsList = null;
         List<StagingPaymentEnter> paymentList = null;

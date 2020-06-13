@@ -62,6 +62,7 @@ import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -153,19 +154,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     /**
      * 创建客户
      *
-     * @param enter
+     * @param createCustomerEnter
      * @return
      */
     @Transactional
     @Override
-    public GeneralResult save(CreateCustomerEnter enter) {
-
-        //邮箱去空格
-        if (StringUtils.isNotEmpty(enter.getEmail())) {
-            enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
-        }
-
-        //客户字段校验
+    public GeneralResult save(CreateCustomerEnter createCustomerEnter) {
+      //employeeListEnter参数值去空格
+      CreateCustomerEnter enter = SesStringUtils.objStringTrim(createCustomerEnter);
+      //客户字段校验
         checkSaveCustomerFiledSingle(enter);
 
         QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
@@ -206,17 +203,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     /**
      * 编辑更新客户
      *
-     * @param enter
+     * @param createCustomerEnter
      * @return
      */
     @Transactional
     @Override
-    public GeneralResult edit(EditCustomerEnter enter) {
-
-        //邮箱去空格
-        if (StringUtils.isNotEmpty(enter.getEmail())) {
-            enter.setEmail(StringUtils.trim(enter.getEmail()));
-        }
+    public GeneralResult edit(EditCustomerEnter createCustomerEnter) {
+      //employeeListEnter参数值去空格
+      EditCustomerEnter enter = SesStringUtils.objStringTrim(createCustomerEnter);
         //客户字段长度校验
         checkEditCustomerFiledSingle(enter);
 

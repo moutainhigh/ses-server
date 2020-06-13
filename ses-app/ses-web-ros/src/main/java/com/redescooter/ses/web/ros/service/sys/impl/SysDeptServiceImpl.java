@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
 import com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper;
@@ -27,6 +28,7 @@ import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -71,8 +73,10 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult save(SaveDeptEnter enter) {
         //保存集合
-        List<OpeSysDept> saveDeptList=new ArrayList<>();
+        List<OpeSysDept> saveDeptList = new ArrayList<>();
 
+        //SaveDeptEnter参数值去空格
+        enter = SesStringUtils.objStringTrim(enter);
         List<OpeSysDept> sysDeptList = sysDeptService.list();
 
         if (CollectionUtils.isNotEmpty(sysDeptList)) {
