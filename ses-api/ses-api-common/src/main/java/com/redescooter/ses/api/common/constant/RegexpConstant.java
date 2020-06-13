@@ -10,7 +10,7 @@ package com.redescooter.ses.api.common.constant;
 public interface RegexpConstant {
 
     //特殊字符 正则表达式
-     String specialCharacters="[~!@#$%^&*()=+[\\]{}''\";:/?.,><`|！·￥…—（）\\-、；：。，》《]";
+     String specialCharacters="[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
 
     //邮箱地址
      String email="^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
@@ -32,12 +32,15 @@ public interface RegexpConstant {
      //不校验首字母大写
      //比如：Jack、Jack Chan、Donald Trump
     // 校验首字母 大写 /^[A-Z][a-z]*(\s[A-Z][a-z]*)*$/
-     String name="/^[A-Za-z]*(\\s[A-Za-z]*)*$/";
+     String name="^[A-Za-z]+$";
 
      //限制两位数字 ^\d{n}$ 两位
      String twoNumber ="^\\d{2}$";
 
      String number="^[0-9]*$";
+
+     //非负整数
+     String positiveNumber="^[1-9]\\d*|0$";
 
     //表达式 原帖地址：https://blog.csdn.net/gdhck123/article/details/86703978
 }

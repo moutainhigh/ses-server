@@ -403,7 +403,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         opeSysUser.setDr(0);
         opeSysUser.setStatus(SysUserStatusEnum.NORMAL.getCode());
         opeSysUser.setAppId(AppIDEnums.SES_ROS.getValue());
-        opeSysUser.setSystemId(AppIDEnums.SES_ROS.getValue());
+        opeSysUser.setSystemId(AppIDEnums.SES_ROS.getSystemId());
         opeSysUser.setDeptId(enter.getDeptId());
         opeSysUser.setLoginName(enter.getEmail());
         opeSysUser.setSalt(String.valueOf(RandomUtils.nextInt(10000, 99999)));
@@ -417,6 +417,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         opeSysUser.setUpdatedTime(new Date());
         opeSysUser.setCreatedBy(enter.getUserId());
         opeSysUser.setCreatedTime(new Date());
+        opeSysUser.setDef1(SysUserSourceEnum.SYSTEM.getValue());
         return opeSysUser;
     }
 

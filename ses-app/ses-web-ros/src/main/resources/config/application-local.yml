@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:42181
+    address: zookeeper://localhost:22181
 #  metadata-report:
 #    address:  zookeeper://192.168.2.200:62181
 
@@ -18,13 +18,17 @@ dubbo:                                                                          
 #      suffix: )            # 加密后缀
 #    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
 
-
-spring:
-  #数据库连接
-  datasource:
-    url: jdbc:mysql://localhost:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+spring:                                                                                                                 #spring config
+  http:                                                                                                                 #上传配置
+  servlet:
+    multipart:
+      max-request-size: 1000MB
+      max-file-size: 20MB
+      enabled: true
+  datasource:                                                                                                           #数据库连接
+    url: jdbc:mysql://localhost:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: root123
+    password: 1qaz2wsx
 
     druid:
       initial-size: 8
