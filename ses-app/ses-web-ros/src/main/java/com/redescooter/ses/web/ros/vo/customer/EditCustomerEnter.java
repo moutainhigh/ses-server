@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.vo.customer;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -44,12 +46,15 @@ public class EditCustomerEnter extends GeneralEnter {
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
     @MinimumLength(value = "2",code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮件非法")
     @MaximumLength(value = "50",code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮件非法")
+    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮箱非法")
     private String email;
 
     @ApiModelProperty(value = "客户名字")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String customerFirstName;
 
     @ApiModelProperty(value = "客户姓氏")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String customerLastName;
 
     @ApiModelProperty(value = "客户全名")

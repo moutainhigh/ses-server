@@ -182,15 +182,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     /**
      * 保存员工
      *
-     * @param employeeListEnter
+     * @param saveEmployeeEnter
      * @return
      */
     @Transactional
     @Override
-    public GeneralResult saveEmployee(SaveEmployeeEnter employeeListEnter) {
+    public GeneralResult saveEmployee(SaveEmployeeEnter saveEmployeeEnter) {
 
         //employeeListEnter参数值去空格
-        SaveEmployeeEnter enter = SesStringUtils.objStringTrim(employeeListEnter);
+      SaveEmployeeEnter enter = SesStringUtils.objStringTrim(saveEmployeeEnter);
       // 部门、职位、办公区域、邮箱校验
       checkSaveEmployeeParameter(enter);
         //员工名称首位大写

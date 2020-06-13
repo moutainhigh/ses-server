@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -74,12 +76,18 @@ public class FactorySaveEnter extends GeneralEnter {
      * 联系人名字
      */
     @ApiModelProperty(value = "联系人名字")
+/*
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+*/
     private String contactFirstName;
 
     /**
      * 联系人姓氏
      */
     @ApiModelProperty(value = "联系人姓氏")
+/*
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+*/
     private String contactLastName;
 
     /**
@@ -98,6 +106,7 @@ public class FactorySaveEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.CONTACT_EMAIL_IS_EMPTY, message = "联系人邮箱不能为空")
     @MinimumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "名字字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "名字符长度为2-20字符")
+    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL,message = "邮箱非法")
     private String contactEmail;
     /**
      * 国家编码，如手机号 中国 +86
