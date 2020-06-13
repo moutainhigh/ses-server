@@ -38,7 +38,6 @@ public class DeliveryResetEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "耗时")
     @NotNull(code = ValidationExceptionCode.DURATION_IS_EMPTY,message = "耗时为空")
-    @Regexp(value = RegexpConstant.twoNumber,code = ValidationExceptionCode.DATE_IS_ILLEGAL,message = "数据非法")
     private Integer duration;
 
 }

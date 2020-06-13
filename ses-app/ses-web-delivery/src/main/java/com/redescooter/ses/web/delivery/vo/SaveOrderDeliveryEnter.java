@@ -54,6 +54,7 @@ public class SaveOrderDeliveryEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.PHONE_IS_EMPTY, message = "电话为空")
     @MinimumLength(code = ValidationExceptionCode.PHONE_IS_UNAVAILABLE, message = "电话字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.PHONE_IS_UNAVAILABLE, message = "电话字符长度为2-20字符")
+    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.PHONE_IS_UNAVAILABLE, message = "电话字符长度为2-20字符")
     private String recipientTel;
 
     @ApiModelProperty(value = "收件人地址")
@@ -74,7 +75,7 @@ public class SaveOrderDeliveryEnter extends GeneralEnter {
     private String houseInfo;
 
     @ApiModelProperty(value = "包裹数量")
-    @Regexp(value=RegexpConstant.positiveNumber,code = ValidationExceptionCode.DATE_IS_ILLEGAL,message = "数据非法")
+    @Regexp(value=RegexpConstant.twoNumber,code = ValidationExceptionCode.DATE_IS_ILLEGAL,message = "数据非法")
     private Integer parcelQuantity = 1;
 
     @ApiModelProperty(value = "商品清单")
