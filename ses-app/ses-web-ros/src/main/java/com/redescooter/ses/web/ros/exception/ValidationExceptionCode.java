@@ -179,7 +179,7 @@ public interface ValidationExceptionCode {
     //发票号存在非法字符
     int INVOICENUM_ILLEGAL_CHARACTER=10109;
     //营业执照存在非法字符
-    int BUSINESS_LICENSE_NUM_illegal_CHARACTER=10110;
+    int BUSINESS_LICENSE_NUM_ILLEGAL_CHARACTER =10110;
     //数量必须为数字
     int QTY_IS_NUMBER=10111;
     //号码必须是数字
