@@ -39,5 +39,8 @@ public interface RegexpConstant {
 
      String number="^[0-9]*$";
 
+     //非负整数
+     String positiveNumber="^[1-9]\\d*|0$";
+
     //表达式 原帖地址：https://blog.csdn.net/gdhck123/article/details/86703978
 }

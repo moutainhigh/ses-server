@@ -2,6 +2,7 @@ package com.redescooter.ses.tool.utils;
 
 import com.redescooter.ses.api.common.annotation.*;
 import com.redescooter.ses.api.common.exception.ValidationException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -47,8 +48,10 @@ public class ValidationUtil {
         Object fieldValue = getFieldValueByName(field.getName(), obj);
         if (fieldValue instanceof String) {
             String value = (String) fieldValue;
-            if (value.length() > Integer.parseInt(annotation.value())) {
-                throw new ValidationException(annotation.code(), annotation.message());
+            if (StringUtils.isNotEmpty(value)){
+                if (value.length() > Integer.parseInt(annotation.value())) {
+                    throw new ValidationException(annotation.code(), annotation.message());
+                }
             }
         }
     }

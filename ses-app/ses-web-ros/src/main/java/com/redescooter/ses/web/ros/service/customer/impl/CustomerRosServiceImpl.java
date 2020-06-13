@@ -264,11 +264,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         OpeCustomer update = new OpeCustomer();
         BeanUtils.copyProperties(enter, update);
         update.setTenantId(tenantId);
-        if (StringUtils.isBlank(enter.getRemark())) {
-            update.setMemo(null);
-        }else {
-            update.setMemo(enter.getRemark());
-        }
+        update.setMemo(enter.getRemark());
         update.setUpdatedBy(enter.getUserId());
         update.setUpdatedTime(new Date());
         update.setCustomerFullName(new StringBuilder().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
