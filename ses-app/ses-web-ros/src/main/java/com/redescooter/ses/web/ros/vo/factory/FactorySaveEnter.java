@@ -28,6 +28,7 @@ public class FactorySaveEnter extends GeneralEnter {
      * 代工厂名称
      */
     @ApiModelProperty(value = "代工厂名称")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     @NotNull(code = ValidationExceptionCode.FACTORY_NAME_IS_EMPTY, message = "id 为空")
     private String factoryName;
 
@@ -36,6 +37,7 @@ public class FactorySaveEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "代工厂地址")
     @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址不能为空")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String factoryAddress;
 
     /**
@@ -64,30 +66,28 @@ public class FactorySaveEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "代工厂标签")
     @NotNull(code = ValidationExceptionCode.FACTORY_TAG_IS_EMPTY, message = "代工厂标签不能为空")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String factoryTag;
 
     /**
      * 代工厂备注
      */
     @ApiModelProperty(value = "代工厂备注")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String factoryMemo;
 
     /**
      * 联系人名字
      */
     @ApiModelProperty(value = "联系人名字")
-/*
     @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
-*/
     private String contactFirstName;
 
     /**
      * 联系人姓氏
      */
     @ApiModelProperty(value = "联系人姓氏")
-/*
     @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
-*/
     private String contactLastName;
 
     /**
@@ -97,6 +97,7 @@ public class FactorySaveEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.CONTACT_FULLNAME_IS_EMPTY, message = "联系人全名不能为空")
     @MinimumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "名字字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "名字符长度为2-20字符")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String contactFullName;
 
     /**
@@ -113,6 +114,7 @@ public class FactorySaveEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
     @NotNull(code = ValidationExceptionCode.COUNTRY_CODE_IS_EMPTY, message = "国家手机号编码不能为空")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String contactPhoneCountryCode;
 
     /**
@@ -122,6 +124,7 @@ public class FactorySaveEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY, message = "联系人手机号不能为空")
     @MinimumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "名字字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "名字符长度为2-20字符")
+    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.TELEPHONE_IS_NUMBER,message = "号码必须为数字0~9")
     private String contactPhone;
 
     /**
@@ -154,6 +157,7 @@ public class FactorySaveEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.BUSINESS_NUMBER_IS_EMPTY, message = "营业执照编号不能为空")
     @MinimumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "名字字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "名字符长度为2-20字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String businessNumber;
 
     /**
@@ -167,6 +171,7 @@ public class FactorySaveEnter extends GeneralEnter {
      * 合同编号
      */
     @ApiModelProperty(value = "合同编号")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String contractNumber;
 
     /**

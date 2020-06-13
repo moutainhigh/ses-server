@@ -69,6 +69,7 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String industryType;
 
     @ApiModelProperty(value = "地址")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.BUSINESS_LICENSE_NUM_illegal_CHARACTER,message = "营业执照存在非法字符")
     private String address;
 
     @ApiModelProperty(value = "地点编号")
@@ -95,9 +96,11 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String contactFullName;
 
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String countryCode;
 
     @ApiModelProperty(value = "电话")
+    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.QTY_IS_NUMBER,message = "数量必须为数字")
     private String telephone;
 
     @ApiModelProperty(value = "邮件")
@@ -108,7 +111,7 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String email;
 
     @ApiModelProperty(value = "车辆数量")
-    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.QTY_IS_NUMBER,message = "数量必须为数字")
+    @Regexp(value = RegexpConstant.twoNumber,code = ValidationExceptionCode.QTY_IS_NUMBER,message = "数量必须为数字")
     private Integer scooterQuantity;
 
     @ApiModelProperty(value="证件类型:ID_CARD-身份证-1,DRIVER_LICENSE-驾驶证2，PASSPORT-护照-3")

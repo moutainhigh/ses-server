@@ -182,4 +182,6 @@ public interface ValidationExceptionCode {
     int BUSINESS_LICENSE_NUM_illegal_CHARACTER=10110;
     //数量必须为数字
     int QTY_IS_NUMBER=10111;
+    //号码必须是数字
+    int TELEPHONE_IS_NUMBER=10112;
 }
