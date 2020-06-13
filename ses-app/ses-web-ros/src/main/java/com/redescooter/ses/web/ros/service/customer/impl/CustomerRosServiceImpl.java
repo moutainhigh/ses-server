@@ -1139,7 +1139,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotEmpty(enter.getInvoiceNum())) {
             //发票号
             if (enter.getInvoiceNum().length() < 2 || enter.getInvoiceNum().length() > 30) {
-                throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getBusinessLicenseNum())) {
