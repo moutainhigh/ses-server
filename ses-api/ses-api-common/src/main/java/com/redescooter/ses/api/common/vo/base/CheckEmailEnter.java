@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.common.vo.base;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

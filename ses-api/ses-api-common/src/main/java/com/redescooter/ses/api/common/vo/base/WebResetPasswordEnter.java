@@ -1,6 +1,8 @@
 package com.redescooter.ses.api.common.vo.base;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

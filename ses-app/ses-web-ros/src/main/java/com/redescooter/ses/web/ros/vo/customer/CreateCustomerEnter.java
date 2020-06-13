@@ -121,14 +121,14 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String certificateNegativeAnnex;
 
     @ApiModelProperty(value = "营业执照编号")
-    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.BUSINESS_LICENSE_NUM_illegal_CHARACTER,message = "营业执照存在非法字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.BUSINESS_LICENSE_NUM_illegal_CHARACTER,message = "营业执照存在非法字符")
     private String businessLicenseNum;
 
     @ApiModelProperty(value = "营业执照附件")
     private String businessLicenseAnnex;
 
     @ApiModelProperty(value = "发票编号")
-    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.INVOICENUM_ILLEGAL_CHARACTER,message = "发票号存在非法字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.INVOICENUM_ILLEGAL_CHARACTER,message = "发票号存在非法字符")
     private String invoiceNum;
 
     @ApiModelProperty(value = "发票附件")
