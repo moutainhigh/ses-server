@@ -174,4 +174,12 @@ public interface ValidationExceptionCode {
     int BANKCARDNAME_IS_NOT_ILLEGAL=10106;
     //名字非法
     int NAME_IS_ILLEGAL=10107;
+    //备注存在非法字符
+    int REMARK_ILLEGAL_CHARACTER=10108;
+    //发票号存在非法字符
+    int INVOICENUM_ILLEGAL_CHARACTER=10109;
+    //营业执照存在非法字符
+    int BUSINESS_LICENSE_NUM_illegal_CHARACTER=10110;
+    //数量必须为数字
+    int QTY_IS_NUMBER=10111;
 }

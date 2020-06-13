@@ -132,14 +132,15 @@ public class ValidationUtil {
             return;
         }
         Object value = getFieldValueByName(field.getName(), obj);
-        if (regexp.value() != null || regexp.value().length() > 0) {
             if (value instanceof String) {
-                if (!((String) value).matches(regexp.value())) {
+                if (StringUtils.isNotEmpty((String)value)) {
+                    if (!((String) value).matches(regexp.value())) {
                     throw new ValidationException(regexp.code(), field.getName() + " is illegal");
                 }
-            } else {
-                throw new ValidationException(regexp.code(), field.getName() + " is illegal");
             }
+//                else {
+//                throw new ValidationException(regexp.code(), field.getName() + " is illegal");
+//            }
         }
     }
 

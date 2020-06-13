@@ -1,6 +1,8 @@
 package com.redescooter.ses.api.foundation.vo.login;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 
@@ -31,6 +33,7 @@ public class LoginEnter extends GeneralEnter {
     private String loginName;
 
     @ApiModelProperty(value = "密码")
+    @NotNull(code = ValidationExceptionCode.PASSWORD_IS_EMPTY,message = "密码为空")
     private String password;
 
     @ApiModelProperty(value = "验证码")
