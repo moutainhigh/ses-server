@@ -214,7 +214,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult edit(EditDeptEnter enter) {
 
-        List<OpeSysDept> saveDeptList=new ArrayList<>();
+        List<OpeSysDept> saveDeptList = new ArrayList<>();
 
         List<OpeSysDept> sysDeptList = sysDeptService.list();
 
@@ -232,20 +232,22 @@ public class SysDeptServiceImpl implements SysDeptService {
                 }
             }
             //排序调换
-            sortDept.setSort(maxSort);
-            saveDeptList.add(sortDept);
+            if (maxSort != 0 && sortDept != null) {
+                sortDept.setSort(maxSort);
+                saveDeptList.add(sortDept);
+            }
         }
         //更新部门
         OpeSysDept dept = new OpeSysDept();
         BeanUtils.copyProperties(enter, dept);
         dept.setId(idAppService.getId(SequenceName.OPE_SYS_DEPT));
         dept.setDr(Constant.DR_FALSE);
-        dept.setLevel((DeptLevelEnums.getEnumByValue(enter.getLevel().toString()) == null ? Integer.valueOf(DeptLevelEnums.COMPANY.getValue()) :
-                Integer.valueOf(DeptLevelEnums.getEnumByValue(enter.getLevel().toString()).getValue())));
+        dept.setSort(enter.getSort());
         dept.setCreatedBy(enter.getUserId());
         dept.setCreatedTime(new Date());
         dept.setUpdatedBy(enter.getUserId());
         dept.setUpdatedTime(new Date());
+        dept.setPrincipal(enter.getPrincipal());
         saveDeptList.add(dept);
         sysDeptService.updateBatch(saveDeptList);
         //更新部门关系
@@ -353,6 +355,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         dept.setDr(Constant.DR_FALSE);
         dept.setLevel((DeptLevelEnums.getEnumByValue(enter.getLevel().toString()) == null ? Integer.valueOf(DeptLevelEnums.COMPANY.getValue()) :
                 Integer.valueOf(DeptLevelEnums.getEnumByValue(enter.getLevel().toString()).getValue())));
+        dept.setPrincipal(enter.getPrincipal());
         dept.setCreatedBy(enter.getUserId());
         dept.setCreatedTime(new Date());
         dept.setUpdatedBy(enter.getUserId());
