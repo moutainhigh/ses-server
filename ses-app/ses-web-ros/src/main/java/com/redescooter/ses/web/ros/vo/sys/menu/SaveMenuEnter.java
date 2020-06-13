@@ -58,7 +58,7 @@ public class SaveMenuEnter extends GeneralEnter {
     private Integer level;
 
     @ApiModelProperty(value = "备注")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.BUSINESS_LICENSE_NUM_illegal_CHARACTER,message = "营业执照存在非法字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String remark;
 
     @ApiModelProperty(value = "扩展字段,父级name")

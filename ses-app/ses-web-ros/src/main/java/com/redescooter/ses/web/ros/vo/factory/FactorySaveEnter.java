@@ -36,7 +36,7 @@ public class FactorySaveEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "代工厂地址")
     @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址不能为空")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.FACTORY_ADDRESS_ILLEGAL_CHARACTER,message = "代工厂地址存在非法字符")
     private String factoryAddress;
 
     /**
@@ -65,14 +65,14 @@ public class FactorySaveEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "代工厂标签")
     @NotNull(code = ValidationExceptionCode.FACTORY_TAG_IS_EMPTY, message = "代工厂标签不能为空")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.FACTORY_TAG_ILLEGAL_CHARACTER,message = "代工厂标签存在非法字符")
     private String factoryTag;
 
     /**
      * 代工厂备注
      */
     @ApiModelProperty(value = "代工厂备注")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "代工厂备注存在非法字符")
     private String factoryMemo;
 
     /**
@@ -155,7 +155,7 @@ public class FactorySaveEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.BUSINESS_NUMBER_IS_EMPTY, message = "营业执照编号不能为空")
     @MinimumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "名字字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "名字符长度为2-20字符")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.BUSINESS_LICENSE_NUM_ILLEGAL_CHARACTER,message = "营业执照编号存在非法字符")
     private String businessNumber;
 
     /**
@@ -169,7 +169,7 @@ public class FactorySaveEnter extends GeneralEnter {
      * 合同编号
      */
     @ApiModelProperty(value = "合同编号")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.CONTRACT_NUMBER_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String contractNumber;
 
     /**

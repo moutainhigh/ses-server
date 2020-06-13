@@ -184,4 +184,16 @@ public interface ValidationExceptionCode {
     int QTY_IS_NUMBER=10111;
     //号码必须是数字
     int TELEPHONE_IS_NUMBER=10112;
+    //地址字符存在非法
+    int ADDRESS_ILLEGAL_CHARACTER=10113;
+    // 岗位字符存在非法
+    int DESCRIPTION_ILLEGAL_CHARACTER=10114;
+    // 代工厂地址字符存在非法
+    int FACTORY_ADDRESS_ILLEGAL_CHARACTER=10115;
+    // 代工厂标签字符存在非法
+    int FACTORY_TAG_ILLEGAL_CHARACTER=10116;
+    //合同编号存在非法
+    int CONTRACT_NUMBER_ILLEGAL_CHARACTER=10117;
+    //付款方式存在非法
+    int PAYMENT_TYPE_ILLEGAL_CHARACTER=10117;
 }

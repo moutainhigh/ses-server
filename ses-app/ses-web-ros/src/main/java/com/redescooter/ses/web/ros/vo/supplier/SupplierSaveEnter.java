@@ -36,7 +36,7 @@ public class SupplierSaveEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "采购商地址")
     @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址不能为空")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.ADDRESS_ILLEGAL_CHARACTER,message = "采购商地址存在非法字符")
     private String supplierAddress;
 
     /**
