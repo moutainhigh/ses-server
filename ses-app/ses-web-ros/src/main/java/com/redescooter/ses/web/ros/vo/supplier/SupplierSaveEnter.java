@@ -28,7 +28,7 @@ public class SupplierSaveEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "采购商名称")
     @NotNull(code = ValidationExceptionCode.SUPPLIER_NAME_IS_EMPTY, message = "供应商名称不能为空")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String supplierName;
 
     /**
@@ -36,7 +36,7 @@ public class SupplierSaveEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "采购商地址")
     @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址不能为空")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.ADDRESS_ILLEGAL_CHARACTER,message = "采购商地址存在非法字符")
+    //@Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.ADDRESS_ILLEGAL_CHARACTER,message = "采购商地址存在非法字符")
     private String supplierAddress;
 
     /**
@@ -75,14 +75,14 @@ public class SupplierSaveEnter extends GeneralEnter {
      * 联系人名字
      */
     @ApiModelProperty(value = "联系人名字")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String contactFirstName;
 
     /**
      * 联系人姓氏
      */
     @ApiModelProperty(value = "联系人姓氏")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String contactLastName;
 
     /**
@@ -101,7 +101,7 @@ public class SupplierSaveEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.CONTACT_EMAIL_IS_EMPTY, message = "联系人邮箱不能为空")
     @MinimumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "邮箱非法")
     @MaximumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "邮箱非法")
-    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮箱非法")
+    //@Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮箱非法")
     private String contactEmail;
     /**
      * 国家编码，如手机号 中国 +86

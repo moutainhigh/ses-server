@@ -43,15 +43,15 @@ public class EditSavePartsEnter extends GeneralEnter {
     private String partsNumber;
 
     @ApiModelProperty(value = "中文名称")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String cnName;
 
     @ApiModelProperty(value = "法文名称")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String frName;
 
     @ApiModelProperty(value = "英文名称")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String enName;
 
     @ApiModelProperty(value = "是否可销售,0:SC仅可采购，1:SSC可销售可采购",required = true)
