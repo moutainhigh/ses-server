@@ -45,7 +45,7 @@ public class ScooterNavigationEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "行驶公里数，结束导航时传递 单位 m")
     @NotNull(code = ValidationExceptionCode.MILEAGE_IS_EMPTY,message = "距离为空")
-    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.DATA_IS_ILLEGAL,message = "距离为空")
+    //@Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.DATA_IS_ILLEGAL,message = "距离为空")
     private String mileage;
 
     @ApiModelProperty(value = "行驶公里数，结束导航时传递 单位 s")

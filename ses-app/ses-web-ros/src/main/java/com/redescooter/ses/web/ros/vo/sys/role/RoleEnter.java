@@ -34,7 +34,7 @@ public class RoleEnter extends PermissionEnter {
     private String roleCode;
 
     @ApiModelProperty(value = "岗位描述")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.DESCRIPTION_ILLEGAL_CHARACTER,message = "岗位描述存在非法字符")
+    //@Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.DESCRIPTION_ILLEGAL_CHARACTER,message = "岗位描述存在非法字符")
     private String description;
 
 }
