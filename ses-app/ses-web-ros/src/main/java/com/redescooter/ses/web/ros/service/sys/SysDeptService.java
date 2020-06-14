@@ -7,6 +7,7 @@ import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalsEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 
@@ -98,5 +99,5 @@ public interface SysDeptService {
      * @param enter
      * @return
      */
-    List<PrincipalResult> principals(GeneralEnter enter);
+    List<PrincipalResult> principals(PrincipalsEnter enter);
 }

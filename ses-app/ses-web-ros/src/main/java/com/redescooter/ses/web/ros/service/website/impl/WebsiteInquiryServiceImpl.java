@@ -505,6 +505,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public GeneralResult payLastParagraph(GeneralEnter enter) {
+
         return null;
     }
 

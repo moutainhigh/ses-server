@@ -120,7 +120,6 @@
         from ope_parts_product opp
         <include refid="join_productList"/>
         <include refid="where_productList"/>
-        order by opp.updated_time desc
         limit #{startRow},#{pageSize}
     </select>
 

@@ -54,6 +54,6 @@ public interface DeptServiceMapper {
      *
      * @return
      */
-    List<PrincipalResult> principals();
+    List<PrincipalResult> principals(List<Long> deptIds);
 
 }

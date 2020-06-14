@@ -9,6 +9,7 @@ import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalsEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import io.swagger.annotations.Api;
@@ -94,7 +95,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/principals")
     @ApiOperation(value = "负责人列表", response = GeneralResult.class)
-    public Response<List<PrincipalResult>> principals(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<PrincipalResult>> principals(@ModelAttribute @ApiParam("请求参数") PrincipalsEnter enter) {
         return new Response<>(deptService.principals(enter));
     }
 }
