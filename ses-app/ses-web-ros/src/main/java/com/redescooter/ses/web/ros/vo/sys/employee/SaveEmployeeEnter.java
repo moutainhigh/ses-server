@@ -69,7 +69,7 @@ public class SaveEmployeeEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "电话", required = true)
     @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY, message = "电话为空")
-    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.TELEPHONE_IS_NUMBER,message = "号码必须为数字0~9")
+    //@Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.TELEPHONE_IS_NUMBER,message = "号码必须为数字0~9")
     private String telephone;
 
     @ApiModelProperty(value = "邮箱", required = true)
@@ -93,7 +93,7 @@ public class SaveEmployeeEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址为空")
     @MinimumLength(code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL, message = "地址字符长度不合法，2-200字符")
     @MaximumLength(code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL, message = "地址字符长度不合法，2-200字符")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.ADDRESS_ILLEGAL_CHARACTER,message = "代工厂地址存在非法字符")
+    //@Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.ADDRESS_ILLEGAL_CHARACTER,message = "代工厂地址存在非法字符")
     private String address;
 
     @ApiModelProperty(value = "证件类型", required = true)
