@@ -27,8 +27,8 @@ import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalsEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -77,12 +77,12 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         //SaveDeptEnter参数值去空格
         enter = SesStringUtils.objStringTrim(enter);
-        List<OpeSysDept> sysDeptList = sysDeptService.list();
+        List<OpeSysDept> deptList = sysDeptService.list();
 
-        if (CollectionUtils.isNotEmpty(sysDeptList)) {
+        if (CollectionUtils.isNotEmpty(deptList)) {
             OpeSysDept sortDept = null;
             int maxSort = 0;
-            for (OpeSysDept item : sysDeptList) {
+            for (OpeSysDept item : deptList) {
                 //不可重复创建 根级部门
                 if (item.getPId().equals(enter.getPId()) && enter.getPId().equals(Constant.DEPT_TREE_ROOT_ID)) {
                     throw new SesWebRosException(ExceptionCodeEnums.NON_REPEATABLE_CREATION_ROOT_LEVEL_DEPT.getCode(), ExceptionCodeEnums.NON_REPEATABLE_CREATION_ROOT_LEVEL_DEPT.getMessage());
@@ -93,16 +93,18 @@ public class SysDeptServiceImpl implements SysDeptService {
                 }
 
                 //排序为同级的部门
-                if (item.getSort().equals(enter.getSort())) {
+                if (item.getSort().equals(enter.getSort()) && enter.getPId().equals(item.getPId())) {
                     sortDept = item;
                 }
                 if (maxSort < item.getSort()) {
                     maxSort = item.getSort();
                 }
             }
-            //排序调换
-            sortDept.setSort(maxSort);
-            saveDeptList.add(sortDept);
+            if (sortDept != null && maxSort != 0) {
+                //排序调换
+                sortDept.setSort(maxSort + 1);
+                saveDeptList.add(sortDept);
+            }
         }
         OpeSysDept dept = this.buildDept(enter);
         saveDeptList.add(dept);
@@ -214,17 +216,31 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult edit(EditDeptEnter enter) {
 
-        List<OpeSysDept> saveDeptList = new ArrayList<>();
+        List<OpeSysDept> updateDeptList = new ArrayList<>();
+        OpeSysDept checkDept = null;
 
+        //查询所有部门
         List<OpeSysDept> sysDeptList = sysDeptService.list();
 
         if (CollectionUtils.isNotEmpty(sysDeptList)) {
+
+            for (OpeSysDept dept : sysDeptList) {
+                if (dept.getId().equals(enter.getId())) {
+                    checkDept = dept;
+                    break;
+                }
+            }
+
+            if (checkDept == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
+            }
+
             OpeSysDept sortDept = null;
             int maxSort = 0;
             for (OpeSysDept item : sysDeptList) {
 
-                //排序为同级的部门
-                if (item.getSort().equals(enter.getSort())) {
+                //找出排序等级为同级的部门
+                if (item.getSort().equals(enter.getSort()) && checkDept.getPId().equals(item.getPId())) {
                     sortDept = item;
                 }
                 if (maxSort < item.getSort()) {
@@ -233,27 +249,24 @@ public class SysDeptServiceImpl implements SysDeptService {
             }
             //排序调换
             if (maxSort != 0 && sortDept != null) {
-                sortDept.setSort(maxSort);
-                saveDeptList.add(sortDept);
+                sortDept.setSort(checkDept.getSort());
+                updateDeptList.add(sortDept);
             }
         }
+
         //更新部门
-        OpeSysDept dept = new OpeSysDept();
-        BeanUtils.copyProperties(enter, dept);
-        dept.setId(idAppService.getId(SequenceName.OPE_SYS_DEPT));
-        dept.setDr(Constant.DR_FALSE);
-        dept.setSort(enter.getSort());
-        dept.setCreatedBy(enter.getUserId());
-        dept.setCreatedTime(new Date());
-        dept.setUpdatedBy(enter.getUserId());
-        dept.setUpdatedTime(new Date());
-        dept.setPrincipal(enter.getPrincipal());
-        saveDeptList.add(dept);
-        sysDeptService.updateBatch(saveDeptList);
+        checkDept.setSort(enter.getSort());
+        checkDept.setUpdatedBy(enter.getUserId());
+        checkDept.setUpdatedTime(new Date());
+        if (enter.getPrincipal() != null && enter.getPrincipal() != 0) {
+            checkDept.setPrincipal(enter.getPrincipal());
+        }
+        updateDeptList.add(checkDept);
+        sysDeptService.updateBatch(updateDeptList);
         //更新部门关系
         OpeSysDeptRelation relation = new OpeSysDeptRelation();
-        relation.setAncestor(dept.getPId());
-        relation.setDescendant(dept.getId());
+        relation.setAncestor(checkDept.getPId());
+        relation.setDescendant(checkDept.getId());
         deptRelationServiceMapper.updateDeptRelations(relation);
 
         return new GeneralResult(enter.getRequestId());
@@ -340,8 +353,13 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
-    public List<PrincipalResult> principals(GeneralEnter enter) {
-        return deptServiceMapper.principals();
+    public List<PrincipalResult> principals(PrincipalsEnter enter) {
+        //查询 部门下员工
+        List<Long> deptIds = new ArrayList<>();
+        if (enter.getId() != null && enter.getId() != 0) {
+            deptIds.add(enter.getId());
+        }
+        return deptServiceMapper.principals(deptIds);
     }
 
     private OpeSysDept buildDept(SaveDeptEnter enter) {
@@ -355,7 +373,9 @@ public class SysDeptServiceImpl implements SysDeptService {
         dept.setDr(Constant.DR_FALSE);
         dept.setLevel((DeptLevelEnums.getEnumByValue(enter.getLevel().toString()) == null ? Integer.valueOf(DeptLevelEnums.COMPANY.getValue()) :
                 Integer.valueOf(DeptLevelEnums.getEnumByValue(enter.getLevel().toString()).getValue())));
-        dept.setPrincipal(enter.getPrincipal());
+        if (enter.getPrincipal() != null && enter.getPrincipal() != 0) {
+            dept.setPrincipal(enter.getPrincipal());
+        }
         dept.setCreatedBy(enter.getUserId());
         dept.setCreatedTime(new Date());
         dept.setUpdatedBy(enter.getUserId());

@@ -42,7 +42,7 @@ public class SaveDeptEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "部门名称", required = true)
     @NotNull(code = ValidationExceptionCode.DEPT_NAME_IS_EMPTY, message = "部门名字为空")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String name;
 
     @ApiModelProperty(value = "部门编码")

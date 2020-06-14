@@ -91,12 +91,12 @@ public class SesWebRosApplicationTests {
     @Test
     public void test() {
         // 对应配置文件中配置的加密密钥
-        System.setProperty("jasypt.encryptor.password", "RedE");
+//        System.setProperty("jasypt.encryptor.password", "RedE");
         StringEncryptor stringEncryptor = new DefaultLazyEncryptor(new StandardEnvironment());
-        System.out.println("加密后的登录名： " + stringEncryptor.encrypt("root"));
-        System.out.println("加密后的密码： " + stringEncryptor.encrypt("1qaz2wsx"));
-        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://localhost:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true\n"));
-//
+//        System.out.println("加密后的登录名： " + stringEncryptor.encrypt("root"));
+//        System.out.println("加密后的密码： " + stringEncryptor.encrypt("1qaz2wsx"));
+//        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://localhost:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true\n"));
+////
 //
 //        String url="+xA0J+wEWz4ZZRqskmzzm7X96KWtE+T+Xbhzg4ai/Ep4VGrri/KtE39cbwwJfBGV/swnJvt1t4d51O5MgV44fZ96gxpWCPg5PJgylytMVX98NcJ+3lUEu0rfIXi43GWvfiuEjtDfadtXZ+5mvMeTZsbw7f/Ko0t7RaP+uf/lW1NWbnmW8MToxyPMT2wgGeMi9uzGnxd3XoaPNKvOstmPB/NdiywUxWIIbCGSpCumB1nFk/vuz+w6fFtrLNXiA+VbogJ6hpmyoaDB+WrIv3MojEkBJNO4rDj02e+Zs93tYoiwT3+aB+sQ/NV7YBA6bgp9eJbTzdwbTYM2Yc9lmi5eRprTf3QPMwFCdf+WdTcqRRs=";
 //
@@ -105,7 +105,7 @@ public class SesWebRosApplicationTests {
 //        String password="h4FTPWlTMiyjC3ibuv4QhvreAET9QoNL";
 //
 //        System.out.println("解密的登录名： " + stringEncryptor.decrypt(userName));
-//        System.out.println("解密的密码： " + stringEncryptor.decrypt(password));
+        System.out.println("解密的密码： " + stringEncryptor.decrypt("fHRxmETbcpUpah/tH49sOY+8Fl86wduHyV7en4kfiEsUeC/5OlB1ZwCTv6lPKVPS"));
 //        System.out.println("url： " + stringEncryptor.decrypt(url));
     }
 

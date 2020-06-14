@@ -27,7 +27,7 @@ public class FactorySaveEnter extends GeneralEnter {
      * 代工厂名称
      */
     @ApiModelProperty(value = "代工厂名称")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "代工厂名称非法")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     @NotNull(code = ValidationExceptionCode.FACTORY_NAME_IS_EMPTY, message = "id 为空")
     private String factoryName;
 
@@ -36,6 +36,7 @@ public class FactorySaveEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "代工厂地址")
     @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址不能为空")
+    //@Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.FACTORY_ADDRESS_ILLEGAL_CHARACTER,message = "代工厂地址存在非法字符")
     private String factoryAddress;
 
     /**
@@ -95,6 +96,7 @@ public class FactorySaveEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.CONTACT_FULLNAME_IS_EMPTY, message = "联系人全名不能为空")
     @MinimumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT, message = "名字字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "名字符长度为2-20字符")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String contactFullName;
 
     /**

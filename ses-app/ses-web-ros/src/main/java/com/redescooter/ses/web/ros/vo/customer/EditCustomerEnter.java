@@ -57,9 +57,6 @@ public class EditCustomerEnter extends GeneralEnter {
     @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String customerLastName;
 
-//    @ApiModelProperty(value = "客户全名")
-//    private String customerFullName;
-
     @ApiModelProperty(value = "企业名称")
     @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String companyName;
@@ -94,14 +91,11 @@ public class EditCustomerEnter extends GeneralEnter {
     @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String contactLastName;
 
-//    @ApiModelProperty(value = "联系人全名")
-//    private String contactFullName;
-
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
     private String countryCode;
 
     @ApiModelProperty(value = "电话")
-      @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.TELEPHONE_IS_NUMBER,message = "号码必须为数字0~9")
+    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.TELEPHONE_IS_NUMBER,message = "号码必须为数字0~9")
     private String telephone;
 
     @ApiModelProperty(value = "车辆数量")
