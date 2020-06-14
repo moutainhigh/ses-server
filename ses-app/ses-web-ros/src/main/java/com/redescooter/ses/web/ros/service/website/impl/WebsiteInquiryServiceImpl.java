@@ -234,10 +234,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             totalPrice = totalPrice.add(topCase.getPrice());
         }
 
-        //todo 测试暂定为0.5 之后要改掉 默认100美分
-//        totalPrice = new BigDecimal("100");
-//        totalPrice = new BigDecimal("19000");
-
         //生成主订单
         OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
         opeCustomerInquiry.setCreatedBy(enter.getUserId());
@@ -329,11 +325,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (enter.getBuyTopCase()) {
             totalPrice = totalPrice.add(topCase.getPrice());
         }
-//        totalPrice = new BigDecimal("19000");
 
-
-        //todo 测试暂定为0.5 之后要改掉 100美分
-//        totalPrice = new BigDecimal("100");
         //生成主订单
         OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, enter.getId());
         opeCustomerInquiry.setCreatedBy(enter.getUserId());
