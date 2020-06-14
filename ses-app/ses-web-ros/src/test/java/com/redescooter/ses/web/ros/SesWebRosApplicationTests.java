@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros;
 
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
@@ -17,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -121,5 +125,22 @@ public class SesWebRosApplicationTests {
         }
     }
 
+    @Test
+    public void stest() {
+        String str="sdasda";
+//        String regEx="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+//        Pattern p = Pattern.compile(regEx);
+//        Matcher m = p.matcher(str);
+//        System.out.println(m.matches());
+//
+////        Pattern p1 = Pattern.compile(RegexpConstant.specialCharacters);
+////        Matcher m2 = p.matcher(str);
+//        System.out.println(Pattern.matches(RegexpConstant.specialCharacters, str));
+
+        String regEx="^((?![`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]).)*";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(str);
+        System.out.println(m.matches());
+    }
 
 }

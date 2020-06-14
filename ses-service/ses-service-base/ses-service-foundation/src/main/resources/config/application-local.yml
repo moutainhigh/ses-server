@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: 1qaz2wsx
+    password: root123
     druid:
       initial-size: 8
       min-idle: 1
@@ -28,4 +28,4 @@ spring:
 ## DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://localhost:22181
+    address: zookeeper://192.168.2.200:42181

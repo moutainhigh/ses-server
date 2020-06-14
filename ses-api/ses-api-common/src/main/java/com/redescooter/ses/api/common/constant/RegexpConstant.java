@@ -1,5 +1,8 @@
 package com.redescooter.ses.api.common.constant;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @ClassName:RegexpConstant
  * @description: RegexpConstant
@@ -9,8 +12,8 @@ package com.redescooter.ses.api.common.constant;
  */
 public interface RegexpConstant {
 
-    //特殊字符 正则表达式
-     String specialCharacters="[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+    //特殊字符 正则表达式 表达式取反  ^((?!你的正则表达式).)*
+     String specialCharacters="^((?![`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]).)*";
 
     //邮箱地址
      String email="^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
@@ -32,7 +35,7 @@ public interface RegexpConstant {
      //不校验首字母大写
      //比如：Jack、Jack Chan、Donald Trump
     // 校验首字母 大写 /^[A-Z][a-z]*(\s[A-Z][a-z]*)*$/
-     String name="^[A-Za-z]+$";
+     String name="^((?!^[A-Za-z]+$).)*";
 
      //限制两位数字 ^\d{n}$ 两位
      String twoNumber ="^\\d{2}$";

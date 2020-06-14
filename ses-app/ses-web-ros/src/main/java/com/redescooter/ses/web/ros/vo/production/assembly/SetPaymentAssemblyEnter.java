@@ -2,7 +2,9 @@ package com.redescooter.ses.web.ros.vo.production.assembly;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -45,6 +47,7 @@ public class SetPaymentAssemblyEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "付款方式", required = true)
     @NotNull(code = ValidationExceptionCode.PAYMENT_TYPE_IS_EMPTY, message = "付款方式为空")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.PAYMENT_TYPE_ILLEGAL_CHARACTER,message = "付款方式存在非法字符")
     private String paymentType;
 
     @ApiModelProperty(value = "付款时间")
@@ -56,6 +59,7 @@ public class SetPaymentAssemblyEnter extends GeneralEnter {
     private Integer days;
 
     @ApiModelProperty(value = "备注")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String remark;
 
     @ApiModelProperty(value = "付款周期，格式：estimatedPaymentDate：2020-3-2 00：00：00，paymentRatio:20.2，price:20.1（无需取整后台会自动进行保留两位、四舍五入）,remark:123")

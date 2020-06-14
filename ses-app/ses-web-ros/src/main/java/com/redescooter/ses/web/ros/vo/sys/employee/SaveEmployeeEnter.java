@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -53,10 +55,12 @@ public class SaveEmployeeEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "员工姓名", required = true)
     @NotNull(code = ValidationExceptionCode.FIRST_NAME_IS_EMPTY, message = "名为空")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String employeeFirstName;
 
     @ApiModelProperty(value = "员工姓名", required = true)
     @NotNull(code = ValidationExceptionCode.LAST_NAME_IS_EMPTY, message = "姓为空")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String employeeLastName;
 
     @ApiModelProperty(value = "电话国家代码", required = true)
@@ -65,12 +69,14 @@ public class SaveEmployeeEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "电话", required = true)
     @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY, message = "电话为空")
+    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.TELEPHONE_IS_NUMBER,message = "号码必须为数字0~9")
     private String telephone;
 
     @ApiModelProperty(value = "邮箱", required = true)
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱为空")
-    @MinimumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL, message = "地址字符长度不合法，2-20字符")
-    @MaximumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_NOT_ILLEGAL, message = "地址字符长度不合法，2-20字符")
+    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮箱非法")
+    @MinimumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "地址字符长度不合法，2-20字符")
+    @MaximumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "地址字符长度不合法，2-20字符")
     private String email;
 
     @ApiModelProperty(value = "生日", required = true)
@@ -87,6 +93,7 @@ public class SaveEmployeeEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ADDRESS_INFO_IS_EMPTY, message = "地址为空")
     @MinimumLength(code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL, message = "地址字符长度不合法，2-200字符")
     @MaximumLength(code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL, message = "地址字符长度不合法，2-200字符")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.ADDRESS_ILLEGAL_CHARACTER,message = "代工厂地址存在非法字符")
     private String address;
 
     @ApiModelProperty(value = "证件类型", required = true)

@@ -101,7 +101,7 @@ public interface ValidationExceptionCode {
     //地址字符不合法
     int ADDRESS_CHAR_IS_NOT_ILLEGAL = 10070;
     // 邮箱长度不合法
-    int EMAIL_CHAR_IS_NOT_ILLEGAL = 10071;
+    int EMAIL_CHAR_IS_ILLEGAL = 10071;
     // 公司为空
     int COMPANY_IS_EMPTY = 10072;
     // 父级Id为空
@@ -179,7 +179,21 @@ public interface ValidationExceptionCode {
     //发票号存在非法字符
     int INVOICENUM_ILLEGAL_CHARACTER=10109;
     //营业执照存在非法字符
-    int BUSINESS_LICENSE_NUM_illegal_CHARACTER=10110;
+    int BUSINESS_LICENSE_NUM_ILLEGAL_CHARACTER =10110;
     //数量必须为数字
     int QTY_IS_NUMBER=10111;
+    //号码必须是数字
+    int TELEPHONE_IS_NUMBER=10112;
+    //地址字符存在非法
+    int ADDRESS_ILLEGAL_CHARACTER=10113;
+    // 岗位字符存在非法
+    int DESCRIPTION_ILLEGAL_CHARACTER=10114;
+    // 代工厂地址字符存在非法
+    int FACTORY_ADDRESS_ILLEGAL_CHARACTER=10115;
+    // 代工厂标签字符存在非法
+    int FACTORY_TAG_ILLEGAL_CHARACTER=10116;
+    //合同编号存在非法
+    int CONTRACT_NUMBER_ILLEGAL_CHARACTER=10117;
+    //付款方式存在非法
+    int PAYMENT_TYPE_ILLEGAL_CHARACTER=10117;
 }
