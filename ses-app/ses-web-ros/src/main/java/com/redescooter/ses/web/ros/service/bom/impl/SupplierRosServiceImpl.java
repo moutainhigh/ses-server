@@ -69,12 +69,8 @@ public class SupplierRosServiceImpl implements SupplierRosService {
       SupplierSaveEnter enter = SesStringUtils.objStringTrim(supplierSaveEnter);
       checkSaveSupplierParameter(enter);
       //员工名称首位大写
-      String factoryName = SesStringUtils.upperCaseString(enter.getSupplierName());
-      String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
-      String lastName = SesStringUtils.upperCaseString(enter.getContactFirstName());
-      enter.setSupplierName(factoryName);
-      enter.setContactFirstName(firstName);
-      enter.setContactLastName(lastName);
+      String SupplierName = SesStringUtils.upperCaseString(enter.getSupplierName());
+      enter.setSupplierName(SupplierName);
         //邮箱去空格
         enter.setContactEmail(SesStringUtils.stringTrim(enter.getContactEmail()));
 
@@ -112,11 +108,8 @@ public class SupplierRosServiceImpl implements SupplierRosService {
       checkSaveSupplierParameter(enter);
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getSupplierName());
-      String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
-      String lastName = SesStringUtils.upperCaseString(enter.getContactFirstName());
+
       enter.setSupplierName(factoryName);
-      enter.setContactFirstName(firstName);
-      enter.setContactLastName(lastName);
         //邮箱去空格
         enter.setContactEmail(SesStringUtils.stringTrim(enter.getContactEmail()));
 

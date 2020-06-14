@@ -47,7 +47,6 @@ public class SetPaymentAssemblyEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "付款方式", required = true)
     @NotNull(code = ValidationExceptionCode.PAYMENT_TYPE_IS_EMPTY, message = "付款方式为空")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.PAYMENT_TYPE_ILLEGAL_CHARACTER,message = "付款方式存在非法字符")
     private String paymentType;
 
     @ApiModelProperty(value = "付款时间")

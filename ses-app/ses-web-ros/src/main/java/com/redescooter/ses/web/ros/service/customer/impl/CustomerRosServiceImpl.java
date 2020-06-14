@@ -203,14 +203,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     /**
      * 编辑更新客户
      *
-     * @param createCustomerEnter
+     * @param editCustomerEnter
      * @return
      */
     @Transactional
     @Override
-    public GeneralResult edit(EditCustomerEnter createCustomerEnter) {
+    public GeneralResult edit(EditCustomerEnter editCustomerEnter) {
       //employeeListEnter参数值去空格
-      EditCustomerEnter enter = SesStringUtils.objStringTrim(createCustomerEnter);
+      EditCustomerEnter enter = SesStringUtils.objStringTrim(editCustomerEnter);
         //客户字段长度校验
         checkEditCustomerFiledSingle(enter);
 

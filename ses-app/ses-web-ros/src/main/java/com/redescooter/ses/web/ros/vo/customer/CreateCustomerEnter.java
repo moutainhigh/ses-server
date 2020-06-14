@@ -48,15 +48,15 @@ public class CreateCustomerEnter extends GeneralEnter {
     private Long salesId;
 
     @ApiModelProperty(value = "客户名字")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "客户名字非法")
     private String customerFirstName;
 
     @ApiModelProperty(value = "客户姓氏")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "客户姓氏非法")
     private String customerLastName;
 
     @ApiModelProperty(value = "企业名称")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "企业名称非法")
     private String companyName;
 
     @ApiModelProperty(value="客户来源渠道,SYSTEM-系统-1, WEBSITE-官网-2")
@@ -69,7 +69,6 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String industryType;
 
     @ApiModelProperty(value = "地址")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.ADDRESS_ILLEGAL_CHARACTER,message = "地址存在非法字符")
     private String address;
 
     @ApiModelProperty(value = "地点编号")
@@ -84,15 +83,15 @@ public class CreateCustomerEnter extends GeneralEnter {
     private BigDecimal latitude;
 
     @ApiModelProperty(value = "联系人名字")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "联系人名字非法")
     private String contactFirstName;
 
     @ApiModelProperty(value = "联系人姓氏")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "联系人姓氏非法")
     private String contactLastName;
 
     @ApiModelProperty(value = "联系人全名")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "联系人全名非法")
     private String contactFullName;
 
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")

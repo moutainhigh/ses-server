@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.vo.inquiry;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -41,23 +43,26 @@ public class NewSaveInquiryEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.FIRST_NAME_IS_EMPTY, message = "姓名为空")
     @MinimumLength(value = "2", code = ValidationExceptionCode.NAME_IS_ILLEGAL, message = "长度过短")
     @MaximumLength(value = "20", code = ValidationExceptionCode.NAME_IS_ILLEGAL, message = "长度过长")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "客户名字非法")
     private String firstName;
 
     @ApiModelProperty(value = "客户姓氏")
     @NotNull(code = ValidationExceptionCode.LAST_NAME_IS_EMPTY, message = "姓名为空")
     @MinimumLength(value = "2", code = ValidationExceptionCode.NAME_IS_ILLEGAL, message = "长度过短")
     @MaximumLength(value = "20", code = ValidationExceptionCode.NAME_IS_ILLEGAL, message = "长度过长")
+    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "客户姓氏非法")
     private String lastName;
 
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
-    @NotNull(code = ValidationExceptionCode.COUNTRY_CODE_IS_EMPTY, message = "邮箱不能为空")
+    @NotNull(code = ValidationExceptionCode.COUNTRY_CODE_IS_EMPTY, message = "国家编码，如手机号 中国 +86不能为空")
     private String countryCode;
 
     @ApiModelProperty(value = "电话")
-    @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY, message = "邮箱不能为空")
+    @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY, message = "电话不能为空")
     //@MaximumLength(value = "10", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "长度过长")
     private String telephone;
 
     @ApiModelProperty(value = "备注")
+    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String remark;
 }
