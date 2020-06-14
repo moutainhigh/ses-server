@@ -115,7 +115,7 @@ public class WebsiteOrderFormController {
     @WebsiteSignIn
     @PostMapping(value = "/payLastParagraph")
     @ApiOperation(value = "支付尾款", response = GeneralResult.class)
-    public Response<GeneralResult> payLastParagraph(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<GeneralResult> payLastParagraph(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(websiteOrderFormService.payLastParagraph(enter));
     }
 

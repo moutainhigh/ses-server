@@ -75,7 +75,7 @@ public interface EmployeeServiceMapper {
      * @param ids
      * @return
      */
-    List<EmployeeDeptResult> getEmployeePositionList(@Param("tenantId") Long tenantId, @Param("ids") List<Long> ids);
+    List<EmployeeDeptResult> getEmployeePositionList(@Param("tenantId") Long tenantId, @Param("ids") List<Long> ids, @Param("adminRole") String adminRole);
 
     /**
      * 员工模块 办公区域列表

@@ -926,7 +926,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      *
      * @param enter
      */
-    private void checkCustomer(EditCustomerEnter enter) {
+    public void checkCustomer(EditCustomerEnter enter) {
         if (enter.getId() == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
         }

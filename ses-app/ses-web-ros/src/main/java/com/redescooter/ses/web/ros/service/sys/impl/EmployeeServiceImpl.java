@@ -299,7 +299,6 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public List<EmployeeDeptResult> employeeDeptList(EmployeeDeptEnter enter) {
-        List<EmployeeDeptResult> employeeDeptResultlist = new ArrayList<>();
         // 类型过滤
         if (EmployeeDeptTypeEnums.checkValue(enter.getType()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
@@ -327,7 +326,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 result.removeIf(item -> item.getId().equals(enter.getBizId()));
                 break;
             case POSITION:
-                result = employeeServiceMapper.getEmployeePositionList(enter.getTenantId(), ids);
+                result = employeeServiceMapper.getEmployeePositionList(enter.getTenantId(), ids,Constant.ADMIN_USER_NAME);
                 break;
             case OFFICEAREA:
                 for (AddressBureauEnums item : AddressBureauEnums.values()) {
