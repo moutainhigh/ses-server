@@ -72,13 +72,9 @@ public class FactoryRosServiceImpl implements FactoryRosService {
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
         checkSaveFactoryParameter(enter);
 
-      //员工名称首位大写
-      String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
-      String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
-      String lastName = SesStringUtils.upperCaseString(enter.getContactFirstName());
-      enter.setFactoryName(factoryName);
-      enter.setContactFirstName(firstName);
-      enter.setContactLastName(lastName);
+        //员工名称首位大写
+        String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
+        enter.setFactoryName(factoryName);
         OpeFactory factorySave = new OpeFactory();
 
         BeanUtils.copyProperties(enter, factorySave);
@@ -114,11 +110,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
 
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
-      String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
-      String lastName = SesStringUtils.upperCaseString(enter.getContactFirstName());
       enter.setFactoryName(factoryName);
-      enter.setContactFirstName(firstName);
-      enter.setContactLastName(lastName);
         OpeFactory factoryEdit = new OpeFactory();
         BeanUtils.copyProperties(enter, factoryEdit);
         factoryEdit.setUpdatedBy(enter.getUserId());
