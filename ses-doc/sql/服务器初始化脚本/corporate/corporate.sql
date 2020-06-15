@@ -11,7 +11,7 @@
  Target Server Version : 80020
  File Encoding         : 65001
 
- Date: 29/05/2020 17:24:49
+ Date: 14/06/2020 18:36:47
 */
 
 SET NAMES utf8mb4;
@@ -555,6 +555,59 @@ CREATE TABLE `cor_tenant_scooter`  (
 -- ----------------------------
 -- Records of cor_tenant_scooter
 -- ----------------------------
+INSERT INTO `cor_tenant_scooter` VALUES (1000000, 0, 1008364, '3', 1008392, 48.8628680000, 2.3139600000, 'AA-AAA-AA', NULL, '1', 1023310, '2020-06-02 06:27:59', 1023310, '2020-06-02 06:27:59', NULL, NULL, 0);
+INSERT INTO `cor_tenant_scooter` VALUES (1002044, 0, 1006344, '3', 1008394, 48.8628680000, 2.3139600000, '12-345-79', NULL, '1', 1021166, '2020-06-03 03:00:43', 1021166, '2020-06-03 03:00:43', NULL, NULL, 0);
+INSERT INTO `cor_tenant_scooter` VALUES (1002045, 0, 1008364, '3', 1008395, 48.8628680000, 2.3139600000, '12-345-67', NULL, '1', 1023310, '2020-06-03 03:11:58', 1023310, '2020-06-03 03:11:58', NULL, NULL, 0);
+INSERT INTO `cor_tenant_scooter` VALUES (1004140, 0, 1006345, '3', 1008394, 48.8628680000, 2.3139600000, '12-345-69', NULL, '1', 1021169, '2020-06-03 08:08:43', 1021169, '2020-06-03 08:08:43', NULL, NULL, 0);
+INSERT INTO `cor_tenant_scooter` VALUES (1004141, 0, 1006344, '3', 1008395, 48.8628680000, 2.3139600000, '12-453-23', NULL, '1', 1021166, '2020-06-03 08:09:11', 1021166, '2020-06-03 08:09:11', NULL, NULL, 0);
+INSERT INTO `cor_tenant_scooter` VALUES (1004171, 0, 1006345, '3', 1020945, 2.3354060000, 48.8652520000, 'AA-001-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '5', 0, '1970-01-01 00:17:45', 1021169, '2020-06-02 03:24:45', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1006258, 0, 1006345, '3', 1020946, 2.3321970000, 48.8666100000, 'AA-002-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '5', 0, '1970-01-01 00:17:45', 1021169, '2020-06-02 02:57:33', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1006259, 0, 1008364, '3', 1020947, 2.3348260000, 48.8662570000, 'AA-003-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '5', 0, '1970-01-01 00:17:49', 1023310, '2020-06-02 06:33:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1006264, 0, 1006344, '3', 1008392, 48.8628680000, 2.3139600000, '12-345-60', NULL, '1', 1021166, '2020-06-03 08:15:03', 1021166, '2020-06-03 08:15:03', NULL, NULL, 0);
+INSERT INTO `cor_tenant_scooter` VALUES (1008320, 0, 1008364, '3', 1020948, 2.3329360000, 48.8655840000, 'AA-004-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '1970-01-01 00:17:49', 1010588, '2020-06-02 06:33:17', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1008321, 0, 0, '3', 1020949, 2.3429170000, 48.8616880000, 'AA-005-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '1970-01-01 00:17:49', 1010587, '2020-06-01 05:45:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1008322, 0, 0, '3', 1020950, 2.3420040000, 48.8710150000, 'AA-006-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010587, '2020-06-01 05:45:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1010353, 0, 0, '3', 1020951, 2.3460490000, 48.8700980000, 'AA-007-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010586, '2020-05-25 07:59:28', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1010354, 0, 0, '3', 1020952, 2.3477770000, 48.8705330000, 'AA-008-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1000002, '2020-05-25 07:59:28', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1012464, 0, 0, '3', 1020953, 2.3364410000, 48.8693320000, 'AA-009-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010592, '2020-06-01 05:45:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1012465, 0, 0, '3', 1020954, 2.3275210000, 48.8712400000, 'AA-010-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010592, '2020-05-25 07:59:28', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1012467, 0, 0, '3', 1020956, 2.3069040000, 48.8328230000, 'AA-011-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010597, '2020-06-01 05:45:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018680, 0, 0, '3', 1020959, 2.3354060000, 48.8652520000, 'AA-015-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010597, '2020-06-01 05:45:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018681, 0, 0, '3', 1020960, 2.3354060000, 48.8652520000, 'AA-016-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010611, '2020-06-01 05:45:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018682, 0, 0, '3', 1020955, 2.3069040000, 48.8328230000, 'AA-012-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010611, '2020-06-01 05:45:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018683, 0, 0, '3', 1020957, 2.3354060000, 48.8652520000, 'AA-013-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1014818, '2020-05-25 07:59:28', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018684, 0, 0, '3', 1020958, 2.3354060000, 48.8652520000, 'AA-014-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1014818, '2020-05-25 07:59:28', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018685, 0, 0, '3', 1020961, 2.3354060000, 48.8652520000, 'AA-017-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1004234, '2020-05-25 07:59:28', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018686, 0, 0, '3', 1020962, 2.3321970000, 48.8666100000, 'AA-018-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1004234, '2020-05-25 07:59:28', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018687, 0, 0, '3', 1020963, 2.3348260000, 48.8662570000, 'AA-019-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010625, '2020-06-01 05:45:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018688, 0, 0, '3', 1020964, 2.3329360000, 48.8655840000, 'AA-020-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1004234, '2020-05-25 07:59:28', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018689, 0, 0, '3', 1020965, 2.3429170000, 48.8616880000, 'AA-021-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010611, '2020-06-01 05:45:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018690, 0, 0, '3', 1020966, 2.3420040000, 48.8710150000, 'AA-022-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1010611, '2020-06-01 05:45:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018691, 0, 0, '3', 1020967, 2.3460490000, 48.8700980000, 'AA-023-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1006420, '2020-02-20 08:28:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018692, 0, 0, '3', 1020968, 2.3477770000, 48.8705330000, 'AA-024-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1006420, '2020-02-20 08:28:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018693, 0, 0, '3', 1020969, 2.3364410000, 48.8693320000, 'AA-025-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1006420, '2020-02-20 08:28:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018694, 0, 0, '3', 1020970, 2.3275210000, 48.8712400000, 'AA-026-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1006420, '2020-02-20 08:28:44', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018695, 0, 0, '3', 1020971, 2.3069040000, 48.8328230000, 'AA-027-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1033718, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018696, 0, 0, '3', 1020972, 2.3354060000, 48.8652520000, 'AA-028-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1014818, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018697, 0, 0, '3', 1020973, 2.3354060000, 48.8652520000, 'AA-029-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1014818, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018698, 0, 0, '3', 1020974, 2.3069040000, 48.8328230000, 'AA-030-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1033718, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018699, 0, 0, '3', 1020975, 2.3354060000, 48.8652520000, 'AA-031-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1014818, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018700, 0, 0, '3', 1020976, 2.3354060000, 48.8652520000, 'AA-032-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1014818, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018701, 0, 0, '3', 1020977, 2.3354060000, 48.8652520000, 'AA-033-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1004234, '2020-02-17 15:39:36', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018702, 0, 0, '3', 1020978, 2.3321970000, 48.8666100000, 'AA-034-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1004234, '2020-02-17 15:39:35', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018703, 0, 0, '3', 1020979, 2.3348260000, 48.8662570000, 'AA-035-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1004234, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018704, 0, 0, '3', 1020980, 2.3329360000, 48.8655840000, 'AA-036-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1004234, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018705, 0, 0, '3', 1020981, 2.3429170000, 48.8616880000, 'AA-037-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1004234, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018706, 0, 0, '3', 1020982, 2.3420040000, 48.8710150000, 'AA-038-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1006420, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018707, 0, 0, '3', 1020983, 2.3460490000, 48.8700980000, 'AA-039-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1006420, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018708, 0, 0, '3', 1020984, 2.3477770000, 48.8705330000, 'AA-040-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1006420, '2020-02-17 15:39:36', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018709, 0, 0, '3', 1020985, 2.3364410000, 48.8693320000, 'AA-041-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1006420, '2020-02-17 15:39:36', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018710, 0, 0, '3', 1020986, 2.3275210000, 48.8712400000, 'AA-042-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1006420, '2020-02-17 15:45:29', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018712, 0, 0, '3', 1020988, 2.3354060000, 48.8652520000, 'AA-044-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1033720, '2020-02-20 08:22:45', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018713, 0, 0, '3', 1020989, 2.3354060000, 48.8652520000, 'AA-045-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1033720, '2020-02-20 08:28:48', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018714, 0, 0, '3', 1020990, 2.3069040000, 48.8328230000, 'AA-046-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1033720, '2020-02-20 08:28:48', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018715, 0, 0, '3', 1020991, 2.3354060000, 48.8652520000, 'AA-047-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1033720, '2020-02-20 08:28:48', NULL, NULL, NULL);
+INSERT INTO `cor_tenant_scooter` VALUES (1018716, 0, 0, '3', 1020992, 2.3354060000, 48.8652520000, 'AA-048-BB', 'https://rede.oss-cn-shanghai.aliyuncs.com/1574231627614.jpeg', '1', 0, '2020-01-11 11:34:02', 1033720, '2020-02-20 08:22:45', NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for cor_user_profile
@@ -569,7 +622,7 @@ CREATE TABLE `cor_user_profile`  (
   `picture` varchar(2048) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '照片',
   `first_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '名',
   `last_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '姓',
-  `full_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '全名',
+  `full_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '全名',
   `nickname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '昵称',
   `email_1` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '邮箱',
   `email_2` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '邮箱',

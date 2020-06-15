@@ -69,8 +69,16 @@
                profile.country_code as countryCode,
                profile.tel_number   as telphone
         from ope_sys_staff staff
-                 inner join ope_sys_user_profile profile on staff.sys_user_id = profile.sys_user_id and profile.dr=0
-        where staff.dr=0
+                 inner join ope_sys_user_profile profile on staff.sys_user_id = profile.sys_user_id and profile.dr = 0
+                 left join ope_sys_user user on user.org_staff_id = staff.id and user.dr = 0
+                 left join ope_sys_dept dept on dept.id = user.dept_id and dept.dr = 0
+        where staff.dr = 0
+        <if test="collection != null and collection.size() != 0">
+        and dept.id in
+            <foreach collection="collection" open="(" close=")" item="item" >
+                #{item}
+            </foreach>
+        </if>
     </select>
 
     <select id="getChildDeptIds" resultType="java.lang.Long">
