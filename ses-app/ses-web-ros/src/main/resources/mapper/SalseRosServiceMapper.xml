@@ -111,7 +111,6 @@
         from ope_parts_product opp
         <include refid="join_productList"/>
         <include refid="where_productList"/>
-        order by opp.updated_time desc
     </select>
 
     <select id="productList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.ProductListResult">
