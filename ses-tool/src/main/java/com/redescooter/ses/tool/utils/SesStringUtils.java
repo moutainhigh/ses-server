@@ -1,10 +1,12 @@
 package com.redescooter.ses.tool.utils;
 
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -195,9 +197,14 @@ public class SesStringUtils extends StringUtils {
      * @return
      */
     public static <T extends Object> T objStringTrim(T t) {
+        if(Objects.isNull(t)){
+            return t;
+        }
         //如果时一个字符串 直接返回
         if (t instanceof String) {
-            return (T) ((String) t).trim();
+            if (!Strings.isNullOrEmpty((String) t)) {
+                return (T) ((String) t).trim();
+            }
         }
 
         try {
