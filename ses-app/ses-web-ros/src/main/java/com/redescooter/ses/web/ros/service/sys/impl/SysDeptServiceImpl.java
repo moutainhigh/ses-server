@@ -255,6 +255,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
 
         //更新部门
+        checkDept.setName(enter.getName());
         checkDept.setSort(enter.getSort());
         checkDept.setUpdatedBy(enter.getUserId());
         checkDept.setUpdatedTime(new Date());

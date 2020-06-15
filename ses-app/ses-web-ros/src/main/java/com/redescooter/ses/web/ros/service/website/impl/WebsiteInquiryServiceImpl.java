@@ -117,7 +117,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         List<ProductModelResult> resultList = new ArrayList<>();
 
         for (ProductModelEnums item : ProductModelEnums.values()) {
-            resultList.add(ProductModelResult.builder().modelCode(item.getValue()).name(item.getCode()).build());
+            resultList.add(ProductModelResult.builder().modelCode(item.getValue()).name(item.getMessage()).build());
         }
         return resultList;
     }

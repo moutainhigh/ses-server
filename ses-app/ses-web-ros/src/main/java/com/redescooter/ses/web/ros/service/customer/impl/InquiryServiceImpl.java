@@ -129,7 +129,7 @@ public class InquiryServiceImpl implements InquiryService {
             } catch (Exception e) {
                 throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
-            if (enter.getEmail().length() < 2 || enter.getEmail().length() > 20) {
+            if (enter.getEmail().length() < 2 || enter.getEmail().length() > 50) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
             }
             if (enter.getTelephone().length() < 2 || enter.getTelephone().length() > 10) {
