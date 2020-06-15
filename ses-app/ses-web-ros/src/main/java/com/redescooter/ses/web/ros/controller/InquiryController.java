@@ -9,7 +9,6 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
-import com.redescooter.ses.web.ros.vo.inquiry.NewSaveInquiryEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,8 +48,8 @@ public class InquiryController {
     @IgnoreLoginCheck
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存询价单", response = GeneralResult.class)
-    public Response<GeneralResult> newSaveInquiry(@ModelAttribute @ApiParam("请求参数") NewSaveInquiryEnter enter) {
-        return new Response<>(inquiryService.newSaveInquiry(enter));
+    public Response<GeneralResult> saveInquiry(@ModelAttribute @ApiParam("请求参数") SaveInquiryEnter enter) {
+        return new Response<>(inquiryService.saveInquiry(enter));
     }
 
     @PostMapping(value = "/list")
