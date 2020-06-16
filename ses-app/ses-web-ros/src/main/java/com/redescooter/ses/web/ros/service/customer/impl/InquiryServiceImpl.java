@@ -147,10 +147,10 @@ public class InquiryServiceImpl implements InquiryService {
 //        if (emailList.contains(enter.getEmail())) {
 //            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
 //        }
-        CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
+       /* CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
         if (cityResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
-        }
+        }*/
 
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
@@ -160,7 +160,7 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         opeCustomerInquiry.setCountry(null);
         opeCustomerInquiry.setCity(null);
-        opeCustomerInquiry.setDistrict(cityResult.getId());
+        opeCustomerInquiry.setDistrict(null);
         opeCustomerInquiry.setCustomerSource("");
         opeCustomerInquiry.setSalesId(0L);
         opeCustomerInquiry.setSource(InquirySourceEnums.INQUIRY.getValue());
