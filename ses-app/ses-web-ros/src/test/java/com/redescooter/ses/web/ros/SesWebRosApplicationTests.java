@@ -1,11 +1,10 @@
 package com.redescooter.ses.web.ros;
 
-import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
+import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -95,7 +94,21 @@ public class SesWebRosApplicationTests {
         StringEncryptor stringEncryptor = new DefaultLazyEncryptor(new StandardEnvironment());
 //        System.out.println("加密后的登录名： " + stringEncryptor.encrypt("root"));
 //        System.out.println("加密后的密码： " + stringEncryptor.encrypt("1qaz2wsx"));
-        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://172.31.5.73:3306/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+        System.out.println("consumer： " + stringEncryptor.encrypt(
+            "jdbc:mysql://172.31.5.73:4269/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+
+        System.out.println("scooter： " + stringEncryptor.encrypt(
+            "jdbc:mysql://172.31.5.73:4269/scooter_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+
+        System.out.println("platform： " + stringEncryptor.encrypt(
+            "jdbc:mysql://172.31.5.73:4269/platform_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+
+        System.out.println("corporate： " + stringEncryptor.encrypt(
+            "jdbc:mysql://172.31.5.73:4269/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+
+        System.out.println("operation： " + stringEncryptor.encrypt(
+            "jdbc:mysql://172.31.5.73:4269/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+
         ////
 //
 //        String url="+chN0fRMdoeLUWSKhrK2wbRtCS9HtHdgHojKHlPjwRbbf/NC9cLGUJGNbS8KTloYlKi43+n79TiDla0aWszCT+pDuCXOcFQy3ycbBJXN4wqwDF5HVL1PObebjlCR29Q7bUW10W7cFdrrjhZN90u0zEtEYh1qzD7rW1rw8uUnFSuF69w9M3et6tHJYU2MpOS/jl/1u6e/d3uhRRp225KLSZMS6PrR3EnsNfW6HQYByeVM3eZLZlBDUkebkhxKcU8tV1Qz4xSJbl9rNA1jqwFAIxhsFFI+uuLfiEe4u0/5DDewWR1NtvzOTEKKKlM1f9VyMDwwECar1IbYORA72Yik0Q==";
