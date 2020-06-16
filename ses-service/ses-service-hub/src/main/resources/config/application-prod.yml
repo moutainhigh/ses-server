@@ -7,7 +7,7 @@ log:
 
 dubbo:
   registry: #注册中心
-    address: zookeeper://172.31.3.48:2181?backup=172.31.3.48:2182,172.31.3.48:2183
+    address: zookeeper://172.31.5.73:2181?backup=172.31.5.73:2182,172.31.5.73:2183
 
 jasypt:
   encryptor:
@@ -24,29 +24,29 @@ spring:
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: RedE(oBSNiGrJNk7a5TcQoJjd2FZoxqxmkEyHCrK1OA2v28Ee5rDtfvPomKdSfYM/YPS8GVn07IA0PY0r+3iPdZ0FpuImgtIblx1r5lmgb/vPyCDnqvZzrfHV3vXaz7gJV4bsN2QFqAKY632OK2fONgbTA3PFrlrmDILaGbV/lpqa5AVk8JJ+MmpnWUiw7BbZ1DcX2A7/Sh51tu6nw+/b2BNZTMUVGrYqxPiwO+sUuIpNu405DRrRP9fMI4f587GU1HQTyIxXOSVuj4N9i3q6gv7stDRfYji6wxE/i8zZoOsRNqc5hjFmi5gZOG6m2IezAus4)
+          url: RedE(uPf3/uMiPDieWFm2Rior8Xm45u+26ZzXJLT1PDbdrwtMu6Ioa3NuhbtvGcXeU1klh4vf5L7ZRhgcJES11n/lyZZXSpd/68Al8hfh48IHfG2tPsbt/wM0u0PUE4psU90GzFrVE4OSyiQDjz69Wx6tNqOsk3muu7k8xdJlafTBoIfjCHYtWZ3wdJdE6zy1vgk3wyc1f962TSHrR7WDIesYbDpO8houCvpDNtIeemLnRzqwKQzKqWeljfJn5WWlU43g0M2jECvfaxGBce9G5HOOhXnIqj0tA/DMrUQqK9pl1HSF2n4ZyeL7CMNWWZdVYU6M)
           username: RedE(Yr0vWxWbNSSkjlTHm4//fA==)
           password: RedE(cfEFXZfdGfZHyT8KdMVRyzN7OcA/nX3Zo/iNQUcCdOl6KuPa9FMTHFoLmki5Sz32)
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: RedE(oBSNiGrJNk7a5TcQoJjd2FZoxqxmkEyHCrK1OA2v28Ee5rDtfvPomKdSfYM/YPS8GVn07IA0PY0r+3iPdZ0FpuImgtIblx1r5lmgb/vPyCDnqvZzrfHV3vXaz7gJV4bsN2QFqAKY632OK2fONgbTA3PFrlrmDILaGbV/lpqa5AVk8JJ+MmpnWUiw7BbZ1DcX2A7/Sh51tu6nw+/b2BNZTMUVGrYqxPiwO+sUuIpNu405DRrRP9fMI4f587GU1HQTyIxXOSVuj4N9i3q6gv7stDRfYji6wxE/i8zZoOsRNqc5hjFmi5gZOG6m2IezAus4)
+          url: RedE(TyS+rBbp4oANJbX8FJU+sK0lLmFWK8ww08AjhZGTWIZ+tP3zG7RADpTYNTZB4eet4rwpLTRr1ISdVUX2E3Zj1HKibpj0UqumWXpdIIYPu37CFreunOI2wkk/X8BzXRhWY1/YxlWitXZpKlLNEu8y0tRdbx4vePWvwb7NzUsv5hjp9v1GPd4c6cYbhE3iunNioEY7g648IemZVD+IDBtrM3sGMa4yw4KzeX0kOf36hMzokHHcToqJhcyGamTcLdv2uVS7XU5AXuDQJFZXPhqpdiQLyjvCJjNe5qEQz467WtaP14b49osll8e8KmpIHh00)
           username: RedE(Yr0vWxWbNSSkjlTHm4//fA==)
           password: RedE(cfEFXZfdGfZHyT8KdMVRyzN7OcA/nX3Zo/iNQUcCdOl6KuPa9FMTHFoLmki5Sz32)
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: RedE(oBSNiGrJNk7a5TcQoJjd2FZoxqxmkEyHCrK1OA2v28Ee5rDtfvPomKdSfYM/YPS8GVn07IA0PY0r+3iPdZ0FpuImgtIblx1r5lmgb/vPyCDnqvZzrfHV3vXaz7gJV4bsN2QFqAKY632OK2fONgbTA3PFrlrmDILaGbV/lpqa5AVk8JJ+MmpnWUiw7BbZ1DcX2A7/Sh51tu6nw+/b2BNZTMUVGrYqxPiwO+sUuIpNu405DRrRP9fMI4f587GU1HQTyIxXOSVuj4N9i3q6gv7stDRfYji6wxE/i8zZoOsRNqc5hjFmi5gZOG6m2IezAus4)
+          url: RedE(XhZ1yxiWni/48tyqS2MC3q9/e/8brCcSgvcGjmHRizgu5cvYCvZTgkG5q53BbTEnIB5Ezq+43FAGE1GEFuvdlNFIJ4EfygUqMNtHr9e8/9gaLA6SL/FERsAU3WzIajX0qDM3q730q0SxVOSTFokC8G9pJwExBMquznZGxMTSfipJhAOm4enEIHT/nM4GJIPSoLj34JVrAOfIpV+dz1vCLQ7DX6Pw0t7NHTrX6jNKf1dRJT8tgY3yEUSB/PZ5yLr90pmkf+l1h/Mo1i2BhBYG4KuCimm77xSaxUjZ/exXGRZ+DdGq/Z8Ol9Fl3BPPx8Hr)
           username: RedE(Yr0vWxWbNSSkjlTHm4//fA==)
           password: RedE(cfEFXZfdGfZHyT8KdMVRyzN7OcA/nX3Zo/iNQUcCdOl6KuPa9FMTHFoLmki5Sz32)
   #REDIS集群配置
   redis:
     cluster:
       nodes:
-        - 172.31.3.48:7000
-        - 172.31.3.48:7001
-        - 172.31.3.48:7002
-        - 172.31.3.48:7003
-        - 172.31.3.48:7004
-        - 172.31.3.48:7005
+        - 172.31.5.73:7000
+        - 172.31.5.73:7001
+        - 172.31.5.73:7002
+        - 172.31.5.73:7003
+        - 172.31.5.73:7004
+        - 172.31.5.73:7005
 
 #
 
