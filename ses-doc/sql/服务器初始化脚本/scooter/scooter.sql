@@ -246,13 +246,6 @@ CREATE TABLE `sco_scooter_navigation`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '导航表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of sco_scooter_navigation
--- ----------------------------
-INSERT INTO `sco_scooter_navigation` VALUES (1006354, 0, 1020946, '0123456789ABCDEF', '0.0', 48.8666100000, 2.3321970000, '2', 1023302, '2020-06-02 02:27:01', 1023302, '2020-06-02 02:27:27', NULL, NULL, NULL, NULL, 0);
-INSERT INTO `sco_scooter_navigation` VALUES (1006355, 0, 1020946, '0123456789ABCDEF', '0.0', 48.8666100000, 2.3321970000, '2', 1023304, '2020-06-02 03:14:36', 1023304, '2020-06-02 03:15:04', NULL, NULL, NULL, NULL, 0);
-INSERT INTO `sco_scooter_navigation` VALUES (1006357, 0, 1020947, '0123456789ABCDEF', '0.0', 48.8662570000, 2.3348260000, '2', 1023311, '2020-06-02 06:58:54', 1023311, '2020-06-02 06:59:23', NULL, NULL, NULL, NULL, 0);
-
--- ----------------------------
 -- Table structure for sco_scooter_obd
 -- ----------------------------
 DROP TABLE IF EXISTS `sco_scooter_obd`;
