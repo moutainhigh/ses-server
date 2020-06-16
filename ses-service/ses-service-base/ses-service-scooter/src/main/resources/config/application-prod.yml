@@ -8,7 +8,7 @@ log:
 # DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://172.31.3.48:2181?backup=172.31.3.48:2182,172.31.3.48:2183
+    address: zookeeper://172.31.5.73:2181?backup=172.31.5.73:2182,172.31.5.73:2183
 
 jasypt:
   encryptor:
@@ -20,7 +20,7 @@ jasypt:
 spring:
   #数据库连接
   datasource:                                                                                                           #数据库连接
-    url: RedE(YXgidNS80Q88uG70K+nf7pXKw8PwgCbSMs/9gnpX3GRcNOeVlE7rb8xxQLswmui36rH0SwJFPUj50FIVRzNgfRqX2y3DFA18eKRFubfg6AZr7sPDSPCR2AMxGoGL0ljSeqowLVjWZwLMIvkliSmR9OIK5LFnmPXhSWy2X3K83ivGCOwreh3D+0OPruZ5nbKi4Tb8GQsZxw4ilg+efqTMbJJnJ7UTSClreh0lR2WNoPjVBnHWG3cw6TIwNxhorYn+8hGqZdKmuGCV2j1gaUOCHau54rtuYErBOSPAYaPA5N3+MJTMnAEjhO7oXGgEI8XT1GnXP7i3JwesAtRM1FcPwfm9ER6x26aDboIGv4fvO/s=)
+    url: RedE(7uoCRUqSiR9HNz2lWhrlfISaIc7pqACPyeyN7wmrhs0sc1P90NWzJMcrwBzfIigKe9HzKuwvFnOVIFe7Azoxy+M5Zicr9ciJA1jiBixuNFb6uUsuzcZYM63IAt9PFSy9RQCCgMPumngyp3jD7DZLBZiUkNsLtpa3EQwLoBUgo6gcirePhqht4RaMksBqvoQaHDNrEtBF1hgwA0zooXrsNrT1v/aL43LhyA6208iDO+PL+apjxhq9f83Tf3nIGJnrDGMNAzheblky/HavvqN+xZ/zQ5TJUx4aZC/qKmSuVXwAtoGxQ+E86+ScaWK45WDn)
     username: RedE(o8C1Nwm+Jz+qAJ5agE+v2w==)
     password: RedE(INiYiZuqy0UL8XEMB+H2OTIXV4g2fUAzpOYfm7NcV7N32jRvUXgOEPFgID32+DI+)
     druid:
@@ -32,12 +32,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 172.31.3.48:7000
-        - 172.31.3.48:7001
-        - 172.31.3.48:7002
-        - 172.31.3.48:7003
-        - 172.31.3.48:7004
-        - 172.31.3.48:7005
+        - 172.31.5.73:7000
+        - 172.31.5.73:7001
+        - 172.31.5.73:7002
+        - 172.31.5.73:7003
+        - 172.31.5.73:7004
+        - 172.31.5.73:7005
 
 
 

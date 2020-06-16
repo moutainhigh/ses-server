@@ -95,15 +95,7 @@ public class SesWebRosApplicationTests {
         StringEncryptor stringEncryptor = new DefaultLazyEncryptor(new StandardEnvironment());
 //        System.out.println("加密后的登录名： " + stringEncryptor.encrypt("root"));
 //        System.out.println("加密后的密码： " + stringEncryptor.encrypt("1qaz2wsx"));
-        System.out.println("foundation");
-        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://172.31.3.48:4269/platform_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements =true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true\n"));
-
-        System.out.println("scooter");
-        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://172.31.3.48:4269/scooter_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements =true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true\n"));
-
-        System.out.println("proxy");
-        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://172.31.3.48:4269/platform_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements =true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true\n"));
-
+        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://172.31.5.73:3306/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
         ////
 //
 //        String url="+chN0fRMdoeLUWSKhrK2wbRtCS9HtHdgHojKHlPjwRbbf/NC9cLGUJGNbS8KTloYlKi43+n79TiDla0aWszCT+pDuCXOcFQy3ycbBJXN4wqwDF5HVL1PObebjlCR29Q7bUW10W7cFdrrjhZN90u0zEtEYh1qzD7rW1rw8uUnFSuF69w9M3et6tHJYU2MpOS/jl/1u6e/d3uhRRp225KLSZMS6PrR3EnsNfW6HQYByeVM3eZLZlBDUkebkhxKcU8tV1Qz4xSJbl9rNA1jqwFAIxhsFFI+uuLfiEe4u0/5DDewWR1NtvzOTEKKKlM1f9VyMDwwECar1IbYORA72Yik0Q==";
