@@ -179,18 +179,18 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
         //入参对象去空格
         SesStringUtils.objStringTrim(enter);
-
-        //电话解密
-        String decrypt = null;
-        try {
-            decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
-        } catch (Exception e) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
-        if (decrypt.length() != 10) {
-            throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
-        }
-        enter.setPhone(decrypt);
+//
+//        //电话解密
+//        String decrypt = null;
+//        try {
+//            decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
+//        } catch (Exception e) {
+//            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+//        }
+//        if (decrypt.length() != 10) {
+//            throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
+//        }
+//        enter.setPhone(decrypt);
 
 
         //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
@@ -310,18 +310,18 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        if (enter.getPhone() != null) {
-            if (enter.getPhone() != null) {
-                String decrypt = null;
-                try {
-
-                    decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
-                } catch (Exception e) {
-                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-                }
-                enter.setPhone(decrypt);
-            }
-        }
+//        if (enter.getPhone() != null) {
+//            if (enter.getPhone() != null) {
+//                String decrypt = null;
+//                try {
+//
+//                    decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
+//                } catch (Exception e) {
+//                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+//                }
+//                enter.setPhone(decrypt);
+//            }
+//        }
 
         //电池要求过滤
         BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
@@ -399,15 +399,15 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 //        opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
         opeCustomerInquiry.setScooterQuantity(1);
         opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
-        opeCustomerInquiry.setAddress(enter.getAddress());
-        opeCustomerInquiry.setCountryCode(enter.getCountryCode());
-        opeCustomerInquiry.setTelephone(enter.getPhone());
+        opeCustomerInquiry.setAddress(null);
+        opeCustomerInquiry.setCountryCode(null);
+        opeCustomerInquiry.setTelephone(null);
         opeCustomerInquiry.setBankCardName(enter.getBankCardName());
         opeCustomerInquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
         opeCustomerInquiry.setCardNum(StringUtils.isEmpty(enter.getCardNum()) ? null : enter.getCardNum());
         opeCustomerInquiry.setExpiredTime(enter.getExpiredTime() != null && enter.getExpiredTime() != 0 ? DateUtil.timeStampToDate(enter.getExpiredTime(), DateUtil.UTC) : null);
         opeCustomerInquiry.setCvv(StringUtils.isBlank(enter.getCvv()) ? null : enter.getCvv());
-        opeCustomerInquiry.setPostalCode(StringUtils.isBlank(enter.getPostalCode()) ? null : enter.getPostalCode());
+        opeCustomerInquiry.setPostalCode(null);
         opeCustomerInquiry.setUpdatedBy(enter.getUserId());
         opeCustomerInquiry.setUpdatedTime(new Date());
         return opeCustomerInquiry;
