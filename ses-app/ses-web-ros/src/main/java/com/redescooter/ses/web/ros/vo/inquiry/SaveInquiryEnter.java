@@ -52,7 +52,7 @@ public class SaveInquiryEnter extends GeneralEnter {
     private String countryCode;
 
     @ApiModelProperty(value = "电话")
-    @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY, message = "邮箱不能为空")
+    @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY, message = "电话不能为空")
     //@MaximumLength(value = "10", code = ValidationExceptionCode.CHARACTER_IS_TOO_LONG, message = "长度过长")
     private String telephone;
 

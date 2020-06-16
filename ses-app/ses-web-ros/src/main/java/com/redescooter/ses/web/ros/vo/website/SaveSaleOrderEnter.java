@@ -45,8 +45,7 @@ public class SaveSaleOrderEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "地址")
     @NotNull(code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "地址为空")
-    @MinimumLength(value = "2",code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "字符过短")
-    @MaximumLength(value = "120",code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "字符过长")
+    @MaximumLength(value = "120",code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "地址不合法")
     private String address;
 
     @ApiModelProperty(value = "产品Id")
