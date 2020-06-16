@@ -393,7 +393,36 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     return new GeneralResult(enter.getRequestId());
   }
 
-  /**
+    /**
+     * 定金支付成功发送邮件
+     *
+     * @param enter@return
+     */
+    @Override
+    public GeneralResult subscribeToEmailSuccessfully(BaseMailTaskEnter enter) {
+        //获取模板
+        PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
+        //将模板赋值
+        List<PlaMailConfig> configList = getPayTemplateById(mailtemplate.getMailTemplateNo());
+        Map<String, String> map = new HashMap();
+        if (configList != null && configList.size() > 0) {
+            map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
+        }
+        map.put("name", enter.getName());
+        //保存邮箱任务
+        PlaMailTask mailTask = new PlaMailTask();
+        mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
+        mailTask.setSubject(mailtemplate.getSubject());
+        mailTask.setParameter(JSON.toJSONString(map));
+        mailTask.setContent(mailtemplate.getContent());
+
+        mailTask = saveTask(mailTask, enter);
+        //触发该邮件的发送
+        runTaskById(mailTask.getId());
+        return null;
+    }
+
+    /**
      * 多系统多维度添加邮件任务
      *
      * @return

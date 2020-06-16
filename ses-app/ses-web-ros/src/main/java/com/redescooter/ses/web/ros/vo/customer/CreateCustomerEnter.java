@@ -69,7 +69,6 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String industryType;
 
     @ApiModelProperty(value = "地址")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.ADDRESS_ILLEGAL_CHARACTER,message = "地址存在非法字符")
     private String address;
 
     @ApiModelProperty(value = "地点编号")

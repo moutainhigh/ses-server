@@ -1,8 +1,11 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.EamilConstant;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerCertificateTypeEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
@@ -11,9 +14,11 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.config.SendinBlueConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
@@ -106,6 +111,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Autowired
     private SendinBlueConfig sendinBlueConfig;
 
+    @Autowired
+    private MailMultiTaskService mailMultiTaskService;
+
     /**
      * 车辆型号
      *
@@ -117,7 +125,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         List<ProductModelResult> resultList = new ArrayList<>();
 
         for (ProductModelEnums item : ProductModelEnums.values()) {
-            resultList.add(ProductModelResult.builder().modelCode(item.getValue()).name(item.getCode()).build());
+            resultList.add(ProductModelResult.builder().modelCode(item.getValue()).name(item.getMessage()).build());
         }
         return resultList;
     }
@@ -683,6 +691,23 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+
+        String name = email.substring(0, email.indexOf("@"));
+        BaseMailTaskEnter enter = new BaseMailTaskEnter();
+        enter.setName(name);
+        enter.setEvent(MailTemplateEventEnums.SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL.getName());
+        enter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
+        enter.setMailAppId(SystemIDEnums.REDE_SES.getValue());
+        enter.setToMail(email);
+        enter.setCode("0");
+        enter.setRequestId("0");
+        enter.setUserRequestId("0");
+        enter.setToUserId(0L);
+        enter.setUserId(0L);
+        enter.setFullName(name);
+        mailMultiTaskService.subscribeToEmailSuccessfully(enter);
     }
 
     /**
