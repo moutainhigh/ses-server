@@ -49,7 +49,6 @@ public class SaveInquiryEnter extends GeneralEnter {
     private String lastName;
 
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
-    @NotNull(code = ValidationExceptionCode.COUNTRY_CODE_IS_EMPTY, message = "邮箱不能为空")
     private String countryCode;
 
     @ApiModelProperty(value = "电话")
