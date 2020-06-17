@@ -29,14 +29,14 @@ public class VersionbaseController {
   @Reference
   private VersionBaseService versionBaseService;
 
-  @ApiOperation(value = "获取PC最新版本")
-  @PostMapping(value = "/newPcData")
+  @ApiOperation(value = "获取仪表平板最新版本")
+  @PostMapping(value = "/getCarInstrumentVersion")
   @IgnoreLoginCheck
   public Response<VersionTypeResult> getcNewVersionData(@ModelAttribute VersionTypeEnter enter) {
     return new Response(versionBaseService.getVersionData(enter));
   }
   @ApiOperation(value = "获取APP最新版本")
-  @PostMapping(value = "/newAppData")
+  @PostMapping(value = "/newAppVersion")
   public Response<VersionTypeResult> getAppNewVersionData(@ModelAttribute VersionTypeEnter enter) {
     return new Response(versionBaseService.getVersionData(enter));
   }
