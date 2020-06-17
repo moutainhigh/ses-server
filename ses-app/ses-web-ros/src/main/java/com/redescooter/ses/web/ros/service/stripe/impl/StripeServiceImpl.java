@@ -305,7 +305,7 @@ public class StripeServiceImpl implements StripeService {
         }
         // 订单数据保存
         //todo 定金支付成功后优惠500 欧元
-        customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("50000")));
+        customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("500")));
 
         customerInquiry.setPayStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
