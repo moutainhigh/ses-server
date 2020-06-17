@@ -18,4 +18,7 @@ public interface PlaAppVersionService extends IService<PlaAppVersion> {
 
     int insertOrUpdateSelective(PlaAppVersion record);
 
+    int updateBatchSelective(List<PlaAppVersion> list);
 }
+
+

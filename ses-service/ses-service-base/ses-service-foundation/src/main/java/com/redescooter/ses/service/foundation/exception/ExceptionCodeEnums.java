@@ -96,7 +96,8 @@ public enum ExceptionCodeEnums {
 
     NEW_AND_OLD_PASSWORDS_ARE_THE_SAME(10042,"新旧密码不能一致"),
 
-    ;
+   VERSION_IS_NOT_EXIST(10043, "版本不存在"),
+  ;
 
     private int code;
     private String message;

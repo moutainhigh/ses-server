@@ -5,10 +5,16 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @ApiModel(value = "com-redescooter-ses-service-foundation-dm-base-PlaAppVersion")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "pla_app_version")
 public class PlaAppVersion implements Serializable {
     /**
@@ -41,11 +47,25 @@ public class PlaAppVersion implements Serializable {
     private String appId;
 
     /**
-     * IOS or ANDROID
+     * 1.IOS 2. ANDROID
      */
     @TableField(value = "system_type")
-    @ApiModelProperty(value = "IOS or ANDROID")
-    private String systemType;
+    @ApiModelProperty(value = "1.IOS 2. ANDROID")
+    private Integer systemType;
+
+    /**
+     * 1.rps  2.singlechip
+     */
+    @TableField(value = "type")
+    @ApiModelProperty(value = "1.rps  2.singlechip")
+    private Integer type;
+
+    /**
+     * 应用code
+     */
+    @TableField(value = "code")
+    @ApiModelProperty(value = "应用code")
+    private String code;
 
     /**
      * 是否强制更新 1时true，0时false
@@ -185,6 +205,10 @@ public class PlaAppVersion implements Serializable {
 
     public static final String COL_SYSTEM_TYPE = "system_type";
 
+    public static final String COL_TYPE = "type";
+
+    public static final String COL_CODE = "code";
+
     public static final String COL_IS_FORCE = "is_force";
 
     public static final String COL_UPDATE_CONTENT = "update_content";
@@ -220,4 +244,8 @@ public class PlaAppVersion implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static PlaAppVersionBuilder builder() {
+        return new PlaAppVersionBuilder();
+    }
 }
