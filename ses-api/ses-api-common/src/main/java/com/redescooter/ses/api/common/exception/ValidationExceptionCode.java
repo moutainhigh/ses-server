@@ -26,6 +26,9 @@ public interface ValidationExceptionCode {
     // id为空
     int ID_IS_EMPTY = 10008;
     //密码为空
-    int PASSWORD_IS_EMPTY=10009;
-
+    int PASSWORD_IS_EMPTY = 10009;
+    //密码不合法
+    int PASSWORD_IS_ILLEGAL = 10010;
+    // 邮箱非法
+    int EMAIL_IS_ILLEGAL = 10011;
 }

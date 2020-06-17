@@ -11,7 +11,7 @@
  Target Server Version : 80020
  File Encoding         : 65001
 
- Date: 29/05/2020 17:24:29
+ Date: 14/06/2020 19:27:04
 */
 
 SET NAMES utf8mb4;
@@ -495,27 +495,24 @@ CREATE TABLE `ope_customer`  (
   `status` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '状态',
   `sales_id` bigint(0) NULL DEFAULT NULL COMMENT '销售',
   `customer_code` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户编码',
-  `customer_first_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户名字',
-  `customer_last_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户姓氏',
-  `customer_full_name` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户全名',
+  `customer_first_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户名字',
+  `customer_last_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户名字',
+  `customer_full_name` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户名字',
   `company_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '企业名称',
   `picture` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户头像',
   `customer_source` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户来源渠道 官网/email/电话',
-  `password` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '官网注册用户存在密码',
-  `salt` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '盐',
-  `last_login_token` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '上次登录token',
   `customer_type` varchar(24) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户类型 1企业/2个人',
   `industry_type` varchar(24) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户行业类型，1餐厅/2快递',
   `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '地址',
   `place_id` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '地点编号',
   `longitude` decimal(32, 10) NULL DEFAULT NULL COMMENT '经度',
   `latitude` decimal(32, 10) NULL DEFAULT NULL COMMENT '纬度',
-  `contact_first_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '联系人名字',
-  `contact_last_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '联系人姓氏',
+  `contact_first_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户名字',
+  `contact_last_name` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户名字',
   `contact_full_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '联系人全名',
   `telephone` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '电话',
   `email` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '邮件',
-  `memo` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注信息',
+  `memo` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注信息',
   `scooter_quantity` int(0) NULL DEFAULT NULL COMMENT '车辆数量',
   `assignation_scooter_qty` int(0) NULL DEFAULT NULL COMMENT '已分配车辆数',
   `certificate_type` varchar(24) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '证件类型1身份证，2驾驶证，3护照',
@@ -569,6 +566,8 @@ CREATE TABLE `ope_customer_accessories`  (
 -- ----------------------------
 -- Records of ope_customer_accessories
 -- ----------------------------
+INSERT INTO `ope_customer_accessories` VALUES (1000000, 0, 99.00, '1', 'Battery', 0, 0, '2020-05-13 11:46:00', 0, '2020-05-13 06:41:33', NULL, NULL, NULL, NULL, 0);
+INSERT INTO `ope_customer_accessories` VALUES (1000001, 0, 300.00, '2', 'TopCase', 0, 0, '2020-05-13 11:46:00', 0, '2020-05-13 06:41:33', NULL, NULL, NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for ope_customer_contact
@@ -619,9 +618,9 @@ CREATE TABLE `ope_customer_inquiry`  (
   `status` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '状态 已处理/未处理（默认）',
   `industry` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '行业 行业',
   `customer_type` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户类型 企业/个人',
-  `first_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户名称',
-  `last_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '姓',
-  `full_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '全名',
+  `first_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户名字',
+  `last_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户名字',
+  `full_name` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '客户名字',
   `company_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '公司名称',
   `country_code` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '国家编码如+86',
   `telephone` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '电话',
@@ -636,7 +635,7 @@ CREATE TABLE `ope_customer_inquiry`  (
   `total_price` decimal(10, 2) NULL DEFAULT NULL COMMENT '单据总价',
   `scooter_quantity` int(0) NULL DEFAULT NULL COMMENT '需求车辆数',
   `pay_status` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '支付状态',
-  `remarks` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `remarks` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
   `source` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '来源1 询价单 2预订单',
   `bank_card_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '银行卡上面名字',
   `cvv` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'cvv',
@@ -711,7 +710,7 @@ CREATE TABLE `ope_excle_import`  (
 -- ----------------------------
 -- Records of ope_excle_import
 -- ----------------------------
-INSERT INTO `ope_excle_import` VALUES (1012408, 0, '1', 'IK20052909406', '[{\"cnName\":\"电池\",\"enName\":\"Battery\",\"esc\":\"F05\",\"frName\":\"La batterie\",\"partsN\":\"RERE2WA-D000007-1\",\"rowNum\":1,\"snClass\":\"SSC\",\"type\":\"Battery\"},{\"cnName\":\"电机\",\"enName\":\"Battery\",\"esc\":\"F05\",\"frName\":\"Moteur\",\"partsN\":\"RERE2WA-D000007-12\",\"rowNum\":2,\"snClass\":\"SSC\",\"type\":\"Battery\"}]', 2, 'https://rede.oss-accelerate.aliyuncs.com/1590740511723.xlsx', 'BOM导入', 'BOM物料部件导入', 1008372, '2020-05-29 08:21:47', 1008372, '2020-05-29 08:21:47', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_excle_import` VALUES (1000000, 0, '1', 'J420061411097', '[{\"cnName\":\"电池\",\"enName\":\"Battery\",\"esc\":\"F05\",\"frName\":\"La batterie\",\"partsN\":\"RERE2WA-D000001-1\",\"rowNum\":1,\"snClass\":\"SSC\",\"type\":\"Battery\"}]', 1, 'https://rede.oss-cn-shanghai.aliyuncs.com/1592128701228.xlsx', 'BOM导入', 'BOM物料部件导入', 1000003, '2020-06-14 09:58:19', 1000003, '2020-06-14 09:58:19', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_factory
@@ -761,7 +760,7 @@ CREATE TABLE `ope_factory`  (
 -- ----------------------------
 -- Records of ope_factory
 -- ----------------------------
-INSERT INTO `ope_factory` VALUES (1008470, 0, '1', 0, 1008372, 'Flextronics', '中国深圳', 'China', NULL, NULL, NULL, NULL, 'Foundries', NULL, NULL, NULL, 'Alex', 'alex@redescooter.com', '33', '646545645', 60, '2020-05-29 00:00:00', NULL, '123456789', 'https://rede.oss-accelerate.aliyuncs.com/1590740305740.pdf', NULL, 'https://rede.oss-accelerate.aliyuncs.com/1590740315996.pdf', 0, '2020-05-29 08:18:30', 1008372, '2020-05-29 08:18:30', 1008372, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_factory` VALUES (1000000, 0, '1', 0, 1000003, 'FEL', 'Shenzhen, China', 'China', NULL, NULL, NULL, NULL, 'Foundries', NULL, NULL, NULL, 'Alex', 'alex@redescooter.com', '86', '1234567890', 30, '2020-06-14 00:00:00', NULL, '1234567890', 'https://rede.oss-cn-shanghai.aliyuncs.com/1592129155806.pdf', NULL, 'https://rede.oss-cn-shanghai.aliyuncs.com/1592129157237.pdf', 0, '2020-06-14 10:05:55', 1000003, '2020-06-14 10:05:55', 1000003, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_factory_trace
@@ -792,7 +791,7 @@ CREATE TABLE `ope_factory_trace`  (
 -- ----------------------------
 -- Records of ope_factory_trace
 -- ----------------------------
-INSERT INTO `ope_factory_trace` VALUES (1010490, 0, 1008470, 0, 1008372, '1', '1', '2020-05-29 08:18:30', NULL, 1008372, '2020-05-29 08:18:30', 1008372, '2020-05-29 08:18:30', NULL, NULL, NULL, NULL, 0);
+INSERT INTO `ope_factory_trace` VALUES (1000000, 0, 1000000, 0, 1000003, '1', '1', '2020-06-14 10:05:55', NULL, 1000003, '2020-06-14 10:05:55', 1000003, '2020-06-14 10:05:55', NULL, NULL, NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for ope_part_draft_qc_template
@@ -821,8 +820,7 @@ CREATE TABLE `ope_part_draft_qc_template`  (
 -- ----------------------------
 -- Records of ope_part_draft_qc_template
 -- ----------------------------
-INSERT INTO `ope_part_draft_qc_template` VALUES (1010320, 0, 1010471, NULL, '2', '外观', 0, 1008372, '2020-05-29 08:28:15', 1008372, '2020-05-29 08:28:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_part_draft_qc_template` VALUES (1010321, 0, 1010472, NULL, '2', '外壳', 0, 1008372, '2020-05-29 08:28:37', 1008372, '2020-05-29 08:28:37', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_part_draft_qc_template` VALUES (1000000, 0, 1000000, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:12:46', 1000003, '2020-06-14 10:12:46', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_part_draft_qc_template_b
@@ -852,10 +850,8 @@ CREATE TABLE `ope_part_draft_qc_template_b`  (
 -- ----------------------------
 -- Records of ope_part_draft_qc_template_b
 -- ----------------------------
-INSERT INTO `ope_part_draft_qc_template_b` VALUES (1010581, 0, 1010320, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:28:15', 1008372, '2020-05-29 08:28:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_part_draft_qc_template_b` VALUES (1010582, 0, 1010320, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:28:15', 1008372, '2020-05-29 08:28:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_part_draft_qc_template_b` VALUES (1010583, 0, 1010321, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:28:37', 1008372, '2020-05-29 08:28:37', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_part_draft_qc_template_b` VALUES (1010584, 0, 1010321, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:28:37', 1008372, '2020-05-29 08:28:37', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_part_draft_qc_template_b` VALUES (1000000, 0, 1000000, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:12:46', 1000003, '2020-06-14 10:12:46', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_part_draft_qc_template_b` VALUES (1000001, 0, 1000000, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:12:46', 1000003, '2020-06-14 10:12:46', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_part_qc_template
@@ -884,8 +880,7 @@ CREATE TABLE `ope_part_qc_template`  (
 -- ----------------------------
 -- Records of ope_part_qc_template
 -- ----------------------------
-INSERT INTO `ope_part_qc_template` VALUES (1010389, 0, 1024448, NULL, '2', '外观', 0, 1008372, '2020-05-29 08:28:15', 1008372, '2020-05-29 08:28:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_part_qc_template` VALUES (1010390, 0, 1024449, NULL, '2', '外壳', 0, 1008372, '2020-05-29 08:28:37', 1008372, '2020-05-29 08:28:37', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_part_qc_template` VALUES (1000000, 0, 1000000, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:12:46', 1000003, '2020-06-14 10:12:46', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_part_qc_template_b
@@ -915,10 +910,8 @@ CREATE TABLE `ope_part_qc_template_b`  (
 -- ----------------------------
 -- Records of ope_part_qc_template_b
 -- ----------------------------
-INSERT INTO `ope_part_qc_template_b` VALUES (1010516, 0, 1010389, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:28:15', 1008372, '2020-05-29 08:28:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_part_qc_template_b` VALUES (1010517, 0, 1010389, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:28:15', 1008372, '2020-05-29 08:28:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_part_qc_template_b` VALUES (1010518, 0, 1010390, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:28:37', 1008372, '2020-05-29 08:28:37', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_part_qc_template_b` VALUES (1010519, 0, 1010390, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:28:37', 1008372, '2020-05-29 08:28:37', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_part_qc_template_b` VALUES (1000000, 0, 1000000, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:12:46', 1000003, '2020-06-14 10:12:46', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_part_qc_template_b` VALUES (1000001, 0, 1000000, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:12:46', 1000003, '2020-06-14 10:12:46', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_parts
@@ -963,8 +956,7 @@ CREATE TABLE `ope_parts`  (
 -- ----------------------------
 -- Records of ope_parts
 -- ----------------------------
-INSERT INTO `ope_parts` VALUES (1024448, 0, 0, 1008372, 'IK20052909406', '1', 1010471, 'Battery', 'F05', 'RERE2WA-D000007-1', '电池', 'La batterie', 'Battery', '1', NULL, '60', NULL, 1006233, 'https://rede.oss-accelerate.aliyuncs.com/1590740550741.png', NULL, 0, 1008372, '2020-05-29 08:21:47', 1008372, '2020-05-29 08:28:15', 1, 1, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts` VALUES (1024449, 0, 0, 1008372, 'IK20052909406', '1', 1010472, 'Battery', 'F05', 'RERE2WA-D000007-12', '电机', 'Moteur', 'Battery', '2', NULL, '20', NULL, 1006233, 'https://rede.oss-accelerate.aliyuncs.com/1590740549863.png', NULL, 0, 1008372, '2020-05-29 08:21:47', 1008372, '2020-05-29 08:28:37', 0, 1, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts` VALUES (1000000, 0, 0, 1000003, 'J420061411097', '1', 1000000, 'Battery', 'F05', 'RERE2WA-D000001-1', '电池', 'La batterie', 'Battery', '2', NULL, '30', NULL, 1000000, 'https://rede.oss-cn-shanghai.aliyuncs.com/1592129541824.png', NULL, 0, 1000003, '2020-06-14 09:58:19', 1000003, '2020-06-14 10:12:46', 0, 1, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_parts_draft
@@ -1009,8 +1001,7 @@ CREATE TABLE `ope_parts_draft`  (
 -- ----------------------------
 -- Records of ope_parts_draft
 -- ----------------------------
-INSERT INTO `ope_parts_draft` VALUES (1010471, 0, 0, 1008372, 'IK20052909406', '1', 'Battery', 'F05', 'RERE2WA-D000007-1', '电池', 'La batterie', 'Battery', '1', NULL, '60', NULL, 1006233, 'https://rede.oss-accelerate.aliyuncs.com/1590740550741.png', NULL, 0, 1008372, '2020-05-29 08:21:47', 1008372, '2020-05-29 08:28:15', 1, 1, 1, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_draft` VALUES (1010472, 0, 0, 1008372, 'IK20052909406', '1', 'Battery', 'F05', 'RERE2WA-D000007-12', '电机', 'Moteur', 'Battery', '2', NULL, '20', NULL, 1006233, 'https://rede.oss-accelerate.aliyuncs.com/1590740549863.png', NULL, 0, 1008372, '2020-05-29 08:21:47', 1008372, '2020-05-29 08:28:37', 0, 1, 1, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_draft` VALUES (1000000, 0, 0, 1000003, 'J420061411097', '1', 'Battery', 'F05', 'RERE2WA-D000001-1', '电池', 'La batterie', 'Battery', '2', NULL, '30', NULL, 1000000, 'https://rede.oss-cn-shanghai.aliyuncs.com/1592129541824.png', NULL, 0, 1000003, '2020-06-14 09:58:19', 1000003, '2020-06-14 10:12:46', 0, 1, 1, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_parts_draft_history_record
@@ -1054,10 +1045,8 @@ CREATE TABLE `ope_parts_draft_history_record`  (
 -- ----------------------------
 -- Records of ope_parts_draft_history_record
 -- ----------------------------
-INSERT INTO `ope_parts_draft_history_record` VALUES (1012485, 0, 0, 1008372, 1010471, '1', 'IK20052909406', '1', 'Battery', 'F05', 'RERE2WA-D000007-1', '电池', 'La batterie', 'Battery', '2', 0, NULL, NULL, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:21:47', 1008372, '2020-05-29 08:21:47', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_draft_history_record` VALUES (1012486, 0, 0, 1008372, 1010472, '1', 'IK20052909406', '1', 'Battery', 'F05', 'RERE2WA-D000007-12', '电机', 'Moteur', 'Battery', '2', 0, NULL, NULL, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:21:47', 1008372, '2020-05-29 08:21:47', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_draft_history_record` VALUES (1012487, 0, 0, 1008372, 1010471, '3', 'IK20052909406', '1', 'Battery', 'F05', 'RERE2WA-D000007-1', '电池', 'La batterie', 'Battery', '2', 0, NULL, NULL, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:22:27', 1008372, '2020-05-29 08:22:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_draft_history_record` VALUES (1012488, 0, 0, 1008372, 1010472, '3', 'IK20052909406', '1', 'Battery', 'F05', 'RERE2WA-D000007-12', '电机', 'Moteur', 'Battery', '2', 0, NULL, NULL, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:22:27', 1008372, '2020-05-29 08:22:27', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_draft_history_record` VALUES (1000000, 0, 0, 1000003, 1000000, '1', 'J420061411097', '1', 'Battery', 'F05', 'RERE2WA-D000001-1', '电池', 'La batterie', 'Battery', '2', 0, NULL, NULL, NULL, NULL, NULL, 0, 1000003, '2020-06-14 09:58:19', 1000003, '2020-06-14 09:58:19', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_draft_history_record` VALUES (1000001, 0, 0, 1000003, 1000000, '3', 'J420061411097', '1', 'Battery', 'F05', 'RERE2WA-D000001-1', '电池', 'La batterie', 'Battery', '2', 0, NULL, NULL, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:12:17', 1000003, '2020-06-14 10:12:17', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_parts_product
@@ -1102,23 +1091,22 @@ CREATE TABLE `ope_parts_product`  (
 -- ----------------------------
 -- Records of ope_parts_product
 -- ----------------------------
-INSERT INTO `ope_parts_product` VALUES (1014561, 0, 0, 1008372, '2', '1', 3, 'Battery', 'RERE2WA-D000007-1', '电池', 'La batterie', 'Battery', '60', 1, 'RERE2WA-D000007-1', 'https://rede.oss-accelerate.aliyuncs.com/1590740550741.png', NULL, 0, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:29:23', 1008372, '2020-05-29 08:29:23', '1024448', NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014562, 0, 0, 1008372, '2', '2', 3, 'Battery', 'RERE2WA-D000007-12', '电机', 'Moteur', 'Battery', '20', 1, 'RERE2WA-D000007-12', 'https://rede.oss-accelerate.aliyuncs.com/1590740549863.png', NULL, 0, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:29:23', 1008372, '2020-05-29 08:29:23', '1024449', NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014563, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-50CC-01', '50CC-01', '50CC-01', '50CC-01', '10', 2, '1', NULL, '1', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:30:36', 1008372, '2020-05-29 08:30:36', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014564, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-50CC-02', '50CC-02', '50CC-02', '50CC-02', '10', 2, '1', NULL, '2', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:32:25', 1008372, '2020-05-29 08:32:25', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014565, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-50CC-03', '50CC-03', '50CC-03', '50CC-03', '10', 2, '1', NULL, '3', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:32:48', 1008372, '2020-05-29 08:32:48', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014566, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-50CC-04', '50CC-04', '50CC-04', '50CC-04', '10', 2, '1', NULL, '4', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:32:59', 1008372, '2020-05-29 08:39:02', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014567, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-50CC-05', '50CC-05', '50CC-05', '50CC-05', '10', 2, '1', NULL, '5', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:37:42', 1008372, '2020-05-29 08:37:42', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014568, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-100CC-01', '100CC-01', '100CC-01', '100CC-01', '10', 2, '2', NULL, '1', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:38:08', 1008372, '2020-05-29 08:38:08', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014569, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-100CC-02', '100CC-02', '100CC-02', '100CC-02', '10', 2, '2', NULL, '2', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:38:26', 1008372, '2020-05-29 08:38:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014570, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-100CC-03', '100CC-03', '100CC-03', '100CC-03', '10', 2, '2', NULL, '3', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:38:48', 1008372, '2020-05-29 08:38:48', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014571, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-100CC-04', '100CC-04', '100CC-04', '100CC-04', '10', 2, '2', NULL, '4', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:41:15', 1008372, '2020-05-29 08:41:30', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014572, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-100CC-05', '100CC-05', '100CC-05', '100CC-05', '10', 2, '2', NULL, '5', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:41:43', 1008372, '2020-05-29 08:41:43', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014573, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-125CC-01', '125CC-01', '125CC-01', '125CC-01', '10', 2, '3', NULL, '1', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:42:09', 1008372, '2020-05-29 08:42:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014574, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-125CC-02', '125CC-02', '125CC-02', '125CC-02', '10', 2, '3', NULL, '2', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:44:27', 1008372, '2020-05-29 08:44:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014575, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-125CC-03', '125CC-03', '125CC-03', '125CC-03', '10', 2, '3', NULL, '3', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:44:50', 1008372, '2020-05-29 08:44:50', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014576, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-125CC-04', '125CC-04', '125CC-04', '125CC-04', '10', 2, '3', NULL, '4', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:45:08', 1008372, '2020-05-29 08:45:08', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product` VALUES (1014577, 0, 0, 1008372, '1', '2', 4, 'Scooter', 'RE-2W-125CC-05', '125CC-05', '125CC-05', '125CC-05', '10', 2, '3', NULL, '5', 1, 0, NULL, NULL, NULL, 0, 1008372, '2020-05-29 08:45:28', 1008372, '2020-05-29 08:45:28', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000000, 0, 0, 1000003, '2', '2', 3, 'Battery', 'RERE2WA-D000001-1', '电池', 'La batterie', 'Battery', '30', 1, 'RERE2WA-D000001-1', 'https://rede.oss-cn-shanghai.aliyuncs.com/1592129541824.png', NULL, 0, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:12:49', 1000003, '2020-06-14 10:12:49', '1000000', NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000001, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-50CC-01', 'RED-50CC-01', 'RED-50CC-01', 'RED-50CC-01', '30', 1, '1', NULL, '1', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:13:57', 1000003, '2020-06-14 10:13:57', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000002, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-50CC-02', 'RED-50CC-02', 'RED-50CC-02', 'RED-50CC-02', '30', 1, '1', NULL, '2', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:14:06', 1000003, '2020-06-14 10:14:06', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000003, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-50CC-03', 'RED-50CC-03', 'RED-50CC-03', 'RED-50CC-03', '30', 1, '1', NULL, '3', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:14:17', 1000003, '2020-06-14 10:14:17', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000004, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-50CC-04', 'RED-50CC-04', 'RED-50CC-04', 'RED-50CC-04', '30', 1, '1', NULL, '4', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:14:28', 1000003, '2020-06-14 10:14:28', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000005, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-50CC-05', 'RED-50CC-05', 'RED-50CC-05', 'RED-50CC-05', '30', 1, '1', NULL, '5', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:14:40', 1000003, '2020-06-14 10:14:40', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000006, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-100CC-01', 'RED-100CC-01', 'RED-100CC-01', 'RED-100CC-01', '30', 1, '2', NULL, '1', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:14:55', 1000003, '2020-06-14 10:14:55', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000007, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-100CC-02', 'RED-100CC-02', 'RED-100CC-02', 'RED-100CC-02', '30', 1, '2', NULL, '2', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:15:04', 1000003, '2020-06-14 10:15:04', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000008, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-100CC-03', 'RED-100CC-03', 'RED-100CC-03', 'RED-100CC-03', '30', 1, '2', NULL, '3', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:15:14', 1000003, '2020-06-14 10:15:14', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000009, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-100CC-04', 'RED-100CC-04', 'RED-100CC-04', 'RED-100CC-04', '30', 1, '2', NULL, '4', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:15:25', 1000003, '2020-06-14 10:15:25', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000010, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-100CC-05', 'RED-100CC-05', 'RED-100CC-05', 'RED-100CC-05', '30', 1, '2', NULL, '5', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:15:36', 1000003, '2020-06-14 10:15:36', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000011, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-125CC-01', 'RED-125CC-01', 'RED-125CC-01', 'RED-125CC-01', '10', 1, '3', NULL, '1', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:15:50', 1000003, '2020-06-14 10:15:50', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000012, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-125CC-02', 'RED-125CC-02', 'RED-125CC-02', 'RED-125CC-02', '20', 1, '3', NULL, '2', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:16:03', 1000003, '2020-06-14 10:16:03', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000013, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-125CC-03', 'RED-125CC-03', 'RED-125CC-03', 'RED-125CC-03', '30', 1, '3', NULL, '3', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:16:23', 1000003, '2020-06-14 10:16:23', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000014, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-125CC-04', 'RED-125CC-04', 'RED-125CC-04', 'RED-125CC-04', '30', 1, '3', NULL, '4', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:16:37', 1000003, '2020-06-14 10:16:37', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product` VALUES (1000015, 0, 0, 1000003, '1', '2', 4, 'Scooter', 'RED-125CC-05', 'RED-125CC-05', 'RED-125CC-05', 'RED-125CC-05', '30', 1, '3', NULL, '5', 1, 0, NULL, NULL, NULL, 0, 1000003, '2020-06-14 10:16:47', 1000003, '2020-06-14 10:16:47', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_parts_product_b
@@ -1150,44 +1138,22 @@ CREATE TABLE `ope_parts_product_b`  (
 -- ----------------------------
 -- Records of ope_parts_product_b
 -- ----------------------------
-INSERT INTO `ope_parts_product_b` VALUES (1014710, 0, 0, 1008372, '1', 1024448, 1014561, 1, NULL, 0, 1008372, '2020-05-29 08:29:23', 1008372, '2020-05-29 08:29:23', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014711, 0, 0, 1008372, '1', 1024449, 1014562, 1, NULL, 0, 1008372, '2020-05-29 08:29:23', 1008372, '2020-05-29 08:29:23', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014712, 0, 0, 1008372, '1', 1024448, 1014563, 1, NULL, 0, 1008372, '2020-05-29 08:30:36', 1008372, '2020-05-29 08:30:36', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014713, 0, 0, 1008372, '1', 1024449, 1014563, 1, NULL, 0, 1008372, '2020-05-29 08:30:36', 1008372, '2020-05-29 08:30:36', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014714, 0, 0, 1008372, '1', 1024448, 1014564, 1, NULL, 0, 1008372, '2020-05-29 08:32:25', 1008372, '2020-05-29 08:32:25', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014715, 0, 0, 1008372, '1', 1024449, 1014564, 1, NULL, 0, 1008372, '2020-05-29 08:32:25', 1008372, '2020-05-29 08:32:25', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014716, 0, 0, 1008372, '1', 1024448, 1014565, 1, NULL, 0, 1008372, '2020-05-29 08:32:48', 1008372, '2020-05-29 08:32:48', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014717, 0, 0, 1008372, '1', 1024449, 1014565, 1, NULL, 0, 1008372, '2020-05-29 08:32:48', 1008372, '2020-05-29 08:32:48', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014718, 1, 0, 1008372, '1', 1024448, 1014566, 1, NULL, 0, 1008372, '2020-05-29 08:32:59', 1008372, '2020-05-29 08:32:59', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014719, 1, 0, 1008372, '1', 1024449, 1014566, 1, NULL, 0, 1008372, '2020-05-29 08:32:59', 1008372, '2020-05-29 08:32:59', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014720, 0, 0, 1008372, '1', 1024448, 1014567, 1, NULL, 0, 1008372, '2020-05-29 08:37:42', 1008372, '2020-05-29 08:37:42', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014721, 0, 0, 1008372, '1', 1024449, 1014567, 1, NULL, 0, 1008372, '2020-05-29 08:37:42', 1008372, '2020-05-29 08:37:42', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014722, 0, 0, 1008372, '1', 1024448, 1014568, 1, NULL, 0, 1008372, '2020-05-29 08:38:08', 1008372, '2020-05-29 08:38:08', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014723, 0, 0, 1008372, '1', 1024449, 1014568, 1, NULL, 0, 1008372, '2020-05-29 08:38:08', 1008372, '2020-05-29 08:38:08', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014724, 0, 0, 1008372, '1', 1024448, 1014569, 1, NULL, 0, 1008372, '2020-05-29 08:38:26', 1008372, '2020-05-29 08:38:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014725, 0, 0, 1008372, '1', 1024449, 1014569, 1, NULL, 0, 1008372, '2020-05-29 08:38:26', 1008372, '2020-05-29 08:38:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014726, 0, 0, 1008372, '1', 1024448, 1014570, 1, NULL, 0, 1008372, '2020-05-29 08:38:48', 1008372, '2020-05-29 08:38:48', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014727, 0, 0, 1008372, '1', 1024449, 1014570, 1, NULL, 0, 1008372, '2020-05-29 08:38:48', 1008372, '2020-05-29 08:38:48', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014728, 0, 0, 1008372, '1', 1024448, 1014566, 1, NULL, 0, 1008372, '2020-05-29 08:39:02', 1008372, '2020-05-29 08:39:02', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014729, 0, 0, 1008372, '1', 1024449, 1014566, 1, NULL, 0, 1008372, '2020-05-29 08:39:02', 1008372, '2020-05-29 08:39:02', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014730, 1, 0, 1008372, '1', 1024448, 1014571, 1, NULL, 0, 1008372, '2020-05-29 08:41:15', 1008372, '2020-05-29 08:41:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014731, 1, 0, 1008372, '1', 1024449, 1014571, 1, NULL, 0, 1008372, '2020-05-29 08:41:15', 1008372, '2020-05-29 08:41:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014732, 0, 0, 1008372, '1', 1024448, 1014571, 1, NULL, 0, 1008372, '2020-05-29 08:41:30', 1008372, '2020-05-29 08:41:30', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014733, 0, 0, 1008372, '1', 1024449, 1014571, 1, NULL, 0, 1008372, '2020-05-29 08:41:30', 1008372, '2020-05-29 08:41:30', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014734, 0, 0, 1008372, '1', 1024448, 1014572, 1, NULL, 0, 1008372, '2020-05-29 08:41:43', 1008372, '2020-05-29 08:41:43', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014735, 0, 0, 1008372, '1', 1024449, 1014572, 1, NULL, 0, 1008372, '2020-05-29 08:41:43', 1008372, '2020-05-29 08:41:43', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014736, 1, 0, 1008372, '1', 1024448, 1014573, 1, NULL, 0, 1008372, '2020-05-29 08:42:09', 1008372, '2020-05-29 08:42:09', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014737, 1, 0, 1008372, '1', 1024449, 1014573, 1, NULL, 0, 1008372, '2020-05-29 08:42:09', 1008372, '2020-05-29 08:42:09', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014738, 0, 0, 1008372, '1', 1024448, 1014573, 1, NULL, 0, 1008372, '2020-05-29 08:42:26', 1008372, '2020-05-29 08:42:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014739, 0, 0, 1008372, '1', 1024449, 1014573, 1, NULL, 0, 1008372, '2020-05-29 08:42:26', 1008372, '2020-05-29 08:42:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014740, 0, 0, 1008372, '1', 1024448, 1014574, 1, NULL, 0, 1008372, '2020-05-29 08:44:27', 1008372, '2020-05-29 08:44:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014741, 0, 0, 1008372, '1', 1024449, 1014574, 1, NULL, 0, 1008372, '2020-05-29 08:44:27', 1008372, '2020-05-29 08:44:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014742, 0, 0, 1008372, '1', 1024448, 1014575, 1, NULL, 0, 1008372, '2020-05-29 08:44:50', 1008372, '2020-05-29 08:44:50', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014743, 0, 0, 1008372, '1', 1024449, 1014575, 1, NULL, 0, 1008372, '2020-05-29 08:44:50', 1008372, '2020-05-29 08:44:50', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014744, 0, 0, 1008372, '1', 1024448, 1014576, 1, NULL, 0, 1008372, '2020-05-29 08:45:08', 1008372, '2020-05-29 08:45:08', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014745, 0, 0, 1008372, '1', 1024449, 1014576, 1, NULL, 0, 1008372, '2020-05-29 08:45:08', 1008372, '2020-05-29 08:45:08', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014746, 0, 0, 1008372, '1', 1024448, 1014577, 1, NULL, 0, 1008372, '2020-05-29 08:45:28', 1008372, '2020-05-29 08:45:28', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_parts_product_b` VALUES (1014747, 0, 0, 1008372, '1', 1024449, 1014577, 1, NULL, 0, 1008372, '2020-05-29 08:45:28', 1008372, '2020-05-29 08:45:28', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000000, 0, 0, 1000003, '1', 1000000, 1000000, 1, NULL, 0, 1000003, '2020-06-14 10:12:49', 1000003, '2020-06-14 10:12:49', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000001, 0, 0, 1000003, '1', 1000000, 1000001, 1, NULL, 0, 1000003, '2020-06-14 10:13:57', 1000003, '2020-06-14 10:13:57', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000002, 0, 0, 1000003, '1', 1000000, 1000002, 1, NULL, 0, 1000003, '2020-06-14 10:14:06', 1000003, '2020-06-14 10:14:06', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000003, 0, 0, 1000003, '1', 1000000, 1000003, 1, NULL, 0, 1000003, '2020-06-14 10:14:17', 1000003, '2020-06-14 10:14:17', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000004, 0, 0, 1000003, '1', 1000000, 1000004, 1, NULL, 0, 1000003, '2020-06-14 10:14:28', 1000003, '2020-06-14 10:14:28', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000005, 0, 0, 1000003, '1', 1000000, 1000005, 1, NULL, 0, 1000003, '2020-06-14 10:14:40', 1000003, '2020-06-14 10:14:40', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000006, 0, 0, 1000003, '1', 1000000, 1000006, 1, NULL, 0, 1000003, '2020-06-14 10:14:55', 1000003, '2020-06-14 10:14:55', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000007, 0, 0, 1000003, '1', 1000000, 1000007, 1, NULL, 0, 1000003, '2020-06-14 10:15:04', 1000003, '2020-06-14 10:15:04', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000008, 0, 0, 1000003, '1', 1000000, 1000008, 1, NULL, 0, 1000003, '2020-06-14 10:15:14', 1000003, '2020-06-14 10:15:14', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000009, 0, 0, 1000003, '1', 1000000, 1000009, 1, NULL, 0, 1000003, '2020-06-14 10:15:25', 1000003, '2020-06-14 10:15:25', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000010, 0, 0, 1000003, '1', 1000000, 1000010, 1, NULL, 0, 1000003, '2020-06-14 10:15:36', 1000003, '2020-06-14 10:15:36', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000011, 0, 0, 1000003, '1', 1000000, 1000011, 1, NULL, 0, 1000003, '2020-06-14 10:15:50', 1000003, '2020-06-14 10:15:50', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000012, 0, 0, 1000003, '1', 1000000, 1000012, 1, NULL, 0, 1000003, '2020-06-14 10:16:03', 1000003, '2020-06-14 10:16:03', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000013, 0, 0, 1000003, '1', 1000000, 1000013, 1, NULL, 0, 1000003, '2020-06-14 10:16:23', 1000003, '2020-06-14 10:16:23', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000014, 0, 0, 1000003, '1', 1000000, 1000014, 1, NULL, 0, 1000003, '2020-06-14 10:16:37', 1000003, '2020-06-14 10:16:37', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_parts_product_b` VALUES (1000015, 0, 0, 1000003, '1', 1000000, 1000015, 1, NULL, 0, 1000003, '2020-06-14 10:16:47', 1000003, '2020-06-14 10:16:47', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_parts_sec
@@ -1389,8 +1355,7 @@ CREATE TABLE `ope_price_sheet`  (
 -- ----------------------------
 -- Records of ope_price_sheet
 -- ----------------------------
-INSERT INTO `ope_price_sheet` VALUES (1027114, 0, 0, 1008372, '1', 1500.00, 'FR', '1', '3', '0', 1024448, NULL, NULL, 0, 1008372, '2020-05-29 08:30:20', 1008372, '2020-05-29 08:30:19', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_price_sheet` VALUES (1027115, 0, 0, 1008372, '1', 2500.00, 'FR', '1', '3', '0', 1024449, NULL, NULL, 0, 1008372, '2020-05-29 08:30:23', 1008372, '2020-05-29 08:30:23', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_price_sheet` VALUES (1000000, 0, 0, 1000003, '1', 990.00, 'FR', '1', '3', '0', 1000000, NULL, NULL, 0, 1000003, '2020-06-14 10:13:14', 1000003, '2020-06-14 10:13:14', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_price_sheet_history
@@ -1424,8 +1389,7 @@ CREATE TABLE `ope_price_sheet_history`  (
 -- ----------------------------
 -- Records of ope_price_sheet_history
 -- ----------------------------
-INSERT INTO `ope_price_sheet_history` VALUES (1029228, 0, 0, 1008372, 1024448, 1027114, 1500.00, 'FR', '1', '3', '0', 0, 1008372, '2020-05-29 08:30:20', 1008372, '2020-05-29 08:30:20', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_price_sheet_history` VALUES (1029229, 0, 0, 1008372, 1024449, 1027115, 2500.00, 'FR', '1', '3', '0', 0, 1008372, '2020-05-29 08:30:23', 1008372, '2020-05-29 08:30:23', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_price_sheet_history` VALUES (1000000, 0, 0, 1000003, 1000000, 1000000, 990.00, 'FR', '1', '3', '0', 0, 1000003, '2020-06-14 10:13:14', 1000003, '2020-06-14 10:13:14', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_product_assembly
@@ -1516,21 +1480,22 @@ CREATE TABLE `ope_product_qc_template`  (
 -- ----------------------------
 -- Records of ope_product_qc_template
 -- ----------------------------
-INSERT INTO `ope_product_qc_template` VALUES (1016563, 0, 1014561, NULL, '2', '外观', 0, 1008372, '2020-05-29 08:28:15', 1008372, '2020-05-29 08:28:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016564, 0, 1014562, NULL, '2', '外壳', 0, 1008372, '2020-05-29 08:28:37', 1008372, '2020-05-29 08:28:37', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016565, 0, 1014577, NULL, '2', '电机', 0, 1008372, '2020-05-29 08:45:53', 1008372, '2020-05-29 08:45:53', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016566, 0, 1014576, NULL, '2', '外壳', 0, 1008372, '2020-05-29 08:46:29', 1008372, '2020-05-29 08:46:29', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016567, 0, 1014575, NULL, '2', '外壳', 0, 1008372, '2020-05-29 08:46:50', 1008372, '2020-05-29 08:46:50', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016568, 0, 1014574, NULL, '2', '外壳', 0, 1008372, '2020-05-29 08:47:12', 1008372, '2020-05-29 08:47:12', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016569, 0, 1014573, NULL, '2', '外壳', 0, 1008372, '2020-05-29 08:47:27', 1008372, '2020-05-29 08:47:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016570, 0, 1014572, NULL, '2', '轮胎', 0, 1008372, '2020-05-29 08:47:48', 1008372, '2020-05-29 08:47:48', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016571, 0, 1014571, NULL, '2', '电池仓', 0, 1008372, '2020-05-29 08:48:11', 1008372, '2020-05-29 08:48:11', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016572, 0, 1014570, NULL, '2', '侧支撑支架', 0, 1008372, '2020-05-29 08:48:44', 1008372, '2020-05-29 08:48:44', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016573, 0, 1014569, NULL, '2', '后备箱', 0, 1008372, '2020-05-29 08:49:26', 1008372, '2020-05-29 08:49:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016574, 0, 1014568, NULL, '2', '外壳', 0, 1008372, '2020-05-29 08:50:00', 1008372, '2020-05-29 08:50:00', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016575, 0, 1014563, NULL, '2', '前大灯', 0, 1008372, '2020-05-29 08:50:24', 1008372, '2020-05-29 08:50:24', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016576, 0, 1014564, NULL, '2', '车前把', 0, 1008372, '2020-05-29 08:51:04', 1008372, '2020-05-29 08:51:04', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template` VALUES (1016577, 0, 1014565, NULL, '2', '转向灯', 0, 1008372, '2020-05-29 08:51:39', 1008372, '2020-05-29 08:51:39', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000000, 0, 1000000, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:12:46', 1000003, '2020-06-14 10:12:46', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000001, 0, 1000001, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:17:14', 1000003, '2020-06-14 10:17:14', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000002, 0, 1000015, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:17:29', 1000003, '2020-06-14 10:17:29', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000003, 0, 1000014, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:17:47', 1000003, '2020-06-14 10:17:47', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000004, 0, 1000013, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:18:07', 1000003, '2020-06-14 10:18:07', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000005, 0, 1000012, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:18:51', 1000003, '2020-06-14 10:18:51', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000006, 0, 1000011, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:19:28', 1000003, '2020-06-14 10:19:28', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000007, 0, 1000010, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:19:49', 1000003, '2020-06-14 10:19:49', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000008, 0, 1000009, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:20:10', 1000003, '2020-06-14 10:20:10', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000009, 0, 1000008, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:20:31', 1000003, '2020-06-14 10:20:31', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000010, 0, 1000007, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:20:45', 1000003, '2020-06-14 10:20:45', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000011, 0, 1000006, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:21:01', 1000003, '2020-06-14 10:21:01', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000012, 0, 1000005, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:21:15', 1000003, '2020-06-14 10:21:15', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000013, 0, 1000004, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:21:28', 1000003, '2020-06-14 10:21:28', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000014, 0, 1000003, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:21:42', 1000003, '2020-06-14 10:21:42', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template` VALUES (1000015, 0, 1000002, NULL, '2', 'Appearance', 0, 1000003, '2020-06-14 10:22:00', 1000003, '2020-06-14 10:22:00', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_product_qc_template_b
@@ -1560,36 +1525,38 @@ CREATE TABLE `ope_product_qc_template_b`  (
 -- ----------------------------
 -- Records of ope_product_qc_template_b
 -- ----------------------------
-INSERT INTO `ope_product_qc_template_b` VALUES (1016747, 0, 1010389, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:28:15', 1008372, '2020-05-29 08:28:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016748, 0, 1010389, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:28:15', 1008372, '2020-05-29 08:28:15', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016749, 0, 1010390, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:28:37', 1008372, '2020-05-29 08:28:37', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016750, 0, 1010390, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:28:37', 1008372, '2020-05-29 08:28:37', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016751, 0, 1016565, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:45:53', 1008372, '2020-05-29 08:45:53', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016752, 0, 1016565, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:45:53', 1008372, '2020-05-29 08:45:53', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016753, 0, 1016566, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:46:29', 1008372, '2020-05-29 08:46:29', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016754, 0, 1016566, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:46:29', 1008372, '2020-05-29 08:46:29', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016755, 0, 1016567, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:46:50', 1008372, '2020-05-29 08:46:50', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016756, 0, 1016567, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:46:50', 1008372, '2020-05-29 08:46:50', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016757, 0, 1016568, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:47:12', 1008372, '2020-05-29 08:47:12', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016758, 0, 1016568, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:47:12', 1008372, '2020-05-29 08:47:12', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016759, 0, 1016569, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:47:27', 1008372, '2020-05-29 08:47:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016760, 0, 1016569, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:47:27', 1008372, '2020-05-29 08:47:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016761, 0, 1016570, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:47:48', 1008372, '2020-05-29 08:47:48', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016762, 0, 1016570, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:47:48', 1008372, '2020-05-29 08:47:48', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016763, 0, 1016571, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:48:11', 1008372, '2020-05-29 08:48:11', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016764, 0, 1016571, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:48:11', 1008372, '2020-05-29 08:48:11', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016765, 0, 1016572, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:48:44', 1008372, '2020-05-29 08:48:44', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016766, 0, 1016572, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:48:44', 1008372, '2020-05-29 08:48:44', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016767, 0, 1016573, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:49:26', 1008372, '2020-05-29 08:49:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016768, 0, 1016573, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:49:26', 1008372, '2020-05-29 08:49:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016769, 0, 1016574, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:50:00', 1008372, '2020-05-29 08:50:00', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016770, 0, 1016574, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:50:00', 1008372, '2020-05-29 08:50:00', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016771, 0, 1016575, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:50:24', 1008372, '2020-05-29 08:50:24', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016772, 0, 1016575, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:50:24', 1008372, '2020-05-29 08:50:24', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016773, 0, 1016576, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:51:04', 1008372, '2020-05-29 08:51:04', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016774, 0, 1016576, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:51:04', 1008372, '2020-05-29 08:51:04', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016775, 0, 1016577, 'PASS', 1, 1, 1, 0, 1008372, '2020-05-29 08:51:39', 1008372, '2020-05-29 08:51:39', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_product_qc_template_b` VALUES (1016776, 0, 1016577, 'NG', 0, 0, 2, 0, 1008372, '2020-05-29 08:51:39', 1008372, '2020-05-29 08:51:39', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000000, 0, 1000000, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:12:46', 1000003, '2020-06-14 10:12:46', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000001, 0, 1000000, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:12:46', 1000003, '2020-06-14 10:12:46', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000002, 0, 1000001, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:17:14', 1000003, '2020-06-14 10:17:14', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000003, 0, 1000001, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:17:14', 1000003, '2020-06-14 10:17:14', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000004, 0, 1000002, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:17:29', 1000003, '2020-06-14 10:17:29', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000005, 0, 1000002, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:17:29', 1000003, '2020-06-14 10:17:29', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000006, 0, 1000003, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:17:47', 1000003, '2020-06-14 10:17:47', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000007, 0, 1000003, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:17:47', 1000003, '2020-06-14 10:17:47', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000008, 0, 1000004, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:18:07', 1000003, '2020-06-14 10:18:07', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000009, 0, 1000004, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:18:07', 1000003, '2020-06-14 10:18:07', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000010, 0, 1000005, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:18:51', 1000003, '2020-06-14 10:18:51', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000011, 0, 1000005, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:18:51', 1000003, '2020-06-14 10:18:51', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000012, 0, 1000006, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:19:28', 1000003, '2020-06-14 10:19:28', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000013, 0, 1000006, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:19:28', 1000003, '2020-06-14 10:19:28', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000014, 0, 1000007, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:19:49', 1000003, '2020-06-14 10:19:49', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000015, 0, 1000007, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:19:49', 1000003, '2020-06-14 10:19:49', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000016, 0, 1000008, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:20:10', 1000003, '2020-06-14 10:20:10', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000017, 0, 1000008, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:20:10', 1000003, '2020-06-14 10:20:10', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000018, 0, 1000009, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:20:31', 1000003, '2020-06-14 10:20:31', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000019, 0, 1000009, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:20:31', 1000003, '2020-06-14 10:20:31', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000020, 0, 1000010, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:20:45', 1000003, '2020-06-14 10:20:45', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000021, 0, 1000010, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:20:45', 1000003, '2020-06-14 10:20:45', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000022, 0, 1000011, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:21:01', 1000003, '2020-06-14 10:21:01', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000023, 0, 1000011, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:21:01', 1000003, '2020-06-14 10:21:01', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000024, 0, 1000012, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:21:15', 1000003, '2020-06-14 10:21:15', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000025, 0, 1000012, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:21:15', 1000003, '2020-06-14 10:21:15', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000026, 0, 1000013, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:21:28', 1000003, '2020-06-14 10:21:28', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000027, 0, 1000013, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:21:28', 1000003, '2020-06-14 10:21:28', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000028, 0, 1000014, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:21:42', 1000003, '2020-06-14 10:21:42', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000029, 0, 1000014, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:21:42', 1000003, '2020-06-14 10:21:42', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000030, 0, 1000015, 'PASS', 1, 1, 1, 0, 1000003, '2020-06-14 10:22:00', 1000003, '2020-06-14 10:22:00', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_product_qc_template_b` VALUES (1000031, 0, 1000015, 'NG', 0, 0, 2, 0, 1000003, '2020-06-14 10:22:00', 1000003, '2020-06-14 10:22:00', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_purchas
@@ -1777,7 +1744,7 @@ CREATE TABLE `ope_purchas_payment`  (
   `payment_time` datetime(0) NULL DEFAULT NULL COMMENT '实际付款时间',
   `payment_status` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '支付状态:Paid Unpaid',
   `payment_priority` int(0) NOT NULL DEFAULT 0 COMMENT '支付优先级',
-  `description` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
+  `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
   `amount` decimal(10, 2) NOT NULL COMMENT '价格',
   `amount_proportion` int(0) NOT NULL COMMENT '55% 标示为 55',
   `invoice_num` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '发票单号',
@@ -1926,38 +1893,38 @@ CREATE TABLE `ope_regional_price_sheet`  (
 -- ----------------------------
 -- Records of ope_regional_price_sheet
 -- ----------------------------
-INSERT INTO `ope_regional_price_sheet` VALUES (1018935, 0, 0, 1008372, '1', 1014562, '1', 2000.00, '2020-05-29 08:30:13', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:30:13', 1008372, '2020-05-29 08:30:13', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018936, 0, 0, 1008372, '1', 1014562, '1', 2000.00, '2020-05-29 08:30:13', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:30:13', 1008372, '2020-05-29 08:30:13', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018937, 0, 0, 1008372, '1', 1014563, '1', 3990.00, '2020-05-29 08:53:38', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:53:38', 1008372, '2020-05-29 08:53:38', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018938, 0, 0, 1008372, '1', 1014563, '1', 3990.00, '2020-05-29 08:53:38', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:53:38', 1008372, '2020-05-29 08:53:38', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018939, 0, 0, 1008372, '1', 1014564, '1', 3990.00, '2020-05-29 08:53:43', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:53:43', 1008372, '2020-05-29 08:53:43', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018940, 0, 0, 1008372, '1', 1014564, '1', 3990.00, '2020-05-29 08:53:43', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:53:43', 1008372, '2020-05-29 08:53:43', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018941, 0, 0, 1008372, '1', 1014565, '1', 3990.00, '2020-05-29 08:54:04', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:04', 1008372, '2020-05-29 08:54:04', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018942, 0, 0, 1008372, '1', 1014565, '1', 3990.00, '2020-05-29 08:54:04', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:04', 1008372, '2020-05-29 08:54:04', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018943, 0, 0, 1008372, '1', 1014567, '1', 3990.00, '2020-05-29 08:54:10', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:10', 1008372, '2020-05-29 08:54:10', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018944, 0, 0, 1008372, '1', 1014567, '1', 3990.00, '2020-05-29 08:54:10', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:10', 1008372, '2020-05-29 08:54:10', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018945, 0, 0, 1008372, '1', 1014566, '1', 3990.00, '2020-05-29 08:54:27', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:27', 1008372, '2020-05-29 08:54:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018946, 0, 0, 1008372, '1', 1014566, '1', 3990.00, '2020-05-29 08:54:27', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:27', 1008372, '2020-05-29 08:54:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018947, 0, 0, 1008372, '1', 1014568, '1', 5490.00, '2020-05-29 09:06:25', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:25', 1008372, '2020-05-29 09:06:25', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018948, 0, 0, 1008372, '1', 1014568, '1', 5490.00, '2020-05-29 09:06:25', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:25', 1008372, '2020-05-29 09:06:25', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018949, 0, 0, 1008372, '1', 1014569, '1', 5490.00, '2020-05-29 09:06:32', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:32', 1008372, '2020-05-29 09:06:32', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018950, 0, 0, 1008372, '1', 1014569, '1', 5490.00, '2020-05-29 09:06:32', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:32', 1008372, '2020-05-29 09:06:32', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018951, 0, 0, 1008372, '1', 1014570, '1', 5490.00, '2020-05-29 09:06:39', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:39', 1008372, '2020-05-29 09:06:39', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018952, 0, 0, 1008372, '1', 1014570, '1', 5490.00, '2020-05-29 09:06:39', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:39', 1008372, '2020-05-29 09:06:39', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018953, 0, 0, 1008372, '1', 1014571, '1', 5490.00, '2020-05-29 09:06:49', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:49', 1008372, '2020-05-29 09:06:49', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018954, 0, 0, 1008372, '1', 1014571, '1', 5490.00, '2020-05-29 09:06:49', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:49', 1008372, '2020-05-29 09:06:49', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018955, 0, 0, 1008372, '1', 1014572, '1', 5490.00, '2020-05-29 09:06:58', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:58', 1008372, '2020-05-29 09:06:58', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018956, 0, 0, 1008372, '1', 1014572, '1', 5490.00, '2020-05-29 09:06:58', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:58', 1008372, '2020-05-29 09:06:58', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018957, 0, 0, 1008372, '1', 1014573, '1', 8490.00, '2020-05-29 09:07:10', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:10', 1008372, '2020-05-29 09:07:10', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018958, 0, 0, 1008372, '1', 1014573, '1', 8490.00, '2020-05-29 09:07:10', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:10', 1008372, '2020-05-29 09:07:10', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018959, 0, 0, 1008372, '1', 1014574, '1', 8490.00, '2020-05-29 09:07:16', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:16', 1008372, '2020-05-29 09:07:16', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018960, 0, 0, 1008372, '1', 1014574, '1', 8490.00, '2020-05-29 09:07:16', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:16', 1008372, '2020-05-29 09:07:16', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018961, 0, 0, 1008372, '1', 1014575, '1', 8490.00, '2020-05-29 09:07:21', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:21', 1008372, '2020-05-29 09:07:21', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018962, 0, 0, 1008372, '1', 1014575, '1', 8490.00, '2020-05-29 09:07:21', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:21', 1008372, '2020-05-29 09:07:21', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018963, 0, 0, 1008372, '1', 1014576, '1', 8490.00, '2020-05-29 09:07:26', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:26', 1008372, '2020-05-29 09:07:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018964, 0, 0, 1008372, '1', 1014576, '1', 8490.00, '2020-05-29 09:07:26', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:26', 1008372, '2020-05-29 09:07:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018965, 0, 0, 1008372, '1', 1014577, '1', 8490.00, '2020-05-29 09:07:31', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:31', 1008372, '2020-05-29 09:07:31', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet` VALUES (1018966, 0, 0, 1008372, '1', 1014577, '1', 8490.00, '2020-05-29 09:07:31', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:31', 1008372, '2020-05-29 09:07:31', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1000000, 0, 0, 1000003, '1', 1000000, '1', 990.00, '2020-06-14 10:13:23', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 10:13:23', 1000003, '2020-06-14 10:13:23', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1000001, 0, 0, 1000003, '1', 1000000, '1', 990.00, '2020-06-14 10:13:23', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 10:13:23', 1000003, '2020-06-14 10:13:23', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002111, 0, 0, 1000003, '1', 1000001, '1', 3990.00, '2020-06-14 11:24:52', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:24:52', 1000003, '2020-06-14 11:24:52', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002112, 0, 0, 1000003, '1', 1000001, '1', 3990.00, '2020-06-14 11:24:52', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:24:52', 1000003, '2020-06-14 11:24:52', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002113, 0, 0, 1000003, '1', 1000002, '1', 3990.00, '2020-06-14 11:24:57', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:24:57', 1000003, '2020-06-14 11:24:57', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002114, 0, 0, 1000003, '1', 1000002, '1', 3990.00, '2020-06-14 11:24:57', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:24:57', 1000003, '2020-06-14 11:24:57', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002115, 0, 0, 1000003, '1', 1000003, '1', 3990.00, '2020-06-14 11:25:03', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:03', 1000003, '2020-06-14 11:25:03', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002116, 0, 0, 1000003, '1', 1000003, '1', 3990.00, '2020-06-14 11:25:03', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:03', 1000003, '2020-06-14 11:25:03', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002117, 0, 0, 1000003, '1', 1000004, '1', 3990.00, '2020-06-14 11:25:09', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:09', 1000003, '2020-06-14 11:25:09', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002118, 0, 0, 1000003, '1', 1000004, '1', 3990.00, '2020-06-14 11:25:09', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:09', 1000003, '2020-06-14 11:25:09', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002119, 0, 0, 1000003, '1', 1000005, '1', 3990.00, '2020-06-14 11:25:14', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:14', 1000003, '2020-06-14 11:25:14', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002120, 0, 0, 1000003, '1', 1000005, '1', 3990.00, '2020-06-14 11:25:14', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:14', 1000003, '2020-06-14 11:25:14', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002121, 0, 0, 1000003, '1', 1000006, '1', 5490.00, '2020-06-14 11:25:24', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:24', 1000003, '2020-06-14 11:25:24', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002122, 0, 0, 1000003, '1', 1000006, '1', 5490.00, '2020-06-14 11:25:24', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:24', 1000003, '2020-06-14 11:25:24', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002123, 0, 0, 1000003, '1', 1000007, '1', 5490.00, '2020-06-14 11:25:31', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:31', 1000003, '2020-06-14 11:25:31', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002124, 0, 0, 1000003, '1', 1000007, '1', 5490.00, '2020-06-14 11:25:31', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:31', 1000003, '2020-06-14 11:25:31', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002125, 0, 0, 1000003, '1', 1000008, '1', 5490.00, '2020-06-14 11:25:36', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:36', 1000003, '2020-06-14 11:25:36', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002126, 0, 0, 1000003, '1', 1000008, '1', 5490.00, '2020-06-14 11:25:36', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:36', 1000003, '2020-06-14 11:25:36', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002127, 0, 0, 1000003, '1', 1000009, '1', 5490.00, '2020-06-14 11:25:42', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:42', 1000003, '2020-06-14 11:25:42', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002128, 0, 0, 1000003, '1', 1000009, '1', 5490.00, '2020-06-14 11:25:42', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:42', 1000003, '2020-06-14 11:25:42', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002129, 0, 0, 1000003, '1', 1000010, '1', 5490.00, '2020-06-14 11:25:49', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:49', 1000003, '2020-06-14 11:25:49', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002130, 0, 0, 1000003, '1', 1000010, '1', 5490.00, '2020-06-14 11:25:49', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:49', 1000003, '2020-06-14 11:25:49', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002131, 0, 0, 1000003, '1', 1000011, '1', 8490.00, '2020-06-14 11:25:56', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:56', 1000003, '2020-06-14 11:25:56', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002132, 0, 0, 1000003, '1', 1000011, '1', 8490.00, '2020-06-14 11:25:56', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:56', 1000003, '2020-06-14 11:25:56', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002133, 0, 0, 1000003, '1', 1000012, '1', 8490.00, '2020-06-14 11:26:01', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:01', 1000003, '2020-06-14 11:26:01', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002134, 0, 0, 1000003, '1', 1000012, '1', 8490.00, '2020-06-14 11:26:01', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:01', 1000003, '2020-06-14 11:26:01', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002135, 0, 0, 1000003, '1', 1000013, '1', 8490.00, '2020-06-14 11:26:05', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:05', 1000003, '2020-06-14 11:26:05', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002136, 0, 0, 1000003, '1', 1000013, '1', 8490.00, '2020-06-14 11:26:05', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:05', 1000003, '2020-06-14 11:26:05', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002137, 0, 0, 1000003, '1', 1000014, '1', 8490.00, '2020-06-14 11:26:12', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:12', 1000003, '2020-06-14 11:26:12', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002138, 0, 0, 1000003, '1', 1000014, '1', 8490.00, '2020-06-14 11:26:12', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:12', 1000003, '2020-06-14 11:26:12', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002139, 0, 0, 1000003, '1', 1000015, '1', 8490.00, '2020-06-14 11:26:46', '1', 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:46', 1000003, '2020-06-14 11:26:46', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet` VALUES (1002140, 0, 0, 1000003, '1', 1000015, '1', 8490.00, '2020-06-14 11:26:46', '1', 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:46', 1000003, '2020-06-14 11:26:46', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_regional_price_sheet_history
@@ -1995,38 +1962,38 @@ CREATE TABLE `ope_regional_price_sheet_history`  (
 -- ----------------------------
 -- Records of ope_regional_price_sheet_history
 -- ----------------------------
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025118, 0, 0, 1008372, 1018935, 1014562, '0', 2000.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:30:13', 1008372, '2020-05-29 08:30:13', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025119, 0, 0, 1008372, 1018935, 1014562, '0', 2000.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:30:13', 1008372, '2020-05-29 08:30:13', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025120, 0, 0, 1008372, 1018937, 1014563, '0', 3990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:53:38', 1008372, '2020-05-29 08:53:38', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025121, 0, 0, 1008372, 1018937, 1014563, '0', 3990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:53:38', 1008372, '2020-05-29 08:53:38', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025122, 0, 0, 1008372, 1018939, 1014564, '0', 3990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:53:43', 1008372, '2020-05-29 08:53:43', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025123, 0, 0, 1008372, 1018939, 1014564, '0', 3990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:53:43', 1008372, '2020-05-29 08:53:43', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025124, 0, 0, 1008372, 1018941, 1014565, '0', 3990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:04', 1008372, '2020-05-29 08:54:04', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025125, 0, 0, 1008372, 1018941, 1014565, '0', 3990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:04', 1008372, '2020-05-29 08:54:04', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025126, 0, 0, 1008372, 1018943, 1014567, '0', 3990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:10', 1008372, '2020-05-29 08:54:10', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025127, 0, 0, 1008372, 1018943, 1014567, '0', 3990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:10', 1008372, '2020-05-29 08:54:10', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025128, 0, 0, 1008372, 1018945, 1014566, '0', 3990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:27', 1008372, '2020-05-29 08:54:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025129, 0, 0, 1008372, 1018945, 1014566, '0', 3990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 08:54:27', 1008372, '2020-05-29 08:54:27', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025130, 0, 0, 1008372, 1018947, 1014568, '0', 5490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:25', 1008372, '2020-05-29 09:06:25', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025131, 0, 0, 1008372, 1018947, 1014568, '0', 5490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:25', 1008372, '2020-05-29 09:06:25', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025132, 0, 0, 1008372, 1018949, 1014569, '0', 5490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:32', 1008372, '2020-05-29 09:06:32', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025133, 0, 0, 1008372, 1018949, 1014569, '0', 5490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:32', 1008372, '2020-05-29 09:06:32', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025134, 0, 0, 1008372, 1018951, 1014570, '0', 5490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:39', 1008372, '2020-05-29 09:06:39', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025135, 0, 0, 1008372, 1018951, 1014570, '0', 5490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:39', 1008372, '2020-05-29 09:06:39', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025136, 0, 0, 1008372, 1018953, 1014571, '0', 5490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:49', 1008372, '2020-05-29 09:06:49', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025137, 0, 0, 1008372, 1018953, 1014571, '0', 5490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:49', 1008372, '2020-05-29 09:06:49', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025138, 0, 0, 1008372, 1018955, 1014572, '0', 5490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:58', 1008372, '2020-05-29 09:06:58', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025139, 0, 0, 1008372, 1018955, 1014572, '0', 5490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:06:58', 1008372, '2020-05-29 09:06:58', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025140, 0, 0, 1008372, 1018957, 1014573, '0', 8490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:10', 1008372, '2020-05-29 09:07:10', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025141, 0, 0, 1008372, 1018957, 1014573, '0', 8490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:10', 1008372, '2020-05-29 09:07:10', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025142, 0, 0, 1008372, 1018959, 1014574, '0', 8490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:16', 1008372, '2020-05-29 09:07:16', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025143, 0, 0, 1008372, 1018959, 1014574, '0', 8490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:16', 1008372, '2020-05-29 09:07:16', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025144, 0, 0, 1008372, 1018961, 1014575, '0', 8490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:21', 1008372, '2020-05-29 09:07:21', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025145, 0, 0, 1008372, 1018961, 1014575, '0', 8490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:21', 1008372, '2020-05-29 09:07:21', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025146, 0, 0, 1008372, 1018963, 1014576, '0', 8490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:26', 1008372, '2020-05-29 09:07:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025147, 0, 0, 1008372, 1018963, 1014576, '0', 8490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:26', 1008372, '2020-05-29 09:07:26', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025148, 0, 0, 1008372, 1018965, 1014577, '0', 8490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:31', 1008372, '2020-05-29 09:07:31', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `ope_regional_price_sheet_history` VALUES (1025149, 0, 0, 1008372, 1018965, 1014577, '0', 8490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1008372, '2020-05-29 09:07:31', 1008372, '2020-05-29 09:07:31', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1000000, 0, 0, 1000003, 1000000, 1000000, '0', 990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 10:13:23', 1000003, '2020-06-14 10:13:23', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1000001, 0, 0, 1000003, 1000000, 1000000, '0', 990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 10:13:23', 1000003, '2020-06-14 10:13:23', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002066, 0, 0, 1000003, 1002111, 1000001, '0', 3990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:24:52', 1000003, '2020-06-14 11:24:52', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002067, 0, 0, 1000003, 1002111, 1000001, '0', 3990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:24:52', 1000003, '2020-06-14 11:24:52', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002068, 0, 0, 1000003, 1002113, 1000002, '0', 3990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:24:57', 1000003, '2020-06-14 11:24:57', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002069, 0, 0, 1000003, 1002113, 1000002, '0', 3990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:24:57', 1000003, '2020-06-14 11:24:57', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002070, 0, 0, 1000003, 1002115, 1000003, '0', 3990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:03', 1000003, '2020-06-14 11:25:03', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002071, 0, 0, 1000003, 1002115, 1000003, '0', 3990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:03', 1000003, '2020-06-14 11:25:03', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002072, 0, 0, 1000003, 1002117, 1000004, '0', 3990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:09', 1000003, '2020-06-14 11:25:09', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002073, 0, 0, 1000003, 1002117, 1000004, '0', 3990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:09', 1000003, '2020-06-14 11:25:09', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002074, 0, 0, 1000003, 1002119, 1000005, '0', 3990.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:14', 1000003, '2020-06-14 11:25:14', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002075, 0, 0, 1000003, 1002119, 1000005, '0', 3990.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:14', 1000003, '2020-06-14 11:25:14', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002076, 0, 0, 1000003, 1002121, 1000006, '0', 5490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:24', 1000003, '2020-06-14 11:25:24', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002077, 0, 0, 1000003, 1002121, 1000006, '0', 5490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:24', 1000003, '2020-06-14 11:25:24', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002078, 0, 0, 1000003, 1002123, 1000007, '0', 5490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:31', 1000003, '2020-06-14 11:25:31', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002079, 0, 0, 1000003, 1002123, 1000007, '0', 5490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:31', 1000003, '2020-06-14 11:25:31', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002080, 0, 0, 1000003, 1002125, 1000008, '0', 5490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:36', 1000003, '2020-06-14 11:25:36', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002081, 0, 0, 1000003, 1002125, 1000008, '0', 5490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:36', 1000003, '2020-06-14 11:25:36', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002082, 0, 0, 1000003, 1002127, 1000009, '0', 5490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:42', 1000003, '2020-06-14 11:25:42', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002083, 0, 0, 1000003, 1002127, 1000009, '0', 5490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:42', 1000003, '2020-06-14 11:25:42', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002084, 0, 0, 1000003, 1002129, 1000010, '0', 5490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:49', 1000003, '2020-06-14 11:25:49', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002085, 0, 0, 1000003, 1002129, 1000010, '0', 5490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:49', 1000003, '2020-06-14 11:25:49', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002086, 0, 0, 1000003, 1002131, 1000011, '0', 8490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:56', 1000003, '2020-06-14 11:25:56', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002087, 0, 0, 1000003, 1002131, 1000011, '0', 8490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:25:56', 1000003, '2020-06-14 11:25:56', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002088, 0, 0, 1000003, 1002133, 1000012, '0', 8490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:01', 1000003, '2020-06-14 11:26:01', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002089, 0, 0, 1000003, 1002133, 1000012, '0', 8490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:01', 1000003, '2020-06-14 11:26:01', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002090, 0, 0, 1000003, 1002135, 1000013, '0', 8490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:05', 1000003, '2020-06-14 11:26:05', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002091, 0, 0, 1000003, 1002135, 1000013, '0', 8490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:05', 1000003, '2020-06-14 11:26:05', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002092, 0, 0, 1000003, 1002137, 1000014, '0', 8490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:12', 1000003, '2020-06-14 11:26:12', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002093, 0, 0, 1000003, 1002137, 1000014, '0', 8490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:12', 1000003, '2020-06-14 11:26:12', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002094, 0, 0, 1000003, 1002139, 1000015, '0', 8490.00, 'FR', '1', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:46', 1000003, '2020-06-14 11:26:46', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_regional_price_sheet_history` VALUES (1002095, 0, 0, 1000003, 1002139, 1000015, '0', 8490.00, 'EN', '2', 'CN', '0', 'US', '0', 'en', 0, 1000003, '2020-06-14 11:26:46', 1000003, '2020-06-14 11:26:46', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_stock
@@ -2257,7 +2224,7 @@ CREATE TABLE `ope_supplier`  (
 -- ----------------------------
 -- Records of ope_supplier
 -- ----------------------------
-INSERT INTO `ope_supplier` VALUES (1006233, 0, '1', 0, 1008372, 'Emma', '中国江苏', 'China', NULL, NULL, NULL, NULL, 'Frame Factory', NULL, NULL, NULL, 'bill', 'bill@redescooter.com', '86', '432423423423', 60, '2020-05-21 00:00:00', NULL, '4342342423423', 'https://rede.oss-accelerate.aliyuncs.com/1590740474000.pdf', NULL, 'https://rede.oss-accelerate.aliyuncs.com/1590740475367.pdf', 0, '2020-05-29 08:21:16', 1008372, '2020-05-29 08:21:16', 1008372, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `ope_supplier` VALUES (1000000, 0, '1', 0, 1000003, 'Emma', 'Wuxi, Jiangsu, China', 'China', NULL, NULL, NULL, NULL, 'Frame Factory', NULL, NULL, NULL, 'bill', 'bill@redescooter.com', '86', '123456789', 30, '2020-06-14 00:00:00', NULL, '1234567890', 'https://rede.oss-cn-shanghai.aliyuncs.com/1592129491969.pdf', NULL, 'https://rede.oss-cn-shanghai.aliyuncs.com/1592129495983.pdf', 0, '2020-06-14 10:11:53', 1000003, '2020-06-14 10:11:53', 1000003, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_supplier_trace
@@ -2288,7 +2255,7 @@ CREATE TABLE `ope_supplier_trace`  (
 -- ----------------------------
 -- Records of ope_supplier_trace
 -- ----------------------------
-INSERT INTO `ope_supplier_trace` VALUES (1006332, 0, 1006233, 0, 1008372, '1', '1', '2020-05-29 08:21:16', NULL, 1008372, '2020-05-29 08:21:16', 1008372, '2020-05-29 08:21:16', NULL, NULL, NULL, NULL, 0);
+INSERT INTO `ope_supplier_trace` VALUES (1000000, 0, 1000000, 0, 1000003, '1', '1', '2020-06-14 10:11:53', NULL, 1000003, '2020-06-14 10:11:53', 1000003, '2020-06-14 10:11:53', NULL, NULL, NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for ope_sys_dept
@@ -2310,15 +2277,25 @@ CREATE TABLE `ope_sys_dept`  (
   `updated_by` bigint(0) NOT NULL COMMENT '更新人',
   `updated_time` datetime(0) NOT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1004223 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '部门管理' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1004233 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '部门管理' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ope_sys_dept
 -- ----------------------------
-INSERT INTO `ope_sys_dept` VALUES (1000000, 0, -1, 0, 0, 0, 'ROOT', 'ROOT', NULL, 1, 0, '2020-03-16 08:40:15', 0, '2020-03-16 08:42:38');
-INSERT INTO `ope_sys_dept` VALUES (1004220, 0, 1000000, 0, 0, 0, 'RedEGroup', 'RedEGroup', NULL, 1, 0, '2020-03-16 08:42:12', 0, '2020-03-16 08:42:12');
-INSERT INTO `ope_sys_dept` VALUES (1004221, 0, 1004220, 0, 0, 1, '研发部', 'R & D Department', NULL, 1, 0, '2020-03-16 08:46:07', 0, '2020-03-16 08:46:07');
-INSERT INTO `ope_sys_dept` VALUES (1004222, 0, 1004220, 0, 0, 1, '财务部', 'Finance Department', NULL, 1, 0, '2020-03-16 08:47:04', 0, '2020-03-16 08:47:04');
+INSERT INTO `ope_sys_dept` VALUES (1000000, 0, -1, 0, 1000002, 0, 'ROOT', 'ROOT', NULL, 2, 0, '2020-03-16 08:40:15', 0, '2020-06-05 07:16:51');
+INSERT INTO `ope_sys_dept` VALUES (1004220, 0, 1000000, 0, 1000002, 0, 'RedEGroup', 'RedEGroup', NULL, 2, 0, '2020-03-16 08:42:12', 0, '2020-06-05 07:16:50');
+INSERT INTO `ope_sys_dept` VALUES (1004221, 0, 1004220, 0, 1000002, 1, '研发部', 'R & D Department', NULL, 7, 0, '2020-03-16 08:46:07', 0, '2020-06-14 06:32:16');
+INSERT INTO `ope_sys_dept` VALUES (1004222, 0, 1004220, 0, 1000002, 1, '财务部', 'Finance Department', NULL, 2, 0, '2020-03-16 08:47:04', 0, '2020-06-05 07:16:50');
+INSERT INTO `ope_sys_dept` VALUES (1004223, 1, 1004222, 0, 0, 1, 'Test', 'Finance Department', NULL, 1, 1000012, '2020-06-13 09:31:22', 1000012, '2020-06-13 09:31:29');
+INSERT INTO `ope_sys_dept` VALUES (1004224, 1, 1004221, 0, 0, 1, '11', 'R & D Department', NULL, 1, 1000006, '2020-06-13 09:49:38', 1000006, '2020-06-13 09:50:03');
+INSERT INTO `ope_sys_dept` VALUES (1004225, 1, 1004221, 0, 0, 1, '11', 'R & D Department', NULL, 2, 1000006, '2020-06-13 09:52:24', 1000006, '2020-06-14 17:50:43');
+INSERT INTO `ope_sys_dept` VALUES (1004226, 1, 1004221, 0, 0, 1, '22', 'R & D Department', NULL, 3, 1000006, '2020-06-13 09:52:38', 1000006, '2020-06-14 06:30:53');
+INSERT INTO `ope_sys_dept` VALUES (1004227, 1, 1004221, 0, 0, 1, '33', 'R & D Department', NULL, 4, 1000006, '2020-06-13 10:04:51', 1000006, '2020-06-14 06:30:53');
+INSERT INTO `ope_sys_dept` VALUES (1004228, 1, 1004221, 0, 0, 1, '20', 'R & D Department', NULL, 5, 1000006, '2020-06-13 10:49:36', 1000006, '2020-06-14 06:30:53');
+INSERT INTO `ope_sys_dept` VALUES (1004229, 1, 1004221, 0, 0, 1, '00', 'R & D Department', NULL, 6, 1000006, '2020-06-13 10:51:25', 1000006, '2020-06-14 17:50:41');
+INSERT INTO `ope_sys_dept` VALUES (1004230, 1, 1004222, 0, 1000000, 1, '00', 'Finance Department', NULL, 2, 1000006, '2020-06-13 10:55:11', 1000006, '2020-06-14 17:50:35');
+INSERT INTO `ope_sys_dept` VALUES (1004231, 1, 1004221, 0, 1000000, 1, '22', 'R & D Department', NULL, 7, 1000006, '2020-06-14 04:04:38', 1000006, '2020-06-14 06:37:36');
+INSERT INTO `ope_sys_dept` VALUES (1004232, 1, 1004221, 0, 1000000, 1, '33', 'R & D Department', NULL, 7, 1000006, '2020-06-14 07:04:52', 1000006, '2020-06-14 17:50:38');
 
 -- ----------------------------
 -- Table structure for ope_sys_dept_relation
@@ -2337,10 +2314,26 @@ CREATE TABLE `ope_sys_dept_relation`  (
 -- ----------------------------
 INSERT INTO `ope_sys_dept_relation` VALUES (1004219, 1004219);
 INSERT INTO `ope_sys_dept_relation` VALUES (1004220, 1004220);
-INSERT INTO `ope_sys_dept_relation` VALUES (1004220, 1004221);
-INSERT INTO `ope_sys_dept_relation` VALUES (1004220, 1004222);
 INSERT INTO `ope_sys_dept_relation` VALUES (1004221, 1004221);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004221, 1004224);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004221, 1004225);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004221, 1004228);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004221, 1004229);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004221, 1004231);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004221, 1004232);
 INSERT INTO `ope_sys_dept_relation` VALUES (1004222, 1004222);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004222, 1004223);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004222, 1004230);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004223, 1004223);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004224, 1004224);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004225, 1004225);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004226, 1004226);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004227, 1004227);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004228, 1004228);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004229, 1004229);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004230, 1004230);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004231, 1004231);
+INSERT INTO `ope_sys_dept_relation` VALUES (1004232, 1004232);
 
 -- ----------------------------
 -- Table structure for ope_sys_menu
@@ -2370,7 +2363,7 @@ CREATE TABLE `ope_sys_menu`  (
   `def5` decimal(10, 2) NULL DEFAULT NULL COMMENT '冗余字段',
   `def6` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '冗余字段',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1010485 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1010482 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ope_sys_menu
@@ -2445,15 +2438,12 @@ INSERT INTO `ope_sys_menu` VALUES (1010472, 0, 1010420, 'View', 'View', NULL, '/
 INSERT INTO `ope_sys_menu` VALUES (1010473, 0, 1010418, 'Edit', 'Edit', NULL, '/', '', '1', NULL, 3, 1, '', 1010426, '2020-04-15 03:31:35', 1010426, '2020-04-15 03:31:35', 'BOM', 'PRODUCT_BOM', '0', NULL, NULL);
 INSERT INTO `ope_sys_menu` VALUES (1010474, 0, 1010419, 'Edit', 'Edit', NULL, '/', '', '1', NULL, 3, 1, '', 1010426, '2020-04-15 03:32:03', 1010426, '2020-04-15 03:32:03', 'Supplier Chaim', 'PRODUCT_CH', '0', NULL, NULL);
 INSERT INTO `ope_sys_menu` VALUES (1010475, 0, 1008301, 'Setting', 'SETTING', '', '/', '', '0', '', 1, 1, '', 1000003, '2020-04-24 09:22:57', 1000006, '2020-04-24 11:44:50', 'ROOT', 'ROOT', '', NULL, NULL);
-INSERT INTO `ope_sys_menu` VALUES (1010476, 0, 1010475, 'Transfer Scooter', 'TRANSFER_SCOOTER', '', '/', '', '1', '', 2, 1, '', 1000003, '2020-04-24 09:24:42', 1000006, '2020-05-21 08:02:50', 'Setting', 'Setting', '', NULL, NULL);
+INSERT INTO `ope_sys_menu` VALUES (1010476, 0, 1010475, 'Transfer Scooter', 'TRANSFER_SCOOTER', '', '/', '', '1', '', 2, 1, '', 1000003, '2020-04-24 09:24:42', 1000006, '2020-04-24 12:17:09', 'Setting', 'Setting', '', NULL, NULL);
 INSERT INTO `ope_sys_menu` VALUES (1010477, 0, 1010476, 'View', 'View', NULL, '/', '', '1', NULL, 3, 1, '', 1000003, '2020-04-24 09:25:19', 1000003, '2020-04-24 09:25:19', 'Transfer Scooter', 'Transfer Scooter', '', NULL, NULL);
 INSERT INTO `ope_sys_menu` VALUES (1010478, 1, 1010476, '123', '123', NULL, '/', '', '0', NULL, 3, 1, '', 1000006, '2020-04-24 09:54:20', 1000006, '2020-04-24 09:54:49', 'Transfer Scooter', 'Transfer Scooter', '', NULL, NULL);
 INSERT INTO `ope_sys_menu` VALUES (1010479, 1, 1010407, 'department', 'DEPARTMENT', NULL, '/', '', '0', NULL, 2, 1, '', 1000006, '2020-04-24 12:13:06', 1000006, '2020-04-24 12:15:25', 'Organization', 'ORGANIZATION', '0', NULL, NULL);
 INSERT INTO `ope_sys_menu` VALUES (1010480, 0, 1010476, 'Edit', 'Edit', NULL, '/', '', '1', NULL, 3, 1, '', 1000006, '2020-04-24 12:15:58', 1000006, '2020-04-24 12:15:58', 'TRANSFER_SCOOTER', 'TRANSFER_SCOOTER', '', NULL, NULL);
-INSERT INTO `ope_sys_menu` VALUES (1010481, 1, 1010408, 'DEPARTMENT', 'DEPARTMENT', NULL, '/DEPARTMENT', '', '0', NULL, 3, 1, '', 1000006, '2020-05-22 11:22:55', 1000006, '2020-05-22 11:23:25', 'Employee', 'ORGANIZATION_EMPLOYEE', '0', NULL, NULL);
-INSERT INTO `ope_sys_menu` VALUES (1010482, 0, 1010407, 'Depatrment', 'DEPARTMENT', '', '/', '', '0', '', 2, 1, '', 1000006, '2020-05-22 11:23:54', 1000006, '2020-05-22 12:16:34', 'Organization', 'ORGANIZATION', '0', NULL, NULL);
-INSERT INTO `ope_sys_menu` VALUES (1010483, 0, 1010482, 'Viem', 'Viem', NULL, '/', '', '0', NULL, 3, 1, '', 1000006, '2020-05-22 11:25:15', 1000006, '2020-05-22 11:25:15', 'DEPARTMENT', 'DEPARTMENT', '0', NULL, NULL);
-INSERT INTO `ope_sys_menu` VALUES (1010484, 0, 1010482, 'Edit', 'Edit', NULL, '/Edit', '', '0', NULL, 3, 1, '', 1000006, '2020-05-22 11:25:44', 1000006, '2020-05-22 11:25:44', 'DEPARTMENT', 'DEPARTMENT', '0', NULL, NULL);
+INSERT INTO `ope_sys_menu` VALUES (1010481, 0, 1010407, 'department', 'DEPARTMENT', NULL, '/', '', '0', NULL, 2, 1, '', 1000006, '2020-05-28 05:47:26', 1000006, '2020-05-28 05:47:26', 'Organization', 'ORGANIZATION', '0', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ope_sys_role
@@ -2472,41 +2462,12 @@ CREATE TABLE `ope_sys_role`  (
   `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `role_idx1_role_code`(`role_code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1012552 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1012556 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ope_sys_role
 -- ----------------------------
-INSERT INTO `ope_sys_role` VALUES (1000031, 0, 0, 'ui', NULL, 'Designer', 1000005, '2020-03-16 09:23:49', 1008371, '2020-04-11 12:18:11');
-INSERT INTO `ope_sys_role` VALUES (1000032, 0, 0, 'text666', NULL, '666666', 1000005, '2020-03-16 09:42:23', 1000005, '2020-03-16 09:42:23');
-INSERT INTO `ope_sys_role` VALUES (1000034, 0, 0, 'text666', NULL, '666666', 1000006, '2020-03-16 09:46:34', 1000006, '2020-03-16 09:46:34');
-INSERT INTO `ope_sys_role` VALUES (1000036, 0, 0, 'adsf', NULL, 'asdfasdfa', 1000005, '2020-03-16 09:55:31', 1000005, '2020-03-16 10:01:55');
-INSERT INTO `ope_sys_role` VALUES (1000037, 0, 0, 'Android', NULL, 'Development Engineer', 1000005, '2020-03-16 10:54:01', 1008378, '2020-03-28 02:46:25');
-INSERT INTO `ope_sys_role` VALUES (1000038, 0, 0, 'Java', NULL, 'RedR Java 开发工程师', 1000005, '2020-03-16 11:12:45', 1000000, '2020-04-11 10:40:48');
-INSERT INTO `ope_sys_role` VALUES (1004200, 0, 0, 'text001', NULL, '001', 1000005, '2020-03-16 11:17:15', 1000005, '2020-03-16 11:17:15');
-INSERT INTO `ope_sys_role` VALUES (1004201, 0, 0, 'text001', NULL, '001', 1000005, '2020-03-16 11:17:24', 1000005, '2020-03-16 11:17:24');
-INSERT INTO `ope_sys_role` VALUES (1006358, 0, 0, 'WEB', NULL, 'Front-end designer', 1000005, '2020-03-17 02:25:23', 1008371, '2020-04-15 03:34:52');
-INSERT INTO `ope_sys_role` VALUES (1006359, 0, 0, 'HR', NULL, 'personnel', 1000001, '2020-03-17 03:22:02', 1008378, '2020-04-10 12:47:41');
-INSERT INTO `ope_sys_role` VALUES (1006360, 0, 0, 'buyer', NULL, 'This is buyer', 1000001, '2020-03-17 03:23:23', 1000000, '2020-04-11 11:54:23');
-INSERT INTO `ope_sys_role` VALUES (1006361, 0, 0, 'Test', NULL, 'software testing engineer', 1000001, '2020-03-17 03:24:45', 1000000, '2020-04-11 12:15:56');
-INSERT INTO `ope_sys_role` VALUES (1006362, 0, 0, 'Operation and maintenance', NULL, 'Operation and maintenance', 1000001, '2020-03-17 03:27:54', 1008378, '2020-03-23 10:38:38');
-INSERT INTO `ope_sys_role` VALUES (1008361, 0, 0, 'textt', NULL, 'ads', 1008371, '2020-03-18 10:29:42', 1008371, '2020-03-18 10:29:42');
-INSERT INTO `ope_sys_role` VALUES (1008363, 0, 0, 'Product manager', NULL, 'Product manager', 1000001, '2020-03-18 10:58:02', 1008378, '2020-03-23 10:37:20');
-INSERT INTO `ope_sys_role` VALUES (1010454, 0, 0, 'text001', NULL, '权限测试', 1008371, '2020-03-19 05:24:01', 1008371, '2020-03-19 05:24:01');
-INSERT INTO `ope_sys_role` VALUES (1010455, 0, 0, 'text0001', NULL, '权限测试', 1008371, '2020-03-19 05:26:24', 1008371, '2020-03-19 07:08:00');
-INSERT INTO `ope_sys_role` VALUES (1012539, 1, 0, 'text002', NULL, '测试', 1008371, '2020-03-19 06:38:28', 1008371, '2020-03-27 05:44:37');
-INSERT INTO `ope_sys_role` VALUES (1012540, 0, 0, 'text003', NULL, '测试', 1008371, '2020-03-19 06:43:53', 1008371, '2020-03-19 06:58:54');
-INSERT INTO `ope_sys_role` VALUES (1012541, 1, 0, 'hr', NULL, '13123', 1008378, '2020-03-24 08:20:38', 1008378, '2020-03-24 08:20:46');
-INSERT INTO `ope_sys_role` VALUES (1012542, 0, 0, 'Java', NULL, NULL, 1000000, '2020-04-24 02:35:36', 1000006, '2020-05-21 09:51:52');
-INSERT INTO `ope_sys_role` VALUES (1012543, 0, 0, 'Design', NULL, NULL, 1000001, '2020-04-24 02:56:22', 1000006, '2020-04-28 02:10:28');
-INSERT INTO `ope_sys_role` VALUES (1012544, 0, 0, 'Director', NULL, 'Development Director', 1000002, '2020-04-24 06:43:56', 1000006, '2020-04-28 02:09:57');
-INSERT INTO `ope_sys_role` VALUES (1012545, 0, 0, '打工', NULL, 'accounting', 1000003, '2020-04-24 09:32:00', 1000006, '2020-05-22 11:26:23');
-INSERT INTO `ope_sys_role` VALUES (1012546, 0, 0, '吧吧v', NULL, '1', 1000006, '2020-04-24 13:02:18', 1000006, '2020-04-24 13:02:18');
-INSERT INTO `ope_sys_role` VALUES (1012547, 0, 0, '密码', NULL, '2', 1000006, '2020-04-24 13:02:50', 1000006, '2020-04-24 13:02:50');
-INSERT INTO `ope_sys_role` VALUES (1012548, 0, 0, '111', NULL, '111', 1000006, '2020-05-06 05:56:25', 1000006, '2020-05-06 05:56:25');
-INSERT INTO `ope_sys_role` VALUES (1012549, 0, 0, 'Purchasing', NULL, NULL, 1000002, '2020-05-09 06:15:58', 1000002, '2020-05-09 06:19:08');
-INSERT INTO `ope_sys_role` VALUES (1012550, 0, 0, 'admin@redescooter.com', NULL, '超级管理员账户', 1000006, '2020-05-22 03:07:03', 1000006, '2020-05-22 03:07:03');
-INSERT INTO `ope_sys_role` VALUES (1012551, 0, 0, 'support@redescooter.com', NULL, '管理员账户', 1000006, '2020-05-22 03:07:47', 1000006, '2020-05-22 03:07:47');
+INSERT INTO `ope_sys_role` VALUES (1012559, 0, 0, 'root@redescooter.com', NULL, 'root@redescooter.com', 0, '2020-06-14 09:48:19', 0, '2020-06-14 09:48:19');
 
 -- ----------------------------
 -- Table structure for ope_sys_role_dept
@@ -2521,16 +2482,7 @@ CREATE TABLE `ope_sys_role_dept`  (
 -- ----------------------------
 -- Records of ope_sys_role_dept
 -- ----------------------------
-INSERT INTO `ope_sys_role_dept` VALUES (1012542, 1004221);
-INSERT INTO `ope_sys_role_dept` VALUES (1012543, 1004221);
-INSERT INTO `ope_sys_role_dept` VALUES (1012544, 1004221);
-INSERT INTO `ope_sys_role_dept` VALUES (1012545, 1004222);
-INSERT INTO `ope_sys_role_dept` VALUES (1012546, 1004222);
-INSERT INTO `ope_sys_role_dept` VALUES (1012547, 1004222);
-INSERT INTO `ope_sys_role_dept` VALUES (1012548, 1004221);
-INSERT INTO `ope_sys_role_dept` VALUES (1012549, 1004222);
-INSERT INTO `ope_sys_role_dept` VALUES (1012550, 1004221);
-INSERT INTO `ope_sys_role_dept` VALUES (1012551, 1004221);
+INSERT INTO `ope_sys_role_dept` VALUES (1012559, 1000000);
 
 -- ----------------------------
 -- Table structure for ope_sys_role_menu
@@ -2545,767 +2497,66 @@ CREATE TABLE `ope_sys_role_menu`  (
 -- ----------------------------
 -- Records of ope_sys_role_menu
 -- ----------------------------
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1000031, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1000037, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010455);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010456);
-INSERT INTO `ope_sys_role_menu` VALUES (1000038, 1010457);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010467);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010468);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010469);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010470);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010471);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010472);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010473);
-INSERT INTO `ope_sys_role_menu` VALUES (1006358, 1010474);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1006360, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1006361, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1008363, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010467);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010468);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010469);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010470);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010471);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010472);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010473);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010474);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010475);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010476);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010477);
-INSERT INTO `ope_sys_role_menu` VALUES (1012542, 1010480);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010467);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010468);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010469);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010470);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010471);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010472);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010473);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010474);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010475);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010476);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010477);
-INSERT INTO `ope_sys_role_menu` VALUES (1012543, 1010480);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010467);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010468);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010469);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010470);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010471);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010472);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010473);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010474);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010475);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010476);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010477);
-INSERT INTO `ope_sys_role_menu` VALUES (1012544, 1010480);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010467);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010468);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010469);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010470);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010471);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010472);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010473);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010474);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010475);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010476);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010477);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010480);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010482);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010483);
-INSERT INTO `ope_sys_role_menu` VALUES (1012545, 1010484);
-INSERT INTO `ope_sys_role_menu` VALUES (1012547, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1012547, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1012547, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010467);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010468);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010469);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010470);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010471);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010472);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010473);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010474);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010475);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010476);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010477);
-INSERT INTO `ope_sys_role_menu` VALUES (1012548, 1010480);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010467);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010468);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010469);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010470);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010471);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010472);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010473);
-INSERT INTO `ope_sys_role_menu` VALUES (1012549, 1010474);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010467);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010468);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010469);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010470);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010471);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010472);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010473);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010474);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010475);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010476);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010477);
-INSERT INTO `ope_sys_role_menu` VALUES (1012550, 1010480);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1008301);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010401);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010403);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010404);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010405);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010406);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010407);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010408);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010409);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010410);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010411);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010412);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010413);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010414);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010415);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010416);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010417);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010418);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010419);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010420);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010421);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010423);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010424);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010425);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010426);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010427);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010429);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010430);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010431);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010432);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010433);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010434);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010435);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010436);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010437);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010438);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010439);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010441);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010442);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010443);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010445);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010447);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010448);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010449);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010450);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010464);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010465);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010467);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010468);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010469);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010470);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010471);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010472);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010473);
-INSERT INTO `ope_sys_role_menu` VALUES (1012551, 1010474);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1008301);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010401);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010403);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010404);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010405);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010406);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010407);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010408);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010409);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010410);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010411);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010412);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010413);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010414);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010415);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010416);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010417);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010418);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010419);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010420);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010421);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010423);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010424);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010425);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010426);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010427);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010429);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010430);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010431);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010432);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010433);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010434);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010435);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010436);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010437);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010438);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010439);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010441);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010442);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010443);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010445);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010447);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010448);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010449);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010450);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010464);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010465);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010467);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010468);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010469);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010470);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010471);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010472);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010473);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010474);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010475);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010476);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010477);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010480);
+INSERT INTO `ope_sys_role_menu` VALUES (1012559, 1010481);
 
 -- ----------------------------
 -- Table structure for ope_sys_role_sales_cidy
@@ -3320,58 +2571,33 @@ CREATE TABLE `ope_sys_role_sales_cidy`  (
 -- ----------------------------
 -- Records of ope_sys_role_sales_cidy
 -- ----------------------------
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000000);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000005);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000012);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000023);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000024);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000025);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000026);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000027);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000028);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000029);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000030);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000031);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000032);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000033);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000034);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000035);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000036);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000037);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000038);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000039);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000040);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000041);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000042);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000043);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000044);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012544, 1000045);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000000);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000005);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000012);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000023);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000024);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000025);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000026);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000027);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000028);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000029);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000030);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000031);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000032);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000033);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000034);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000035);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000036);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000037);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000038);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000039);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000040);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000041);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000042);
-INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012545, 1000043);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000000);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000005);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000012);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000023);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000024);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000025);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000026);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000027);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000028);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000029);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000030);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000031);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000032);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000033);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000034);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000035);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000036);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000037);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000038);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000039);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000040);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000041);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000042);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000043);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000044);
+INSERT INTO `ope_sys_role_sales_cidy` VALUES (1012559, 1000045);
 
 -- ----------------------------
 -- Table structure for ope_sys_staff
@@ -3398,7 +2624,7 @@ CREATE TABLE `ope_sys_staff`  (
 -- ----------------------------
 -- Records of ope_sys_staff
 -- ----------------------------
-INSERT INTO `ope_sys_staff` VALUES (1004261, 0, '1', 1008372, 1000006, '2020-05-22 03:11:34', 1000006, '2020-05-22 03:11:34', NULL, NULL, NULL, NULL, 0);
+INSERT INTO `ope_sys_staff` VALUES (1000003, 0, '1', 1000003, 0, '2020-06-14 09:48:19', 0, '2020-06-14 09:48:19', NULL, NULL, NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for ope_sys_user
@@ -3414,7 +2640,7 @@ CREATE TABLE `ope_sys_user`  (
   `password` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '密码',
   `salt` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '盐',
   `status` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '状态 Normal,Lock,Cancel，Expired',
-  `login_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '登录名',
+  `login_name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '登录名',
   `last_login_time` datetime(0) NULL DEFAULT NULL COMMENT '最后登录时间',
   `last_login_token` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后登录TOKEN',
   `last_login_ip` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后登录IP地址',
@@ -3435,8 +2661,7 @@ CREATE TABLE `ope_sys_user`  (
 -- ----------------------------
 -- Records of ope_sys_user
 -- ----------------------------
-INSERT INTO `ope_sys_user` VALUES (1000003, 0, 0, 0, '4', 'REDE_SES', '220b9bccaa4aa832b05fbfaaca4fe54a', '21408', 'NORMAL', 'sysAdmin', '2020-05-20 08:53:45', 'f5f4599c628e41d185ca1b1c36d45a58', '192.168.2.200', NULL, NULL, 0, '2020-04-24 06:39:52', 0, '2020-05-20 08:53:45', NULL, NULL, NULL, NULL, 0);
-INSERT INTO `ope_sys_user` VALUES (1008372, 0, 1004221, 0, '4', 'REDE_SES', '41a52fcd80ed2362706404af64933a92', '30896', 'NORMAL', 'support@redescooter.com', '2020-05-29 08:16:49', '36adf81720b84b2f9ff0145c517c07d9', '192.168.2.220', '2020-05-22', NULL, 1000006, '2020-05-22 03:11:34', 1000006, '2020-05-29 08:16:49', NULL, NULL, NULL, NULL, 0);
+INSERT INTO `ope_sys_user` VALUES (1000003, 0, 1000000, 0, '4', 'REDE_SES', '214ac9c07191d0646839138808f7ee46', '31822', '1', 'root@redescooter.com', '2020-06-14 09:50:02', 'c90e2c5e3321428d90ae89cb77145354', '192.168.2.220', '2020-06-14', NULL, 0, '2020-06-14 09:48:19', 0, '2020-06-14 09:50:02', '1', NULL, NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for ope_sys_user_profile
@@ -3479,8 +2704,7 @@ CREATE TABLE `ope_sys_user_profile`  (
 -- ----------------------------
 -- Records of ope_sys_user_profile
 -- ----------------------------
-INSERT INTO `ope_sys_user_profile` VALUES (1000003, 0, 0, 1000003, NULL, 'sysAdmin', 'sysAdmin', 'sysAdmin', NULL, NULL, NULL, 'male', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2020-04-24 06:39:52', 0, '2020-04-24 06:39:52', NULL, NULL, NULL, NULL, 0);
-INSERT INTO `ope_sys_user_profile` VALUES (1008405, 0, 0, 1008372, 'https://rede.oss-cn-shanghai.aliyuncs.com/1584347057644.png', 'Supertube', 'Supertube', 'Supertube Supertube', 'support@redescooter.com', '33', '1234567892', NULL, '2001-01-01', NULL, 'French', '顶顶顶顶', '1000001', '1', 'https://rede.oss-cn-shanghai.aliyuncs.com/1590117102829.pdf', 'https://rede.oss-cn-shanghai.aliyuncs.com/1590117093072.pdf', '2020-05-22 03:11:34', 1000006, '2020-05-22 03:11:34', 1000006, '2020-05-22 03:11:34', NULL, NULL, NULL, NULL, 0);
+INSERT INTO `ope_sys_user_profile` VALUES (1000003, 0, 0, 1000003, NULL, 'ROOT', 'ROOT', 'ROOT ROOT', 'root@redescooter.com', '33', '30690', NULL, '2020-06-18', NULL, NULL, NULL, '1000000', NULL, NULL, NULL, NULL, 0, '2020-06-14 09:48:19', 0, '2020-06-14 09:48:19', NULL, NULL, NULL, NULL, 0);
 
 -- ----------------------------
 -- Table structure for ope_sys_user_role
@@ -3496,7 +2720,7 @@ CREATE TABLE `ope_sys_user_role`  (
 -- ----------------------------
 -- Records of ope_sys_user_role
 -- ----------------------------
-INSERT INTO `ope_sys_user_role` VALUES (1008372, 1012551);
+INSERT INTO `ope_sys_user_role` VALUES (1000003, 1012559);
 
 -- ----------------------------
 -- Table structure for ope_whse

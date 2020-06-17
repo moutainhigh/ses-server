@@ -24,6 +24,7 @@ import com.redescooter.ses.web.ros.vo.factory.FactoryPage;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
 import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,16 +69,25 @@ public class FactoryRosServiceImpl implements FactoryRosService {
     @Transactional
     @Override
     public GeneralResult save(FactorySaveEnter factorySaveEnter) {
-        checkSaveFactoryParameter(factorySaveEnter);
-      //factorySaveEnter参数值去空格
+      //employeeListEnter参数值去空格
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
+        checkSaveFactoryParameter(enter);
+
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
-      String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
-      String lastName = SesStringUtils.upperCaseString(enter.getContactFirstName());
-      enter.setFactoryName(factoryName);
-      enter.setContactFirstName(firstName);
-      enter.setContactLastName(lastName);
+      if (StringUtils.isNotEmpty(enter.getContactFirstName())){
+          String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
+          enter.setContactFirstName(firstName);
+      }
+        if (StringUtils.isNotEmpty(enter.getContactLastName())){
+          String lastName = SesStringUtils.upperCaseString(enter.getContactLastName());
+            enter.setContactLastName(lastName);
+        }
+        if (StringUtils.isNotEmpty(enter.getContactFullName())){
+            String lastName = SesStringUtils.upperCaseString(enter.getContactFullName());
+            enter.setContactFullName(lastName);
+        }
+        enter.setFactoryName(factoryName);
         OpeFactory factorySave = new OpeFactory();
 
         BeanUtils.copyProperties(enter, factorySave);
@@ -107,9 +117,10 @@ public class FactoryRosServiceImpl implements FactoryRosService {
     @Transactional
     @Override
     public GeneralResult edit(FactoryEditEnter factorySaveEnter) {
-      checkSaveFactoryParameter(factorySaveEnter);
       //employeeListEnter参数值去空格
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
+      checkSaveFactoryParameter(enter);
+
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
       String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());

@@ -121,6 +121,7 @@
         from ope_sys_role_dept roleDept
         inner join ope_sys_role role on roleDept.role_id = role.id and role.dr = 0
         where 1 = 1
+        and role.role_name !=#{adminRole}
         <if test="ids != null and ids.size() != 0">
             and roleDept.dept_id in
             <foreach collection="ids" item="item" open="(" separator="," close=")">

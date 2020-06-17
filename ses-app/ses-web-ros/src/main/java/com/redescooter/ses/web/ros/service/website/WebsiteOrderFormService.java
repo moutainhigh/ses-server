@@ -97,7 +97,7 @@ public interface WebsiteOrderFormService {
      * @param enter
      * @return
      */
-    GeneralResult payLastParagraph(GeneralEnter enter);
+    GeneralResult payLastParagraph(IdEnter enter);
 
     /**
      * email 校验

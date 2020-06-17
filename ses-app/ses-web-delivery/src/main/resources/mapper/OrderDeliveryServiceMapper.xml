@@ -23,6 +23,7 @@
             or cup.first_name like concat("%",#{keyword},"%")
             or cts.license_plate like concat("%",#{keyword},"%")
             or cdy.house_info like concat("%",#{keyword},"%")
+            or cdy.recipient_tel like concat("%",#{keyword},"%")
             )
         </if>
     </sql>

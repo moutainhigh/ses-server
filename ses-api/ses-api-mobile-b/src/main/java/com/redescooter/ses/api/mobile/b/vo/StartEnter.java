@@ -1,6 +1,8 @@
 package com.redescooter.ses.api.mobile.b.vo;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -27,7 +29,7 @@ import lombok.NoArgsConstructor;
 public class StartEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "主键")
-    @NotNull
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 为空")
     private Long id;
 
     @ApiModelProperty(value = "是否启动蓝牙模式")
@@ -44,5 +46,6 @@ public class StartEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "距离 单位 米 ")
     @NotNull(code = ValidationExceptionCode.MILEAGE_IS_EMPTY, message = "距离为空")
+    //@Regexp(value= RegexpConstant.number,code = ValidationExceptionCode.DATA_IS_ILLEGLE,message = "数据非法")
     private String mileage;
 }

@@ -3,6 +3,8 @@ package com.redescooter.ses.web.delivery.vo;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -35,6 +37,7 @@ public class SaveOrderDeliveryEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.RECIPIENT_IS_EMPTY, message = "收件人为空")
     @MinimumLength(code = ValidationExceptionCode.RECIPIENT_IS_UNAVAILABLE, message = "姓字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.RECIPIENT_IS_UNAVAILABLE, message = "姓字符长度为2-20字符")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.RECIPIENT_IS_UNAVAILABLE, message = "姓字非法字符")
     private String recipient;
 
 //    @ApiModelProperty(value = "收件人邮箱")
@@ -51,6 +54,7 @@ public class SaveOrderDeliveryEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.PHONE_IS_EMPTY, message = "电话为空")
     @MinimumLength(code = ValidationExceptionCode.PHONE_IS_UNAVAILABLE, message = "电话字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.PHONE_IS_UNAVAILABLE, message = "电话字符长度为2-20字符")
+    //@Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.PHONE_IS_UNAVAILABLE, message = "电话字符长度为2-20字符")
     private String recipientTel;
 
     @ApiModelProperty(value = "收件人地址")
@@ -71,6 +75,7 @@ public class SaveOrderDeliveryEnter extends GeneralEnter {
     private String houseInfo;
 
     @ApiModelProperty(value = "包裹数量")
+    //@Regexp(value=RegexpConstant.twoNumber,code = ValidationExceptionCode.DATE_IS_ILLEGAL,message = "数据非法")
     private Integer parcelQuantity = 1;
 
     @ApiModelProperty(value = "商品清单")

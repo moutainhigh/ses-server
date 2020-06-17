@@ -218,7 +218,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
         //验证前端输入的车辆数量
         if (opeCustomer.getAssignationScooterQty() != null && opeCustomer.getAssignationScooterQty() != 0) {
-            if (opeCustomer.getAssignationScooterQty() < transferScooterListEnterList.size()) {
+            if ((opeCustomer.getScooterQuantity()-opeCustomer.getAssignationScooterQty()) < transferScooterListEnterList.size()) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getMessage());
             }
         }
@@ -272,7 +272,10 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         //查询库存
         Collection<OpeStock> opeStockList =
                 opeStockService.listByIds(opeStockProdProductList.stream().map(OpeStockProdProduct::getStockId).collect(Collectors.toList()));
-
+        if(CollectionUtils.isEmpty(opeStockList)){
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+                    ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
         //根据产品型号形成 出库单
         Map<Long, Integer> stockBillMap = new HashMap<>();
         opeStockProdProductList.forEach(item -> {

@@ -62,6 +62,7 @@ import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -153,19 +154,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     /**
      * 创建客户
      *
-     * @param enter
+     * @param createCustomerEnter
      * @return
      */
     @Transactional
     @Override
-    public GeneralResult save(CreateCustomerEnter enter) {
-
-        //邮箱去空格
-        if (StringUtils.isNotEmpty(enter.getEmail())) {
-            enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
-        }
-
-        //客户字段校验
+    public GeneralResult save(CreateCustomerEnter createCustomerEnter) {
+      //employeeListEnter参数值去空格
+      CreateCustomerEnter enter = SesStringUtils.objStringTrim(createCustomerEnter);
+      //客户字段校验
         checkSaveCustomerFiledSingle(enter);
 
         QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
@@ -206,17 +203,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     /**
      * 编辑更新客户
      *
-     * @param enter
+     * @param createCustomerEnter
      * @return
      */
     @Transactional
     @Override
-    public GeneralResult edit(EditCustomerEnter enter) {
-
-        //邮箱去空格
-        if (StringUtils.isNotEmpty(enter.getEmail())) {
-            enter.setEmail(StringUtils.trim(enter.getEmail()));
-        }
+    public GeneralResult edit(EditCustomerEnter createCustomerEnter) {
+      //employeeListEnter参数值去空格
+      EditCustomerEnter enter = SesStringUtils.objStringTrim(createCustomerEnter);
         //客户字段长度校验
         checkEditCustomerFiledSingle(enter);
 
@@ -264,11 +258,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         OpeCustomer update = new OpeCustomer();
         BeanUtils.copyProperties(enter, update);
         update.setTenantId(tenantId);
-        if (StringUtils.isBlank(enter.getRemark())) {
-            update.setMemo(null);
-        }else {
-            update.setMemo(enter.getRemark());
-        }
+        update.setMemo(enter.getRemark());
         update.setUpdatedBy(enter.getUserId());
         update.setUpdatedTime(new Date());
         update.setCustomerFullName(new StringBuilder().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
@@ -353,6 +343,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
                 updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
                 updated.eq(OpeSysUserProfile.COL_DR, 0);
+                updated.last("limit 1");
                 result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
             }
             result.setCreatedName(opeCustomer.getCustomerFullName());
@@ -361,12 +352,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             QueryWrapper<OpeSysUserProfile> created = new QueryWrapper<>();
             created.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getCreatedBy());
             created.eq(OpeSysUserProfile.COL_DR, 0);
+            created.last("limit 1");
             result.setCreatedName(sysUserProfileMapper.selectOne(created) == null ? null : sysUserProfileMapper.selectOne(created).getFullName());
             result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
 
             QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
             updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
             updated.eq(OpeSysUserProfile.COL_DR, 0);
+            updated.last("limit 1");
             result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
         }
 
@@ -936,7 +929,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      *
      * @param enter
      */
-    private void checkCustomer(EditCustomerEnter enter) {
+    public void checkCustomer(EditCustomerEnter enter) {
         if (enter.getId() == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
         }
@@ -1143,7 +1136,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotEmpty(enter.getInvoiceNum())) {
             //发票号
             if (enter.getInvoiceNum().length() < 2 || enter.getInvoiceNum().length() > 30) {
-                throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getBusinessLicenseNum())) {

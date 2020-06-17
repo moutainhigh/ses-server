@@ -24,6 +24,5 @@ import lombok.*;
 public class StorageEamilEnter extends GeneralEnter {
   @ApiModelProperty(value = "邮箱")
   @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY,message = "邮箱为空")
-  @MinimumLength(value = "2",code = ValidationExceptionCode.CHARACTER_IS_TOO_SHORT,message = "字符过短")
   private String email;
 }

@@ -13,7 +13,7 @@ public interface ValidationExceptionCode {
     //长度过短，长度为2-20字符
     int CHARACTER_IS_TOO_SHORT = 10011;
     //国家手机号编码不能为空
-    int COUNTRY_CODE_IS_EMPTY = 100012;
+    int COUNTRY_CODE_IS_EMPTY = 10012;
     //URL不能为空
     int URL_IS_EMPTY = 10013;
 
@@ -101,7 +101,7 @@ public interface ValidationExceptionCode {
     //地址字符不合法
     int ADDRESS_CHAR_IS_NOT_ILLEGAL = 10070;
     // 邮箱长度不合法
-    int EMAIL_CHAR_IS_NOT_ILLEGAL = 10071;
+    int EMAIL_CHAR_IS_ILLEGAL = 10071;
     // 公司为空
     int COMPANY_IS_EMPTY = 10072;
     // 父级Id为空
@@ -174,4 +174,28 @@ public interface ValidationExceptionCode {
     int BANKCARDNAME_IS_NOT_ILLEGAL=10106;
     //名字非法
     int NAME_IS_ILLEGAL=10107;
+    //备注存在非法字符
+    int REMARK_ILLEGAL_CHARACTER=10108;
+    //发票号存在非法字符
+    int INVOICENUM_ILLEGAL_CHARACTER=10109;
+    //营业执照存在非法字符
+    int BUSINESS_LICENSE_NUM_ILLEGAL_CHARACTER =10110;
+    //数量必须为数字
+    int QTY_IS_NUMBER=10111;
+    //号码必须是数字
+    int TELEPHONE_IS_NUMBER=10112;
+    //地址字符存在非法
+    int ADDRESS_ILLEGAL_CHARACTER=10113;
+    // 岗位字符存在非法
+    int DESCRIPTION_ILLEGAL_CHARACTER=10114;
+    // 代工厂地址字符存在非法
+    int FACTORY_ADDRESS_ILLEGAL_CHARACTER=10115;
+    // 代工厂标签字符存在非法
+    int FACTORY_TAG_ILLEGAL_CHARACTER=10116;
+    //合同编号存在非法
+    int CONTRACT_NUMBER_ILLEGAL_CHARACTER=10117;
+    //付款方式存在非法
+    int PAYMENT_TYPE_ILLEGAL_CHARACTER=10118;
+    //备注非法
+    int REMARK_ILLEGAL=10119;
 }

@@ -112,7 +112,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         //用户校验
         OpeSysUser opeSysUser =
-                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1,SysUserSourceEnum.WEBSITE.getValue()));
+                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1,SysUserSourceEnum.WEBSITE.getValue()).last("limit 1"));
         if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -186,6 +186,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, decryptEamil);
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, CustomerSourceEnum.WEBSITE.getValue());
+        opeCustomerQueryWrapper.last("limit 1");
         OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
         if (opeCustomer != null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
@@ -277,12 +278,10 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             checkString(baseSendMailEnter.getMail(),2,50);
         }
         //先判断邮箱是否存在、
-        QueryWrapper<OpeCustomer> qw = new QueryWrapper<>();
-        qw.eq("email", baseSendMailEnter.getMail());
-        qw.eq("dr", 0);
-        qw.last("limit 1");
-        OpeCustomer customer = opeCustomerMapper.selectOne(qw);
-        if (null == customer) {
+        QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
+        OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).eq(OpeSysUser::getLoginName,
+                baseSendMailEnter.getMail()).last("limit 1"));
+        if (null == opeSysUser) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
@@ -292,7 +291,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         enter.setAppId(AppIDEnums.SES_ROS.getValue());
         enter.setEmail(decryptMail);
         enter.setRequestId(baseSendMailEnter.getRequestId());
-        enter.setUserId(customer.getId());
+        enter.setUserId(opeSysUser.getId());
         mailMultiTaskService.addMultiMailTask(enter);
         return new GeneralResult(baseSendMailEnter.getRequestId());
     }

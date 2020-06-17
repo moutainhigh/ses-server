@@ -3,6 +3,8 @@ package com.redescooter.ses.web.delivery.vo;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -39,12 +41,14 @@ public class SaveDriverEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.FIRST_NAME_IS_EMPTY, message = "名为空")
     @MinimumLength(code = ValidationExceptionCode.FIRST_NAME_IS_UNAVAILABLE, message = "名字字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.FIRST_NAME_IS_UNAVAILABLE, message = "名字符长度为2-20字符")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.FIRST_NAME_IS_UNAVAILABLE, message = "名字非法字符")
     private String driverFirstName;
 
     @ApiModelProperty(value = "司机名字")
     @NotNull(code = ValidationExceptionCode.LAST_NAME_IS_EMPTY, message = "姓为空")
     @MinimumLength(code = ValidationExceptionCode.LAST_NAME_IS_UNAVAILABLE, message = "姓字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.LAST_NAME_IS_UNAVAILABLE, message = "姓字符长度为2-20字符")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.LAST_NAME_IS_UNAVAILABLE, message = "名字非法字符")
     private String driverLastName;
 
     @ApiModelProperty(value = "司机性别")
@@ -59,6 +63,7 @@ public class SaveDriverEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.PHONE_IS_EMPTY, message = "手机号为空")
     @MinimumLength(code = ValidationExceptionCode.PHONE_IS_UNAVAILABLE, message = "手机号字符长度为2-20字符")
     @MaximumLength(code = ValidationExceptionCode.PHONE_IS_UNAVAILABLE, message = "手机号字符长度为2-20字符")
+    //@Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.PHONE_IS_UNAVAILABLE, message = "手机号非法")
     private String driverPhone;
 
     @ApiModelProperty(value = "司机地址")

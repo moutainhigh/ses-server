@@ -2,7 +2,9 @@ package com.redescooter.ses.web.ros.vo.production;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -48,9 +50,11 @@ public class PayEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "发票", required = true)
     @NotNull(code = ValidationExceptionCode.INVOICE_IS_EMPTY, message = "发票为空")
+    //@Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.INVOICENUM_ILLEGAL_CHARACTER,message = "发票存在非法字符")
     private String invoicePicture;
 
     @ApiModelProperty(value = "发票号", required = true)
     @NotNull(code = ValidationExceptionCode.INVOICE_NUM_IS_EMPTY, message = "发票号为空")
+    //@Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.INVOICENUM_ILLEGAL_CHARACTER,message = "发票号存在非法字符")
     private String invoiceNum;
 }

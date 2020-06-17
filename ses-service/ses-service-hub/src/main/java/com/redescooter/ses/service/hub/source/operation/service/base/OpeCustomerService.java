@@ -12,8 +12,6 @@ public interface OpeCustomerService extends IService<OpeCustomer> {
 
     int updateBatch(List<OpeCustomer> list);
 
-    int updateBatchSelective(List<OpeCustomer> list);
-
     int batchInsert(List<OpeCustomer> list);
 
     int insertOrUpdate(OpeCustomer record);

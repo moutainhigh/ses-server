@@ -46,7 +46,7 @@ public interface Constant {
     /**
      * 超级管理员用户名,原始adminRedE
      */
-    String ADMIN_USER_NAME = "sysAdmin";
+    String ADMIN_USER_NAME = "root@redescooter.com";
 
     /**
      * 默认密码

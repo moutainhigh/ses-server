@@ -20,6 +20,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.AllocateServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeAllocate;
@@ -50,6 +51,7 @@ import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderNodeResul
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderPartResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAllocateEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -365,6 +367,7 @@ public class AllocateServiceImpl implements AllocateService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
@@ -444,6 +447,7 @@ public class AllocateServiceImpl implements AllocateService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
@@ -513,12 +517,14 @@ public class AllocateServiceImpl implements AllocateService {
     /**
      * 保存调拨单
      *
-     * @param enter
+     * @param saveAllocateEnter
      * @return
      */
     @Transactional
     @Override
-    public GeneralResult saveAllocate(SaveAllocateEnter enter) {
+    public GeneralResult saveAllocate(SaveAllocateEnter saveAllocateEnter) {
+      //SaveAllocateEnter参数值去空格
+      SaveAllocateEnter enter = SesStringUtils.objStringTrim(saveAllocateEnter);
         //配件、付款信息转换
         List<ProductionPartsEnter> productionPartsEnterList = null;
         // 出库单集合
@@ -547,6 +553,7 @@ public class AllocateServiceImpl implements AllocateService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());

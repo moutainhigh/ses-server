@@ -152,7 +152,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         //创建个人信息
         OpeSysUserProfile opeSysUserProfile = buildSysUserProfile(opeSysUser);
         //查询是否有admin Role 没有的话
-        OpeSysRole sysRole = opeSysRoleService.getOne(new LambdaQueryWrapper<OpeSysRole>().eq(OpeSysRole::getRoleName, Constant.ADMIN_USER_NAME));
+        OpeSysRole sysRole = opeSysRoleService.getOne(new LambdaQueryWrapper<OpeSysRole>().eq(OpeSysRole::getRoleName, Constant.ADMIN_USER_NAME).last("limit 1"));
         if (sysRole == null) {
             //创建角色
             sysRole = saveRole();
@@ -206,20 +206,20 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         }
 
         OpeSysUser sysUserServiceOne = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, Constant.ADMIN_USER_NAME).eq(OpeSysUser::getDef1,
-        SysUserSourceEnum.SYSTEM.getValue()));
+        SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
         if (sysUserServiceOne == null) {
             //账号信息创建
             saveAdmin();
             return new GeneralResult();
         }
         //查询是否有admin Role 没有的话
-        OpeSysRole sysRole = opeSysRoleService.getOne(new LambdaQueryWrapper<OpeSysRole>().eq(OpeSysRole::getRoleName, Constant.ADMIN_USER_NAME));
+        OpeSysRole sysRole = opeSysRoleService.getOne(new LambdaQueryWrapper<OpeSysRole>().eq(OpeSysRole::getRoleName, Constant.ADMIN_USER_NAME).last("limit 1"));
         if (sysRole == null) {
             //创建角色
             sysRole = saveRole();
         }
         //查询员工 是否
-        OpeSysStaff opeSysStaff = opeSysStaffService.getOne(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getSysUserId,sysUserServiceOne.getId()));
+        OpeSysStaff opeSysStaff = opeSysStaffService.getOne(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getSysUserId,sysUserServiceOne.getId()).last("limit 1"));
         if (opeSysStaff == null) {
             OpeSysStaff saveOpeSysStaff = buildOpeSysStaff(sysUserServiceOne.getId());
             opeSysStaffService.save(saveOpeSysStaff);
@@ -228,7 +228,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         //查询所有页面
         List<OpeSysMenu> opeSysMenus = opeSysMenuService.list();
         //校验 admin 是否 和Root部门 存在绑定关系
-        OpeSysRoleDept sysRoleDept = opeSysRoleDeptService.getOne(new LambdaQueryWrapper<OpeSysRoleDept>().eq(OpeSysRoleDept::getDeptId, dept.getId()).eq(OpeSysRoleDept::getRoleId, sysRole.getId()));
+        OpeSysRoleDept sysRoleDept = opeSysRoleDeptService.getOne(new LambdaQueryWrapper<OpeSysRoleDept>().eq(OpeSysRoleDept::getDeptId, dept.getId()).eq(OpeSysRoleDept::getRoleId, sysRole.getId()).last("limit 1"));
         if (sysRoleDept == null) {
             opeSysRoleDeptService.save(OpeSysRoleDept.builder().deptId(dept.getId()).roleId(sysRole.getId()).build());
         }
@@ -249,7 +249,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         }
         //校验 员工和角色是否具有绑定关系
         OpeSysUserRole sysUserRole = opeSysUserRoleService.getOne(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getRoleId, sysRole.getId()).eq(OpeSysUserRole::getUserId,
-                sysUserServiceOne.getId()));
+                sysUserServiceOne.getId()).last("limit 1"));
         if (sysUserRole == null) {
             opeSysUserRoleService.save(OpeSysUserRole.builder().roleId(sysRole.getId()).userId(sysUserServiceOne.getId()).build());
         }
@@ -292,7 +292,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .gender(null)
                 .birthday(RandomUtil.randomDate(new Date(), DateField.HOUR, 10, 100))
                 .placeBirth(null)
-                .addressBureau(null)
+                .addressBureau("1000000")
                 .address(null)
                 .addressCountryCode(null)
                 .createdBy(0L)

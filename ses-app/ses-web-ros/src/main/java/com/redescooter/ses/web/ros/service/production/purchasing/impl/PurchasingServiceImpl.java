@@ -28,6 +28,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.poi.EasyPoiUtils;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
@@ -84,6 +85,7 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -278,12 +280,14 @@ public class PurchasingServiceImpl implements PurchasingService {
      * 3、配件过滤
      * 4、支付信息过滤
      *
-     * @param enter
+     * @param savePurchasingEnter
      * @return
      */
     @Transactional
     @Override
-    public GeneralResult save(SavePurchasingEnter enter) {
+    public GeneralResult save(SavePurchasingEnter savePurchasingEnter) {
+      //savePurchasingEnter参数值去空格
+      SavePurchasingEnter enter = SesStringUtils.objStringTrim(savePurchasingEnter);
         //配件、付款信息转换
         List<ProductionPartsEnter> productsList = null;
         List<StagingPaymentEnter> paymentList = null;
@@ -313,6 +317,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, enter.getConsigneeId());
+        opeSysUserProfileQueryWrapper.last("limit 1");
         OpeSysUserProfile opeSysUserProfile = opeSysUserProfileService.getOne(opeSysUserProfileQueryWrapper);
         if (opeSysUserProfile == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
@@ -321,6 +326,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         QueryWrapper<OpeFactory> opeFactoryQueryWrapper = new QueryWrapper<>();
         opeFactoryQueryWrapper.eq(OpeFactory.COL_DR, 0);
         opeFactoryQueryWrapper.eq(OpeFactory.COL_ID, enter.getFactoryId());
+        opeFactoryQueryWrapper.last("limit 1");
         OpeFactory opeFactory = opeFactoryService.getOne(opeFactoryQueryWrapper);
         if (opeFactory == null) {
             throw new SesWebRosException(ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getMessage());
@@ -644,6 +650,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         opePurchasTraceQueryWrapper.eq(OpePurchasTrace.COL_DR, 0);
         opePurchasTraceQueryWrapper.in(OpePurchasTrace.COL_PURCHAS_ID, enter.getId());
         opePurchasTraceQueryWrapper.eq(OpePurchasTrace.COL_STATUS, PurchasingStatusEnums.MATERIALS_QC.getValue());
+        opePurchasTraceQueryWrapper.last("limit 1");
         OpePurchasTrace opePurchasTrace = opePurchasTraceService.getOne(opePurchasTraceQueryWrapper);
         if (opePurchasTrace == null) {
             return result;
@@ -1168,6 +1175,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         QueryWrapper<OpePurchasPayment> opePurchasPaymentQueryWrapper = new QueryWrapper<>();
         opePurchasPaymentQueryWrapper.eq(OpePurchasPayment.COL_PURCHAS_ID, opePurchas.getId());
         opePurchasPaymentQueryWrapper.eq(OpePurchasPayment.COL_DR, 0);
+        opePurchasPaymentQueryWrapper.last("limit 1");
         OpePurchasPayment purchasPayment = opePurchasPaymentService.getOne(opePurchasPaymentQueryWrapper);
         if (purchasPayment == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
@@ -1481,6 +1489,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
+        opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
         if (opeWhse == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());

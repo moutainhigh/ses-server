@@ -1,6 +1,8 @@
 package com.redescooter.ses.api.mobile.c.vo;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.c.exception.ValidationExceptionCode;
 
@@ -42,6 +44,8 @@ public class ScooterNavigationEnter extends GeneralEnter {
     private Boolean bluetoothCommunication = Boolean.FALSE;
 
     @ApiModelProperty(value = "行驶公里数，结束导航时传递 单位 m")
+    @NotNull(code = ValidationExceptionCode.MILEAGE_IS_EMPTY,message = "距离为空")
+    //@Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.DATA_IS_ILLEGAL,message = "距离为空")
     private String mileage;
 
     @ApiModelProperty(value = "行驶公里数，结束导航时传递 单位 s")

@@ -22,11 +22,6 @@ public class OpeCustomerServiceImpl extends ServiceImpl<OpeCustomerMapper, OpeCu
     }
 
     @Override
-    public int updateBatchSelective(List<OpeCustomer> list) {
-        return baseMapper.updateBatchSelective(list);
-    }
-
-    @Override
     public int batchInsert(List<OpeCustomer> list) {
         return baseMapper.batchInsert(list);
     }

@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://172.31.3.48:2181?backup=172.31.3.48:2182,172.31.3.48:2183
+    address: zookeeper://172.31.5.73:2181?backup=172.31.5.73:2182,172.31.5.73:2183
 
 # swagger配置
 
@@ -28,7 +28,7 @@ spring:
       enabled: true
   #数据库连接
   datasource:
-    url: RedE(nxCMVOLkKHv+MLsgcjvb/krHjznklQHK2vJg7bj8nfQNsN01adBSnFibaA0o7kTMymx/1sfnpejgOevunVPGx5xcS9E+6yjjDzQnC4yK8rss22Z0j84c0gjHEqoHyK0IOXdnwMr1bMjKt4IhglIvsJB59piqPwJ2a7wUhCT8aqpGhwBGzqBgfG1eU1UCE+n4jXUgZAU4Vu8kW24JTy+HyUq0GPnYNS3Zm1uJVL9jymtsNc8XxpAAwgh+seKiOoft+rmLTW5uYtd+nwv2wMxok7p17m9zm87lN9hjaunuf+x6TJVHaaz8T30yE0ychPQa/E0/TkKJOQ0p6pWNOgQX8Q==)
+    url: RedE(fAAsjYNI9GEWNIQBH9DBhOaL5/SiTRFY9xDeZiR9eApKJaSCWomr+Gr3zWjR6gxweHaZoADZZV2SOU6viQGJo/nxAwextEXz/PM+3pt+BgVbVng5xsNX3gXG+0gqItzKHGOnBejS5zI5/Nbi1naBDp8W8w89JqcLPj8//2VU2PDQj+X9Ycxo2db40C0cTaU7ClMiD9VOV5Rv/tXsv1il3UJXreRYP8KRZga7v4vWMPLSXLTTbi0vB8lJzxdraEVy9VaIbRIyu/L1HZ3aMw8I6UjCujLTF27hLNvE5pga5ecJMOE+BY0LE22X5QLbVtIl)
     username: RedE(2mrIxb+xr0JIkJZhpZM6rw==)
     password: RedE(9xt4+dxZg7UJ2xBU2RxnIWPv/HPPdya2mAko1SSIglQLFWER6wFnCDrF700p4xLB)
     druid:
@@ -46,12 +46,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 172.31.3.48:7000
-        - 172.31.3.48:7001
-        - 172.31.3.48:7002
-        - 172.31.3.48:7003
-        - 172.31.3.48:7004
-        - 172.31.3.48:7005        
+        - 172.31.5.73:7000
+        - 172.31.5.73:7001
+        - 172.31.5.73:7002
+        - 172.31.5.73:7003
+        - 172.31.5.73:7004
+        - 172.31.5.73:7005
   # swagger在线文档配置
   swagger:
     enabled: false                                       # 是否启用swagger

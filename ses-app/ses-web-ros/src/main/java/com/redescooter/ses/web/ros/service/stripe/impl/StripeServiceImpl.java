@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -110,10 +111,12 @@ public class StripeServiceImpl implements StripeService {
         map.put("order_id", String.valueOf(payOrder.getId()));
         map.put("order_no", payOrder.getOrderNo());
 
+        //暂时支付为190 欧元 优惠500欧元
+        Long payAmount=190L;
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder().setReceiptEmail(ReceiptEmail)
                 .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
-                .setAmount(payOrder.getTotalPrice().longValue()).putAllMetadata(map).build();
+                .setAmount(payAmount).putAllMetadata(map).build();
 
             PaymentIntent intent = PaymentIntent.create(params);
        /*   String decrypt =null;
@@ -301,6 +304,9 @@ public class StripeServiceImpl implements StripeService {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         // 订单数据保存
+        //todo 定金支付成功后优惠500 欧元
+        customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("500")));
+
         customerInquiry.setPayStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setUpdatedTime(new Date());

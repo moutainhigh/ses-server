@@ -36,18 +36,17 @@ public class SaveSaleOrderEnter extends GeneralEnter {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "国家电话代码")
-    private String countryCode;
+//    @ApiModelProperty(value = "国家电话代码")
+//    private String countryCode;
 
-    @ApiModelProperty(value = "电话")
-    @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY,message = "电话为空")
-    private String phone;
+//    @ApiModelProperty(value = "电话")
+//    @NotNull(code = ValidationExceptionCode.CONTACT_PHONE_IS_EMPTY,message = "电话为空")
+//    private String phone;
 
-    @ApiModelProperty(value = "地址")
-    @NotNull(code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "地址为空")
-    @MinimumLength(value = "2",code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "字符过短")
-    @MaximumLength(value = "120",code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "字符过长")
-    private String address;
+//    @ApiModelProperty(value = "地址")
+//    @NotNull(code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "地址为空")
+//    @MaximumLength(value = "120",code = ValidationExceptionCode.ADDRESS_CHAR_IS_NOT_ILLEGAL,message = "地址不合法")
+//    private String address;
 
     @ApiModelProperty(value = "产品Id")
     @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "产品类型为空")
@@ -92,7 +91,7 @@ public class SaveSaleOrderEnter extends GeneralEnter {
     //@NotNull(code = ValidationExceptionCode.CVV_IS_EMPTY, message = "CVV为空")
     private String cvv;
 
-    @ApiModelProperty(value = "邮编")
-    //@NotNull(code = ValidationExceptionCode.POSTAL_CODE_IS_EMPTY, message = "邮编为空")
-    private String postalCode;
+//    @ApiModelProperty(value = "邮编")
+//    //@NotNull(code = ValidationExceptionCode.POSTAL_CODE_IS_EMPTY, message = "邮编为空")
+//    private String postalCode;
 }

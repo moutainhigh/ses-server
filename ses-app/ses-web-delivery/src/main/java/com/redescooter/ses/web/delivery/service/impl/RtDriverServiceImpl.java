@@ -2,6 +2,7 @@ package com.redescooter.ses.web.delivery.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.driver.DriverLicenseLevelEnum;
 import com.redescooter.ses.api.common.enums.driver.DriverLoginTypeEnum;
@@ -169,6 +170,10 @@ public class RtDriverServiceImpl implements RtDriverService {
         //邮箱去空格
         if (StringUtils.isNotEmpty(enter.getEmail())) {
             enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
+            //特殊字符校验
+            if (!SesStringUtils.checkString(enter.getEmail(), RegexpConstant.email)){
+                throw new SesWebDeliveryException(ExceptionCodeEnums.EMAIL_IS_ILLEGAL.getCode(),ExceptionCodeEnums.EMAIL_IS_ILLEGAL.getMessage());
+            }
         }
         //密码去空格
         if (StringUtils.isNotEmpty(enter.getPassword())) {
@@ -176,11 +181,19 @@ public class RtDriverServiceImpl implements RtDriverService {
             if (enter.getPassword().length() < 2 || enter.getPassword().length() > 20) {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.PASSOWRD_IS_ILLEGAL.getCode(),ExceptionCodeEnums.PASSOWRD_IS_ILLEGAL.getMessage());
             }
+            //特殊字符
+            if (!SesStringUtils.checkString(enter.getPassword(), RegexpConstant.specialCharacters)){
+                throw new SesWebDeliveryException(ExceptionCodeEnums.EMAIL_IS_ILLEGAL.getCode(),ExceptionCodeEnums.EMAIL_IS_ILLEGAL.getMessage());
+            }
         }
         if (StringUtils.isNotEmpty(enter.getPasswordAgain())) {
             enter.setPasswordAgain(SesStringUtils.stringTrim(enter.getPasswordAgain()));
             if (enter.getPasswordAgain().length() < 2 || enter.getPasswordAgain().length() > 20) {
                 throw new SesWebDeliveryException(ExceptionCodeEnums.PASSOWRD_IS_ILLEGAL.getCode(),ExceptionCodeEnums.PASSOWRD_IS_ILLEGAL.getMessage());
+            }
+            //特殊字符
+            if (!SesStringUtils.checkString(enter.getPasswordAgain(), RegexpConstant.specialCharacters)){
+                throw new SesWebDeliveryException(ExceptionCodeEnums.EMAIL_IS_ILLEGAL.getCode(),ExceptionCodeEnums.EMAIL_IS_ILLEGAL.getMessage());
             }
         }
 

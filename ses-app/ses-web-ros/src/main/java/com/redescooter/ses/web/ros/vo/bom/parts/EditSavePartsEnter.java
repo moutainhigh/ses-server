@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.bom.parts;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -41,12 +43,15 @@ public class EditSavePartsEnter extends GeneralEnter {
     private String partsNumber;
 
     @ApiModelProperty(value = "中文名称")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String cnName;
 
     @ApiModelProperty(value = "法文名称")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String frName;
 
     @ApiModelProperty(value = "英文名称")
+    //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
     private String enName;
 
     @ApiModelProperty(value = "是否可销售,0:SC仅可采购，1:SSC可销售可采购",required = true)

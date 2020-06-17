@@ -75,12 +75,12 @@ public class RoleServiceImpl implements RoleService {
     private CityBaseService ctiyBaseService;
 
     @Override
-    public GeneralResult save(RoleEnter roleEnter) {
+    public GeneralResult save(RoleEnter enter) {
+      //employeeListEnter参数值去空格
+      RoleEnter roleEnter = SesStringUtils.objStringTrim(enter);
       if (roleEnter.getRoleName().length()<2||roleEnter.getRoleName().length()>20){
         throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
       }
-      //employeeListEnter参数值去空格
-      RoleEnter enter = SesStringUtils.objStringTrim(roleEnter);
       String roleName = SesStringUtils.upperCaseString(enter.getRoleName());
       enter.setRoleName(roleName);
       //保存岗位角色
