@@ -1,11 +1,10 @@
 package com.redescooter.ses.web.ros;
 
-import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
+import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -91,21 +90,35 @@ public class SesWebRosApplicationTests {
     @Test
     public void test() {
         // 对应配置文件中配置的加密密钥
-//        System.setProperty("jasypt.encryptor.password", "RedE");
+        System.setProperty("jasypt.encryptor.password", "RedE");
         StringEncryptor stringEncryptor = new DefaultLazyEncryptor(new StandardEnvironment());
 //        System.out.println("加密后的登录名： " + stringEncryptor.encrypt("root"));
 //        System.out.println("加密后的密码： " + stringEncryptor.encrypt("1qaz2wsx"));
-//        System.out.println("url： " + stringEncryptor.encrypt("jdbc:mysql://localhost:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true\n"));
+        System.out.println("consumer： " + stringEncryptor.encrypt(
+            "jdbc:mysql://172.31.5.73:4269/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+
+        System.out.println("scooter： " + stringEncryptor.encrypt(
+            "jdbc:mysql://172.31.5.73:4269/scooter_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+
+        System.out.println("platform： " + stringEncryptor.encrypt(
+            "jdbc:mysql://172.31.5.73:4269/platform_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+
+        System.out.println("corporate： " + stringEncryptor.encrypt(
+            "jdbc:mysql://172.31.5.73:4269/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+
+        System.out.println("operation： " + stringEncryptor.encrypt(
+            "jdbc:mysql://172.31.5.73:4269/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false"));
+
+        ////
+//
+//        String url="+chN0fRMdoeLUWSKhrK2wbRtCS9HtHdgHojKHlPjwRbbf/NC9cLGUJGNbS8KTloYlKi43+n79TiDla0aWszCT+pDuCXOcFQy3ycbBJXN4wqwDF5HVL1PObebjlCR29Q7bUW10W7cFdrrjhZN90u0zEtEYh1qzD7rW1rw8uUnFSuF69w9M3et6tHJYU2MpOS/jl/1u6e/d3uhRRp225KLSZMS6PrR3EnsNfW6HQYByeVM3eZLZlBDUkebkhxKcU8tV1Qz4xSJbl9rNA1jqwFAIxhsFFI+uuLfiEe4u0/5DDewWR1NtvzOTEKKKlM1f9VyMDwwECar1IbYORA72Yik0Q==";
 ////
-//
-//        String url="+xA0J+wEWz4ZZRqskmzzm7X96KWtE+T+Xbhzg4ai/Ep4VGrri/KtE39cbwwJfBGV/swnJvt1t4d51O5MgV44fZ96gxpWCPg5PJgylytMVX98NcJ+3lUEu0rfIXi43GWvfiuEjtDfadtXZ+5mvMeTZsbw7f/Ko0t7RaP+uf/lW1NWbnmW8MToxyPMT2wgGeMi9uzGnxd3XoaPNKvOstmPB/NdiywUxWIIbCGSpCumB1nFk/vuz+w6fFtrLNXiA+VbogJ6hpmyoaDB+WrIv3MojEkBJNO4rDj02e+Zs93tYoiwT3+aB+sQ/NV7YBA6bgp9eJbTzdwbTYM2Yc9lmi5eRprTf3QPMwFCdf+WdTcqRRs=";
-//
-//        String userName="PUCVDfaGX5+GHC5sLQUkaw==";
-//
-//        String password="h4FTPWlTMiyjC3ibuv4QhvreAET9QoNL";
-//
+//        String userName="vWqurNhz5ZyGRrJm4tjVnA==";
+////
+//        String password="Q/B0gpzvU8K2HB+l+DVlQn1L/n3F2RZ8gSpIZT4CkvqqOg9GfxXs+Ouj4IJSNXrf";
+////
 //        System.out.println("解密的登录名： " + stringEncryptor.decrypt(userName));
-        System.out.println("解密的密码： " + stringEncryptor.decrypt("fHRxmETbcpUpah/tH49sOY+8Fl86wduHyV7en4kfiEsUeC/5OlB1ZwCTv6lPKVPS"));
+//        System.out.println("解密的密码： " + stringEncryptor.decrypt(password));
 //        System.out.println("url： " + stringEncryptor.decrypt(url));
     }
 

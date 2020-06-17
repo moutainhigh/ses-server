@@ -13,7 +13,7 @@ public interface ValidationExceptionCode {
     //长度过短，长度为2-20字符
     int CHARACTER_IS_TOO_SHORT = 10011;
     //国家手机号编码不能为空
-    int COUNTRY_CODE_IS_EMPTY = 100012;
+    int COUNTRY_CODE_IS_EMPTY = 10012;
     //URL不能为空
     int URL_IS_EMPTY = 10013;
 
@@ -195,5 +195,7 @@ public interface ValidationExceptionCode {
     //合同编号存在非法
     int CONTRACT_NUMBER_ILLEGAL_CHARACTER=10117;
     //付款方式存在非法
-    int PAYMENT_TYPE_ILLEGAL_CHARACTER=10117;
+    int PAYMENT_TYPE_ILLEGAL_CHARACTER=10118;
+    //备注非法
+    int REMARK_ILLEGAL=10119;
 }

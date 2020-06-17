@@ -29,6 +29,9 @@ public enum MailTemplateEventEnums {
     CUSTOMER_INQUIRY_LAST_PARAGRAPH("客户询价单支付尾款",11,"customer_inquiry_last_paragraph","CUSTOMER_INQUIRY_LAST_PARAGRAPH"),
     SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL("订金支付成功发送邮箱",12,"subscription_pay_succeed_send_eamil","SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL"),
     FORGET_PSD_SEND_MAIL("官网忘记密码发送邮件",13,"forget_psd_send_mail","FORGET_PSD_SEND_MAIL"),
+    SUBSCRIBE_TO_EMAIL_SUCCESSFULLY("官网订邮件成功后发送邮件",14,"Subscribe_to_email_successfully","SUBSCRIBE_TO_EMAIL_SUCCESSFULLY"),
+
+
     ;
     private String mome;
 

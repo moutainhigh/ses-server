@@ -193,5 +193,4 @@ public interface CustomerRosService {
      */
     BooleanResult sendEmailAgian(IdEnter enter);
 
-
 }

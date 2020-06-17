@@ -104,9 +104,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<DeptEmployeeListResult> employeeList(EmployeeListEnter enter) {
 
-      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
             return new ArrayList<>();
-      }
+        }
         // 拿到所有部门
         List<DeptEmployeeListResult> deptList = employeeServiceMapper.deptList(enter);
         if (CollectionUtils.isEmpty(deptList)) {
@@ -190,9 +190,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public GeneralResult saveEmployee(SaveEmployeeEnter saveEmployeeEnter) {
 
         //employeeListEnter参数值去空格
-      SaveEmployeeEnter enter = SesStringUtils.objStringTrim(saveEmployeeEnter);
-      // 部门、职位、办公区域、邮箱校验
-      checkSaveEmployeeParameter(enter);
+        SaveEmployeeEnter enter = SesStringUtils.objStringTrim(saveEmployeeEnter);
+        // 部门、职位、办公区域、邮箱校验
+        checkSaveEmployeeParameter(enter);
         //员工名称首位大写
         String firstName = SesStringUtils.upperCaseString(enter.getEmployeeFirstName());
         String lastName = SesStringUtils.upperCaseString(enter.getEmployeeLastName());
@@ -210,14 +210,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         OpeSysUser opeSysUser = null;
         OpeSysUserRole opeSysUserRole = null;
         if (enter.getId() == null || enter.getId() == 0) {
-          if (!enter.getEmail().contains("@")|| enter.getEmail().length()<2||enter.getEmail().length()>20) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-          }
-          // 创建
-          if (checkMail != null) {
-              throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
-          }
-          //邮箱过滤
+            if (!enter.getEmail().contains("@") || enter.getEmail().length() < 2 || enter.getEmail().length() > 50) {
+                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
+            }
+            // 创建
+            if (checkMail != null) {
+                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+            }
+            //邮箱过滤
 
             // 构建个人账户
             opeSysUser = saveSysUserSingle(enter);
@@ -240,7 +240,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             QueryWrapper<OpeSysUser> opeSysUserQueryWrapper = new QueryWrapper<>();
             opeSysUserQueryWrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getEmail());
             opeSysUserQueryWrapper.eq(OpeSysUser.COL_DR, 0);
-            opeSysUserQueryWrapper.eq(OpeSysUser.COL_DEF1,SysUserSourceEnum.SYSTEM.getValue());
+            opeSysUserQueryWrapper.eq(OpeSysUser.COL_DEF1, SysUserSourceEnum.SYSTEM.getValue());
             opeSysUserQueryWrapper.last("limit 1");
             opeSysUser = opeSysUserService.getOne(opeSysUserQueryWrapper);
             if (opeSysUser == null) {
@@ -299,7 +299,6 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public List<EmployeeDeptResult> employeeDeptList(EmployeeDeptEnter enter) {
-        List<EmployeeDeptResult> employeeDeptResultlist = new ArrayList<>();
         // 类型过滤
         if (EmployeeDeptTypeEnums.checkValue(enter.getType()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
@@ -327,7 +326,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 result.removeIf(item -> item.getId().equals(enter.getBizId()));
                 break;
             case POSITION:
-                result = employeeServiceMapper.getEmployeePositionList(enter.getTenantId(), ids);
+                result = employeeServiceMapper.getEmployeePositionList(enter.getTenantId(), ids, Constant.ADMIN_USER_NAME);
                 break;
             case OFFICEAREA:
                 for (AddressBureauEnums item : AddressBureauEnums.values()) {
@@ -447,7 +446,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return opeSysUserProfile;
     }
 
-        private void checkSaveEmployeeParameter(SaveEmployeeEnter enter) {
+    private void checkSaveEmployeeParameter(SaveEmployeeEnter enter) {
         if (opeSysDeptService.getById(enter.getDeptId()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
@@ -459,17 +458,17 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
-        if (enter.getEmployeeFirstName().length() < 2 || enter.getEmployeeFirstName().length() > 20){
+        if (enter.getEmployeeFirstName().length() < 2 || enter.getEmployeeFirstName().length() > 20) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getEmployeeLastName().length() < 2 || enter.getEmployeeLastName().length() > 20){
-          throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getMessage());
+        if (enter.getEmployeeLastName().length() < 2 || enter.getEmployeeLastName().length() > 20) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getTelephone().length() < 2 || enter.getTelephone().length() > 20){
-          throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getMessage());
+        if (enter.getTelephone().length() < 2 || enter.getTelephone().length() > 20) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getAddress().length() < 2 || enter.getAddress().length() > 200){
-          throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
+        if (enter.getAddress().length() < 2 || enter.getAddress().length() > 200) {
+            throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
         }
 
     }

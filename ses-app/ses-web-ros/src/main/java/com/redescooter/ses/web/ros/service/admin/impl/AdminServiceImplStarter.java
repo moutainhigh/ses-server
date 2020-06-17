@@ -292,7 +292,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .gender(null)
                 .birthday(RandomUtil.randomDate(new Date(), DateField.HOUR, 10, 100))
                 .placeBirth(null)
-                .addressBureau(null)
+                .addressBureau("1000000")
                 .address(null)
                 .addressCountryCode(null)
                 .createdBy(0L)

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -34,10 +35,8 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
-import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
-import com.redescooter.ses.web.ros.vo.inquiry.NewSaveInquiryEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -109,33 +108,7 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     /**
-     * @param enter
-     * @desc: 保存询价单
-     * @param: enter
-     * @retrn: GeneralResult
-     * @auther: alex
-     * @date: 2020/3/5 15:03
-     * @Version: Ros 1.3
-     */
-    @Transactional
-    @Override
-    public GeneralResult saveInquiry(SaveInquiryEnter enter) {
-
-        //邮箱 去空格
-        enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
-
-        // 查询已存在的email
-        List<String> emailList = inquiryServiceMapper.usingEmailList();
-        if (emailList.contains(enter.getEmail())) {
-            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
-        }
-        OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquirySingle(enter);
-        opeCustomerInquiryService.save(opeCustomerInquiry);
-        return new GeneralResult(enter.getRequestId());
-    }
-
-    /**
-     * @param newSaveInquiryEnter
+     * @param saveInquiryEnter
      * @desc: 保存询价单
      * @param: enter
      * @retrn: GeneralResult
@@ -144,10 +117,9 @@ public class InquiryServiceImpl implements InquiryService {
      * @Version: Ros 1.3
      */
     @Override
-    public GeneralResult newSaveInquiry(NewSaveInquiryEnter newSaveInquiryEnter) {
-      NewSaveInquiryEnter enter = SesStringUtils.objStringTrim(newSaveInquiryEnter);
-        //邮箱 去空格
-        enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
+    public GeneralResult saveInquiry(SaveInquiryEnter saveInquiryEnter) {
+        //入参去空格
+        SaveInquiryEnter enter = SesStringUtils.objStringTrim(saveInquiryEnter);
         //邮箱解密
         //电话解密
         if (!StringUtils.isAllBlank(enter.getTelephone(), enter.getEmail())) {
@@ -157,9 +129,16 @@ public class InquiryServiceImpl implements InquiryService {
             } catch (Exception e) {
                 throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
-            if (enter.getEmail().length() < 2 || enter.getEmail().length() > 20) {
-                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(),ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
+            if (enter.getEmail().length() < 2 || enter.getEmail().length() > 50) {
+                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
             }
+            if (enter.getTelephone().length() < 2 || enter.getTelephone().length() > 10) {
+                throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
+            }
+            //电话
+            enter.setTelephone(SesStringUtils.stringTrim(enter.getTelephone()));
+            //邮箱 去空格
+            enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
         }
 
 
@@ -168,18 +147,20 @@ public class InquiryServiceImpl implements InquiryService {
 //        if (emailList.contains(enter.getEmail())) {
 //            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
 //        }
-        CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
+       /* CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
         if (cityResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
-        }
+        }*/
 
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
         opeCustomerInquiry.setDr(0);
+        opeCustomerInquiry.setOrderNo(RandomUtil.simpleUUID());
         opeCustomerInquiry.setCustomerId(0L);
+        opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         opeCustomerInquiry.setCountry(null);
         opeCustomerInquiry.setCity(null);
-        opeCustomerInquiry.setDistrict(cityResult.getId());
+        opeCustomerInquiry.setDistrict(null);
         opeCustomerInquiry.setCustomerSource("");
         opeCustomerInquiry.setSalesId(0L);
         opeCustomerInquiry.setSource(InquirySourceEnums.INQUIRY.getValue());
@@ -223,9 +204,9 @@ public class InquiryServiceImpl implements InquiryService {
      */
     @Override
     public PageResult<InquiryResult> inquiryList(InquiryListEnter enter) {
-      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
-        return PageResult.createZeroRowResult(enter);
-      }
+        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(enter);
+        }
         int count = inquiryServiceMapper.inquiryListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -426,69 +407,6 @@ public class InquiryServiceImpl implements InquiryService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    private OpeCustomerInquiry buildOpeCustomerInquirySingle(SaveInquiryEnter enter) {
-        OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
-        opeCustomerInquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
-        opeCustomerInquiry.setDr(0);
-        opeCustomerInquiry.setCustomerId(0L);
-        opeCustomerInquiry.setCountry(enter.getCountryId());
-        opeCustomerInquiry.setCity(enter.getCityId());
-        opeCustomerInquiry.setDistrict(enter.getDistrustId());
-        opeCustomerInquiry.setCustomerSource("");
-        opeCustomerInquiry.setSalesId(0L);
-        opeCustomerInquiry.setSource(InquirySourceEnums.INQUIRY.getValue());
-        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPROCESSED.getValue());
-        if (CustomerIndustryEnums.getIndustryEnumByValue(enter.getIndustryType()) == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
-        opeCustomerInquiry.setIndustry(enter.getIndustryType());
-        if (CustomerTypeEnum.getEnumByValue(enter.getCustomerType()) == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
-        opeCustomerInquiry.setCustomerType(CustomerTypeEnum.PERSONAL.getValue());
-
-        if (SesStringUtils.equals(enter.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
-            if (SesStringUtils.isBlank(enter.getCompanyName())) {
-                throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COMPANY_NAME_CANNOT_EMPTY.getMessage());
-            }
-            opeCustomerInquiry.setCompanyName(enter.getCompanyName());
-            opeCustomerInquiry.setScooterQuantity(enter.getScooterQuantity());
-            opeCustomerInquiry.setContactFirst(enter.getContactFirstName());
-            opeCustomerInquiry.setContactLast(enter.getContactLastName());
-            opeCustomerInquiry.setContantFullName(new StringBuilder(enter.getContactFirstName()).append(" ").append(enter.getContactLastName()).toString());
-        }
-        if (SesStringUtils.equals(enter.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
-            if (SesStringUtils.isBlank(enter.getCustomerFirstName())) {
-                throw new SesWebRosException(ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.FIRST_NAME_CANNOT_EMPTY.getMessage());
-            }
-            if (SesStringUtils.isBlank(enter.getCustomerLastName())) {
-                throw new SesWebRosException(ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LAST_NAME_CANNOT_EMPTY.getMessage());
-            }
-            opeCustomerInquiry.setFirstName(enter.getCustomerFirstName());
-            opeCustomerInquiry.setLastName(enter.getCustomerLastName());
-            opeCustomerInquiry.setFullName(new StringBuilder(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
-            opeCustomerInquiry.setScooterQuantity(1);
-            opeCustomerInquiry.setContactFirst(null);
-            opeCustomerInquiry.setContactLast(null);
-            opeCustomerInquiry.setContantFullName(null);
-        }
-        opeCustomerInquiry.setCountryCode(enter.getCountryCode());
-        opeCustomerInquiry.setTelephone(enter.getTelephone());
-        opeCustomerInquiry.setEmail(enter.getEmail());
-        opeCustomerInquiry.setAddress("");
-        opeCustomerInquiry.setRemarks(enter.getRemark());
-        if (enter.getUserId() == null) {
-            opeCustomerInquiry.setCreatedBy(0L);
-            opeCustomerInquiry.setUpdatedBy(0L);
-        } else {
-            opeCustomerInquiry.setCreatedBy(enter.getUserId());
-            opeCustomerInquiry.setUpdatedBy(enter.getUserId());
-        }
-        opeCustomerInquiry.setCreatedTime(new Date());
-        opeCustomerInquiry.setUpdatedTime(new Date());
-        return opeCustomerInquiry;
-    }
-
     private OpeCustomer buildOpeCustomerSingle(IdEnter enter, OpeCustomerInquiry opeCustomerInquiry) {
         OpeCustomer opeCustomer = new OpeCustomer();
         opeCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
@@ -504,16 +422,19 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomer.setCustomerCode("0");
         opeCustomer.setIndustryType(opeCustomerInquiry.getIndustry());
         opeCustomer.setCustomerType(opeCustomerInquiry.getCustomerType());
-        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
-            opeCustomer.setCompanyName(opeCustomerInquiry.getCompanyName());
-            opeCustomer.setContactFirstName(opeCustomerInquiry.getContactFirst());
-            opeCustomer.setContactLastName(opeCustomerInquiry.getContactLast());
-        }
-        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
-            opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
-            opeCustomer.setCustomerLastName(opeCustomerInquiry.getLastName());
-            opeCustomer.setCustomerFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
-        }
+//        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
+//            opeCustomer.setCompanyName(opeCustomerInquiry.getCompanyName());
+//            opeCustomer.setContactFirstName(opeCustomerInquiry.getContactFirst());
+//            opeCustomer.setContactLastName(opeCustomerInquiry.getContactLast());
+//        }
+//        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
+//            opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
+//            opeCustomer.setCustomerLastName(opeCustomerInquiry.getLastName());
+//            opeCustomer.setCustomerFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
+//        }
+        opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
+        opeCustomer.setCustomerLastName(opeCustomerInquiry.getLastName());
+        opeCustomer.setCustomerFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
         opeCustomer.setCertificateType("0");
         opeCustomer.setScooterQuantity(opeCustomerInquiry.getScooterQuantity());
         opeCustomer.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());

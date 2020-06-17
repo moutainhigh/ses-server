@@ -8,7 +8,7 @@ log:
 # DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://172.31.3.48:2181?backup=172.31.3.48:2182,172.31.3.48:2183
+    address: zookeeper://172.31.5.73:2181?backup=172.31.5.73:2182,172.31.5.73:2183
 
 jasypt:
   encryptor:
@@ -20,7 +20,7 @@ jasypt:
 spring:
   #数据库连接
   datasource:                                                                                                           #数据库连接
-    url: RedE(zCGR0ghJHLqwOAeMfIUIyDO4wK16cyHcpNsn7/vKY3qKk/RLAVEaibV7NBtv5wvDOO64Se4ndjcASRCgZMseYeNg/5LGjTm5VfRlySyXbzmY3o8iDgnsZ7j/VLS07Eo+Zhzm1eC8U4cV1RK5kT3+4QNCwvrHvCTxuBzuOMiRe7iTrixADrsfsdPDTJyzxx5t0S27RjGBiAQcfa1ZdGjqaQPG8z//kIfhGwvtlu7WI7Z0YhZ822O1txSZkSf/lAvWxCIZRVCE4D2/X1FEaATXC5LaGjYQwc4HnO0RWDzMWy5xP7IYRDfnbuqH5aqxm4qAdHYXObacK/8H1GrZ/1eROQ==)
+    url: RedE(w67gcY8zXtgJOayQO8BSE6SRYBVKRqEzB0JoX37pGcmutm+8Q1nO/vYitxVhbCOoC2txI3GrFV5dPEyvz0x/G0yKkICoZwRE6HrnFbmnBrg3bbqVqsn4BfdBChWxNJDEpaPHEXehsU6XCMJorHbuNltkBQxEzcqiiGGM9fScWLqp7pX7KFTUuRZ3QoScHIwFaLknxdPSusGJ6X3nhLF43ix9y3k9E6qg+TvQWGGjH2hjjOnPqllja/Cr59si0GsXoYAXp5UV+0W1V9zMeH+ojFPNIwZqpvlHRTKRU4jKJi2F/Hv4TbxzEFQ0am9XnYQd)
     username: RedE(MQksLacGhzJsE+d+kFyr2A==)
     password: RedE(KsbR76xwwl4wdKPPkuPrB8pvdNRDNfD8FbLdrYfnPLqHzp7HfaaPRsrhhOdK1NSX)
     druid:
@@ -32,12 +32,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 172.31.3.48:7000
-        - 172.31.3.48:7001
-        - 172.31.3.48:7002
-        - 172.31.3.48:7003
-        - 172.31.3.48:7004
-        - 172.31.3.48:7005
+        - 172.31.5.73:7000
+        - 172.31.5.73:7001
+        - 172.31.5.73:7002
+        - 172.31.5.73:7003
+        - 172.31.5.73:7004
+        - 172.31.5.73:7005
   # 邮件配置
   mail:
     from: support@redelectric.fr

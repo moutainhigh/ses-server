@@ -183,7 +183,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         // 找到当前部门的所有子部门
         if (CollectionUtils.isNotEmpty(parent)) {
             // 统计当前部门和所有子部门人数
-            count = count + parent.stream().collect(Collectors.summingInt(DeptTreeReslt::getEmployeeCount));
+            count = count + parent.stream().mapToInt(DeptTreeReslt::getEmployeeCount).sum();
         }
         for (DeptTreeReslt reslt : parent) {
             count = recurCount(count, reslt, child);
@@ -255,6 +255,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
 
         //更新部门
+        checkDept.setName(enter.getName());
         checkDept.setSort(enter.getSort());
         checkDept.setUpdatedBy(enter.getUserId());
         checkDept.setUpdatedTime(new Date());

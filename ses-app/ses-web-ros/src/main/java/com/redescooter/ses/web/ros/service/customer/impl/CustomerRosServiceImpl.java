@@ -343,6 +343,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
                 updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
                 updated.eq(OpeSysUserProfile.COL_DR, 0);
+                updated.last("limit 1");
                 result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
             }
             result.setCreatedName(opeCustomer.getCustomerFullName());
@@ -351,12 +352,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             QueryWrapper<OpeSysUserProfile> created = new QueryWrapper<>();
             created.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getCreatedBy());
             created.eq(OpeSysUserProfile.COL_DR, 0);
+            created.last("limit 1");
             result.setCreatedName(sysUserProfileMapper.selectOne(created) == null ? null : sysUserProfileMapper.selectOne(created).getFullName());
             result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
 
             QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
             updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
             updated.eq(OpeSysUserProfile.COL_DR, 0);
+            updated.last("limit 1");
             result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
         }
 
@@ -926,7 +929,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      *
      * @param enter
      */
-    private void checkCustomer(EditCustomerEnter enter) {
+    public void checkCustomer(EditCustomerEnter enter) {
         if (enter.getId() == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
         }
