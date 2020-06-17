@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://localhost:22181
+    address: zookeeper://192.168.2.200:42181
 #  metadata-report:
 #    address:  zookeeper://192.168.2.200:62181
 
@@ -26,10 +26,9 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: RedE(5KdTQlJkto9xiRd0GOnIPPOFXjpOhg7b4jAzhyDKacKc5HEMC5cuco8t/kxfNUhazjzFwP7xJ5U+1XJiJg2dDbl7/vQeXArSbeH9m5+2XuIc4keoyAgZxIMsW/lPum+2rgS3P8Pq6lDwbpv9B/67NAdHqq6EHBEpjWhXnNe9KtK8V4lamUN63Pk5HtKpcECN15Flv3Y5q99fmJsLcZlSKMtLVqV5bevqypxb2g6VegWdwMtsTcs5ODrHdZ4TXQk+lX1rYt+9X3JWCahjTF6CHUy7SjniHlWMXtvbCUWhlKLvg51YuZBVP/yI5Abk2ODxy8b53sFb/SIq3u+MFJFVCNwbUN/122dp)
-    username: RedE(KxYC7YmxKsSC7MaMsnGI6w==)
-    password: RedE(fGUHvqNyAxYC32MUsWxiSXrJ+feA9dxR)
-
+    url: jdbc:mysql://47.105.215.239:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: rede,1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
