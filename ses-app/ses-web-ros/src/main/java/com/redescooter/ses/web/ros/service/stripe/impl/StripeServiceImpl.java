@@ -111,8 +111,8 @@ public class StripeServiceImpl implements StripeService {
         map.put("order_id", String.valueOf(payOrder.getId()));
         map.put("order_no", payOrder.getOrderNo());
 
-        //暂时支付为190 欧元 优惠500欧元
-        Long payAmount=190L;
+        //暂时支付为190 欧元 优惠500欧元 最小单位为 欧分
+        Long payAmount=190000L;
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder().setReceiptEmail(ReceiptEmail)
                 .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
@@ -305,7 +305,7 @@ public class StripeServiceImpl implements StripeService {
         }
         // 订单数据保存
         //todo 定金支付成功后优惠500 欧元
-        customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("500")));
+        customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("500000")));
 
         customerInquiry.setPayStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
