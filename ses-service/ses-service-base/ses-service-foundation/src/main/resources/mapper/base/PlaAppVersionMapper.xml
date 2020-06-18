@@ -14,7 +14,7 @@
     <result column="is_force" jdbcType="INTEGER" property="isForce" />
     <result column="update_content" jdbcType="VARCHAR" property="updateContent" />
     <result column="update_link" jdbcType="VARCHAR" property="updateLink" />
-    <result column="new_version_num" jdbcType="INTEGER" property="newVersionNum" />
+    <result column="new_version_num" jdbcType="VARCHAR" property="newVersionNum" />
     <result column="package_size" jdbcType="VARCHAR" property="packageSize" />
     <result column="new_version_name" jdbcType="VARCHAR" property="newVersionName" />
     <result column="min_version_num" jdbcType="INTEGER" property="minVersionNum" />
@@ -32,9 +32,9 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, system_id, app_id, system_type, type `code`, is_force, update_content, update_link,
-    new_version_num, package_size, new_version_name, min_version_num, nin_version_name,
-    `status`, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5,
+    id, dr, system_id, app_id, system_type, `type`, code, is_force, update_content, update_link, 
+    new_version_num, package_size, new_version_name, min_version_num, nin_version_name, 
+    `status`, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
     def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
@@ -88,7 +88,7 @@
       </trim>
       <trim prefix="new_version_num = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.newVersionNum,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.newVersionNum,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="package_size = case" suffix="end,">
@@ -237,7 +237,7 @@
       <trim prefix="new_version_num = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.newVersionNum != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.newVersionNum,jdbcType=INTEGER}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.newVersionNum,jdbcType=VARCHAR}
           </if>
         </foreach>
       </trim>
@@ -348,64 +348,64 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into pla_app_version
-    (id, dr, system_id, app_id, system_type, `type`, code, is_force, update_content,
-      update_link, new_version_num, package_size, new_version_name, min_version_num,
-      nin_version_name, `status`, created_by, created_time, updated_by, updated_time,
+    (id, dr, system_id, app_id, system_type, `type`, code, is_force, update_content, 
+      update_link, new_version_num, package_size, new_version_name, min_version_num, 
+      nin_version_name, `status`, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.systemId,jdbcType=VARCHAR},
-        #{item.appId,jdbcType=VARCHAR}, #{item.systemType,jdbcType=INTEGER}, #{item.type,jdbcType=INTEGER},
-        #{item.code,jdbcType=VARCHAR}, #{item.isForce,jdbcType=INTEGER}, #{item.updateContent,jdbcType=VARCHAR},
-        #{item.updateLink,jdbcType=VARCHAR}, #{item.newVersionNum,jdbcType=INTEGER}, #{item.packageSize,jdbcType=VARCHAR},
-        #{item.newVersionName,jdbcType=VARCHAR}, #{item.minVersionNum,jdbcType=INTEGER},
-        #{item.ninVersionName,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.systemId,jdbcType=VARCHAR}, 
+        #{item.appId,jdbcType=VARCHAR}, #{item.systemType,jdbcType=INTEGER}, #{item.type,jdbcType=INTEGER}, 
+        #{item.code,jdbcType=VARCHAR}, #{item.isForce,jdbcType=INTEGER}, #{item.updateContent,jdbcType=VARCHAR}, 
+        #{item.updateLink,jdbcType=VARCHAR}, #{item.newVersionNum,jdbcType=VARCHAR}, #{item.packageSize,jdbcType=VARCHAR}, 
+        #{item.newVersionName,jdbcType=VARCHAR}, #{item.minVersionNum,jdbcType=INTEGER}, 
+        #{item.ninVersionName,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
         #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaAppVersion">
     <!--@mbg.generated-->
     insert into pla_app_version
-    (id, dr, system_id, app_id, system_type, `type`, code, is_force, update_content,
-      update_link, new_version_num, package_size, new_version_name, min_version_num,
-      nin_version_name, `status`, created_by, created_time, updated_by, updated_time,
+    (id, dr, system_id, app_id, system_type, `type`, code, is_force, update_content, 
+      update_link, new_version_num, package_size, new_version_name, min_version_num, 
+      nin_version_name, `status`, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{systemId,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
-      #{systemType,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR},
-      #{isForce,jdbcType=INTEGER}, #{updateContent,jdbcType=VARCHAR}, #{updateLink,jdbcType=VARCHAR},
-      #{newVersionNum,jdbcType=INTEGER}, #{packageSize,jdbcType=VARCHAR}, #{newVersionName,jdbcType=VARCHAR},
-      #{minVersionNum,jdbcType=INTEGER}, #{ninVersionName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
-      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
-      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{systemId,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, 
+      #{systemType,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, 
+      #{isForce,jdbcType=INTEGER}, #{updateContent,jdbcType=VARCHAR}, #{updateLink,jdbcType=VARCHAR}, 
+      #{newVersionNum,jdbcType=VARCHAR}, #{packageSize,jdbcType=VARCHAR}, #{newVersionName,jdbcType=VARCHAR}, 
+      #{minVersionNum,jdbcType=INTEGER}, #{ninVersionName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
       #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
-    on duplicate key update
-    id = #{id,jdbcType=BIGINT},
-    dr = #{dr,jdbcType=INTEGER},
-    system_id = #{systemId,jdbcType=VARCHAR},
-    app_id = #{appId,jdbcType=VARCHAR},
-    system_type = #{systemType,jdbcType=INTEGER},
-    `type` = #{type,jdbcType=INTEGER},
-    code = #{code,jdbcType=VARCHAR},
-    is_force = #{isForce,jdbcType=INTEGER},
-    update_content = #{updateContent,jdbcType=VARCHAR},
-    update_link = #{updateLink,jdbcType=VARCHAR},
-    new_version_num = #{newVersionNum,jdbcType=INTEGER},
-    package_size = #{packageSize,jdbcType=VARCHAR},
-    new_version_name = #{newVersionName,jdbcType=VARCHAR},
-    min_version_num = #{minVersionNum,jdbcType=INTEGER},
-    nin_version_name = #{ninVersionName,jdbcType=VARCHAR},
-    `status` = #{status,jdbcType=VARCHAR},
-    created_by = #{createdBy,jdbcType=BIGINT},
-    created_time = #{createdTime,jdbcType=TIMESTAMP},
-    updated_by = #{updatedBy,jdbcType=BIGINT},
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-    def1 = #{def1,jdbcType=VARCHAR},
-    def2 = #{def2,jdbcType=VARCHAR},
-    def3 = #{def3,jdbcType=VARCHAR},
-    def5 = #{def5,jdbcType=VARCHAR},
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    system_id = #{systemId,jdbcType=VARCHAR}, 
+    app_id = #{appId,jdbcType=VARCHAR}, 
+    system_type = #{systemType,jdbcType=INTEGER}, 
+    `type` = #{type,jdbcType=INTEGER}, 
+    code = #{code,jdbcType=VARCHAR}, 
+    is_force = #{isForce,jdbcType=INTEGER}, 
+    update_content = #{updateContent,jdbcType=VARCHAR}, 
+    update_link = #{updateLink,jdbcType=VARCHAR}, 
+    new_version_num = #{newVersionNum,jdbcType=VARCHAR}, 
+    package_size = #{packageSize,jdbcType=VARCHAR}, 
+    new_version_name = #{newVersionName,jdbcType=VARCHAR}, 
+    min_version_num = #{minVersionNum,jdbcType=INTEGER}, 
+    nin_version_name = #{ninVersionName,jdbcType=VARCHAR}, 
+    `status` = #{status,jdbcType=VARCHAR}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
     def6 = #{def6,jdbcType=DOUBLE}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaAppVersion">
@@ -521,7 +521,7 @@
         #{updateLink,jdbcType=VARCHAR},
       </if>
       <if test="newVersionNum != null">
-        #{newVersionNum,jdbcType=INTEGER},
+        #{newVersionNum,jdbcType=VARCHAR},
       </if>
       <if test="packageSize != null">
         #{packageSize,jdbcType=VARCHAR},
@@ -566,7 +566,7 @@
         #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
-    on duplicate key update
+    on duplicate key update 
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},
@@ -599,7 +599,7 @@
         update_link = #{updateLink,jdbcType=VARCHAR},
       </if>
       <if test="newVersionNum != null">
-        new_version_num = #{newVersionNum,jdbcType=INTEGER},
+        new_version_num = #{newVersionNum,jdbcType=VARCHAR},
       </if>
       <if test="packageSize != null">
         package_size = #{packageSize,jdbcType=VARCHAR},
