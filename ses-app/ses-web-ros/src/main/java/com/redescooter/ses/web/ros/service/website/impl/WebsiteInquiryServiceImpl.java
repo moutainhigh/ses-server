@@ -467,6 +467,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
       }catch (Exception e){
         throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
       }*/
+
+        //todo 实际优惠了690 欧元
+        BigDecimal price = new BigDecimal("690");
         //反参对象
         OrderFormInfoResult result = OrderFormInfoResult.builder()
                 .id(customerInquiry.getId())
@@ -482,7 +485,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .expiredTime(customerInquiry.getExpiredTime())
                 .cvv(customerInquiry.getCvv())
                 .postalCode(customerInquiry.getPostalCode())
-                .totalPrice(customerInquiry.getTotalPrice().add(new BigDecimal("500")))
+                .totalPrice(customerInquiry.getTotalPrice().add(price))
                 .remainingPrice(customerInquiry.getTotalPrice())
                 .color(opePartsProduct.getColor())
                 .status(customerInquiry.getStatus())
