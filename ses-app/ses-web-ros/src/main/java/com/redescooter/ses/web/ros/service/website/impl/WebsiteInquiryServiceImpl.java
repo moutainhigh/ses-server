@@ -482,8 +482,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .expiredTime(customerInquiry.getExpiredTime())
                 .cvv(customerInquiry.getCvv())
                 .postalCode(customerInquiry.getPostalCode())
-                .totalPrice(customerInquiry.getTotalPrice())
-                .remainingPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("190")))
+                .totalPrice(customerInquiry.getTotalPrice().add(new BigDecimal("500")))
+                .remainingPrice(customerInquiry.getTotalPrice())
                 .color(opePartsProduct.getColor())
                 .status(customerInquiry.getStatus())
                 .build();
@@ -665,7 +665,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
 
         //todo 目前是优惠价 减500欧元
-        return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty))).subtract(new BigDecimal(500));
+        return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty)));
     }
 
     private void adPush(String email) {
