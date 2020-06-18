@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
@@ -307,7 +308,7 @@ public class StripeServiceImpl implements StripeService {
         //todo 定金支付成功后优惠500 欧元
         customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("500")));
 
-        customerInquiry.setPayStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
+        customerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setUpdatedTime(new Date());
         opeCustomerInquiryService.updateById(customerInquiry);
