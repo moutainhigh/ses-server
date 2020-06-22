@@ -47,24 +47,24 @@ public class PlaAppVersion implements Serializable {
     private String appId;
 
     /**
-     * 1.IOS 2. ANDROID
+     * IOS or ANDROID
      */
     @TableField(value = "system_type")
-    @ApiModelProperty(value = "1.IOS 2. ANDROID")
+    @ApiModelProperty(value = "IOS or ANDROID")
     private Integer systemType;
 
     /**
-     * 1.rps  2.singlechip
+     * 版本类型：1.IOS 2. ANDROID
      */
     @TableField(value = "type")
-    @ApiModelProperty(value = "1.rps  2.singlechip")
+    @ApiModelProperty(value = "版本类型：1.IOS 2. ANDROID")
     private Integer type;
 
     /**
-     * 应用code
+     * 版本应用编码
      */
     @TableField(value = "code")
-    @ApiModelProperty(value = "应用code")
+    @ApiModelProperty(value = "版本应用编码")
     private String code;
 
     /**

@@ -67,7 +67,7 @@ public class VersionTypeResult extends GeneralResult {
    * 新版本号
    */
   @ApiModelProperty(value = "新版本号")
-  private Integer newVersionNum;
+  private String newVersionNum;
 
   /**
    * 安装包大小
