@@ -1387,11 +1387,6 @@ CREATE TABLE `ope_price_sheet_history`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '报价列表历史记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of ope_price_sheet_history
--- ----------------------------
-INSERT INTO `ope_price_sheet_history` VALUES (1000000, 0, 0, 1000003, 1000000, 1000000, 990.00, 'FR', '1', '3', '0', 0, 1000003, '2020-06-14 10:13:14', 1000003, '2020-06-14 10:13:14', NULL, NULL, NULL, NULL, NULL);
-
--- ----------------------------
 -- Table structure for ope_product_assembly
 -- ----------------------------
 DROP TABLE IF EXISTS `ope_product_assembly`;

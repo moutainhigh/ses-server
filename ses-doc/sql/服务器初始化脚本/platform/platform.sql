@@ -244,7 +244,7 @@ CREATE TABLE `pla_mail_config`  (
 -- Records of pla_mail_config
 -- ----------------------------
 INSERT INTO `pla_mail_config` VALUES (10000, 0, 'NORMAL', 12, 'REDE_SES', '4', 'subscriptionPaySucceedSendEamil', '18721403004', 0, '2020-05-28 15:59:34', 0, '2020-05-28 15:59:34', NULL, NULL, NULL, NULL, 0);
-INSERT INTO `pla_mail_config` VALUES (10013, 0, 'NORMAL', 13, 'REDE_SES', '4', 'url', 'https://redelectric.fr/reset-password?requestId=', 0, '2020-05-28 15:59:36', 0, '2020-05-28 15:59:36', NULL, NULL, NULL, NULL, 0);
+INSERT INTO `pla_mail_config` VALUES (10013, 0, 'NORMAL', 13, 'REDE_SES', '4', 'url', 'https://redelectric.fr/#/reset-password?requestId=', 0, '2020-05-28 15:59:36', 0, '2020-05-28 15:59:36', NULL, NULL, NULL, NULL, 0);
 INSERT INTO `pla_mail_config` VALUES (100000, 0, 'NORMAL', 1, 'REDE_SAAS', '1', 'url', 'https://redelectric.fr/account-plugin/#/?requestId=', 0, '2019-10-14 17:58:27', 0, '2019-10-14 17:58:33', NULL, NULL, NULL, NULL, 0);
 INSERT INTO `pla_mail_config` VALUES (100001, 0, 'NORMAL', 1, 'REDE_SAAS', '3', 'url', 'https://redelectric.fr/repair/#/retrieve?requestId=', 0, '2019-10-15 11:31:04', 0, '2019-10-15 11:31:06', NULL, NULL, NULL, NULL, 0);
 INSERT INTO `pla_mail_config` VALUES (100002, 0, 'NORMAL', 3, 'REDE_SAAS', '3', 'url', 'https://redelectric.fr/repair/#/retrieve?requestId=', 0, '2019-10-15 11:48:06', 0, '2019-10-15 11:48:09', NULL, NULL, NULL, NULL, 0);
