@@ -2,6 +2,7 @@ package com.redescooter.ses.api.foundation.service;
 
 import com.redescooter.ses.api.foundation.vo.app.VersionTypeEnter;
 import com.redescooter.ses.api.foundation.vo.app.VersionTypeResult;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @ClassNameAppBaseService
@@ -18,6 +19,8 @@ public interface VersionBaseService {
    * @author joan
    */
   VersionTypeResult getVersionData(VersionTypeEnter versionTypeEnter);
+
+  void fileUpload(MultipartFile file,String fileMsg);
 
 
 }

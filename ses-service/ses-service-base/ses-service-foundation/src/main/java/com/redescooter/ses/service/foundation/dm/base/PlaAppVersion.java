@@ -93,7 +93,7 @@ public class PlaAppVersion implements Serializable {
      */
     @TableField(value = "new_version_num")
     @ApiModelProperty(value = "新版本号")
-    private Integer newVersionNum;
+    private String newVersionNum;
 
     /**
      * 安装包大小

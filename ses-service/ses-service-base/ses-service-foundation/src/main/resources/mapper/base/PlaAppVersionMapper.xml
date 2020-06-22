@@ -14,7 +14,7 @@
     <result column="is_force" jdbcType="INTEGER" property="isForce" />
     <result column="update_content" jdbcType="VARCHAR" property="updateContent" />
     <result column="update_link" jdbcType="VARCHAR" property="updateLink" />
-    <result column="new_version_num" jdbcType="INTEGER" property="newVersionNum" />
+    <result column="new_version_num" jdbcType="VARCHAR" property="newVersionNum" />
     <result column="package_size" jdbcType="VARCHAR" property="packageSize" />
     <result column="new_version_name" jdbcType="VARCHAR" property="newVersionName" />
     <result column="min_version_num" jdbcType="INTEGER" property="minVersionNum" />
@@ -33,7 +33,7 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, system_id, app_id, system_type, type `code`, is_force, update_content, update_link,
-    new_version_num, package_size, new_version_name, min_version_num, nin_version_name,
+    `new_version_num`, package_size, new_version_name, min_version_num, nin_version_name,
     `status`, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5,
     def6
   </sql>

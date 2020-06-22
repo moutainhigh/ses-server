@@ -34,4 +34,6 @@ public interface SequenceName {
     String PLA_I18NCONFIG = "PLA_I18NCONFIG";
 
     String PLA_USER_NODE = "PLA_USER_NODE";
+
+    String PLA_APP_VERSION = "PLA_APP_VERSION";
 }
