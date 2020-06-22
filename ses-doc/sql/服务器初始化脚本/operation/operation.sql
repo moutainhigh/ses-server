@@ -566,7 +566,7 @@ CREATE TABLE `ope_customer_accessories`  (
 -- ----------------------------
 -- Records of ope_customer_accessories
 -- ----------------------------
-INSERT INTO `ope_customer_accessories` VALUES (1000000, 0, 99.00, '1', 'Battery', 0, 0, '2020-05-13 11:46:00', 0, '2020-05-13 06:41:33', NULL, NULL, NULL, NULL, 0);
+INSERT INTO `ope_customer_accessories` VALUES (1000000, 0, 990.00, '1', 'Battery', 0, 0, '2020-05-13 11:46:00', 0, '2020-05-13 06:41:33', NULL, NULL, NULL, NULL, 0);
 INSERT INTO `ope_customer_accessories` VALUES (1000001, 0, 300.00, '2', 'TopCase', 0, 0, '2020-05-13 11:46:00', 0, '2020-05-13 06:41:33', NULL, NULL, NULL, NULL, 0);
 
 -- ----------------------------
