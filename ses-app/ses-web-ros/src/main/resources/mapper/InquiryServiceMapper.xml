@@ -99,5 +99,6 @@
         select email
         from ope_customer
         where dr=0
+        and ope_customer.status in (1,2)
     </select>
 </mapper>

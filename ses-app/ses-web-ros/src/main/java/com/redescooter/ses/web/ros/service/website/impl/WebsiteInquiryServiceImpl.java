@@ -207,10 +207,10 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getMessage());
         }
         //订单校验客户订单校验 一个客户只允许存在一个订单
-//        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, opeCustomer.getEmail()));
-//        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
-//            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
-//        }
+        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, opeCustomer.getEmail()));
+        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
+        }
         //后备箱 校验
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
@@ -281,13 +281,13 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
 
         //订单校验客户订单校验 一个客户只允许存在一个订单
-//        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>()
-//                .eq(OpeCustomerInquiry::getEmail, customerInquiry.getEmail())
-//        .gt(OpeCustomerInquiry::getId,customerInquiry.getId())
-//        );
-//        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
-//            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
-//        }
+        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>()
+                .eq(OpeCustomerInquiry::getEmail, customerInquiry.getEmail())
+        .gt(OpeCustomerInquiry::getId,customerInquiry.getId())
+        );
+        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
+        }
 
 
         //后备箱 校验
