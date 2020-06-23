@@ -61,7 +61,7 @@ public class MapUtil {
 
 	/**
 	 * 根据经纬度 计算geoHash
-	 *
+	 * 注意：经纬度 写反了 会出现geo算法越界
 	 * @param longitude
 	 * @param latitude
 	 * @return
