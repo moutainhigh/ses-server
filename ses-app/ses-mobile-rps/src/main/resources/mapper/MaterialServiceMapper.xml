@@ -37,6 +37,7 @@
         where purchasb.dr=0
         and purchasb.lave_wait_qc_qty != 0
         and purchasb.purchas_id=#{id}
+        limit #{startRow},#{pageSize}
     </select>
     <select id="failListCount" resultType="int">
         select count(*)
