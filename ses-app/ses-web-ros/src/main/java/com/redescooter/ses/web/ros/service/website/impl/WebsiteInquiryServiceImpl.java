@@ -485,10 +485,10 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .expiredTime(customerInquiry.getExpiredTime())
                 .cvv(customerInquiry.getCvv())
                 .postalCode(customerInquiry.getPostalCode())
-                .totalPrice(customerInquiry.getTotalPrice().add(price))
                 .remainingPrice(customerInquiry.getTotalPrice())
                 .color(opePartsProduct.getColor())
                 .status(customerInquiry.getStatus())
+                .totalPrice(StringUtils.equals(InquiryStatusEnums.PAY_DEPOSIT.getValue(), customerInquiry.getStatus()) ? customerInquiry.getTotalPrice().subtract(price) : customerInquiry.getTotalPrice())
                 .build();
 
         //封装配件数量
@@ -664,6 +664,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 if (enter.getAccessoryBatteryQty() < 4) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
+                qty = enter.getAccessoryBatteryQty() - 4;
                 break;
         }
 
@@ -694,7 +695,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
 
         String name = email.substring(0, email.indexOf("@"));
