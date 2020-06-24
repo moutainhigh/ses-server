@@ -143,10 +143,10 @@ public class InquiryServiceImpl implements InquiryService {
 
 
         // 查询已存在的email 暂时注释掉 邮箱过滤
-//        List<String> emailList = inquiryServiceMapper.usingEmailList();
-//        if (emailList.contains(enter.getEmail())) {
-//            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
-//        }
+        List<String> emailList = inquiryServiceMapper.usingEmailList();
+        if (emailList.contains(enter.getEmail())) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
        /* CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
         if (cityResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());

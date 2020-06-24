@@ -165,6 +165,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
       //客户字段校验
         checkSaveCustomerFiledSingle(enter);
 
+        //已存在客户 不可重复添加
         QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
         Integer count = opeCustomerMapper.selectCount(queryWrapper);
@@ -1007,7 +1008,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         //公共信息 13个 个人有的信息 两个 customerFirstName、customerLastName
         //企业有的信息 5个 companyName、constantFirstName,constantLastName,bussinessnex(2)
 
-        int result = 12;
+        int result = 11;
         int count = 0;
 
         //一下信息时 个人、企都具有的信息
@@ -1023,9 +1024,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotEmpty(customer.getAddress())) {
             count++;
         }
-        if (StringUtils.isNotEmpty(customer.getCountryCode())) {
-            count++;
-        }
+//        if (StringUtils.isNotEmpty(customer.getCountryCode())) {
+//            count++;
+//        }
         if (StringUtils.isNotEmpty(customer.getTelephone())) {
             count++;
         }

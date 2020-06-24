@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
@@ -111,8 +112,8 @@ public class StripeServiceImpl implements StripeService {
         map.put("order_id", String.valueOf(payOrder.getId()));
         map.put("order_no", payOrder.getOrderNo());
 
-        //暂时支付为190 欧元 优惠500欧元
-        Long payAmount=190L;
+        //暂时支付为190 欧元 优惠500欧元 最小单位为 欧分
+        Long payAmount=19000L;
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder().setReceiptEmail(ReceiptEmail)
                 .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
@@ -305,9 +306,10 @@ public class StripeServiceImpl implements StripeService {
         }
         // 订单数据保存
         //todo 定金支付成功后优惠500 欧元
-        customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("500")));
+        BigDecimal price = new BigDecimal("690");
+        customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(price));
 
-        customerInquiry.setPayStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
+        customerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setUpdatedTime(new Date());
         opeCustomerInquiryService.updateById(customerInquiry);

@@ -87,17 +87,20 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
     public Map<String, Integer> countByType(GeneralEnter enter) {
         Map<String, Integer> map = Maps.newHashMap();
 
-        //采购仓库
         OpeWhse opeWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.PURCHAS.getValue())).get(0);
         QueryWrapper<OpeStock> availableWrapper = new QueryWrapper<>();
         availableWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         availableWrapper.gt(OpeStock.COL_AVAILABLE_TOTAL, 0);
+
+        //采购仓库
         int availableCount = opeStockService.count(availableWrapper);
         map.put(PurchasingWhTypeEnums.AVAILABLE.getValue(), availableCount);
 
+        //质检中
         int qcCount = purchasingWhServiceMapper.countByTypeQcCount(enter);
         map.put(PurchasingWhTypeEnums.PURCHASING.getValue(), qcCount);
 
+        //待入库
         int tobeStoredCount = purchasingWhServiceMapper.countByTypetobeStoredCount(enter);
         map.put(PurchasingWhTypeEnums.TO_BE_STORED.getValue(), tobeStoredCount);
 
@@ -120,7 +123,6 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         int outWhCountAllocate = purchasingWhServiceMapper.countByTypeOutWhCountAllocate(enter, assembleyWh.getId());
 
         map.put(PurchasingWhTypeEnums.OUT_WH.getValue(), outWhCountAssembly + outWhCountAllocate);
-
 
         for (PurchasingWhTypeEnums item : PurchasingWhTypeEnums.values()) {
             if (!map.containsKey(item.getValue())) {
@@ -239,9 +241,6 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
     @Override
     public PageResult<QcingListResult> qcingList(WhEnter enter) {
         if (StringUtils.isNotEmpty(enter.getType())) {
-            enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
-        }
-        if (StringUtils.isBlank(enter.getType())) {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }
         int count = purchasingWhServiceMapper.qcingListCount(enter);

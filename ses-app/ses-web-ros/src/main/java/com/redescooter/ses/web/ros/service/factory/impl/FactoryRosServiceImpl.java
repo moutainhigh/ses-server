@@ -123,6 +123,12 @@ public class FactoryRosServiceImpl implements FactoryRosService {
 
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
+      if(StringUtils.isNotEmpty(enter.getContactFirstName())){
+          enter.setContactFirstName(SesStringUtils.upperCaseString(enter.getContactFirstName()));
+      }
+      if (StringUtils.isNotEmpty(enter.getContactFirstName())){
+          enter.setContactLastName(SesStringUtils.upperCaseString(enter.getContactFirstName()));
+      }
       enter.setFactoryName(factoryName);
         OpeFactory factoryEdit = new OpeFactory();
         BeanUtils.copyProperties(enter, factoryEdit);

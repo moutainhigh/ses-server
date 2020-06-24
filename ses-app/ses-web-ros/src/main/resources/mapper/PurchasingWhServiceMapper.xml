@@ -21,6 +21,7 @@
 
     <sql id="where_qcingList">
         where purchasb.dr = 0
+        and purchas.status = 3
         <if test="type != null and type != ''">
             and part.parts_type =#{type}
         </if>
@@ -36,6 +37,7 @@
 
     <sql id="where_tobeStoredList">
         where purchasb.dr = 0
+         and purchas.status in (4, 5)
         <if test="type != null and type != ''">
             and part.parts_type =#{type}
         </if>
@@ -51,6 +53,7 @@
 
     <sql id="where_outWhList">
         where stock.dr=0
+        and stock.available_total > 0
         <if test="whseIds != null and whseIds.size() != 0">
             and stock.whse_id in
             <foreach collection="whseIds" separator="," open="(" close=")" item="item">
@@ -71,6 +74,7 @@
 
     <sql id="where_OutWh_Allocate">
         where stock.dr=0
+        and stock.available_total > 0
         <if test="whseIds != null and whseIds.size() != 0">
             and stock.whse_id in
             <foreach collection="whseIds" separator="," open="(" close=")" item="item">
@@ -119,7 +123,7 @@
         count(*) as qty
         from ope_purchas_b purchasb
         left join ope_purchas purchas
-        on purchas.id = purchasb.purchas_id and purchas.dr = 0 and purchas.status=3
+        on purchas.id = purchasb.purchas_id and purchas.dr = 0
         left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
         <include refid="where_qcingList"/>
         ) result
@@ -134,7 +138,7 @@
         count(*) as qty
         from ope_purchas_b purchasb
         left join ope_purchas purchas
-        on purchas.id = purchasb.purchas_id and purchas.dr = 0 and purchas.status =3
+        on purchas.id = purchasb.purchas_id and purchas.dr = 0
         left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
         <include refid="where_qcingList"/>
         limit #{startRow},#{pageSize}
@@ -151,7 +155,7 @@
         count(*) as qty
         from ope_purchas_b purchasb
         left join ope_purchas purchas
-        on purchas.id = purchasb.purchas_id and purchas.dr = 0 and purchas.status in (4, 5)
+        on purchas.id = purchasb.purchas_id and purchas.dr = 0
         left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
         <include refid="where_tobeStoredList"/>
         ) result
@@ -166,7 +170,7 @@
         count(*) as qty
         from ope_purchas_b purchasb
         left join ope_purchas purchas
-        on purchas.id = purchasb.purchas_id and purchas.dr = 0 and purchas.status in (4, 5)
+        on purchas.id = purchasb.purchas_id and purchas.dr = 0
         left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
         <include refid="where_tobeStoredList"/>
         limit #{startRow},#{pageSize}
@@ -246,9 +250,10 @@
         count(*) as qty
         from ope_purchas_b purchasb
         left join ope_purchas purchas
-        on purchas.id = purchasb.purchas_id and purchas.dr = 0 and purchas.status=3
+        on purchas.id = purchasb.purchas_id and purchas.dr = 0
         left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
         where purchasb.dr=0
+        and purchas.status=3
         group by id, partN, type, enName, cnName
         ) result
     </select>
@@ -263,24 +268,27 @@
         count(*) as qty
         from ope_purchas_b purchasb
         left join ope_purchas purchas
-        on purchas.id = purchasb.purchas_id and purchas.dr = 0 and purchas.status in (4, 5)
+        on purchas.id = purchasb.purchas_id and purchas.dr = 0
         left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
         where purchasb.dr=0
+        and purchas.status in (4, 5)
         group by id, partN, type, enName, cnName
         ) result
     </select>
     <select id="countByTypeOutWhCountAssembly" resultType="int">
         select count(*)
         from ope_stock stock
-        left join ope_parts_product product on stock.materiel_product_id = product.id and product.dr=0
+         left join ope_parts_product product on stock.materiel_product_id = product.id and product.dr = 0
         where stock.dr=0
+        and stock.available_total > 0
         and  stock.whse_id=#{whseId}
     </select>
     <select id="countByTypeOutWhCountAllocate" resultType="java.lang.Integer">
         select count(*)
         from ope_stock stock
-                 left join ope_stock_prod_part prodPart on stock.materiel_product_id = prodPart.id and prodPart.dr = 0
+        left join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
         where stock.dr = 0
+        and stock.available_total > 0
         and  stock.whse_id=#{whseId}
     </select>
 </mapper>

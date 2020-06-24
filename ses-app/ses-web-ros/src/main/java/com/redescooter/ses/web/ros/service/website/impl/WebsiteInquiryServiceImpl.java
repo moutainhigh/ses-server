@@ -207,10 +207,10 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_ALLOWED_TO_CREATED_INQUIRY.getMessage());
         }
         //订单校验客户订单校验 一个客户只允许存在一个订单
-//        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, opeCustomer.getEmail()));
-//        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
-//            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
-//        }
+        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, opeCustomer.getEmail()));
+        if (CollectionUtils.isNotEmpty(customerInquiryList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
+        }
         //后备箱 校验
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
@@ -467,6 +467,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
       }catch (Exception e){
         throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
       }*/
+
+        //todo 实际优惠了690 欧元
+        BigDecimal price = new BigDecimal("690");
         //反参对象
         OrderFormInfoResult result = OrderFormInfoResult.builder()
                 .id(customerInquiry.getId())
@@ -482,10 +485,10 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .expiredTime(customerInquiry.getExpiredTime())
                 .cvv(customerInquiry.getCvv())
                 .postalCode(customerInquiry.getPostalCode())
-                .totalPrice(customerInquiry.getTotalPrice())
-                .remainingPrice(customerInquiry.getTotalPrice().subtract(new BigDecimal("190")))
+                .remainingPrice(customerInquiry.getTotalPrice())
                 .color(opePartsProduct.getColor())
                 .status(customerInquiry.getStatus())
+                .totalPrice(StringUtils.equals(InquiryStatusEnums.PAY_DEPOSIT.getValue(), customerInquiry.getStatus()) ? customerInquiry.getTotalPrice().add(price) : customerInquiry.getTotalPrice())
                 .build();
 
         //封装配件数量
@@ -661,11 +664,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 if (enter.getAccessoryBatteryQty() < 4) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
+                qty = enter.getAccessoryBatteryQty() - 4;
                 break;
         }
 
         //todo 目前是优惠价 减500欧元
-        return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty))).subtract(new BigDecimal(500));
+        return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty)));
     }
 
     private void adPush(String email) {
@@ -691,7 +695,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
 
         String name = email.substring(0, email.indexOf("@"));
