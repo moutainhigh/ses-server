@@ -75,7 +75,7 @@ public class MessageServiceImpl implements MessageService {
         List<MessageResult> messageResultList = messageServiceMapper.messageList(enter);
         if (CollectionUtils.isNotEmpty(messageResultList)) {
             messageResultList.forEach(item -> {
-                Object[] args = StringUtils.isBlank(item.getMemo()) == true ? null : item.getMemo().split(",");
+                Object[] args = StringUtils.isBlank(item.getMemo()) ? null : item.getMemo().split(",");
                 item.setTitle(i18nServiceMessage.getMessage(item.getTitle(), args, locale));
                 item.setContent(i18nServiceMessage.getMessage(item.getContent(), args, locale));
             });
