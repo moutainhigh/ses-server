@@ -488,7 +488,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .remainingPrice(customerInquiry.getTotalPrice())
                 .color(opePartsProduct.getColor())
                 .status(customerInquiry.getStatus())
-                .totalPrice(StringUtils.equals(InquiryStatusEnums.PAY_DEPOSIT.getValue(), customerInquiry.getStatus()) ? customerInquiry.getTotalPrice().subtract(price) : customerInquiry.getTotalPrice())
+                .totalPrice(StringUtils.equals(InquiryStatusEnums.PAY_DEPOSIT.getValue(), customerInquiry.getStatus()) ? customerInquiry.getTotalPrice().add(price) : customerInquiry.getTotalPrice())
                 .build();
 
         //封装配件数量
