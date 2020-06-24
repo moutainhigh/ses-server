@@ -165,6 +165,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
       //客户字段校验
         checkSaveCustomerFiledSingle(enter);
 
+        //已存在客户 不可重复添加
         QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
         Integer count = opeCustomerMapper.selectCount(queryWrapper);

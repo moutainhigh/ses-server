@@ -94,11 +94,15 @@
     <select id="usingEmailList" resultType="java.lang.String">
         select email
         from ope_customer_inquiry
-        where dr=0
+        where dr = 0
         union all
         select email
         from ope_customer
-        where dr=0
-        and ope_customer.status in (1,2)
+        where dr = 0
+          and ope_customer.status in (1, 2)
+        union
+        select email
+        from ope_customer_inquiry inquiry
+        where status != 3
     </select>
 </mapper>

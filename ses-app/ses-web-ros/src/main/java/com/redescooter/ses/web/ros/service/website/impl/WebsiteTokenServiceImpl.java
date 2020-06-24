@@ -185,7 +185,6 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         //用户校验
         QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, decryptEamil);
-        opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_SOURCE, CustomerSourceEnum.WEBSITE.getValue());
         opeCustomerQueryWrapper.last("limit 1");
         OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
         if (opeCustomer != null) {
