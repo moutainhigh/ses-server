@@ -67,7 +67,13 @@ public class ESCUtils {
         put("F51", "F51");
         put("F52", "F52");
         put("F53", "F53");
+        put("F54", "F54");
         put("F55", "F55");
+        put("F56", "F56");
+        put("F57", "F57");
+        put("F58", "F58");
+        put("F59", "F59");
+        put("F60", "F60");
         put("F61", "F61");
         put("F62", "F62");
         put("F63", "F63");
