@@ -53,5 +53,5 @@ public interface InquiryServiceMapper {
      *
      * @return
      */
-    List<String> usingEmailList();
+   // List<String> usingEmailList();
 }

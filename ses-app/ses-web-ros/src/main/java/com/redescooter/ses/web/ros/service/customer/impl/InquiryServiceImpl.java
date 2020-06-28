@@ -39,6 +39,7 @@ import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,16 +144,42 @@ public class InquiryServiceImpl implements InquiryService {
 
 
         // 查询已存在的email 暂时注释掉 邮箱过滤
-        List<String> emailList = inquiryServiceMapper.usingEmailList();
-        if (emailList.contains(enter.getEmail())) {
-            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        //List<String> emailList = inquiryServiceMapper.usingEmailList();
+
+        //查询 该邮箱 是否为正式客户 是的话 直接返回
+        OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().in(OpeCustomer::getStatus, CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue(),
+                CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue()).eq(OpeCustomer::getEmail,
+                enter.getEmail()));
+        if (opeCustomer != null) {
+            return new GeneralResult(enter.getRequestId());
         }
+
+        //查询客户是否有询价单 存在的话数量累计
+        List<OpeCustomerInquiry> customerInquiryList =
+                opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, enter.getEmail()).ne(OpeCustomerInquiry::getStatus,
+                        InquiryStatusEnums.DECLINE.getValue()));
+
+        OpeCustomerInquiry opeCustomerInquiry = null;
+        if (CollectionUtils.isEmpty(customerInquiryList)) {
+            opeCustomerInquiry = buildOpeCustomerInquiry(enter);
+        } else {
+            opeCustomerInquiry = customerInquiryList.get(0);
+            opeCustomerInquiry.setScooterQuantity(opeCustomerInquiry.getScooterQuantity() + 1);
+        }
+
        /* CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
         if (cityResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
         }*/
 
-        OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
+
+        opeCustomerInquiryService.saveOrUpdate(opeCustomerInquiry);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    private OpeCustomerInquiry buildOpeCustomerInquiry(SaveInquiryEnter enter) {
+        OpeCustomerInquiry opeCustomerInquiry;
+        opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
         opeCustomerInquiry.setDr(0);
         opeCustomerInquiry.setOrderNo(RandomUtil.simpleUUID());
@@ -187,10 +214,7 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setUpdatedBy(0L);
         opeCustomerInquiry.setCreatedTime(new Date());
         opeCustomerInquiry.setUpdatedTime(new Date());
-
-
-        opeCustomerInquiryService.save(opeCustomerInquiry);
-        return new GeneralResult(enter.getRequestId());
+        return opeCustomerInquiry;
     }
 
     /**

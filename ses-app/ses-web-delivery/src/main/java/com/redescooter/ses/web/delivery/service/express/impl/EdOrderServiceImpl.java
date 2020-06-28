@@ -605,7 +605,12 @@ public class EdOrderServiceImpl implements EdOrderService {
         } else {
             saverOrder.setRecipientLatitude(order.getRecipientLatitude());
             saverOrder.setRecipientLongitude(order.getRecipientLongitude());
-            saverOrder.setRecipientGeohash(MapUtil.geoHash(order.getRecipientLongitude().toString(), order.getRecipientLatitude().toString()));
+            //excel 如果经纬度 写反了 会出现geo算法越界
+            try {
+                saverOrder.setRecipientGeohash(MapUtil.geoHash(order.getRecipientLongitude().toString(), order.getRecipientLatitude().toString()));
+            }catch (Exception e){
+                throw new SesWebDeliveryException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
         }
         if (order.getSenderLatitude() == null || order.getSenderLongitude() == null) {
             saverOrder.setSenderLatitude(new BigDecimal("0"));
