@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface PlaAppVersionMapper extends BaseMapper<PlaAppVersion> {
     int updateBatch(List<PlaAppVersion> list);
 
+    int updateBatchSelective(List<PlaAppVersion> list);
+
     int batchInsert(@Param("list") List<PlaAppVersion> list);
 
     int insertOrUpdate(PlaAppVersion record);
