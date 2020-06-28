@@ -66,6 +66,7 @@ import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -282,7 +283,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             }
         }
         if (StringUtils.isNotEmpty(enter.getCompanyName())) {
-            if (enter.getCompanyName().length() < 2 || enter.getCompanyName().length() > 20) {
+            if (enter.getCompanyName().length() < 2 || enter.getCompanyName().length() > 30) {
                 throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
@@ -305,7 +306,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotEmpty(enter.getInvoiceNum())) {
             //发票号
             if (enter.getInvoiceNum().length() < 2 || enter.getInvoiceNum().length() > 30) {
-                throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getBusinessLicenseNum())) {
@@ -317,6 +318,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (enter.getScooterQuantity() != null) {
             if (String.valueOf(enter.getScooterQuantity()).length() < 1 || String.valueOf(enter.getScooterQuantity()).length() > 6) {
                 throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getMessage());
+            }
+        }
+        if(Strings.isNotBlank(enter.getTelephone())){
+            if(enter.getTelephone().length() < 8 || enter.getTelephone().length() > 20){
+                throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
             }
         }
     }
@@ -1114,7 +1120,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             }
         }
         if (StringUtils.isNotEmpty(enter.getCompanyName())) {
-            if (enter.getCompanyName().length() < 2 || enter.getCompanyName().length() > 20) {
+            if (enter.getCompanyName().length() < 2 || enter.getCompanyName().length() > 30) {
                 throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
@@ -1149,6 +1155,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (enter.getScooterQuantity() != null) {
             if (String.valueOf(enter.getScooterQuantity()).length() < 1 || String.valueOf(enter.getScooterQuantity()).length() > 6) {
                 throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getMessage());
+            }
+        }
+        if(Strings.isNotBlank(enter.getTelephone())){
+            if(enter.getTelephone().length() < 8 || enter.getTelephone().length() > 20){
+                throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
             }
         }
     }
