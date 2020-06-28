@@ -543,10 +543,10 @@ public class UserTokenServiceImpl implements UserTokenService {
     public GeneralResult setPassword(SetPasswordEnter enter) {
 
         //密码去空格
-        if (StringUtils.isNotEmpty(enter.getConfirmPassword())){
+        if (StringUtils.isNotEmpty(enter.getConfirmPassword())) {
             enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
         }
-        if (StringUtils.isNotEmpty(enter.getNewPassword())){
+        if (StringUtils.isNotEmpty(enter.getNewPassword())) {
             enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         }
 
@@ -638,6 +638,12 @@ public class UserTokenServiceImpl implements UserTokenService {
             plaTenantMapper.updateById(plaTenant);
         }
 
+        //token 为空为系统外设置密码 设置成功过后 清楚 缓存保证一个requestId 只能用一次
+        if (StringUtils.isBlank(enter.getToken())) {
+            if (jedisCluster.exists(enter.getRequestId())){
+                jedisCluster.del(enter.getRequestId());
+            }
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -652,19 +658,18 @@ public class UserTokenServiceImpl implements UserTokenService {
     public GeneralResult chanagePassword(ChanagePasswordEnter enter) {
 
         //邮箱、密码去空格
-        if (StringUtils.isNotEmpty(enter.getEmail())){
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
             enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
         }
-        if (StringUtils.isNotEmpty(enter.getNewPassword())){
+        if (StringUtils.isNotEmpty(enter.getNewPassword())) {
             enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         }
-        if (StringUtils.isNotEmpty(enter.getOldPassword())){
+        if (StringUtils.isNotEmpty(enter.getOldPassword())) {
             enter.setOldPassword(SesStringUtils.stringTrim(enter.getOldPassword()));
         }
-        if (StringUtils.isNotEmpty(enter.getConfirmNewPassword())){
+        if (StringUtils.isNotEmpty(enter.getConfirmNewPassword())) {
             enter.setConfirmNewPassword(SesStringUtils.stringTrim(enter.getConfirmNewPassword()));
         }
-
 
 
         //新密码判断是否一致
@@ -714,7 +719,7 @@ public class UserTokenServiceImpl implements UserTokenService {
     public GeneralResult sendEmail(BaseSendMailEnter enter) {
 
         //邮箱去空格
-        if (StringUtils.isNotEmpty(enter.getMail())){
+        if (StringUtils.isNotEmpty(enter.getMail())) {
             enter.setMail(SesStringUtils.stringTrim(enter.getMail()));
         }
 
@@ -758,14 +763,15 @@ public class UserTokenServiceImpl implements UserTokenService {
     }
 
     /**
-     *  App 手机号类型验证 用户密码
+     * App 手机号类型验证 用户密码
+     *
      * @param enter
      * @return
      */
     @Override
     public GeneralResult verifyAccount(VerifyAccountEnter enter) {
-        if (StringUtils.isBlank(enter.getPassword())){
-            throw new FoundationException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        if (StringUtils.isBlank(enter.getPassword())) {
+            throw new FoundationException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
 
         //密码去空格
@@ -773,18 +779,18 @@ public class UserTokenServiceImpl implements UserTokenService {
 
 
         PlaUser plaUser = plaUserMapper.selectById(enter.getUserId());
-        if (plaUser==null){
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        if (plaUser == null) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper=new QueryWrapper<>();
-        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME,plaUser.getLoginName());
-        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_DR,0);
+        QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
+        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME, plaUser.getLoginName());
+        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_DR, 0);
         PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
-        if (plaUserPassword==null){
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        if (plaUserPassword == null) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(plaUserPassword.getPassword(),DigestUtils.md5Hex(enter.getPassword() + plaUserPassword.getSalt()))){
-            throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(),ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        if (!StringUtils.equals(plaUserPassword.getPassword(), DigestUtils.md5Hex(enter.getPassword() + plaUserPassword.getSalt()))) {
+            throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
         return new GeneralResult(enter.getRequestId());
     }
