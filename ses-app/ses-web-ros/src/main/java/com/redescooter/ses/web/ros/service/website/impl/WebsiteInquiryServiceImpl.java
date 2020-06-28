@@ -700,7 +700,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         String name = email.substring(0, email.indexOf("@"));
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
         enter.setName(name);
-        enter.setEvent(MailTemplateEventEnums.SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL.getName());
+        enter.setEvent(MailTemplateEventEnums.SUBSCRIBE_TO_EMAIL_SUCCESSFULLY.getName());
         enter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
         enter.setMailAppId(SystemIDEnums.REDE_SES.getValue());
         enter.setToMail(email);
