@@ -120,7 +120,7 @@ spring:                                                                         
           email: Jerry@redescooter.com
           url: https://github.com/mrjerryli#联系地址
       version-api:
-        group-name: 4.Version-API
+        group-name: 5.Version-API
         title: 个人信息相关的操作
         description: 个人信息相关的操作
         base-package: com.redescooter.ses
