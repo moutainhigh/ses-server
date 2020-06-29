@@ -459,7 +459,7 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
         opeCustomer.setCustomerLastName(opeCustomerInquiry.getLastName());
         opeCustomer.setCustomerFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
-        opeCustomer.setCertificateType("0");
+//        opeCustomer.setCertificateType("0");
         opeCustomer.setScooterQuantity(opeCustomerInquiry.getScooterQuantity());
         opeCustomer.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
         opeCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
