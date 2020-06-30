@@ -428,6 +428,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                     result.add(AssemblyProductResult.builder()
                             .id(key)
                             .productName(item.getCnName())
+                            .productModel(item.getModel())
                             .qty(value)
                             .build());
                 }

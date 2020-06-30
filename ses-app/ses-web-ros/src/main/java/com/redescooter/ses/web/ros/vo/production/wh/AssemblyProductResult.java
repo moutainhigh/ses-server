@@ -30,6 +30,9 @@ public class AssemblyProductResult extends GeneralResult {
     @ApiModelProperty(value = "产品名字")
     private String productName;
 
+    @ApiModelProperty(value = "产品型号")
+    private String productModel;
+
     @ApiModelProperty(value = "数量")
     private Integer qty;
 }
