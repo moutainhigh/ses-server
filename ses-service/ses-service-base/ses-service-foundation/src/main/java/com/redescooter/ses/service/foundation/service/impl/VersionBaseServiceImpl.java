@@ -36,7 +36,7 @@ public class VersionBaseServiceImpl implements VersionBaseService {
   @Reference
   private IdAppService idAppService;
 
-  @Value("${fileUpload.path}")
+//  @Value("${fileUpload.path}")
   private String uploadPath;
 
   @Override
