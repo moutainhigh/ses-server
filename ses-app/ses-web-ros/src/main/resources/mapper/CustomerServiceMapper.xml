@@ -220,6 +220,7 @@
         from ope_customer
         where dr = 0
         and status = 2
+        limit #{startRow},#{pageSize}
     </select>
     <select id="scooterCustomerCount"
             resultType="int">
