@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.exception.BusinessException;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -468,6 +469,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Override
     public GeneralResult editCustomer(WebEditCustomerEnter enter) {
+        if(enter == null){
+            throw  new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
         // 登录的时候  是把这些东西放在缓存里  直接获取
         OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
         if (opeSysUser == null) {
