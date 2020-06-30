@@ -59,8 +59,8 @@ public class ValidationUtil {
     }
 
     private static void validationLat(Object obj, Field field){
-        LonCheck lonCheck = field.getAnnotation(LonCheck.class);
-        if(lonCheck == null){
+        LatCheck latCheck = field.getAnnotation(LatCheck.class);
+        if(latCheck == null){
             return;
         }
         Object fieldValue = getFieldValueByName(field.getName(), obj);
@@ -69,7 +69,7 @@ public class ValidationUtil {
             if (StringUtils.isNotEmpty(value)){
                 Integer dou = Integer.valueOf(value.substring(0,value.indexOf(".")));
                 if(dou < -90 || dou > 90){
-                    throw new ValidationException(lonCheck.code(), field.getName() + " is illegal");
+                    throw new ValidationException(latCheck.code(), field.getName() + " is illegal");
                 }
             }
         }
