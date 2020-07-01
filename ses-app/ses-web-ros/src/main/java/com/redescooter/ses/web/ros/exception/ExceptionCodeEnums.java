@@ -320,6 +320,8 @@ public enum ExceptionCodeEnums {
 
   SUPPLIER_TAG_IS_NOT_ILLEGAL(10151, "供应商标签不合法"),
 
+    TOP_DEPT_IS_NOT_EXIST(10152, "顶级部门不存在"),
+
 
     ;
 

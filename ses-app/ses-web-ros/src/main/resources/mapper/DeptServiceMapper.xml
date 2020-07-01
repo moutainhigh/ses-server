@@ -1,47 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper">
-
     <select id="topDeptartment" resultType="com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt">
-    select osd.*
-    from (select dept.p_id
-          from ope_sys_dept dept
-                   left join
-               ope_sys_dept_relation osdr
-               on osdr.descendant = dept.id
-          where (osdr.descendant = #{enter.id} OR osdr.ancestor = #{enter.id})
-          group by dept.p_id) pdept
-             inner join ope_sys_dept osd on pdept.p_id = osd.id
-    where osd.level = #{level}
+                SELECT *
+            FROM (
+                SELECT
+                        @r AS _id,
+                        (SELECT @r := p_id FROM ope_sys_dept WHERE id = _id) AS p_id,
+                         @l := @l + 1 AS lvl
+                FROM
+                        (SELECT @r := #{enter.id}, @l := 0) vars,
+                        ope_sys_dept h
+                WHERE @r != 0) T1
+            JOIN ope_sys_dept T2
+            ON T1._id = T2.id
+            where dr = 0 and `level` = 0 and id != 1000000
 
     </select>
 
     <select id="deptList" resultType="com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt">
-    select dept.id
-         , dept.dr
-         , dept.p_id
-         , dept.tenant_id
-         , dept.principal
-         , dept.level
-         , dept.name
-         , dept.code
-         , dept.sort
-         , count(user.dept_id) as employeeCount
-    from ope_sys_dept dept
-             left join ope_sys_user user on dept.id = user.dept_id and user.dr = 0
-    where dept.dr = 0
-    group by dept.id, dept.dr, dept.p_id, dept.tenant_id, dept.principal, dept.level, dept.name, dept.code, dept.sort
+
+            select dept.id
+                 , dept.dr
+                 , dept.p_id
+                 , dept.tenant_id
+                 , dept.principal
+                 , dept.level
+                 , dept.name
+                 , dept.code
+                 , dept.sort
+                 , count(user.dept_id) as employeeCount
+            from ope_sys_dept dept
+                     left join ope_sys_user user on dept.id = user.dept_id and user.dr = 0
+            where dept.dr = 0
+            group by dept.id, dept.dr, dept.p_id, dept.tenant_id, dept.principal, dept.level, dept.name, dept.code, dept.sort
+
     </select>
 
     <select id="employeeList" resultType="com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult">
         select profile.sys_user_id as id,
-            user.dept_id        as deptId,
-            profile.first_name  as employeeFirstName,
-            profile.last_name   as employeeLastName,
-            profile.picture     as employeePicture,
-            role.id             as employeePositionId,
-            role.role_name      as employeePositionName,
-            profile.email       as email
+        user.dept_id as deptId,
+        profile.first_name as employeeFirstName,
+        profile.last_name as employeeLastName,
+        profile.picture as employeePicture,
+        role.id as employeePositionId,
+        role.role_name as employeePositionName,
+        profile.email as email
         from ope_sys_user_profile profile
         inner join ope_sys_user user on profile.sys_user_id = user.id and user.dr = 0
         inner join ope_sys_user_role osur on user.id = osur.user_id
@@ -64,37 +68,39 @@
 
     <select id="principals" resultType="com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult">
         select staff.id,
-               profile.first_name   as fitstName,
-               profile.last_name    as lastName,
-               profile.country_code as countryCode,
-               profile.tel_number   as telphone
+        profile.first_name as fitstName,
+        profile.last_name as lastName,
+        profile.country_code as countryCode,
+        profile.tel_number as telphone
         from ope_sys_staff staff
-                 inner join ope_sys_user_profile profile on staff.sys_user_id = profile.sys_user_id and profile.dr = 0
-                 left join ope_sys_user user on user.org_staff_id = staff.id and user.dr = 0
-                 left join ope_sys_dept dept on dept.id = user.dept_id and dept.dr = 0
+        inner join ope_sys_user_profile profile on staff.sys_user_id = profile.sys_user_id and profile.dr = 0
+        left join ope_sys_user user on user.org_staff_id = staff.id and user.dr = 0
+        left join ope_sys_dept dept on dept.id = user.dept_id and dept.dr = 0
         where staff.dr = 0
         <if test="collection != null and collection.size() != 0">
-        and dept.id in
-            <foreach collection="collection" open="(" close=")" item="item" >
+            and dept.id in
+            <foreach collection="collection" open="(" close=")" item="item">
                 #{item}
             </foreach>
         </if>
     </select>
 
     <select id="getChildDeptIds" resultType="java.lang.Long">
-        SELECT
-	      id
-       FROM
-            (
-            SELECT
-                t1.id,
-            IF
-                ( find_in_set( p_id, @pids ) > 0, @pids := concat( @pids, ',', id ), 0 ) AS ischild
-            FROM
-                ( SELECT id, p_id FROM ope_sys_dept t ) t1,
-                ( SELECT @pids := #{deptId}) t2
-            ) t3
-        WHERE
-	ischild != 0
+
+                SELECT
+                  id
+               FROM
+                    (
+                    SELECT
+                        t1.id,
+                    IF
+                        ( find_in_set( p_id, @pids ) > 0, @pids := concat( @pids, ',', id ), 0 ) AS ischild
+                    FROM
+                        ( SELECT id, p_id FROM ope_sys_dept t ) t1,
+                        ( SELECT @pids := #{deptId}) t2
+                    ) t3
+                WHERE
+            ischild != 0
+
     </select>
 </mapper>

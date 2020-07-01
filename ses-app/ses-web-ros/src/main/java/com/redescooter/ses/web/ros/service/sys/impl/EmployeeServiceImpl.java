@@ -174,7 +174,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         employeeResult.setAddressBureau(addressBureau);
         DeptTreeReslt deptTreeReslt = sysDeptService.topDeptartment(new IdEnter(employeeResult.getDeptId()), DeptLevelEnums.COMPANY.getValue());
-        employeeResult.setCompanyId(deptTreeReslt.getId());
+        if(deptTreeReslt == null){
+            throw new SesWebRosException(ExceptionCodeEnums.TOP_DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_DEPT_IS_NOT_EXIST.getMessage());
+        }
+        employeeResult.setCompanyId(deptTreeReslt == null?0L:deptTreeReslt.getId());
         employeeResult.setCompanyName(deptTreeReslt.getName());
         return employeeResult;
     }
