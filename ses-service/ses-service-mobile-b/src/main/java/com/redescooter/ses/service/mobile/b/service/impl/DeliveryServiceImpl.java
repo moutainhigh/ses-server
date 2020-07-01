@@ -177,15 +177,9 @@ public class DeliveryServiceImpl implements DeliveryService {
      */
     @Override
     public DeliveryDetailResult detail(IdEnter enter) {
-        CorDelivery delivery = null;
-
-        delivery = JSONObject.parseObject(jedisCluster.get(enter.getId().toString()), CorDelivery.class);
-
+        CorDelivery delivery = corDeliveryMapper.selectById(enter.getId());
         if (delivery == null) {
-            delivery = corDeliveryMapper.selectById(enter.getId());
-            if (delivery == null) {
-                throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
-            }
+            throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
 
         DeliveryDetailResult result = new DeliveryDetailResult();
