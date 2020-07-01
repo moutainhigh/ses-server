@@ -31,4 +31,8 @@ public interface ValidationExceptionCode {
     int PASSWORD_IS_ILLEGAL = 10010;
     // 邮箱非法
     int EMAIL_IS_ILLEGAL = 10011;
+    //经度违法
+    int LON_IS_ILLEGAL = 10014;
+    //维度违法
+    int LAT_IS_ILLEGAL = 10015;
 }

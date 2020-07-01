@@ -36,7 +36,42 @@ public class ValidationUtil {
             validationNotZero(obj, field);
             validationMaximumLength(obj, field);
             validationMinimumLength(obj, field);
+            validationLon(obj, field);
+            validationLat(obj, field);
+        }
+    }
 
+    private static void validationLon(Object obj, Field field){
+        LonCheck lonCheck = field.getAnnotation(LonCheck.class);
+        if(lonCheck == null){
+            return;
+        }
+        Object fieldValue = getFieldValueByName(field.getName(), obj);
+        if(fieldValue instanceof String){
+            String value = (String) fieldValue;
+            if (StringUtils.isNotEmpty(value)){
+                Integer dou = Integer.valueOf(value.substring(0,value.indexOf(".")));
+                if(dou < -180 || dou > 180){
+                    throw new ValidationException(lonCheck.code(), field.getName() + " is illegal");
+                }
+            }
+        }
+    }
+
+    private static void validationLat(Object obj, Field field){
+        LatCheck latCheck = field.getAnnotation(LatCheck.class);
+        if(latCheck == null){
+            return;
+        }
+        Object fieldValue = getFieldValueByName(field.getName(), obj);
+        if(fieldValue instanceof String){
+            String value = (String) fieldValue;
+            if (StringUtils.isNotEmpty(value)){
+                Integer dou = Integer.valueOf(value.substring(0,value.indexOf(".")));
+                if(dou < -90 || dou > 90){
+                    throw new ValidationException(latCheck.code(), field.getName() + " is illegal");
+                }
+            }
         }
     }
 
