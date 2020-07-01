@@ -252,15 +252,11 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      */
     @Override
     public PageResult<ListDeliveryResult> list(ListDeliveryPage page) {
-
         int totalRows = orderDeliveryServiceMapper.listCount(page);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(page);
         }
-
-        List<ListDeliveryResult> list = orderDeliveryServiceMapper.list(page);
-
-        return PageResult.create(page, totalRows, list);
+        return PageResult.create(page, totalRows, orderDeliveryServiceMapper.list(page));
 
     }
 
