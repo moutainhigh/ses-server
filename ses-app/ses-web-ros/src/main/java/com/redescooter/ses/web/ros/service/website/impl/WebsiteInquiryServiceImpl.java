@@ -1,9 +1,7 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.redescooter.ses.api.common.constant.EamilConstant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerCertificateTypeEnum;
@@ -13,7 +11,6 @@ import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
-import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
@@ -37,7 +34,6 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
-import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
 import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
@@ -612,7 +608,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         adPush(eamil);
-        jedisCluster.set(EamilConstant.SUBSCRIBE_EMAIL + enter.getRequestId(), eamil);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -697,9 +692,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
 
 
-        String name = email.substring(0, email.indexOf("@"));
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
-        enter.setName(name);
         enter.setEvent(MailTemplateEventEnums.SUBSCRIBE_TO_EMAIL_SUCCESSFULLY.getName());
         enter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
         enter.setMailAppId(SystemIDEnums.REDE_SES.getValue());
@@ -709,7 +702,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         enter.setUserRequestId("0");
         enter.setToUserId(0L);
         enter.setUserId(0L);
-        enter.setFullName(name);
         mailMultiTaskService.subscribeToEmailSuccessfully(enter);
     }
 

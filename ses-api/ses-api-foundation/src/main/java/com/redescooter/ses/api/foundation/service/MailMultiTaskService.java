@@ -113,7 +113,7 @@ public interface MailMultiTaskService {
   GeneralResult subscriptionPaySucceedSendmail( BaseMailTaskEnter enter);
 
     /**
-     * 定金支付成功发送邮件
+     * 订阅广告发送邮件
      * @param
      * @return
      */
