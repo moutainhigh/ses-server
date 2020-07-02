@@ -83,7 +83,6 @@ public class SesWebRosApplicationTests {
         enter.setAddress("");
         enter.setFirstName("");
         enter.setLastName("");
-        enter.setTelephone("");
         webSiteService.editCustomer(enter);
     }
 

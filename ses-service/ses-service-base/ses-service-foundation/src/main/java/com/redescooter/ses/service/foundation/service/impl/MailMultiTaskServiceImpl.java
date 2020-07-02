@@ -404,11 +404,11 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
         //将模板赋值
         List<PlaMailConfig> configList = getPayTemplateById(mailtemplate.getMailTemplateNo());
+        //参数的map
         Map<String, String> map = new HashMap();
         if (configList != null && configList.size() > 0) {
             map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
         }
-        map.put("name", enter.getName());
         //保存邮箱任务
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
