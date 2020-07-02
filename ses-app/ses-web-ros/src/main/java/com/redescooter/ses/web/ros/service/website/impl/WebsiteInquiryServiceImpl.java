@@ -393,6 +393,10 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setTotalPrice(totalPrice);
         //todo 目前暂做个人端 默认车辆数量为一
 //        opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
+
+        opeCustomerInquiry.setDistrict(Long.valueOf(enter.getDistrict()));
+        opeCustomerInquiry.setDef1(enter.getCustomerCountry());
+        opeCustomerInquiry.setAddress(enter.getAddress());
         opeCustomerInquiry.setScooterQuantity(1);
         opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setAddress(null);
@@ -587,6 +591,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .email(opeCustomer.getEmail())
                 .firstName(opeCustomer.getCustomerFirstName())
                 .lastName(opeCustomer.getCustomerLastName())
+                .address(opeCustomer.getAddress())
+                .customerCountry(opeCustomer.getDef1())
+                .district(opeCustomer.getDistrust().toString())
                 .build();
     }
 

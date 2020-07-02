@@ -48,7 +48,7 @@ public class ValidationUtil {
         Object fieldValue = getFieldValueByName(field.getName(), obj);
         if (fieldValue instanceof String) {
             String value = (String) fieldValue;
-            if (StringUtils.isNotEmpty(value)){
+            if (StringUtils.isNotEmpty(value)) {
                 if (value.length() > Integer.parseInt(annotation.value())) {
                     throw new ValidationException(annotation.code(), annotation.message());
                 }
@@ -132,9 +132,9 @@ public class ValidationUtil {
             return;
         }
         Object value = getFieldValueByName(field.getName(), obj);
-            if (value instanceof String) {
-                if (StringUtils.isNotEmpty((String)value)) {
-                    if (!((String) value).matches(regexp.value())) {
+        if (value instanceof String) {
+            if (StringUtils.isNotEmpty((String) value)) {
+                if (!((String) value).matches(regexp.value())) {
                     throw new ValidationException(regexp.code(), field.getName() + " is illegal");
                 }
             }

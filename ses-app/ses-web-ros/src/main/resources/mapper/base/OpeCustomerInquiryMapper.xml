@@ -44,6 +44,11 @@
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DOUBLE" property="def6" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
@@ -52,7 +57,7 @@
     country_code, telephone, email, address, contact_first, contact_last, contant_full_name, 
     product_id, product_model, product_price, total_price, scooter_quantity, pay_status, 
     remarks, `source`, bank_card_name, cvv, expired_time, card_Num, postal_code, created_by, 
-    created_time, updated_time, updated_by
+    created_time, updated_time, updated_by, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -253,6 +258,31 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
@@ -267,7 +297,7 @@
       country_code, telephone, email, address, contact_first, contact_last, contant_full_name, 
       product_id, product_model, product_price, total_price, scooter_quantity, pay_status, 
       remarks, `source`, bank_card_name, cvv, expired_time, card_Num, postal_code, created_by, 
-      created_time, updated_time, updated_by)
+      created_time, updated_time, updated_by, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.orderNo,jdbcType=VARCHAR}, 
@@ -284,7 +314,9 @@
         #{item.bankCardName,jdbcType=VARCHAR}, #{item.cvv,jdbcType=VARCHAR}, #{item.expiredTime,jdbcType=DATE}, 
         #{item.cardNum,jdbcType=VARCHAR}, #{item.postalCode,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT})
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+        )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
@@ -295,7 +327,7 @@
       country_code, telephone, email, address, contact_first, contact_last, contant_full_name, 
       product_id, product_model, product_price, total_price, scooter_quantity, pay_status, 
       remarks, `source`, bank_card_name, cvv, expired_time, card_Num, postal_code, created_by, 
-      created_time, updated_time, updated_by)
+      created_time, updated_time, updated_by, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{customerId,jdbcType=BIGINT}, 
       #{country,jdbcType=BIGINT}, #{city,jdbcType=BIGINT}, #{district,jdbcType=BIGINT}, 
@@ -309,8 +341,9 @@
       #{payStatus,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, 
       #{bankCardName,jdbcType=VARCHAR}, #{cvv,jdbcType=VARCHAR}, #{expiredTime,jdbcType=DATE}, 
       #{cardNum,jdbcType=VARCHAR}, #{postalCode,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}
-      )
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -351,7 +384,12 @@
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
     updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
+    def6 = #{def6,jdbcType=DOUBLE}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
     <!--@mbg.generated-->
@@ -477,6 +515,21 @@
       <if test="updatedBy != null">
         updated_by,
       </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -600,6 +653,21 @@
       <if test="updatedBy != null">
         #{updatedBy,jdbcType=BIGINT},
       </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=DOUBLE},
+      </if>
     </trim>
     on duplicate key update 
     <trim suffixOverrides=",">
@@ -722,6 +790,21 @@
       </if>
       <if test="updatedBy != null">
         updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>

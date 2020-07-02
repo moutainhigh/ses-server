@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
-import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -47,6 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -481,19 +481,27 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if(StringUtils.isNotEmpty(enter.getAddress())){
             customer.setAddress(enter.getAddress());
         }
-        String decrypt = null;
-        if (enter.getTelephone() != null) {
-            try {
-                //密码校验
-                decrypt = RsaUtils.decrypt(enter.getTelephone(), privatekey);
-            } catch (Exception e) {
-                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-            }
-            enter.setTelephone(decrypt);
-            //电话长度校验
-            checkString(enter.getTelephone(),2,10);
+//        String decrypt = null;
+//        if (enter.getTelephone() != null) {
+//            try {
+//                //密码校验
+//                decrypt = RsaUtils.decrypt(enter.getTelephone(), privatekey);
+//            } catch (Exception e) {
+//                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+//            }
+//            enter.setTelephone(decrypt);
+//            //电话长度校验
+//            checkString(enter.getTelephone(),2,10);
+//        }
+//        customer.setTelephone(decrypt);
+        customer.setDef1(enter.getCustomerCountry());
+        customer.setAddress(enter.getAddress());
+        customer.setDistrust(Long.valueOf(enter.getDistrict()));
+        if (!StringUtils.isAllBlank(enter.getLat(),enter.getLng(),enter.getPlaceId())){
+            customer.setLatitude(new BigDecimal(enter.getLat()));
+            customer.setLongitude(new BigDecimal(enter.getLng()));
+            customer.setPlaceId(enter.getPlaceId());
         }
-        customer.setTelephone(decrypt);
         customer.setCustomerFirstName(SesStringUtils.upperCaseString(enter.getFirstName()));
         customer.setCustomerLastName(SesStringUtils.upperCaseString(enter.getLastName()));
         customer.setCustomerFullName(new StringBuilder(SesStringUtils.upperCaseString(enter.getFirstName())).append(" ").append(SesStringUtils.upperCaseString(enter.getLastName())).toString());
@@ -509,7 +517,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                 inquiry.setFirstName(customer.getCustomerFirstName());
                 inquiry.setLastName(customer.getCustomerLastName());
                 inquiry.setFullName(customer.getCustomerFullName());
-                inquiry.setTelephone(customer.getTelephone());
+//                inquiry.setTelephone(customer.getTelephone());
+                inquiry.setAddress(customer.getAddress());
+                inquiry.setDistrict(Long.valueOf(enter.getDistrict()));
                 update.add(inquiry);
             }
             opeCustomerInquiryMapper.updateBatch(update);
@@ -536,6 +546,15 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         saveCustomer.setCreatedBy(saveCustomer.getId());
         saveCustomer.setCreatedTime(new Date());
         saveCustomer.setAccountFlag("0");
+        saveCustomer.setAddress(enter.getAddress());
+
+        if (!StringUtils.isAllBlank(enter.getLat(),enter.getLng(),enter.getPlaceId())){
+            saveCustomer.setLatitude(new BigDecimal(enter.getLat()));
+            saveCustomer.setLongitude(new BigDecimal(enter.getLng()));
+            saveCustomer.setPlaceId(enter.getPlaceId());
+        }
+        saveCustomer.setDistrust(Long.valueOf(enter.getDistrict()));
+        saveCustomer.setDef1(enter.getCustomerCountry());
         return saveCustomer;
     }
 
