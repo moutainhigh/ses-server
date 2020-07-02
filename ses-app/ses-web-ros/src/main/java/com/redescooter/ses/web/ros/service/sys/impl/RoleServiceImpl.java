@@ -38,6 +38,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -75,6 +76,7 @@ public class RoleServiceImpl implements RoleService {
     private CityBaseService ctiyBaseService;
 
     @Override
+    @Transactional
     public GeneralResult save(RoleEnter enter) {
       //employeeListEnter参数值去空格
       RoleEnter roleEnter = SesStringUtils.objStringTrim(enter);
@@ -94,6 +96,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public GeneralResult edit(RoleEnter roleEnter) {
       if (roleEnter.getRoleName().length()<2||roleEnter.getRoleName().length()>20){
         throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
@@ -109,6 +112,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public GeneralResult delete(IdEnter enter) {
 
         //验证该角色下是否有人员，如果有人员，那么选进行解绑人员

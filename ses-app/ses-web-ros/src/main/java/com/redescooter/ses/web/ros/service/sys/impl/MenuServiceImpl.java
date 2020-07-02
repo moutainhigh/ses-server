@@ -357,6 +357,11 @@ public class MenuServiceImpl implements MenuService {
                 }
             }
         }
+        for (MenuTreeResult tree : trees) {
+            if(tree.getLevel() == 1){
+                tree.setChecked(false);
+            }
+        }
         return trees;
     }
 
