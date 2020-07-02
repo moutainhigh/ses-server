@@ -394,9 +394,22 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //todo 目前暂做个人端 默认车辆数量为一
 //        opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
 
-        opeCustomerInquiry.setDistrict(Long.valueOf(enter.getDistrict()));
-        opeCustomerInquiry.setDef1(enter.getCustomerCountry());
-        opeCustomerInquiry.setAddress(enter.getAddress());
+        if (StringUtils.isNotEmpty(enter.getDistrict())){
+            opeCustomerInquiry.setDistrict(Long.valueOf(enter.getDistrict()));
+        }else {
+            opeCustomerInquiry.setDistrict(opeCustomer.getDistrust());
+        }
+        if (StringUtils.isNotEmpty(enter.getCustomerCountry())){
+            opeCustomerInquiry.setDef1(enter.getCustomerCountry());
+        }else {
+            opeCustomerInquiry.setDef1(opeCustomer.getDef1());
+        }
+        if (StringUtils.isNotEmpty(enter.getAddress())){
+            opeCustomerInquiry.setAddress(enter.getAddress());
+        }else{
+            opeCustomerInquiry.setAddress(opeCustomer.getAddress());
+        }
+
         opeCustomerInquiry.setScooterQuantity(1);
         opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setAddress(null);
