@@ -27,6 +27,8 @@ public class EmployeeDeptResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "部门id")
+    private Long deptId;
     @ApiModelProperty(value = "名称")
     private String name;
 

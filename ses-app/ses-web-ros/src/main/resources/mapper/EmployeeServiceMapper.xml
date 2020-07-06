@@ -117,7 +117,8 @@
     <select id="getEmployeePositionList"
             resultType="com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult">
         select role.id as id,
-        role.role_name as name
+        role.role_name as name,
+      roleDept.dept_id as deptId
         from ope_sys_role_dept roleDept
         inner join ope_sys_role role on roleDept.role_id = role.id and role.dr = 0
         where 1 = 1
