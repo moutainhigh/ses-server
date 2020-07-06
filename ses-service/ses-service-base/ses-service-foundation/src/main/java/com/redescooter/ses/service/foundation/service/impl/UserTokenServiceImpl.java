@@ -32,6 +32,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -40,6 +41,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
@@ -79,6 +81,9 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Autowired
     private PlaTenantMapper plaTenantMapper;
 
+    @Value("${Request.privateKey}")
+    private String privatekey;
+
     @Reference
     private MailMultiTaskService mailMultiTaskService;
 
@@ -94,6 +99,20 @@ public class UserTokenServiceImpl implements UserTokenService {
         //用户名密码去除空格
         enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
         enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
+
+        //用户名解密
+        /*if (enter.getPassword() != null && enter.getLoginName() != null) {
+            String decryptPassword = "";
+            String loginName = "";
+            try {
+                loginName = RsaUtils.decrypt(enter.getLoginName(), privatekey);
+                decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
+            } catch (Exception e) {
+                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            enter.setPassword(decryptPassword);
+            enter.setLoginName(loginName);
+        }*/
 
         if (enter.getAppId().equals(AppIDEnums.SAAS_WEB.getValue())) {
             // ① PC端登录逻辑
@@ -550,6 +569,20 @@ public class UserTokenServiceImpl implements UserTokenService {
             enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         }
 
+        //用户名解密
+        /*if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getConfirmPassword())) {
+            String newPassword = "";
+            String confirmPassword = "";
+            try {
+                newPassword = RsaUtils.decrypt(enter.getNewPassword(), privatekey);
+                confirmPassword = RsaUtils.decrypt(enter.getConfirmPassword(), privatekey);
+            } catch (Exception e) {
+                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            enter.setNewPassword(newPassword);
+            enter.setConfirmPassword(confirmPassword);
+        }*/
+
 
         /**
          * 系统内部进行设置密码
@@ -640,7 +673,7 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         //token 为空为系统外设置密码 设置成功过后 清楚 缓存保证一个requestId 只能用一次
         if (StringUtils.isBlank(enter.getToken())) {
-            if (jedisCluster.exists(enter.getRequestId())){
+            if (jedisCluster.exists(enter.getRequestId())) {
                 jedisCluster.del(enter.getRequestId());
             }
         }
@@ -670,7 +703,31 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (StringUtils.isNotEmpty(enter.getConfirmNewPassword())) {
             enter.setConfirmNewPassword(SesStringUtils.stringTrim(enter.getConfirmNewPassword()));
         }
-
+        //密码解密
+        //用户名解密
+        /*if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getOldPassword()) && StringUtils.isNotEmpty(enter.getConfirmNewPassword())) {
+            String newPassword = "";
+            String oldPassword = "";
+            String confirmPassword = "";
+            try {
+                newPassword = RsaUtils.decrypt(enter.getNewPassword(), privatekey);
+                oldPassword = RsaUtils.decrypt(enter.getOldPassword(), privatekey);
+                confirmPassword = RsaUtils.decrypt(enter.getConfirmNewPassword(), privatekey);
+            } catch (Exception e) {
+                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            enter.setNewPassword(newPassword);
+            enter.setOldPassword(oldPassword);
+        }
+        if (StringUtils.isNotEmpty(enter.getEmail())){
+            String email = "";
+            try {
+                email = RsaUtils.decrypt(enter.getEmail(), privatekey);
+            } catch (Exception e) {
+                throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            }
+            enter.setEmail(email);
+        }*/
 
         //新密码判断是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmNewPassword())) {
@@ -722,6 +779,18 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (StringUtils.isNotEmpty(enter.getMail())) {
             enter.setMail(SesStringUtils.stringTrim(enter.getMail()));
         }
+
+        //用户名解密
+        /*if (enter.getMail() != null) {
+            String email = "";
+            try {
+                email = RsaUtils.decrypt(enter.getMail(), privatekey);
+            } catch (Exception e) {
+                throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            }
+            enter.setMail(email);
+        }*/
+
 
         GetUserEnter getUser = new GetUserEnter();
         BeanUtils.copyProperties(enter, getUser);
