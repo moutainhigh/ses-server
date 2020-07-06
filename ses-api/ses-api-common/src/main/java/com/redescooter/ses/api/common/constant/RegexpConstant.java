@@ -45,5 +45,9 @@ public interface RegexpConstant {
      //非负整数
      String positiveNumber="^[1-9]\\d*|0$";
 
+     String lat="^[\\-\\+]?((0|([1-8]\\d?))(\\.\\d{1,10})?|90(\\.0{1,10})?)$";
+     //纬度
+     String lng="^[\\-\\+]?(0(\\.\\d{1,10})?|([1-9](\\d)?)(\\.\\d{1,10})?|1[0-7]\\d{1}(\\.\\d{1,10})?|180\\.0{1,10})$";
+
     //表达式 原帖地址：https://blog.csdn.net/gdhck123/article/details/86703978
 }
