@@ -29,6 +29,13 @@ public interface ExcelService<T extends GeneralEnter> {
      *
      * @return
      */
-    void download(String fileName, String path, HttpServletResponse response);
+    void download(String fileName, String path);
+
+    /**
+     * 询价单数据导出
+     * @param fileName
+     * @param path
+     */
+    void downloadInquiryExcel(String fileName, String path);
 
 }

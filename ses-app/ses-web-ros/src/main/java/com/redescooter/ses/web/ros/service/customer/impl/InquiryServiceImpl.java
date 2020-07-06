@@ -35,6 +35,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
@@ -85,6 +86,9 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Reference
     private IdAppService idAppService;
+
+    @Autowired
+    private ExcelService excelService;
 
     @Value("${Request.privateKey}")
     private String privateKey;
@@ -431,6 +435,18 @@ public class InquiryServiceImpl implements InquiryService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 询价单数据导出
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult inquiryExport(GeneralEnter enter) {
+        return excelService.downloadInquiryExcel(""."","");
+    }
+
     private OpeCustomer buildOpeCustomerSingle(IdEnter enter, OpeCustomerInquiry opeCustomerInquiry) {
         OpeCustomer opeCustomer = new OpeCustomer();
         opeCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
@@ -488,4 +504,5 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomer.setUpdatedTime(new Date());
         return opeCustomer;
     }
+
 }

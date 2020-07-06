@@ -88,4 +88,9 @@ public class InquiryController {
         return new Response<>(inquiryService.declineInquiry(enter));
     }
 
+    @PostMapping(value = "/inquiryExport")
+    @ApiOperation(value = "询价单导出", response = GeneralResult.class)
+    public Response<GeneralResult> inquiryExport(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(inquiryService.inquiryExport(enter));
+    }
 }

@@ -113,7 +113,18 @@ public class ExcelServiceImpl implements ExcelService {
     }
 
     @Override
-    public void download(String fileName, String path, HttpServletResponse response) {
+    public void download(String fileName, String path) {
+
+    }
+
+    /**
+     * 询价单数据导出
+     *
+     * @param fileName
+     * @param path
+     */
+    @Override
+    public void downloadInquiryExcel(String fileName, String path) {
 
     }
 }

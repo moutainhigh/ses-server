@@ -83,4 +83,11 @@ public interface InquiryService {
      * @return
      */
     GeneralResult declineInquiry(IdEnter enter);
+
+    /**
+     * 询价单数据导出
+     * @param enter
+     * @return
+     */
+    GeneralResult inquiryExport(GeneralEnter enter);
 }
