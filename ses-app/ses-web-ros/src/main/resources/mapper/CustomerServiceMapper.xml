@@ -140,7 +140,7 @@
             and opc.customer_source =#{customerSource}
         </if>
         <if test="createEndDateTime != null and createStartDateTime != null">
-            <if test="status ==2 or status==3">
+            <if test="status ==2 or status==3 or status==4">
                 and (opc.updated_time between #{createStartDateTime} and #{createEndDateTime} )
             </if>
             <if test="status ==1  or status==''">
@@ -154,7 +154,7 @@
             or opc.contact_full_name like concat("%",#{keyword},"%")
             )
         </if>
-        <if test="status ==2 or status==3">
+        <if test="status ==2 or status==3 or status==4">
             order by opc.updated_time desc
         </if>
         <if test="status ==1  or status==''">

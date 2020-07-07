@@ -5,7 +5,7 @@
         select count(*)
         from ope_purchas
         where dr=0
-        and  status=3
+        and status in (3,8);
     </select>
     <select id="rpsHeadPurchasInWh" resultType="int">
         select count(*)
