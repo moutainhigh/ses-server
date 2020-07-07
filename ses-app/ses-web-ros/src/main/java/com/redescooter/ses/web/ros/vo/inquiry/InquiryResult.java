@@ -102,5 +102,4 @@ public class InquiryResult extends GeneralResult {
 
     @ApiModelProperty(value = "区域")
     private String def2;
-
 }
