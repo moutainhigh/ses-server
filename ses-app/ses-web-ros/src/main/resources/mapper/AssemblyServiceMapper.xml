@@ -105,9 +105,15 @@
         <if test="keyword != null and keyword != ''">
             and (
             product.en_name like concat("%",#{keyword},"%") or
-            and product.product_number like concat("%",#{keyword},"%")
+            product.product_number like concat("%",#{keyword},"%")
             )
         </if>
+      <if test="status != null and status != ''">
+        and product.status=#{status}
+      </if>
+      <if test="qcStartTime != null and qcEndTime != null">
+        and (product.created_time between #{qcStartTime}  and #{qcEndTime} )
+      </if>
     </sql>
 
     <sql id="WHERE_ASSEMBLYQCINFOITEM">
