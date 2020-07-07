@@ -178,7 +178,7 @@ public class InquiryServiceImpl implements InquiryService {
         if (cityResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
         }*/
-
+        opeCustomerInquiry.setSource("1");
         opeCustomerInquiryService.saveOrUpdate(opeCustomerInquiry);
         return new GeneralResult(enter.getRequestId());
     }
