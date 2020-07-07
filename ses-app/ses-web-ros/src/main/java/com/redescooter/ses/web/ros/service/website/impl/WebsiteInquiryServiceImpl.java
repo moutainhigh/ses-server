@@ -395,9 +395,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 //        opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
 
         if (StringUtils.isNotEmpty(enter.getDistrict())){
-            opeCustomerInquiry.setDistrict(Long.valueOf(enter.getDistrict()));
+            opeCustomerInquiry.setDef2(enter.getDistrict());
         }else {
-            opeCustomerInquiry.setDistrict(opeCustomer.getDistrust());
+            opeCustomerInquiry.setDef2(opeCustomer.getDef2());
         }
         if (StringUtils.isNotEmpty(enter.getCustomerCountry())){
             opeCustomerInquiry.setDef1(enter.getCustomerCountry());

@@ -179,14 +179,13 @@ public class InquiryServiceImpl implements InquiryService {
             throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
         }*/
 
-
         opeCustomerInquiryService.saveOrUpdate(opeCustomerInquiry);
         return new GeneralResult(enter.getRequestId());
     }
 
     private OpeCustomerInquiry buildOpeCustomerInquiry(SaveInquiryEnter enter) {
-        OpeCustomerInquiry opeCustomerInquiry;
-        opeCustomerInquiry = new OpeCustomerInquiry();
+
+        OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
         opeCustomerInquiry.setDr(0);
         opeCustomerInquiry.setOrderNo(RandomUtil.simpleUUID());
@@ -221,6 +220,7 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setUpdatedBy(0L);
         opeCustomerInquiry.setCreatedTime(new Date());
         opeCustomerInquiry.setUpdatedTime(new Date());
+        opeCustomerInquiry.setDef2(enter.getDistrust());
         return opeCustomerInquiry;
     }
 

@@ -107,7 +107,7 @@
      select
         <include refid="InquiryResult"/>
         from ope_customer_inquiry inquiry
-        where source = 01 and dr = 0
+        where source = 1 and dr = 0
         order by inquiry.created_time desc
     </select>
 </mapper>

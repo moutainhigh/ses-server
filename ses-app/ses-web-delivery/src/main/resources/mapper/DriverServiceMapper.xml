@@ -14,6 +14,7 @@
                         or cup.last_name like concat("%",#{keyword},"%")
                         or cup.email_1 like concat("%",#{keyword},"%")
                         or cup.tel_number_1 like concat("%",#{keyword},"%")
+                        or cup.place_birth like concat("%",#{keyword},"%")
                         )
                     </if>
                 </when>
