@@ -446,18 +446,16 @@ public class InquiryServiceImpl implements InquiryService {
      */
     @Transactional
     @Override
-    public GeneralResult inquiryExport(GeneralEnter enter) {
+    public GeneralResult inquiryExport(InquiryListEnter enter) {
         String excelPath = "";
-        List<InquiryResult> list = inquiryServiceMapper.exportInquiry();
+        List<InquiryResult> list = inquiryServiceMapper.exportInquiry(enter);
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
-            Integer i = 1;
             for (InquiryResult inquiry : list) {
-                dataMap.add(toMap(inquiry,i));
-                i ++;
+                dataMap.add(toMap(inquiry));
             }
             String sheetName = "询价单";
-            String[] headers = {"ID","CUSTOMER NAME","CP","STATUS","USER TYPE","INDUSTRY","SCOOTER QUANTITY","ACCEPTANCE TIME"};
+            String[] headers = {"NAME","SURNAME","EMAIL","TELEPHONE","CODE POSTAL","VOTER MESSAGE"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName);
@@ -479,87 +477,20 @@ public class InquiryServiceImpl implements InquiryService {
             }catch (Exception e){
 
             }
-
         }
         return new GeneralResult(excelPath);
     }
 
 
-   private Map<String, Object> toMap(InquiryResult opeCustomerInquiry,Integer integer){
+   private Map<String, Object> toMap(InquiryResult opeCustomerInquiry){
        Map<String, Object> map = new LinkedHashMap<>();
-       map.put("ID",integer);
-       map.put("CUSTOMER NAME",opeCustomerInquiry.getCustomerFirstName()+" "+opeCustomerInquiry.getCustomerLastName());
-       map.put("CP",cp(opeCustomerInquiry.getCityName(),opeCustomerInquiry.getDistrustName()));
-       map.put("STATUS",status(opeCustomerInquiry.getStatus()));
-       map.put("USER TYPE",userType(opeCustomerInquiry.getCustomerType()));
-       map.put("INDUSTRY",industry(opeCustomerInquiry.getIndustryType()));
-       map.put("SCOOTER QUANTITY",opeCustomerInquiry.getScooterQty());
-       map.put("ACCEPTANCE TIME",opeCustomerInquiry.getAcceptanceTime()==null?"--":DateUtil.getYmdhm(opeCustomerInquiry.getAcceptanceTime()));
+       map.put("NAME",Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerFirstName())?"--":opeCustomerInquiry.getCustomerFirstName());
+       map.put("SURNAME NAME",Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName())?"--":opeCustomerInquiry.getCustomerLastName());
+       map.put("EMAIL",Strings.isNullOrEmpty(opeCustomerInquiry.getEmail())?"--":opeCustomerInquiry.getEmail());
+       map.put("TELEPHONE",Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone())?"--":"+33"+opeCustomerInquiry.getTelephone());
+       map.put("CODE POSTAL",Strings.isNullOrEmpty(opeCustomerInquiry.getDef1())?"--":opeCustomerInquiry.getDef1());
+       map.put("VOTER MESSAGE",Strings.isNullOrEmpty(opeCustomerInquiry.getRemark())?"--":opeCustomerInquiry.getRemark());
        return map;
-   }
-
-   public String cp(String citiName,String distrustName){
-        String cp = "--";
-        if(!Strings.isNullOrEmpty(citiName) && !Strings.isNullOrEmpty(distrustName)){
-            cp = citiName + distrustName;
-        }
-        return cp;
-   }
-
-   public String status(String status){
-        String inquiryStatus = "--";
-        if (!Strings.isNullOrEmpty(status)){
-            switch (status){
-                case "1":
-                    inquiryStatus = "Pending";
-                    break;
-                    default:
-                case "3":
-                    inquiryStatus = "Declined";
-                    break;
-                case "4":
-                    inquiryStatus = "Failed";
-                    break;
-                case "5":
-                    inquiryStatus = "Paid";
-                    break;
-            }
-        }
-        return inquiryStatus;
-   }
-
-
-   public String userType(String userType){
-        String type = "--";
-        if(!Strings.isNullOrEmpty(userType)){
-            switch (userType){
-                case "1":
-                    type = "Company";
-                    break;
-                    default:
-                case "2":
-                    type = "Individual";
-                    break;
-            }
-        }
-        return type;
-   }
-
-
-   public String industry(String industry){
-        String ind = "--";
-       if(!Strings.isNullOrEmpty(industry)){
-           switch (industry){
-               case "1":
-                   ind = "Restaurant";
-                   break;
-               default:
-               case "2":
-                   ind = "Express";
-                   break;
-           }
-       }
-        return ind;
    }
 
 

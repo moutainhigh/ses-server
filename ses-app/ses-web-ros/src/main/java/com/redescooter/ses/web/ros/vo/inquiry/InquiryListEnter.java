@@ -56,4 +56,7 @@ public class InquiryListEnter extends PageEnter {
     @ApiModelProperty(value = "关键字")
     private String keyword;
 
+    @ApiModelProperty(value = "来源1 询价单 2预订单")
+    private String source;
+
 }
