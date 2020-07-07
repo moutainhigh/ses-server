@@ -51,6 +51,7 @@ public class SysUserProfileServiceImpl implements SysUserProfileService {
                 .email(user.getEmail())
                 .certificateType(user.getCertificateType())
                 .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .fullName(user.getFullName())
                 .gender(user.getGender())
                 .picture(user.getPicture())
