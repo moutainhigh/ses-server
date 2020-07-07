@@ -35,7 +35,8 @@ spring:                                                                         
     from: support@redelectric.fr
     username: support@redelectric.fr
     host: smtp.ionos.fr
-    password: RedE@Scooter54
+    # 邮箱原密码
+    password: sh80QPSKjhqdou!
     port: 465
 
 # 多注册中心配置
