@@ -102,4 +102,12 @@
         where dr = 0
           and ope_customer.status in (1, 2)
     </select>
+
+    <select id="exportInquiry" resultType="com.redescooter.ses.web.ros.vo.inquiry.InquiryResult">
+     select
+        <include refid="InquiryResult"/>
+        from ope_customer_inquiry inquiry
+        where source = 01 and dr = 0
+        order by inquiry.created_time desc
+    </select>
 </mapper>

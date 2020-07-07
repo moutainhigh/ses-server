@@ -1,26 +1,24 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.OSSClient;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
-import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
-import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
+import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
-import com.redescooter.ses.api.foundation.vo.common.CityResult;
+import com.redescooter.ses.starter.common.config.OssConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
@@ -32,10 +30,11 @@ import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
+import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
@@ -43,16 +42,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.http.entity.ContentType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.*;
 
 /**
  * @ClassName:InquiryServiceImpl
@@ -93,6 +94,8 @@ public class InquiryServiceImpl implements InquiryService {
     @Value("${Request.privateKey}")
     private String privateKey;
 
+    @Autowired
+    private OssConfig ossConfig;
 
     @Override
     public Map<String, Integer> countStatus(GeneralEnter enter) {
@@ -444,8 +447,121 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional
     @Override
     public GeneralResult inquiryExport(GeneralEnter enter) {
-        return excelService.downloadInquiryExcel(""."","");
+        String excelPath = "";
+        List<InquiryResult> list = inquiryServiceMapper.exportInquiry();
+        List<Map<String, Object>> dataMap = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(list)) {
+            Integer i = 1;
+            for (InquiryResult inquiry : list) {
+                dataMap.add(toMap(inquiry,i));
+                i ++;
+            }
+            String sheetName = "询价单";
+            String[] headers = {"ID","CUSTOMER NAME","CP","STATUS","USER TYPE","INDUSTRY","SCOOTER QUANTITY","ACCEPTANCE TIME"};
+            String exportExcelName = String.valueOf(System.currentTimeMillis());
+            try {
+                String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName);
+                File file = new File(path);
+                FileInputStream inputStream = new FileInputStream(file);
+                MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),
+                        ContentType.APPLICATION_OCTET_STREAM.toString(), inputStream);
+
+                ClientConfiguration conf = new ClientConfiguration();
+                conf.setProtocol(ProtocolEnums.getProtocol(ossConfig.getProtocol()));
+                OSSClient ossClient = null;
+                ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(),
+                        ossConfig.getSecretAccesskey(), conf);
+                String fileName = System.currentTimeMillis()+".xlsx";
+                ossClient.putObject(ossConfig.getDefaultBucketName(), fileName,
+                        multipartFile.getInputStream());
+                String bucket = ossConfig.getDefaultBucketName();
+                excelPath = "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + fileName;
+            }catch (Exception e){
+
+            }
+
+        }
+        return new GeneralResult(excelPath);
     }
+
+
+   private Map<String, Object> toMap(InquiryResult opeCustomerInquiry,Integer integer){
+       Map<String, Object> map = new LinkedHashMap<>();
+       map.put("ID",integer);
+       map.put("CUSTOMER NAME",opeCustomerInquiry.getCustomerFirstName()+" "+opeCustomerInquiry.getCustomerLastName());
+       map.put("CP",cp(opeCustomerInquiry.getCityName(),opeCustomerInquiry.getDistrustName()));
+       map.put("STATUS",status(opeCustomerInquiry.getStatus()));
+       map.put("USER TYPE",userType(opeCustomerInquiry.getCustomerType()));
+       map.put("INDUSTRY",industry(opeCustomerInquiry.getIndustryType()));
+       map.put("SCOOTER QUANTITY",opeCustomerInquiry.getScooterQty());
+       map.put("ACCEPTANCE TIME",opeCustomerInquiry.getAcceptanceTime()==null?"--":DateUtil.getYmdhm(opeCustomerInquiry.getAcceptanceTime()));
+       return map;
+   }
+
+   public String cp(String citiName,String distrustName){
+        String cp = "--";
+        if(!Strings.isNullOrEmpty(citiName) && !Strings.isNullOrEmpty(distrustName)){
+            cp = citiName + distrustName;
+        }
+        return cp;
+   }
+
+   public String status(String status){
+        String inquiryStatus = "--";
+        if (!Strings.isNullOrEmpty(status)){
+            switch (status){
+                case "1":
+                    inquiryStatus = "Pending";
+                    break;
+                    default:
+                case "3":
+                    inquiryStatus = "Declined";
+                    break;
+                case "4":
+                    inquiryStatus = "Failed";
+                    break;
+                case "5":
+                    inquiryStatus = "Paid";
+                    break;
+            }
+        }
+        return inquiryStatus;
+   }
+
+
+   public String userType(String userType){
+        String type = "--";
+        if(!Strings.isNullOrEmpty(userType)){
+            switch (userType){
+                case "1":
+                    type = "Company";
+                    break;
+                    default:
+                case "2":
+                    type = "Individual";
+                    break;
+            }
+        }
+        return type;
+   }
+
+
+   public String industry(String industry){
+        String ind = "--";
+       if(!Strings.isNullOrEmpty(industry)){
+           switch (industry){
+               case "1":
+                   ind = "Restaurant";
+                   break;
+               default:
+               case "2":
+                   ind = "Express";
+                   break;
+           }
+       }
+        return ind;
+   }
+
 
     private OpeCustomer buildOpeCustomerSingle(IdEnter enter, OpeCustomerInquiry opeCustomerInquiry) {
         OpeCustomer opeCustomer = new OpeCustomer();

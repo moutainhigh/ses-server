@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
@@ -88,9 +90,10 @@ public class InquiryController {
         return new Response<>(inquiryService.declineInquiry(enter));
     }
 
+    @IgnoreLoginCheck
     @PostMapping(value = "/inquiryExport")
     @ApiOperation(value = "询价单导出", response = GeneralResult.class)
-    public Response<GeneralResult> inquiryExport(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<GeneralResult> inquiryExport(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter ) {
         return new Response<>(inquiryService.inquiryExport(enter));
     }
 }

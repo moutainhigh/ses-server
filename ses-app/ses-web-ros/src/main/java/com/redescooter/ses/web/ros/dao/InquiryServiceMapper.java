@@ -54,4 +54,14 @@ public interface InquiryServiceMapper {
      * @return
      */
    // List<String> usingEmailList();
+
+
+    /**
+     * @Author Aleks
+     * @Description  查询出要导出的询价单
+     * @Date  2020/7/6 19:31
+     * @Param []
+     * @return
+     **/
+    List<InquiryResult> exportInquiry();
 }
