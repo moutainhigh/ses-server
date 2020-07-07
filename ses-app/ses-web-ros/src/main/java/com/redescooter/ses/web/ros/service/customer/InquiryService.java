@@ -89,5 +89,5 @@ public interface InquiryService {
      * @param enter
      * @return
      */
-    GeneralResult inquiryExport(GeneralEnter enter);
+    GeneralResult inquiryExport(InquiryListEnter enter);
 }

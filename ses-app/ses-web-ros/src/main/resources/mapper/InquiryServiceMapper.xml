@@ -36,6 +36,9 @@
             or inquiry.last_name like concat("%",#{keyword},"%")
             )
         </if>
+        <if test="source != null and source != ''">
+            and inquiry.source = #{source}
+        </if>
     </sql>
 
     <sql id="InquiryResult">
@@ -56,10 +59,11 @@
            inquiry.scooter_quantity                           as scooterQty,
            inquiry.remarks                                    as remark,
            if(inquiry.status = 3, inquiry.updated_time, null) as acceptanceTime,
-           inquiry.company_name                                as companyName,
+           inquiry.company_name                               as companyName,
            inquiry.country_code                               as countryCode,
            inquiry.source                                     as source,
-            inquiry.address                                    as address
+           inquiry.address                                    as address,
+           inquiry.def1                                       as def1
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
@@ -104,10 +108,10 @@
     </select>
 
     <select id="exportInquiry" resultType="com.redescooter.ses.web.ros.vo.inquiry.InquiryResult">
-     select
+    select
         <include refid="InquiryResult"/>
         from ope_customer_inquiry inquiry
-        where source = 01 and dr = 0
+        <include refid="where_inquiryList"/>
         order by inquiry.created_time desc
     </select>
 </mapper>

@@ -63,5 +63,5 @@ public interface InquiryServiceMapper {
      * @Param []
      * @return
      **/
-    List<InquiryResult> exportInquiry();
+    List<InquiryResult> exportInquiry(InquiryListEnter enter);
 }

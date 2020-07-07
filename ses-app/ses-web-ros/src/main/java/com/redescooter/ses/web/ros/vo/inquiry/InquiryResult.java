@@ -99,4 +99,7 @@ public class InquiryResult extends GeneralResult {
 
     @ApiModelProperty(value = "剩余时间")
     private Long ttl;
+
+    @ApiModelProperty(value = "区域")
+    private String def1;
 }
