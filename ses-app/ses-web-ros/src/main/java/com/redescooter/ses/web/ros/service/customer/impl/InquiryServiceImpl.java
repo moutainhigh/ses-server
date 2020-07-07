@@ -178,7 +178,7 @@ public class InquiryServiceImpl implements InquiryService {
         if (cityResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
         }*/
-
+        opeCustomerInquiry.setSource("1");
         opeCustomerInquiryService.saveOrUpdate(opeCustomerInquiry);
         return new GeneralResult(enter.getRequestId());
     }
@@ -488,7 +488,7 @@ public class InquiryServiceImpl implements InquiryService {
        map.put("SURNAME NAME",Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName())?"--":opeCustomerInquiry.getCustomerLastName());
        map.put("EMAIL",Strings.isNullOrEmpty(opeCustomerInquiry.getEmail())?"--":opeCustomerInquiry.getEmail());
        map.put("TELEPHONE",Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone())?"--":"+33-"+opeCustomerInquiry.getTelephone());
-       map.put("CODE POSTAL",Strings.isNullOrEmpty(opeCustomerInquiry.getDef1())?"--":opeCustomerInquiry.getDef1());
+       map.put("CODE POSTAL",Strings.isNullOrEmpty(opeCustomerInquiry.getDef2())?"--":opeCustomerInquiry.getDef2());
        map.put("VOTER MESSAGE",Strings.isNullOrEmpty(opeCustomerInquiry.getRemark())?"--":opeCustomerInquiry.getRemark());
        return map;
    }
