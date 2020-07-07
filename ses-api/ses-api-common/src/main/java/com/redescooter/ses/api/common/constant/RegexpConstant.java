@@ -32,10 +32,10 @@ public interface RegexpConstant {
      String space="^\\s*|\\s*$";
 
      //名称校验 英文姓名由字母和空格组成
-     //不校验首字母大写
+     //不校验首字母大写 和法语 -
      //比如：Jack、Jack Chan、Donald Trump
     // 校验首字母 大写 /^[A-Z][a-z]*(\s[A-Z][a-z]*)*$/
-     String name="^[A-Za-z]+$";
+     String name="^[A-Za-z àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ -]+$";
 
      //限制两位数字 ^\d{n}$ 两位
      String twoNumber ="^\\d{2}$";
