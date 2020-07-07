@@ -108,7 +108,7 @@
     </select>
 
     <select id="exportInquiry" resultType="com.redescooter.ses.web.ros.vo.inquiry.InquiryResult">
-    select
+        select
         <include refid="InquiryResult"/>
         from ope_customer_inquiry inquiry
         <include refid="where_inquiryList"/>

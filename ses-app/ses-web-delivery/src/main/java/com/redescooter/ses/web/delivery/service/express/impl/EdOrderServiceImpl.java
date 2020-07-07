@@ -201,14 +201,10 @@ public class EdOrderServiceImpl implements EdOrderService {
     public PageResult<QueryExpressOrderByPageResult> list(QueryExpressOrderByPageEnter enter) {
 
         int totalRows = expressOrderServiceMapper.listCount(enter);
-
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-
-        List<QueryExpressOrderByPageResult> list = expressOrderServiceMapper.list(enter);
-
-        return PageResult.create(enter, totalRows, list);
+        return PageResult.create(enter, totalRows, expressOrderServiceMapper.list(enter));
     }
 
     /**
