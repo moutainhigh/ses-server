@@ -63,7 +63,7 @@
            inquiry.country_code                               as countryCode,
            inquiry.source                                     as source,
            inquiry.address                                    as address,
-           inquiry.def1                                       as def1
+           inquiry.def2                                       as def2
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
