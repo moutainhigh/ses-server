@@ -166,7 +166,7 @@ public class MaterialServiceImpl implements MaterialService {
     public GeneralResult returnedCompleted(ReturnedCompletedEnter enter) {
         //验证主订单
         OpePurchas opePurchas = opePurchasService.getById(enter.getPurchasId());
-        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue())) {
+        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue()) || !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.QC_AGAIN.getValue())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
         if (opePurchas.getLaveWaitQcTotal() != 0) {
