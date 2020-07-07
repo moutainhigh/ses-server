@@ -18,6 +18,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,6 +52,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
      * @param email
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult deleteCustomer(StorageEamilEnter email) {
         OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, email.getEmail()).eq(OpeCustomer::getDr, 0));
