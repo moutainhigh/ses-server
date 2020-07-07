@@ -81,9 +81,6 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Autowired
     private PlaTenantMapper plaTenantMapper;
 
-    @Value("${Request.privateKey}")
-    private String privatekey;
-
     @Reference
     private MailMultiTaskService mailMultiTaskService;
 
