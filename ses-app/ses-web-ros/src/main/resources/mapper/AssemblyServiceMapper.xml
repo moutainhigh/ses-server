@@ -368,7 +368,7 @@
         where item.dr = 0
         <if test="ids != null and ids.size() != 0">
             and bqc.id in
-            <foreach collection="ids" open="(" close=")" item="item">
+            <foreach collection="ids" separator="," open="(" close=")" item="item">
                 #{item}
             </foreach>
         </if>
