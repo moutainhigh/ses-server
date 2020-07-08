@@ -35,7 +35,7 @@ public interface RegexpConstant {
      //不校验首字母大写
      //比如：Jack、Jack Chan、Donald Trump
     // 校验首字母 大写 /^[A-Z][a-z]*(\s[A-Z][a-z]*)*$/
-     String name="^[A-Za-z]+$";
+     String name="^[A-Za-z àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ -]+$";
 
      //限制两位数字 ^\d{n}$ 两位
      String twoNumber ="^\\d{2}$";
