@@ -193,3 +193,6 @@ stripe:
   publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
   secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
   receipt_email: etienne@redescooter.fr
+
+excel:
+  folder: /root/java_service/local/projectExcel

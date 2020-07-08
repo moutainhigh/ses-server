@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
@@ -31,7 +32,7 @@ public class ExcelUtil {
     private FileAppService fileAppService;
 
     public  static String exportExcel(String sheetName, List<Map<String, Object>> dataList,
-                                    String[] headers,String      exportExcelName) {
+                                    String[] headers,String exportExcelName,String path) {
 
         // 声明一个工作薄
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -105,7 +106,7 @@ public class ExcelUtil {
         OutputStream out = null;
         String tmpPath = "";
         try {
-            tmpPath = "D:\\" + exportExcelName + ".xlsx";
+            tmpPath =new StringBuilder(path).append("/").append(exportExcelName).append(".xlsx").toString();
             out = new FileOutputStream(tmpPath);
             workbook.write(out);
 

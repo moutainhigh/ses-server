@@ -67,4 +67,5 @@ stripe:
 oss:                                                                                                                    #阿里oss上传
   #oss 使用HTTPS、HTTP请求方式
   protocol: HTTPS
-
+excel:
+  folder: /root/java_service/prod/projectExcel

@@ -200,3 +200,6 @@ oss:                                                                            
   #oss 使用HTTPS、HTTP请求方式
   protocol: HTTP
 
+excel:
+  folder: /root/java_service/dev/projectExcel
+
