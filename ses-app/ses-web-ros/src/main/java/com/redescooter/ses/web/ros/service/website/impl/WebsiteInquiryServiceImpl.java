@@ -692,12 +692,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OkHttpClient client = new OkHttpClient();
 
         MediaType mediaType = MediaType.parse(sendinBlueConfig.getMediaType());
-
-        Map<String, String> map = new HashMap<>();
-        map.put("updateEnabled", sendinBlueConfig.getUpdateEnabled());
-        map.put("email", email);
-
-        RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(map));
+        RequestBody body = RequestBody.create(mediaType,"{\"listIds\":["+ sendinBlueConfig.getListIds() +"],\"updateEnabled\":false,\"email\":\""+ email +"\"}");
         Request request = new Request.Builder()
                 .url(sendinBlueConfig.getUrl())
                 .post(body)
@@ -710,7 +705,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             System.out.println("response" + response.message());
         } catch (IOException e) {
             e.printStackTrace();
-        }
+            }
 
 
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
