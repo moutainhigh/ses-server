@@ -43,7 +43,7 @@
         left join cor_express_delivery c on b.express_delivery_id = c.id and c.dr = 0
         left join cor_driver d on c.driver_id = d.id and d.dr = 0
         left join cor_express_order_trace trace
-        on a.id = trace.express_order_id and trace.status =4 and trace.dr = 0
+        on a.id = trace.express_order_id and trace.status =a.status and trace.dr = 0
         left join cor_tenant_scooter scooter on trace.scooter_id = scooter.scooter_id and scooter.dr = 0
         left join cor_user_profile e on e.user_id = d.user_id and e.dr = 0
         <include refid="where_ExpressOrder_List"/>
@@ -74,7 +74,7 @@
         left join cor_express_delivery c on b.express_delivery_id = c.id and c.dr = 0
         left join cor_driver d on c.driver_id = d.id and d.dr = 0
         left join cor_express_order_trace trace
-        on a.id = trace.express_order_id and trace.status =4 and trace.dr = 0
+        on a.id = trace.express_order_id and trace.status = a.status and trace.dr = 0
         left join cor_tenant_scooter scooter on trace.scooter_id = scooter.scooter_id and scooter.dr = 0
         left join cor_user_profile e on e.user_id = d.user_id and e.dr = 0
         <include refid="where_ExpressOrder_List"/>

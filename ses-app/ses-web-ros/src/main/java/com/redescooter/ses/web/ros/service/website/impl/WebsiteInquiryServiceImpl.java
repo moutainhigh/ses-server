@@ -255,6 +255,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             opeCustomerInquiryBService.saveBatch(opeCustomerInquiryBList);
         }
         //主订单保存
+        opeCustomerInquiry.setSource("2");
         opeCustomerInquiryService.save(opeCustomerInquiry);
         return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
