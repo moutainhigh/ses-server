@@ -18,6 +18,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpePartsProductMapper;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplate;
 import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplateB;
@@ -116,6 +117,8 @@ public class BomRosServiceImpl implements BomRosService {
     @Autowired
     private OpePartsDraftService opePartsDraftService;
 
+    @Autowired
+    private OpePartsProductMapper opePartsProductMapper;
 
     /**
      * @param enter
@@ -192,13 +195,13 @@ public class BomRosServiceImpl implements BomRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getCode(),
                         ExceptionCodeEnums.PARTS_CANNOT_BE_ASSEMBLED_WITHOUT_SUPPLIERS_WITHOUT_PRICES.getMessage());
             }
-            //保存
-            Long productId = idAppService.getId(SequenceName.OPE_PARTS_PRODUCT);
             // 产品编号过滤
             List<String> productNList = bomRosServiceMapper.checkProductNums(enter);
             if (productNList.contains(enter.getProductN())) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
             }
+            //保存
+            Long productId = idAppService.getId(SequenceName.OPE_PARTS_PRODUCT);
             //子表都保存
             if (CollectionUtils.isNotEmpty(partList)) {
                 for (ProdoctPartListEnter item : partList) {
