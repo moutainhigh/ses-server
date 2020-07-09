@@ -244,6 +244,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             //构建员工信息
             saveEmployeeSingle(enter, opeSysUser.getId());
             //发送邮件
+          createEmployeeEmail(enter);
         } else {
             // 修改
             // 查询用户信息
@@ -484,7 +485,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     private void createEmployeeEmail(SaveEmployeeEnter saveEmployeeEnter){
-
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
         enter.setName(saveEmployeeEnter.getEmployeeFirstName()+" "+saveEmployeeEnter.getEmployeeLastName());
         enter.setEvent(MailTemplateEventEnums.ROS_CREATE_EMPLOYEE.getName());
@@ -493,6 +493,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         enter.setEmail(saveEmployeeEnter.getEmail());
         enter.setRequestId(saveEmployeeEnter.getRequestId());
         enter.setUserId(saveEmployeeEnter.getUserId());
-        mailMultiTaskService.addMultiMailTask(enter);
+        mailMultiTaskService.addCreateEmployeeMailTask(enter);
     }
 }
