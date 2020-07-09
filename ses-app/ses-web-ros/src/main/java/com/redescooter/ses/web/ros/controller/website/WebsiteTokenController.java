@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
@@ -30,6 +31,9 @@ public class WebsiteTokenController {
 
     @Autowired
     private WebSiteTokenService webSiteService;
+
+    @Autowired
+    private MondayService mondayService;
 
     @IgnoreLoginCheck
     @PostMapping(value = "/login")
@@ -83,4 +87,12 @@ public class WebsiteTokenController {
     public Response<GeneralResult> editCustomer(@ModelAttribute @ApiParam("请求参数") WebEditCustomerEnter enter) {
         return new Response<>(webSiteService.editCustomer(enter));
     }
+
+    @IgnoreLoginCheck
+    @PostMapping(value = "/getMondayData")
+    @ApiOperation(value = "获取Monday数据", response = GeneralResult.class)
+    public Response<GeneralResult> getMondayData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(mondayService.getMondayData(enter));
+    }
+
 }

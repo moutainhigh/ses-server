@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "sendinblue",ignoreUnknownFields = true)
 public class SendinBlueConfig {
     private String listIds;
+
     private String accept;
 
     private String contentType;
