@@ -46,7 +46,6 @@ public class SignUpEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "邮箱")
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY,message = "邮箱为空")
-    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮箱非法不合法")
     private String email;
 
     @ApiModelProperty(value = "密码")
