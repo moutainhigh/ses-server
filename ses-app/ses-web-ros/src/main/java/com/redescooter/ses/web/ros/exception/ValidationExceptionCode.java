@@ -198,9 +198,9 @@ public interface ValidationExceptionCode {
     int PAYMENT_TYPE_ILLEGAL_CHARACTER = 10118;
     //备注非法
     int REMARK_ILLEGAL = 10119;
-    //维度为空
+    //纬度非法
     int LAT_IS_ILLEGAL = 10120;
-    //经度为空
+    //经度非法
     int LNG_ILLEGAL = 10121;
     //国家非法
     int COUNTRY_CITY_ILLEGAL=10122;
