@@ -5,13 +5,17 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.enums.employee.AddressBureauEnums;
 import com.redescooter.ses.api.common.enums.employee.EmployeeDeptTypeEnums;
 import com.redescooter.ses.api.common.enums.employee.EmployeeStatusEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -91,6 +95,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private SysDeptService sysDeptService;
+
+    @Autowired
+    private MailMultiTaskService mailMultiTaskService;
 
     @Reference
     private IdAppService idAppService;
@@ -236,7 +243,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             opeSysUserRole.setRoleId(enter.getPositionId());
             //构建员工信息
             saveEmployeeSingle(enter, opeSysUser.getId());
-
+            //发送邮件
         } else {
             // 修改
             // 查询用户信息
@@ -473,6 +480,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (enter.getAddress().length() < 2 || enter.getAddress().length() > 200) {
             throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
         }
+    }
 
+
+    private void createEmployeeEmail(SaveEmployeeEnter saveEmployeeEnter){
+
+        BaseMailTaskEnter enter = new BaseMailTaskEnter();
+        enter.setName(saveEmployeeEnter.getEmployeeFirstName()+" "+saveEmployeeEnter.getEmployeeLastName());
+        enter.setEvent(MailTemplateEventEnums.ROS_CREATE_EMPLOYEE.getName());
+        enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        enter.setAppId(AppIDEnums.SES_ROS.getValue());
+        enter.setEmail(saveEmployeeEnter.getEmail());
+        enter.setRequestId(saveEmployeeEnter.getRequestId());
+        enter.setUserId(saveEmployeeEnter.getUserId());
+        mailMultiTaskService.addMultiMailTask(enter);
     }
 }
