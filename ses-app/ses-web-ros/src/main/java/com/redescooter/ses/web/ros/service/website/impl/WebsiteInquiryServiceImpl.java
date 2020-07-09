@@ -691,7 +691,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OkHttpClient client = new OkHttpClient();
 
         MediaType mediaType = MediaType.parse(sendinBlueConfig.getMediaType());
-        RequestBody body = RequestBody.create(mediaType,"{\"listIds\":["+ sendinBlueConfig.getListIds() +"],\"updateEnabled\":false,\"email\":\""+ email +"\"}");
+        RequestBody body = RequestBody.create(mediaType,"{\"listIds\":["+ sendinBlueConfig.getListIds() +"],\"updateEnabled\":"+sendinBlueConfig.getUpdateEnabled()+",\"email\":\""+ email +"\"}");
         Request request = new Request.Builder()
                 .url(sendinBlueConfig.getUrl())
                 .post(body)
