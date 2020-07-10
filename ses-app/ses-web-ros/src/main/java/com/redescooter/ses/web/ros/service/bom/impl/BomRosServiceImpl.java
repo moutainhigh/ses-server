@@ -64,7 +64,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -153,12 +155,7 @@ public class BomRosServiceImpl implements BomRosService {
       //SaveScooterEnter参数值去空格
       SaveScooterEnter enter = SesStringUtils.objStringTrim(saveScooterEnter);
         // json 转换
-        List<ProdoctPartListEnter> partList = null;
-        try {
-            partList = JSONArray.parseArray(enter.getPartList(), ProdoctPartListEnter.class);
-        } catch (Exception e) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
+        List<ProdoctPartListEnter> partList = getProdoctPartListEnters(enter);
         // 数据重复性过滤
         HashSet<Long> partIds = new HashSet<>();
         partList.forEach(item -> {
@@ -203,19 +200,7 @@ public class BomRosServiceImpl implements BomRosService {
             //保存
             Long productId = idAppService.getId(SequenceName.OPE_PARTS_PRODUCT);
             //子表都保存
-            if (CollectionUtils.isNotEmpty(partList)) {
-                for (ProdoctPartListEnter item : partList) {
-
-                    OpePartsProductB opePartsProductB = buildOpePartsProductBSingle(enter.getUserId(), productId, item);
-                    opePartsProductB.setId(idAppService.getId(SequenceName.OPE_PARTS_PRODUCT_B));
-                    opePartsProductB.setPartsId(item.getId());
-                    opePartsProductB.setCreatedBy(enter.getUserId());
-                    opePartsProductB.setCreatedTime(new Date());
-
-                    opePartsProductList.add(opePartsProductB);
-                    partAllQty += item.getQty();
-                }
-            }
+            partAllQty = handlePartB(enter, partList, opePartsProductList, partAllQty, productId);
             opePartsProduct.setId(productId);
             opePartsProduct.setCreatedBy(enter.getUserId());
             opePartsProduct.setCreatedTime(new Date());
@@ -240,16 +225,7 @@ public class BomRosServiceImpl implements BomRosService {
             opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, enter.getId());
             opePartsProductBService.remove(opePartsProductBQueryWrapper);
             // 重新添加数据
-            if (CollectionUtils.isNotEmpty(partList)) {
-                for (ProdoctPartListEnter item : partList) {
-                    OpePartsProductB opePartsProductB = buildOpePartsProductBSingle(enter.getUserId(), enter.getId(), item);
-                    opePartsProductB.setCreatedBy(enter.getUserId());
-                    opePartsProductB.setCreatedTime(new Date());
-                    opePartsProductB.setId(idAppService.getId(SequenceName.OPE_PARTS_PRODUCT_B));
-                    opePartsProductList.add(opePartsProductB);
-                    partAllQty += item.getQty();
-                }
-            }
+            partAllQty = handlePartB(enter, partList, opePartsProductList, partAllQty, enter.getId());
             opePartsProduct.setId(enter.getId());
         }
         opePartsProduct.setSumPartsQty(partAllQty);
@@ -269,6 +245,46 @@ public class BomRosServiceImpl implements BomRosService {
 
         opePartsProductService.saveOrUpdate(opePartsProduct);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    private List<ProdoctPartListEnter> getProdoctPartListEnters(SaveScooterEnter enter) {
+        List<ProdoctPartListEnter> partList = new ArrayList<>();
+        try {
+            partList = JSONArray.parseArray(enter.getPartList(), ProdoctPartListEnter.class);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        if(CollectionUtils.isNotEmpty(partList)){
+            List<Long> ids = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
+            List<OpePartsProductB> productBs = (List<OpePartsProductB>) opePartsProductBService.listByIds(ids);
+            if(CollectionUtils.isNotEmpty(productBs)){
+                for (OpePartsProductB productB : productBs) {
+                    ProdoctPartListEnter  partListEnter = new ProdoctPartListEnter();
+                    partListEnter.setId(productB.getId());
+                    partListEnter.setQty(productB.getPartsQty()==null?0:productB.getPartsQty());
+                    partList.add(partListEnter);
+                }
+            }
+        }
+        return partList;
+    }
+
+
+    private int handlePartB(SaveScooterEnter enter, List<ProdoctPartListEnter> partList, List<OpePartsProductB> opePartsProductList, int partAllQty, Long productId) {
+        if (CollectionUtils.isNotEmpty(partList)) {
+            for (ProdoctPartListEnter item : partList) {
+
+                OpePartsProductB opePartsProductB = buildOpePartsProductBSingle(enter.getUserId(), productId, item);
+                opePartsProductB.setId(idAppService.getId(SequenceName.OPE_PARTS_PRODUCT_B));
+                opePartsProductB.setPartsId(item.getId());
+                opePartsProductB.setCreatedBy(enter.getUserId());
+                opePartsProductB.setCreatedTime(new Date());
+                opePartsProductList.add(opePartsProductB);
+                partAllQty += (item.getQty()==null?0:item.getQty());
+            }
+        }
+        return partAllQty;
     }
 
     /**
