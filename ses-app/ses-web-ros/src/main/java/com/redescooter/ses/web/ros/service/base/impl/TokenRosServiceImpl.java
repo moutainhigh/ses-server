@@ -435,8 +435,8 @@ public class TokenRosServiceImpl implements TokenRosService {
     if (Strings.isNullOrEmpty(baseSendMailEnter.getMail())) {
       throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
     }
-    String decryptMail = null;
-/*    if (StringUtils.isNotEmpty(baseSendMailEnter.getMail())) {
+   /* String decryptMaildecryptMaildecryptMail = null;
+  if (StringUtils.isNotEmpty(baseSendMailEnter.getMail())) {
       try {
         //邮箱解密
         decryptMail = RsaUtils.decrypt(baseSendMailEnter.getMail(), privateKey);
@@ -456,11 +456,11 @@ public class TokenRosServiceImpl implements TokenRosService {
       throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
     }
     BaseMailTaskEnter enter = new BaseMailTaskEnter();
-    enter.setName(baseSendMailEnter.getMail().substring(0, decryptMail.indexOf("@")));
+    enter.setName(baseSendMailEnter.getMail().substring(0, baseSendMailEnter.getMail().indexOf("@")));
     enter.setEvent(MailTemplateEventEnums.ROS_FORGET_PSD_SEND_MAIL.getName());
     enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
     enter.setAppId(AppIDEnums.SES_ROS.getValue());
-    enter.setEmail(decryptMail);
+    enter.setEmail(baseSendMailEnter.getMail());
     enter.setRequestId(baseSendMailEnter.getRequestId());
     enter.setUserId(opeSysUser.getId());
     mailMultiTaskService.addMultiMailTask(enter);
