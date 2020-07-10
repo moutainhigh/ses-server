@@ -462,6 +462,7 @@ public class InquiryServiceImpl implements InquiryService {
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName,excelFolder);
+                log.info("路劲是这个！！！！！！！！！！！！！！！"+excelFolder);
                 File file = new File(path);
                 FileInputStream inputStream = new FileInputStream(file);
                 MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),

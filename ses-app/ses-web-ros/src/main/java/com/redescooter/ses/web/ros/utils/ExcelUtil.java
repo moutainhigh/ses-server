@@ -1,15 +1,8 @@
 package com.redescooter.ses.web.ros.utils;
 
-import com.redescooter.ses.app.common.service.FileAppService;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
@@ -17,7 +10,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNameExcelUtil
@@ -27,9 +22,6 @@ import java.util.*;
  * @Version V1.0
  **/
 public class ExcelUtil {
-
-    @Autowired
-    private FileAppService fileAppService;
 
     public  static String exportExcel(String sheetName, List<Map<String, Object>> dataList,
                                     String[] headers,String exportExcelName,String path) {
@@ -44,7 +36,8 @@ public class ExcelUtil {
         // 生成表格中非标题栏的样式
         XSSFCellStyle style = workbook.createCellStyle();
         // 设置这些样式
-//        style.setFillForegroundColor(HSSFColor.WHITE.index);//背景色
+        //背景色
+        style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setBorderBottom(BorderStyle.THIN);
         style.setBorderLeft(BorderStyle.THIN);
@@ -55,14 +48,15 @@ public class ExcelUtil {
         XSSFFont font = workbook.createFont();
 //        font.setColor(HSSFColor.BLACK.index);
         font.setFontHeightInPoints((short) 12);
-        font.setBold(true);
+        // 设置表格里面的字体是否加粗
+        font.setBold(false);
         // 把字体应用到当前的样式
         style.setFont(font);
 
 
         // 设置表格标题栏的样式
         XSSFCellStyle titleStyle = workbook.createCellStyle();
-//        titleStyle.setFillForegroundColor(HSSFColor.BLUE_GREY.index);
+        titleStyle.setFillForegroundColor(IndexedColors.SEA_GREEN.getIndex());
         titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         titleStyle.setBorderBottom(BorderStyle.THIN);
         titleStyle.setBorderLeft(BorderStyle.THIN);
