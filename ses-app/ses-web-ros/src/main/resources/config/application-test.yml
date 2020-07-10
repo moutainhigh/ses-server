@@ -202,3 +202,5 @@ oss:                                                                            
 
 excel:
   folder: /root/java_service/test/projectExcel
+sendinblue:
+  listIds: 119

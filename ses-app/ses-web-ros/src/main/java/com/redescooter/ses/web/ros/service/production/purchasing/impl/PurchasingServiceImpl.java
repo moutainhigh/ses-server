@@ -1442,7 +1442,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .userId(enter.getUserId())
                 .tenantId(0L)
                 .consigneeId(enter.getConsigneeId())
-                .contractNo("REDE" + new Random().nextInt(10000))
+                .contractNo("RED" + new Random().nextInt(10000))
                 .status(PurchasingStatusEnums.PENDING.getValue())
                 .paymentType(enter.getPaymentType())
                 .factoryId(enter.getFactoryId())

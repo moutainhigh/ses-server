@@ -203,3 +203,6 @@ oss:                                                                            
 excel:
   folder: /root/java_service/dev/projectExcel
 
+sendinblue:
+  listIds: 119
+

@@ -1619,7 +1619,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .userId(enter.getUserId())
                 .tenantId(0L)
                 .status(AssemblyStatusEnums.PENDING.getValue())
-                .assemblyNumber("REDE" + RandomUtil.randomNumbers(7))
+                .assemblyNumber("RED" + RandomUtil.randomNumbers(7))
                 .totalQty(productTotal)
                 .waitPreparationTotal(productTotal)
                 .waitAssemblyTotal(productTotal)

@@ -413,9 +413,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
         opeCustomerInquiry.setScooterQuantity(1);
         opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
-        opeCustomerInquiry.setAddress(null);
         opeCustomerInquiry.setCountryCode(null);
-        opeCustomerInquiry.setTelephone(null);
+        opeCustomerInquiry.setTelephone(opeCustomer.getTelephone());
         opeCustomerInquiry.setBankCardName(enter.getBankCardName());
         opeCustomerInquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
         opeCustomerInquiry.setCardNum(StringUtils.isEmpty(enter.getCardNum()) ? null : enter.getCardNum());

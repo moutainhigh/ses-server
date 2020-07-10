@@ -654,7 +654,7 @@ public class AllocateServiceImpl implements AllocateService {
                 .dr(0)
                 .tenantId(0L)
                 .userId(enter.getUserId())
-                .allocateNum("REDE" + RandomUtil.randomDouble(999999, 10000000))
+                .allocateNum("RED" + RandomUtil.randomDouble(999999, 10000000))
                 .status(AllocateOrderStatusEnums.PENDING.getValue())
                 .count(totalCount)
                 .preparationWaitTotal(totalCount)
