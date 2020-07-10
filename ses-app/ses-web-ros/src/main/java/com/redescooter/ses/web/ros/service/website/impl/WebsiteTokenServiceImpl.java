@@ -286,7 +286,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
         enter.setName(baseSendMailEnter.getMail().substring(0, decryptMail.indexOf("@")));
-        enter.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getName());
+        enter.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getEvent());
         enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
         enter.setAppId(AppIDEnums.SES_ROS.getValue());
         enter.setEmail(decryptMail);
