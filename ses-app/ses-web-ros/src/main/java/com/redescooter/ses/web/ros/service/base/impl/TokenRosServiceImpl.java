@@ -236,7 +236,7 @@ public class TokenRosServiceImpl implements TokenRosService {
                 newPassword = RsaUtils.decrypt(enter.getNewPassword(), privateKey);
                 confirmPassword = RsaUtils.decrypt(enter.getOldPassword(), privateKey);
             } catch (Exception e) {
-                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
             enter.setNewPassword(newPassword);
             enter.setOldPassword(confirmPassword);
@@ -245,7 +245,7 @@ public class TokenRosServiceImpl implements TokenRosService {
 
 
       if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
-        throw new FoundationException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
+        throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
           ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
       }
 
@@ -278,15 +278,15 @@ public class TokenRosServiceImpl implements TokenRosService {
          */
         Map<String, String> hash = jedisCluster.hgetAll(enter.getRequestId());
         if (hash == null || hash.isEmpty()) {
-          throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+          throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
             ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
         }
         if (!StringUtils.equals(hash.get("systemId"), enter.getSystemId())) {
-          throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+          throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
             ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
         }
         if (!StringUtils.equals(hash.get("appId"), enter.getAppId())) {
-          throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+          throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
             ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
         }
 
@@ -304,7 +304,7 @@ public class TokenRosServiceImpl implements TokenRosService {
       emailUser.eq(OpeSysUser.COL_DR, 0);
       OpeSysUser opeSysUser= opeSysUserService.getOne(emailUser);
       if (opeSysUser == null) {
-        throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+        throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
           ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
       }
 
