@@ -139,10 +139,9 @@ public class ControllerAspect {
      */
     private void checkPermission(ProceedingJoinPoint point, GeneralEnter enter) {
         HttpServletRequest request = SpringContextUtils.getHttpServletRequest();
-        String requestMethod = request.getMethod();
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         requestPath = filterUrl(requestPath);
-        log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + requestMethod);
+        log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + request.getMethod());
 
 
     }

@@ -69,7 +69,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
         //删除用户
         opeSysUserService.removeById(opeSysUser.getId());
 
-        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getCustomerId, opeCustomer.getId()));
+        List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, opeCustomer.getEmail()));
         if (CollectionUtils.isNotEmpty(customerInquiryList)){
             List<OpeCustomerInquiryB> customerInquiryBList = opeCustomerInquiryBService.list(new LambdaQueryWrapper<OpeCustomerInquiryB>().in(OpeCustomerInquiryB::getInquiryId,
                     customerInquiryList.stream().map(OpeCustomerInquiry::getId).collect(Collectors.toList())));
