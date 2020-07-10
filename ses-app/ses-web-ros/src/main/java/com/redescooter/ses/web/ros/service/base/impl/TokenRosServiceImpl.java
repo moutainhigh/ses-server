@@ -463,7 +463,7 @@ public class TokenRosServiceImpl implements TokenRosService {
     enter.setEmail(baseSendMailEnter.getMail());
     enter.setRequestId(baseSendMailEnter.getRequestId());
     enter.setUserId(opeSysUser.getId());
-    mailMultiTaskService.addMultiMailTask(enter);
+    mailMultiTaskService.sendForgetPasswordEmaillTask(enter);
     return new GeneralResult(baseSendMailEnter.getRequestId());
   }
 

@@ -58,6 +58,10 @@ public interface Constant {
      */
 
     String ROS_LOGIN_URL="http://192.168.2.200/ros/#/";
+    /*
+    ros重置密码
+     */
+    String ROS_FORGET_PASSWORD="http://192.168.2.227:8080/#/account-plugin";
     /**
      * Excel批量导入车辆模板地址
      */

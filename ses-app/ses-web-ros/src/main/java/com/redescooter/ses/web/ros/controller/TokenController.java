@@ -53,8 +53,8 @@ public class TokenController {
     }
     @IgnoreLoginCheck
     @ApiOperation(value = "修改密码", response = GeneralResult.class)
-    @PostMapping(value = "/chanage/{code}")
-    public Response<GeneralResult> chanagePassword(@PathVariable("code") String code, @ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
+    @PostMapping(value = "/chanage")
+    public Response<GeneralResult> chanagePassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
         return new Response<>(tokenRosService.modifyPassword(enter));
     }
 
@@ -76,6 +76,7 @@ public class TokenController {
     public Response<GeneralResult> sendCode(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
         return new Response<>(tokenRosService.sendCode(enter));
     }
+    @IgnoreLoginCheck
     @PostMapping(value = "/sendForgetPasswordEmail")
     @ApiOperation(value = "忘记密码", response = BooleanResult.class)
     public Response<GeneralResult> sendForgetPasswordEmail(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
