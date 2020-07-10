@@ -6,6 +6,7 @@ import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
 import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
+import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 
 /**
  * 功能描述: TOKE服务
@@ -79,5 +80,13 @@ public interface TokenRosService {
      * @return
      */
     GeneralResult deleteRosUser(IdEnter enter);
+
+    /**
+     * 发送忘记密码邮箱
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult sendForgetPasswordEmail(BaseSendMailEnter enter);
 
 }
