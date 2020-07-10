@@ -451,7 +451,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         Long userId = enter.getUserId();
         String name = map.get("name");
 
-        PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
+      PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
         Map<String, String> mapParameter = getParameterMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email);
         map.putAll(mapParameter == null ? new HashMap<>() : mapParameter);
         PlaMailTask mailTask = new PlaMailTask();
@@ -462,7 +462,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         mailTask.setAppId(appId);
         mailTask.setRequestId(requestId);
         mailTask.setReceiveMail(map.get("email"));
-        mailTask.setToUserId(userId);
+        mailTask.setToUserId(enter.getToUserId());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(getContent(map, mailtemplate));
@@ -513,7 +513,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     mailTask.setAppId(appId);
     mailTask.setRequestId(requestId);
     mailTask.setReceiveMail(map.get("email"));
-    mailTask.setToUserId(userId);
+    mailTask.setToUserId(enter.getToUserId());
     mailTask.setSubject(mailtemplate.getSubject());
     mailTask.setParameter(JSON.toJSONString(map));
     mailTask.setContent(getContent(map, mailtemplate));

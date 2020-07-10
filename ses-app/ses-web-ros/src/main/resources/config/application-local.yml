@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:62181
+    address: zookeeper://192.168.2.200:42181
 #  metadata-report:
 #    address:  zookeeper://localhost:62181
 
@@ -26,9 +26,9 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://192.168.2.200/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.2.93/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: 1qaz2wsx
+    password: root
 
     druid:
       initial-size: 8
@@ -193,3 +193,6 @@ stripe:
   publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
   secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
   receipt_email: etienne@redescooter.fr
+
+excel:
+  folder: /root/java_service/local/projectExcel

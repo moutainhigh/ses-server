@@ -94,6 +94,9 @@ public class InquiryServiceImpl implements InquiryService {
     @Value("${Request.privateKey}")
     private String privateKey;
 
+    @Value("${excel.folder}")
+    private String excelFolder;
+
     @Autowired
     private OssConfig ossConfig;
 
@@ -458,7 +461,7 @@ public class InquiryServiceImpl implements InquiryService {
             String[] headers = {"NAME","SURNAME","EMAIL","TELEPHONE","CODE POSTAL","VOTER MESSAGE"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
-                String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName);
+                String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName,excelFolder);
                 File file = new File(path);
                 FileInputStream inputStream = new FileInputStream(file);
                 MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),
@@ -474,6 +477,9 @@ public class InquiryServiceImpl implements InquiryService {
                         multipartFile.getInputStream());
                 String bucket = ossConfig.getDefaultBucketName();
                 excelPath = "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + fileName;
+                if(file.exists()){
+                    file.delete();
+                }
             }catch (Exception e){
 
             }

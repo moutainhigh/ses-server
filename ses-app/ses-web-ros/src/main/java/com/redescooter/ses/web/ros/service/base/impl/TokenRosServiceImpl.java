@@ -289,25 +289,31 @@ public class TokenRosServiceImpl implements TokenRosService {
           throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
             ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
         }
+/*
         getUser.setUserId(Long.parseLong(StringUtils.isBlank(hash.get("userId")) ? "0" : hash.get("userId")) == 0 ? null : Long.parseLong(hash.get("userId")));
+*/
         getUser.setEmail(StringUtils.isBlank(hash.get("email")) ? null : hash.get("email"));
         getUser.setAppId(StringUtils.isBlank(hash.get("appId")) ? null : hash.get("appId"));
         getUser.setSystemId(StringUtils.isBlank(hash.get("systemId")) ? null : hash.get("systemId"));
       }
       QueryWrapper<OpeSysUser> emailUser = new QueryWrapper<>();
       emailUser.eq(OpeSysUser.COL_LOGIN_NAME, getUser.getEmail());
+/*
       emailUser.eq(OpeSysUser.COL_ID, getUser.getUserId());
+*/
       emailUser.eq(OpeSysUser.COL_APP_ID,getUser.getAppId());
       emailUser.eq(OpeSysUser.COL_SYSTEM_ID,getUser.getSystemId());
-      emailUser.eq(OpeSysUser.COL_SYSTEM_ID,getUser.getSystemId());
+/*
       emailUser.eq(OpeSysUser.COL_STATUS, UserStatusEnum.NORMAL.getValue());
+*/
       emailUser.last("limit 1");
       emailUser.eq(OpeSysUser.COL_DR, 0);
-      if (emailUser == null) {
+      OpeSysUser opeSysUser= opeSysUserService.getOne(emailUser);
+      if (opeSysUser == null) {
         throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
           ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
       }
-      OpeSysUser opeSysUser= opeSysUserService.getOne(emailUser);
+
 
       opeSysUser.setPassword(DigestUtils.md5Hex(enter.getOldPassword() + opeSysUser.getSalt()));
       opeSysUser.setUpdatedBy(opeSysUser.getId());
