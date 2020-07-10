@@ -38,7 +38,7 @@
             </if>
             <if test="keyword != null and keyword != ''">
                 and (osu.supplier_name like concat("%",#{keyword},"%")
-                or osu.contact_email like concat("%",#{keyword},"%"))
+                or osu.supplier_tag like concat("%",#{keyword},"%"))
             </if>
         </where>
     </sql>

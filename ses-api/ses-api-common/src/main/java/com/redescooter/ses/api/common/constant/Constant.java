@@ -53,6 +53,11 @@ public interface Constant {
      */
     String DEFAULT_PASSWORD = "RedEScooter2019";
 
+    /*
+    ros登录地址
+     */
+
+    String ROS_LOGIN_URL="http://192.168.2.200/ros/#/";
     /**
      * Excel批量导入车辆模板地址
      */

@@ -7,6 +7,7 @@ import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
 import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
+import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -50,7 +51,7 @@ public class TokenController {
     public Response<GeneralResult> logout(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(tokenRosService.logout(enter));
     }
-
+    @IgnoreLoginCheck
     @ApiOperation(value = "修改密码", response = GeneralResult.class)
     @PostMapping(value = "/chanage/{code}")
     public Response<GeneralResult> chanagePassword(@PathVariable("code") String code, @ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
@@ -75,4 +76,10 @@ public class TokenController {
     public Response<GeneralResult> sendCode(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
         return new Response<>(tokenRosService.sendCode(enter));
     }
+    @PostMapping(value = "/sendForgetPasswordEmail")
+    @ApiOperation(value = "忘记密码", response = BooleanResult.class)
+    public Response<GeneralResult> sendForgetPasswordEmail(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
+      return new Response<>(tokenRosService.sendForgetPasswordEmail(enter));
+    }
+
 }
