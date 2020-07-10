@@ -229,7 +229,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
       }
 
-    /*    if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getOldPassword())) {
+  if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getOldPassword())) {
             String newPassword = "";
             String confirmPassword = "";
             try {
@@ -242,7 +242,7 @@ public class TokenRosServiceImpl implements TokenRosService {
             enter.setOldPassword(confirmPassword);
         }
 
-*/
+
 
       if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
         throw new FoundationException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
@@ -289,23 +289,17 @@ public class TokenRosServiceImpl implements TokenRosService {
           throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
             ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
         }
-/*
-        getUser.setUserId(Long.parseLong(StringUtils.isBlank(hash.get("userId")) ? "0" : hash.get("userId")) == 0 ? null : Long.parseLong(hash.get("userId")));
-*/
+
         getUser.setEmail(StringUtils.isBlank(hash.get("email")) ? null : hash.get("email"));
         getUser.setAppId(StringUtils.isBlank(hash.get("appId")) ? null : hash.get("appId"));
         getUser.setSystemId(StringUtils.isBlank(hash.get("systemId")) ? null : hash.get("systemId"));
       }
       QueryWrapper<OpeSysUser> emailUser = new QueryWrapper<>();
       emailUser.eq(OpeSysUser.COL_LOGIN_NAME, getUser.getEmail());
-/*
-      emailUser.eq(OpeSysUser.COL_ID, getUser.getUserId());
-*/
+
       emailUser.eq(OpeSysUser.COL_APP_ID,getUser.getAppId());
       emailUser.eq(OpeSysUser.COL_SYSTEM_ID,getUser.getSystemId());
-/*
-      emailUser.eq(OpeSysUser.COL_STATUS, UserStatusEnum.NORMAL.getValue());
-*/
+
       emailUser.last("limit 1");
       emailUser.eq(OpeSysUser.COL_DR, 0);
       OpeSysUser opeSysUser= opeSysUserService.getOne(emailUser);
@@ -435,7 +429,7 @@ public class TokenRosServiceImpl implements TokenRosService {
     if (Strings.isNullOrEmpty(baseSendMailEnter.getMail())) {
       throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
     }
-   /* String decryptMaildecryptMaildecryptMail = null;
+    String decryptMail=null;
   if (StringUtils.isNotEmpty(baseSendMailEnter.getMail())) {
       try {
         //邮箱解密
@@ -447,7 +441,7 @@ public class TokenRosServiceImpl implements TokenRosService {
 
       //邮箱长度校验
       checkString(baseSendMailEnter.getMail(),2,50);
-    }*/
+    }
     //先判断邮箱是否存在、
     QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
     OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue()).eq(OpeSysUser::getLoginName,
