@@ -229,7 +229,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
       }
 
-        if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getOldPassword())) {
+    /*    if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getOldPassword())) {
             String newPassword = "";
             String confirmPassword = "";
             try {
@@ -242,7 +242,7 @@ public class TokenRosServiceImpl implements TokenRosService {
             enter.setOldPassword(confirmPassword);
         }
 
-
+*/
 
       if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
         throw new FoundationException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
@@ -436,7 +436,7 @@ public class TokenRosServiceImpl implements TokenRosService {
       throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
     }
     String decryptMail = null;
-    if (StringUtils.isNotEmpty(baseSendMailEnter.getMail())) {
+/*    if (StringUtils.isNotEmpty(baseSendMailEnter.getMail())) {
       try {
         //邮箱解密
         decryptMail = RsaUtils.decrypt(baseSendMailEnter.getMail(), privateKey);
@@ -447,7 +447,7 @@ public class TokenRosServiceImpl implements TokenRosService {
 
       //邮箱长度校验
       checkString(baseSendMailEnter.getMail(),2,50);
-    }
+    }*/
     //先判断邮箱是否存在、
     QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
     OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue()).eq(OpeSysUser::getLoginName,

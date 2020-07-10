@@ -462,7 +462,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         mailTask.setAppId(appId);
         mailTask.setRequestId(requestId);
         mailTask.setReceiveMail(map.get("email"));
-        mailTask.setToUserId(enter.getToUserId());
+        mailTask.setToUserId(userId);
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(getContent(map, mailtemplate));
@@ -513,7 +513,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     mailTask.setAppId(appId);
     mailTask.setRequestId(requestId);
     mailTask.setReceiveMail(map.get("email"));
-    mailTask.setToUserId(enter.getToUserId());
+    mailTask.setToUserId(userId);
     mailTask.setSubject(mailtemplate.getSubject());
     mailTask.setParameter(JSON.toJSONString(map));
     mailTask.setContent(getContent(map, mailtemplate));
