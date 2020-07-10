@@ -487,7 +487,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private void createEmployeeEmail(SaveEmployeeEnter saveEmployeeEnter){
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
         enter.setName(saveEmployeeEnter.getEmployeeFirstName()+" "+saveEmployeeEnter.getEmployeeLastName());
-        enter.setEvent(MailTemplateEventEnums.ROS_CREATE_EMPLOYEE.getName());
+        enter.setEvent(MailTemplateEventEnums.ROS_CREATE_EMPLOYEE.getEvent());
         enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
         enter.setAppId(AppIDEnums.SES_ROS.getValue());
         enter.setEmail(saveEmployeeEnter.getEmail());

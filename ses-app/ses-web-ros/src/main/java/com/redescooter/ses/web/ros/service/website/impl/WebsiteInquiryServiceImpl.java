@@ -713,7 +713,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
 
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
-        enter.setEvent(MailTemplateEventEnums.SUBSCRIBE_TO_EMAIL_SUCCESSFULLY.getName());
+        enter.setEvent(MailTemplateEventEnums.SUBSCRIBE_TO_EMAIL_SUCCESSFULLY.getEvent());
         enter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
         enter.setMailAppId(SystemIDEnums.REDE_SES.getValue());
         enter.setToMail(email);

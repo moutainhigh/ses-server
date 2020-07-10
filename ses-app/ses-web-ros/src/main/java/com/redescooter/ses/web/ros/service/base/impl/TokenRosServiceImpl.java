@@ -451,7 +451,7 @@ public class TokenRosServiceImpl implements TokenRosService {
     }
     BaseMailTaskEnter enter = new BaseMailTaskEnter();
     enter.setName(baseSendMailEnter.getMail().substring(0, baseSendMailEnter.getMail().indexOf("@")));
-    enter.setEvent(MailTemplateEventEnums.ROS_FORGET_PSD_SEND_MAIL.getName());
+    enter.setEvent(MailTemplateEventEnums.ROS_FORGET_PSD_SEND_MAIL.getEvent());
     enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
     enter.setAppId(AppIDEnums.SES_ROS.getValue());
     enter.setEmail(baseSendMailEnter.getMail());
