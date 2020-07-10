@@ -504,7 +504,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     String name = map.get("name");
 
     PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
-    Map<String, String> mapParameter = getForgetPasswordMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email,Constant.ROS_FORGET_PASSWORD);
+    Map<String, String> mapParameter = getForgetPasswordMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email);
     map.putAll(mapParameter == null ? new HashMap<>() : mapParameter);
     PlaMailTask mailTask = new PlaMailTask();
     mailTask.setId(idSerService.getId(SequenceName.PLA_MAIL_TASK));
@@ -554,7 +554,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     String name = map.get("name");
 
     PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
-    Map<String, String> mapParameter = getEmployeeParameterMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email,Constant.DEFAULT_PASSWORD,Constant.ROS_LOGIN_URL);
+    Map<String, String> mapParameter = getEmployeeParameterMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email,Constant.DEFAULT_PASSWORD);
     map.putAll(mapParameter == null ? new HashMap<>() : mapParameter);
     PlaMailTask mailTask = new PlaMailTask();
     mailTask.setId(idSerService.getId(SequenceName.PLA_MAIL_TASK));
@@ -631,7 +631,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         return map;
     }
 
-  private Map<String, String> getEmployeeParameterMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email,String password,String url) {
+  private Map<String, String> getEmployeeParameterMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email,String password) {
 
     List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
     Map<String, String> map = new HashMap();
@@ -646,11 +646,10 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     map.put("systemId", systemId);
     map.put("appId", appId);
     map.put("password", password);
-    map.put("url", url);
     return map;
   }
 
-  private Map<String, String> getForgetPasswordMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email,String url) {
+  private Map<String, String> getForgetPasswordMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email) {
 
     List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
     Map<String, String> map = new HashMap();
@@ -664,7 +663,6 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     map.put("email", email);
     map.put("systemId", systemId);
     map.put("appId", appId);
-    map.put("url", url);
     return map;
   }
 
