@@ -329,8 +329,13 @@ public class MaterialServiceImpl implements MaterialService {
                 }
             });
         });
+
+        //子订单质检记录
+        List<OpePurchasBQc> opePurchasBQcList = opePurchasBQcService.list(new LambdaQueryWrapper<OpePurchasBQc>().in(OpePurchasBQc::getPurchasBId,
+                checkPurchasList.stream().map(OpePurchasB::getId).collect(Collectors.toList())));
+
         //校验主订单是否需要修改状态
-        checkPurchasStatus(enter, opePurchas, purchasBQcList, returnCompletePartDtoMap, checkPurchasList);
+        checkPurchasStatus(enter, opePurchas, opePurchasBQcList,returnCompletePartDtoMap);
 
         //更新付款价格
         opePurchasPaymentService.updateBatch(opePurchasPaymentList);
@@ -352,21 +357,13 @@ public class MaterialServiceImpl implements MaterialService {
      * @param opePurchas
      * @param purchasBQcList
      * @param returnCompletePartDtoMap
-     * @param checkPurchasList
      */
-    private void checkPurchasStatus(ReturnedCompletedEnter enter, OpePurchas opePurchas, List<OpePurchasBQc> purchasBQcList, Map<Long, ReturnCompletePartDto> returnCompletePartDtoMap,
-                                    List<OpePurchasB> checkPurchasList) {
+    private void checkPurchasStatus(ReturnedCompletedEnter enter, OpePurchas opePurchas, List<OpePurchasBQc> purchasBQcList, Map<Long, ReturnCompletePartDto> returnCompletePartDtoMap) {
         int passTotal = 0;
-        flagOne:
-        for (OpePurchasB item : checkPurchasList) {
-            //校验质检信息是否能 已经全部质检过
-            for (OpePurchasBQc purchasbqc : purchasBQcList) {
-                //同一个主订单下 判断所有子订单 是否 采购所有部件 是否已经通过质检  都通过时 修改主订单状态
-                if (item.getId().equals(purchasbqc.getPurchasBId())) {
-                    passTotal += purchasbqc.getPassCount();
-                    break flagOne;
-                }
-            }
+
+        for (OpePurchasBQc purchasbqc : purchasBQcList) {
+            //同一个主订单下 判断所有子订单 是否 采购所有部件 是否已经通过质检  都通过时 修改主订单状态
+            passTotal += purchasbqc.getPassCount();
         }
 
         //修改主订单状态
@@ -413,7 +410,7 @@ public class MaterialServiceImpl implements MaterialService {
         if (opePurchas == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue()) &&  !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.QC_AGAIN.getValue())) {
+        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue()) && !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.QC_AGAIN.getValue())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
 
@@ -818,12 +815,12 @@ public class MaterialServiceImpl implements MaterialService {
                     }
                 }
             }
-            if (passTotal==opePurchas.getTotalQty()){
+            if (passTotal == opePurchas.getTotalQty()) {
                 break;
             }
         }
-        if (passTotal!=opePurchas.getTotalQty()){
-            updatePuchasStatus=Boolean.FALSE;
+        if (passTotal != opePurchas.getTotalQty()) {
+            updatePuchasStatus = Boolean.FALSE;
         }
 
         //更新采购单状态以及采购单记录
