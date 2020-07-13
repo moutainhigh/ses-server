@@ -109,7 +109,7 @@ public interface PurchasingService {
      * @param enter
      * @return
      */
-    GeneralResult export(IdEnter enter,HttpServletResponse response);
+    GeneralResult export(IdEnter enter);
 
     /**
      * 付款详情

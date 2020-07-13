@@ -395,7 +395,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 
                     flag3:
                     for (OpeStock stock : stockList) {
-                        if (item.getPartsId().equals(stock.getMaterielProductId())) {
+                        if (item.getPartsId().equals(stock.getMaterielProductId()) && (item.getPartsQty() != null && item.getPartsQty() > 0)) {
 
                             int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
                             if (maxTotal == 0) {

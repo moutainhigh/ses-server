@@ -215,7 +215,8 @@
         payment.payment_time as actualPaymentDate,
         payment.description as remark,
         payment.payment_type as paymentType,
-        payment.planned_payment_time as estimatedPaymentDate
+        payment.planned_payment_time as estimatedPaymentDate,
+        payment.planned_payment_time as plannedPaymentTime
         from ope_assembly_order_payment payment
         where payment.dr = 0
         and payment.ope_assembly_order_id =#{id}

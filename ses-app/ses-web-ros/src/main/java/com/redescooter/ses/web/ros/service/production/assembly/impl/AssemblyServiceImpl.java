@@ -28,6 +28,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace;
@@ -1279,6 +1280,20 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //查询 支付信息
         List<PaymentItemDetailResult> paymentItemList = assemblyServiceMapper.paymentItemList(enter.getId());
+        if(CollectionUtils.isNotEmpty(paymentItemList)){
+            for (PaymentItemDetailResult result : paymentItemList) {
+                if(result.getPlannedPaymentTime() != null){
+                    String date = DateUtil.getTimeStr(result.getPlannedPaymentTime(),"yyyy-MM-dd");
+                    result.setYear(date.split("-")[0]);
+                    try {
+                        result.setMonth(DateUtil.numMonToEngMon(date.split("-")[1]));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    result.setDay(date.split("-")[2]);
+                }
+            }
+        }
         return PaymentDetailResullt.builder()
                 .id(opeAssemblyOrder.getId())
                 .totalPrice(opeAssemblyOrder.getTotalPrice())
