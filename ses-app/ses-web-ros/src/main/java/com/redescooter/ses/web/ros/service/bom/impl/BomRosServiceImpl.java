@@ -262,7 +262,7 @@ public class BomRosServiceImpl implements BomRosService {
                 for (OpePartsProductB productB : productBs) {
                     ProdoctPartListEnter  partListEnter = new ProdoctPartListEnter();
                     partListEnter.setId(productB.getId());
-                    partListEnter.setQty(productB.getPartsQty()==null?0:productB.getPartsQty());
+                    partListEnter.setQty(productB.getPartsQty()==null?1:productB.getPartsQty());
                     partList.add(partListEnter);
                 }
             }
