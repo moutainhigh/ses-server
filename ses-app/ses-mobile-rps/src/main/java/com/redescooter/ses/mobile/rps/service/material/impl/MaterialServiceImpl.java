@@ -368,14 +368,19 @@ public class MaterialServiceImpl implements MaterialService {
                 }
             }
         }
+
+        //修改主订单状态
+        ReturnCompletePartDto returnCompletePart = returnCompletePartDtoMap.get(opePurchas.getId());
+
+        //主订单数量维护
+        opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - returnCompletePart.getReturnTotal());
+        opePurchas.setTotalQty(opePurchas.getTotalQty() - returnCompletePart.getReturnTotal());
         //校验每个主订单部件 是否全部通过质检
         Boolean updatePurchasStatus = Boolean.TRUE;
         if (passTotal != opePurchas.getTotalQty()) {
             updatePurchasStatus = Boolean.FALSE;
         }
 
-        //修改主订单状态
-        ReturnCompletePartDto returnCompletePart = returnCompletePartDtoMap.get(opePurchas.getId());
         if (updatePurchasStatus) {
             opePurchas.setStatus(PurchasingStatusEnums.RETURN.getValue());
 
@@ -390,8 +395,6 @@ public class MaterialServiceImpl implements MaterialService {
             saveNodeEnter.setMemo(memo);
             receiptTraceService.savePurchasingNode(saveNodeEnter);
         }
-        opePurchas.setInWaitWhTotal(opePurchas.getInWaitWhTotal() - returnCompletePart.getReturnTotal());
-        opePurchas.setTotalQty(opePurchas.getTotalQty() - returnCompletePart.getReturnTotal());
         opePurchas.setUpdatedBy(enter.getUserId());
         opePurchas.setUpdatedTime(new Date());
     }
