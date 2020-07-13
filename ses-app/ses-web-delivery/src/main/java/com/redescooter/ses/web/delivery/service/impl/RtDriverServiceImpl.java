@@ -183,7 +183,7 @@ public class RtDriverServiceImpl implements RtDriverService {
             }
             //特殊字符
             if (!SesStringUtils.checkString(enter.getPassword(), RegexpConstant.specialCharacters)){
-                throw new SesWebDeliveryException(ExceptionCodeEnums.EMAIL_IS_ILLEGAL.getCode(),ExceptionCodeEnums.EMAIL_IS_ILLEGAL.getMessage());
+                throw new SesWebDeliveryException(ExceptionCodeEnums.PASSOWRD_IS_ILLEGAL.getCode(),ExceptionCodeEnums.PASSOWRD_IS_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getPasswordAgain())) {

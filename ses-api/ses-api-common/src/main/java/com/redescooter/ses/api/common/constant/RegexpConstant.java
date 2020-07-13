@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public interface RegexpConstant {
 
     //特殊字符 正则表达式 表达式取反  ^((?!你的正则表达式).)*
-     String specialCharacters="^((?![`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]).)*";
+     String specialCharacters="^((?![`~!@#$%^&*()+=|{}':;',\\\\[\\\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]).)*";
 
     //邮箱地址
      String email="^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
