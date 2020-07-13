@@ -59,7 +59,7 @@ public class EasyPoiUtils {
      * @param filename
      * @throws IOException
      */
-    public static Workbook exportExcel(Class<?> pojoClass, Collection<?> dataSet, String path, String filename) throws IOException {
+    public static Workbook exportExcel(Class<?> pojoClass, Collection<?> dataSet, String path, String filename,HttpServletResponse response) throws IOException {
 
         File savefile = new File(path);
         if (!savefile.exists()) {
@@ -67,7 +67,10 @@ public class EasyPoiUtils {
         }
         Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(), pojoClass, dataSet);
         FileOutputStream fos = new FileOutputStream(path + filename);
-        workbook.write(fos);
+//        workbook.write(fos);
+        response.setHeader("content-Type", "application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;"+filename+"=user.xls");
+        workbook.write(response.getOutputStream());
         fos.close();
 
         return workbook;
