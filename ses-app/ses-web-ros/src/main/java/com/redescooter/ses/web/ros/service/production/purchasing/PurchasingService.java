@@ -10,16 +10,7 @@ import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
 import com.redescooter.ses.web.ros.vo.production.PayEnter;
 import com.redescooter.ses.web.ros.vo.production.PaymentDetailResullt;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingDetailProductEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
-import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
-import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
-import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -103,13 +94,16 @@ public interface PurchasingService {
      */
     List<CommonNodeResult> purchasingNode(IdEnter enter);
 
+
+    GeneralResult purchasingExport(Long id,HttpServletResponse response);
+
     /**
      * 采购单信息导出
      *
      * @param enter
      * @return
      */
-    GeneralResult export(IdEnter enter);
+//    GeneralResult export(IdEnter enter);
 
     /**
      * 付款详情

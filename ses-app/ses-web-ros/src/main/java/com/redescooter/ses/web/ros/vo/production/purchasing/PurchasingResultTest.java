@@ -28,89 +28,89 @@ public class PurchasingResultTest {
     private String contractN;
 
 //    //@ApiModelProperty(value = "状态")
-//    @Excel(name = "状态")
-//    private String status;
+      @Excel(name = "状态")
+      private String status;
 //
 //    //@ApiModelProperty(value = "收货人Id")
-//    @Excel(name = "收货人Id")
-//    private Long consigneeId;
+      @Excel(name = "收货人Id")
+      private Long consigneeId;
 //
 //    //@ApiModelProperty(value = "收货人名字")
-//    @Excel(name = "收货人名字")
-//    private String consigneeFirstName;
+      @Excel(name = "收货人名字")
+      private String consigneeFirstName;
 //
 //    //@ApiModelProperty(value = "收货人名字")
-//    @Excel(name = "收货人名字")
-//    private String consigneeLastName;
+      @Excel(name = "收货人名字")
+      private String consigneeLastName;
 //
 //    //@ApiModelProperty(value = "收货人电话国家代码")
-//    @Excel(name = "收货人电话国家代码")
-//    private String consigneeCountryCode;
+      @Excel(name = "收货人电话国家代码")
+      private String consigneeCountryCode;
 //
 //    //@ApiModelProperty(value = "收货人电话")
-//    @Excel(name = "收货人电话")
-//    private String consigneePhone;
+      @Excel(name = "收货人电话")
+      private String consigneePhone;
 //
 //    //@ApiModelProperty(value = "收货人邮箱")
-//    @Excel(name = "收货人邮箱")
-//    private String consigneeEmail;
+      @Excel(name = "收货人邮箱")
+      private String consigneeEmail;
 //
 //    //@ApiModelProperty(value = "工厂Id")
-//    @Excel(name = "工厂Id")
-//    private Long factoryId;
+      @Excel(name = "工厂Id")
+      private Long factoryId;
 //
 //    //@ApiModelProperty(value = "工常名字")
-//    @Excel(name = "工常名字")
-//    private String factoryName;
+      @Excel(name = "工常名字")
+      private String factoryName;
 //
 //    //@ApiModelProperty(value = "工厂联系人名字")
-//    @Excel(name = "工厂联系人名字")
-//    private String factoryContactFirstName;
+      @Excel(name = "工厂联系人名字")
+      private String factoryContactFirstName;
 //
 //    //@ApiModelProperty(value = "工厂联系人名字")
-//    @Excel(name = "工厂联系人名字")
-//    private String factoryContactLastName;
+      @Excel(name = "工厂联系人名字")
+      private String factoryContactLastName;
 //
 //    //@ApiModelProperty(value = "工厂联系人名字")
-//    @Excel(name = "工厂联系人名字")
-//    private String factoryContactFullName;
+      @Excel(name = "工厂联系人名字")
+      private String factoryContactFullName;
 //
 //    //@ApiModelProperty(value = "联系人电话国家代码")
-//    @Excel(name = "联系人电话国家代码")
-//    private String factoryContactPhoneCountryCode;
+      @Excel(name = "联系人电话国家代码")
+      private String factoryContactPhoneCountryCode;
 //
 //    //@ApiModelProperty(value = "联系人电话")
-//    @Excel(name = "联系人电话")
-//    private String factoryContactPhone;
+      @Excel(name = "联系人电话")
+      private String factoryContactPhone;
 //
 //    //@ApiModelProperty(value = "联系人邮箱")
-//    @Excel(name = "联系人邮箱")
-//    private String factoryContactEmail;
+      @Excel(name = "联系人邮箱")
+      private String factoryContactEmail;
 //
 //    //@ApiModelProperty(value = "总价格")
-//    @Excel(name = "总价格")
-//    private String totalPrice;
+      @Excel(name = "总价格")
+      private String totalPrice;
 //
 //    //@ApiModelProperty(value = "付款类型")
-//    @Excel(name = "付款类型")
-//    private String paymentType;
+      @Excel(name = "付款类型")
+      private String paymentType;
 //
 //
 //    //@ApiModelProperty(value = "天数")
-//    @Excel(name = "天数")
-//    private Integer days;
+      @Excel(name = "天数")
+      private Integer days;
 //
 //    //@ApiModelProperty(value = "分期总数")
-//    @Excel(name = "分期总数")
-//    private Integer stagTotal;
+      @Excel(name = "分期总数")
+      private Integer stagTotal;
 //
 //    //@ApiModelProperty(value = "支付分期数")
-//    @Excel(name = "支付分期数")
-//    private Integer paidstagNum;
+      @Excel(name = "支付分期数")
+      private Integer paidstagNum;
 //
 //    //@ApiModelProperty(value = "部件数量")
-//    @Excel(name = "部件数量")
-//    private Integer partsQty;
+      @Excel(name = "部件数量")
+      private Integer partsQty;
 
 
 }

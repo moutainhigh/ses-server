@@ -1,7 +1,5 @@
 package com.redescooter.ses.mobile.rps.service.material.impl;
 
-import java.util.HashMap;
-
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -37,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -183,8 +180,6 @@ public class MaterialServiceImpl implements MaterialService {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PLEASE_SCAN_THE_CODE_FIRST.getCode(), ExceptionCodeEnums.PLEASE_SCAN_THE_CODE_FIRST.getMessage());
             }
         });
-        //查询所有主订单相关联的子表数据
-        Collection<OpePurchasB> checkOpePurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().eq(OpePurchasB::getPurchasId, opePurchas.getId()));
 
         //查询qc 信息
         QueryWrapper<OpePurchasBQc> opePurchasBQcQueryWrapper = new QueryWrapper<>();
@@ -234,9 +229,6 @@ public class MaterialServiceImpl implements MaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
         }
 
-        //封装退货时主订单的信息
-        Map<Long, ReturnCompletePartDto> returnCompletePartDtoMap = new HashMap<>();
-
         //对采购子订单 价格、数量 处理
         //退货金额
         BigDecimal retureTotalPrice = BigDecimal.ZERO;
@@ -285,6 +277,8 @@ public class MaterialServiceImpl implements MaterialService {
             }
         }
 
+        //封装退货时主订单的信息
+        Map<Long, ReturnCompletePartDto> returnCompletePartDtoMap = new HashMap<>();
 
         ReturnCompletePartDto returnCompletePartDto = ReturnCompletePartDto.builder()
                 .id(opePurchas.getId())
@@ -294,6 +288,29 @@ public class MaterialServiceImpl implements MaterialService {
                 .build();
         returnCompletePartDtoMap.put(opePurchas.getId(), returnCompletePartDto);
 
+        List<OpePurchasB> checkPurchasList = getOpePurchasBS(enter, opePurchas, opePurchasBList, purchasBQcList);
+
+        //子订单质检记录
+        List<OpePurchasBQc> opePurchasBQcList = opePurchasBQcService.list(new LambdaQueryWrapper<OpePurchasBQc>().in(OpePurchasBQc::getPurchasBId,
+                checkPurchasList.stream().map(OpePurchasB::getId).collect(Collectors.toList())));
+
+        //校验主订单是否需要修改状态
+        checkPurchasStatus(enter, opePurchas, opePurchasBQcList,returnCompletePartDtoMap);
+
+        //更新付款价格
+        opePurchasPaymentService.updateBatch(opePurchasPaymentList);
+
+        //采购单更新
+        opePurchasService.updateById(opePurchas);
+
+        //子表数据更新
+        opePurchasBService.updateBatchById(opePurchasBList);
+        //Qc 质检通过
+        opePurchasBQcService.updateBatchById(purchasBQcList);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    private List<OpePurchasB> getOpePurchasBS(ReturnedCompletedEnter enter, OpePurchas opePurchas, List<OpePurchasB> opePurchasBList, List<OpePurchasBQc> purchasBQcList) {
         //抹除掉 质检失败和批次号建立的绑定关系
         List<OpePurchasBQcItem> opePurchasBQcItemList = opePurchasBQcItemService.list(new LambdaQueryWrapper<OpePurchasBQcItem>().in(OpePurchasBQcItem::getPurchasBQcId,
                 purchasBQcList.stream().map(OpePurchasBQc::getId).collect(Collectors.toList())));
@@ -317,7 +334,8 @@ public class MaterialServiceImpl implements MaterialService {
             item.setUpdatedTime(new Date());
         });
 
-
+        //查询所有主订单相关联的子表数据
+        Collection<OpePurchasB> checkOpePurchasBList = opePurchasBService.list(new LambdaQueryWrapper<OpePurchasB>().eq(OpePurchasB::getPurchasId, opePurchas.getId()));
         List<OpePurchasB> checkPurchasList = new ArrayList<>();
         //形成 子订单校验集合
         checkOpePurchasBList.forEach(item -> {
@@ -329,25 +347,7 @@ public class MaterialServiceImpl implements MaterialService {
                 }
             });
         });
-
-        //子订单质检记录
-        List<OpePurchasBQc> opePurchasBQcList = opePurchasBQcService.list(new LambdaQueryWrapper<OpePurchasBQc>().in(OpePurchasBQc::getPurchasBId,
-                checkPurchasList.stream().map(OpePurchasB::getId).collect(Collectors.toList())));
-
-        //校验主订单是否需要修改状态
-        checkPurchasStatus(enter, opePurchas, opePurchasBQcList,returnCompletePartDtoMap);
-
-        //更新付款价格
-        opePurchasPaymentService.updateBatch(opePurchasPaymentList);
-
-        //采购单更新
-        opePurchasService.updateById(opePurchas);
-
-        //子表数据更新
-        opePurchasBService.updateBatchById(opePurchasBList);
-        //Qc 质检通过
-        opePurchasBQcService.updateBatchById(purchasBQcList);
-        return new GeneralResult(enter.getRequestId());
+        return checkPurchasList;
     }
 
     /**
