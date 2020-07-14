@@ -1,16 +1,10 @@
 package com.redescooter.ses.api.common.vo.base;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.annotation.Regexp;
-import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * @description: BaseSendMailEnter

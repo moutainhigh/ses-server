@@ -11,7 +11,6 @@ import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.exception.BusinessException;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -96,8 +95,6 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     public TokenResult login(LoginEnter enter) {
         //入参对象去空格
         SesStringUtils.objStringTrim(enter);
-
-
         if (enter.getPassword() != null) {
             String decryptPassword = "";
             String email = "";
@@ -107,7 +104,6 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             } catch (Exception e) {
                 throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
-
             enter.setPassword(decryptPassword);
             enter.setLoginName(email);
         }
@@ -207,7 +203,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
         int salt = RandomUtils.nextInt(10000, 99999);
 
-        opeCustomerService.save(buildCustomerSingle(enter, decryptEamil));
+        opeCustomerService.save(buildCustomerSingle(enter));
 
         //创建账户
         OpeSysUser opeSysUser = buildOpeSysUser(decryptEamil, decryptPassword, salt);
@@ -376,8 +372,6 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             //密码长度校验
             checkString(enter.getConfirmPassword(),2,18);
         }
-
-
         //比较两个密码是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
@@ -485,19 +479,6 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if(StringUtils.isNotEmpty(enter.getAddress())){
             customer.setAddress(enter.getAddress());
         }
-//        String decrypt = null;
-//        if (enter.getTelephone() != null) {
-//            try {
-//                //密码校验
-//                decrypt = RsaUtils.decrypt(enter.getTelephone(), privatekey);
-//            } catch (Exception e) {
-//                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-//            }
-//            enter.setTelephone(decrypt);
-//            //电话长度校验
-//            checkString(enter.getTelephone(),2,10);
-//        }
-//        customer.setTelephone(decrypt);
         customer.setDef1(enter.getCustomerCountry());
         customer.setAddress(enter.getAddress());
         customer.setDistrust(Long.valueOf(enter.getDistrict()));
@@ -531,7 +512,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    private OpeCustomer buildCustomerSingle(SignUpEnter enter, String decryptEamil) {
+    private OpeCustomer buildCustomerSingle(SignUpEnter enter) {
         OpeCustomer saveCustomer = new OpeCustomer();
         saveCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
         saveCustomer.setDr(0);
@@ -540,7 +521,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         saveCustomer.setCustomerFirstName(SesStringUtils.upperCaseString(enter.getFirstName()));
         saveCustomer.setCustomerLastName(SesStringUtils.upperCaseString(enter.getLastName()));
         saveCustomer.setCustomerFullName(new StringBuilder(SesStringUtils.upperCaseString(enter.getFirstName())).append(" ").append(SesStringUtils.upperCaseString(enter.getLastName())).toString());
-        saveCustomer.setEmail(decryptEamil);
+        saveCustomer.setEmail(enter.getEmail());
         saveCustomer.setScooterQuantity(1);
         saveCustomer.setAssignationScooterQty(0);
         saveCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());

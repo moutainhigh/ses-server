@@ -62,6 +62,7 @@ import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateEnter;
 import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateResult;
 import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
 import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
+import com.redescooter.ses.web.delivery.vo.edorder.QueryDriverListEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -298,7 +299,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @return
      */
     @Override
-    public List<SelectDriverResult> selectDriverList(IdsEnter enter) {
+    public List<SelectDriverResult> selectDriverList(QueryDriverListEnter enter) {
         return orderDeliveryServiceMapper.selectDriverList(enter);
     }
 

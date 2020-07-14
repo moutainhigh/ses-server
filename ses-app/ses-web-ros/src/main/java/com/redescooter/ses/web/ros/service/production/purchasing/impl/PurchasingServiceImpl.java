@@ -446,10 +446,10 @@ public class PurchasingServiceImpl implements PurchasingService {
         IdEnter enter = new IdEnter();
         enter.setId(id);
         PurchasingResult purchasingResult = this.detail(enter);
-        PurchasingResultTest purchasingResultTest = new PurchasingResultTest();
-        BeanUtil.copyProperties(purchasingResult,purchasingResultTest);
-        List<PurchasingResultTest> list = new ArrayList<>();
-        list.add(purchasingResultTest);
+        PurchasingExportResult exportResult = new PurchasingExportResult();
+        BeanUtil.copyProperties(purchasingResult,exportResult);
+        List<PurchasingExportResult> list = new ArrayList<>();
+        list.add(exportResult);
         try{
             // 设置响应输出的头类型
             response.setHeader("content-Type", "application/vnd.ms-excel");
@@ -457,15 +457,12 @@ public class PurchasingServiceImpl implements PurchasingService {
             response.setHeader("Content-Disposition", "attachment;filename="+System.currentTimeMillis()+".xls");
             // =========easypoi部分
             ExportParams exportParams = new ExportParams();
-
-
             // exportParams.setDataHanlder(null);//和导入一样可以设置一个handler来处理特殊数据
-            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, PurchasingResultTest.class, list);
+            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, PurchasingExportResult.class, list);
             workbook.write(response.getOutputStream());
         } catch (Exception e) {
             System.out.println("+++++++++++++++++++");
         }
-
         return   new GeneralResult();
     }
 

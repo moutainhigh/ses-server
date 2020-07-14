@@ -2,25 +2,10 @@ package com.redescooter.ses.web.ros.service.customer.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.DateConstant;
-import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
-import com.redescooter.ses.api.common.enums.customer.CustomerCertificateTypeEnum;
-import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
-import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
-import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.customer.*;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.BaseUserResult;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IntResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
@@ -50,19 +35,9 @@ import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
-import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
-import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
-import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
-import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
-import com.redescooter.ses.web.ros.vo.account.VerificationCodeResult;
-import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
-import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
-import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
-import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
-import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
-import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
-import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
+import com.redescooter.ses.web.ros.vo.account.*;
+import com.redescooter.ses.web.ros.vo.customer.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -73,13 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @ClassName:CustomerImpl
@@ -88,6 +57,7 @@ import java.util.Set;
  * @Version：1.0
  * @create: 2019/12/18 10:06
  */
+@Slf4j
 @Service
 public class CustomerRosServiceImpl implements CustomerRosService {
 
@@ -161,9 +131,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Transactional
     @Override
     public GeneralResult save(CreateCustomerEnter createCustomerEnter) {
-      //employeeListEnter参数值去空格
-      CreateCustomerEnter enter = SesStringUtils.objStringTrim(createCustomerEnter);
-      //客户字段校验
+        //employeeListEnter参数值去空格
+        CreateCustomerEnter enter = SesStringUtils.objStringTrim(createCustomerEnter);
+        //客户字段校验
         checkSaveCustomerFiledSingle(enter);
 
         //已存在客户 不可重复添加
@@ -202,6 +172,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
+
     /**
      * 编辑更新客户
      *
@@ -211,14 +182,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Transactional
     @Override
     public GeneralResult edit(EditCustomerEnter editCustomerEnter) {
-      //employeeListEnter参数值去空格
-      EditCustomerEnter enter = SesStringUtils.objStringTrim(editCustomerEnter);
+        //employeeListEnter参数值去空格
+        EditCustomerEnter enter = SesStringUtils.objStringTrim(editCustomerEnter);
         //客户字段长度校验
         checkEditCustomerFiledSingle(enter);
-
-
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
-        final Long tenantId = customer.getTenantId();
+        if (customer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        Long tenantId = customer.getTenantId();
         if (customer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getCode(), ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getMessage());
         }
@@ -232,7 +204,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             if (!StringUtils.equals(enter.getIndustryType(), customer.getIndustryType())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_INDUSTRYTYPE_IS_NOT_EDIT.getCode(), ExceptionCodeEnums.CUSTOMER_INDUSTRYTYPE_IS_NOT_EDIT.getMessage());
             }
-
             EditUserProfileEnter editUserProfileEnter = new EditUserProfileEnter();
             BeanUtils.copyProperties(enter, editUserProfileEnter);
             editUserProfileEnter.setInputTenantId(customer.getTenantId());
@@ -249,7 +220,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 // TOc 更新个人信息
                 userProfileService.editUserProfile2C(editUserProfileEnter);
             }
-
         }
         if (!enter.getEmail().equals(customer.getEmail())) {
             //潜在客户允许编辑邮箱，但不允许重复
@@ -269,6 +239,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         return new GeneralResult(enter.getRequestId());
     }
+
 
     private void checkEditCustomerFiledSingle(EditCustomerEnter enter) {
         //字段校验
@@ -327,6 +298,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
     }
 
+
     /**
      * 客户详情查询
      *
@@ -347,29 +319,19 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             if (opeCustomer.getId().equals(opeCustomer.getUpdatedBy())) {
                 result.setUpdatedName(opeCustomer.getCustomerFullName());
             } else {
-                QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
-                updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
-                updated.eq(OpeSysUserProfile.COL_DR, 0);
-                updated.last("limit 1");
-                result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
+                OpeSysUserProfile profile = getOpeSysUserProfile(result.getUpdatedBy());
+                result.setUpdatedName(profile == null ? null : profile.getFullName());
             }
             result.setCreatedName(opeCustomer.getCustomerFullName());
             result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
         } else {
-            QueryWrapper<OpeSysUserProfile> created = new QueryWrapper<>();
-            created.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getCreatedBy());
-            created.eq(OpeSysUserProfile.COL_DR, 0);
-            created.last("limit 1");
-            result.setCreatedName(sysUserProfileMapper.selectOne(created) == null ? null : sysUserProfileMapper.selectOne(created).getFullName());
+            OpeSysUserProfile create = getOpeSysUserProfile(result.getCreatedBy());
+            result.setCreatedName(create == null ? null : create.getFullName());
             result.setAccountFlag(Integer.valueOf(opeCustomer.getAccountFlag()));
 
-            QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
-            updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, result.getUpdatedBy());
-            updated.eq(OpeSysUserProfile.COL_DR, 0);
-            updated.last("limit 1");
-            result.setUpdatedName(sysUserProfileMapper.selectOne(updated) == null ? null : sysUserProfileMapper.selectOne(updated).getFullName());
+            OpeSysUserProfile update = getOpeSysUserProfile(result.getUpdatedBy());
+            result.setUpdatedName(update == null ? null : update.getFullName());
         }
-
 
         result.setRequestId(enter.getRequestId());
         if (opeCustomer.getCity() != null) {
@@ -400,6 +362,17 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         return result;
     }
 
+
+    private OpeSysUserProfile getOpeSysUserProfile(Long userId) {
+        QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
+        updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, userId);
+        updated.eq(OpeSysUserProfile.COL_DR, 0);
+        updated.last("limit 1");
+        OpeSysUserProfile profile = sysUserProfileMapper.selectOne(updated);
+        return profile;
+    }
+
+
     /**
      * 状态统计
      *
@@ -420,6 +393,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         return map;
     }
+
 
     /**
      * @param page
@@ -707,13 +681,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         AccountDeatilResult accountReslut = AccountDeatilResult.builder()
                 .id(customerInfo.getId())
                 .customerType(customerInfo.getCustomerType())
-                .customerFirstName(StringUtils.isNotEmpty(customerInfo.getCustomerFirstName()) == true ? customerInfo.getCustomerFirstName() : null)
-                .customerLastName(StringUtils.isNotEmpty(customerInfo.getCustomerLastName()) == true ? customerInfo.getCustomerLastName() : null)
-                .customerFullName(StringUtils.isNotEmpty(customerInfo.getCustomerFullName()) == true ? customerInfo.getCustomerFullName() : null)
-                .companyName(StringUtils.isNotEmpty(customerInfo.getCompanyName()) == true ? customerInfo.getCompanyName() : null)
-                .contactFirstName(StringUtils.isNotEmpty(customerInfo.getContactFirstName()) == true ? customerInfo.getContactFirstName() : null)
-                .contactLastName(StringUtils.isNotEmpty(customerInfo.getContactLastName()) == true ? customerInfo.getContactLastName() : null)
-                .contactFullName(StringUtils.isNotEmpty(customerInfo.getContactFullName()) == true ? customerInfo.getContactFullName() : null)
+                .customerFirstName(StringUtils.isNotEmpty(customerInfo.getCustomerFirstName()) ? customerInfo.getCustomerFirstName() : null)
+                .customerLastName(StringUtils.isNotEmpty(customerInfo.getCustomerLastName()) ? customerInfo.getCustomerLastName() : null)
+                .customerFullName(StringUtils.isNotEmpty(customerInfo.getCustomerFullName()) ? customerInfo.getCustomerFullName() : null)
+                .companyName(StringUtils.isNotEmpty(customerInfo.getCompanyName()) ? customerInfo.getCompanyName() : null)
+                .contactFirstName(StringUtils.isNotEmpty(customerInfo.getContactFirstName()) ? customerInfo.getContactFirstName() : null)
+                .contactLastName(StringUtils.isNotEmpty(customerInfo.getContactLastName()) ? customerInfo.getContactLastName() : null)
+                .contactFullName(StringUtils.isNotEmpty(customerInfo.getContactFullName()) ? customerInfo.getContactFullName() : null)
                 .industryType(customerInfo.getIndustryType())
                 .email(customerInfo.getEmail())
                 .build();
@@ -823,7 +797,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         jedisCluster.expire(enter.getRequestId(), new Long(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
         VerificationCodeResult result = VerificationCodeResult.builder().base64Img(VerificationCodeImgUtil.base64String).build();
         result.setRequestId(enter.getRequestId());
-        System.out.println(code);
+        log.info("获取code码为："+ code);
         return result;
     }
 
