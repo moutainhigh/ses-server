@@ -126,10 +126,9 @@
         where status in ('1', '2')) delivery on cd.user_id = delivery.userId
         where  cd.status ='1'
         and cd.tenant_id=#{tenantId}
-        and cd.id not in
-        <foreach collection="ids" item="item" open="(" close=")" separator=",">
-            #{item}
-        </foreach>
+        <if test="id != null and id != 0 ">
+        and cd.id =#{id}
+        </if>
         group by driverId, userId, first_name, last_name;
     </select>
     <select id="scooterMap" resultType="com.redescooter.ses.web.delivery.vo.ScooterMapResult">

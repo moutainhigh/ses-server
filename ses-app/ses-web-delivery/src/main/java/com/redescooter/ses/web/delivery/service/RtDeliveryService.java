@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.edorder.QueryDriverListEnter;
 
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,7 @@ public interface RtDeliveryService {
      * @param enter
      * @return
      */
-    List<SelectDriverResult> selectDriverList(IdsEnter enter);
+    List<SelectDriverResult> selectDriverList(QueryDriverListEnter enter);
 
     /**
      * 关闭订单
