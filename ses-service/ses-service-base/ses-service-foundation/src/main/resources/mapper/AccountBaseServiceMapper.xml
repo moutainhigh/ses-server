@@ -128,6 +128,7 @@
             and user.expire_time between #{enter.startExpirationTime} and #{enter.endExpirationTime}
         </if>
         order by user.created_time desc
+      limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <select id="customerAccountDeatil"

@@ -110,6 +110,8 @@
         from ope_stock stock
         left join ope_parts part on part.id = stock.materiel_product_id and part.dr = 0
         <include refid="wher_availableList"/>
+        order by part.updated_time desc
+        limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <select id="qcingListCount" resultType="int">
@@ -238,6 +240,8 @@
         from ope_stock stock
         inner join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
         <include refid="where_OutWh_Allocate"/>
+        order by stock.updated_time desc
+        limit #{enter.startRow},#{enter.pageSize}
     </select>
     <select id="countByTypeQcCount" resultType="int">
         select count(*) from

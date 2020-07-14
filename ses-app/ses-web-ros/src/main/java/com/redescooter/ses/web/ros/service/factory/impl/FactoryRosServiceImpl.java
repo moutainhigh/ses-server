@@ -159,9 +159,9 @@ public class FactoryRosServiceImpl implements FactoryRosService {
 
     @Override
     public PageResult<FactoryResult> list(FactoryPage page) {
-      if (page.getKeyword()!=null && page.getKeyword().length()>50){
-        return PageResult.createZeroRowResult(page);
-      }
+        if (page.getKeyword() != null && page.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(page);
+        }
         int count = factoryServiceMapper.listCount(page);
         if (count == 0) {
             return PageResult.createZeroRowResult(page);

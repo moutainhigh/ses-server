@@ -54,6 +54,7 @@ import redis.clients.jedis.JedisCluster;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:InquiryServiceImpl
@@ -151,7 +152,6 @@ public class InquiryServiceImpl implements InquiryService {
             //邮箱 去空格
             enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
         }
-
 
         // 查询已存在的email 暂时注释掉 邮箱过滤
         //List<String> emailList = inquiryServiceMapper.usingEmailList();
