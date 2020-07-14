@@ -1397,7 +1397,7 @@ public class AssemblyServiceImpl implements AssemblyService {
             for (ProductAssemblyTraceResult item : productAssemblyTraceResults) {
                 int count = 0;
                 for (ProductAssemblyTraceItemResult trace : productAssemblyTraceItemResultList) {
-                    if (item.getId().equals(trace.getAssemId())) {
+                    if (item.getId().equals(trace.getBorderId())) {
                         if (count > 1) {
                             item.setAssemblyFlag(Boolean.TRUE);
                             continue;

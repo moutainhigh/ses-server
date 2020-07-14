@@ -3,6 +3,7 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.web.delivery.dm.CorDelivery;
 import com.redescooter.ses.web.delivery.vo.*;
 
@@ -47,7 +48,12 @@ public interface OrderDeliveryServiceMapper {
      */
     DeliveryDetailsResult details(IdEnter enter);
 
-    List<SelectDriverResult> selectDriverList(GeneralEnter enter);
+    /**
+     * 可选司机列表
+     * @param enter
+     * @return
+     */
+    List<SelectDriverResult> selectDriverList(IdsEnter enter);
 
     /**
      * 车辆地图统计

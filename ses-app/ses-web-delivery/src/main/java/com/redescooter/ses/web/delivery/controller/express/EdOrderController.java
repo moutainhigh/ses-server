@@ -114,7 +114,7 @@ public class EdOrderController {
     }
 
     @PostMapping(value = "/refuseOrderDriverList")
-    @ApiOperation(value = "拒绝订单详情", response = RefuseOrderDetailResult.class)
+    @ApiOperation(value = "拒绝订单司机", response = RefuseOrderDetailResult.class)
     public Response<List<SelectDriverResult>> refuseOrderDriverList(@ModelAttribute @ApiParam("请求参数") IdsEnter enter) {
         return new Response<>(edOrderService.refuseOrderDriverList(enter));
     }

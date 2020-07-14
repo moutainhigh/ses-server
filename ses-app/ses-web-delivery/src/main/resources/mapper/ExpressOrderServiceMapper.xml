@@ -365,14 +365,25 @@
 
     </select>
     <select id="refuseOrderDriverList" resultType="com.redescooter.ses.web.delivery.vo.SelectDriverResult">
-        select cd.id as driverId,
-        cd.user_id as userId,
-        cup.first_name as firstName,
-        cup.last_name as lastName
-        from cor_driver cd
-        inner join cor_user_profile cup on cd.user_id = cup.user_id
-        where  cd.status ='1'
-        and  cd.tenant_id=#{tenantId}
-        group by driverId, userId, first_name, last_name;
+        select ced.driver_id  as driverId,
+               driver.user_id as userId,
+               cup.first_name as firstName,
+               cup.last_name  as lastName,
+               count(exo.id)  as completeAmount
+        from cor_express_order exo
+                 inner join cor_express_delivery_detail detail
+                            on exo.id = detail.express_order_id and detail.dr = 0
+                 left join cor_express_delivery ced on ced.id = detail.express_delivery_id and ced.dr = 0
+                 inner join cor_driver driver on driver.id = ced.driver_id and driver.dr = 0
+                 inner join cor_user_profile cup on driver.user_id = cup.user_id and cup.dr = 0
+        where exo.status in (2, 3)
+          and exo.dr = 0
+          and exo.tenant_id=#{tenantId}
+          and driver.status=1
+          and driver.id not in
+          <foreach collection="ids" item="item" separator="," open="(" close=")">
+              #{item}
+          </foreach>
+        group by driverId,userId,firstName,lastName
     </select>
 </mapper>

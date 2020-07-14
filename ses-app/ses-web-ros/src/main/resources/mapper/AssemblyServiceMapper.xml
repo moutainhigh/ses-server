@@ -275,7 +275,7 @@
 
     <select id="productAssemblyItemTrace"
             resultType="com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult">
-        select count(assem.id)                             as assemblyCompleteTotal,
+        select count(border.id)                             as assemblyCompleteTotal,
                DATE_FORMAT(assem.created_time, '%Y-%m-%d') as assemblyDate
         from ope_product_assembly assem
                  left join ope_assembly_b_order border
@@ -286,20 +286,20 @@
     </select>
 
     <select id="productAssemblyItemTraceByIds" resultType="com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult">
-        select assem.id                                    as assemId,
-               count(assem.id)                             as assemblyCompleteTotal,
+              select border.id                                    as borderId,
+               count(border.id)                             as assemblyCompleteTotal,
                DATE_FORMAT(assem.created_time, '%Y-%m-%d') as assemblyDate
-        from ope_product_assembly assem
-                 left join ope_assembly_b_order border
-                           on assem.assembly_b_id = border.id
-        where border.dr = 0
+            from ope_product_assembly assem
+                     left join ope_assembly_b_order border
+                               on assem.assembly_b_id = border.id
+            where border.dr = 0
             <if test="list != null and list.size() != 0">
                 and border.id in
-                <foreach collection="collection"item="item" open="(" close=")" separator=",">
+                <foreach collection="collection" item="item" open="(" close=")" separator=",">
                     #{item}
                 </foreach>
             </if>
-        group by assemblyDate, assemId
+        group by assemblyDate, borderId
     </select>
 
     <select id="assemblyQcInfoCount" resultType="java.lang.Integer">
