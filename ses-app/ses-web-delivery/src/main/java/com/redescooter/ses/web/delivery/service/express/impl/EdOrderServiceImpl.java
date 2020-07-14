@@ -10,7 +10,9 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -429,6 +431,17 @@ public class EdOrderServiceImpl implements EdOrderService {
                 ExpressOrderEventEnums.UNASGN.getValue(), null, null, Boolean.TRUE);
 
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 拒绝订单时 的司机列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<SelectDriverResult> refuseOrderDriverList(IdsEnter enter) {
+        return expressOrderServiceMapper.refuseOrderDriverList(enter);
     }
 
     /**

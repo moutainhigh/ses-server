@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.wh.PurchasingWhTypeEnums;
 import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
+import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.production.PurchasingWhServiceMapper;
@@ -26,7 +26,6 @@ import com.redescooter.ses.web.ros.service.base.OpeStockPurchasService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.purchasingWh.PurchasingWhService;
-import com.redescooter.ses.web.ros.vo.production.wh.AssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.wh.AvailableListBatchNResult;
 import com.redescooter.ses.web.ros.vo.production.wh.AvailableListResult;
 import com.redescooter.ses.web.ros.vo.production.wh.OutWhResult;
@@ -326,7 +325,13 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      * @return
      */
     @Override
-    public List<AssemblyProductResult> canAssemblyProductList(GeneralEnter enter) {
+    public  Map<String, Integer> canAssemblyProductList(GeneralEnter enter) {
+        //反参对象
+        Map<String, Integer> result = new HashMap<>();
+        for (ProductModelEnums item : ProductModelEnums.values()) {
+            result.put(item.getValue(),0);
+        }
+
         //查询出所有商品及bom 规则
         Map<Long, List<OpePartsProductB>> productPartMap = Maps.newHashMap();
 
@@ -334,33 +339,20 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         opePartsProductQueryWrapper.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.SCOOTER.getValue());
         List<OpePartsProduct> partsProductList = opePartsProductService.list(opePartsProductQueryWrapper);
         if (CollectionUtils.isEmpty(partsProductList)) {
-            return new ArrayList<>();
+            return result;
         }
         List<Long> productIds = partsProductList.stream().map(OpePartsProduct::getId).collect(Collectors.toList());
-//        partsProductList.forEach(item -> {
-//            productIds.add(item.getId());
-//        });
 
         //查询bom 规则
         QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
         opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_PRODUCT_ID, productIds);
         List<OpePartsProductB> partsProductBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
         if (CollectionUtils.isEmpty(partsProductBList)) {
-            return new ArrayList<>();
+            return new HashMap<>();
         }
         //过滤出map 产品结构
         Set<Long> partIds = partsProductBList.stream().map(OpePartsProductB::getPartsId).collect(Collectors.toSet());
         productPartMap = partsProductBList.stream().collect(Collectors.groupingBy(OpePartsProductB::getPartsProductId));
-//        partsProductBList.forEach(item -> {
-//            if (!productPartMap.containsKey(item.getPartsProductId())) {
-//                productPartMap.put(item.getPartsProductId(), Lists.newArrayList(item));
-//            } else {
-//                List<OpePartsProductB> opePartsProductBList = productPartMap.get(item.getPartsProductId());
-//                opePartsProductBList.add(item);
-//                productPartMap.put(item.getPartsProductId(), opePartsProductBList);
-//            }
-//            partIds.add(item.getPartsId());
-//        });
 
         //查询采购仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
@@ -376,7 +368,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         List<OpeStock> stockList = opeStockService.list(opeStockQueryWrapper);
         if (CollectionUtils.isEmpty(stockList)) {
-            return new ArrayList<>();
+            return result;
         }
 
         // 确认可组装的产品的最大值
@@ -421,21 +413,20 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
             }
         }
 
-        List<AssemblyProductResult> result = new ArrayList<>();
-        canAssembledMap.forEach((key, value) -> {
+        for (Map.Entry<Long, Integer> entry : canAssembledMap.entrySet()) {
+            Long key = entry.getKey();
+            Integer value = entry.getValue();
             partsProductList.forEach(item -> {
                 if (key.equals(item.getId())) {
-                    result.add(AssemblyProductResult.builder()
-                            .id(key)
-                            .productName(item.getCnName())
-                            .productModel(item.getModel())
-                            .qty(value)
-                            .build());
+                    if (!result.containsKey(item.getModel())) {
+                        result.put(item.getModel(), value);
+                    } else {
+                        result.put(item.getModel(), result.get(item.getModel()) + value);
+                    }
                 }
             });
-        });
-
-        result.removeIf(item -> item.getQty() == 0);
+        }
+        //根据产品型号分类
         return result;
     }
 

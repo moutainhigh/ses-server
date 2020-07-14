@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.service.production.purchasingWh;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.production.wh.AssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.wh.AvailableListResult;
 import com.redescooter.ses.web.ros.vo.production.wh.OutWhResult;
 import com.redescooter.ses.web.ros.vo.production.wh.QcingListResult;
@@ -10,7 +9,6 @@ import com.redescooter.ses.web.ros.vo.production.wh.TobeStoredResult;
 import com.redescooter.ses.web.ros.vo.production.wh.WasteResult;
 import com.redescooter.ses.web.ros.vo.production.wh.WhEnter;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -84,5 +82,5 @@ public interface PurchasingWhService {
      * @param enter
      * @return
      */
-    List<AssemblyProductResult> canAssemblyProductList(GeneralEnter enter);
+    Map<String, Integer>canAssemblyProductList(GeneralEnter enter);
 }

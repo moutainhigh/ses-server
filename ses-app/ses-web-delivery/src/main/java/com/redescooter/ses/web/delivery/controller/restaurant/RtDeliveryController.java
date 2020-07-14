@@ -67,9 +67,8 @@ public class RtDeliveryController {
 
     @PostMapping(value = "/selectDriver")
     @ApiOperation(value = "司机列表选择", response = SelectDriverResult.class)
-    public Response<List<SelectDriverResult>> selectDriver(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        List<SelectDriverResult> selectDriverResults = rtDeliveryService.selectDriverList(enter);
-        return new Response<>(selectDriverResults);
+    public Response<List<SelectDriverResult>> selectDriver(@ModelAttribute @ApiParam("请求参数") IdsEnter enter) {
+        return new Response<>(rtDeliveryService.selectDriverList(enter));
     }
 
     @PostMapping(value = "/map")

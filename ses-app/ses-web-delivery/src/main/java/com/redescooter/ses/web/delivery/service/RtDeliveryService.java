@@ -3,6 +3,7 @@ package com.redescooter.ses.web.delivery.service;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.delivery.vo.*;
 
@@ -55,7 +56,7 @@ public interface RtDeliveryService {
      * @param enter
      * @return
      */
-    List<SelectDriverResult> selectDriverList(GeneralEnter enter);
+    List<SelectDriverResult> selectDriverList(IdsEnter enter);
 
     /**
      * 关闭订单

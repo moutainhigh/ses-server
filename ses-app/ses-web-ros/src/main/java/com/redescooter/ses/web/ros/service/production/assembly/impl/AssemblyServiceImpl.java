@@ -91,6 +91,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.poi.hssf.record.PageBreakRecord;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -680,9 +681,9 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public PageResult<AssemblyResult> list(AssemblyListEnter enter) {
-      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
-        return PageResult.createZeroRowResult(enter);
-      }
+        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(enter);
+        }
         //对type 进行拆分 组装statusList
         List<String> statusList = Lists.newArrayList();
         if (StringUtils.equals(enter.getType(), ProductionTypeEnums.TODO.getValue())) {
@@ -889,12 +890,13 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //组装单 质检结果集
         List<AssemblyQcInfoResult> assemblyQcInfoResultList = assemblyServiceMapper.assemblyQcInfoList(enter);
-        if (CollectionUtils.isEmpty(assemblyQcInfoResultList)){
+        if (CollectionUtils.isEmpty(assemblyQcInfoResultList)) {
             return new ArrayList<>();
         }
 
         //查询子集
-        List<AssemblyQcItemResult> assemblyQcItemResultList = assemblyServiceMapper.assemblyQcInfoItemByIds(enter,assemblyQcInfoResultList.stream().map(AssemblyQcInfoResult::getId).collect(Collectors.toList()));
+        List<AssemblyQcItemResult> assemblyQcItemResultList = assemblyServiceMapper.assemblyQcInfoItemByIds(enter,
+                assemblyQcInfoResultList.stream().map(AssemblyQcInfoResult::getId).collect(Collectors.toList()));
 
         //封装是否要查询的Boolean 字段
         if (CollectionUtils.isNotEmpty(assemblyQcItemResultList)) {
@@ -1280,10 +1282,10 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //查询 支付信息
         List<PaymentItemDetailResult> paymentItemList = assemblyServiceMapper.paymentItemList(enter.getId());
-        if(CollectionUtils.isNotEmpty(paymentItemList)){
+        if (CollectionUtils.isNotEmpty(paymentItemList)) {
             for (PaymentItemDetailResult result : paymentItemList) {
-                if(result.getPlannedPaymentTime() != null){
-                    String date = DateUtil.getTimeStr(result.getPlannedPaymentTime(),"yyyy-MM-dd");
+                if (result.getPlannedPaymentTime() != null) {
+                    String date = DateUtil.getTimeStr(result.getPlannedPaymentTime(), "yyyy-MM-dd");
                     result.setYear(date.split("-")[0]);
                     try {
                         result.setMonth(DateUtil.numMonToEngMon(date.split("-")[1]));
@@ -1386,7 +1388,26 @@ public class AssemblyServiceImpl implements AssemblyService {
     public List<ProductAssemblyTraceResult> productAssemblyTrace(IdEnter enter) {
         //组装单校验
         checkAssembly(enter.getId(), null);
-        return assemblyServiceMapper.productAssemblyTrace(enter);
+        List<ProductAssemblyTraceResult> productAssemblyTraceResults = assemblyServiceMapper.productAssemblyTrace(enter);
+        if (CollectionUtils.isNotEmpty(productAssemblyTraceResults)) {
+            //查询组装信息
+            List<ProductAssemblyTraceItemResult> productAssemblyTraceItemResultList =
+                    assemblyServiceMapper.productAssemblyItemTraceByIds(productAssemblyTraceResults.stream().map(ProductAssemblyTraceResult::getId).collect(Collectors.toList()));
+            //如果说组装记录只有一条 进行数据拼接
+            for (ProductAssemblyTraceResult item : productAssemblyTraceResults) {
+                int count = 0;
+                for (ProductAssemblyTraceItemResult trace : productAssemblyTraceItemResultList) {
+                    if (item.getId().equals(trace.getAssemId())) {
+                        if (count > 1) {
+                            item.setAssemblyFlag(Boolean.TRUE);
+                            continue;
+                        }
+                        item.setAssemblyDate(trace.getAssemblyDate());
+                    }
+                }
+            }
+        }
+        return productAssemblyTraceResults;
     }
 
     /**

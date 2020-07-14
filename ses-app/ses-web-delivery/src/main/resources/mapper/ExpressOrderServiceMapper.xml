@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.delivery.dao.ExpressOrderServiceMapper">
-
-
     <sql id="where_ExpressOrder_List">
         where a.tenant_id=#{tenantId}
         and a.dr=0
@@ -31,12 +29,15 @@
     </sql>
 
     <select id="countByStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+
         select count(*) as totalCount, status
         from cor_express_order
         where tenant_id=#{tenantId}
         group by status
+
     </select>
     <select id="listCount" resultType="int">
+
         select count(*)
         from cor_express_order a
         left join cor_express_delivery_detail b on a.id = b.express_order_id and b.dr = 0
@@ -46,9 +47,11 @@
         on a.id = trace.express_order_id and trace.status =4 and trace.dr = 0
         left join cor_tenant_scooter scooter on trace.scooter_id = scooter.scooter_id and scooter.dr = 0
         left join cor_user_profile e on e.user_id = d.user_id and e.dr = 0
+
         <include refid="where_ExpressOrder_List"/>
     </select>
     <select id="list" resultType="com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult">
+
         select
         a.id as id,
         a.batch_no as batchNo,
@@ -77,11 +80,15 @@
         on a.id = trace.express_order_id and trace.status =4 and trace.dr = 0
         left join cor_tenant_scooter scooter on trace.scooter_id = scooter.scooter_id and scooter.dr = 0
         left join cor_user_profile e on e.user_id = d.user_id and e.dr = 0
+
         <include refid="where_ExpressOrder_List"/>
+
         order by a.created_time desc
         limit #{startRow},#{pageSize}
+
     </select>
     <select id="detail" resultType="com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult">
+
         SELECT a.id,
         a.tenant_id as tenantId,
         a.batch_no as batchNo,
@@ -143,8 +150,10 @@
         WHERE a.tenant_id = #{tenantId}
         AND a.dr = 0
         AND a.id = #{id};
+
     </select>
     <select id="getOrderNode" resultType="com.redescooter.ses.web.delivery.vo.QueryExpressOrderTraceResult">
+
         SELECT
         a.id AS id,
         a.express_delivery_id AS expressDeliveryId,
@@ -179,9 +188,11 @@
         AND a.express_order_id = #{id}
         ORDER BY
         a.created_time ASC
+
     </select>
 
     <select id="scooterMap" resultType="com.redescooter.ses.web.delivery.vo.ScooterMapResult">
+
         select scooter.scooter_id as id,
         scooter.latitude as lat,
         scooter.longitule as lng,
@@ -196,8 +207,10 @@
         left join cor_driver driver on cds.driver_id = driver.id and driver.dr = 0 and driver.status in (1, 2)
         left join cor_user_profile profile on driver.user_id = profile.USER_ID and profile.dr = 0
         where scooter.tenant_id = #{tenantId}
+
     </select>
     <select id="mapOrderList" resultType="com.redescooter.ses.web.delivery.dm.CorExpressOrder">
+
         SELECT
         a.id,
         a.tenant_id as tenantId,
@@ -264,15 +277,21 @@
         WHERE
         a.tenant_id = #{tenantId}
         AND a.dr = 0
-        <if test="statusList !=null and statusList.size() !=0">
+
+        <if test="statusList != null and statusList.size() != 0">
+
             and a.STATUS in
+
             <foreach collection="statusList" item="item" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
+
         order by a.created_time desc
+
     </select>
     <select id="diverInfor" resultType="com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult">
+
         select driver.id as id,
         driver.user_id as userId,
         profile.picture as avatar,
@@ -286,9 +305,11 @@
         and driver.tenant_id = #{tenantId}
         and driver.id=#{id}
         and cds.status = 1
+
     </select>
 
     <select id="driverOrderList" resultType="com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult">
+
         select exorder.*
         from cor_express_order exorder
         right join cor_express_delivery_detail cedd on exorder.id = cedd.express_order_id and cedd.dr=0
@@ -297,9 +318,11 @@
         where exorder.dr=0
         and exorder.tenant_id=#{tenantId}
         and cd.id=#{id}
+
     </select>
     <select id="refuseOrderDetail"
             resultType="com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult">
+
         select driver.id as driverId,
         profile.first_name as driverFirstName,
         profile.last_name as driverLastName,
@@ -315,17 +338,21 @@
         and driver.id is not null
         order by ceot.created_time desc
         limit 1
+
     </select>
     <select id="expressDeliveryShippingByDriverId"
             resultType="com.redescooter.ses.web.delivery.dm.CorExpressDelivery">
+
         select *
         from cor_express_delivery delivery
         where dr = 0
           and driver_id = 1004162
           and TO_DAYS(create_time) = TO_DAYS(NOW())
+
     </select>
     <select id="queryCorTenantScooterByDriverId"
             resultType="com.redescooter.ses.web.delivery.dm.CorTenantScooter">
+
         select tscooter.*
         from cor_tenant_scooter tscooter
         inner join (select scooter_id
@@ -335,5 +362,17 @@
         order by created_time desc
         limit 1) histroy
         on tscooter.scooter_id = histroy.scooter_id;
+
+    </select>
+    <select id="refuseOrderDriverList" resultType="com.redescooter.ses.web.delivery.vo.SelectDriverResult">
+        select cd.id as driverId,
+        cd.user_id as userId,
+        cup.first_name as firstName,
+        cup.last_name as lastName
+        from cor_driver cd
+        inner join cor_user_profile cup on cd.user_id = cup.user_id
+        where  cd.status ='1'
+        and  cd.tenant_id=#{tenantId}
+        group by driverId, userId, first_name, last_name;
     </select>
 </mapper>

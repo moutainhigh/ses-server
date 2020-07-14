@@ -132,6 +132,14 @@ public interface AssemblyServiceMapper {
     List<ProductAssemblyTraceItemResult> productAssemblyItemTrace(IdEnter enter);
 
     /**
+     * 查询组装记录
+     *
+     * @param ids
+     * @return
+     */
+    List<ProductAssemblyTraceItemResult> productAssemblyItemTraceByIds(List<Long> ids);
+
+    /**
      * 产品之间信息
      *
      * @param enter

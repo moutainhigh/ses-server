@@ -17,6 +17,7 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.message.PushMsgBo;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
@@ -297,7 +298,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @return
      */
     @Override
-    public List<SelectDriverResult> selectDriverList(GeneralEnter enter) {
+    public List<SelectDriverResult> selectDriverList(IdsEnter enter) {
         return orderDeliveryServiceMapper.selectDriverList(enter);
     }
 
