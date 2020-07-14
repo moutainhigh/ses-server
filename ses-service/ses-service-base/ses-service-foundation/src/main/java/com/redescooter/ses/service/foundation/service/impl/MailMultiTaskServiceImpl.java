@@ -482,48 +482,49 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
    */
   @Override
   public GeneralResult sendForgetPasswordEmaillTask(BaseMailTaskEnter enter) {
-    Map<String, String> map = JSON.parseObject(JSON.toJSONString(enter), Map.class);
-    if (!map.containsKey("event") ||
-      !map.containsKey("requestId") ||
-      !map.containsKey("systemId") ||
-      !map.containsKey("appId") ||
-      !map.containsKey("name") ||
-      !map.containsKey("userId") ||
-      !map.containsKey("email")) {
-      log.info("=========================================");
-      log.info("=========任务添加失败，必须参数缺失==========");
-      log.info("=========================================");
+      Map<String, String> map = JSON.parseObject(JSON.toJSONString(enter), Map.class);
+      if (!map.containsKey("event") ||
+              !map.containsKey("requestId") ||
+              !map.containsKey("systemId") ||
+              !map.containsKey("appId") ||
+              !map.containsKey("name") ||
+              !map.containsKey("userId") ||
+              !map.containsKey("email")) {
+          log.info("=========================================");
+          log.info("=========任务添加失败，必须参数缺失==========");
+          log.info("=========================================");
+          return new GeneralResult();
+      }
+
+      String systemId = map.get("systemId");
+      String appId = map.get("appId");
+      String requestId = map.get("requestId");
+      String email = map.get("email");
+      Long userId = enter.getUserId();
+      String name = map.get("name");
+
+      PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
+      Map<String, String> mapParameter = getForgetPasswordMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email);
+      map.putAll(mapParameter == null ? new HashMap<>() : mapParameter);
+      PlaMailTask mailTask = new PlaMailTask();
+      mailTask.setId(idSerService.getId(SequenceName.PLA_MAIL_TASK));
+      mailTask.setStatus(MailTaskStatusEnums.PENDING.getCode());
+      mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
+      mailTask.setSystemId(systemId);
+      mailTask.setAppId(appId);
+      mailTask.setRequestId(requestId);
+      mailTask.setReceiveMail(map.get("email"));
+      mailTask.setToUserId(userId);
+      mailTask.setSubject(mailtemplate.getSubject());
+      mailTask.setParameter(JSON.toJSONString(map));
+      mailTask.setContent(getContent(map, mailtemplate));
+      mailTask.setCreatedTime(new Date());
+      mailTask.setUpdatedTime(new Date());
+      mailTaskMapper.insert(mailTask);
+      pullResdis(mailTask, mailtemplate.getExpire());
+
       return new GeneralResult();
-    }
-
-    String systemId = map.get("systemId");
-    String appId = map.get("appId");
-    String requestId = map.get("requestId");
-    String email = map.get("email");
-    Long userId = enter.getUserId();
-    String name = map.get("name");
-
-    PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
-    Map<String, String> mapParameter = getForgetPasswordMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email);
-    map.putAll(mapParameter == null ? new HashMap<>() : mapParameter);
-    PlaMailTask mailTask = new PlaMailTask();
-    mailTask.setId(idSerService.getId(SequenceName.PLA_MAIL_TASK));
-    mailTask.setStatus(MailTaskStatusEnums.PENDING.getCode());
-    mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
-    mailTask.setSystemId(systemId);
-    mailTask.setAppId(appId);
-    mailTask.setRequestId(requestId);
-    mailTask.setReceiveMail(map.get("email"));
-    mailTask.setToUserId(userId);
-    mailTask.setSubject(mailtemplate.getSubject());
-    mailTask.setParameter(JSON.toJSONString(map));
-    mailTask.setContent(getContent(map, mailtemplate));
-    mailTask.setCreatedTime(new Date());
-    mailTask.setUpdatedTime(new Date());
-    mailTaskMapper.insert(mailTask);
-    pullResdis(mailTask, mailtemplate.getExpire());
-
-    return new GeneralResult();  }
+  }
 
   /**
    * subscriptionsubscriptionsubscriptionsubscription     * @return
