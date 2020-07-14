@@ -113,6 +113,7 @@
             or email like concat("%",#{keyword},"%")
             )
             order by created_time desc
+            limit #{startRow},#{pageSize}
         </if>
     </select>
     <select id="customerList" resultType="com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult">
