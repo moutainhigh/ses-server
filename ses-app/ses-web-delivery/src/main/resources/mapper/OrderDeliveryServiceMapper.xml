@@ -127,7 +127,7 @@
         where  cd.status ='1'
         and cd.tenant_id=#{tenantId}
         <if test="ids != null and ids.size() != 0">
-         and cd.id in
+         and cd.id not in
             <foreach collection="ids" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
