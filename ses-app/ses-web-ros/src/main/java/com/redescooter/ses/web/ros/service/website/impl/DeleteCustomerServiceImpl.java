@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
@@ -62,7 +63,8 @@ public class DeleteCustomerServiceImpl implements DeleteService {
         //删除客户
         opeCustomerService.removeById(opeCustomer.getId());
 
-        OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, email.getEmail()).eq(OpeSysUser::getDr, 0));
+        OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, email.getEmail()).eq(OpeSysUser::getDr, 0).eq(OpeSysUser::getDef1,
+                CustomerSourceEnum.WEBSITE.getValue()));
         if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -79,6 +81,31 @@ public class DeleteCustomerServiceImpl implements DeleteService {
             }
             //删除询价单主表数据
             opeCustomerInquiryService.removeByIds(customerInquiryList.stream().map(OpeCustomerInquiry::getId).collect(Collectors.toList()));
+        }
+        return new GeneralResult();
+    }
+
+
+    /**
+     * 删除联系我们询价单
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult deleteInquiry(StorageEamilEnter enter) {
+        OpeCustomerInquiry opeCustomerInquiry =
+                opeCustomerInquiryService.getOne(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, enter.getEmail()).eq(OpeCustomerInquiry::getDr, 0));
+        if (opeCustomerInquiry != null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        //删除主订单
+        opeCustomerInquiryService.removeById(opeCustomerInquiry.getId());
+        OpeCustomerInquiryB customerInquiryB =
+                opeCustomerInquiryBService.getOne(new LambdaQueryWrapper<OpeCustomerInquiryB>().eq(OpeCustomerInquiryB::getInquiryId, opeCustomerInquiry.getId()).eq(OpeCustomerInquiryB::getDr, 0));
+        if (customerInquiryB != null) {
+            opeCustomerInquiryBService.removeById(customerInquiryB.getId());
         }
         return new GeneralResult();
     }
