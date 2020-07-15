@@ -1085,68 +1085,67 @@ public class PartsRosServiceImpl implements PartsRosService {
         QueryWrapper<OpeParts> opePartsQueryWrapper = new QueryWrapper<>();
         opePartsQueryWrapper.in(OpeParts.COL_PARTS_DRAFT_ID, opePartDraftList.stream().map(OpePartsDraft::getId).collect(Collectors.toList()));
         List<OpeParts> opePartsList = opePartsService.list(opePartsQueryWrapper);
-        if (CollectionUtils.isEmpty(opePartsList)) {
-            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
-        }
-
-        QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
-        opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
-        List<OpePartsProductB> partsProductBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
-        if (CollectionUtils.isNotEmpty(partsProductBList)) {
-            //查询相应产品
-            Map<Long, Long> productIdMaps = Maps.newHashMap();
-            partsProductBList.forEach(item -> {
-                productIdMaps.put(item.getPartsProductId(), item.getPartsId());
-            });
-
-            Collection<OpePartsProduct> opePartsProductList = opePartsProductService.listByIds(productIdMaps.entrySet().stream().map(item -> item.getKey()).collect(Collectors.toList()));
-            if (CollectionUtils.isNotEmpty(opePartsProductList)) {
-                List<DeletePartResult> result = new ArrayList<>();
-                opePartsList.forEach(part -> {
-                    if (productIdMaps.containsValue(part.getId())) {
-                        //封装数据返回
-                        List<DeletePartBindProductResult> scooterList = new ArrayList<>();
-
-                        List<DeletePartBindProductResult> combinationList = new ArrayList<>();
-
-                        opePartsProductList.forEach(item -> {
-                            if (StringUtils.equals(item.getProductType().toString(), BomCommonTypeEnums.SCOOTER.getValue())) {
-                                //整车
-                                scooterList.add(
-                                        DeletePartBindProductResult.builder()
-                                                .id(item.getId())
-                                                .cnName(item.getCnName())
-                                                .enName(item.getEnName())
-                                                .productN(item.getProductNumber())
-                                                .build()
-                                );
-                            } else {
-                                //组合
-                                combinationList.add(
-                                        DeletePartBindProductResult.builder()
-                                                .id(item.getId())
-                                                .cnName(item.getCnName())
-                                                .enName(item.getEnName())
-                                                .productN(item.getProductNumber())
-                                                .build()
-                                );
-                            }
-                        });
-                        result.add(
-                                DeletePartResult.builder()
-                                        .id(part.getPartsDraftId())
-                                        .cnName(part.getCnName())
-                                        .enName(part.getEnName())
-                                        .partsN(part.getPartsNumber())
-                                        .scooterList(scooterList)
-                                        .combinationList(combinationList)
-                                        .build()
-                        );
-                    }
+        if (!CollectionUtils.isEmpty(opePartsList)) {
+//            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+            QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
+            opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
+            List<OpePartsProductB> partsProductBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
+            if (CollectionUtils.isNotEmpty(partsProductBList)) {
+                //查询相应产品
+                Map<Long, Long> productIdMaps = Maps.newHashMap();
+                partsProductBList.forEach(item -> {
+                    productIdMaps.put(item.getPartsProductId(), item.getPartsId());
                 });
-                return result;
+
+                Collection<OpePartsProduct> opePartsProductList = opePartsProductService.listByIds(productIdMaps.entrySet().stream().map(item -> item.getKey()).collect(Collectors.toList()));
+                if (CollectionUtils.isNotEmpty(opePartsProductList)) {
+                    List<DeletePartResult> result = new ArrayList<>();
+                    opePartsList.forEach(part -> {
+                        if (productIdMaps.containsValue(part.getId())) {
+                            //封装数据返回
+                            List<DeletePartBindProductResult> scooterList = new ArrayList<>();
+
+                            List<DeletePartBindProductResult> combinationList = new ArrayList<>();
+
+                            opePartsProductList.forEach(item -> {
+                                if (StringUtils.equals(item.getProductType().toString(), BomCommonTypeEnums.SCOOTER.getValue())) {
+                                    //整车
+                                    scooterList.add(
+                                            DeletePartBindProductResult.builder()
+                                                    .id(item.getId())
+                                                    .cnName(item.getCnName())
+                                                    .enName(item.getEnName())
+                                                    .productN(item.getProductNumber())
+                                                    .build()
+                                    );
+                                } else {
+                                    //组合
+                                    combinationList.add(
+                                            DeletePartBindProductResult.builder()
+                                                    .id(item.getId())
+                                                    .cnName(item.getCnName())
+                                                    .enName(item.getEnName())
+                                                    .productN(item.getProductNumber())
+                                                    .build()
+                                    );
+                                }
+                            });
+                            result.add(
+                                    DeletePartResult.builder()
+                                            .id(part.getPartsDraftId())
+                                            .cnName(part.getCnName())
+                                            .enName(part.getEnName())
+                                            .partsN(part.getPartsNumber())
+                                            .scooterList(scooterList)
+                                            .combinationList(combinationList)
+                                            .build()
+                            );
+                        }
+                    });
+                    return result;
+                }
             }
         }
-        return null;
+        return new ArrayList<>();
     }
 }
