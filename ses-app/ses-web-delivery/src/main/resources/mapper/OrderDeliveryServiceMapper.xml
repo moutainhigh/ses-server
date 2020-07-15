@@ -126,8 +126,11 @@
         where status in ('1', '2')) delivery on cd.user_id = delivery.userId
         where  cd.status ='1'
         and cd.tenant_id=#{tenantId}
-        <if test="id != null and id != 0 ">
-        and cd.id =#{id}
+        <if test="ids != null and ids.size() != 0">
+         and cd.id in
+            <foreach collection="ids" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
         </if>
         group by driverId, userId, first_name, last_name;
     </select>
