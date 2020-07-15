@@ -19,4 +19,12 @@ public interface DeleteService {
      * @return
      */
     GeneralResult deleteCustomer(StorageEamilEnter email);
+
+    /**
+     * 删除 联系我们询价单
+     * @param enter
+     * @return
+     */
+    GeneralResult deleteInquiry(StorageEamilEnter enter);
+
 }
