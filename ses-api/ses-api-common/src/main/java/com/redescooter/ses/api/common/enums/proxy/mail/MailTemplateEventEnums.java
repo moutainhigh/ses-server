@@ -25,12 +25,13 @@ public enum MailTemplateEventEnums {
     WEB_UNFREEZE_WARN("WEB解冻通知", 7, "web_unfreeze_warn", "WEB_UNFREEZE_WARN"),
     WEB_EXPIRED_WARN("WEB过期通知", 8, "web_expired_warn", "WEB_EXPIRED_WARN"),
     MOBILE_PERMISSION_WARN("MOBILE权限通知", 9, "mobile_permission_warn", "MOBILE_PERMISSION_WARN"),
-    CUSTOMER_INQUIRY_PAY_DEPOSIT("客户询价单支付定金",10,"customer_inquiry_pay_deposit","CUSTOMER_INQUIRY_PAY_DEPOSIT"),
-    CUSTOMER_INQUIRY_LAST_PARAGRAPH("客户询价单支付尾款",11,"customer_inquiry_last_paragraph","CUSTOMER_INQUIRY_LAST_PARAGRAPH"),
-    SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL("订金支付成功发送邮箱",12,"subscription_pay_succeed_send_eamil","SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL"),
-    FORGET_PSD_SEND_MAIL("官网忘记密码发送邮件",13,"forget_psd_send_mail","FORGET_PSD_SEND_MAIL"),
-    SUBSCRIBE_TO_EMAIL_SUCCESSFULLY("官网订邮件成功后发送邮件",14,"Subscribe_to_email_successfully","SUBSCRIBE_TO_EMAIL_SUCCESSFULLY"),
-    ROS_CREATE_EMPLOYEE("ROS员工账户开通",15,"Ros_open_employee_account","ROS_OPEN_EMPLOYEE_ACCOUNT")
+    CUSTOMER_INQUIRY_PAY_DEPOSIT("客户询价单支付定金", 10, "customer_inquiry_pay_deposit", "CUSTOMER_INQUIRY_PAY_DEPOSIT"),
+    CUSTOMER_INQUIRY_LAST_PARAGRAPH("客户询价单支付尾款", 11, "customer_inquiry_last_paragraph", "CUSTOMER_INQUIRY_LAST_PARAGRAPH"),
+    SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL("订金支付成功发送邮箱", 12, "subscription_pay_succeed_send_eamil", "SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL"),
+    FORGET_PSD_SEND_MAIL("官网忘记密码发送邮件", 13, "forget_psd_send_mail", "FORGET_PSD_SEND_MAIL"),
+    SUBSCRIBE_TO_EMAIL_SUCCESSFULLY("官网订邮件成功后发送邮件", 14, "Subscribe_to_email_successfully", "SUBSCRIBE_TO_EMAIL_SUCCESSFULLY"),
+    ROS_CREATE_EMPLOYEE("ROS员工账户开通", 15, "Ros_open_employee_account", "ROS_OPEN_EMPLOYEE_ACCOUNT"),
+    ROS_FORGET_PSD_SEND_MAIL("ROS忘记密码发送邮件", 13, "ros_forget_psd_send_mail", "ROS_FORGET_PSD_SEND_MAIL"),
 
     ;
     private String mome;
