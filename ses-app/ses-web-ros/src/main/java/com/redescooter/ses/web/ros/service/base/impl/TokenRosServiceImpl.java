@@ -176,14 +176,19 @@ public class TokenRosServiceImpl implements TokenRosService {
             //缓存中能找到，说明已经输错过密码了
             Map<String, String> data = jedisCluster.hgetAll(key);
             String oldNum = data.get("num");
+            if(Integer.parseInt(oldNum) >= 5){
+                return Integer.parseInt(oldNum);
+            }
             num = Integer.parseInt(oldNum) + 1;
-            if(num > 5){
+            if(num == 5){
+                map.put("num",num.toString());
+                jedisCluster.hmset(key, map);
+                jedisCluster.expire(key, 60);
                 return num;
             }
         }
         map.put("num",num.toString());
         jedisCluster.hmset(key, map);
-        jedisCluster.expire(key, 60);
         return num;
     }
 
