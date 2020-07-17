@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.wms;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.wms.WmsStockAvailableResult;
 import com.redescooter.ses.web.ros.vo.wms.WmsStockEnter;
+import com.redescooter.ses.web.ros.vo.wms.WmsStockResult;
 
 /**
  * @ClassNameWmsStockAvailableService
@@ -18,4 +19,25 @@ public interface WmsStockService{
    * @return
    */
   PageResult<WmsStockAvailableResult> getStockAvailableList(WmsStockEnter enter);
+
+
+  /**
+   * 查询仓储待生产库存集合
+   * @return
+   */
+  PageResult<WmsStockResult> getStockPredictedList(WmsStockEnter enter);
+
+  /**
+   * 查询仓储待入库库存集合
+   * @return
+   */
+  PageResult<WmsStockResult> getStockStoredList(WmsStockEnter enter);
+
+
+  /**
+   * 查询仓储已出库库存集合
+   * @return
+   */
+  PageResult<WmsStockResult> getStockOutWhList(WmsStockEnter enter);
+
 }

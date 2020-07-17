@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.dao.WmsServiceMapper;
 import com.redescooter.ses.web.ros.service.wms.WmsStockService;
 import com.redescooter.ses.web.ros.vo.wms.WmsStockAvailableResult;
 import com.redescooter.ses.web.ros.vo.wms.WmsStockEnter;
+import com.redescooter.ses.web.ros.vo.wms.WmsStockResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,4 +43,38 @@ private WmsServiceMapper wmsServiceMapper;
 
     return PageResult.create(page, totalRows, stockAvailableList);
   }
+
+  /**
+   * 查询仓储待生产库存集合
+   *
+   * @param enter
+   * @return
+   */
+  @Override
+  public PageResult<WmsStockResult> getStockPredictedList(WmsStockEnter enter) {
+    return null;
+  }
+
+  /**
+   * 查询仓储待入库库存集合
+   *
+   * @param enter
+   * @return
+   */
+  @Override
+  public PageResult<WmsStockResult> getStockStoredList(WmsStockEnter enter) {
+    return null;
+  }
+
+  /**
+   * 查询仓储已出库库存集合
+   *
+   * @param enter
+   * @return
+   */
+  @Override
+  public PageResult<WmsStockResult> getStockOutWhList(WmsStockEnter enter) {
+    return null;
+  }
+
 }
