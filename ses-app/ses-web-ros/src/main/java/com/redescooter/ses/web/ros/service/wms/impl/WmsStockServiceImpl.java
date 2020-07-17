@@ -22,24 +22,26 @@ import java.util.List;
 @Service
 @Slf4j
 public class WmsStockServiceImpl implements WmsStockService {
-@Autowired
-private WmsServiceMapper wmsServiceMapper;
+
+  @Autowired
+  private WmsServiceMapper wmsServiceMapper;
 
   /**
    * 查询仓储显示可用库存集合
+   *
    * @return
    */
   @Override
   public PageResult<WmsStockAvailableResult> getStockAvailableList(WmsStockEnter page) {
-    if (page.getKeyword()!=null && page.getKeyword().length()>50){
+    if (page.getKeyword() != null && page.getKeyword().length() > 50) {
       return PageResult.createZeroRowResult(page);
     }
-    int totalRows = wmsServiceMapper.WmsUsableStockCount(page);
+    int totalRows = wmsServiceMapper.wmsUsableStockCount(page);
     if (totalRows == 0) {
       return PageResult.createZeroRowResult(page);
     }
 
-    List<WmsStockAvailableResult> stockAvailableList = wmsServiceMapper.WmsUsableStockList(page);
+    List<WmsStockAvailableResult> stockAvailableList = wmsServiceMapper.wmsUsableStockList(page);
 
     return PageResult.create(page, totalRows, stockAvailableList);
   }

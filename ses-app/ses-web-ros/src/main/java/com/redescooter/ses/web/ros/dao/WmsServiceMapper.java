@@ -21,14 +21,14 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int WmsUsableStockCount(@Param("enter") WmsStockEnter enter);
+  int wmsUsableStockCount(@Param("enter") WmsStockEnter enter);
   /**
    * 仓储可用列表
    *
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> WmsUsableStockList(@Param("enter") WmsStockEnter enter);
+  List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter);
 
 }
 

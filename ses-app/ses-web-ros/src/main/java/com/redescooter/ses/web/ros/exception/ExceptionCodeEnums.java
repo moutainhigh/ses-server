@@ -322,6 +322,10 @@ public enum ExceptionCodeEnums {
 
     TOP_DEPT_IS_NOT_EXIST(10152, "顶级部门不存在"),
 
+    LOGIN_PSD_ERROER_NEED_CODE(10153,"密码错误"),
+
+    LOGIN_PSD_ERROER_NUM_MANY(10154,"密码错误次数过多，请一分钟之后再登陆"),
+
 
     ;
 
