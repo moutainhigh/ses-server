@@ -1,15 +1,10 @@
 package com.redescooter.ses.tool.utils;
 
 import com.redescooter.ses.api.common.constant.DateConstant;
-import lombok.SneakyThrows;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * description: DateUtil 时间工具类
@@ -882,7 +877,18 @@ public class DateUtil {
         return new Date(timeStamp);
     }
 
-    public static void main(String[] args) {
-        System.out.println(timeStampToDate(2553436800000L,UTC));
+
+    // 数字月份转为英文的月份
+    public static String numMonToEngMon(String month) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM");
+        Date date = sdf.parse(month);
+        sdf = new SimpleDateFormat("MMMMM", Locale.US);
+        month = sdf.format(date);
+        return month;
+    }
+
+
+    public static void main(String[] args) throws ParseException {
+        System.out.println(numMonToEngMon("07"));
     }
 }

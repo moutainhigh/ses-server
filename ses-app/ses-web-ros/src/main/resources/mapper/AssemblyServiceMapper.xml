@@ -215,7 +215,8 @@
         payment.payment_time as actualPaymentDate,
         payment.description as remark,
         payment.payment_type as paymentType,
-        payment.planned_payment_time as estimatedPaymentDate
+        payment.planned_payment_time as estimatedPaymentDate,
+        payment.planned_payment_time as plannedPaymentTime
         from ope_assembly_order_payment payment
         where payment.dr = 0
         and payment.ope_assembly_order_id =#{id}
@@ -266,8 +267,7 @@
                 border.product_number             as productN,
                 product.en_name                   as enName,
                 border.assembly_qty               as assemblyTotal,
-                border.complete_qty               as assemblyCompleteTotal,
-                if(border.complete_qty = 0, 0, 1) as assemblyFlag
+                border.complete_qty               as assemblyCompleteTotal
         from ope_assembly_b_order border
                  inner join ope_parts_product product on border.product_id = product.id
         where border.assembly_id = #{id}
@@ -275,7 +275,7 @@
 
     <select id="productAssemblyItemTrace"
             resultType="com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult">
-        select count(assem.id)                             as assemblyCompleteTotal,
+        select count(border.id)                             as assemblyCompleteTotal,
                DATE_FORMAT(assem.created_time, '%Y-%m-%d') as assemblyDate
         from ope_product_assembly assem
                  left join ope_assembly_b_order border
@@ -283,6 +283,23 @@
         where border.dr=0
         and border.id=#{id}
         group by assemblyDate
+    </select>
+
+    <select id="productAssemblyItemTraceByIds" resultType="com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult">
+              select border.id                                    as borderId,
+               count(border.id)                             as assemblyCompleteTotal,
+               DATE_FORMAT(assem.created_time, '%Y-%m-%d') as assemblyDate
+            from ope_product_assembly assem
+                     left join ope_assembly_b_order border
+                               on assem.assembly_b_id = border.id
+            where border.dr = 0
+            <if test="list != null and list.size() != 0">
+                and border.id in
+                <foreach collection="collection" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        group by assemblyDate, borderId
     </select>
 
     <select id="assemblyQcInfoCount" resultType="java.lang.Integer">

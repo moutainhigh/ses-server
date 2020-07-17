@@ -54,6 +54,7 @@ import redis.clients.jedis.JedisCluster;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:InquiryServiceImpl
@@ -151,7 +152,6 @@ public class InquiryServiceImpl implements InquiryService {
             //邮箱 去空格
             enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
         }
-
 
         // 查询已存在的email 暂时注释掉 邮箱过滤
         //List<String> emailList = inquiryServiceMapper.usingEmailList();
@@ -462,6 +462,7 @@ public class InquiryServiceImpl implements InquiryService {
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName,excelFolder);
+                log.info("路劲是这个！！！！！！！！！！！！！！！"+excelFolder);
                 File file = new File(path);
                 FileInputStream inputStream = new FileInputStream(file);
                 MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),

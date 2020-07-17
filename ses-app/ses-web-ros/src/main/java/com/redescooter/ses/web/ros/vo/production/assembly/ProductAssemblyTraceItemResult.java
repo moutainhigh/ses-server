@@ -29,6 +29,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Builder
 public class ProductAssemblyTraceItemResult extends GeneralResult {
 
+    @ApiModelProperty(value = "组装单Id")
+    private Long borderId;
+
     @ApiModelProperty(value = "需组装总数量")
     private int assemblyTotal;
 

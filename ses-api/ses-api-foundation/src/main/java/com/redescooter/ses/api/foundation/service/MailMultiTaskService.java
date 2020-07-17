@@ -126,6 +126,19 @@ public interface MailMultiTaskService {
     GeneralResult addMultiMailTask(BaseMailTaskEnter enter);
 
     /**
+     *添加创建人员邮件任务
+     subscriptionsubscriptionsubscriptionsubscription     * @return
+     */
+    GeneralResult sendForgetPasswordEmaillTask(BaseMailTaskEnter enter);
+
+
+    /**
+     *添加创建人员邮件任务
+     subscriptionsubscriptionsubscriptionsubscription     * @return
+     */
+  GeneralResult addCreateEmployeeMailTask(BaseMailTaskEnter enter);
+
+    /**
      * 执行所有任务
      *
      * @return

@@ -338,7 +338,7 @@ public class StripeServiceImpl implements StripeService {
         String name = eamil.substring(0, eamil.indexOf("@"));
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
         enter.setName(name);
-        enter.setEvent(MailTemplateEventEnums.SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL.getName());
+        enter.setEvent(MailTemplateEventEnums.SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL.getEvent());
         enter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
         enter.setMailAppId(SystemIDEnums.REDE_SES.getValue());
         enter.setToMail(eamil);

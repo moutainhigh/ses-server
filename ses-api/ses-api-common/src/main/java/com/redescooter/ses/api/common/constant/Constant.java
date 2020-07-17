@@ -53,6 +53,15 @@ public interface Constant {
      */
     String DEFAULT_PASSWORD = "RedEScooter2019";
 
+    /*
+    ros登录地址
+     */
+
+    String ROS_LOGIN_URL = "http://192.168.2.200/ros/#/";
+    /*
+    ros重置密码
+     */
+    String ROS_FORGET_PASSWORD = "http://192.168.2.227:8080/#/account-plugin";
     /**
      * Excel批量导入车辆模板地址
      */
@@ -62,7 +71,7 @@ public interface Constant {
     //百分比
     int AMOUNTP_ROPORTION = 100;
     //默认经纬度
-    BigDecimal LONGITUDE = new BigDecimal("48.862868");
+    BigDecimal LATITUDE = new BigDecimal("48.862868");
 
-    BigDecimal LATITUDE=new BigDecimal("2.313960");
+    BigDecimal LONGITUDE = new BigDecimal("2.313960");
 }

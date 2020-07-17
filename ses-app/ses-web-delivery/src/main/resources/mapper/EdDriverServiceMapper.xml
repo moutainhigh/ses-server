@@ -20,7 +20,7 @@
         ceo.status as status,
         ceo.recipient_name as recipient,
         ceo.created_time as createdTime,
-        detail.ata as completeTime
+        if(ceo.status != 2, detail.ata, null) as completeTime
         from cor_express_delivery_detail detail
         left join cor_express_delivery ced on detail.express_delivery_id = ced.id and ced.dr = 0
         left join cor_express_order ceo on ceo.id = detail.express_order_id and ceo.dr = 0

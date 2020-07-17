@@ -23,12 +23,7 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.dm.OpeCustomerAccessories;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
-import com.redescooter.ses.web.ros.dm.OpePartsProduct;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
@@ -36,11 +31,8 @@ import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -53,11 +45,7 @@ import redis.clients.jedis.JedisCluster;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -691,7 +679,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OkHttpClient client = new OkHttpClient();
 
         MediaType mediaType = MediaType.parse(sendinBlueConfig.getMediaType());
-        RequestBody body = RequestBody.create(mediaType,"{\"listIds\":["+ sendinBlueConfig.getListIds() +"],\"updateEnabled\":"+sendinBlueConfig.getUpdateEnabled()+",\"email\":\""+ email +"\"}");
+
+        Map<String, String> map = new HashMap<>();
+        map.put("updateEnabled", sendinBlueConfig.getUpdateEnabled());
+        map.put("email", email);
+
+        RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(map));
         Request request = new Request.Builder()
                 .url(sendinBlueConfig.getUrl())
                 .post(body)
@@ -704,11 +697,11 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             System.out.println("response" + response.message());
         } catch (IOException e) {
             e.printStackTrace();
-            }
+        }
 
 
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
-        enter.setEvent(MailTemplateEventEnums.SUBSCRIBE_TO_EMAIL_SUCCESSFULLY.getName());
+        enter.setEvent(MailTemplateEventEnums.SUBSCRIBE_TO_EMAIL_SUCCESSFULLY.getEvent());
         enter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
         enter.setMailAppId(SystemIDEnums.REDE_SES.getValue());
         enter.setToMail(email);

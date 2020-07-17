@@ -3,6 +3,7 @@ package com.redescooter.ses.web.delivery.dao;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.web.delivery.dm.CorExpressDelivery;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
@@ -131,4 +132,12 @@ public interface ExpressOrderServiceMapper {
      * @Version: SAAS 1.2
      */
     CorTenantScooter queryCorTenantScooterByDriverId(Long driverId);
+
+    /**
+     * 拒绝订单时的司机列表
+     *
+     * @param enter
+     * @return
+     */
+    List<SelectDriverResult> refuseOrderDriverList(IdsEnter enter);
 }

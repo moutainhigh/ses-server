@@ -24,6 +24,7 @@
         where allocateb.dr = 0
         and allocateb.allocate_id=#{id}
         order by allocateb.created_time asc
+        limit #{startRow},#{pageSize}
     </select>
     <select id="allocatListCount" resultType="int">
         select count(*)
@@ -92,6 +93,7 @@
         where opart.dr = 0
         and opart.assembly_id =#{id}
         order by opart.created_time asc
+        limit #{startRow},#{pageSize}
     </select>
 
     <select id="queryStockBillBySourceTypeId"

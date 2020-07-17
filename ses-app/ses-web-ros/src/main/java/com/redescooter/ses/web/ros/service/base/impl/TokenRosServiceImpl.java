@@ -5,17 +5,20 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.CacheConstants;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
-import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.GetAccountKeyResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.exception.FoundationException;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -25,6 +28,7 @@ import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
@@ -34,6 +38,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
+import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -70,7 +75,8 @@ public class TokenRosServiceImpl implements TokenRosService {
 
     @Reference
     private IdAppService idAppService;
-
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
     @Value("${Request.privateKey}")
     private  String privateKey;
 
@@ -146,10 +152,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         sysUser.setLastLoginIp(enter.getClientIp());
         sysUser.setUpdatedBy(enter.getUserId());
         sysUser.setUpdatedTime(new Date());
-
-        UpdateWrapper<OpeSysUser> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", sysUser.getId());
-        sysUserMapper.update(sysUser, updateWrapper);
+        sysUserMapper.updateById(sysUser);
 
         TokenResult result = new TokenResult();
         result.setToken(userToken.getToken());
@@ -207,6 +210,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
+
     /**
      * 更换密码
      *
@@ -215,7 +219,108 @@ public class TokenRosServiceImpl implements TokenRosService {
      */
     @Override
     public GeneralResult modifyPassword(ModifyPasswordEnter enter) {
-        return null;
+        //密码去空格
+        if (StringUtils.isNotEmpty(enter.getOldPassword())) {
+            enter.setOldPassword(SesStringUtils.stringTrim(enter.getOldPassword()));
+        }
+        if (StringUtils.isNotEmpty(enter.getNewPassword())) {
+            enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
+        }
+
+        if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getOldPassword())) {
+            String newPassword = "";
+            String confirmPassword = "";
+            try {
+                newPassword = RsaUtils.decrypt(enter.getNewPassword(), privateKey);
+                confirmPassword = RsaUtils.decrypt(enter.getOldPassword(), privateKey);
+            } catch (Exception e) {
+                throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            enter.setNewPassword(newPassword);
+            enter.setOldPassword(confirmPassword);
+        }
+
+        if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
+                    ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+        }
+
+        GetUserEnter getUser = getGetUserEnter(enter);
+        QueryWrapper<OpeSysUser> emailUser = new QueryWrapper<>();
+        emailUser.eq(OpeSysUser.COL_LOGIN_NAME, getUser.getEmail());
+        emailUser.eq(OpeSysUser.COL_APP_ID, getUser.getAppId());
+        emailUser.eq(OpeSysUser.COL_SYSTEM_ID, getUser.getSystemId());
+        emailUser.last("limit 1");
+        OpeSysUser opeSysUser = opeSysUserService.getOne(emailUser);
+        if (opeSysUser == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                    ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+        }
+
+        opeSysUser.setPassword(DigestUtils.md5Hex(enter.getOldPassword() + opeSysUser.getSalt()));
+        opeSysUser.setUpdatedBy(opeSysUser.getId());
+        opeSysUser.setUpdatedTime(new Date());
+        opeSysUserService.updateById(opeSysUser);
+
+        if (StringUtils.isNotBlank(opeSysUser.getLastLoginToken())) {
+            // 清除原有token,重新登录
+            jedisCluster.del(opeSysUser.getLastLoginToken());
+            jedisCluster.del(enter.getRequestId());
+        }
+        //token 为空为系统外设置密码 设置成功过后 清楚 缓存保证一个requestId 只能用一次
+        if (StringUtils.isBlank(enter.getToken())) {
+            if (jedisCluster.exists(enter.getRequestId())) {
+                jedisCluster.del(enter.getRequestId());
+            }
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    private GetUserEnter getGetUserEnter(ModifyPasswordEnter enter) {
+        GetUserEnter getUser = new GetUserEnter();
+        getUser.setRequestId(enter.getRequestId());
+
+        if (StringUtils.isNotBlank(enter.getToken())) {
+            // 数据校验
+            String code = jedisCluster.get(enter.getRequestId());
+            if(Strings.isNullOrEmpty(code)){
+                throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                        ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            }
+            if (!StringUtils.equals(code, enter.getCode())) {
+                throw new SesWebRosException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
+            }
+             // 系统内部进行设置密码
+            UserToken userToken = getUserToken(enter.getToken());
+            if (userToken.getUserId() == null || userToken.getUserId() == 0) {
+                throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                        ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            }
+            getUser.setUserId(userToken.getUserId());
+            getUser.setAppId(enter.getAppId());
+            getUser.setSystemId(enter.getSystemId());
+        } else {
+             // 系统外部进行设置密码
+            Map<String, String> hash = jedisCluster.hgetAll(enter.getRequestId());
+            if (hash == null || hash.isEmpty()) {
+                throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                        ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            }
+            if (!StringUtils.equals(hash.get("systemId"), enter.getSystemId())) {
+                throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                        ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            }
+            if (!StringUtils.equals(hash.get("appId"), enter.getAppId())) {
+                throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
+                        ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            }
+
+            getUser.setEmail(StringUtils.isBlank(hash.get("email")) ? null : hash.get("email"));
+            getUser.setAppId(StringUtils.isBlank(hash.get("appId")) ? null : hash.get("appId"));
+            getUser.setSystemId(StringUtils.isBlank(hash.get("systemId")) ? null : hash.get("systemId"));
+        }
+        return getUser;
     }
 
     /**
@@ -306,7 +411,50 @@ public class TokenRosServiceImpl implements TokenRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    private OpeSysUser buildSysUserSingle(AddSysUserEnter enter, String password) {
+  /**
+   * 发送忘记密码邮箱
+   *
+   * @param baseSendMailEnter
+   * @return
+   */
+  @Override
+  public GeneralResult sendForgetPasswordEmail(BaseSendMailEnter baseSendMailEnter) {
+
+      if (Strings.isNullOrEmpty(baseSendMailEnter.getMail())) {
+          throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
+      }
+      String decryptMail = null;
+      if (StringUtils.isNotEmpty(baseSendMailEnter.getMail())) {
+          try {
+              //邮箱解密
+              decryptMail = RsaUtils.decrypt(baseSendMailEnter.getMail(), privateKey);
+          } catch (Exception e) {
+              throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+          }
+          baseSendMailEnter.setMail(decryptMail);
+
+          //邮箱长度校验
+          checkString(baseSendMailEnter.getMail(), 2, 50);
+      }
+      //先判断邮箱是否存在、
+      OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue()).eq(OpeSysUser::getLoginName,
+              baseSendMailEnter.getMail()).last("limit 1"));
+      if (null == opeSysUser) {
+          throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+      }
+      BaseMailTaskEnter enter = new BaseMailTaskEnter();
+      enter.setName(baseSendMailEnter.getMail().substring(0, baseSendMailEnter.getMail().indexOf("@")));
+      enter.setEvent(MailTemplateEventEnums.ROS_FORGET_PSD_SEND_MAIL.getEvent());
+      enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+      enter.setAppId(AppIDEnums.SES_ROS.getValue());
+      enter.setEmail(baseSendMailEnter.getMail());
+      enter.setRequestId(baseSendMailEnter.getRequestId());
+      enter.setUserId(opeSysUser.getId());
+      mailMultiTaskService.sendForgetPasswordEmaillTask(enter);
+      return new GeneralResult(baseSendMailEnter.getRequestId());
+  }
+
+  private OpeSysUser buildSysUserSingle(AddSysUserEnter enter, String password) {
         OpeSysUser sysUser = new OpeSysUser();
         int salt = RandomUtils.nextInt(10000, 99999);
         String savePassword = DigestUtils.md5Hex(password + salt);
@@ -360,10 +508,8 @@ public class TokenRosServiceImpl implements TokenRosService {
         UserToken userToken = new UserToken();
         try {
             BeanUtils.populate(userToken, map);
-        } catch (IllegalAccessException e) {
-            log.error("checkToken IllegalAccessException sessionMap:" + map, e);
-        } catch (InvocationTargetException e) {
-            log.error("checkToken IllegalAccessException sessionMap:" + map, e);
+        } catch (Exception e) {
+            log.error("checkToken Exception sessionMap:" + map, e);
         }
         return userToken;
     }
@@ -399,6 +545,15 @@ public class TokenRosServiceImpl implements TokenRosService {
         return userToken;
     }
 
+  private void checkString(String str, int min, int max) {
+    if (StringUtils.isEmpty(str)) {
+      throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+    }
+    if (str.length() < min || str.length() > max) {
+      throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+    }
+  }
+
     private void setAuth(long roleId) {
 
         String key = new StringBuilder().append(roleId).append(":::").append(CacheConstants.MENU_DETAILS).toString();
@@ -406,4 +561,5 @@ public class TokenRosServiceImpl implements TokenRosService {
         Boolean aBoolean = jedisCluster.exists(key);
 
     }
+
 }

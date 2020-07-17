@@ -17,6 +17,7 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.message.PushMsgBo;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
@@ -61,6 +62,7 @@ import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateEnter;
 import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateResult;
 import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
 import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
+import com.redescooter.ses.web.delivery.vo.edorder.QueryDriverListEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -297,7 +299,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @return
      */
     @Override
-    public List<SelectDriverResult> selectDriverList(GeneralEnter enter) {
+    public List<SelectDriverResult> selectDriverList(QueryDriverListEnter enter) {
         return orderDeliveryServiceMapper.selectDriverList(enter);
     }
 

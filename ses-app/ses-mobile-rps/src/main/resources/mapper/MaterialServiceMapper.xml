@@ -67,6 +67,7 @@
                          inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr = 0
                 where purchasbqc.dr = 0
                 and purchasbqc.fail_count !=0
+                and purchasb.purchas_id=#{id}
     </select>
 
     <select id="qcFailDetail" resultType="com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult">
@@ -82,6 +83,7 @@
                  inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr = 0
         where purchasbqc.dr = 0
         and purchasbqc.fail_count !=0
+        and purchasb.purchas_id=#{id}
         order by purchasb.created_time asc
         limit #{startRow},#{pageSize}
     </select>

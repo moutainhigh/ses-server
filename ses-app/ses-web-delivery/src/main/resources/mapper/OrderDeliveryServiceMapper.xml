@@ -124,10 +124,15 @@
         left join (select deliverer_id as userId, id as deliveryId
         from cor_delivery
         where status in ('1', '2')) delivery on cd.user_id = delivery.userId
-        where cd.tenant_id =#{tenantId}
-        and cd.status ='1'
-        group by driverId, userId, first_name, last_name
-
+        where  cd.status ='1'
+        and cd.tenant_id=#{tenantId}
+        <if test="ids != null and ids.size() != 0">
+         and cd.id not in
+            <foreach collection="ids" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        group by driverId, userId, first_name, last_name;
     </select>
     <select id="scooterMap" resultType="com.redescooter.ses.web.delivery.vo.ScooterMapResult">
         select scooter.scooter_id as id,

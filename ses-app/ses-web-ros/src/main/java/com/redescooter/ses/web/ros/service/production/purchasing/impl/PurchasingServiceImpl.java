@@ -1,5 +1,8 @@
 package com.redescooter.ses.web.ros.service.production.purchasing.impl;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
@@ -73,18 +76,7 @@ import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
 import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
 import com.redescooter.ses.web.ros.vo.production.SaveSupplierAnnexEnter;
 import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingDetailProductEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasSupplierResult;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
-import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
-import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemDetailResult;
-import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
-import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
-import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.*;
 import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -162,6 +154,9 @@ public class PurchasingServiceImpl implements PurchasingService {
 
     @Autowired
     private OpeStockBillService opeStockBillService;
+
+//    @Autowired
+//    private HttpServletResponse response;
 
     /**
      * 采购单状态统计
@@ -446,26 +441,72 @@ public class PurchasingServiceImpl implements PurchasingService {
         return resultList;
     }
 
+    @Override
+    public GeneralResult purchasingExport(Long id,HttpServletResponse response) {
+        IdEnter enter = new IdEnter();
+        enter.setId(id);
+        PurchasingResult purchasingResult = this.detail(enter);
+        PurchasingExportResult exportResult = new PurchasingExportResult();
+        BeanUtil.copyProperties(purchasingResult,exportResult);
+        List<PurchasingExportResult> list = new ArrayList<>();
+        list.add(exportResult);
+        try{
+            // 设置响应输出的头类型
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            // 下载文件的默认名称
+            response.setHeader("Content-Disposition", "attachment;filename="+System.currentTimeMillis()+".xls");
+            // =========easypoi部分
+            ExportParams exportParams = new ExportParams();
+            // exportParams.setDataHanlder(null);//和导入一样可以设置一个handler来处理特殊数据
+            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, PurchasingExportResult.class, list);
+            workbook.write(response.getOutputStream());
+        } catch (Exception e) {
+            System.out.println("+++++++++++++++++++");
+        }
+        return   new GeneralResult();
+    }
+
     /**
      * @param enter
      * @return
      */
-    @Override
-    public GeneralResult export(IdEnter enter, HttpServletResponse response) {
-
-        String path = "src/main/resources/template/";
-
-        PurchasingResult purchasingResult = this.detail(enter);
-
-        try {
-            Workbook workbook = EasyPoiUtils.exportExcel(PurchasingResult.class, (Collection<?>) purchasingResult, path, purchasingResult.getContractN());
-            EasyPoiUtils.downLoadExcel(purchasingResult.getContractN(), workbook, response);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return new GeneralResult();
-    }
+//    @Override
+//    public GeneralResult export(IdEnter enter) {
+//
+//        String path = "src/main/resources/template/";
+//
+//        PurchasingResult purchasingResult = this.detail(enter);
+//
+//        PurchasingResultTest purchasingResultTest = new PurchasingResultTest();
+//        BeanUtil.copyProperties(purchasingResult,purchasingResultTest);
+//        List<PurchasingResultTest> list = new ArrayList<>();
+//        list.add(purchasingResultTest);
+////        try {
+////            Workbook workbook = EasyPoiUtils.exportExcel(PurchasingResultTest.class, list, path, purchasingResultTest.getContractN(),response);
+////            EasyPoiUtils.downLoadExcel(purchasingResultTest.getContractN(), workbook, response);
+//            try{
+//                // 设置响应输出的头类型
+//                response.setCharacterEncoding("UTF-8");
+//                response.setHeader("content-Type", "application/vnd.ms-excel");
+//                // 下载文件的默认名称
+//                response.setHeader("Content-Disposition", "attachment;filename=user.xls");
+//                // =========easypoi部分
+//                ExportParams exportParams = new ExportParams();
+//
+//
+//                // exportParams.setDataHanlder(null);//和导入一样可以设置一个handler来处理特殊数据
+////                Workbook workbook = ExcelExportUtil.exportExcel(exportParams, PurchasingResultTest.class, list);
+////                workbook.write(response.getOutputStream());
+//                EasyPoiNewUtils.exportExcel(list,"导出","导出1",PurchasingResultTest.class,"导出2",true,response);
+//            } catch (Exception e) {
+//                System.out.println("+++++++++++++++++++");
+//            }
+////        } catch (IOException e) {
+////            e.printStackTrace();
+////        }
+//
+//        return new GeneralResult();
+//    }
 
     /**
      * 付款详情
