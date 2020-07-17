@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
 
+import java.util.List;
+
 /**
  * @ClassName:QueryDriverListEnter
  * @description: QueryDriverListEnter
@@ -26,5 +28,5 @@ public class QueryDriverListEnter extends GeneralEnter {
 
 
     @ApiModelProperty(value = "不需要查询的司机Id")
-    private Long id;
+    private List<Long> ids;
 }
