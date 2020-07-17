@@ -12,37 +12,18 @@ import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.production.PurchasingWhServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpePartsProduct;
-import com.redescooter.ses.web.ros.dm.OpePartsProductB;
-import com.redescooter.ses.web.ros.dm.OpeStock;
-import com.redescooter.ses.web.ros.dm.OpeStockPurchas;
-import com.redescooter.ses.web.ros.dm.OpeWhse;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasService;
-import com.redescooter.ses.web.ros.service.base.OpeStockPurchasService;
-import com.redescooter.ses.web.ros.service.base.OpeStockService;
-import com.redescooter.ses.web.ros.service.base.OpeWhseService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.production.purchasingWh.PurchasingWhService;
-import com.redescooter.ses.web.ros.vo.production.wh.AvailableListBatchNResult;
-import com.redescooter.ses.web.ros.vo.production.wh.AvailableListResult;
-import com.redescooter.ses.web.ros.vo.production.wh.OutWhResult;
-import com.redescooter.ses.web.ros.vo.production.wh.QcingListResult;
-import com.redescooter.ses.web.ros.vo.production.wh.TobeStoredResult;
-import com.redescooter.ses.web.ros.vo.production.wh.WasteResult;
-import com.redescooter.ses.web.ros.vo.production.wh.WhEnter;
+import com.redescooter.ses.web.ros.vo.production.wh.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -178,8 +159,6 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 
             //批次号集合
             Map<Long, List<AvailableListBatchNResult>> batchNMap = new HashMap<>();
-
-
             opeStockPurchasList.forEach(item -> {
                 //已存在 该部件
                 if (batchNMap.containsKey(item.getPartId())) {
