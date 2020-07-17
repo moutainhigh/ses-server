@@ -179,46 +179,27 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
             //批次号集合
             Map<Long, List<AvailableListBatchNResult>> batchNMap = new HashMap<>();
 
-            //往集合里放入数据
-            for (OpeStockPurchas item : opeStockPurchasList) {
+
+            opeStockPurchasList.forEach(item -> {
+                //已存在 该部件
                 if (batchNMap.containsKey(item.getPartId())) {
-
-                    //若批次号存在 维护数量、若不存在 新增一个批次号
-                    List<AvailableListBatchNResult> availableListBatchNList = batchNMap.get(item.getPartId());
-
-                    Boolean existBatchN = Boolean.FALSE;
-
-                    for (AvailableListBatchNResult batchN : availableListBatchNList) {
-                        if (StringUtils.equals(item.getLot(), batchN.getBatchN())) {
-                            existBatchN = Boolean.TRUE;
-
-                            batchN.setQty(batchN.getQty() + item.getInWhQty());
+                    //判断是否存在批次号
+                    for (AvailableListBatchNResult batch : batchNMap.get(item.getPartId())) {
+                        //存在批次号 数量累加
+                        if (StringUtils.equals(batch.getBatchN(), item.getLot())) {
+                            batch.setQty(batch.getQty() + 1);
                             break;
                         }
                     }
-                    //已存在批次号 更新map 集合 不存在 生成新的对象
-                    if (!existBatchN) {
-                        //否则 在map的value集合中放入新数据
-                        availableListBatchNList.add(AvailableListBatchNResult.builder()
-                                .id(item.getPartId())
-                                .qty(item.getInWhQty())
-                                .batchN(item.getLot())
-                                .build());
-                    }
-                    batchNMap.put(item.getPartId(), availableListBatchNList);
-                }
-
-                //map中不存在这个部件 就在map放入新数据
-                if (!batchNMap.containsKey(item.getPartId())) {
-                    List<AvailableListBatchNResult> availableListBatchNList = new ArrayList<>();
-                    availableListBatchNList.add(AvailableListBatchNResult.builder()
+                } else {
+                    batchNMap.put(item.getPartId(), Lists.newArrayList(AvailableListBatchNResult.builder()
                             .id(item.getPartId())
                             .qty(item.getInWhQty())
                             .batchN(item.getLot())
-                            .build());
-                    batchNMap.put(item.getPartId(), availableListBatchNList);
+                            .build()));
                 }
-            }
+            });
+
             //封装数据返回
             availableList.forEach(item -> {
                 if (batchNMap.containsKey(item.getId())) {
@@ -226,8 +207,6 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                 }
             });
         }
-
-
         return PageResult.create(enter, count, availableList);
     }
 
@@ -404,7 +383,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
             }
         }
 
-        if (canAssembledMap.isEmpty()){
+        if (canAssembledMap.isEmpty()) {
             return result;
         }
         for (Map.Entry<Long, Integer> entry : canAssembledMap.entrySet()) {
