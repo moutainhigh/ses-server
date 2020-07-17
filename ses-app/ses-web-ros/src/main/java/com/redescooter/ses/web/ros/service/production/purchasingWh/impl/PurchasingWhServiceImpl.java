@@ -155,8 +155,8 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public PageResult<AvailableListResult> availableList(WhEnter enter) {
-        if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
-          return PageResult.createZeroRowResult(enter);
+        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(enter);
         }
         if (StringUtils.isNotEmpty(enter.getType())) {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
@@ -325,11 +325,11 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      * @return
      */
     @Override
-    public  Map<String, Integer> canAssemblyProductList(GeneralEnter enter) {
+    public Map<String, Integer> canAssemblyProductList(GeneralEnter enter) {
         //反参对象
         Map<String, Integer> result = new HashMap<>();
         for (ProductModelEnums item : ProductModelEnums.values()) {
-            result.put(item.getValue(),0);
+            result.put(item.getValue(), 0);
         }
 
         //查询出所有商品及bom 规则
@@ -348,7 +348,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_PRODUCT_ID, productIds);
         List<OpePartsProductB> partsProductBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
         if (CollectionUtils.isEmpty(partsProductBList)) {
-            return new HashMap<>();
+            return result;
         }
         //过滤出map 产品结构
         Set<Long> partIds = partsProductBList.stream().map(OpePartsProductB::getPartsId).collect(Collectors.toSet());
@@ -390,41 +390,39 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                         if (item.getPartsId().equals(stock.getMaterielProductId()) && (item.getPartsQty() != null && item.getPartsQty() > 0)) {
 
                             int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
-                            if (maxTotal == 0) {
-                                partTotal++;
-                                maxTotal = canAss;
-                                continue flag2;
-                            }
-                            if (canAss < maxTotal) {
-                                partTotal++;
-                                maxTotal = canAss;
-                                continue flag2;
-                            }
+                            //计算可以组装的车辆最大值
                             if (canAss > 0) {
-                                partTotal++;
+                                maxTotal += canAss;
                                 continue flag2;
                             }
                         }
                     }
                 }
             }
-            if (partTotal == value.size()) {
+            if (maxTotal > 0) {
                 canAssembledMap.put(key, maxTotal);
             }
         }
 
+        if (canAssembledMap.isEmpty()){
+            return result;
+        }
         for (Map.Entry<Long, Integer> entry : canAssembledMap.entrySet()) {
             Long key = entry.getKey();
             Integer value = entry.getValue();
-            partsProductList.forEach(item -> {
+            for (OpePartsProduct item : partsProductList) {
                 if (key.equals(item.getId())) {
                     if (!result.containsKey(item.getModel())) {
+                        //对于未完善车辆型号的产品直接跳过
+                        if (StringUtils.isEmpty(item.getModel())) {
+                            continue;
+                        }
                         result.put(item.getModel(), value);
                     } else {
                         result.put(item.getModel(), result.get(item.getModel()) + value);
                     }
                 }
-            });
+            }
         }
         //根据产品型号分类
         return result;
