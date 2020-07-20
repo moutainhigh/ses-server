@@ -21,4 +21,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class WhOutSaveEnter extends GeneralEnter {
 
+    private Long id;
+
 }
