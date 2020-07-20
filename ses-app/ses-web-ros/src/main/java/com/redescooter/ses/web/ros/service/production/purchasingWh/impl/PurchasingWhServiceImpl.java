@@ -12,37 +12,18 @@ import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.production.PurchasingWhServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpePartsProduct;
-import com.redescooter.ses.web.ros.dm.OpePartsProductB;
-import com.redescooter.ses.web.ros.dm.OpeStock;
-import com.redescooter.ses.web.ros.dm.OpeStockPurchas;
-import com.redescooter.ses.web.ros.dm.OpeWhse;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasService;
-import com.redescooter.ses.web.ros.service.base.OpeStockPurchasService;
-import com.redescooter.ses.web.ros.service.base.OpeStockService;
-import com.redescooter.ses.web.ros.service.base.OpeWhseService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.production.purchasingWh.PurchasingWhService;
-import com.redescooter.ses.web.ros.vo.production.wh.AvailableListBatchNResult;
-import com.redescooter.ses.web.ros.vo.production.wh.AvailableListResult;
-import com.redescooter.ses.web.ros.vo.production.wh.OutWhResult;
-import com.redescooter.ses.web.ros.vo.production.wh.QcingListResult;
-import com.redescooter.ses.web.ros.vo.production.wh.TobeStoredResult;
-import com.redescooter.ses.web.ros.vo.production.wh.WasteResult;
-import com.redescooter.ses.web.ros.vo.production.wh.WhEnter;
+import com.redescooter.ses.web.ros.vo.production.wh.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -155,8 +136,8 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public PageResult<AvailableListResult> availableList(WhEnter enter) {
-        if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
-          return PageResult.createZeroRowResult(enter);
+        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(enter);
         }
         if (StringUtils.isNotEmpty(enter.getType())) {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
@@ -178,47 +159,26 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 
             //批次号集合
             Map<Long, List<AvailableListBatchNResult>> batchNMap = new HashMap<>();
-
-            //往集合里放入数据
-            for (OpeStockPurchas item : opeStockPurchasList) {
+            opeStockPurchasList.forEach(item -> {
+                //已存在 该部件
                 if (batchNMap.containsKey(item.getPartId())) {
-
-                    //若批次号存在 维护数量、若不存在 新增一个批次号
-                    List<AvailableListBatchNResult> availableListBatchNList = batchNMap.get(item.getPartId());
-
-                    Boolean existBatchN = Boolean.FALSE;
-
-                    for (AvailableListBatchNResult batchN : availableListBatchNList) {
-                        if (StringUtils.equals(item.getLot(), batchN.getBatchN())) {
-                            existBatchN = Boolean.TRUE;
-
-                            batchN.setQty(batchN.getQty() + item.getInWhQty());
+                    //判断是否存在批次号
+                    for (AvailableListBatchNResult batch : batchNMap.get(item.getPartId())) {
+                        //存在批次号 数量累加
+                        if (StringUtils.equals(batch.getBatchN(), item.getLot())) {
+                            batch.setQty(batch.getQty() + 1);
                             break;
                         }
                     }
-                    //已存在批次号 更新map 集合 不存在 生成新的对象
-                    if (!existBatchN) {
-                        //否则 在map的value集合中放入新数据
-                        availableListBatchNList.add(AvailableListBatchNResult.builder()
-                                .id(item.getPartId())
-                                .qty(item.getInWhQty())
-                                .batchN(item.getLot())
-                                .build());
-                    }
-                    batchNMap.put(item.getPartId(), availableListBatchNList);
-                }
-
-                //map中不存在这个部件 就在map放入新数据
-                if (!batchNMap.containsKey(item.getPartId())) {
-                    List<AvailableListBatchNResult> availableListBatchNList = new ArrayList<>();
-                    availableListBatchNList.add(AvailableListBatchNResult.builder()
+                } else {
+                    batchNMap.put(item.getPartId(), Lists.newArrayList(AvailableListBatchNResult.builder()
                             .id(item.getPartId())
                             .qty(item.getInWhQty())
                             .batchN(item.getLot())
-                            .build());
-                    batchNMap.put(item.getPartId(), availableListBatchNList);
+                            .build()));
                 }
-            }
+            });
+
             //封装数据返回
             availableList.forEach(item -> {
                 if (batchNMap.containsKey(item.getId())) {
@@ -226,8 +186,6 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                 }
             });
         }
-
-
         return PageResult.create(enter, count, availableList);
     }
 
@@ -325,11 +283,11 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      * @return
      */
     @Override
-    public  Map<String, Integer> canAssemblyProductList(GeneralEnter enter) {
+    public Map<String, Integer> canAssemblyProductList(GeneralEnter enter) {
         //反参对象
         Map<String, Integer> result = new HashMap<>();
         for (ProductModelEnums item : ProductModelEnums.values()) {
-            result.put(item.getValue(),0);
+            result.put(item.getValue(), 0);
         }
 
         //查询出所有商品及bom 规则
@@ -348,7 +306,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_PRODUCT_ID, productIds);
         List<OpePartsProductB> partsProductBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
         if (CollectionUtils.isEmpty(partsProductBList)) {
-            return new HashMap<>();
+            return result;
         }
         //过滤出map 产品结构
         Set<Long> partIds = partsProductBList.stream().map(OpePartsProductB::getPartsId).collect(Collectors.toSet());
@@ -390,41 +348,39 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                         if (item.getPartsId().equals(stock.getMaterielProductId()) && (item.getPartsQty() != null && item.getPartsQty() > 0)) {
 
                             int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
-                            if (maxTotal == 0) {
-                                partTotal++;
-                                maxTotal = canAss;
-                                continue flag2;
-                            }
-                            if (canAss < maxTotal) {
-                                partTotal++;
-                                maxTotal = canAss;
-                                continue flag2;
-                            }
+                            //计算可以组装的车辆最大值
                             if (canAss > 0) {
-                                partTotal++;
+                                maxTotal += canAss;
                                 continue flag2;
                             }
                         }
                     }
                 }
             }
-            if (partTotal == value.size()) {
+            if (maxTotal > 0) {
                 canAssembledMap.put(key, maxTotal);
             }
         }
 
+        if (canAssembledMap.isEmpty()) {
+            return result;
+        }
         for (Map.Entry<Long, Integer> entry : canAssembledMap.entrySet()) {
             Long key = entry.getKey();
             Integer value = entry.getValue();
-            partsProductList.forEach(item -> {
+            for (OpePartsProduct item : partsProductList) {
                 if (key.equals(item.getId())) {
                     if (!result.containsKey(item.getModel())) {
+                        //对于未完善车辆型号的产品直接跳过
+                        if (StringUtils.isEmpty(item.getModel())) {
+                            continue;
+                        }
                         result.put(item.getModel(), value);
                     } else {
                         result.put(item.getModel(), result.get(item.getModel()) + value);
                     }
                 }
-            });
+            }
         }
         //根据产品型号分类
         return result;
