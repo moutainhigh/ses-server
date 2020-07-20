@@ -26,7 +26,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class WhOutListResult extends GeneralResult {
+public class WhOutOrderListResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;

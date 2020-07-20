@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.wms.WhOutServiceMapper">
+    <sql id="Query_ProductList_Parts">
+        where stock.dr = 0
+        and parts.dr=0
+        and stock.available_total > 0
+        and materiel_product_type != 4
+        <if test="keyword != null and keyword != ''">
+            and (parts.parts_number like concat('%', #{keyword}, '%')
+            or parts.fr_name like concat('%', #{keyword}, '%')
+            or parts.en_name like concat('%', #{keyword}, '%')
+            or parts.cn_name like concat('%', #{keyword}, '%')
+            )
+        </if>
+    </sql>
+    <sql id="Query_ProductList_Scooter">
+        where stock.dr = 0
+        and product.dr=0
+        and stock.available_total > 0
+        and materiel_product_type = 4) product;
+        <if test="keyword != null and keyword != ''">
+            and (product.product_number like concat('%', #{keyword}, '%')
+            or product.fr_name like concat('%', #{keyword}, '%')
+            or product.en_name like concat('%', #{keyword}, '%')
+            or product.cn_name like concat('%', #{keyword}, '%')
+            )
+        </if>
+    </sql>
+    <select id="productListCount" resultType="java.lang.Integer">
+        select sum(count) from (select count(*) as count
+        from ope_stock stock
+                 inner join ope_parts as parts on stock.materiel_product_id = parts.id
+        <include refid="Query_ProductList_Parts"/>
+        union
+        select count(*) as count
+        from ope_stock stock
+                 inner join ope_parts_product as product on stock.materiel_product_id = product.id
+        <include refid="Query_ProductList_Scooter"/>
+    </select>
+
+    <select id="productListList" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutProductListResult">
+        select stock.id,
+               parts.parts_number          as productN,
+               parts.cn_name               as cnName,
+               parts.fr_name               as frName,
+               parts.en_name               as enName,
+               stock.available_total       as stocks,
+               stock.materiel_product_type as type
+        from ope_stock stock
+                 inner join ope_parts as parts on stock.materiel_product_id = parts.id
+        <include refid="Query_ProductList_Parts"/>
+        union
+        select stock.id,
+               product.product_number      as productN,
+               product.en_name             as cnName,
+               product.fr_name             as frName,
+               product.en_name             as enName,
+               stock.available_total       as stocks,
+               stock.materiel_product_type as type
+        from ope_stock stock
+                 inner join ope_parts_product as product on stock.materiel_product_id = product.id
+        <include refid="Query_ProductList_Scooter"/>
+          limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="consigneeList" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutConsigneeResult">
+        select profile.sys_user_id  as id,
+               profile.FIRST_NAME   as firstName,
+               profile.LAST_NAME    as lastName,
+               profile.country_code as countryCode,
+               profile.tel_number   as telephone,
+               profile.email        as email
+        from ope_sys_user_profile profile
+    </select>
+</mapper>

@@ -439,7 +439,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .tenantId(enter.getTenantId())
                     .materielProductName(opeParts.getCnName())
                     .materielProductId(opeAllocateB.getPartId())
-                    .materielProductType(opeParts.getPartsType())//产品物料类型
+                    .materielProductType(BomCommonTypeEnums.getValueByCode(opeParts.getPartsType()))//产品物料类型
                     .updatedTime(new Date())
                     .createdTime(new Date())
                     .updatedBy(enter.getUserId())
@@ -651,7 +651,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .tenantId(enter.getTenantId())
                     .materielProductName(opeAssemblyBOrder.getEnName())
                     .materielProductId(opeAssemblyBOrder.getProductId())
-                    .materielProductType(BomCommonTypeEnums.SCOOTER.getCode())  //类型是整车
+                    .materielProductType(BomCommonTypeEnums.SCOOTER.getValue())  //类型是整车
                     .availableTotal(1)
                     .wornTotal(0)
                     .updatedTime(new Date())
