@@ -69,6 +69,7 @@
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select inquiry.status as status, count(*) as totalCount
         from ope_customer_inquiry inquiry
+        where inquiry.dr=0
         group by inquiry.status
     </select>
 
