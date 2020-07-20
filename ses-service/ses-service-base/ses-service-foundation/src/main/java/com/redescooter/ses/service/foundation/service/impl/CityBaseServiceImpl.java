@@ -8,17 +8,21 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
+import com.redescooter.ses.api.foundation.vo.common.CityEnter;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
+import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaCityMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaCity;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * description: CityBaseServiceImpl
@@ -32,6 +36,9 @@ public class CityBaseServiceImpl implements CityBaseService {
 
     @Autowired
     private PlaCityMapper cityMapper;
+
+    @Reference
+    private IdAppService idAppService;
 
     /**
      * 分页查询 根据条件查询城市信息列表
@@ -146,7 +153,7 @@ public class CityBaseServiceImpl implements CityBaseService {
             return new CityResult();
         }
 
-        PlaCity city = cityMapper.selectOne(new LambdaQueryWrapper<PlaCity>().eq(PlaCity::getName,name));
+        PlaCity city = cityMapper.selectOne(new LambdaQueryWrapper<PlaCity>().eq(PlaCity::getName, name));
 
         CityResult result = new CityResult();
         if (city != null) {
@@ -154,4 +161,58 @@ public class CityBaseServiceImpl implements CityBaseService {
         }
         return result;
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int batchSaveCity(List<CityEnter> list) {
+
+        //存在所有城市
+        List<PlaCity> saveList = new ArrayList<>();
+
+        if (list.size() > 0) {
+            list.forEach(c -> {
+                PlaCity city = new PlaCity();
+                city.setId(idAppService.getId(SequenceName.PLA_CITY));
+                city.setDr(Constant.DR_FALSE);
+                city.setPId(c.getPId());
+                city.setLevel(c.getLevel());
+                city.setCode(c.getCode());
+                city.setName(c.getName());
+                city.setLanguage(c.getLanguage());
+                city.setStatus(c.getStatus());
+                city.setLongitude(c.getLongitude());
+                city.setLatitude(c.getLatitude());
+                city.setTimeZone("UTC +1");
+                city.setDef1(c.getDef1());
+                city.setCreatedTime(new Date());
+                city.setCreatedBy(new Long("0"));
+                city.setUpdatedTime(new Date());
+                city.setUpdatedBy(new Long("0"));
+                saveList.add(city);
+            });
+            return cityMapper.batchInsert(saveList);
+        }
+        return 0;
+    }
+
+    /**
+     * 删除ArrayList中重复元素，保持顺序
+     *
+     * @param list
+     */
+//    private List<CityEnter> removeDuplicateWithOrder(List<CityEnter> list) {
+//        Set set = new HashSet();
+//        List newList = new ArrayList();
+//        for (Iterator iter = list.iterator(); iter.hasNext(); ) {
+//            Object element = iter.next();
+//            if (set.add(element)) {
+//                newList.add(element);
+//            }
+//        }
+//        list.clear();
+//        list.addAll(newList);
+//        System.out.println(" remove duplicate " + list);
+//
+//        return newList;
+//    }
 }

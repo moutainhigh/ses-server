@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
+import com.redescooter.ses.api.foundation.vo.common.CityEnter;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 
 /**
@@ -55,4 +56,12 @@ public interface CityBaseService {
      * @return
      */
     CityResult queryCityDetailByName(String name);
+
+    /**
+     * 批量保存城市
+     *
+     * @param list
+     * @return
+     */
+    int batchSaveCity(List<CityEnter> list);
 }
