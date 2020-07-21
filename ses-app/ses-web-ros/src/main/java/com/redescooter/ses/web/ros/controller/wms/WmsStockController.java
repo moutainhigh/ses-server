@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.wms.WmsStockService;
 import com.redescooter.ses.web.ros.vo.wms.WmsStockAvailableResult;
 import com.redescooter.ses.web.ros.vo.wms.WmsStockEnter;
+import com.redescooter.ses.web.ros.vo.wms.WmsStockResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * @Version V1.0
  **/
 @Log4j2
-@Api(tags = {"仓储库存可用"})
+@Api(tags = {"仓储库存"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/wms/stock/")
@@ -30,8 +31,23 @@ public class WmsStockController{
   private WmsStockService wmsStockService;
 
   @PostMapping(value = "/available")
-  @ApiOperation(value = "显示列表", response = WmsStockAvailableResult.class)
+  @ApiOperation(value = "显示可用列表", response = WmsStockAvailableResult.class)
   public Response<PageResult<WmsStockAvailableResult>> stockAvailableList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
     return new Response<>(wmsStockService.getStockAvailableList(enter));
+  }
+  @PostMapping(value = "/predicted")
+  @ApiOperation(value = "待生产列表", response = WmsStockResult.class)
+  public Response<PageResult<WmsStockResult>> stockResultList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
+    return new Response<>(wmsStockService.getStockPredictedList(enter));
+  }
+  @PostMapping(value = "/stored")
+  @ApiOperation(value = "待入库列表", response = WmsStockResult.class)
+  public Response<PageResult<WmsStockResult>> wmsStockList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
+    return new Response<>(wmsStockService.getStockStoredList(enter));
+  }
+  @PostMapping(value = "/outWh")
+  @ApiOperation(value = "待出库列表", response = WmsStockResult.class)
+  public Response<PageResult<WmsStockResult>> wmsStockOutStockList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
+    return new Response<>(wmsStockService.getStockOutWhList(enter));
   }
 }

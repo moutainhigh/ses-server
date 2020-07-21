@@ -1,33 +1,32 @@
 package com.redescooter.ses.web.ros.vo.wms;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 /**
- * @ClassNameWmsStockPredictedResult
+ * @ClassNameProductListResult
  * @Description
  * @Author Joan
- * @Date2020/7/17 15:43
+ * @Date2020/7/20 11:39
  * @Version V1.0
  **/
-@ApiModel(value = "仓储待生产出参", description = "仓储待生产出参")
+@ApiModel(value = "入库部件/产品信息详情出参", description = "入库部件/产品信息详情出参")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class WmsStockResult extends GeneralEnter {
+public class WmsProductListResult extends GeneralResult {
   /**
    * 产品编号
    */
   @ApiModelProperty(value = "产品/部品编号")
   private String productNumber;
 
-
+  @ApiModelProperty(value = "产品/部品类型")
+  private String productType;
   /**
    * 入库总数
    */
@@ -46,9 +45,4 @@ public class WmsStockResult extends GeneralEnter {
   @ApiModelProperty(value = "英文名称")
   private String enName;
 
-  /**
-   * 价格 浮点型价格
-   */
-  @ApiModelProperty(value="价格 浮点型价格")
-  private String price;
 }
