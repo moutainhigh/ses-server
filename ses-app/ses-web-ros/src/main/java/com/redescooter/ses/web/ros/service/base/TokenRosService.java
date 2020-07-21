@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.base;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.vo.login.EmailLoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
@@ -31,7 +32,7 @@ public interface TokenRosService {
      * @Param [enter]
      * @return
      **/
-    void emailLoginSendCode(LoginEnter enter);
+    void emailLoginSendCode(EmailLoginEnter enter);
 
     /**
      * @Author Aleks
@@ -40,7 +41,7 @@ public interface TokenRosService {
      * @Param [enter]
      * @return
      **/
-    TokenResult emailLogin(LoginEnter enter);
+    TokenResult emailLogin(EmailLoginEnter enter);
 
     /**
      * 获取密钥
