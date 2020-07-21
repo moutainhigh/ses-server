@@ -311,7 +311,7 @@
     WHERE
       b.allocate_id = #{enter.id} and b.dr = 0
   </select>
-    <select id="productList" resultType="com.redescooter.ses.web.ros.vo.wms.WmsProductListResult">
+  <select id="productList" resultType="com.redescooter.ses.web.ros.vo.wms.WmsProductListResult">
     SELECT
       s.cn_name AS cnName,
       s.en_name AS enName,
