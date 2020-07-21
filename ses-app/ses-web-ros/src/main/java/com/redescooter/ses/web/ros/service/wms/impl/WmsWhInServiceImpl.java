@@ -3,10 +3,6 @@ package com.redescooter.ses.web.ros.service.wms.impl;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.WmsServiceMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeAssemblyBOrderMapper;
-import com.redescooter.ses.web.ros.dao.base.OpePartsMapper;
-import com.redescooter.ses.web.ros.dao.base.OpePartsProductMapper;
-import com.redescooter.ses.web.ros.service.base.OpeAllocateBService;
 import com.redescooter.ses.web.ros.service.wms.WmsWhInService;
 import com.redescooter.ses.web.ros.vo.wms.*;
 import lombok.extern.slf4j.Slf4j;
@@ -28,15 +24,6 @@ import java.util.List;
 public class WmsWhInServiceImpl implements WmsWhInService {
   @Autowired
   private WmsServiceMapper wmsServiceMapper;
-  @Autowired
-  private OpeAssemblyBOrderMapper opeAssemblyBOrderMapper;
-  @Autowired
-  private OpePartsProductMapper opePartsProductMapper;
-  @Autowired
-  private OpeAllocateBService opeAllocateBService;
-  @Autowired
-  private OpePartsMapper opePartsMapper;
-
   /**
    * 查询入库集合
    *

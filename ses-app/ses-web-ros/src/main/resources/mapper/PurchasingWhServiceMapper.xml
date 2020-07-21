@@ -241,7 +241,7 @@
         inner join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
         <include refid="where_OutWh_Allocate"/>
         order by stock.updated_time desc
-        limit #{enter.startRow},#{enter.pageSize}
+        limit #{num}
     </select>
     <select id="countByTypeQcCount" resultType="int">
         select count(*) from
