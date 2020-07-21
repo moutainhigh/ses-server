@@ -27,6 +27,8 @@ public class WmsStockAvailableResult extends GeneralResult {
   @ApiModelProperty(value = "产品/部品编号")
   private String productNumber;
 
+  @ApiModelProperty(value = "产品/部品类型")
+  private String productType;
 
   /**
    * 入库总数
@@ -50,6 +52,6 @@ public class WmsStockAvailableResult extends GeneralResult {
    * 价格 浮点型价格
    */
   @ApiModelProperty(value="价格 浮点型价格")
-  private BigDecimal price;
+  private String price;
 
 }

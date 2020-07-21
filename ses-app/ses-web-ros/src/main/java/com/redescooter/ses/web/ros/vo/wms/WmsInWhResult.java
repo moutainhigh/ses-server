@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.vo.wms;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -28,6 +30,11 @@ public class WmsInWhResult extends GeneralResult {
   @ApiModelProperty(value = "调拨/组装编号")
   private String allocateNumber;
 
+  @ApiModelProperty(value = "id")
+  private  String id;
+
+  @ApiModelProperty(value = "产品/部品类型")
+  private String productType;
 
   /**
    * 质检数
@@ -38,12 +45,14 @@ public class WmsInWhResult extends GeneralResult {
   /**
    * 委托人
    */
-  @ApiModelProperty(value = "委托人")
+  @ApiModelProperty(value = "收货人")
   private String consignee;
 
   /**
    * 入库时间
    */
+  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
   @ApiModelProperty(value = "入库时间")
   private Date inWhTime;
 

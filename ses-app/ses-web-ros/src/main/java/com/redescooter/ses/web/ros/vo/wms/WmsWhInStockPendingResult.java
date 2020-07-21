@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.vo.wms;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -21,6 +23,12 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsWhInStockPendingResult extends GeneralResult {
+
+  @ApiModelProperty(value = "id")
+  private  String id;
+
+  @ApiModelProperty(value = "产品/部品类型")
+  private String productType;
   /**
    * 调拨/组装编号
    */
@@ -29,22 +37,30 @@ public class WmsWhInStockPendingResult extends GeneralResult {
 
 
   /**
-   * 质检数
+   * 已入库数量
    */
-  @ApiModelProperty(value = "质检数")
+  @ApiModelProperty(value = "已入库数量")
   private Integer qty;
 
+
   /**
-   * 委托人
+   * 质检数
    */
-  @ApiModelProperty(value = "委托人")
+  @ApiModelProperty(value = "总数量")
+  private Integer sumTotal;
+  /**
+   * 收货人
+   */
+  @ApiModelProperty(value = "收货人")
   private String consignee;
 
   /**
-   * 入库时间
+   * 创建时间
    */
   @ApiModelProperty(value = "创建时间")
-  private Date CreationTime;
+  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+  private Date creationTime;
 
 
 }
