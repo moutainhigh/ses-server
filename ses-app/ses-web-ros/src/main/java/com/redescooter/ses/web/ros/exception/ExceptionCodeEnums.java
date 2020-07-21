@@ -326,6 +326,12 @@ public enum ExceptionCodeEnums {
 
     LOGIN_PSD_ERROER_NUM_MANY(10154,"密码错误次数过多，请一分钟之后再登陆"),
 
+    CODE_NOT_EMPTY(10155,"验证码不能为空"),
+
+    EAMIL_NOT_REGISTER(10156,"当前邮箱还未注册，请先注册"),
+
+    EAMIL_CODE_TIME_OUT(10157,"请先获取验证码或验证码已过期"),
+
 
     ;
 
