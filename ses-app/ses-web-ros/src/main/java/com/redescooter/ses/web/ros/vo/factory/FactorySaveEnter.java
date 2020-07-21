@@ -28,7 +28,7 @@ public class FactorySaveEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "代工厂名称")
     //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "名字非法")
-    @NotNull(code = ValidationExceptionCode.FACTORY_NAME_IS_EMPTY, message = "id 为空")
+    @NotNull(code = ValidationExceptionCode.FACTORY_NAME_IS_EMPTY, message = "代工厂名称为空")
     private String factoryName;
 
     /**
