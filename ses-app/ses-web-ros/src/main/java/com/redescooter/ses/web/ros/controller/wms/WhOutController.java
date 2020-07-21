@@ -61,7 +61,7 @@ public class WhOutController {
     @PostMapping(value = "/nodeDetail")
     @ApiOperation(value = "订单节点", response = CommonNodeResult.class)
     public Response<CommonNodeResult> nodeDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(whOutService.nodeDetail(enter));
+        return new Response<>(whOutService.nodeList(enter));
     }
 
     @PostMapping(value = "/detailProductList")

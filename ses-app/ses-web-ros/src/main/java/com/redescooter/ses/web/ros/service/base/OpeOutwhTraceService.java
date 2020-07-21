@@ -3,7 +3,10 @@ package com.redescooter.ses.web.ros.service.base;
 import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeOutwhTrace;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface OpeOutwhTraceService extends IService<OpeOutwhTrace>{
+import org.springframework.transaction.annotation.Transactional;
+
+@Transactional
+public interface OpeOutwhTraceService extends IService<OpeOutwhTrace> {
 
 
     int updateBatch(List<OpeOutwhTrace> list);
@@ -15,3 +18,4 @@ public interface OpeOutwhTraceService extends IService<OpeOutwhTrace>{
     int insertOrUpdateSelective(OpeOutwhTrace record);
 
 }
+

@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.wms;
 
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
+import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -51,7 +52,7 @@ public interface WhOutService {
      * @param enter
      * @return
      */
-    CommonNodeResult nodeDetail(IdEnter enter);
+    CommonNodeResult nodeList(IdEnter enter);
 
     /**
      * 详情产品列表
@@ -79,6 +80,7 @@ public interface WhOutService {
 
     /**
      * 确认备料
+     *
      * @param enter
      * @return
      */
@@ -86,6 +88,7 @@ public interface WhOutService {
 
     /**
      * 入库
+     *
      * @param enter
      * @return
      */
@@ -93,6 +96,7 @@ public interface WhOutService {
 
     /**
      * 保存
+     *
      * @param enter
      * @return
      */
@@ -100,6 +104,7 @@ public interface WhOutService {
 
     /**
      * 收件人集合
+     *
      * @param enter
      * @return
      */
@@ -107,6 +112,7 @@ public interface WhOutService {
 
     /**
      * 仓库列表
+     *
      * @param enter
      * @return
      */
@@ -114,36 +120,50 @@ public interface WhOutService {
 
     /**
      * 发货方式
+     *
      * @param enter
      * @return
      */
-    Map<String,String> consignType(GeneralEnter enter);
+    Map<String, String> consignType(GeneralEnter enter);
 
     /**
-     *  委托方式
+     * 委托方式
+     *
      * @param enter
      * @return
      */
-    Map<String,String> consignMethod(StringEnter enter);
+    Map<String, String> consignMethod(StringEnter enter);
 
     /**
      * 订单状态列表
+     *
      * @param enter
      * @return
      */
-    Map<String,String> statusList(GeneralEnter enter);
+    Map<String, String> statusList(GeneralEnter enter);
 
     /**
      * 订单状态统计
+     *
      * @param enter
      * @return
      */
-    Map<String,Integer> statusByCount(GeneralEnter enter);
+    Map<String, Integer> statusByCount(GeneralEnter enter);
+
     /**
      * 产品列表
+     *
      * @param enter
      * @return
      */
     PageResult<WhOutProductListResult> productList(WhOutProductListEnter enter);
+
+    /**
+     * 保存订单节点
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult saveNode(SaveNodeEnter enter);
 }
 

@@ -27,6 +27,42 @@
             )
         </if>
     </sql>
+
+    <sql id="whOrder_List">
+            where outOrder.dr = 0
+          and (
+                outOrder.order_no like concat('%', '', '%') or
+                outOrder.tracking_num like concat('%', '', '%') or
+                outOrder.consign_company like concat('%', '', '%')
+            )
+    </sql>
+
+    <sql id="detailProductPartList_scooter">
+     where orderB.dr=0
+                and orderB.id=#{id}
+                <if test="productType != null">
+                    and orderB.source_type #{productType}
+                </if>
+                and (
+                    product.en_name  like concat('',#{keyword},'') or
+                    product.fr_name  like concat('',#{keyword},'') or
+                    product.cn_name  like concat('',#{keyword},'') or
+                    product.product_number like concat('',#{keyword},'')
+                    )
+    </sql>
+    <sql id="detailProductPartList_parts">
+    where orderB.dr=0
+                and orderB.id=#{id}
+                <if test="productType != null">
+                    and orderB.source_type=#{productType}
+                </if>
+                and (
+                    parts.en_name  like concat('',#{keyword},'') or
+                    parts.fr_name  like concat('',#{keyword},'') or
+                    parts.cn_name  like concat('',#{keyword},'') or
+                    parts.parts_number like concat('',#{keyword},'')
+                    )
+    </sql>
     <select id="productListCount" resultType="java.lang.Integer">
         select sum(count) from (select count(*) as count
         from ope_stock stock
@@ -72,5 +108,113 @@
                profile.tel_number   as telephone,
                profile.email        as email
         from ope_sys_user_profile profile
+    </select>
+    <select id="whOrderListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_outwh_order outOrder
+    </select>
+    <select id="whOrderList" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutOrderListResult">
+        select outOrder.id              as id,
+               outOrder.order_no        as whOutN,
+               outOrder.status          as status,
+               outOrder.consign_type    as consignType,
+               outOrder.consign_company as consignCompany,
+               outOrder.tracking_num    as trackingN,
+               outOrder.product_count   as qty,
+               outOrder.created_time    as createdTime
+        from ope_outwh_order outOrder
+        limit#{startRow},#{pageSize}
+    </select>
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutDetailResult">
+        select outOrder.id                as id,
+               outOrder.order_no          as whOutN,
+               outOrder.in_wh_id          as goalWhId,
+               whse.name                  as goalWhName,
+               outOrder.address           as address,
+               outOrder.consignee_id      as consigneeId,
+               profile.first_name         as consigneeFirstName,
+               profile.last_name          as consigneeLastName,
+               profile.tel_number         as telephone,
+               profile.country_code       as countryCode,
+               profile.email              as email,
+               outOrder.notify_first_name as notifyFirstName,
+               outOrder.notify_last_name  as notifyLastName,
+               outOrder.consign_type      as consignType,
+               outOrder.consign_method    as consignMethod,
+               outOrder.consign_company   as consignCompany,
+               outOrder.tracking_num      as trackingN,
+               outOrder.annex             as annex,
+               outOrder.total_price       as price
+        from ope_outwh_order outOrder
+                 inner join ope_whse whse on outOrder.in_wh_id = whse.id and whse.type = 4 and whse.dr=0
+                 inner join ope_sys_user_profile profile on profile.sys_user_id = outOrder.consignee_id and profile.dr = 0
+        where outOrder.dr=0
+        and  outOrder.id=#{id}
+
+    </select>
+    <select id="nodeList" resultType="com.redescooter.ses.api.common.vo.CommonNodeResult">
+        select trace.id           as id,
+               trace.status       as trace,
+               trace.event        as event,
+               trace.event_time   as eventTime,
+               trace.created_by   as createdBy,
+               profile.first_name as createdByFirstName,
+               profile.last_name  as createdByLastName,
+               profile.last_name  as createdByFullName,
+               trace.memo         as memo
+        from ope_outwh_trace trace
+                 left join ope_sys_user_profile profile on trace.created_by = profile.sys_user_id and profile.dr = 0
+        where trace.dr = 0
+          and trace.wh_out_order_id =#{id}
+    </select>
+    <select id="detailProductPartListCount" resultType="int">
+        select sum(*)
+        from (
+        select count(*) as count from ope_outwh_order_b orderB
+        left join ope_parts_product product
+        on orderB.part_product_id = product.id and orderB.source_type = 4 and product.dr = 0
+        <include refid="detailProductPartList_scooter"/>
+        union
+        select count (*) as count
+        from ope_outwh_order_b orderB
+        left join ope_parts parts
+        on parts.id = orderB.part_product_id and orderB.source_type != 4n and parts.dr=0
+        <include refid="detailProductPartList_parts"/>)
+    </select>
+    <select id="detailProductPartList" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutDetailProductPartListResult">
+        select orderB.id              as id,
+           product.product_number as productN,
+           product.product_type   as type,
+           product.en_name        as enName,
+           product.fr_name        as frName,
+           product.cn_name        as cnName,
+           orderB.total_count     as qty
+        from ope_outwh_order_b orderB
+                 left join ope_parts_product product on orderB.part_product_id = product.id and orderB.source_type = 4 and product.dr=0
+    <include refid="detailProductPartList_scooter"/>
+    union
+        select orderB.id          as id,
+               parts.parts_number as productN,
+               parts.parts_type   as type,
+               parts.en_name      as enName,
+               parts.fr_name      as frName,
+               parts.cn_name      as cnName,
+               orderB.total_count as qty
+        from ope_outwh_order_b orderB
+                 left join ope_parts parts on parts.id = orderB.part_product_id and orderB.source_type != 4n and parts.dr=0
+    <include refid="detailProductPartList_parts"/>
+    limit #{startRow},#{pageSize}
+    </select>
+    <select id="whList" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutWhResult">
+        select ope_whse.id   as id,
+               ope_whse.name as name
+        from ope_whse
+        where dr = 0
+          and type in(4,5)
+    </select>
+    <select id="statusByCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select if(status = 4 or status = 5, 2, 1) as status, count(status) as totalCount
+        from ope_outwh_order
+        group by status
     </select>
 </mapper>

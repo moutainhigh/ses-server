@@ -328,6 +328,12 @@ public enum ExceptionCodeEnums {
 
     NO_LOAN(10155,"该运输方式暂无货代"),
 
+    WH_OUT_ORDER_NOT_EXIST(10156,"出货单不存在"),
+
+    PRODUCT_PART_IS_EMPTY(10157,"产品部件为空"),
+
+    CONSIGN_TYPE_NOT_EXIST(10158,"物流方式不存在"),
+
     ;
 
 

@@ -6,6 +6,7 @@
     <!--@Table ope_outwh_trace-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="wh_out_order_id" jdbcType="BIGINT" property="whOutOrderId" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="event" jdbcType="VARCHAR" property="event" />
     <result column="event_time" jdbcType="TIMESTAMP" property="eventTime" />
@@ -23,8 +24,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, `status`, event, event_time, memo, created_by, created_time, updated_by, 
-    updated_time, revision, def1, def2, def3, def5, def6
+    id, dr, wh_out_order_id, `status`, event, event_time, memo, created_by, created_time, 
+    updated_by, updated_time, revision, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -33,6 +34,11 @@
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="wh_out_order_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.whOutOrderId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="`status` = case" suffix="end,">
@@ -114,32 +120,34 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_outwh_trace
-    (id, dr, `status`, event, event_time, memo, created_by, created_time, updated_by, 
-      updated_time, revision, def1, def2, def3, def5, def6)
+    (id, dr, wh_out_order_id, `status`, event, event_time, memo, created_by, created_time, 
+      updated_by, updated_time, revision, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.event,jdbcType=VARCHAR}, #{item.eventTime,jdbcType=TIMESTAMP}, #{item.memo,jdbcType=VARCHAR}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.revision,jdbcType=INTEGER}, #{item.def1,jdbcType=VARCHAR}, 
-        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
-        #{item.def6,jdbcType=DOUBLE})
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.whOutOrderId,jdbcType=BIGINT}, 
+        #{item.status,jdbcType=VARCHAR}, #{item.event,jdbcType=VARCHAR}, #{item.eventTime,jdbcType=TIMESTAMP}, 
+        #{item.memo,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.revision,jdbcType=INTEGER}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeOutwhTrace">
     <!--@mbg.generated-->
     insert into ope_outwh_trace
-    (id, dr, `status`, event, event_time, memo, created_by, created_time, updated_by, 
-      updated_time, revision, def1, def2, def3, def5, def6)
+    (id, dr, wh_out_order_id, `status`, event, event_time, memo, created_by, created_time, 
+      updated_by, updated_time, revision, def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{event,jdbcType=VARCHAR}, 
-      #{eventTime,jdbcType=TIMESTAMP}, #{memo,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{revision,jdbcType=INTEGER}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
-      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{whOutOrderId,jdbcType=BIGINT}, 
+      #{status,jdbcType=VARCHAR}, #{event,jdbcType=VARCHAR}, #{eventTime,jdbcType=TIMESTAMP}, 
+      #{memo,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{revision,jdbcType=INTEGER}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
+    wh_out_order_id = #{whOutOrderId,jdbcType=BIGINT}, 
     `status` = #{status,jdbcType=VARCHAR}, 
     event = #{event,jdbcType=VARCHAR}, 
     event_time = #{eventTime,jdbcType=TIMESTAMP}, 
@@ -164,6 +172,9 @@
       </if>
       <if test="dr != null">
         dr,
+      </if>
+      <if test="whOutOrderId != null">
+        wh_out_order_id,
       </if>
       <if test="status != null">
         `status`,
@@ -216,6 +227,9 @@
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
       </if>
+      <if test="whOutOrderId != null">
+        #{whOutOrderId,jdbcType=BIGINT},
+      </if>
       <if test="status != null">
         #{status,jdbcType=VARCHAR},
       </if>
@@ -266,6 +280,9 @@
       </if>
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="whOutOrderId != null">
+        wh_out_order_id = #{whOutOrderId,jdbcType=BIGINT},
       </if>
       <if test="status != null">
         `status` = #{status,jdbcType=VARCHAR},

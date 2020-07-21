@@ -21,6 +21,11 @@ public enum ConsignTypeEnums {
     SEA_TRANSPORTATION("SEA_TRANSPORTATION","海运","2"),
     LAND_CARRIAGE("LAND_CARRIAGE","陆运","3");
 
+    private String code;
+
+    private String message;
+
+    private String value;
 
     public static ConsignTypeEnums getEnumsByCode(String code){
         for (ConsignTypeEnums value : ConsignTypeEnums.values()) {
@@ -30,9 +35,12 @@ public enum ConsignTypeEnums {
         }
         return null;
     }
-    private String code;
-
-    private String message;
-
-    private String value;
+    public static ConsignTypeEnums getEnumsByValue(String value){
+        for (ConsignTypeEnums item : ConsignTypeEnums.values()) {
+            if (StringUtils.equals(item.getValue(),value)){
+                return item;
+            }
+        }
+        return null;
+    }
 }
