@@ -24,6 +24,24 @@ public interface TokenRosService {
      */
     TokenResult login(LoginEnter enter);
 
+    /*
+     * @Author Aleks
+     * @Description  邮箱加验证码登录给用户发邮件（邮件里面是验证码）
+     * @Date  2020/7/20 19:23
+     * @Param [enter]
+     * @return
+     **/
+    void emailLoginSendCode(LoginEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  邮箱加验证码登陆
+     * @Date  2020/7/20 19:13
+     * @Param [enter]
+     * @return
+     **/
+    TokenResult emailLogin(LoginEnter enter);
+
     /**
      * 获取密钥
      *

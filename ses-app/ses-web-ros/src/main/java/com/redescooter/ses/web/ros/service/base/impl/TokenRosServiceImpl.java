@@ -168,6 +168,21 @@ public class TokenRosServiceImpl implements TokenRosService {
         return result;
     }
 
+
+    @Override
+    public void emailLoginSendCode(LoginEnter enter) {
+        // TODO 给用户发邮件  邮件里面是验证码  登陆的时候验证邮箱和验证码
+        // TODO 邮件发完后  需要把邮箱和验证码放进缓存  验证码后端随机生成（4或6位数字）
+
+    }
+
+
+    @Override
+    public TokenResult emailLogin(LoginEnter enter) {
+        // TODO 先校验邮箱和缓存中的邮箱是否匹配  如果是同一个邮箱 再看验证码是否是一样的 都通过校验  直接登录
+        return null;
+    }
+
     public Integer passWordMistaken(OpeSysUser sysUser,String key){
         Integer num = 1;
         Map<String,String> map = new HashMap<>();
@@ -176,14 +191,19 @@ public class TokenRosServiceImpl implements TokenRosService {
             //缓存中能找到，说明已经输错过密码了
             Map<String, String> data = jedisCluster.hgetAll(key);
             String oldNum = data.get("num");
+            if(Integer.parseInt(oldNum) >= 5){
+                return Integer.parseInt(oldNum);
+            }
             num = Integer.parseInt(oldNum) + 1;
-            if(num > 5){
+            if(num == 5){
+                map.put("num",num.toString());
+                jedisCluster.hmset(key, map);
+                jedisCluster.expire(key, 60);
                 return num;
             }
         }
         map.put("num",num.toString());
         jedisCluster.hmset(key, map);
-        jedisCluster.expire(key, 60);
         return num;
     }
 

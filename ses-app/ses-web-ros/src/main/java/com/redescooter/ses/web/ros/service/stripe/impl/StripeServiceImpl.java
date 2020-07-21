@@ -9,12 +9,11 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.StringResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
@@ -94,6 +93,9 @@ public class StripeServiceImpl implements StripeService {
     private IdAppService idAppService;
     @Value("${Request.privateKey}")
     private String privatekey;
+
+    @Value("${Request.publicKey}")
+    private String publicSecret;
 
     @SneakyThrows
     @Override
@@ -394,5 +396,26 @@ public class StripeServiceImpl implements StripeService {
         private Boolean requiresAction;
         private String error;
     }
+
+
+    @Override
+    public PublicSecretResult publicSecret() {
+        PublicSecretResult result = new PublicSecretResult();
+        String secret = publicSecret;
+        String front = secret.substring(0,secret.length()/2);
+        String behind = secret.substring(secret.length()/2,secret.length());
+        String whole = front + behind;
+        System.out.println(whole);
+        try {
+            front = RsaUtils.encrypt(front, publicSecret);
+            behind = RsaUtils.encrypt(behind, publicSecret);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        result.setFront(front);
+        result.setBehind(behind);
+        return result;
+    }
+
 
 }

@@ -46,6 +46,23 @@ public class TokenController {
         return new Response<>(tokenRosService.login(enter));
     }
 
+    @IgnoreLoginCheck
+    @ApiOperation(value = "邮箱加验证码登录给用户发邮件（邮件里面是验证码）", response = TokenResult.class)
+    @PostMapping(value = "/emailLoginSendCode")
+    public Response emailLoginSendCode(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
+        tokenRosService.emailLoginSendCode(enter);
+        return new Response();
+    }
+
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "邮箱加验证码登录", response = TokenResult.class)
+    @PostMapping(value = "/emailLogin")
+    public Response<TokenResult> emailLogin(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
+        return new Response<>(tokenRosService.emailLogin(enter));
+    }
+
+
     @ApiOperation(value = "登出", response = GeneralResult.class)
     @PostMapping(value = "/logout")
     public Response<GeneralResult> logout(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {

@@ -112,9 +112,9 @@
             or company_name like concat("%",#{keyword},"%")
             or email like concat("%",#{keyword},"%")
             )
-            order by created_time desc
-            limit #{startRow},#{pageSize}
         </if>
+        order by created_time desc
+        limit #{startRow},#{pageSize}
     </select>
     <select id="customerList" resultType="com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult">
         select
