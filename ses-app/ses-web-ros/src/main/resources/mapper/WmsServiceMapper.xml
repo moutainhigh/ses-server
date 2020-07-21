@@ -216,7 +216,8 @@
     SELECT
     e.id as id,
     e.allocate_num as allocateNumber,
-    e.count as qty,
+    e.count-e.pending_storage_total as qty,
+    e.count as sumTotal,
     s.full_name as consignee,
     '2' as productType,
     e.created_time as creationTime
@@ -228,7 +229,8 @@
     SELECT
     r.id as id,
     r.assembly_number as allocateNumber,
-    r.in_wait_wh_total as qty,
+    r.total_qty-r.in_wait_wh_total as qty,
+    r.total_qty as sumTotal,
     s.full_name as consignee,
     '3' as productType,
     r.created_time as creationTime
@@ -242,7 +244,8 @@
     * from ((SELECT
     e.id as id,
     e.allocate_num as allocateNumber,
-    e.count as qty,
+    e.count-e.pending_storage_total as qty,
+    e.count as sumTotal,
     s.full_name as consignee,
     '2' as productType,
     e.created_time as creationTime
@@ -255,7 +258,8 @@
     (SELECT
     r.id as id,
     r.assembly_number as allocateNumber,
-    r.in_wait_wh_total as qty,
+    r.total_qty-r.in_wait_wh_total as qty,
+    r.total_qty as sumTotal,
     s.full_name as consignee,
     '3' as productType,
     r.created_time as creationTime
