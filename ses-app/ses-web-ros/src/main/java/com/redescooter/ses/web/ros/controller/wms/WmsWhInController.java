@@ -30,22 +30,22 @@ public class WmsWhInController{
   @Autowired
   private WmsWhInService wmswhinservice;
 
-  @PostMapping(value = "/inWh")
+  @PostMapping(value = "/inWhList")
   @ApiOperation(value = "已入库", response = WmsInWhResult.class)
   public Response<PageResult<WmsInWhResult>> wmsInWhResultList(@ModelAttribute @ApiParam("请求参数") WmsWhInEnter enter) {
     return new Response<>(wmswhinservice.getWmsInWhList(enter));
   }
-  @PostMapping(value = "/stockPending")
+  @PostMapping(value = "/stockPendingList")
   @ApiOperation(value = "待入库", response = WmsWhInStockPendingResult.class)
   public Response<PageResult<WmsWhInStockPendingResult>> whInStockPendingList(@ModelAttribute @ApiParam("请求参数") WmsWhInEnter enter) {
     return new Response<>(wmswhinservice.getWhInStockPendingList(enter));
   }
-  @PostMapping(value = "/personnel")
+  @PostMapping(value = "/personnelDetails")
   @ApiOperation(value = "入库单人员信息详情", response = WmsInWhDetailsResult.class)
   public Response<WmsInWhDetailsResult> wmsInWhDetails(@ModelAttribute @ApiParam("请求参数") WmsWhInDetailsEnter enter) {
     return new Response<>(wmswhinservice.getInWhDetails(enter));
   }
-  @PostMapping(value = "/product")
+  @PostMapping(value = "/productDetails")
   @ApiOperation(value = "入库部件/产品信息详情", response = WmsProductListResult.class)
   public Response<List<WmsProductListResult>> whInStockPendingList(@ModelAttribute @ApiParam("请求参数") WmsWhInDetailsEnter enter) {
     return new Response<>(wmswhinservice.getProductList(enter));
