@@ -7,11 +7,12 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="tracking_num" jdbcType="VARCHAR" property="trackingNum" />
     <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="consignee_id" jdbcType="BIGINT" property="consigneeId" />
     <result column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
-    <result column="countryCode" jdbcType="VARCHAR" property="countrycode" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
     <result column="consignee_email" jdbcType="VARCHAR" property="consigneeEmail" />
     <result column="notify_first_name" jdbcType="VARCHAR" property="notifyFirstName" />
     <result column="notify_last_name" jdbcType="VARCHAR" property="notifyLastName" />
@@ -21,7 +22,7 @@
     <result column="annex" jdbcType="VARCHAR" property="annex" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="product_count" jdbcType="INTEGER" property="productCount" />
-    <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
+    <result column="logistics_price" jdbcType="DECIMAL" property="logisticsPrice" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
@@ -35,10 +36,11 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, order_no, in_wh_id, address, consignee_id, consignee_phone, countryCode, 
-    consignee_email, notify_first_name, notify_last_name, consign_type, consign_method, 
-    consign_company, annex, `status`, product_count, total_price, created_by, created_time, 
-    updated_by, updated_time, revision, def1, def2, def3, def5, def6
+    id, dr, order_no, tracking_num, in_wh_id, address, consignee_id, consignee_phone, 
+    country_code, consignee_email, notify_first_name, notify_last_name, consign_type, 
+    consign_method, consign_company, annex, `status`, product_count, logistics_price, 
+    created_by, created_time, updated_by, updated_time, revision, def1, def2, def3, def5, 
+    def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -52,6 +54,11 @@
       <trim prefix="order_no = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.orderNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="tracking_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.trackingNum,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="in_wh_id = case" suffix="end,">
@@ -74,9 +81,9 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.consigneePhone,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="countryCode = case" suffix="end,">
+      <trim prefix="country_code = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.countrycode,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="consignee_email = case" suffix="end,">
@@ -124,9 +131,9 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.productCount,jdbcType=INTEGER}
         </foreach>
       </trim>
-      <trim prefix="total_price = case" suffix="end,">
+      <trim prefix="logistics_price = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.totalPrice,jdbcType=DECIMAL}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.logisticsPrice,jdbcType=DECIMAL}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
@@ -188,20 +195,21 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_outwh_order
-    (id, dr, order_no, in_wh_id, address, consignee_id, consignee_phone, countryCode, 
-      consignee_email, notify_first_name, notify_last_name, consign_type, consign_method, 
-      consign_company, annex, `status`, product_count, total_price, created_by, created_time, 
-      updated_by, updated_time, revision, def1, def2, def3, def5, def6)
+    (id, dr, order_no, tracking_num, in_wh_id, address, consignee_id, consignee_phone, 
+      country_code, consignee_email, notify_first_name, notify_last_name, consign_type, 
+      consign_method, consign_company, annex, `status`, product_count, logistics_price, 
+      created_by, created_time, updated_by, updated_time, revision, def1, def2, def3, 
+      def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.orderNo,jdbcType=VARCHAR}, 
-        #{item.inWhId,jdbcType=BIGINT}, #{item.address,jdbcType=VARCHAR}, #{item.consigneeId,jdbcType=BIGINT}, 
-        #{item.consigneePhone,jdbcType=VARCHAR}, #{item.countrycode,jdbcType=VARCHAR}, 
+        #{item.trackingNum,jdbcType=VARCHAR}, #{item.inWhId,jdbcType=BIGINT}, #{item.address,jdbcType=VARCHAR}, 
+        #{item.consigneeId,jdbcType=BIGINT}, #{item.consigneePhone,jdbcType=VARCHAR}, #{item.countryCode,jdbcType=VARCHAR}, 
         #{item.consigneeEmail,jdbcType=VARCHAR}, #{item.notifyFirstName,jdbcType=VARCHAR}, 
         #{item.notifyLastName,jdbcType=VARCHAR}, #{item.consignType,jdbcType=VARCHAR}, 
         #{item.consignMethod,jdbcType=VARCHAR}, #{item.consignCompany,jdbcType=VARCHAR}, 
         #{item.annex,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR}, #{item.productCount,jdbcType=INTEGER}, 
-        #{item.totalPrice,jdbcType=DECIMAL}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.logisticsPrice,jdbcType=DECIMAL}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
         #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.revision,jdbcType=INTEGER}, 
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
         #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
@@ -210,29 +218,32 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeOutwhOrder">
     <!--@mbg.generated-->
     insert into ope_outwh_order
-    (id, dr, order_no, in_wh_id, address, consignee_id, consignee_phone, countryCode, 
-      consignee_email, notify_first_name, notify_last_name, consign_type, consign_method, 
-      consign_company, annex, `status`, product_count, total_price, created_by, created_time, 
-      updated_by, updated_time, revision, def1, def2, def3, def5, def6)
+    (id, dr, order_no, tracking_num, in_wh_id, address, consignee_id, consignee_phone, 
+      country_code, consignee_email, notify_first_name, notify_last_name, consign_type, 
+      consign_method, consign_company, annex, `status`, product_count, logistics_price, 
+      created_by, created_time, updated_by, updated_time, revision, def1, def2, def3, 
+      def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{inWhId,jdbcType=BIGINT}, 
-      #{address,jdbcType=VARCHAR}, #{consigneeId,jdbcType=BIGINT}, #{consigneePhone,jdbcType=VARCHAR}, 
-      #{countrycode,jdbcType=VARCHAR}, #{consigneeEmail,jdbcType=VARCHAR}, #{notifyFirstName,jdbcType=VARCHAR}, 
-      #{notifyLastName,jdbcType=VARCHAR}, #{consignType,jdbcType=VARCHAR}, #{consignMethod,jdbcType=VARCHAR}, 
-      #{consignCompany,jdbcType=VARCHAR}, #{annex,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
-      #{productCount,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{revision,jdbcType=INTEGER}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
-      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{trackingNum,jdbcType=VARCHAR}, 
+      #{inWhId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, #{consigneeId,jdbcType=BIGINT}, 
+      #{consigneePhone,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR}, #{consigneeEmail,jdbcType=VARCHAR}, 
+      #{notifyFirstName,jdbcType=VARCHAR}, #{notifyLastName,jdbcType=VARCHAR}, #{consignType,jdbcType=VARCHAR}, 
+      #{consignMethod,jdbcType=VARCHAR}, #{consignCompany,jdbcType=VARCHAR}, #{annex,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{productCount,jdbcType=INTEGER}, #{logisticsPrice,jdbcType=DECIMAL}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{revision,jdbcType=INTEGER}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
     order_no = #{orderNo,jdbcType=VARCHAR}, 
+    tracking_num = #{trackingNum,jdbcType=VARCHAR}, 
     in_wh_id = #{inWhId,jdbcType=BIGINT}, 
     address = #{address,jdbcType=VARCHAR}, 
     consignee_id = #{consigneeId,jdbcType=BIGINT}, 
     consignee_phone = #{consigneePhone,jdbcType=VARCHAR}, 
-    countryCode = #{countrycode,jdbcType=VARCHAR}, 
+    country_code = #{countryCode,jdbcType=VARCHAR}, 
     consignee_email = #{consigneeEmail,jdbcType=VARCHAR}, 
     notify_first_name = #{notifyFirstName,jdbcType=VARCHAR}, 
     notify_last_name = #{notifyLastName,jdbcType=VARCHAR}, 
@@ -242,7 +253,7 @@
     annex = #{annex,jdbcType=VARCHAR}, 
     `status` = #{status,jdbcType=VARCHAR}, 
     product_count = #{productCount,jdbcType=INTEGER}, 
-    total_price = #{totalPrice,jdbcType=DECIMAL}, 
+    logistics_price = #{logisticsPrice,jdbcType=DECIMAL}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
     updated_by = #{updatedBy,jdbcType=BIGINT}, 
@@ -267,6 +278,9 @@
       <if test="orderNo != null">
         order_no,
       </if>
+      <if test="trackingNum != null">
+        tracking_num,
+      </if>
       <if test="inWhId != null">
         in_wh_id,
       </if>
@@ -279,8 +293,8 @@
       <if test="consigneePhone != null">
         consignee_phone,
       </if>
-      <if test="countrycode != null">
-        countryCode,
+      <if test="countryCode != null">
+        country_code,
       </if>
       <if test="consigneeEmail != null">
         consignee_email,
@@ -309,8 +323,8 @@
       <if test="productCount != null">
         product_count,
       </if>
-      <if test="totalPrice != null">
-        total_price,
+      <if test="logisticsPrice != null">
+        logistics_price,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -354,6 +368,9 @@
       <if test="orderNo != null">
         #{orderNo,jdbcType=VARCHAR},
       </if>
+      <if test="trackingNum != null">
+        #{trackingNum,jdbcType=VARCHAR},
+      </if>
       <if test="inWhId != null">
         #{inWhId,jdbcType=BIGINT},
       </if>
@@ -366,8 +383,8 @@
       <if test="consigneePhone != null">
         #{consigneePhone,jdbcType=VARCHAR},
       </if>
-      <if test="countrycode != null">
-        #{countrycode,jdbcType=VARCHAR},
+      <if test="countryCode != null">
+        #{countryCode,jdbcType=VARCHAR},
       </if>
       <if test="consigneeEmail != null">
         #{consigneeEmail,jdbcType=VARCHAR},
@@ -396,8 +413,8 @@
       <if test="productCount != null">
         #{productCount,jdbcType=INTEGER},
       </if>
-      <if test="totalPrice != null">
-        #{totalPrice,jdbcType=DECIMAL},
+      <if test="logisticsPrice != null">
+        #{logisticsPrice,jdbcType=DECIMAL},
       </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
@@ -441,6 +458,9 @@
       <if test="orderNo != null">
         order_no = #{orderNo,jdbcType=VARCHAR},
       </if>
+      <if test="trackingNum != null">
+        tracking_num = #{trackingNum,jdbcType=VARCHAR},
+      </if>
       <if test="inWhId != null">
         in_wh_id = #{inWhId,jdbcType=BIGINT},
       </if>
@@ -453,8 +473,8 @@
       <if test="consigneePhone != null">
         consignee_phone = #{consigneePhone,jdbcType=VARCHAR},
       </if>
-      <if test="countrycode != null">
-        countryCode = #{countrycode,jdbcType=VARCHAR},
+      <if test="countryCode != null">
+        country_code = #{countryCode,jdbcType=VARCHAR},
       </if>
       <if test="consigneeEmail != null">
         consignee_email = #{consigneeEmail,jdbcType=VARCHAR},
@@ -483,8 +503,8 @@
       <if test="productCount != null">
         product_count = #{productCount,jdbcType=INTEGER},
       </if>
-      <if test="totalPrice != null">
-        total_price = #{totalPrice,jdbcType=DECIMAL},
+      <if test="logisticsPrice != null">
+        logistics_price = #{logisticsPrice,jdbcType=DECIMAL},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},

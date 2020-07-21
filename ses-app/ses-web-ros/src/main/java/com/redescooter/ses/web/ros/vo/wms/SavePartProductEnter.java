@@ -27,9 +27,6 @@ public class SavePartProductEnter extends GeneralEnter {
     @ApiModelProperty(value = "id",required = true)
     private Long id;
 
-    @ApiModelProperty(value = "类型",required = true)
-    private String type;
-
     @ApiModelProperty(value = "数量",required = true)
     private int qty;
 }

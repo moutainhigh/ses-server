@@ -1,11 +1,12 @@
 package com.redescooter.ses.web.ros.service.wms.impl;
 
-import cn.hutool.db.Page;
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.wms.ConsignMethodEnums;
 import com.redescooter.ses.api.common.enums.wms.ConsignTypeEnums;
 import com.redescooter.ses.api.common.enums.wms.WhOutEventEnums;
+import com.redescooter.ses.api.common.enums.wms.WhOutStatusBEnums;
 import com.redescooter.ses.api.common.enums.wms.WhOutStatusEnums;
 import com.redescooter.ses.api.common.enums.wms.WhOutTypeEnums;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
@@ -16,19 +17,18 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.api.common.whse.WhseTypeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.wms.WhOutServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeOutwhOrder;
+import com.redescooter.ses.web.ros.dm.OpeOutwhOrderB;
 import com.redescooter.ses.web.ros.dm.OpeOutwhTrace;
 import com.redescooter.ses.web.ros.dm.OpeStock;
-import com.redescooter.ses.web.ros.dm.OpeStockPurchas;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
-import com.redescooter.ses.web.ros.exception.ExceptionCode;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeOutwhOrderBService;
 import com.redescooter.ses.web.ros.service.base.OpeOutwhOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeOutwhTraceService;
 import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
@@ -57,11 +57,13 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:WhOutServiceImpl
@@ -95,6 +97,9 @@ public class WhOutServiceImpl implements WhOutService {
 
     @Autowired
     private OpeStockProdProductService opeStockProdProductService;
+
+    @Autowired
+    private OpeOutwhOrderBService opeOutwhOrderBService;
 
     @Autowired
     private OpeSysUserProfileService opeSysUserProfileService;
@@ -207,6 +212,14 @@ public class WhOutServiceImpl implements WhOutService {
      */
     @Override
     public GeneralResult start(StartWhOutOrderEnter enter) {
+        if (ConsignTypeEnums.getEnumsByValue(enter.getConsignType()) == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CONSIGN_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.CONSIGN_TYPE_NOT_EXIST.getMessage());
+        }
+        if (StringUtils.equals(ConsignTypeEnums.getEnumsByValue(enter.getConsignType()).getValue(), ConsignTypeEnums.AIR_PARCEL.getValue())) {
+            if (ConsignMethodEnums.getEnumByValue(enter.getAirParcelType()) == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.NO_LOAN.getCode(), ExceptionCodeEnums.NO_LOAN.getMessage());
+            }
+        }
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
         if (opeOutwhOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
@@ -214,8 +227,16 @@ public class WhOutServiceImpl implements WhOutService {
         if (!StringUtils.equals(WhOutStatusEnums.PREPARE_MATERIAL.getValue(), opeOutwhOrder.getStatus())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
+
         //修改主订单
         opeOutwhOrder.setStatus(WhOutStatusEnums.OUT_WH.getValue());
+        opeOutwhOrder.setConsignType(enter.getConsignType());
+        opeOutwhOrder.setConsignMethod(StringUtils.equals(ConsignTypeEnums.getEnumsByValue(enter.getConsignType()).getValue(), ConsignTypeEnums.AIR_PARCEL.getValue())
+                == true ? enter.getAirParcelType() : null);
+        opeOutwhOrder.setConsignCompany(enter.getConsignCompany());
+        opeOutwhOrder.setTrackingNum(enter.getTrackingN());
+        opeOutwhOrder.setAnnex(enter.getAnnex());
+        opeOutwhOrder.setLogisticsPrice(new BigDecimal(enter.getPrice()));
         opeOutwhOrder.setUpdatedBy(enter.getUserId());
         opeOutwhOrder.setUpdatedTime(new Date());
         opeOutwhOrderService.updateById(opeOutwhOrder);
@@ -292,11 +313,7 @@ public class WhOutServiceImpl implements WhOutService {
         if (CollectionUtils.isEmpty(savePartProductEnterList)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_PART_IS_EMPTY.getCode(), ExceptionCodeEnums.PRODUCT_PART_IS_EMPTY.getMessage());
         }
-        //查询仓库是否存在
-        OpeWhse gogalWh = opeWhseService.getById(enter.getGogalId());
-        if (gogalWh == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
-        }
+
         //校验收货人
         OpeSysUserProfile opeSysUserProfile = opeSysUserProfileService.getOne(new LambdaQueryWrapper<OpeSysUserProfile>().eq(OpeSysUserProfile::getSysUserId, enter.getUserId()));
         if (opeSysUserProfile == null) {
@@ -306,14 +323,58 @@ public class WhOutServiceImpl implements WhOutService {
         if (ConsignTypeEnums.getEnumsByValue(enter.getConsignType()) == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CONSIGN_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.CONSIGN_TYPE_NOT_EXIST.getMessage());
         }
-
-        //查询采购仓库和组装仓库
-        List<OpeWhse> opeWhseList = opeWhseService.list(new LambdaQueryWrapper<OpeWhse>().in(OpeWhse::getType, WhseTypeEnums.PURCHAS.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
-        if (CollectionUtils.isEmpty(opeWhseList)){
-            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        //查询仓库是否存在
+        OpeWhse gogalWh = opeWhseService.getById(enter.getGogalId());
+        if (gogalWh == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
-        opeWhseList.for
+        //库存校验
+        List<OpeStock> opeStocks = new ArrayList<>(opeStockService.listByIds(savePartProductEnterList.stream().map(SavePartProductEnter::getId).collect(Collectors.toList())));
+        if (CollectionUtils.isEmpty(opeStocks)) {
+            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+        }
+        //库存校验
+        for (SavePartProductEnter item : savePartProductEnterList) {
+            Boolean existStock = Boolean.FALSE;
+            for (OpeStock stock : opeStocks) {
+                if (item.getId().equals(stock.getId())) {
+                    if (item.getQty() <= stock.getAvailableTotal()) {
+                        existStock = Boolean.TRUE;
+                        continue;
+                    }
+                    //库存不满足 抛出库存不足
+                    throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                }
+            }
+            //无匹配库存 抛出暂无库存呢
+            if (!existStock) {
+                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+            }
+        }
 
+        //主订单新建
+        OpeOutwhOrder opeOutwhOrder = buildOpeOutWhOrder(enter, savePartProductEnterList.stream().mapToInt(SavePartProductEnter::getQty).sum(), opeSysUserProfile);
+
+        //子订单新建
+        List<OpeOutwhOrderB> opeOutwhOrderBList = new ArrayList<>();
+        savePartProductEnterList.forEach(item -> {
+            Long productId = opeStocks.stream().filter(stock -> item.getId().equals(stock.getId())).findFirst().orElse(null).getMaterielProductId();
+            String productType = opeStocks.stream().filter(stock -> item.getId().equals(stock.getId())).findFirst().orElse(null).getMaterielProductType();
+            opeOutwhOrderBList.add(buildOpeOutWhSingle(enter, opeOutwhOrder.getId(), item, productId, productType));
+        });
+
+        //主订单保存
+        opeOutwhOrderService.save(opeOutwhOrder);
+        //子订单保存
+        opeOutwhOrderBService.saveBatch(opeOutwhOrderBList);
+        //订单节点保存
+        SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
+        BeanUtils.copyProperties(enter, saveNodeEnter);
+        saveNodeEnter.setId(opeOutwhOrder.getId());
+        saveNodeEnter.setStatus(WhOutStatusEnums.PENDING.getValue());
+        saveNodeEnter.setEvent(WhOutEventEnums.PENDING.getValue());
+        saveNodeEnter.setMemo(null);
+        saveNode(saveNodeEnter);
         return null;
     }
 
@@ -451,5 +512,63 @@ public class WhOutServiceImpl implements WhOutService {
                 .build();
         opeOutwhTraceService.save(opeOutwhTrace);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 主订单新建
+     *
+     * @param enter
+     * @param totalCount
+     * @param opeSysUserProfile
+     * @return
+     */
+    private OpeOutwhOrder buildOpeOutWhOrder(WhOutSaveEnter enter, int totalCount, OpeSysUserProfile opeSysUserProfile) {
+        return OpeOutwhOrder.builder()
+                .id(idAppService.getId(SequenceName.OPE_OUTWH_ORDER))
+                .dr(0)
+                .orderNo(RandomUtil.randomStringUpper(8))
+                .inWhId(enter.getGogalId())
+                .address(null)
+                .consigneeId(enter.getConsigneeId())
+                .consigneePhone(opeSysUserProfile.getTelNumber())
+                .consigneeEmail(opeSysUserProfile.getEmail())
+                .countryCode(opeSysUserProfile.getCountryCode())
+                .notifyFirstName(enter.getNotifyFirstName())
+                .notifyLastName(enter.getNotifyLastName())
+                .consignType(enter.getConsignType())
+                .status(WhOutStatusEnums.PENDING.getValue())
+                .productCount(totalCount)
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+    }
+
+    /**
+     * 子订单新建
+     *
+     * @param enter
+     * @param orderId
+     * @param item
+     * @param productId
+     * @param productType
+     * @return
+     */
+    private OpeOutwhOrderB buildOpeOutWhSingle(WhOutSaveEnter enter, Long orderId, SavePartProductEnter item, Long productId, String productType) {
+        return OpeOutwhOrderB
+                .builder()
+                .id(idAppService.getId(SequenceName.OPE_OUTWH_ORDER_B))
+                .outwhOrderId(orderId)
+                .partProductId(productId)
+                .productType(productType)
+                .totalCount(item.getQty())
+                .lastOutCount(item.getQty())
+                .status(WhOutStatusBEnums.UNPREPARED.getValue())
+                .createdBy(enter.getUserId())
+                .createdTime(new Date())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
     }
 }

@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,11 +51,11 @@ public class OpeOutwhOrderB implements Serializable {
     private Long partProductId;
 
     /**
-     * 来源 
+     * 产品类型 
      */
-    @TableField(value = "source_type")
-    @ApiModelProperty(value="来源 ")
-    private String sourceType;
+    @TableField(value = "product_type")
+    @ApiModelProperty(value="产品类型 ")
+    private String productType;
 
     /**
      * 总数量
@@ -64,13 +63,6 @@ public class OpeOutwhOrderB implements Serializable {
     @TableField(value = "total_count")
     @ApiModelProperty(value="总数量")
     private Integer totalCount;
-
-    /**
-     * 总价格
-     */
-    @TableField(value = "total_price")
-    @ApiModelProperty(value="总价格")
-    private BigDecimal totalPrice;
 
     /**
      * 剩余出货数量
@@ -166,11 +158,9 @@ public class OpeOutwhOrderB implements Serializable {
 
     public static final String COL_PART_PRODUCT_ID = "part_product_id";
 
-    public static final String COL_SOURCE_TYPE = "source_type";
+    public static final String COL_PRODUCT_TYPE = "product_type";
 
     public static final String COL_TOTAL_COUNT = "total_count";
-
-    public static final String COL_TOTAL_PRICE = "total_price";
 
     public static final String COL_LAST_OUT_COUNT = "last_out_count";
 

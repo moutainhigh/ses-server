@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.wms.WhOutConsigneeResult;
 import com.redescooter.ses.web.ros.vo.wms.WhOutDetailProductPartListEnter;
 import com.redescooter.ses.web.ros.vo.wms.WhOutDetailProductPartListResult;
@@ -114,4 +115,5 @@ public interface WhOutServiceMapper {
      * @return
      */
     List<CountByStatusResult> statusByCount(GeneralEnter enter);
+
 }

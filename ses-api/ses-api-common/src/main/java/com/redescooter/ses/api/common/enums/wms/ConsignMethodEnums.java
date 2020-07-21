@@ -24,4 +24,13 @@ public enum ConsignMethodEnums {
     private String message;
 
     private String value;
+
+    public static ConsignMethodEnums getEnumByValue(String value) {
+        for (ConsignMethodEnums item : ConsignMethodEnums.values()) {
+            if (item.getValue().equals(value)) {
+                return item;
+            }
+        }
+        return null;
+    }
 }

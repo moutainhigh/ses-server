@@ -217,4 +217,5 @@
         from ope_outwh_order
         group by status
     </select>
+
 </mapper>
