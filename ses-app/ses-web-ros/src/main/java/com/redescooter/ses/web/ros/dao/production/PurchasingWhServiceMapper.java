@@ -161,7 +161,7 @@ public interface PurchasingWhServiceMapper {
      * @param whseIds
      * @return
      */
-    List<OutWhResult> outWhListAllocate(@Param("enter") WhEnter enter, @Param("whseIds") List<Long> whseIds,@Param("num") Integer num);
+    List<OutWhResult> outWhListAllocate(@Param("enter") WhEnter enter, @Param("whseIds") List<Long> whseIds);
 
     /**
      * 出库类型统计

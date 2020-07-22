@@ -341,6 +341,8 @@ public enum ExceptionCodeEnums {
 
     NO_LOAN(10161,"委托方式为空"),
 
+    NO_PERM(10162,"没有该接口的权限"),
+
 
     ;
 
