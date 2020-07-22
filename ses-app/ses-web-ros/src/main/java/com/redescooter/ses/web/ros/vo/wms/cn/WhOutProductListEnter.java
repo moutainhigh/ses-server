@@ -24,6 +24,9 @@ import io.swagger.annotations.*;
 @Builder
 public class WhOutProductListEnter extends PageEnter {
 
+    @ApiModelProperty(value = "产品类型")
+    private String productType;
+
     @ApiModelProperty(value = "关键字搜索")
     private String keyword;
 }

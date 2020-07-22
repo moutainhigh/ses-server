@@ -20,6 +20,7 @@ public enum SourceTypeEnums {
     ALLOCATE("ALLOCATE", "调拨", "2"),
     ASSEMBLY("ASSEMBLY", "组装", "3"),
     SCOOTER_ALLOCATE("SCOOTER_ALLOCATE","车辆分配","4"),
+    WH_OUT("WH_OUT","生成出库","5"),
     ;
 
     private String code;

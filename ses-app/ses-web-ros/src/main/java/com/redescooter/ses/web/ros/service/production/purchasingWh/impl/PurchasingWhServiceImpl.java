@@ -256,7 +256,8 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 //        if (countAllocate == 0) {
 //            return PageResult.createZeroRowResult(enter);
 //        }
-        List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(allocateWhse.get(0).getId()),enter.getPageSize()-countAssembly);
+        enter.setPageSize(enter.getPageSize()-countAssembly);
+        List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
         whResultListAllocate.addAll(whResultListAssembly);
 
         return PageResult.create(enter, countAllocate + countAssembly, whResultListAllocate);

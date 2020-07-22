@@ -87,6 +87,14 @@ public interface WhOutService {
     GeneralResult prepareMaterial(IdEnter enter);
 
     /**
+     * 出库
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult outwh(IdEnter enter);
+
+    /**
      * 入库
      *
      * @param enter
@@ -157,5 +165,13 @@ public interface WhOutService {
      * @return
      */
     GeneralResult saveNode(SaveNodeEnter enter);
+
+    /**
+     * 出库单库存锁定
+     *
+     * @param ids
+     * @return
+     */
+    void lockStock(List<Long> ids);
 }
 

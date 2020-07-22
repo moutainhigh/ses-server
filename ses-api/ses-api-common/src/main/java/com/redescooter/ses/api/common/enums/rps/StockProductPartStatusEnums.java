@@ -18,6 +18,7 @@ public enum StockProductPartStatusEnums {
     AVAILABLE("AVAILABLE", "可用", "1"),
     BROKEN("BROKEN", "破损", "2"),
     OUT_WH("OUT_WH", "出库", "3"),
+    LOCKING("LOCKING","锁定","4"),
     ;
 
     private String code;

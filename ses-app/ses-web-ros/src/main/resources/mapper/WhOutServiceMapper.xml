@@ -6,6 +6,9 @@
         and parts.dr=0
         and stock.available_total > 0
         and materiel_product_type != 4
+        <if test="productType != null and productType != ''">
+            and materiel_product_type=#{productType}
+        </if>
         <if test="keyword != null and keyword != ''">
             and (parts.parts_number like concat('%', #{keyword}, '%')
             or parts.fr_name like concat('%', #{keyword}, '%')
@@ -19,6 +22,9 @@
         and product.dr=0
         and stock.available_total > 0
         and materiel_product_type = 4
+        <if test="productType != null and productType != ''">
+            and materiel_product_type=#{productType}
+        </if>
         <if test="keyword != null and keyword != ''">
             and (product.product_number like concat('%', #{keyword}, '%')
             or product.fr_name like concat('%', #{keyword}, '%')
@@ -102,7 +108,7 @@
                parts.fr_name               as frName,
                parts.en_name               as enName,
                stock.available_total       as stocks,
-               stock.materiel_product_type as type
+               stock.materiel_product_type as productType
         from ope_stock stock
                  inner join ope_parts as parts on stock.materiel_product_id = parts.id
         <include refid="Query_ProductList_Parts"/>

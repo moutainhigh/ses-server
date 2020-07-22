@@ -40,7 +40,7 @@ public class WhOutProductListResult extends GeneralResult {
     private String cnName;
 
     @ApiModelProperty(value = "类型")
-    private String type;
+    private String productType;
 
     @ApiModelProperty(value = "库存")
     private Integer stocks;

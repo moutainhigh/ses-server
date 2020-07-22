@@ -13,6 +13,9 @@
     <result column="out_total" jdbcType="INTEGER" property="outTotal" />
     <result column="available_total" jdbcType="INTEGER" property="availableTotal" />
     <result column="worn_total" jdbcType="INTEGER" property="wornTotal" />
+    <result column="lock_total" jdbcType="INTEGER" property="lockTotal" />
+    <result column="wait_product_total" jdbcType="INTEGER" property="waitProductTotal" />
+    <result column="wait_stored_total" jdbcType="INTEGER" property="waitStoredTotal" />
     <result column="materiel_product_id" jdbcType="BIGINT" property="materielProductId" />
     <result column="materiel_product_type" jdbcType="VARCHAR" property="materielProductType" />
     <result column="materiel_product_name" jdbcType="VARCHAR" property="materielProductName" />
@@ -30,8 +33,9 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, user_id, tenant_id, whse_id, int_total, out_total, available_total, worn_total, 
-    materiel_product_id, materiel_product_type, materiel_product_name, revision, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    lock_total, wait_product_total, wait_stored_total, materiel_product_id, materiel_product_type, 
+    materiel_product_name, revision, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -75,6 +79,21 @@
       <trim prefix="worn_total = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.wornTotal,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="lock_total = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.lockTotal,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="wait_product_total = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.waitProductTotal,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="wait_stored_total = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.waitStoredTotal,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="materiel_product_id = case" suffix="end,">
@@ -152,31 +171,35 @@
     <!--@mbg.generated-->
     insert into ope_stock
     (id, dr, user_id, tenant_id, whse_id, int_total, out_total, available_total, worn_total, 
-      materiel_product_id, materiel_product_type, materiel_product_name, revision, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+      lock_total, wait_product_total, wait_stored_total, materiel_product_id, materiel_product_type, 
+      materiel_product_name, revision, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.userId,jdbcType=BIGINT}, 
         #{item.tenantId,jdbcType=BIGINT}, #{item.whseId,jdbcType=BIGINT}, #{item.intTotal,jdbcType=INTEGER}, 
         #{item.outTotal,jdbcType=INTEGER}, #{item.availableTotal,jdbcType=INTEGER}, #{item.wornTotal,jdbcType=INTEGER}, 
-        #{item.materielProductId,jdbcType=BIGINT}, #{item.materielProductType,jdbcType=VARCHAR}, 
-        #{item.materielProductName,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
-        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
-        )
+        #{item.lockTotal,jdbcType=INTEGER}, #{item.waitProductTotal,jdbcType=INTEGER}, 
+        #{item.waitStoredTotal,jdbcType=INTEGER}, #{item.materielProductId,jdbcType=BIGINT}, 
+        #{item.materielProductType,jdbcType=VARCHAR}, #{item.materielProductName,jdbcType=VARCHAR}, 
+        #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
+        #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeStock">
     <!--@mbg.generated-->
     insert into ope_stock
     (id, dr, user_id, tenant_id, whse_id, int_total, out_total, available_total, worn_total, 
-      materiel_product_id, materiel_product_type, materiel_product_name, revision, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+      lock_total, wait_product_total, wait_stored_total, materiel_product_id, materiel_product_type, 
+      materiel_product_name, revision, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, 
       #{whseId,jdbcType=BIGINT}, #{intTotal,jdbcType=INTEGER}, #{outTotal,jdbcType=INTEGER}, 
-      #{availableTotal,jdbcType=INTEGER}, #{wornTotal,jdbcType=INTEGER}, #{materielProductId,jdbcType=BIGINT}, 
+      #{availableTotal,jdbcType=INTEGER}, #{wornTotal,jdbcType=INTEGER}, #{lockTotal,jdbcType=INTEGER}, 
+      #{waitProductTotal,jdbcType=INTEGER}, #{waitStoredTotal,jdbcType=INTEGER}, #{materielProductId,jdbcType=BIGINT}, 
       #{materielProductType,jdbcType=VARCHAR}, #{materielProductName,jdbcType=VARCHAR}, 
       #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
@@ -192,6 +215,9 @@
     out_total = #{outTotal,jdbcType=INTEGER}, 
     available_total = #{availableTotal,jdbcType=INTEGER}, 
     worn_total = #{wornTotal,jdbcType=INTEGER}, 
+    lock_total = #{lockTotal,jdbcType=INTEGER}, 
+    wait_product_total = #{waitProductTotal,jdbcType=INTEGER}, 
+    wait_stored_total = #{waitStoredTotal,jdbcType=INTEGER}, 
     materiel_product_id = #{materielProductId,jdbcType=BIGINT}, 
     materiel_product_type = #{materielProductType,jdbcType=VARCHAR}, 
     materiel_product_name = #{materielProductName,jdbcType=VARCHAR}, 
@@ -236,6 +262,15 @@
       </if>
       <if test="wornTotal != null">
         worn_total,
+      </if>
+      <if test="lockTotal != null">
+        lock_total,
+      </if>
+      <if test="waitProductTotal != null">
+        wait_product_total,
+      </if>
+      <if test="waitStoredTotal != null">
+        wait_stored_total,
       </if>
       <if test="materielProductId != null">
         materiel_product_id,
@@ -306,6 +341,15 @@
       <if test="wornTotal != null">
         #{wornTotal,jdbcType=INTEGER},
       </if>
+      <if test="lockTotal != null">
+        #{lockTotal,jdbcType=INTEGER},
+      </if>
+      <if test="waitProductTotal != null">
+        #{waitProductTotal,jdbcType=INTEGER},
+      </if>
+      <if test="waitStoredTotal != null">
+        #{waitStoredTotal,jdbcType=INTEGER},
+      </if>
       <if test="materielProductId != null">
         #{materielProductId,jdbcType=BIGINT},
       </if>
@@ -374,6 +418,15 @@
       </if>
       <if test="wornTotal != null">
         worn_total = #{wornTotal,jdbcType=INTEGER},
+      </if>
+      <if test="lockTotal != null">
+        lock_total = #{lockTotal,jdbcType=INTEGER},
+      </if>
+      <if test="waitProductTotal != null">
+        wait_product_total = #{waitProductTotal,jdbcType=INTEGER},
+      </if>
+      <if test="waitStoredTotal != null">
+        wait_stored_total = #{waitStoredTotal,jdbcType=INTEGER},
       </if>
       <if test="materielProductId != null">
         materiel_product_id = #{materielProductId,jdbcType=BIGINT},
