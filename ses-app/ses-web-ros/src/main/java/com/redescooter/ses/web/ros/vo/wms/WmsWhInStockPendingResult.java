@@ -29,34 +29,21 @@ public class WmsWhInStockPendingResult extends GeneralResult {
 
   @ApiModelProperty(value = "产品/部品类型")
   private String productType;
-  /**
-   * 调拨/组装编号
-   */
+
   @ApiModelProperty(value = "调拨/组装编号")
   private String allocateNumber;
 
-
-  /**
-   * 已入库数量
-   */
   @ApiModelProperty(value = "已入库数量")
   private Integer qty;
 
 
-  /**
-   * 质检数
-   */
   @ApiModelProperty(value = "总数量")
   private Integer sumTotal;
-  /**
-   * 收货人
-   */
+
   @ApiModelProperty(value = "收货人")
   private String consignee;
 
-  /**
-   * 创建时间
-   */
+
   @ApiModelProperty(value = "创建时间")
   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")

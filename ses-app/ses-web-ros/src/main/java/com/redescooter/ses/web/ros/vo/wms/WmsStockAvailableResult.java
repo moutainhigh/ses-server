@@ -21,36 +21,26 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsStockAvailableResult extends GeneralResult {
-  /**
-   * 产品编号
-   */
+
   @ApiModelProperty(value = "产品/部品编号")
   private String productNumber;
 
   @ApiModelProperty(value = "产品/部品类型")
   private String productType;
 
-  /**
-   * 入库总数
-   */
+
   @ApiModelProperty(value = "入库总数")
   private Integer intTotal;
 
-  /**
-   * 中文名称
-   */
+
   @ApiModelProperty(value = "中文名称")
   private String cnName;
 
-  /**
-   * 英文名称
-   */
+
   @ApiModelProperty(value = "英文名称")
   private String enName;
 
-  /**
-   * 价格 浮点型价格
-   */
+
   @ApiModelProperty(value="价格 浮点型价格")
   private String price;
 

@@ -21,11 +21,11 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsWhInDetailsEnter extends GeneralEnter {
-  @ApiModelProperty(value = "id")
+  @ApiModelProperty(value = "id",required = true)
   @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
   private  long id;
 
-  @ApiModelProperty(value = "类型")
+  @ApiModelProperty(value = "类型",required = true)
   @NotNull(code = com.redescooter.ses.web.ros.exception.ValidationExceptionCode.TYPE_IS_EMPTY, message = "类型 为空")
   private String type;
 }

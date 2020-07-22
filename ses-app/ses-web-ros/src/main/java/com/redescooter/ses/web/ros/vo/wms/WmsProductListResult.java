@@ -19,29 +19,20 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsProductListResult extends GeneralResult {
-  /**
-   * 产品编号
-   */
+
+
   @ApiModelProperty(value = "产品/部品编号")
   private String productNumber;
 
   @ApiModelProperty(value = "产品/部品类型")
   private String productType;
-  /**
-   * 入库总数
-   */
+
   @ApiModelProperty(value = "质检数")
   private Integer qty;
 
-  /**
-   * 中文名称
-   */
   @ApiModelProperty(value = "中文名称")
   private String cnName;
 
-  /**
-   * 英文名称
-   */
   @ApiModelProperty(value = "英文名称")
   private String enName;
 

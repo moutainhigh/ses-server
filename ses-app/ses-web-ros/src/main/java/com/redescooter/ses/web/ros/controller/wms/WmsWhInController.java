@@ -24,7 +24,7 @@ import java.util.List;
 @Api(tags = {"入库单列表"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/wms/whIn/")
+@RequestMapping(value = "/wms/whIn")
 public class WmsWhInController{
 
   @Autowired
@@ -35,17 +35,20 @@ public class WmsWhInController{
   public Response<PageResult<WmsInWhResult>> wmsInWhResultList(@ModelAttribute @ApiParam("请求参数") WmsWhInEnter enter) {
     return new Response<>(wmswhinservice.getWmsInWhList(enter));
   }
+
   @PostMapping(value = "/stockPendingList")
   @ApiOperation(value = "待入库", response = WmsWhInStockPendingResult.class)
   public Response<PageResult<WmsWhInStockPendingResult>> whInStockPendingList(@ModelAttribute @ApiParam("请求参数") WmsWhInEnter enter) {
     return new Response<>(wmswhinservice.getWhInStockPendingList(enter));
   }
-  @PostMapping(value = "/personnelDetails")
-  @ApiOperation(value = "入库单人员信息详情", response = WmsInWhDetailsResult.class)
-  public Response<WmsInWhDetailsResult> wmsInWhDetails(@ModelAttribute @ApiParam("请求参数") WmsWhInDetailsEnter enter) {
+
+  @PostMapping(value = "/detail")
+  @ApiOperation(value = "详情", response = WmsInWhDetailsResult.class)
+  public Response<WmsInWhDetailsResult> wmsInWhInfoDetails(@ModelAttribute @ApiParam("请求参数") WmsWhInDetailsEnter enter) {
     return new Response<>(wmswhinservice.getInWhDetails(enter));
   }
-  @PostMapping(value = "/productDetails")
+
+  @PostMapping(value = "/detailProductList")
   @ApiOperation(value = "入库部件/产品信息详情", response = WmsProductListResult.class)
   public Response<List<WmsProductListResult>> whInStockPendingList(@ModelAttribute @ApiParam("请求参数") WmsWhInDetailsEnter enter) {
     return new Response<>(wmswhinservice.getProductList(enter));

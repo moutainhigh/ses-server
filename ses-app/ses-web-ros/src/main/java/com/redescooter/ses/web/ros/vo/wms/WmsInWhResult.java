@@ -24,9 +24,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsInWhResult extends GeneralResult {
-  /**
-   * 调拨/组装编号
-   */
+
   @ApiModelProperty(value = "调拨/组装编号")
   private String allocateNumber;
 
@@ -36,21 +34,13 @@ public class WmsInWhResult extends GeneralResult {
   @ApiModelProperty(value = "产品/部品类型")
   private String productType;
 
-  /**
-   * 质检数
-   */
   @ApiModelProperty(value = "质检数")
   private Integer qty;
 
-  /**
-   * 委托人
-   */
   @ApiModelProperty(value = "收货人")
   private String consignee;
 
-  /**
-   * 入库时间
-   */
+
   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
   @ApiModelProperty(value = "入库时间")
