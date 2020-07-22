@@ -317,7 +317,7 @@ public class WhOutServiceImpl implements WhOutService {
         }
 
         //子订单出库
-//        whOutServiceMapper.outwh();
+        whOutServiceMapper.outwh(enter.getId());
 
         //修改主订单
         opeOutwhOrder.setStatus(WhOutStatusEnums.OUT_WH.getValue());

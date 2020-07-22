@@ -106,4 +106,9 @@ public interface WhOutServiceMapper {
      */
     List<CountByStatusResult> statusByCount(GeneralEnter enter);
 
+    /**
+     * 锁定库存出库
+     * @param id
+     */
+    void outwh(Long id);
 }
