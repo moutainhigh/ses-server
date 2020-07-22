@@ -13,4 +13,6 @@ public interface OpeSysUserMapper extends BaseMapper<OpeSysUser> {
     int insertOrUpdate(OpeSysUser record);
 
     int insertOrUpdateSelective(OpeSysUser record);
+
+    List<String> findPerms(@Param("userId") Long userId);
 }

@@ -10,10 +10,12 @@ import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.tool.utils.ValidationUtil;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.utils.SpringContextUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -27,6 +29,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -48,6 +51,9 @@ public class ControllerAspect {
 
     @Autowired
     private WebSiteTokenService webSiteService;
+
+    @Autowired
+    private OpeSysUserService opeSysUserService;
 
     @Around("execution(* com.redescooter.ses.web.ros.controller..*.*(..))")
     public Object check(ProceedingJoinPoint point) throws Throwable {
@@ -142,8 +148,21 @@ public class ControllerAspect {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         requestPath = filterUrl(requestPath);
         log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + request.getMethod());
-
-
+        List<String> permsList = opeSysUserService.findPerms(enter.getUserId());
+        // todo 接口的权限控制，等数据库的数据完善了  再将下面注释的两行（154、164）放开
+        if(!CollectionUtils.isNotEmpty(permsList)){
+//            throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
+        }
+        boolean flag = false;
+        for (String perm : permsList) {
+            if(perm.contains(requestPath)){
+                flag = true;
+                break;
+            }
+        }
+        if(!flag){
+//            throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
+        }
     }
 
     private void checkEnterParameter(GeneralEnter enter) {
