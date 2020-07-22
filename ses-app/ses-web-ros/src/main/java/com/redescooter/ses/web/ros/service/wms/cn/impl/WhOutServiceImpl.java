@@ -280,7 +280,6 @@ public class WhOutServiceImpl implements WhOutService {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
 
-
         //库存锁定
         lockStock(Lists.newArrayList(enter.getId()));
 
@@ -321,6 +320,8 @@ public class WhOutServiceImpl implements WhOutService {
         opeOutwhOrder.setUpdatedTime(new Date());
         opeOutwhOrderService.updateById(opeOutwhOrder);
 
+        //子订单出库
+
         //保存节点
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
@@ -329,7 +330,7 @@ public class WhOutServiceImpl implements WhOutService {
         saveNodeEnter.setEvent(WhOutEventEnums.OUT_WH.getValue());
         saveNodeEnter.setMemo(null);
         saveNode(saveNodeEnter);
-        return null;
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -570,7 +571,7 @@ public class WhOutServiceImpl implements WhOutService {
      */
     @Transactional
     @Override
-    public GeneralResult lockStock(List<Long> ids) {
+    public void lockStock(List<Long> ids) {
 
         //查询子订单信息
         List<OpeOutwhOrderB> outwhOrderBList = opeOutwhOrderBService.list(new LambdaQueryWrapper<OpeOutwhOrderB>().in(OpeOutwhOrderB::getOutwhOrderId, ids));
@@ -594,6 +595,7 @@ public class WhOutServiceImpl implements WhOutService {
                 //库存锁定
                 if (item.getStockId().equals(stock.getId())) {
                     stock.setLockTotal(stock.getLockTotal() + item.getTotalCount());
+                    stock.setAvailableTotal(stock.getAvailableTotal() - item.getTotalCount());
                     stock.setUpdatedTime(new Date());
                     break;
                 }
@@ -601,7 +603,7 @@ public class WhOutServiceImpl implements WhOutService {
         });
 
         //部件子表锁定库存
-        List<OpeStockPurchas> stockPurchasList = lockOpeStockPurchas(outwhOrderBList,opeStocks);
+        List<OpeStockPurchas> stockPurchasList = lockOpeStockPurchas(outwhOrderBList, opeStocks);
         //整车锁定
         List<OpeStockProdProduct> stockProdProductList = lockOpeStockProdProductsSingle(outwhOrderBList, opeStocks);
 
@@ -610,16 +612,16 @@ public class WhOutServiceImpl implements WhOutService {
         //子表更新
         opeStockPurchasService.updateBatch(stockPurchasList);
         opeStockProdProductService.updateBatch(stockProdProductList);
-        return null;
     }
 
     /**
      * 部件锁定
+     *
      * @param outwhOrderBList
      * @param opeStocks
      * @return
      */
-    private List<OpeStockPurchas> lockOpeStockPurchas(List<OpeOutwhOrderB> outwhOrderBList,List<OpeStock> opeStocks) {
+    private List<OpeStockPurchas> lockOpeStockPurchas(List<OpeOutwhOrderB> outwhOrderBList, List<OpeStock> opeStocks) {
         //库存部件Id
         List<Long> opeStockPurchasIds =
                 opeStocks.stream().filter(item -> {
@@ -655,9 +657,9 @@ public class WhOutServiceImpl implements WhOutService {
         return stockPurchasList;
     }
 
-    /**'
-     *
+    /**
      * 整车锁定
+     *
      * @param outwhOrderBList
      * @param opeStocks
      * @return

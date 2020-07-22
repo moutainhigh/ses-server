@@ -172,6 +172,6 @@ public interface WhOutService {
      * @param ids
      * @return
      */
-    GeneralResult lockStock(List<Long> ids);
+    void lockStock(List<Long> ids);
 }
 
