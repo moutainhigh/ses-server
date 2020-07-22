@@ -20,6 +20,8 @@ import lombok.*;
 @Builder
 public class WmsProductListResult extends GeneralResult {
 
+  @ApiModelProperty(value = "id")
+  private  String id;
 
   @ApiModelProperty(value = "产品/部品编号")
   private String productNumber;

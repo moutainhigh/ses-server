@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.vo.wms.cn;
 
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -20,9 +22,12 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsStockEnter extends PageEnter {
+@ApiModelProperty(value = "产品类型")
+@NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "产品类型")
+private String productType;
 
-@ApiModelProperty(value = "类型")
-private String type;
+@ApiModelProperty(value = "库存类型")
+private String stockType;
 
 @ApiModelProperty(value = "关键字,部件号、产品号、中文名、英文名")
 private  String keyword;

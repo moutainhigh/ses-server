@@ -1,13 +1,8 @@
-package com.redescooter.ses.web.ros.dao;
+package com.redescooter.ses.web.ros.dao.wms.cn;
 
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInDetailsEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInStockPendingResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.vo.bo.WmsStockDefaultDto;
+import com.redescooter.ses.web.ros.vo.wms.cn.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -27,15 +22,31 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsUsableStockCount(@Param("enter") WmsStockEnter enter);
-
+  int wmsUsableStockCount(@Param("enter") WmsStockEnter enter,@Param("defaultParam") WmsStockDefaultDto defaultParam);
   /**
    * 仓储可用列表
    *
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter);
+  List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter,@Param("defaultParam") WmsStockDefaultDto defaultParam);
+
+
+  /**
+   * 返回已入库列表count
+   *
+   * @param enter
+   * @return
+   */
+  int wmsInWhCountByType(@Param("enter") GeneralEnter enter);
+  /**
+   * 返回已入库列表count
+   *
+   * @param enter
+   * @return
+   */
+  int stockPendingCountByType(@Param("enter") GeneralEnter enter);
+
 
   /**
    * 返回已入库列表count
@@ -68,7 +79,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  List<WmsWhInStockPendingResult> stockPendingList(@Param("enter") WmsWhInEnter enter);
+  List<WmsInWhResult> stockPendingList(@Param("enter") WmsWhInEnter enter);
 
 
   /**
@@ -103,5 +114,12 @@ public interface WmsServiceMapper {
    * @return
    */
   List<WmsProductListResult> productList(@Param("enter") WmsWhInDetailsEnter enter);
+  /**
+   * 可用库存count
+   *
+   * @param defaultParam
+   * @return
+   */
+  int usableStockCountByType(@Param("defaultParam") WmsStockDefaultDto defaultParam);
 }
 

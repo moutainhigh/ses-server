@@ -21,6 +21,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsInWhDetailsResult extends GeneralResult {
+  @ApiModelProperty(value = "id")
+  private  String id;
 
   @ApiModelProperty(value = "调拨/组装编号")
   private String allocateNumber;
