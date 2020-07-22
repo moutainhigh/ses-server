@@ -27,7 +27,10 @@ public class WhOutWhResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "姓名")
+    @ApiModelProperty(value = "仓库名字")
     private String name;
+
+    @ApiModelProperty(value = "地址")
+    private String address;
 
 }

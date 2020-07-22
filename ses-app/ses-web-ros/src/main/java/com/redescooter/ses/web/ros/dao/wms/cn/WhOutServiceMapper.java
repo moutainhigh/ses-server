@@ -99,14 +99,6 @@ public interface WhOutServiceMapper {
     List<WhOutConsigneeResult> consigneeList(GeneralEnter enter);
 
     /**
-     * 仓库列表
-     *
-     * @param enter
-     * @return
-     */
-    List<WhOutWhResult> whList(GeneralEnter enter);
-
-    /**
      * 状态统计
      *
      * @param enter

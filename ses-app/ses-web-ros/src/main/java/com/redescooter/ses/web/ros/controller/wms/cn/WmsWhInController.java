@@ -26,7 +26,7 @@ import java.util.List;
  * @Version V1.0
  **/
 @Log4j2
-@Api(tags = {"CN-WH入库单列表"})
+@Api(tags = {"CN-WH入库管理"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/wms/cn/whIn")

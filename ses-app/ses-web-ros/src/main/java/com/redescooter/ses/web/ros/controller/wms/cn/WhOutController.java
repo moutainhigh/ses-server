@@ -110,7 +110,7 @@ public class WhOutController {
     }
 
     @PostMapping(value = "/consignType")
-    @ApiOperation(value = "仓库列表", response = Map.class)
+    @ApiOperation(value = "物流方式", response = Map.class)
     public Response<Map<String, String>> consignType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(whOutService.consignType(enter));
     }

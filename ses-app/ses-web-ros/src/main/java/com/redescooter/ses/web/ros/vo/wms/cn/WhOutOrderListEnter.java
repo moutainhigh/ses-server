@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.wms.cn;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -10,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:WhOutListEnter
@@ -26,8 +28,21 @@ import io.swagger.annotations.*;
 @Builder
 public class WhOutOrderListEnter extends PageEnter {
 
-    @ApiModelProperty(value = "产品类型")
-    private String productType;
+    @ApiModelProperty(value = "产品状态")
+    private String status;
+
+    @ApiModelProperty(value = "物流方式")
+    private String consignType;
+
+    @ApiModelProperty(value = "创建开始时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private String createStartTime;
+
+    @ApiModelProperty(value = "创建结束时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private String createEndTime;
 
     @ApiModelProperty(value = "关键字搜索")
     private String keyword;

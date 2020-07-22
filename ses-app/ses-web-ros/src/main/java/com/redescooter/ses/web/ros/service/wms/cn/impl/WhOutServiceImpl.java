@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.wms.cn.impl;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.wms.ConsignMethodEnums;
 import com.redescooter.ses.api.common.enums.wms.ConsignTypeEnums;
 import com.redescooter.ses.api.common.enums.wms.WhOutEventEnums;
@@ -56,6 +57,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -179,6 +181,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult cancel(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -210,6 +213,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult start(StartWhOutOrderEnter enter) {
         if (ConsignTypeEnums.getEnumsByValue(enter.getConsignType()) == null) {
@@ -257,6 +261,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult prepareMaterial(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -291,6 +296,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult inWh(IdEnter enter) {
         return null;
@@ -302,6 +308,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult save(WhOutSaveEnter enter) {
         List<SavePartProductEnter> savePartProductEnterList = new ArrayList<>();
@@ -375,7 +382,7 @@ public class WhOutServiceImpl implements WhOutService {
         saveNodeEnter.setEvent(WhOutEventEnums.PENDING.getValue());
         saveNodeEnter.setMemo(null);
         saveNode(saveNodeEnter);
-        return null;
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -397,7 +404,20 @@ public class WhOutServiceImpl implements WhOutService {
      */
     @Override
     public List<WhOutWhResult> whList(GeneralEnter enter) {
-        return whOutServiceMapper.whList(enter);
+        List<WhOutWhResult> results=new ArrayList<>();
+
+        List<OpeWhse> whseList = opeWhseService.list(new LambdaQueryWrapper<OpeWhse>().in(OpeWhse::getType, WhseTypeEnums.FR_WHSE.getValue(), WhseTypeEnums.UK_WHSE.getValue()));
+        if (CollectionUtils.isEmpty(whseList)) {
+            return results;
+        }
+        whseList.forEach(item->{
+            results.add(WhOutWhResult.builder()
+                    .id(item.getId())
+                    .name(item.getName())
+                    .address(item.getAddress())
+                    .build());
+        });
+        return results;
     }
 
     /**
@@ -480,6 +500,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult saveNode(SaveNodeEnter enter) {
         OpeOutwhTrace opeOutwhTrace = OpeOutwhTrace.builder()

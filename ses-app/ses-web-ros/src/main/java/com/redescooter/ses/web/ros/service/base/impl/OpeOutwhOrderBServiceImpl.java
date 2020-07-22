@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.web.ros.dao.OpeOutwhOrderBMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeOutwhOrderBMapper;
 import com.redescooter.ses.web.ros.service.base.OpeOutwhOrderBService;
 
 @Service
