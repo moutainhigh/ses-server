@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.wms.WhOutServiceMapper">
+<mapper namespace="com.redescooter.ses.web.ros.dao.wms.cn.WhOutServiceMapper">
     <sql id="Query_ProductList_Parts">
         where stock.dr = 0
         and parts.dr=0
         and stock.available_total > 0
         and materiel_product_type != 4
+        <if test="productType != null and productType != ''">
+            and materiel_product_type=#{productType}
+        </if>
         <if test="keyword != null and keyword != ''">
             and (parts.parts_number like concat('%', #{keyword}, '%')
             or parts.fr_name like concat('%', #{keyword}, '%')
@@ -18,7 +21,10 @@
         where stock.dr = 0
         and product.dr=0
         and stock.available_total > 0
-        and materiel_product_type = 4) product;
+        and materiel_product_type = 4
+        <if test="productType != null and productType != ''">
+            and materiel_product_type=#{productType}
+        </if>
         <if test="keyword != null and keyword != ''">
             and (product.product_number like concat('%', #{keyword}, '%')
             or product.fr_name like concat('%', #{keyword}, '%')
@@ -63,6 +69,26 @@
                     parts.parts_number like concat('',#{keyword},'')
                     )
     </sql>
+
+    <sql id="whOrderList_condition">
+    where outOrder.dr=0
+        <if test="status != null and status != ''">
+            and outOrder.status=#{status}
+        </if>
+        <if test="consignType != null and consignType != ''">
+            and outOrder.consign_type=#{consignType}
+        </if>
+        <if test="createStartTime != null and createStartTime != '' and  createEndTime != null and createEndTime != ''">
+            and (outOrder.created_time between #{createStartTime} and #{createEndTime})
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+                outOrder.order_no like concat ('%',#{keyword},'%') or
+                outOrder.consign_company like concat ('%',#{keyword},'%') or
+                outOrder.tracking_num like concat ('%',#{keyword},'%')
+            )
+        </if>
+</sql>
     <select id="productListCount" resultType="java.lang.Integer">
         select sum(count) from (select count(*) as count
         from ope_stock stock
@@ -72,17 +98,17 @@
         select count(*) as count
         from ope_stock stock
                  inner join ope_parts_product as product on stock.materiel_product_id = product.id
-        <include refid="Query_ProductList_Scooter"/>
+        <include refid="Query_ProductList_Scooter"/>) product
     </select>
 
-    <select id="productListList" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutProductListResult">
+    <select id="productListList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WhOutProductListResult">
         select stock.id,
                parts.parts_number          as productN,
                parts.cn_name               as cnName,
                parts.fr_name               as frName,
                parts.en_name               as enName,
                stock.available_total       as stocks,
-               stock.materiel_product_type as type
+               stock.materiel_product_type as productType
         from ope_stock stock
                  inner join ope_parts as parts on stock.materiel_product_id = parts.id
         <include refid="Query_ProductList_Parts"/>
@@ -100,7 +126,7 @@
           limit #{startRow},#{pageSize}
     </select>
 
-    <select id="consigneeList" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutConsigneeResult">
+    <select id="consigneeList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WhOutConsigneeResult">
         select profile.sys_user_id  as id,
                profile.FIRST_NAME   as firstName,
                profile.LAST_NAME    as lastName,
@@ -112,8 +138,9 @@
     <select id="whOrderListCount" resultType="java.lang.Integer">
         select count(*)
         from ope_outwh_order outOrder
+        <include refid="whOrderList_condition"/>
     </select>
-    <select id="whOrderList" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutOrderListResult">
+    <select id="whOrderList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WhOutOrderListResult">
         select outOrder.id              as id,
                outOrder.order_no        as whOutN,
                outOrder.status          as status,
@@ -123,9 +150,10 @@
                outOrder.product_count   as qty,
                outOrder.created_time    as createdTime
         from ope_outwh_order outOrder
-        limit#{startRow},#{pageSize}
+        <include refid="whOrderList_condition"/>
+        limit #{startRow},#{pageSize}
     </select>
-    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutDetailResult">
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailResult">
         select outOrder.id                as id,
                outOrder.order_no          as whOutN,
                outOrder.in_wh_id          as goalWhId,
@@ -154,7 +182,7 @@
     </select>
     <select id="nodeList" resultType="com.redescooter.ses.api.common.vo.CommonNodeResult">
         select trace.id           as id,
-               trace.status       as trace,
+               trace.status       as status,
                trace.event        as event,
                trace.event_time   as eventTime,
                trace.created_by   as createdBy,
@@ -181,7 +209,7 @@
         on parts.id = orderB.part_product_id and orderB.source_type != 4n and parts.dr=0
         <include refid="detailProductPartList_parts"/>)
     </select>
-    <select id="detailProductPartList" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutDetailProductPartListResult">
+    <select id="detailProductPartList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailProductPartListResult">
         select orderB.id              as id,
            product.product_number as productN,
            product.product_type   as type,
@@ -205,13 +233,7 @@
     <include refid="detailProductPartList_parts"/>
     limit #{startRow},#{pageSize}
     </select>
-    <select id="whList" resultType="com.redescooter.ses.web.ros.vo.wms.WhOutWhResult">
-        select ope_whse.id   as id,
-               ope_whse.name as name
-        from ope_whse
-        where dr = 0
-          and type in(4,5)
-    </select>
+
     <select id="statusByCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select if(status = 4 or status = 5, 2, 1) as status, count(status) as totalCount
         from ope_outwh_order
