@@ -21,6 +21,8 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsStockAvailableResult extends GeneralResult {
+  @ApiModelProperty(value = "id")
+  private  String id;
 
   @ApiModelProperty(value = "产品/部品编号")
   private String productNumber;
@@ -28,18 +30,14 @@ public class WmsStockAvailableResult extends GeneralResult {
   @ApiModelProperty(value = "产品/部品类型")
   private String productType;
 
-
   @ApiModelProperty(value = "入库总数")
   private Integer intTotal;
-
 
   @ApiModelProperty(value = "中文名称")
   private String cnName;
 
-
   @ApiModelProperty(value = "英文名称")
   private String enName;
-
 
   @ApiModelProperty(value="价格 浮点型价格")
   private String price;

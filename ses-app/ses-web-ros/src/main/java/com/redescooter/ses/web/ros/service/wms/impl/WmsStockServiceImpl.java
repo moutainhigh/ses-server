@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.wms.impl;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.WmsServiceMapper;
 import com.redescooter.ses.web.ros.service.wms.WmsStockService;
@@ -10,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNameWmsStockServiceImpl
@@ -25,6 +28,20 @@ public class WmsStockServiceImpl implements WmsStockService {
 
   @Autowired
   private WmsServiceMapper wmsServiceMapper;
+
+  /**
+   * 库存单状态统计
+   *
+   * @param enter
+   * @retrn
+   */
+  @Override
+  public Map<String, Integer> countByType(GeneralEnter enter) {
+    Map<String, Integer> map = new HashMap<>();
+    int usableStockCount = wmsServiceMapper.usableStockCountByType(enter);
+    map.put("1",usableStockCount);
+    return map;
+  }
 
   /**
    * 查询仓储显示可用库存集合
@@ -42,39 +59,6 @@ public class WmsStockServiceImpl implements WmsStockService {
     }
 
     return PageResult.create(page, totalRows, wmsServiceMapper.wmsUsableStockList(page));
-  }
-
-  /**
-   * 查询仓储待生产库存集合
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public PageResult<WmsStockResult> getStockPredictedList(WmsStockEnter enter) {
-    return null;
-  }
-
-  /**
-   * 查询仓储待入库库存集合
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public PageResult<WmsStockResult> getStockStoredList(WmsStockEnter enter) {
-    return null;
-  }
-
-  /**
-   * 查询仓储已出库库存集合
-   *
-   * @param enter
-   * @return
-   */
-  @Override
-  public PageResult<WmsStockResult> getStockOutWhList(WmsStockEnter enter) {
-    return null;
   }
 
 }

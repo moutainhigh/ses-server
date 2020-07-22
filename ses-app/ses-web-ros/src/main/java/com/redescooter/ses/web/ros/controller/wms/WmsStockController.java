@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.wms;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.wms.WmsStockService;
@@ -12,6 +13,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @ClassNameWmsStockController
@@ -30,27 +33,15 @@ public class WmsStockController{
   @Autowired
   private WmsStockService wmsStockService;
 
-  @PostMapping(value = "/availableList")
+  @PostMapping(value = "/countByType")
+  @ApiOperation(value = "库存类型统计", response = Map.class)
+  public Response<Map<String, Integer>> countByType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    return new Response<>(wmsStockService.countByType(enter));
+  }
+
+  @PostMapping(value = "/ist")
   @ApiOperation(value = "显示可用列表", response = WmsStockAvailableResult.class)
   public Response<PageResult<WmsStockAvailableResult>> stockAvailableList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
     return new Response<>(wmsStockService.getStockAvailableList(enter));
-  }
-
-  @PostMapping(value = "/predictedList")
-  @ApiOperation(value = "待生产列表", response = WmsStockResult.class)
-  public Response<PageResult<WmsStockResult>> stockResultList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
-    return new Response<>(wmsStockService.getStockPredictedList(enter));
-  }
-
-  @PostMapping(value = "/storedList")
-  @ApiOperation(value = "待入库列表", response = WmsStockResult.class)
-  public Response<PageResult<WmsStockResult>> wmsStockList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
-    return new Response<>(wmsStockService.getStockStoredList(enter));
-  }
-
-  @PostMapping(value = "/outWhList")
-  @ApiOperation(value = "待出库列表", response = WmsStockResult.class)
-  public Response<PageResult<WmsStockResult>> wmsStockOutStockList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
-    return new Response<>(wmsStockService.getStockOutWhList(enter));
   }
 }

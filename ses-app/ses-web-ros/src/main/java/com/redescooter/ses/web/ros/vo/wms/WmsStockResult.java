@@ -21,11 +21,11 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsStockResult extends GeneralEnter {
+  @ApiModelProperty(value = "id")
+  private  String id;
 
   @ApiModelProperty(value = "产品/部品编号")
   private String productNumber;
-
-
 
   @ApiModelProperty(value = "质检数")
   private Integer qty;

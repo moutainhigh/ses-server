@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.dao;
 
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.vo.bom.ProdoctPartListEnter;
 import com.redescooter.ses.web.ros.vo.wms.*;
 import org.apache.ibatis.annotations.Param;
@@ -22,7 +24,6 @@ public interface WmsServiceMapper {
    * @return
    */
   int wmsUsableStockCount(@Param("enter") WmsStockEnter enter);
-
   /**
    * 仓储可用列表
    *
@@ -30,6 +31,23 @@ public interface WmsServiceMapper {
    * @return
    */
   List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter);
+
+
+  /**
+   * 返回已入库列表count
+   *
+   * @param enter
+   * @return
+   */
+  int wmsInWhCountByType(@Param("enter") GeneralEnter enter);
+  /**
+   * 返回已入库列表count
+   *
+   * @param enter
+   * @return
+   */
+  int stockPendingCountByType(@Param("enter") GeneralEnter enter);
+
 
   /**
    * 返回已入库列表count
@@ -62,7 +80,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  List<WmsWhInStockPendingResult> stockPendingList(@Param("enter") WmsWhInEnter enter);
+  List<WmsInWhResult> stockPendingList(@Param("enter") WmsWhInEnter enter);
 
 
   /**
@@ -97,5 +115,12 @@ public interface WmsServiceMapper {
    * @return
    */
   List<WmsProductListResult> productList(@Param("enter") WmsWhInDetailsEnter enter);
+  /**
+   * 可用库存count
+   *
+   * @param enter
+   * @return
+   */
+  int usableStockCountByType(@Param("enter") GeneralEnter enter);
 }
 

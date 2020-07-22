@@ -1,9 +1,12 @@
 package com.redescooter.ses.web.ros.service.wms;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.wms.WmsStockAvailableResult;
 import com.redescooter.ses.web.ros.vo.wms.WmsStockEnter;
 import com.redescooter.ses.web.ros.vo.wms.WmsStockResult;
+
+import java.util.Map;
 
 /**
  * @ClassNameWmsStockAvailableService
@@ -13,31 +16,17 @@ import com.redescooter.ses.web.ros.vo.wms.WmsStockResult;
  * @Version V1.0
  **/
 public interface WmsStockService{
+  /**
+   * 库存单状态统计
+   *
+   * @retrn
+   */
+  Map<String, Integer> countByType(GeneralEnter enter);
+
 
   /**
    * 查询仓储显示可用库存集合
    * @return
    */
   PageResult<WmsStockAvailableResult> getStockAvailableList(WmsStockEnter enter);
-
-
-  /**
-   * 查询仓储待生产库存集合
-   * @return
-   */
-  PageResult<WmsStockResult> getStockPredictedList(WmsStockEnter enter);
-
-  /**
-   * 查询仓储待入库库存集合
-   * @return
-   */
-  PageResult<WmsStockResult> getStockStoredList(WmsStockEnter enter);
-
-
-  /**
-   * 查询仓储已出库库存集合
-   * @return
-   */
-  PageResult<WmsStockResult> getStockOutWhList(WmsStockEnter enter);
-
 }

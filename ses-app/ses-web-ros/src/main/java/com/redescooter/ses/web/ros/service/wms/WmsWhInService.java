@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.service.wms;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.wms.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNameWmsWhInService
@@ -17,16 +19,16 @@ import java.util.List;
 
 public interface WmsWhInService{
   /**
+   * 入库单状态统计
+   *
+   * @retrn
+   */
+  Map<String, Integer> countByType(GeneralEnter enter);
+  /**
    * 查询入库集合
    * @return
    */
   PageResult<WmsInWhResult> getWmsInWhList(WmsWhInEnter enter);
-
-  /**
-   * 查询入库库存待定结果集合
-   * @return
-   */
-  PageResult<WmsWhInStockPendingResult> getWhInStockPendingList(WmsWhInEnter enter);
 
 
   /**
