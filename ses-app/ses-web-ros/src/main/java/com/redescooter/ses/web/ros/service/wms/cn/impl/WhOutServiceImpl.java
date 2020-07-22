@@ -569,8 +569,8 @@ public class WhOutServiceImpl implements WhOutService {
      * @param ids
      * @return
      */
-    @Transactional
     @Override
+    @Transactional
     public void lockStock(List<Long> ids) {
 
         //查询子订单信息
