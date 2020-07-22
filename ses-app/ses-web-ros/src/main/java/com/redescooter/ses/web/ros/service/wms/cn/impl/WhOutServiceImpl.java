@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.wms.cn.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -314,14 +315,15 @@ public class WhOutServiceImpl implements WhOutService {
         if (!StringUtils.equals(WhOutStatusEnums.PREPARE_MATERIAL.getValue(), opeOutwhOrder.getStatus())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
+
+        //子订单出库
+//        whOutServiceMapper.outwh();
+
         //修改主订单
         opeOutwhOrder.setStatus(WhOutStatusEnums.OUT_WH.getValue());
         opeOutwhOrder.setUpdatedBy(enter.getUserId());
         opeOutwhOrder.setUpdatedTime(new Date());
         opeOutwhOrderService.updateById(opeOutwhOrder);
-
-        //子订单出库
-
         //保存节点
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
