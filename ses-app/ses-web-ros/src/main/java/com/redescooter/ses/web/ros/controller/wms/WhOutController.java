@@ -35,10 +35,10 @@ import java.util.Map;
 
 
 @Log4j2
-@Api(tags = {"仓储库存可用"})
+@Api(tags = {"出库单模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/wms/whOut/")
+@RequestMapping(value = "/wms/whOut")
 public class WhOutController {
     @Autowired
     private WhOutService whOutService;
