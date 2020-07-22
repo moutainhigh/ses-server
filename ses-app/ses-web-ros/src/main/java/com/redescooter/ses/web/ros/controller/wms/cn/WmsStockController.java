@@ -33,11 +33,7 @@ public class WmsStockController{
 
   @Autowired
   private WmsStockService wmsStockService;
-  @PostMapping(value = "/getType")
-  @ApiOperation(value = "筛选类型", response = String.class)
-  public Response<Map<String, String>> getType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-    return new Response<>(wmsStockService.getStockType(enter));
-  }
+
 
 
   @PostMapping(value = "/countByType")
@@ -46,7 +42,7 @@ public class WmsStockController{
     return new Response<>(wmsStockService.countByType(enter));
   }
 
-  @PostMapping(value = "/ist")
+  @PostMapping(value = "/list")
   @ApiOperation(value = "显示可用列表", response = WmsStockAvailableResult.class)
   public Response<PageResult<WmsStockAvailableResult>> stockAvailableList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
     return new Response<>(wmsStockService.getStockAvailableList(enter));

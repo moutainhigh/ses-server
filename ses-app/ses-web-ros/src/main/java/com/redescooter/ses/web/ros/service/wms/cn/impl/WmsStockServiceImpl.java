@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.wms.cn.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
 import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -36,19 +37,6 @@ public class WmsStockServiceImpl implements WmsStockService {
   private WmsServiceMapper wmsServiceMapper;
   @Autowired
   private OpeWhseService opewhseservice;
-  /**
-   * 库存类型
-   *
-   * @retrn
-   */
-  @Override
-  public Map<String, String> getStockType(GeneralEnter enter) {
-    Map<String, String> map = new HashMap<>();
-    for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-      map.put(item.getValue(), item.getCode());
-    }
-    return map;
-  }
 
   /**
    * 库存单状态统计
@@ -71,7 +59,7 @@ public class WmsStockServiceImpl implements WmsStockService {
     defaultParam.setPurchas(purchas.getId());
     defaultParam.setAssembly(assembly.getId());
     int usableStockCount = wmsServiceMapper.usableStockCountByType(defaultParam);
-    map.put("1",usableStockCount);
+    map.put(String.valueOf(PushTypeEnums.TAG.getValue()),usableStockCount);
     return map;
   }
 

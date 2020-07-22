@@ -35,63 +35,6 @@
       )
     </if>
   </sql>
-  <select
-    id="wmsUsableStockCount" resultType="int">
-    SELECT
-    sum(aa.count) from (
-    select
-    count(*) AS count
-    FROM
-    ope_stock s
-    JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
-    JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
-    <include refid="where_wmsProductList"/>
-    UNION
-    SELECT
-    count(*) AS count
-    FROM
-    ope_stock s
-    JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
-    JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
-    <include refid="where_wmsPartsList"/>
-    ) aa
-  </select>
-
-
-  <select id="wmsUsableStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
-    SELECT
-    * from ((SELECT
-    s.id as id,
-    b.cn_name as cnName,
-    b.en_name as enName,
-    b.product_number as productNumber,
-    s.int_total as intTotal,
-    s.materiel_product_type as productType,
-    e.sales_price as price
-    FROM
-    ope_stock s
-    JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
-    JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
-    <include refid="where_wmsProductList"/>
-    order by s.updated_time desc)
-    UNION
-    (SELECT
-    s.id as id,
-    p.cn_name as cnName,
-    p.en_name as enName,
-    p.parts_number as productNumber,
-    s.int_total as intTotal,
-    s.materiel_product_type as productType,
-    e.price as price
-    FROM
-    ope_stock s
-    JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
-    JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
-    <include refid="where_wmsPartsList"/>
-    order by s.updated_time desc))
-    bb limit #{enter.startRow},#{enter.pageSize}
-  </select>
-
   <sql id="where_inHw_allocate">
     WHERE
     e.dr=0
@@ -120,6 +63,61 @@
       )
     </if>
   </sql>
+  <select
+    id="wmsUsableStockCount" resultType="int">
+    SELECT
+    sum(aa.count) from (
+    select
+    count(*) AS count
+    FROM
+    ope_stock s
+    JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
+    JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
+    <include refid="where_wmsProductList"/>
+    UNION
+    SELECT
+    count(*) AS count
+    FROM
+    ope_stock s
+    JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
+    JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
+    <include refid="where_wmsPartsList"/>
+    ) aa
+  </select>
+
+
+  <select id="wmsUsableStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
+    SELECT
+    s.id as id,
+    b.cn_name as cnName,
+    b.en_name as enName,
+    b.product_number as productNumber,
+    s.int_total as intTotal,
+    s.materiel_product_type as productType,
+    e.sales_price as price
+    FROM
+    ope_stock s
+    JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
+    JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
+    <include refid="where_wmsProductList"/>
+    UNION
+    SELECT
+    s.id as id,
+    p.cn_name as cnName,
+    p.en_name as enName,
+    p.parts_number as productNumber,
+    s.int_total as intTotal,
+    s.materiel_product_type as productType,
+    e.price as price
+    FROM
+    ope_stock s
+    JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
+    JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
+    <include refid="where_wmsPartsList"/>
+    limit #{enter.startRow},#{enter.pageSize}
+  </select>
+
+
   <select id="wmsInWhCount" resultType="int">
     SELECT
     sum(aa.count) from (
@@ -139,7 +137,6 @@
   </select>
   <select id="wmsInWhList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult">
     SELECT
-    * from ((SELECT
     e.id as id,
     e.allocate_num as allocateNumber,
     e.count as qty,
@@ -150,9 +147,8 @@
     ope_allocate e
     JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
     <include refid="where_inHw_allocate"/>
-    order by e.updated_time desc)
     UNION
-    (SELECT
+    SELECT
     r.id as id,
     r.assembly_number as allocateNumber,
     r.in_wait_wh_total as qty,
@@ -163,8 +159,7 @@
     ope_assembly_order r
     JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
     <include refid="where_inHw_assembly"/>
-    order by r.updated_time desc))
-    bb limit #{enter.startRow},#{enter.pageSize}
+     limit #{enter.startRow},#{enter.pageSize}
   </select>
   <sql id="where_stockPending_allocate">
     WHERE
@@ -201,19 +196,16 @@
     count(*) AS count
     FROM
     ope_allocate e
-    JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
     <include refid="where_stockPending_allocate"/>
     UNION
     SELECT
     count(*) AS count
     FROM
     ope_assembly_order r
-    JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
     <include refid="where_stockPending_assembly"/>)aa
   </select>
   <select id="stockPendingList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult">
-    SELECT
-    * from ((SELECT
+  SELECT
     e.id as id,
     e.allocate_num as allocateNumber,
     e.count-e.pending_storage_total as qty,
@@ -225,9 +217,8 @@
     ope_allocate e
     JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
     <include refid="where_stockPending_allocate"/>
-    order by e.updated_time desc)
     UNION
-    (SELECT
+    SELECT
     r.id as id,
     r.assembly_number as allocateNumber,
     r.total_qty-r.in_wait_wh_total as qty,
@@ -239,8 +230,7 @@
     ope_assembly_order r
     JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
     <include refid="where_stockPending_assembly"/>
-    order by r.updated_time desc))
-    bb limit #{enter.startRow},#{enter.pageSize}
+     limit #{enter.startRow},#{enter.pageSize}
   </select>
   <select id="allocateDetails" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult">
     SELECT
@@ -311,8 +301,6 @@
       count(*) AS count
     FROM
       ope_allocate e
-      JOIN ope_sys_user_profile s ON e.consignee_id = s.id
-      AND s.dr = 0
     WHERE
       e.dr = 0
       AND e.`status` = 4 UNION
@@ -320,8 +308,6 @@
       count(*) AS count
     FROM
       ope_assembly_order r
-      JOIN ope_sys_user_profile s ON r.consignee_id = s.id
-      AND s.dr = 0
     WHERE
       r.dr = 0
       AND r.`status` = 3
@@ -336,8 +322,6 @@
       count(*) AS count
     FROM
       ope_allocate e
-      JOIN ope_sys_user_profile s ON e.consignee_id = s.id
-      AND s.dr = 0
     WHERE
       e.dr = 0
       AND e.`status` = 3 UNION
@@ -345,8 +329,6 @@
       count(*) AS count
     FROM
       ope_assembly_order r
-      JOIN ope_sys_user_profile s ON r.consignee_id = s.id
-      AND s.dr = 0
     WHERE
       r.dr = 0
     AND r.`status` = 5

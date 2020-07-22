@@ -22,10 +22,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsStockEnter extends PageEnter {
-@ApiModelProperty(value = "产品类型")
-@NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "产品类型")
-private String productType;
-
 @ApiModelProperty(value = "库存类型")
 private String stockType;
 

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
+import com.redescooter.ses.web.ros.dao.base.OpeStockProdProductMapper;
 import com.redescooter.ses.web.ros.dm.OpeStockProdProduct;
 import org.springframework.stereotype.Service;
 

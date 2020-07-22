@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.wms.cn.impl;
 
 import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper;
@@ -45,8 +46,8 @@ public class WmsWhInServiceImpl implements WmsWhInService {
     Map<String, Integer> map = new HashMap<>();
     int wmsInWhCount = wmsServiceMapper.wmsInWhCountByType(enter);
     int stockPendingCount = wmsServiceMapper.stockPendingCountByType(enter);
-    map.put("1",wmsInWhCount);
-    map.put("2",stockPendingCount);
+    map.put(String.valueOf(PushTypeEnums.TAG.getValue()),wmsInWhCount);
+    map.put(String.valueOf(PushTypeEnums.TAG_AND.getValue()),stockPendingCount);
     return map;
   }
 
