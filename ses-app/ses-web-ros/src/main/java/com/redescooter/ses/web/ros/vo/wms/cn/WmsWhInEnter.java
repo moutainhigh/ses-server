@@ -25,9 +25,9 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class WmsWhInEnter extends PageEnter {
-  @ApiModelProperty(value = "类型")
+  @ApiModelProperty(value = "产品类型")
   @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "类型为空")
-  private String type;
+  private String productType;
 
   @ApiModelProperty(value = "开始时间", required = false)
   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

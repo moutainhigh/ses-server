@@ -4,14 +4,13 @@ import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.dao.WmsServiceMapper;
+import com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper;
 import com.redescooter.ses.web.ros.service.wms.cn.WmsWhInService;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInDetailsEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInStockPendingResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +63,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
       }
       int totalRows = 0;
       List<WmsInWhResult> wmsInWhResult = new ArrayList<WmsInWhResult>();
-      if (StringUtils.equals(enter.getType(), ProductionTypeEnums.TODO.getValue())) {
+      if (StringUtils.equals(enter.getProductType(), ProductionTypeEnums.TODO.getValue())) {
           totalRows = wmsServiceMapper.wmsInWhCount(enter);
           wmsInWhResult= wmsServiceMapper.wmsInWhList(enter);
       } else {
@@ -86,7 +85,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      */
     @Override
     public WmsInWhDetailsResult getInWhDetails(WmsWhInDetailsEnter enter) {
-        if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getType())) {
+        if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getProductType())) {
             return wmsServiceMapper.allocateDetails(enter);
         } else {
             return wmsServiceMapper.assemblyDetails(enter);
@@ -101,7 +100,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      */
     @Override
     public List<WmsProductListResult> getProductList(WmsWhInDetailsEnter enter) {
-        if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getType())) {
+        if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getProductType())) {
             return wmsServiceMapper.partList(enter);
         } else {
             return wmsServiceMapper.productList(enter);

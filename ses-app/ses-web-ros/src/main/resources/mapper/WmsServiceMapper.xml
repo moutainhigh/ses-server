@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.WmsServiceMapper">
+<mapper namespace="com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper">
   <sql id="where_wmsProductList">
     WHERE
     s.dr=0
+    AND s.whse_id IN (#{defaultParam.purchas},#{defaultParam.assembly})
+    AND s.materiel_product_type in (#{defaultParam.combination},#{defaultParam.scooter})
+    AND e.currency_unit = #{defaultParam.fr}
     <if test="enter.stockType!=''and enter.stockType!=null">
       and s.materiel_product_type=#{enter.stockType}
     </if>
@@ -18,6 +21,9 @@
   <sql id="where_wmsPartsList">
     WHERE
     s.dr=0
+    AND s.whse_id IN (#{defaultParam.purchas},#{defaultParam.assembly})
+    AND s.materiel_product_type in (#{defaultParam.parts},#{defaultParam.battery},#{defaultParam.accessory})
+    AND e.currency_unit = #{defaultParam.fr}
     <if test="enter.stockType!=''and enter.stockType!=null">
       and s.materiel_product_type=#{enter.stockType}
     </if>
@@ -52,7 +58,7 @@
   </select>
 
 
-  <select id="wmsUsableStockList" resultType="com.redescooter.ses.web.ros.vo.wms.WmsStockAvailableResult">
+  <select id="wmsUsableStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
     SELECT
     * from ((SELECT
     s.id as id,
@@ -131,7 +137,7 @@
     JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
     <include refid="where_inHw_assembly"/>)aa
   </select>
-  <select id="wmsInWhList" resultType="com.redescooter.ses.web.ros.vo.wms.WmsInWhResult">
+  <select id="wmsInWhList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult">
     SELECT
     * from ((SELECT
     e.id as id,
@@ -358,6 +364,9 @@
     JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
     WHERE
     s.dr=0
+    AND s.whse_id IN (#{defaultParam.purchas},#{defaultParam.assembly})
+    AND s.materiel_product_type in (#{defaultParam.combination},#{defaultParam.scooter})
+    AND e.currency_unit = #{defaultParam.fr}
     UNION
     SELECT
     count(*) AS count
@@ -367,6 +376,9 @@
     JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
     WHERE
     s.dr=0
+    AND s.whse_id IN (#{defaultParam.purchas},#{defaultParam.assembly})
+    AND s.materiel_product_type in (#{defaultParam.parts},#{defaultParam.battery},#{defaultParam.accessory})
+    AND e.currency_unit = #{defaultParam.fr}
     ) aa
   </select>
 </mapper>
