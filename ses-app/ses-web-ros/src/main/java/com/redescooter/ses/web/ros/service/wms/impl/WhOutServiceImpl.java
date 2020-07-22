@@ -146,7 +146,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @return
      */
     @Override
-    public CommonNodeResult nodeList(IdEnter enter) {
+    public List<CommonNodeResult> nodeList(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
         if (opeOutwhOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
@@ -428,21 +428,6 @@ public class WhOutServiceImpl implements WhOutService {
         }
         Map<String, String> resultMap = new HashMap<>();
         for (ConsignMethodEnums item : ConsignMethodEnums.values()) {
-            resultMap.put(item.getCode(), item.getValue());
-        }
-        return resultMap;
-    }
-
-    /**
-     * 订单状态列表
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public Map<String, String> statusList(GeneralEnter enter) {
-        Map<String, String> resultMap = new HashMap<>();
-        for (WhOutStatusEnums item : WhOutStatusEnums.values()) {
             resultMap.put(item.getCode(), item.getValue());
         }
         return resultMap;

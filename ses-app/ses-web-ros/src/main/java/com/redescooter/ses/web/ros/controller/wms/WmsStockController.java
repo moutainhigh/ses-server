@@ -40,11 +40,13 @@ public class WmsStockController{
   public Response<PageResult<WmsStockResult>> stockResultList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
     return new Response<>(wmsStockService.getStockPredictedList(enter));
   }
+
   @PostMapping(value = "/storedList")
   @ApiOperation(value = "待入库列表", response = WmsStockResult.class)
   public Response<PageResult<WmsStockResult>> wmsStockList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
     return new Response<>(wmsStockService.getStockStoredList(enter));
   }
+
   @PostMapping(value = "/outWhList")
   @ApiOperation(value = "待出库列表", response = WmsStockResult.class)
   public Response<PageResult<WmsStockResult>> wmsStockOutStockList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {

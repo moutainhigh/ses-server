@@ -52,7 +52,7 @@ public interface WhOutService {
      * @param enter
      * @return
      */
-    CommonNodeResult nodeList(IdEnter enter);
+    List<CommonNodeResult> nodeList(IdEnter enter);
 
     /**
      * 详情产品列表
@@ -133,14 +133,6 @@ public interface WhOutService {
      * @return
      */
     Map<String, String> consignMethod(StringEnter enter);
-
-    /**
-     * 订单状态列表
-     *
-     * @param enter
-     * @return
-     */
-    Map<String, String> statusList(GeneralEnter enter);
 
     /**
      * 订单状态统计

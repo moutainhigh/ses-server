@@ -58,7 +58,7 @@ public interface WhOutServiceMapper {
      * @param enter
      * @return
      */
-    CommonNodeResult nodeList(IdEnter enter);
+    List<CommonNodeResult> nodeList(IdEnter enter);
 
     /**
      * 产品个数统计
