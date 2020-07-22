@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeOutwhOrderBMapper">
+<mapper namespace="com.redescooter.ses.web.ros.dao.OpeOutwhOrderBMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeOutwhOrderB">
     <!--@mbg.generated-->
     <!--@Table ope_outwh_order_b-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="outwh_order_id" jdbcType="BIGINT" property="outwhOrderId" />
+    <result column="stock_id" jdbcType="BIGINT" property="stockId" />
     <result column="part_product_id" jdbcType="BIGINT" property="partProductId" />
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="total_count" jdbcType="INTEGER" property="totalCount" />
@@ -25,7 +26,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, outwh_order_id, part_product_id, product_type, total_count, last_out_count, 
+    id, dr, outwh_order_id, stock_id, part_product_id, product_type, total_count, last_out_count, 
     `status`, created_by, created_time, updated_by, updated_time, revision, def1, def2, 
     def3, def5, def6
   </sql>
@@ -41,6 +42,11 @@
       <trim prefix="outwh_order_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.outwhOrderId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="stock_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.stockId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="part_product_id = case" suffix="end,">
@@ -127,37 +133,39 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_outwh_order_b
-    (id, dr, outwh_order_id, part_product_id, product_type, total_count, last_out_count, 
+    (id, dr, outwh_order_id, stock_id, part_product_id, product_type, total_count, last_out_count, 
       `status`, created_by, created_time, updated_by, updated_time, revision, def1, def2, 
       def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.outwhOrderId,jdbcType=BIGINT}, 
-        #{item.partProductId,jdbcType=BIGINT}, #{item.productType,jdbcType=VARCHAR}, #{item.totalCount,jdbcType=INTEGER}, 
-        #{item.lastOutCount,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.revision,jdbcType=INTEGER}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
-        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
-        )
+        #{item.stockId,jdbcType=BIGINT}, #{item.partProductId,jdbcType=BIGINT}, #{item.productType,jdbcType=VARCHAR}, 
+        #{item.totalCount,jdbcType=INTEGER}, #{item.lastOutCount,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.revision,jdbcType=INTEGER}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
+        #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeOutwhOrderB">
     <!--@mbg.generated-->
     insert into ope_outwh_order_b
-    (id, dr, outwh_order_id, part_product_id, product_type, total_count, last_out_count, 
+    (id, dr, outwh_order_id, stock_id, part_product_id, product_type, total_count, last_out_count, 
       `status`, created_by, created_time, updated_by, updated_time, revision, def1, def2, 
       def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{outwhOrderId,jdbcType=BIGINT}, 
-      #{partProductId,jdbcType=BIGINT}, #{productType,jdbcType=VARCHAR}, #{totalCount,jdbcType=INTEGER}, 
-      #{lastOutCount,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{revision,jdbcType=INTEGER}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
-      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+      #{stockId,jdbcType=BIGINT}, #{partProductId,jdbcType=BIGINT}, #{productType,jdbcType=VARCHAR}, 
+      #{totalCount,jdbcType=INTEGER}, #{lastOutCount,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{revision,jdbcType=INTEGER}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
     outwh_order_id = #{outwhOrderId,jdbcType=BIGINT}, 
+    stock_id = #{stockId,jdbcType=BIGINT}, 
     part_product_id = #{partProductId,jdbcType=BIGINT}, 
     product_type = #{productType,jdbcType=VARCHAR}, 
     total_count = #{totalCount,jdbcType=INTEGER}, 
@@ -186,6 +194,9 @@
       </if>
       <if test="outwhOrderId != null">
         outwh_order_id,
+      </if>
+      <if test="stockId != null">
+        stock_id,
       </if>
       <if test="partProductId != null">
         part_product_id,
@@ -244,6 +255,9 @@
       <if test="outwhOrderId != null">
         #{outwhOrderId,jdbcType=BIGINT},
       </if>
+      <if test="stockId != null">
+        #{stockId,jdbcType=BIGINT},
+      </if>
       <if test="partProductId != null">
         #{partProductId,jdbcType=BIGINT},
       </if>
@@ -300,6 +314,9 @@
       </if>
       <if test="outwhOrderId != null">
         outwh_order_id = #{outwhOrderId,jdbcType=BIGINT},
+      </if>
+      <if test="stockId != null">
+        stock_id = #{stockId,jdbcType=BIGINT},
       </if>
       <if test="partProductId != null">
         part_product_id = #{partProductId,jdbcType=BIGINT},
