@@ -64,7 +64,7 @@
   </select>
 
 
-  <select id="wmsUsableStockList" resultType="com.redescooter.ses.web.ros.vo.wms.WmsStockAvailableResult">
+  <select id="wmsUsableStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
     SELECT
     * from ((SELECT
     b.cn_name as cnName,
@@ -153,7 +153,7 @@
     JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
     <include refid="where_inHw_assembly"></include>)aa
   </select>
-  <select id="wmsInWhList" resultType="com.redescooter.ses.web.ros.vo.wms.WmsInWhResult">
+  <select id="wmsInWhList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult">
     SELECT
     * from ((SELECT
     e.id as id,
@@ -239,7 +239,7 @@
     JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
     <include refid="where_stockPending_assembly"></include>)aa
   </select>
-  <select id="stockPendingList" resultType="com.redescooter.ses.web.ros.vo.wms.WmsWhInStockPendingResult">
+  <select id="stockPendingList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInStockPendingResult">
     SELECT
     * from ((SELECT
     e.id as id,
@@ -270,7 +270,7 @@
     order by r.updated_time desc))
     bb limit #{enter.startRow},#{enter.pageSize}
   </select>
-  <select id="allocateDetails" resultType="com.redescooter.ses.web.ros.vo.wms.WmsInWhDetailsResult">
+  <select id="allocateDetails" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult">
     SELECT
       e.allocate_num as allocateNumber,
       e.STATUS as status,
@@ -283,7 +283,7 @@
   WHERE
     e.id =#{enter.id} and e.dr = 0
   </select>
-  <select id="assemblyDetails" resultType="com.redescooter.ses.web.ros.vo.wms.WmsInWhDetailsResult">
+  <select id="assemblyDetails" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult">
     SELECT
       r.assembly_number as allocateNumber,
       r.status as status,
@@ -296,7 +296,7 @@
     WHERE
       r.id = #{enter.id} and r.dr = 0
   </select>
-  <select id="partList" resultType="com.redescooter.ses.web.ros.vo.wms.WmsProductListResult">
+  <select id="partList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult">
     SELECT
       s.cn_name AS cnName,
       s.en_name AS enName,
@@ -311,7 +311,7 @@
     WHERE
       b.allocate_id = #{enter.id} and b.dr = 0
   </select>
-  <select id="productList" resultType="com.redescooter.ses.web.ros.vo.wms.WmsProductListResult">
+  <select id="productList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult">
     SELECT
       s.cn_name AS cnName,
       s.en_name AS enName,

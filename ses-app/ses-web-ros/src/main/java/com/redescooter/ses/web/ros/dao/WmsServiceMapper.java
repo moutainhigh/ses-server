@@ -1,7 +1,13 @@
 package com.redescooter.ses.web.ros.dao;
 
-import com.redescooter.ses.web.ros.vo.bom.ProdoctPartListEnter;
-import com.redescooter.ses.web.ros.vo.wms.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInDetailsEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInStockPendingResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
