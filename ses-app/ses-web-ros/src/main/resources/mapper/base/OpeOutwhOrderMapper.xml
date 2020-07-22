@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.OpeOutwhOrderMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeOutwhOrder">
+    <!--@mbg.generated-->
+    <!--@Table ope_outwh_order-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="tracking_num" jdbcType="VARCHAR" property="trackingNum" />
+    <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="consignee_id" jdbcType="BIGINT" property="consigneeId" />
+    <result column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+    <result column="consignee_email" jdbcType="VARCHAR" property="consigneeEmail" />
+    <result column="notify_first_name" jdbcType="VARCHAR" property="notifyFirstName" />
+    <result column="notify_last_name" jdbcType="VARCHAR" property="notifyLastName" />
+    <result column="consign_type" jdbcType="VARCHAR" property="consignType" />
+    <result column="consign_method" jdbcType="VARCHAR" property="consignMethod" />
+    <result column="consign_company" jdbcType="VARCHAR" property="consignCompany" />
+    <result column="annex" jdbcType="VARCHAR" property="annex" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="product_count" jdbcType="INTEGER" property="productCount" />
+    <result column="logistics_price" jdbcType="DECIMAL" property="logisticsPrice" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="revision" jdbcType="INTEGER" property="revision" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DOUBLE" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, order_no, tracking_num, in_wh_id, address, consignee_id, consignee_phone, 
+    country_code, consignee_email, notify_first_name, notify_last_name, consign_type, 
+    consign_method, consign_company, annex, `status`, product_count, logistics_price, 
+    created_by, created_time, updated_by, updated_time, revision, def1, def2, def3, def5, 
+    def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_outwh_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="order_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.orderNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="tracking_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.trackingNum,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="in_wh_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.inWhId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.address,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="consignee_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.consigneeId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="consignee_phone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.consigneePhone,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="consignee_email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.consigneeEmail,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="notify_first_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.notifyFirstName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="notify_last_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.notifyLastName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="consign_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.consignType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="consign_method = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.consignMethod,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="consign_company = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.consignCompany,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.annex,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="product_count = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productCount,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="logistics_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.logisticsPrice,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_outwh_order
+    (id, dr, order_no, tracking_num, in_wh_id, address, consignee_id, consignee_phone, 
+      country_code, consignee_email, notify_first_name, notify_last_name, consign_type, 
+      consign_method, consign_company, annex, `status`, product_count, logistics_price, 
+      created_by, created_time, updated_by, updated_time, revision, def1, def2, def3, 
+      def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.orderNo,jdbcType=VARCHAR}, 
+        #{item.trackingNum,jdbcType=VARCHAR}, #{item.inWhId,jdbcType=BIGINT}, #{item.address,jdbcType=VARCHAR}, 
+        #{item.consigneeId,jdbcType=BIGINT}, #{item.consigneePhone,jdbcType=VARCHAR}, #{item.countryCode,jdbcType=VARCHAR}, 
+        #{item.consigneeEmail,jdbcType=VARCHAR}, #{item.notifyFirstName,jdbcType=VARCHAR}, 
+        #{item.notifyLastName,jdbcType=VARCHAR}, #{item.consignType,jdbcType=VARCHAR}, 
+        #{item.consignMethod,jdbcType=VARCHAR}, #{item.consignCompany,jdbcType=VARCHAR}, 
+        #{item.annex,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR}, #{item.productCount,jdbcType=INTEGER}, 
+        #{item.logisticsPrice,jdbcType=DECIMAL}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.revision,jdbcType=INTEGER}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeOutwhOrder">
+    <!--@mbg.generated-->
+    insert into ope_outwh_order
+    (id, dr, order_no, tracking_num, in_wh_id, address, consignee_id, consignee_phone, 
+      country_code, consignee_email, notify_first_name, notify_last_name, consign_type, 
+      consign_method, consign_company, annex, `status`, product_count, logistics_price, 
+      created_by, created_time, updated_by, updated_time, revision, def1, def2, def3, 
+      def5, def6)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{trackingNum,jdbcType=VARCHAR}, 
+      #{inWhId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, #{consigneeId,jdbcType=BIGINT}, 
+      #{consigneePhone,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR}, #{consigneeEmail,jdbcType=VARCHAR}, 
+      #{notifyFirstName,jdbcType=VARCHAR}, #{notifyLastName,jdbcType=VARCHAR}, #{consignType,jdbcType=VARCHAR}, 
+      #{consignMethod,jdbcType=VARCHAR}, #{consignCompany,jdbcType=VARCHAR}, #{annex,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{productCount,jdbcType=INTEGER}, #{logisticsPrice,jdbcType=DECIMAL}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{revision,jdbcType=INTEGER}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    order_no = #{orderNo,jdbcType=VARCHAR}, 
+    tracking_num = #{trackingNum,jdbcType=VARCHAR}, 
+    in_wh_id = #{inWhId,jdbcType=BIGINT}, 
+    address = #{address,jdbcType=VARCHAR}, 
+    consignee_id = #{consigneeId,jdbcType=BIGINT}, 
+    consignee_phone = #{consigneePhone,jdbcType=VARCHAR}, 
+    country_code = #{countryCode,jdbcType=VARCHAR}, 
+    consignee_email = #{consigneeEmail,jdbcType=VARCHAR}, 
+    notify_first_name = #{notifyFirstName,jdbcType=VARCHAR}, 
+    notify_last_name = #{notifyLastName,jdbcType=VARCHAR}, 
+    consign_type = #{consignType,jdbcType=VARCHAR}, 
+    consign_method = #{consignMethod,jdbcType=VARCHAR}, 
+    consign_company = #{consignCompany,jdbcType=VARCHAR}, 
+    annex = #{annex,jdbcType=VARCHAR}, 
+    `status` = #{status,jdbcType=VARCHAR}, 
+    product_count = #{productCount,jdbcType=INTEGER}, 
+    logistics_price = #{logisticsPrice,jdbcType=DECIMAL}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    revision = #{revision,jdbcType=INTEGER}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
+    def6 = #{def6,jdbcType=DOUBLE}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeOutwhOrder">
+    <!--@mbg.generated-->
+    insert into ope_outwh_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="trackingNum != null">
+        tracking_num,
+      </if>
+      <if test="inWhId != null">
+        in_wh_id,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="consigneeId != null">
+        consignee_id,
+      </if>
+      <if test="consigneePhone != null">
+        consignee_phone,
+      </if>
+      <if test="countryCode != null">
+        country_code,
+      </if>
+      <if test="consigneeEmail != null">
+        consignee_email,
+      </if>
+      <if test="notifyFirstName != null">
+        notify_first_name,
+      </if>
+      <if test="notifyLastName != null">
+        notify_last_name,
+      </if>
+      <if test="consignType != null">
+        consign_type,
+      </if>
+      <if test="consignMethod != null">
+        consign_method,
+      </if>
+      <if test="consignCompany != null">
+        consign_company,
+      </if>
+      <if test="annex != null">
+        annex,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="productCount != null">
+        product_count,
+      </if>
+      <if test="logisticsPrice != null">
+        logistics_price,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="revision != null">
+        revision,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="trackingNum != null">
+        #{trackingNum,jdbcType=VARCHAR},
+      </if>
+      <if test="inWhId != null">
+        #{inWhId,jdbcType=BIGINT},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeId != null">
+        #{consigneeId,jdbcType=BIGINT},
+      </if>
+      <if test="consigneePhone != null">
+        #{consigneePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null">
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeEmail != null">
+        #{consigneeEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyFirstName != null">
+        #{notifyFirstName,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyLastName != null">
+        #{notifyLastName,jdbcType=VARCHAR},
+      </if>
+      <if test="consignType != null">
+        #{consignType,jdbcType=VARCHAR},
+      </if>
+      <if test="consignMethod != null">
+        #{consignMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="consignCompany != null">
+        #{consignCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="annex != null">
+        #{annex,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="productCount != null">
+        #{productCount,jdbcType=INTEGER},
+      </if>
+      <if test="logisticsPrice != null">
+        #{logisticsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="revision != null">
+        #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="trackingNum != null">
+        tracking_num = #{trackingNum,jdbcType=VARCHAR},
+      </if>
+      <if test="inWhId != null">
+        in_wh_id = #{inWhId,jdbcType=BIGINT},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeId != null">
+        consignee_id = #{consigneeId,jdbcType=BIGINT},
+      </if>
+      <if test="consigneePhone != null">
+        consignee_phone = #{consigneePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null">
+        country_code = #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeEmail != null">
+        consignee_email = #{consigneeEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyFirstName != null">
+        notify_first_name = #{notifyFirstName,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyLastName != null">
+        notify_last_name = #{notifyLastName,jdbcType=VARCHAR},
+      </if>
+      <if test="consignType != null">
+        consign_type = #{consignType,jdbcType=VARCHAR},
+      </if>
+      <if test="consignMethod != null">
+        consign_method = #{consignMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="consignCompany != null">
+        consign_company = #{consignCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="annex != null">
+        annex = #{annex,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="productCount != null">
+        product_count = #{productCount,jdbcType=INTEGER},
+      </if>
+      <if test="logisticsPrice != null">
+        logistics_price = #{logisticsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="revision != null">
+        revision = #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+</mapper>

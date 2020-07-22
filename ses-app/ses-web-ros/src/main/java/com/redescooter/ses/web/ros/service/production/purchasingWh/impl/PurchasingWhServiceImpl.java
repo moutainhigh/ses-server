@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
-import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
+import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.wh.PurchasingWhTypeEnums;
 import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
@@ -18,6 +18,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.production.purchasingWh.PurchasingWhService;
 import com.redescooter.ses.web.ros.vo.production.wh.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
  * @Version：1.3
  * @create: 2020/04/03 14:16
  */
+@Slf4j
 @Service
 public class PurchasingWhServiceImpl implements PurchasingWhService {
 
@@ -243,18 +245,18 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 
         //组装仓库 数据
         int countAssembly = purchasingWhServiceMapper.outWhListAssemblyCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
-
+        log.info("前面的数量是："+countAssembly);
         List<OutWhResult> whResultListAssembly = purchasingWhServiceMapper.outWhListAssembly(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
 
         //调拨仓库数据
         List<OpeWhse> allocateWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue()));
 
         int countAllocate = purchasingWhServiceMapper.outWhListAllocateCount(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
-
-        if (countAllocate == 0) {
-            return PageResult.createZeroRowResult(enter);
-        }
-        List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
+        log.info("后面的数量是："+countAllocate);
+//        if (countAllocate == 0) {
+//            return PageResult.createZeroRowResult(enter);
+//        }
+        List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(allocateWhse.get(0).getId()),enter.getPageSize()-countAssembly);
         whResultListAllocate.addAll(whResultListAssembly);
 
         return PageResult.create(enter, countAllocate + countAssembly, whResultListAllocate);

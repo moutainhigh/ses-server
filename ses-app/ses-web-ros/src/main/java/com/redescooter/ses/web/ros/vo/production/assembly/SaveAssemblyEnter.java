@@ -27,7 +27,7 @@ import io.swagger.annotations.*;
 public class SaveAssemblyEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "收货人Id", required = true)
-    @NotNull(code = ValidationExceptionCode.CONSIGNEE_ID__IS_EMPTY, message = "收件人为空")
+    @NotNull(code = ValidationExceptionCode.CONSIGNEE_ID_IS_EMPTY, message = "收件人为空")
     private Long consigneeId;
 
     @ApiModelProperty(value = "工厂Id", required = true)

@@ -41,9 +41,7 @@ public class WmsStockServiceImpl implements WmsStockService {
       return PageResult.createZeroRowResult(page);
     }
 
-    List<WmsStockAvailableResult> stockAvailableList = wmsServiceMapper.wmsUsableStockList(page);
-
-    return PageResult.create(page, totalRows, stockAvailableList);
+    return PageResult.create(page, totalRows, wmsServiceMapper.wmsUsableStockList(page));
   }
 
   /**

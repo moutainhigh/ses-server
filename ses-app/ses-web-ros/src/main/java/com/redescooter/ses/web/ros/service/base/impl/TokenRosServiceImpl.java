@@ -125,6 +125,13 @@ public class TokenRosServiceImpl implements TokenRosService {
         //密码MD5 加密
         String password = DigestUtils.md5Hex(decryptPassword + sysUser.getSalt());
         String psdErrorKey = LOGIN_PSD_ERROR_NUM + sysUser.getId();
+        if(jedisCluster.exists(psdErrorKey)){
+            Map<String, String> data = jedisCluster.hgetAll(psdErrorKey);
+            String oldNum = data.get("num");
+            if(Integer.parseInt(oldNum) >= 5){
+                throw new SesWebRosException(ExceptionCodeEnums.LOGIN_PSD_ERROER_NUM_MANY.getCode(), ExceptionCodeEnums.LOGIN_PSD_ERROER_NUM_MANY.getMessage());
+            }
+        }
         if (!password.equals(sysUser.getPassword())) {
             //连续输错3次密码，出现图片验证码，连续输错5次账号冻结1分钟
             Integer errorNum = passWordMistaken(psdErrorKey);

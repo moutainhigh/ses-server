@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.wms;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class WhOutListEnter extends PageResult {
+public class WhOutOrderListEnter extends PageEnter {
 
     @ApiModelProperty(value = "产品类型")
     private String productType;

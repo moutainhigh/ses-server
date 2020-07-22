@@ -2,9 +2,7 @@ package com.redescooter.ses.web.ros.vo.production.purchasing;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
-import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
@@ -35,7 +33,7 @@ import java.util.Date;
 @Builder
 public class SavePurchasingEnter extends GeneralEnter {
     @ApiModelProperty(value = "收货人id", required = true)
-    @NotNull(code = ValidationExceptionCode.CONSIGNEE_ID__IS_EMPTY, message = "收货人为空")
+    @NotNull(code = ValidationExceptionCode.CONSIGNEE_ID_IS_EMPTY, message = "收货人为空")
     private Long consigneeId;
 
     @ApiModelProperty(value = "工厂Id", required = true)

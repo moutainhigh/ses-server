@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.production;
+package com.redescooter.ses.api.common.enums.whse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +18,10 @@ public enum WhseTypeEnums {
 
     PURCHAS("PURCHAS", "采购仓库", "1"),
     ALLOCATE("ALLOCATE", "调拨仓库", "2"),
-    ASSEMBLY("ASSEMBLY", "生产仓库", "3");
+    ASSEMBLY("ASSEMBLY", "生产仓库", "3"),
+    FR_WHSE("FR_WHSE","法国仓库","4"),
+    UK_WHSE("FR_WHSE","英国仓库","5")
+    ;
 
     private String code;
 
