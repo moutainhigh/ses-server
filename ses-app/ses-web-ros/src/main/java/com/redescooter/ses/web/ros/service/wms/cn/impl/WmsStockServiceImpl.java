@@ -88,13 +88,13 @@ public class WmsStockServiceImpl implements WmsStockService {
 
     int totalRows = 0;
     List<WmsStockAvailableResult> stockResult = new ArrayList<WmsStockAvailableResult>();
-    if (StringUtils.equals(enter.getProductType(), String.valueOf(PushTypeEnums.TAG.getValue()))){
+    if (StringUtils.equals(enter.getClassType(), String.valueOf(PushTypeEnums.TAG.getValue()))){
         totalRows = wmsServiceMapper.wmsUsableStockCount(enter, whselist, list, CurrencyUnitEnums.FR.getValue());
         stockResult  = wmsServiceMapper.wmsUsableStockList(enter, whselist, list, CurrencyUnitEnums.FR.getValue());
-    }else if (StringUtils.equals(enter.getProductType(), String.valueOf(PushTypeEnums.TAG_AND.getValue()))){
+    }else if (StringUtils.equals(enter.getClassType(), String.valueOf(PushTypeEnums.TAG_AND.getValue()))){
       totalRows = wmsServiceMapper.wmsBePredictedStockCount(enter, whselist.get(Constant.DR_FALSE).getId(), list, CurrencyUnitEnums.FR.getValue());
       stockResult  = wmsServiceMapper.wmsBePredictedStockList(enter, whselist.get(Constant.DR_FALSE).getId(), list, CurrencyUnitEnums.FR.getValue());
-    }else if (StringUtils.equals(enter.getProductType(),String.valueOf(PushTypeEnums.TAG_NOT.getValue()))){
+    }else if (StringUtils.equals(enter.getClassType(),String.valueOf(PushTypeEnums.TAG_NOT.getValue()))){
       totalRows = wmsServiceMapper.wmsStoredStockCount(enter, whselist.get(Constant.DR_TRUE).getId(), list, CurrencyUnitEnums.FR.getValue());
       stockResult  = wmsServiceMapper.wmsStoredStockList(enter, whselist.get(Constant.DR_TRUE).getId(), list, CurrencyUnitEnums.FR.getValue());
     }
