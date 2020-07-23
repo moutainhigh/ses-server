@@ -31,19 +31,19 @@ public interface WmsWhInService{
    * 查询入库集合
    * @return
    */
-  PageResult<WmsInWhResult> getWmsInWhList(WmsWhInEnter enter);
+  PageResult<WmsInWhResult> list(WmsWhInEnter enter);
 
 
   /**
    * 入库单人员信息详情
    * @return
    */
-  WmsInWhDetailsResult getInWhDetails(WmsWhInDetailsEnter enter);
+  WmsInWhDetailsResult details(WmsWhInDetailsEnter enter);
 
 
   /**
-   * 查询入库详情对象
+   * 查询入库产品/部件详情对象
    * @return
    */
-  List<WmsProductListResult> getProductList(WmsWhInDetailsEnter enter);
+  List<WmsProductListResult> productList(WmsWhInDetailsEnter enter);
 }

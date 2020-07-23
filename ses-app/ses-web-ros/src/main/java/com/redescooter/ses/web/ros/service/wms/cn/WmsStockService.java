@@ -29,5 +29,5 @@ public interface WmsStockService{
    * 查询仓储显示可用库存集合
    * @return
    */
-  PageResult<WmsStockAvailableResult> getStockAvailableList(WmsStockEnter enter);
+  PageResult<WmsStockAvailableResult> list(WmsStockEnter enter);
 }

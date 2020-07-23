@@ -11,11 +11,10 @@ import com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.wms.cn.WmsStockService;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult;
 import com.redescooter.ses.web.ros.vo.bo.WmsStockDefaultDto;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockEnter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +68,7 @@ public class WmsStockServiceImpl implements WmsStockService {
    * @return
    */
   @Override
-  public PageResult<WmsStockAvailableResult> getStockAvailableList(WmsStockEnter enter) {
+  public PageResult<WmsStockAvailableResult> list(WmsStockEnter enter) {
     if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
       return PageResult.createZeroRowResult(enter);
     }

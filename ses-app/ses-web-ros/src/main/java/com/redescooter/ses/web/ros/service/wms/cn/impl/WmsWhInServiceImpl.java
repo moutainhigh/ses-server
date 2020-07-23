@@ -58,7 +58,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      * @return
      */
     @Override
-    public PageResult<WmsInWhResult> getWmsInWhList(WmsWhInEnter enter) {
+    public PageResult<WmsInWhResult> list(WmsWhInEnter enter) {
       if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
         return PageResult.createZeroRowResult(enter);
       }
@@ -85,7 +85,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      * @return
      */
     @Override
-    public WmsInWhDetailsResult getInWhDetails(WmsWhInDetailsEnter enter) {
+    public WmsInWhDetailsResult details(WmsWhInDetailsEnter enter) {
         if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getProductType())) {
             return wmsServiceMapper.allocateDetails(enter);
         } else {
@@ -100,7 +100,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      * @return
      */
     @Override
-    public List<WmsProductListResult> getProductList(WmsWhInDetailsEnter enter) {
+    public List<WmsProductListResult> productList(WmsWhInDetailsEnter enter) {
         if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getProductType())) {
             return wmsServiceMapper.partList(enter);
         } else {
