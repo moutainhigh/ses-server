@@ -27,7 +27,7 @@ import java.util.Date;
 public class WmsWhInEnter extends PageEnter {
   @ApiModelProperty(value = "产品类型")
   @NotNull(code = com.redescooter.ses.web.ros.exception.ValidationExceptionCode.TYPE_IS_EMPTY, message = "类型 为空")
-  private String productType;
+  private String classType;
 
   @ApiModelProperty(value = "开始时间", required = false)
   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

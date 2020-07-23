@@ -24,7 +24,7 @@ import lombok.*;
 public class WmsStockEnter extends PageEnter {
 @ApiModelProperty(value = "产品类型")
 @NotNull(code = com.redescooter.ses.web.ros.exception.ValidationExceptionCode.TYPE_IS_EMPTY, message = "类型 为空")
-private String productType;
+private String classType;
 
 @ApiModelProperty(value = "库存类型")
 private String stockType;
