@@ -37,9 +37,9 @@
     <sql id="whOrder_List">
             where outOrder.dr = 0
           and (
-                outOrder.order_no like concat('%', '', '%') or
-                outOrder.tracking_num like concat('%', '', '%') or
-                outOrder.consign_company like concat('%', '', '%')
+                outOrder.order_no like concat('%', '#{keyword}', '%') or
+                outOrder.tracking_num like concat('%', '#{keyword}', '%') or
+                outOrder.consign_company like concat('%', '#{keyword}', '%')
             )
     </sql>
 
@@ -49,12 +49,14 @@
                 <if test="productType != null">
                     and orderB.product_type #{productType}
                 </if>
-                and (
-                    product.en_name  like concat('',#{keyword},'') or
-                    product.fr_name  like concat('',#{keyword},'') or
-                    product.cn_name  like concat('',#{keyword},'') or
-                    product.product_number like concat('',#{keyword},'')
+                <if test="keyword != null and keyword != ''">
+                    and (
+                    product.en_name  like concat('%', '#{keyword}', '%') or
+                    product.fr_name  like concat('%', '#{keyword}', '%') or
+                    product.cn_name  like concat('%', '#{keyword}', '%') or
+                    product.product_number like concat('%', '#{keyword}', '%')
                     )
+                </if>
     </sql>
     <sql id="detailProductPartList_parts">
     where orderB.dr=0
@@ -62,12 +64,14 @@
                 <if test="productType != null">
                     and orderB.product_type=#{productType}
                 </if>
-                and (
-                    parts.en_name  like concat('',#{keyword},'') or
-                    parts.fr_name  like concat('',#{keyword},'') or
-                    parts.cn_name  like concat('',#{keyword},'') or
-                    parts.parts_number like concat('',#{keyword},'')
+                <if test="keyword != null and keyword != ''">
+                    and (
+                    parts.en_name  like concat('%', '#{keyword}', '%') or
+                    parts.fr_name  like concat('%', '#{keyword}', '%') or
+                    parts.cn_name  like concat('%', '#{keyword}', '%') or
+                    parts.parts_number like concat('%', '#{keyword}', '%')
                     )
+                </if>
     </sql>
 
     <sql id="whOrderList_condition">
