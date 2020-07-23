@@ -67,8 +67,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
       if (StringUtils.equals(enter.getClassType(), ProductionTypeEnums.TODO.getValue())) {
           totalRows = wmsServiceMapper.wmsInWhCount(enter);
           wmsInWhResult= wmsServiceMapper.wmsInWhList(enter);
-      } else {
-
+      } else if (StringUtils.equals(enter.getClassType(), ProductionTypeEnums.HISTORY.getValue())){
          totalRows = wmsServiceMapper.stockPendingCount(enter);
          wmsInWhResult= wmsServiceMapper.stockPendingList(enter);
       }

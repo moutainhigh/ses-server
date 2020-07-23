@@ -266,12 +266,14 @@
     count(*) AS count
     FROM
     ope_allocate e
+    JOIN ope_sys_user_profile s ON e.consignee_id = s.id
     <include refid="where_stockPending_allocate"/>
     UNION
     SELECT
     count(*) AS count
     FROM
     ope_assembly_order r
+    JOIN ope_sys_user_profile s ON r.consignee_id = s.id
     <include refid="where_stockPending_assembly"/>)aa
   </select>
   <select id="stockPendingList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult">
@@ -364,45 +366,57 @@
   </select>
   <select id="wmsInWhCountByType" resultType="int">
   SELECT
-    sum( aa.count )
-  FROM
-    (
-    SELECT
-      count(*) AS count
-    FROM
-      ope_allocate e
-    WHERE
-      e.dr = 0
-      AND e.`status` = 4 UNION
-    SELECT
-      count(*) AS count
-    FROM
-      ope_assembly_order r
-    WHERE
-      r.dr = 0
-      AND r.`status` = 3
-    ) aa
+        sum(aa.count)
+    from
+        ( SELECT
+            count(*) AS count
+        FROM
+            ope_allocate e
+        JOIN
+            ope_sys_user_profile s
+                ON e.consignee_id = s.id
+                and s.dr = 0
+        WHERE
+            e.dr=0
+            and e.`status` = 4
+        UNION
+        SELECT
+            count(*) AS count
+        FROM
+            ope_assembly_order r
+        JOIN
+            ope_sys_user_profile s
+                ON r.consignee_id = s.id
+                and s.dr = 0
+        WHERE
+            r.dr=0
+            and r.`status` = 3
+    )aa
   </select>
   <select id="stockPendingCountByType" resultType="int">
   SELECT
-    sum( aa.count)
-  FROM
-    (
-    SELECT
-      count(*) AS count
-    FROM
-      ope_allocate e
-    WHERE
-      e.dr = 0
-      AND e.`status` = 3 UNION
-    SELECT
-      count(*) AS count
-    FROM
-      ope_assembly_order r
-    WHERE
-      r.dr = 0
-    AND r.`status` = 5
-    ) aa
+	sum( aa.count )
+FROM
+	(
+	SELECT
+		count(*) AS count
+	FROM
+		ope_allocate e
+		JOIN ope_sys_user_profile s ON e.consignee_id = s.id
+		AND s.dr = 0
+	WHERE
+		e.dr = 0
+		AND e.`status` = 3 UNION
+	SELECT
+		count(*) AS count
+	FROM
+		ope_assembly_order r
+		JOIN ope_sys_user_profile s ON r.consignee_id = s.id
+		AND s.dr = 0
+	WHERE
+		r.dr = 0
+	AND r.`status` = 5
+	) aa
   </select>
   <select id="usableStockCountByType" resultType="int">
     SELECT
