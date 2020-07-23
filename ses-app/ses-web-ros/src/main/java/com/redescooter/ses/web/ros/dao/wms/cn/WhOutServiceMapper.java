@@ -13,8 +13,10 @@ import com.redescooter.ses.web.ros.vo.wms.cn.WhOutOrderListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutProductListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutProductListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutWhResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:WhOutServiceMapper
@@ -106,9 +108,4 @@ public interface WhOutServiceMapper {
      */
     List<CountByStatusResult> statusByCount(GeneralEnter enter);
 
-    /**
-     * 锁定库存出库
-     * @param id
-     */
-    void outwh(Long id);
 }

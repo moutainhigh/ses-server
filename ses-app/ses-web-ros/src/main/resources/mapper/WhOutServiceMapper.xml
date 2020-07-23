@@ -240,7 +240,4 @@
         group by status
     </select>
 
-<!--    <update id="outwh">-->
-<!--     </update>-->
-
 </mapper>
