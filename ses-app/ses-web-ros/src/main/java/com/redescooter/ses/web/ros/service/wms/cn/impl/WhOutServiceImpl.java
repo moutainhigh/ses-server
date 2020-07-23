@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.wms.cn.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
@@ -134,11 +135,21 @@ public class WhOutServiceImpl implements WhOutService {
      */
     @Override
     public PageResult<WhOutOrderListResult> whOrderList(WhOutOrderListEnter enter) {
-        Integer count = whOutServiceMapper.whOrderListCount(enter);
+        List<String> statusList = new ArrayList<>();
+        if (StringUtils.equals(enter.getClassType(),WhOutTypeEnums.TODO.getValue())){
+            statusList.add(WhOutStatusEnums.PENDING.getValue());
+            statusList.add(WhOutStatusEnums.IN_WH.getValue());
+            statusList.add(WhOutStatusEnums.PREPARE_MATERIAL.getValue());
+        }else{
+            statusList.add(WhOutStatusEnums.CANCELLED.getValue());
+            statusList.add(WhOutStatusEnums.OUT_WH.getValue());
+        }
+
+        Integer count = whOutServiceMapper.whOrderListCount(enter,statusList);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, count, whOutServiceMapper.whOrderList(enter));
+        return PageResult.create(enter, count, whOutServiceMapper.whOrderList(enter,statusList));
     }
 
     /**

@@ -72,20 +72,26 @@
 
     <sql id="whOrderList_condition">
     where outOrder.dr=0
-        <if test="status != null and status != ''">
-            and outOrder.status=#{status}
+        <if test="statusList != null and statusList.size() != 0">
+            and outOrder.status in
+            <foreach collection="statusList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </if>
-        <if test="consignType != null and consignType != ''">
-            and outOrder.consign_type=#{consignType}
+        <if test="enter.status != null and enter.status != ''">
+            and outOrder.status=#{enter.status}
         </if>
-        <if test="createStartTime != null and createStartTime != '' and  createEndTime != null and createEndTime != ''">
-            and (outOrder.created_time between #{createStartTime} and #{createEndTime})
+        <if test="enter.consignType != null and enter.consignType != ''">
+            and outOrder.consign_type=#{enter.consignType}
         </if>
-        <if test="keyword != null and keyword != ''">
+        <if test="enter.createStartTime != null and enter.createStartTime != '' and  enter.createEndTime != null and createEndTime != ''">
+            and (outOrder.created_time between #{enter.createStartTime} and #{enter.createEndTime})
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
             and (
-                outOrder.order_no like concat ('%',#{keyword},'%') or
-                outOrder.consign_company like concat ('%',#{keyword},'%') or
-                outOrder.tracking_num like concat ('%',#{keyword},'%')
+                outOrder.order_no like concat ('%',#{enter.keyword},'%') or
+                outOrder.consign_company like concat ('%',#{enter.keyword},'%') or
+                outOrder.tracking_num like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -151,7 +157,7 @@
                outOrder.created_time    as createdTime
         from ope_outwh_order outOrder
         <include refid="whOrderList_condition"/>
-        limit #{startRow},#{pageSize}
+        limit #{enter.startRow},#{enter.pageSize}
     </select>
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailResult">
         select outOrder.id                as id,
@@ -212,7 +218,7 @@
     <select id="detailProductPartList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailProductPartListResult">
         select orderB.id              as id,
            product.product_number as productN,
-           product.product_type   as type,
+           product.product_type   as productType,
            product.en_name        as enName,
            product.fr_name        as frName,
            product.cn_name        as cnName,
