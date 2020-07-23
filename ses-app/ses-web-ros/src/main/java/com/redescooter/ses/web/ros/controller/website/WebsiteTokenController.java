@@ -87,12 +87,4 @@ public class WebsiteTokenController {
     public Response<GeneralResult> editCustomer(@ModelAttribute @ApiParam("请求参数") WebEditCustomerEnter enter) {
         return new Response<>(webSiteService.editCustomer(enter));
     }
-
-    @IgnoreLoginCheck
-    @PostMapping(value = "/getMondayData")
-    @ApiOperation(value = "获取Monday数据", response = GeneralResult.class)
-    public Response<GeneralResult> getMondayData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(mondayService.getMondayData(enter));
-    }
-
 }

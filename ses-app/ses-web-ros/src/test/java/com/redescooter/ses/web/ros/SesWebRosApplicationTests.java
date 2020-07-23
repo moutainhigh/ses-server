@@ -1,14 +1,21 @@
 package com.redescooter.ses.web.ros;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
+import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
+import com.redescooter.ses.web.ros.vo.monday.MondayBoardResult;
+import com.redescooter.ses.web.ros.vo.monday.MondayDataResult;
+import com.redescooter.ses.web.ros.vo.monday.MondayGeneralResult;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.After;
 import org.junit.Before;
@@ -180,37 +187,13 @@ public class SesWebRosApplicationTests {
     }
 
 
+    @Autowired
+    private MondayService mondayService;
     @Test
-    public void sendRequestByRestTemplateGet() throws RestClientException {
-        String url = "https://api.monday.com/v2";
+    public void sendRequestByRestTemplateGet(){
 
-        String query="query {\n" +
-                "teams {\n" +
-                "name\n" +
-                "picture_url\n" +
-                "users {\n" +
-                "created_at\n" +
-                "phone\n" +
-                "}\n" +
-                "}\n" +
-                "}";
+        System.out.println(mondayService.queryGroup("641082556"));
 
-        RestTemplate client = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        HttpMethod method = HttpMethod.POST;
-        // 以表单的方式提交
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.add("Authorization", "eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0" +
-                ".Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA");
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("query", query);
-        map.add("variables", null);
-        //将请求头部和参数合成一个请求
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
-        //执行HTTP请求，将返回的结构使用ResultVO类格式化
-        ResponseEntity<String> response = client.exchange(url, method, requestEntity, String.class);
-        System.out.println(response.getBody());
     }
 
 }

@@ -31,7 +31,11 @@ public class MondayConfig {
 
     private MediaType mediaType;
 
-    private Long orderFormBoardId;
+    private String orderFormBoardName;
 
-    private Long contactUsBoardId;
+    private String orderFormGroupName;
+
+    private String contactUsBoardName;
+
+    private String contactUsGroupName;
 }

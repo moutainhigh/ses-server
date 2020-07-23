@@ -208,6 +208,6 @@ monday:
   httpMethod: POST
   MediaType: application/x-www-form-urlencoded
   #Préco clients RED Série E
-  orderFormBoardId: 639902086
+  orderFormBoardName: Préco clients RED Série E
   #(RFQ) Relation client RED Série E
-  contactUsBoardId: 641082556
+  contactUsBoardName: (RFQ) Relation client RED Série E
