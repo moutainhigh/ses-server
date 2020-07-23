@@ -31,6 +31,9 @@ public class WhOutOrderListEnter extends PageEnter {
     @ApiModelProperty(value = "产品状态")
     private String status;
 
+    @ApiModelProperty(value = "类表类型")
+    private String classType;
+
     @ApiModelProperty(value = "物流方式")
     private String consignType;
 

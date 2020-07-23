@@ -12,7 +12,7 @@ import com.redescooter.ses.web.ros.vo.wms.cn.WhOutOrderListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutOrderListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutProductListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutProductListResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.WhOutWhResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -30,17 +30,19 @@ public interface WhOutServiceMapper {
      * 出库单 统计
      *
      * @param enter
+     * @param statusList
      * @return
      */
-    Integer whOrderListCount(WhOutOrderListEnter enter);
+    Integer whOrderListCount(@Param("enter") WhOutOrderListEnter enter, @Param("statusList") List<String> statusList);
 
     /**
      * 出库单列表
      *
      * @param enter
+     * @param statusList
      * @return
      */
-    List<WhOutOrderListResult> whOrderList(WhOutOrderListEnter enter);
+    List<WhOutOrderListResult> whOrderList(@Param("enter") WhOutOrderListEnter enter, @Param("statusList") List<String> statusList);
 
     /**
      * 详情

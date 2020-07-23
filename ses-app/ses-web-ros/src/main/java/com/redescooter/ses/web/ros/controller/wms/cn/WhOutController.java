@@ -85,6 +85,12 @@ public class WhOutController {
         return new Response<>(whOutService.prepareMaterial(enter));
     }
 
+    @PostMapping(value = "/outwh")
+    @ApiOperation(value = "出库", response = GeneralResult.class)
+    public Response<GeneralResult> outwh(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(whOutService.outwh(enter));
+    }
+
     @PostMapping(value = "/inWh")
     @ApiOperation(value = "入库", response = GeneralResult.class)
     public Response<GeneralResult> inWh(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {

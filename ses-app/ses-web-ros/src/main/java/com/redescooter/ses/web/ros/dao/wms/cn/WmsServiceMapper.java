@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.dao.wms.cn;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
-import com.redescooter.ses.web.ros.vo.bo.WmsStockDefaultDto;
 import com.redescooter.ses.web.ros.vo.wms.cn.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,6 +30,37 @@ public interface WmsServiceMapper {
    * @return
    */
   List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter,@Param("whseidList") List<OpeWhse> whseidList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+
+  /**
+   * 返回仓储待生产列表count
+   *
+   * @param enter
+   * @return
+   */
+  int wmsBePredictedStockCount(@Param("enter") WmsStockEnter enter,@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  /**
+   * 仓储待生产列表
+   *
+   * @param enter
+   * @return
+   */
+  List<WmsStockAvailableResult> wmsBePredictedStockList(@Param("enter") WmsStockEnter enter,@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  /**
+   * 返回仓储待入库列表count
+   *
+   * @param enter
+   * @return
+   */
+  int wmsStoredStockCount(@Param("enter") WmsStockEnter enter,@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  /**
+   * 仓储待入库列表
+   *
+   * @param enter
+   * @return
+   */
+  List<WmsStockAvailableResult> wmsStoredStockList(@Param("enter") WmsStockEnter enter,@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+
+
 
 
   /**
@@ -122,5 +152,22 @@ public interface WmsServiceMapper {
    * @return
    */
   int usableStockCountByType(@Param("whseidList") List<OpeWhse> whseidList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+
+  /**
+   * 返回仓储待入库列表count
+   *
+   * @param
+   * @return
+   */
+  int wmsStoredStockCountByType(@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+
+  /**
+   * 返回仓储待生产列表count
+   *
+   * @param
+   * @return
+   */
+  int wmsBePredictedStockCountByType(@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+
 }
 
