@@ -243,14 +243,6 @@ public class WhOutServiceImpl implements WhOutService {
     @Transactional
     @Override
     public GeneralResult start(StartWhOutOrderEnter enter) {
-        if (ConsignTypeEnums.getEnumsByValue(enter.getConsignType()) == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.CONSIGN_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.CONSIGN_TYPE_NOT_EXIST.getMessage());
-        }
-        if (StringUtils.equals(ConsignTypeEnums.getEnumsByValue(enter.getConsignType()).getValue(), ConsignTypeEnums.AIR_PARCEL.getValue())) {
-            if (ConsignMethodEnums.getEnumByValue(enter.getAirParcelType()) == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.NO_LOAN.getCode(), ExceptionCodeEnums.NO_LOAN.getMessage());
-            }
-        }
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
         if (opeOutwhOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
@@ -259,11 +251,16 @@ public class WhOutServiceImpl implements WhOutService {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
 
+        if (StringUtils.equals(opeOutwhOrder.getConsignType(), ConsignTypeEnums.AIR_PARCEL.getValue())) {
+            if (ConsignMethodEnums.getEnumByValue(enter.getAirParcelType()) == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.NO_LOAN.getCode(), ExceptionCodeEnums.NO_LOAN.getMessage());
+            }
+        }
+
         //修改主订单
         opeOutwhOrder.setStatus(WhOutStatusEnums.OUT_WH.getValue());
-        opeOutwhOrder.setConsignType(enter.getConsignType());
-        opeOutwhOrder.setConsignMethod(StringUtils.equals(ConsignTypeEnums.getEnumsByValue(enter.getConsignType()).getValue(), ConsignTypeEnums.AIR_PARCEL.getValue())
-                == true ? enter.getAirParcelType() : null);
+        opeOutwhOrder.setConsignType(opeOutwhOrder.getConsignType());
+        opeOutwhOrder.setConsignMethod(StringUtils.equals(opeOutwhOrder.getConsignType(), ConsignTypeEnums.AIR_PARCEL.getValue())== true ? enter.getAirParcelType() : null);
         opeOutwhOrder.setConsignCompany(enter.getConsignCompany());
         opeOutwhOrder.setTrackingNum(enter.getTrackingN());
         opeOutwhOrder.setAnnex(enter.getAnnex());
