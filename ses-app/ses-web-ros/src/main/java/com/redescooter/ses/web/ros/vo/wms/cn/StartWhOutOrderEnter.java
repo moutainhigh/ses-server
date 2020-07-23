@@ -24,24 +24,21 @@ import io.swagger.annotations.*;
 @Builder
 public class StartWhOutOrderEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "id",required = true)
     private Long id;
-
-    @ApiModelProperty(value = "物流方式")
-    private String consignType;
 
     @ApiModelProperty(value = "空运方式")
     private String airParcelType;
 
-    @ApiModelProperty(value = "收获公司")
+    @ApiModelProperty(value = "收获公司",required = true)
     private String consignCompany;
 
-    @ApiModelProperty(value = "物流单号")
+    @ApiModelProperty(value = "物流单号",required = true)
     private String trackingN;
 
-    @ApiModelProperty(value = "物流附件")
+    @ApiModelProperty(value = "物流附件",required = true)
     private String annex;
 
-    @ApiModelProperty(value = "物流金额")
+    @ApiModelProperty(value = "物流金额",required = true)
     private String price;
 }

@@ -171,4 +171,9 @@ public interface PurchasingWhServiceMapper {
      */
 
     int countByTypeOutWhCountAllocate(@Param("enter") GeneralEnter enter, @Param("whseId") Long whseId);
+
+
+    Integer outWhCount(WhEnter enter,@Param("assemblyIds") List<Long> assemblyIds,@Param("allocateIds") List<Long> allocateIds);
+
+    List<OutWhResult> outWhList(WhEnter enter,@Param("assemblyIds") List<Long> assemblyIds,@Param("allocateIds") List<Long> allocateIds);
 }
