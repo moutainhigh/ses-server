@@ -9,7 +9,6 @@ import com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInDetailsEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInStockPendingResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -46,17 +45,17 @@ public class WmsWhInController{
   @PostMapping(value = "/list")
   @ApiOperation(value = "已入库", response = WmsInWhResult.class)
   public Response<PageResult<WmsInWhResult>> wmsInWhResultList(@ModelAttribute @ApiParam("请求参数") WmsWhInEnter enter) {
-    return new Response<>(wmswhinservice.getWmsInWhList(enter));
+    return new Response<>(wmswhinservice.list(enter));
   }
   @PostMapping(value = "/detail")
   @ApiOperation(value = "详情", response = WmsInWhDetailsResult.class)
   public Response<WmsInWhDetailsResult> wmsInWhInfoDetails(@ModelAttribute @ApiParam("请求参数") WmsWhInDetailsEnter enter) {
-    return new Response<>(wmswhinservice.getInWhDetails(enter));
+    return new Response<>(wmswhinservice.details(enter));
   }
 
   @PostMapping(value = "/detailProductList")
   @ApiOperation(value = "入库部件/产品信息详情", response = WmsProductListResult.class)
   public Response<List<WmsProductListResult>> whInStockPendingList(@ModelAttribute @ApiParam("请求参数") WmsWhInDetailsEnter enter) {
-    return new Response<>(wmswhinservice.getProductList(enter));
+    return new Response<>(wmswhinservice.productList(enter));
   }
 }

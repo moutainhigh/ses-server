@@ -18,12 +18,6 @@ import java.util.Map;
  **/
 public interface WmsStockService{
   /**
-   * 库存类型
-   *
-   * @retrn
-   */
-  Map<String, String> getStockType(GeneralEnter enter);
-  /**
    * 库存单状态统计
    *
    * @retrn
@@ -35,5 +29,5 @@ public interface WmsStockService{
    * 查询仓储显示可用库存集合
    * @return
    */
-  PageResult<WmsStockAvailableResult> getStockAvailableList(WmsStockEnter enter);
+  PageResult<WmsStockAvailableResult> list(WmsStockEnter enter);
 }

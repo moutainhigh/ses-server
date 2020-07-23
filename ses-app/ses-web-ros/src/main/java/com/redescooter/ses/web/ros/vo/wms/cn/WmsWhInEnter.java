@@ -26,7 +26,6 @@ import java.util.Date;
 @Builder
 public class WmsWhInEnter extends PageEnter {
   @ApiModelProperty(value = "产品类型")
-  @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "类型为空")
   private String productType;
 
   @ApiModelProperty(value = "开始时间", required = false)

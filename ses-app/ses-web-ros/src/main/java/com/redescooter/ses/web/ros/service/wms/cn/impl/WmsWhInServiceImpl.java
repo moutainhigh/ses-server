@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.wms.cn.impl;
 
 import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper;
@@ -34,46 +35,47 @@ public class WmsWhInServiceImpl implements WmsWhInService {
     @Autowired
     private WmsServiceMapper wmsServiceMapper;
 
-    /**
-     * 入库单状态统计
-     *
-     * @param enter
-     * @retrn
-     */
-    @Override
-    public Map<String, Integer> countByType(GeneralEnter enter) {
-        Map<String, Integer> map = new HashMap<>();
-        int wmsInWhCount = wmsServiceMapper.wmsInWhCountByType(enter);
-        int stockPendingCount = wmsServiceMapper.stockPendingCountByType(enter);
-        map.put("1", wmsInWhCount);
-        map.put("2", stockPendingCount);
-        return map;
-    }
+  /**
+   * 入库单状态统计
+   *
+   * @param enter
+   * @retrn
+   */
+  @Override
+  public Map<String, Integer> countByType(GeneralEnter enter) {
+    Map<String, Integer> map = new HashMap<>();
+    int wmsInWhCount = wmsServiceMapper.wmsInWhCountByType(enter);
+    int stockPendingCount = wmsServiceMapper.stockPendingCountByType(enter);
+    map.put(String.valueOf(PushTypeEnums.TAG.getValue()),wmsInWhCount);
+    map.put(String.valueOf(PushTypeEnums.TAG_AND.getValue()),stockPendingCount);
+    return map;
+  }
 
-    /**
+  /**
      * 查询入库集合
      *
      * @param enter
      * @return
      */
     @Override
-    public PageResult<WmsInWhResult> getWmsInWhList(WmsWhInEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
-            return PageResult.createZeroRowResult(enter);
-        }
-        int totalRows = 0;
-        List<WmsInWhResult> wmsInWhResult = null;
-        if (StringUtils.equals(enter.getProductType(), ProductionTypeEnums.TODO.getValue())) {
-            totalRows = wmsServiceMapper.wmsInWhCount(enter);
-            wmsInWhResult = wmsServiceMapper.wmsInWhList(enter);
-        } else {
-            totalRows = wmsServiceMapper.stockPendingCount(enter);
-            wmsInWhResult = wmsServiceMapper.stockPendingList(enter);
-        }
-        if (totalRows == 0) {
-            return PageResult.createZeroRowResult(enter);
-        }
-        return PageResult.create(enter, totalRows, wmsInWhResult);
+    public PageResult<WmsInWhResult> list(WmsWhInEnter enter) {
+      if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        return PageResult.createZeroRowResult(enter);
+      }
+      int totalRows = 0;
+      List<WmsInWhResult> wmsInWhResult = new ArrayList<WmsInWhResult>();
+      if (StringUtils.equals(enter.getProductType(), ProductionTypeEnums.TODO.getValue())) {
+          totalRows = wmsServiceMapper.wmsInWhCount(enter);
+          wmsInWhResult= wmsServiceMapper.wmsInWhList(enter);
+      } else {
+
+         totalRows = wmsServiceMapper.stockPendingCount(enter);
+         wmsInWhResult= wmsServiceMapper.stockPendingList(enter);
+      }
+      if (totalRows == 0) {
+        return PageResult.createZeroRowResult(enter);
+      }
+      return PageResult.create(enter, totalRows,wmsInWhResult);
     }
 
     /**
@@ -83,7 +85,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      * @return
      */
     @Override
-    public WmsInWhDetailsResult getInWhDetails(WmsWhInDetailsEnter enter) {
+    public WmsInWhDetailsResult details(WmsWhInDetailsEnter enter) {
         if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getProductType())) {
             return wmsServiceMapper.allocateDetails(enter);
         } else {
@@ -98,7 +100,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      * @return
      */
     @Override
-    public List<WmsProductListResult> getProductList(WmsWhInDetailsEnter enter) {
+    public List<WmsProductListResult> productList(WmsWhInDetailsEnter enter) {
         if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getProductType())) {
             return wmsServiceMapper.partList(enter);
         } else {
