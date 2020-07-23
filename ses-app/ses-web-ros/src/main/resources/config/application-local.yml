@@ -207,3 +207,7 @@ monday:
   paramVariables: variables
   httpMethod: POST
   MediaType: application/x-www-form-urlencoded
+  #Préco clients RED Série E
+  orderFormBoardId: 639902086
+  #(RFQ) Relation client RED Série E
+  contactUsBoardId: 641082556

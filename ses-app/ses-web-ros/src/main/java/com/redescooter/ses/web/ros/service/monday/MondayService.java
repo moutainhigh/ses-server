@@ -14,4 +14,7 @@ public interface MondayService {
 
 
     GeneralResult getMondayData(GeneralEnter enter);
+
+
+
 }

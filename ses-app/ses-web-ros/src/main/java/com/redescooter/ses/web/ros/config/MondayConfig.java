@@ -30,4 +30,8 @@ public class MondayConfig {
     private HttpMethod httpMethod;
 
     private MediaType mediaType;
+
+    private Long orderFormBoardId;
+
+    private Long contactUsBoardId;
 }
