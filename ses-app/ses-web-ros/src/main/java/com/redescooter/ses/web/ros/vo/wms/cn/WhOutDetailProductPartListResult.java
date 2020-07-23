@@ -31,7 +31,7 @@ public class WhOutDetailProductPartListResult extends GeneralResult {
     private String productN;
 
     @ApiModelProperty(value = "类型")
-    private String type;
+    private String productType;
 
     @ApiModelProperty(value = "名称")
     private String enName;
