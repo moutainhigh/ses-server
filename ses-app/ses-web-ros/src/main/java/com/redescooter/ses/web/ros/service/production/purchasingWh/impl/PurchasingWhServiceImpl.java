@@ -242,25 +242,31 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }
         List<OpeWhse> assemblyWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ASSEMBLY.getValue()));
-
-        //组装仓库 数据
-        int countAssembly = purchasingWhServiceMapper.outWhListAssemblyCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
-        log.info("前面的数量是："+countAssembly);
-        List<OutWhResult> whResultListAssembly = purchasingWhServiceMapper.outWhListAssembly(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
-
         //调拨仓库数据
         List<OpeWhse> allocateWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue()));
 
-        int countAllocate = purchasingWhServiceMapper.outWhListAllocateCount(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
-        log.info("后面的数量是："+countAllocate);
-//        if (countAllocate == 0) {
-//            return PageResult.createZeroRowResult(enter);
-//        }
-        enter.setPageSize(enter.getPageSize()-countAssembly);
-        List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
-        whResultListAllocate.addAll(whResultListAssembly);
 
-        return PageResult.create(enter, countAllocate + countAssembly, whResultListAllocate);
+        Integer num = purchasingWhServiceMapper.outWhCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()),Lists.newArrayList(allocateWhse.get(0).getId()));
+
+        List<OutWhResult> results = purchasingWhServiceMapper.outWhList(enter, Lists.newArrayList(assemblyWhse.get(0).getId()),Lists.newArrayList(allocateWhse.get(0).getId()));
+
+//        //组装仓库 数据
+//        int countAssembly = purchasingWhServiceMapper.outWhListAssemblyCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
+//        log.info("前面的数量是："+countAssembly);
+//        List<OutWhResult> whResultListAssembly = purchasingWhServiceMapper.outWhListAssembly(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
+//        log.info("前面的本次查出来的数量："+whResultListAssembly.size());
+//
+//        int countAllocate = purchasingWhServiceMapper.outWhListAllocateCount(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
+//        log.info("后面的数量是："+countAllocate);
+////        if (countAllocate == 0) {
+////            return PageResult.createZeroRowResult(enter);
+////        }
+//        enter.setPageSize(enter.getPageSize()-whResultListAssembly.size());
+//        List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
+//        log.info("后面的本次查出来的数量："+whResultListAllocate.size());
+//        whResultListAllocate.addAll(whResultListAssembly);
+
+        return PageResult.create(enter, num, results);
     }
 
     /**
