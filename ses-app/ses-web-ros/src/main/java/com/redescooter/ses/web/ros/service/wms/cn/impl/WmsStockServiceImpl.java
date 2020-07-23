@@ -18,7 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,19 +48,13 @@ public class WmsStockServiceImpl implements WmsStockService {
   @Override
   public Map<String, Integer> countByType(GeneralEnter enter) {
     Map<String, Integer> map = new HashMap<>();
-    WmsStockDefaultDto defaultParam = new WmsStockDefaultDto();
-    defaultParam.setAccessory(BomCommonTypeEnums.ACCESSORY.getValue());
-    defaultParam.setParts(BomCommonTypeEnums.PARTS.getValue());
-    defaultParam.setBattery(BomCommonTypeEnums.BATTERY.getValue());
-    defaultParam.setScooter(BomCommonTypeEnums.SCOOTER.getValue());
-    defaultParam.setCombination(BomCommonTypeEnums.COMBINATION.getValue());
-    defaultParam.setFr(CurrencyUnitEnums.FR.getValue());
-    OpeWhse purchas = opewhseservice.getOne(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE,WhseTypeEnums.PURCHAS.getValue()));
-    OpeWhse assembly = opewhseservice.getOne(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE,WhseTypeEnums.ASSEMBLY.getValue()));
-    defaultParam.setPurchas(purchas.getId());
-    defaultParam.setAssembly(assembly.getId());
-    int usableStockCount = wmsServiceMapper.usableStockCountByType(defaultParam);
-    map.put(String.valueOf(PushTypeEnums.TAG.getValue()),usableStockCount);
+    List<String> list = new ArrayList<String>();
+    for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
+      list.add(item.getValue());
+    }
+    List<OpeWhse> whselist = opewhseservice.list(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
+    int usableStockCount = wmsServiceMapper.usableStockCountByType(whselist, list, CurrencyUnitEnums.FR.getValue());
+    map.put(String.valueOf(PushTypeEnums.TAG.getValue()), usableStockCount);
     return map;
   }
 
@@ -72,23 +68,17 @@ public class WmsStockServiceImpl implements WmsStockService {
     if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
       return PageResult.createZeroRowResult(enter);
     }
-    WmsStockDefaultDto defaultParam = new WmsStockDefaultDto();
-    defaultParam.setAccessory(BomCommonTypeEnums.ACCESSORY.getValue());
-    defaultParam.setParts(BomCommonTypeEnums.PARTS.getValue());
-    defaultParam.setBattery(BomCommonTypeEnums.BATTERY.getValue());
-    defaultParam.setScooter(BomCommonTypeEnums.SCOOTER.getValue());
-    defaultParam.setCombination(BomCommonTypeEnums.COMBINATION.getValue());
-    defaultParam.setFr(CurrencyUnitEnums.FR.getValue());
-    OpeWhse purchas = opewhseservice.getOne(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE,WhseTypeEnums.PURCHAS.getValue()));
-    OpeWhse assembly = opewhseservice.getOne(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE,WhseTypeEnums.ASSEMBLY.getValue()));
-    defaultParam.setPurchas(purchas.getId());
-    defaultParam.setAssembly(assembly.getId());
-    int totalRows = wmsServiceMapper.wmsUsableStockCount(enter,defaultParam);
+    List<String> list = new ArrayList<String>();
+    for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
+      list.add(item.getValue());
+    }
+    List<OpeWhse> whselist = opewhseservice.list(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
+    int totalRows = wmsServiceMapper.wmsUsableStockCount(enter, whselist, list, CurrencyUnitEnums.FR.getValue());
     if (totalRows == 0) {
       return PageResult.createZeroRowResult(enter);
     }
 
-    return PageResult.create(enter, totalRows, wmsServiceMapper.wmsUsableStockList(enter,defaultParam));
+    return PageResult.create(enter, totalRows, wmsServiceMapper.wmsUsableStockList(enter, whselist, list, CurrencyUnitEnums.FR.getValue()));
   }
 
 }

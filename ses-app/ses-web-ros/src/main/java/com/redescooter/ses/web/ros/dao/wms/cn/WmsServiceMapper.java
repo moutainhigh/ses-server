@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.wms.cn;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.dm.OpeWhse;
 import com.redescooter.ses.web.ros.vo.bo.WmsStockDefaultDto;
 import com.redescooter.ses.web.ros.vo.wms.cn.*;
 import org.apache.ibatis.annotations.Param;
@@ -22,14 +23,14 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsUsableStockCount(@Param("enter") WmsStockEnter enter,@Param("defaultParam") WmsStockDefaultDto defaultParam);
+  int wmsUsableStockCount(@Param("enter") WmsStockEnter enter,@Param("whseidList") List<OpeWhse> whseidList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
   /**
    * 仓储可用列表
    *
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter,@Param("defaultParam") WmsStockDefaultDto defaultParam);
+  List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter,@Param("whseidList") List<OpeWhse> whseidList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
 
 
   /**
@@ -117,9 +118,9 @@ public interface WmsServiceMapper {
   /**
    * 可用库存count
    *
-   * @param defaultParam
+   * @param
    * @return
    */
-  int usableStockCountByType(@Param("defaultParam") WmsStockDefaultDto defaultParam);
+  int usableStockCountByType(@Param("whseidList") List<OpeWhse> whseidList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
 }
 

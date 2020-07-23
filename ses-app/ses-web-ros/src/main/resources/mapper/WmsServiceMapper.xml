@@ -1,238 +1,258 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper">
-  <sql id="where_wmsProductList">
-    WHERE
-    s.dr=0
-    AND s.whse_id IN (#{defaultParam.purchas},#{defaultParam.assembly})
-    AND s.materiel_product_type in (#{defaultParam.combination},#{defaultParam.scooter})
-    AND e.currency_unit = #{defaultParam.fr}
-    <if test="enter.stockType!=''and enter.stockType!=null">
-      and s.materiel_product_type=#{enter.stockType}
-    </if>
-    <if test="enter.keyword!=''and enter.keyword!=null">
-      and (
-      b.cn_name like concat ("%",#{enter.keyword},"%") or
-      b.en_name like concat ("%",#{enter.keyword},"%") or
-      b.product_number like concat ("%",#{enter.keyword},"%")
-      )
-    </if>
-  </sql>
-  <sql id="where_wmsPartsList">
-    WHERE
-    s.dr=0
-    AND s.whse_id IN (#{defaultParam.purchas},#{defaultParam.assembly})
-    AND s.materiel_product_type in (#{defaultParam.parts},#{defaultParam.battery},#{defaultParam.accessory})
-    AND e.currency_unit = #{defaultParam.fr}
-    <if test="enter.stockType!=''and enter.stockType!=null">
-      and s.materiel_product_type=#{enter.stockType}
-    </if>
-    <if test="enter.keyword!=''and enter.keyword!=null">
-      and (
-      p.cn_name like concat ("%",#{enter.keyword},"%") or
-      p.en_name like concat ("%",#{enter.keyword},"%") or
-      p.parts_number like concat ("%",#{enter.keyword},"%")
-      )
-    </if>
-  </sql>
-  <sql id="where_inHw_allocate">
-    WHERE
-    e.dr=0
-    and e.`status` = 4
-    <if test="enter.startTime != null and enter.endTime != null">
-      and e.updated_time between #{enter.startTime} and #{enter.endTime}
-    </if>
-    <if test="enter.keyword!=''and enter.keyword!=null">
-      and (
-      e.allocate_num like concat ("%",#{enter.keyword},"%") or
-      e.consignee_id like concat ("%",#{enter.keyword},"%")
-      )
-    </if>
-  </sql>
-  <sql id="where_inHw_assembly">
-    WHERE
-    r.dr=0
-    and r.`status` = 3
-    <if test="enter.startTime != null and enter.endTime != null">
-      and e.updated_time between #{enter.startTime} and #{enter.endTime}
-    </if>
-    <if test="enter.keyword!=''and enter.keyword!=null">
-      and (
-      r.assembly_number like concat ("%",#{enter.keyword},"%") or
-      r.consignee_id like concat ("%",#{enter.keyword},"%")
-      )
-    </if>
-  </sql>
-  <select
-    id="wmsUsableStockCount" resultType="int">
-    SELECT
-    sum(aa.count) from (
-    select
-    count(*) AS count
-    FROM
-    ope_stock s
-    JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
-    JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
-    <include refid="where_wmsProductList"/>
-    UNION
-    SELECT
-    count(*) AS count
-    FROM
-    ope_stock s
-    JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
-    JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
-    <include refid="where_wmsPartsList"/>
-    ) aa
-  </select>
+    <sql id="where_wmsProductList">
+        WHERE
+        s.dr=0
+        AND s.whse_id IN
+        <foreach collection="whseidList" item="whseItem" separator="," open="(" close=")">
+            #{whseItem.id}
+        </foreach>
+        AND s.materiel_product_type in
+        <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
+            <choose>
+                <when test="typeItem==4 or typeItem==5">
+                    #{typeItem}
+                </when>
+            </choose>
+        </foreach>
+        AND e.currency_unit = #{amountType}
+        <if test="enter.stockType!=''and enter.stockType!=null">
+            and s.materiel_product_type=#{enter.stockType}
+        </if>
+        <if test="enter.keyword!=''and enter.keyword!=null">
+            and (
+            b.cn_name like concat ("%",#{enter.keyword},"%") or
+            b.en_name like concat ("%",#{enter.keyword},"%") or
+            b.product_number like concat ("%",#{enter.keyword},"%")
+            )
+        </if>
+    </sql>
+    <sql id="where_wmsPartsList">
+        WHERE
+        s.dr=0
+        AND s.whse_id IN
+        <foreach collection="whseidList" item="whseItem" separator="," open="(" close=")">
+            #{whseItem.id}
+        </foreach>
+        AND s.materiel_product_type in
+        <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
+            <choose>
+                <when test="typeItem==1 or typeItem==2 or typeItem==3">
+                    #{typeItem}
+                </when>
+            </choose>
+        </foreach>
+        AND e.currency_unit = #{amountType}
+        <if test="enter.stockType!=''and enter.stockType!=null">
+            and s.materiel_product_type=#{enter.stockType}
+        </if>
+        <if test="enter.keyword!=''and enter.keyword!=null">
+            and (
+            p.cn_name like concat ("%",#{enter.keyword},"%") or
+            p.en_name like concat ("%",#{enter.keyword},"%") or
+            p.parts_number like concat ("%",#{enter.keyword},"%")
+            )
+        </if>
+    </sql>
+    <sql id="where_inHw_allocate">
+        WHERE
+        e.dr=0
+        and e.`status` = 4
+        <if test="enter.startTime != null and enter.endTime != null">
+            and e.updated_time between #{enter.startTime} and #{enter.endTime}
+        </if>
+        <if test="enter.keyword!=''and enter.keyword!=null">
+            and (
+            e.allocate_num like concat ("%",#{enter.keyword},"%") or
+            e.consignee_id like concat ("%",#{enter.keyword},"%")
+            )
+        </if>
+    </sql>
+    <sql id="where_inHw_assembly">
+        WHERE
+        r.dr=0
+        and r.`status` = 3
+        <if test="enter.startTime != null and enter.endTime != null">
+            and e.updated_time between #{enter.startTime} and #{enter.endTime}
+        </if>
+        <if test="enter.keyword!=''and enter.keyword!=null">
+            and (
+            r.assembly_number like concat ("%",#{enter.keyword},"%") or
+            r.consignee_id like concat ("%",#{enter.keyword},"%")
+            )
+        </if>
+    </sql>
+    <select
+            id="wmsUsableStockCount" resultType="int">
+        SELECT
+        sum(aa.count) from (
+        select
+        count(*) AS count
+        FROM
+        ope_stock s
+        JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
+        JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
+        <include refid="where_wmsProductList"/>
+        UNION
+        SELECT
+        count(*) AS count
+        FROM
+        ope_stock s
+        JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
+        JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
+        <include refid="where_wmsPartsList"/>
+        ) aa
+    </select>
 
 
-  <select id="wmsUsableStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
-    SELECT
-    s.id as id,
-    b.cn_name as cnName,
-    b.en_name as enName,
-    b.product_number as productNumber,
-    s.int_total as intTotal,
-    s.materiel_product_type as productType,
-    e.sales_price as price
-    FROM
-    ope_stock s
-    JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
-    JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
-    <include refid="where_wmsProductList"/>
-    UNION
-    SELECT
-    s.id as id,
-    p.cn_name as cnName,
-    p.en_name as enName,
-    p.parts_number as productNumber,
-    s.int_total as intTotal,
-    s.materiel_product_type as productType,
-    e.price as price
-    FROM
-    ope_stock s
-    JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
-    JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
-    <include refid="where_wmsPartsList"/>
-    limit #{enter.startRow},#{enter.pageSize}
-  </select>
+    <select id="wmsUsableStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
+        SELECT
+        s.id as id,
+        b.cn_name as cnName,
+        b.en_name as enName,
+        b.product_number as productNumber,
+        s.int_total as intTotal,
+        s.materiel_product_type as productType,
+        e.sales_price as price
+        FROM
+        ope_stock s
+        JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
+        JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
+        <include refid="where_wmsProductList"/>
+        UNION
+        SELECT
+        s.id as id,
+        p.cn_name as cnName,
+        p.en_name as enName,
+        p.parts_number as productNumber,
+        s.int_total as intTotal,
+        s.materiel_product_type as productType,
+        e.price as price
+        FROM
+        ope_stock s
+        JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
+        JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
+        <include refid="where_wmsPartsList"/>
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
 
 
-  <select id="wmsInWhCount" resultType="int">
-    SELECT
-    sum(aa.count) from (
-    SELECT
-    count(*) AS count
-    FROM
-    ope_allocate e
-    JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
-    <include refid="where_inHw_allocate"/>
-    UNION
-    SELECT
-    count(*) AS count
-    FROM
-    ope_assembly_order r
-    JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
-    <include refid="where_inHw_assembly"/>)aa
-  </select>
-  <select id="wmsInWhList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult">
-    SELECT
-    e.id as id,
-    e.allocate_num as allocateNumber,
-    e.count as qty,
-    s.full_name as consignee,
-    '2' as productType,
-    e.updated_time as inWhTime
-    FROM
-    ope_allocate e
-    JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
-    <include refid="where_inHw_allocate"/>
-    UNION
-    SELECT
-    r.id as id,
-    r.assembly_number as allocateNumber,
-    r.in_wait_wh_total as qty,
-    s.full_name as consignee,
-    '3' as productType,
-    r.updated_time as inWhTime
-    FROM
-    ope_assembly_order r
-    JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
-    <include refid="where_inHw_assembly"/>
-     limit #{enter.startRow},#{enter.pageSize}
-  </select>
-  <sql id="where_stockPending_allocate">
-    WHERE
-    e.dr=0
-    and e.`status` = 3
-    <if test="enter.startTime != null and enter.endTime != null">
-      and e.created_time between #{enter.startTime} and #{enter.endTime}
-    </if>
-    <if test="enter.keyword!=''and enter.keyword!=null">
-      and (
-      e.allocate_num like concat ("%",#{enter.keyword},"%") or
-      e.consignee_id like concat ("%",#{enter.keyword},"%")
-      )
-    </if>
-  </sql>
-  <sql id="where_stockPending_assembly">
-    WHERE
-    r.dr=0
-    and r.`status` = 5
-    <if test="enter.startTime != null and enter.endTime != null">
-      and e.created_time between #{enter.startTime} and #{enter.endTime}
-    </if>
-    <if test="enter.keyword!=''and enter.keyword!=null">
-      and (
-      r.assembly_number like concat ("%",#{enter.keyword},"%") or
-      r.consignee_id like concat ("%",#{enter.keyword},"%")
-      )
-    </if>
-  </sql>
-  <select id="stockPendingCount" resultType="int">
-    SELECT
-    sum(aa.count) from (
-    SELECT
-    count(*) AS count
-    FROM
-    ope_allocate e
-    <include refid="where_stockPending_allocate"/>
-    UNION
-    SELECT
-    count(*) AS count
-    FROM
-    ope_assembly_order r
-    <include refid="where_stockPending_assembly"/>)aa
-  </select>
-  <select id="stockPendingList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult">
-  SELECT
-    e.id as id,
-    e.allocate_num as allocateNumber,
-    e.count-e.pending_storage_total as qty,
-    e.count as sumTotal,
-    s.full_name as consignee,
-    '2' as productType,
-    e.created_time as inWhTime
-    FROM
-    ope_allocate e
-    JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
-    <include refid="where_stockPending_allocate"/>
-    UNION
-    SELECT
-    r.id as id,
-    r.assembly_number as allocateNumber,
-    r.total_qty-r.in_wait_wh_total as qty,
-    r.total_qty as sumTotal,
-    s.full_name as consignee,
-    '3' as productType,
-    r.created_time as inWhTime
-    FROM
-    ope_assembly_order r
-    JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
-    <include refid="where_stockPending_assembly"/>
-     limit #{enter.startRow},#{enter.pageSize}
-  </select>
-  <select id="allocateDetails" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult">
+    <select id="wmsInWhCount" resultType="int">
+        SELECT
+        sum(aa.count) from (
+        SELECT
+        count(*) AS count
+        FROM
+        ope_allocate e
+        JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
+        <include refid="where_inHw_allocate"/>
+        UNION
+        SELECT
+        count(*) AS count
+        FROM
+        ope_assembly_order r
+        JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
+        <include refid="where_inHw_assembly"/>)aa
+    </select>
+    <select id="wmsInWhList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult">
+        SELECT
+        e.id as id,
+        e.allocate_num as allocateNumber,
+        e.count as qty,
+        s.full_name as consignee,
+        '2' as productType,
+        e.updated_time as inWhTime
+        FROM
+        ope_allocate e
+        JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
+        <include refid="where_inHw_allocate"/>
+        UNION
+        SELECT
+        r.id as id,
+        r.assembly_number as allocateNumber,
+        r.in_wait_wh_total as qty,
+        s.full_name as consignee,
+        '3' as productType,
+        r.updated_time as inWhTime
+        FROM
+        ope_assembly_order r
+        JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
+        <include refid="where_inHw_assembly"/>
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+    <sql id="where_stockPending_allocate">
+        WHERE
+        e.dr=0
+        and e.`status` = 3
+        <if test="enter.startTime != null and enter.endTime != null">
+            and e.created_time between #{enter.startTime} and #{enter.endTime}
+        </if>
+        <if test="enter.keyword!=''and enter.keyword!=null">
+            and (
+            e.allocate_num like concat ("%",#{enter.keyword},"%") or
+            e.consignee_id like concat ("%",#{enter.keyword},"%")
+            )
+        </if>
+    </sql>
+    <sql id="where_stockPending_assembly">
+        WHERE
+        r.dr=0
+        and r.`status` = 5
+        <if test="enter.startTime != null and enter.endTime != null">
+            and e.created_time between #{enter.startTime} and #{enter.endTime}
+        </if>
+        <if test="enter.keyword!=''and enter.keyword!=null">
+            and (
+            r.assembly_number like concat ("%",#{enter.keyword},"%") or
+            r.consignee_id like concat ("%",#{enter.keyword},"%")
+            )
+        </if>
+    </sql>
+    <select id="stockPendingCount" resultType="int">
+        SELECT
+        sum(aa.count) from (
+        SELECT
+        count(*) AS count
+        FROM
+        ope_allocate e
+        <include refid="where_stockPending_allocate"/>
+        UNION
+        SELECT
+        count(*) AS count
+        FROM
+        ope_assembly_order r
+        <include refid="where_stockPending_assembly"/>)aa
+    </select>
+    <select id="stockPendingList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult">
+        SELECT
+        e.id as id,
+        e.allocate_num as allocateNumber,
+        e.count-e.pending_storage_total as qty,
+        e.count as sumTotal,
+        s.full_name as consignee,
+        '2' as productType,
+        e.created_time as inWhTime
+        FROM
+        ope_allocate e
+        JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
+        <include refid="where_stockPending_allocate"/>
+        UNION
+        SELECT
+        r.id as id,
+        r.assembly_number as allocateNumber,
+        r.total_qty-r.in_wait_wh_total as qty,
+        r.total_qty as sumTotal,
+        s.full_name as consignee,
+        '3' as productType,
+        r.created_time as inWhTime
+        FROM
+        ope_assembly_order r
+        JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
+        <include refid="where_stockPending_assembly"/>
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+    <select id="allocateDetails" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult">
     SELECT
       e.id as id,
       e.allocate_num as allocateNumber,
@@ -246,7 +266,7 @@
   WHERE
     e.id =#{enter.id} and e.dr = 0
   </select>
-  <select id="assemblyDetails" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult">
+    <select id="assemblyDetails" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult">
     SELECT
       r.id as id,
       r.assembly_number as allocateNumber,
@@ -260,7 +280,7 @@
     WHERE
       r.id = #{enter.id} and r.dr = 0
   </select>
-  <select id="partList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult">
+    <select id="partList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult">
     SELECT
       b.id as id,
       s.cn_name AS cnName,
@@ -276,7 +296,7 @@
     WHERE
       b.allocate_id = #{enter.id} and b.dr = 0
   </select>
-  <select id="productList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult">
+    <select id="productList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult">
     SELECT
       b.id as id,
       s.cn_name AS cnName,
@@ -292,7 +312,7 @@
   WHERE
     b.assembly_id = #{enter.id} and b.dr = 0
   </select>
-  <select id="wmsInWhCountByType" resultType="int">
+    <select id="wmsInWhCountByType" resultType="int">
   SELECT
     sum( aa.count )
   FROM
@@ -313,7 +333,7 @@
       AND r.`status` = 3
     ) aa
   </select>
-  <select id="stockPendingCountByType" resultType="int">
+    <select id="stockPendingCountByType" resultType="int">
   SELECT
     sum( aa.count)
   FROM
@@ -334,33 +354,53 @@
     AND r.`status` = 5
     ) aa
   </select>
+    <select id="usableStockCountByType" resultType="int">
+        SELECT
+        sum(aa.count) from (
+        select
+        count(*) AS count
+        FROM
+        ope_stock s
+        JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
+        JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
+        WHERE
+        s.dr=0
+        AND s.whse_id IN
+        <foreach collection="whseidList" item="whseItem" separator="," open="(" close=")">
+            #{whseItem.id}
+        </foreach>
+        AND s.materiel_product_type in
+        <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
+            <choose>
+                <when test="typeItem==4 or typeItem==5">
+                    #{typeItem}
+                </when>
+            </choose>
+        </foreach>
+        AND e.currency_unit = #{amountType}
+        UNION
+        SELECT
+        count(*) AS count
+        FROM
+        ope_stock s
+        JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
+        JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
+        WHERE
+        s.dr=0
+        AND s.whse_id IN
+        <foreach collection="whseidList" item="whseItem" separator="," open="(" close=")">
+            #{whseItem.id}
+        </foreach>
+        AND s.materiel_product_type in
+        <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
+            <choose>
+                <when test="typeItem==1 or typeItem==2 or typeItem==3">
+                    #{typeItem}
+                </when>
+            </choose>
+        </foreach>
+        AND e.currency_unit = #{amountType}
+        ) aa
+    </select>
 
-  <select id="usableStockCountByType" resultType="int">
-    SELECT
-    sum(aa.count) from (
-    select
-    count(*) AS count
-    FROM
-    ope_stock s
-    JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
-    JOIN ope_regional_price_sheet e ON b.id = e.parts_product_id and e.dr = 0
-    WHERE
-    s.dr=0
-    AND s.whse_id IN (#{defaultParam.purchas},#{defaultParam.assembly})
-    AND s.materiel_product_type in (#{defaultParam.combination},#{defaultParam.scooter})
-    AND e.currency_unit = #{defaultParam.fr}
-    UNION
-    SELECT
-    count(*) AS count
-    FROM
-    ope_stock s
-    JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
-    JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
-    WHERE
-    s.dr=0
-    AND s.whse_id IN (#{defaultParam.purchas},#{defaultParam.assembly})
-    AND s.materiel_product_type in (#{defaultParam.parts},#{defaultParam.battery},#{defaultParam.accessory})
-    AND e.currency_unit = #{defaultParam.fr}
-    ) aa
-  </select>
 </mapper>
