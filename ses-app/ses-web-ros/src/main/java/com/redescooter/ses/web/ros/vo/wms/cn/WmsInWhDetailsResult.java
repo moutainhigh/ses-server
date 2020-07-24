@@ -40,11 +40,11 @@ public class WmsInWhDetailsResult extends GeneralResult {
   @ApiModelProperty(value = "收货人名")
   private String consigneeFristName;
 
+  @ApiModelProperty(value = "类型")
+  private String classType;
+
   @ApiModelProperty(value = "状态")
   private String status;
-
-  @ApiModelProperty(value = "单据类型")
-  private String documentType;
 
   @ApiModelProperty(value = "手机号码")
   private String phone;
