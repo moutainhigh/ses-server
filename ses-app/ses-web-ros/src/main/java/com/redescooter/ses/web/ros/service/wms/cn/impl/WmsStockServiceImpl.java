@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
 import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
 import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
+import com.redescooter.ses.api.common.enums.wms.WhOutStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper;
@@ -17,6 +18,7 @@ import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Case;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +65,8 @@ public class WmsStockServiceImpl implements WmsStockService {
     map.put(String.valueOf(PushTypeEnums.TAG_AND.getValue()), predictedStockCount);
     int storedStockCount= wmsServiceMapper.wmsStoredStockCountByType(whselist.get(Constant.DR_TRUE).getId(), list, CurrencyUnitEnums.FR.getValue());
     map.put(String.valueOf(PushTypeEnums.TAG_NOT.getValue()), storedStockCount);
+    int outWhStockCount= wmsServiceMapper.wmsOutWhStockCountByType(WhOutStatusEnums.OUT_WH.getValue(), list, CurrencyUnitEnums.FR.getValue());
+    map.put(String.valueOf(PushTypeEnums.ALIAS.getValue()), outWhStockCount);
     return map;
   }
 
@@ -88,12 +92,24 @@ public class WmsStockServiceImpl implements WmsStockService {
     if (StringUtils.equals(enter.getClassType(), String.valueOf(PushTypeEnums.TAG.getValue()))){
         totalRows = wmsServiceMapper.wmsUsableStockCount(enter, whselist, list, CurrencyUnitEnums.FR.getValue());
         stockResult  = wmsServiceMapper.wmsUsableStockList(enter, whselist, list, CurrencyUnitEnums.FR.getValue());
-    }else if (StringUtils.equals(enter.getClassType(), String.valueOf(PushTypeEnums.TAG_AND.getValue()))){
+    }
+    if (StringUtils.equals(enter.getClassType(), String.valueOf(PushTypeEnums.TAG_AND.getValue()))){
       totalRows = wmsServiceMapper.wmsBePredictedStockCount(enter, whselist.get(Constant.DR_FALSE).getId(), list, CurrencyUnitEnums.FR.getValue());
       stockResult  = wmsServiceMapper.wmsBePredictedStockList(enter, whselist.get(Constant.DR_FALSE).getId(), list, CurrencyUnitEnums.FR.getValue());
-    }else if (StringUtils.equals(enter.getClassType(),String.valueOf(PushTypeEnums.TAG_NOT.getValue()))){
+    }
+    if (StringUtils.equals(enter.getClassType(),String.valueOf(PushTypeEnums.TAG_NOT.getValue()))){
       totalRows = wmsServiceMapper.wmsStoredStockCount(enter, whselist.get(Constant.DR_TRUE).getId(), list, CurrencyUnitEnums.FR.getValue());
       stockResult  = wmsServiceMapper.wmsStoredStockList(enter, whselist.get(Constant.DR_TRUE).getId(), list, CurrencyUnitEnums.FR.getValue());
+    }
+    if (StringUtils.equals(enter.getClassType(),String.valueOf(PushTypeEnums.ALIAS.getValue()))){
+      totalRows = wmsServiceMapper.wmsOutWhStockCount(enter,WhOutStatusEnums.OUT_WH.getValue(), list, CurrencyUnitEnums.FR.getValue());
+      stockResult  = wmsServiceMapper.wmsOutWhStockList(enter,WhOutStatusEnums.OUT_WH.getValue(), list, CurrencyUnitEnums.FR.getValue());
+     stockResult.forEach(item ->
+       {
+         if (item.getPrice()!=null && item.getIntTotal()!=null){
+           item.setPrice(item.getIntTotal()*item.getPrice());
+         }
+       });
     }
     if (totalRows == 0) {
       return PageResult.createZeroRowResult(enter);

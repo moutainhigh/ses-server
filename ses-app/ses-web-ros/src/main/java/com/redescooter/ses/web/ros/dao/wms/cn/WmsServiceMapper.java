@@ -60,6 +60,20 @@ public interface WmsServiceMapper {
    */
   List<WmsStockAvailableResult> wmsStoredStockList(@Param("enter") WmsStockEnter enter,@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
 
+  /**
+   * 返回仓储出库列表count
+   *
+   * @param enter
+   * @return
+   */
+  int wmsOutWhStockCount(@Param("enter") WmsStockEnter enter,@Param("status") String status,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  /**
+   * 返回仓储出库列表count
+   *
+   * @param enter
+   * @return
+   */
+  List<WmsStockAvailableResult> wmsOutWhStockList(@Param("enter") WmsStockEnter enter,@Param("status") String status,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
 
 
 
@@ -168,6 +182,16 @@ public interface WmsServiceMapper {
    * @return
    */
   int wmsBePredictedStockCountByType(@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+
+
+
+  /**
+   * 返回仓储出库列表count
+   *
+   * @param
+   * @return
+   */
+  int wmsOutWhStockCountByType(@Param("status") String status,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
 
 }
 

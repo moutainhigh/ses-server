@@ -40,6 +40,6 @@ public class WmsStockAvailableResult extends GeneralResult {
   private String enName;
 
   @ApiModelProperty(value="价格 浮点型价格")
-  private String price;
+  private Integer price;
 
 }
