@@ -7,7 +7,7 @@ package com.redescooter.ses.web.ros.constant;
  * @Version：1.3
  * @create: 2020/07/09 16:44
  */
-public interface MondayQueryConstant {
+public interface MondayQueryGqlConstant {
 
     String BOARD_PARAMETER="#{BOARD_PARAMETER}";
 
@@ -24,7 +24,7 @@ public interface MondayQueryConstant {
             "}";
 
     String QUERY_GROUP="query {\n" +
-            "\tboards(ids: +BOARD_PARAMETER+\") {\n" +
+            "\tboards(ids: "+BOARD_PARAMETER+") {\n" +
             "\t\tgroups {\n" +
             "\t\t\tid archived color position deleted title\n" +
             "\t\t}\n" +
@@ -38,11 +38,17 @@ public interface MondayQueryConstant {
             "\t}\n" +
             "}\n";
 
-    String MUTATION_DATA="mutation {\n" +
-            "\tcreate_item (board_id: "+BOARD_PARAMETER+", group_id: "+CREATE_BELONG_GROUP+", item_name: "+CREATE_ITEM_NAME+",column_values:"+ CREATE_COLUMN_VALUES+") {\n" +
-            "\t\tid\n" +
+    String QUERY_COLUMN="query {\n" +
+            "\tboards (ids: "+BOARD_PARAMETER+") {\n" +
+            "\t\tcolumns {\n" +
+            "\t\t\tid title type archived pos settings_str width\n" +
+            "\t\t}\n" +
             "\t}\n" +
             "}";
 
-
+    String MUTATION_DATA="mutation {\n" +
+            "\tcreate_item (board_id: "+BOARD_PARAMETER+", group_id: \""+CREATE_BELONG_GROUP+"\", item_name: \""+CREATE_ITEM_NAME+"\",column_values:\""+ CREATE_COLUMN_VALUES+"\") {\n" +
+            "\t\tid\n" +
+            "\t}\n" +
+            "}";
 }

@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class MondayColumnResult extends MondayGeneralResult {
+public class MondayColumnResult{
 
     private boolean archived;
     private String pos;

@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "monday",ignoreUnknownFields = true)
+@ConfigurationProperties(prefix = "monday", ignoreUnknownFields = true)
 public class MondayConfig {
 
     private String url;
@@ -31,11 +31,15 @@ public class MondayConfig {
 
     private MediaType mediaType;
 
+    //预定单板子名称
     private String orderFormBoardName;
 
+    //板子内分组名称
     private String orderFormGroupName;
 
+    //联系我们板子名称
     private String contactUsBoardName;
 
+    //联系我们分组名称
     private String contactUsGroupName;
 }

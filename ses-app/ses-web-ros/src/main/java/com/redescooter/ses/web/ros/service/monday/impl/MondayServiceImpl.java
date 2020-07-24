@@ -1,24 +1,28 @@
 package com.redescooter.ses.web.ros.service.monday.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.alibaba.fastjson.JSONObject;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.config.MondayConfig;
-import com.redescooter.ses.web.ros.constant.MondayQueryConstant;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.constant.MondayQueryGqlConstant;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.enums.MondayColumnDateEnums;
+import com.redescooter.ses.web.ros.enums.MondayColumnEnums;
+import com.redescooter.ses.web.ros.enums.MondayColumnPhoneEnums;
+import com.redescooter.ses.web.ros.enums.MondayCountryShortNameEnums;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.vo.monday.MondayBoardResult;
+import com.redescooter.ses.web.ros.vo.monday.MondayColumnResult;
 import com.redescooter.ses.web.ros.vo.monday.MondayCreateResult;
 import com.redescooter.ses.web.ros.vo.monday.MondayDataResult;
 import com.redescooter.ses.web.ros.vo.monday.MondayGeneralResult;
 import com.redescooter.ses.web.ros.vo.monday.MondayGroupResult;
 import com.redescooter.ses.web.ros.vo.monday.MondayMutationDataEnter;
 import com.redescooter.ses.web.ros.vo.monday.MondayTagResult;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -31,7 +35,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:MondayServiceImpl
@@ -48,10 +54,10 @@ public class MondayServiceImpl implements MondayService {
     private MondayConfig mondayConfig;
 
     @Override
-    public void push(OpeCustomer enter) {
+    public MondayCreateResult websiteContantUs(OpeCustomerInquiry enter) {
 
         //查看 板子是否存在
-        List<MondayBoardResult> mondayBoardResults = queryBoard();
+       List<MondayBoardResult> mondayBoardResults = queryBoard();
         if (CollectionUtil.isEmpty(mondayBoardResults)) {
             //创建
         }
@@ -61,11 +67,11 @@ public class MondayServiceImpl implements MondayService {
         }
 
         //数据插入
-        List<MondayGroupResult> mondayGroupResults = queryGroup(mondayBoardResults.get(0).getId());
+        List<MondayGroupResult> mondayGroupResults = queryGroupByBoardId(mondayBoardResult.getId());
         if (CollectionUtils.isEmpty(mondayGroupResults)) {
             //创建
         }
-        MondayGroupResult mondayGroupResult = mondayGroupResults.stream().filter(item -> StringUtils.equals(item.getTitle(), mondayConfig.getContactUsBoardName())).findFirst().orElse(null);
+        MondayGroupResult mondayGroupResult = mondayGroupResults.stream().filter(item -> StringUtils.equals(item.getTitle(), mondayConfig.getContactUsGroupName())).findFirst().orElse(null);
         if (mondayGroupResult == null) {
             //创建
         }
@@ -76,19 +82,65 @@ public class MondayServiceImpl implements MondayService {
             tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2())).findFirst().map(MondayTagResult::getId).orElse(null);
         }
 
-        //数据插入
-//        MondayMutationDataEnter
-//                .builder()
-//                .boardId()
-//                .groupId()
-//                .build();
 
+        int IdCp=0;
+        for (MondayTagResult item : mondayTagResults) {
+            if (StringUtils.equals(item.getName(), enter.getDef2())) {
+                IdCp = item.getId();
+                break;
+            }
+        }
+
+        Map<String,String> phoneMap=new HashMap<>();
+
+        phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(),enter.getTelephone());
+        phoneMap.put(MondayColumnPhoneEnums.phone.getCountryShortName(), MondayCountryShortNameEnums.FRANCE.getValue());
+
+        Map<String,String> dateMap=new HashMap<>();
+        dateMap.put(MondayColumnDateEnums.DATE.getTitle(), DateUtil.getTimeStr(enter.getCreatedTime(),DateUtil.DEFAULT_DATE_FORMAT));
+        dateMap.put(MondayColumnDateEnums.TIME.getTitle(), DateUtil.getTimeStr(enter.getCreatedTime(),DateUtil.DEFAULT_TIME_FORMAT));
+
+
+
+        Map<String, Object>  columnValue= new HashMap<>();
+        columnValue.put(MondayColumnEnums.ID_CP.getId(),IdCp);
+        columnValue.put(MondayColumnEnums.RESP.getId(),null);
+        //时间
+        columnValue.put(MondayColumnEnums.FIRST_CONTACT.getId(),dateMap);
+        columnValue.put(MondayColumnEnums.LAST_CONTACTED.getId(),null);
+        columnValue.put(MondayColumnEnums.NEXT_CONTACT.getId(),null);
+        columnValue.put(MondayColumnEnums.TYPE.getId(),null);
+        columnValue.put(MondayColumnEnums.CONVERSION.getId(),null);
+        columnValue.put(MondayColumnEnums.PRENOM.getId(),enter.getFirstName());
+        columnValue.put(MondayColumnEnums.NOM.getId(),enter.getLastName());
+        //电话
+        columnValue.put(MondayColumnEnums.TEL.getId(),phoneMap);
+        columnValue.put(MondayColumnEnums.EMAIL.getId(),enter.getEmail());
+        columnValue.put(MondayColumnEnums.VILLE.getId(),null);
+        columnValue.put(MondayColumnEnums.CODE_POSTAL.getId(),enter.getDef2());
+        columnValue.put(MondayColumnEnums.VOTRE_MESSAGE.getId(),enter.getRemarks());
+
+        String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
+        System.out.println("----------------------"+columnValues+"-------------------------");
+
+        //数据插入
+//        MondayMutationDataEnter build = MondayMutationDataEnter
+//                .builder()
+//                .boardId(mondayBoardResult.getId())
+//                .groupId(mondayGroupResult.getId())
+//                .itemName(new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
+//                .columnValues()
+//                .build();
+//        return mutationData(build);
+        return null;
     }
 
     @Transactional
     @Override
     public List<MondayBoardResult> queryBoard() {
-        String mondayJson = getMondayData(MondayQueryConstant.QUERY_BOARD, HttpMethod.POST);
+
+        System.out.println("--------------------------"+ MondayQueryGqlConstant.QUERY_BOARD+"--------------------------------");
+        String mondayJson = getMondayData(MondayQueryGqlConstant.QUERY_BOARD, HttpMethod.POST);
         System.out.println("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         MondayDataResult mondayDataResult = JSON.parseObject(mondayGeneralResult.getData(), MondayDataResult.class);
@@ -103,10 +155,12 @@ public class MondayServiceImpl implements MondayService {
      */
     @Transactional
     @Override
-    public List<MondayGroupResult> queryGroup(String boardId) {
+    public List<MondayGroupResult> queryGroupByBoardId(String boardId) {
 
         //替换语句中的id 参数
-        String graphGql = MondayQueryConstant.QUERY_GROUP.replace(MondayQueryConstant.BOARD_PARAMETER, boardId);
+        String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayQueryGqlConstant.BOARD_PARAMETER, boardId);
+
+        System.out.println("--------------------------"+graphGql+"--------------------------------");
 
         String mondayJson = getMondayData(graphGql, HttpMethod.POST);
         System.out.println("---------------{" + mondayJson + "}---------");
@@ -123,11 +177,32 @@ public class MondayServiceImpl implements MondayService {
      */
     @Override
     public List<MondayTagResult> queryTagList() {
-        String mondayJson = getMondayData(MondayQueryConstant.QUERY_TAGS, HttpMethod.POST);
-        System.out.println("---------------{" + mondayJson + "}---------");
+
+        log.info("--------------------------"+ MondayQueryGqlConstant.QUERY_TAGS+"--------------------------------");
+
+        String mondayJson = getMondayData(MondayQueryGqlConstant.QUERY_TAGS, HttpMethod.POST);
+        log.info("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         MondayDataResult mondayDataResult = JSON.parseObject(mondayGeneralResult.getData(), MondayDataResult.class);
         return mondayDataResult.getTags();
+    }
+
+    /**
+     * 查询该板子所有列
+     *
+     * @return
+     */
+    @Override
+    public List<MondayColumnResult> queryColumnResult(String boardId) {
+        String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayQueryGqlConstant.QUERY_COLUMN, boardId);
+
+
+        log.info("--------------------------"+ graphGql+"--------------------------------");
+        String mondayJson = getMondayData(graphGql, HttpMethod.POST);
+        log.info("---------------{" + mondayJson + "}---------");
+        MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
+        List<MondayBoardResult> mondayBoardResultList = JSON.parseArray(mondayGeneralResult.getData(), MondayBoardResult.class);
+        return mondayBoardResultList.get(0).getColumns();
     }
 
     /**
@@ -137,21 +212,24 @@ public class MondayServiceImpl implements MondayService {
      * @return
      */
     @Override
-    public GeneralResult mutationData(MondayMutationDataEnter enter) {
+    public MondayCreateResult mutationData(MondayMutationDataEnter enter) {
         //替换语句中的id 参数
-        String graphGql = MondayQueryConstant.MUTATION_DATA
-                .replace(MondayQueryConstant.BOARD_PARAMETER, enter.getBoardId())
-                .replace(MondayQueryConstant.CREATE_BELONG_GROUP, enter.getGroupId())
-                .replace(MondayQueryConstant.CREATE_ITEM_NAME, enter.getItemName())
-                .replace(MondayQueryConstant.CREATE_COLUMN_VALUES, enter.getColumnValues());
+        String graphGql = MondayQueryGqlConstant.MUTATION_DATA
+                .replace(MondayQueryGqlConstant.BOARD_PARAMETER, enter.getBoardId())
+                .replace(MondayQueryGqlConstant.CREATE_BELONG_GROUP, enter.getGroupId().toString())
+                .replace(MondayQueryGqlConstant.CREATE_ITEM_NAME, enter.getItemName().toString())
+                .replace(MondayQueryGqlConstant.CREATE_COLUMN_VALUES, enter.getColumnValues());
+
+        System.out.println("--------------------------"+graphGql+"--------------------------------");
 
 
         String mondayJson = getMondayData(graphGql, HttpMethod.POST);
         System.out.println("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         MondayDataResult mondayDataResult = JSON.parseObject(mondayGeneralResult.getData(), MondayDataResult.class);
-        System.out.println(mondayDataResult.getCreate_item());
-        return null;
+
+        log.info("-----------------------------------数据插入成功-----------------------------------");
+        return mondayDataResult.getCreate_item();
     }
 
     private String getMondayData(String querySdl, HttpMethod method) {

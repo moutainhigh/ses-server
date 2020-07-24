@@ -1,21 +1,18 @@
 package com.redescooter.ses.web.ros;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
+import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
-import com.redescooter.ses.web.ros.vo.monday.MondayBoardResult;
-import com.redescooter.ses.web.ros.vo.monday.MondayDataResult;
-import com.redescooter.ses.web.ros.vo.monday.MondayGeneralResult;
+import com.redescooter.ses.web.ros.vo.monday.MondayCreateResult;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.dubbo.config.annotation.Reference;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.After;
 import org.junit.Before;
@@ -24,19 +21,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -189,11 +177,30 @@ public class SesWebRosApplicationTests {
 
     @Autowired
     private MondayService mondayService;
+
+    @Autowired
+    private OpeCustomerInquiryService opeCustomerInquiryService;
+
     @Test
-    public void sendRequestByRestTemplateGet(){
+    public void sendRequestByRestTemplateGet() {
 
-        System.out.println(mondayService.queryGroup("641082556"));
+        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getById(1016964L);
+        if (opeCustomerInquiry == null) {
+            System.out.println("------------------------------------------------询价单不存在-----------------");
+        }
 
+        MondayCreateResult mondayCreateResult = mondayService.websiteContantUs(opeCustomerInquiry);
+
+        System.out.println(mondayCreateResult.getId()+"--------------------------------插入成功--------------------");
+
+    }
+
+    @Test
+    public void dateTest(){
+        Date date= new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat(DateUtil.DEFAULT_TIME_FORMAT);
+        String datestr=sdf.format(date);// format  为格式化方法
+        System.out.println(datestr);
     }
 
 }

@@ -44,6 +44,10 @@ public class DateUtil {
      */
     public static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     /**
+     * 缺省的日期显示格式： HH:mm:ss
+     */
+    public static final String DEFAULT_TIME_FORMAT="HH:mm:ss";
+    /**
      * 缺省的日期时间显示格式：yyyy-MM-dd HH:mm:ss:sss
      */
     public static final String YMDHMSS = "yyyy-MM-dd HH:mm:ss:sss";
@@ -882,7 +886,11 @@ public class DateUtil {
         return new Date(timeStamp);
     }
 
+
     public static void main(String[] args) {
-        System.out.println(timeStampToDate(2553436800000L,UTC));
+        Date date= new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+        String datestr=sdf.format(date);// format  为格式化方法
+        System.out.println(datestr);
     }
 }

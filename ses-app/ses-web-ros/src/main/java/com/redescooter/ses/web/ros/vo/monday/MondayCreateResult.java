@@ -19,5 +19,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class MondayCreateResult {
+
     private String id;
 }

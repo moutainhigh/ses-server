@@ -36,5 +36,9 @@ public class MondayBoardResult{
 
     private String description;
 
+    //分组名称
     private List<MondayGroupResult> groups;
+
+    //列名集合
+    private List<MondayColumnResult> columns;
 }
