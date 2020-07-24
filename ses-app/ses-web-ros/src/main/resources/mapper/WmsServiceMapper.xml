@@ -323,7 +323,7 @@
       s.email as email,
       s.tel_number as phone,
     s.country_code as telCountryCode,
-    #{enter.classType} as documentType
+    #{enter.classType} as classType
   FROM
     ope_allocate e
     JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
@@ -341,7 +341,7 @@
       s.email  as email,
       s.tel_number as phone,
     s.country_code as telCountryCode,
-    #{enter.classType} as documentType
+    #{enter.classType} as classType
     FROM
       ope_assembly_order r
       JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
@@ -357,7 +357,7 @@
       s.parts_type AS productType,
       s.parts_qty AS qty,
       e.price AS price,
-    #{enter.classType} as documentType
+    #{enter.classType} as classType
     FROM
       ope_allocate_b b
       JOIN ope_parts s ON b.part_id = s.id and s.dr = 0
@@ -374,7 +374,7 @@
       s.product_type AS productType,
       s.sum_parts_qty AS qty,
       e.sales_price as price,
-    #{enter.classType} as documentType
+    #{enter.classType} as classType
   FROM
     ope_assembly_b_order b
     JOIN ope_parts_product s ON b.product_id = s.id and s.dr = 0
