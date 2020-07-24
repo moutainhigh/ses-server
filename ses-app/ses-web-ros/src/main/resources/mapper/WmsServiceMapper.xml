@@ -322,6 +322,7 @@
       s.last_name as consigneelastName,
       s.email as email,
       s.tel_number as phone,
+    s.country_code as telCountryCode,
     #{enter.documentType} as documentType
   FROM
     ope_allocate e
@@ -339,7 +340,8 @@
       s.last_name as consigneelastName,
       s.email  as email,
       s.tel_number as phone,
-        #{enter.documentType} as documentType
+    s.country_code as telCountryCode,
+    #{enter.documentType} as documentType
     FROM
       ope_assembly_order r
       JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
