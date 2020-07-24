@@ -38,4 +38,7 @@ public class WmsProductListResult extends GeneralResult {
   @ApiModelProperty(value = "英文名称")
   private String enName;
 
+  @ApiModelProperty(value = "单据类型")
+  private String documentType;
+
 }

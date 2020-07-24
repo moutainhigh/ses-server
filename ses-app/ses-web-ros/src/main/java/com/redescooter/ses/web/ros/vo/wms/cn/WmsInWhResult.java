@@ -31,15 +31,23 @@ public class WmsInWhResult extends GeneralResult {
   @ApiModelProperty(value = "id")
   private  String id;
 
-  @ApiModelProperty(value = "产品/部品类型")
-  private String productType;
-
   @ApiModelProperty(value = "质检数")
   private Integer qty;
 
-  @ApiModelProperty(value = "收货人")
-  private String consignee;
+  @ApiModelProperty(value = "总数量")
+  private Integer sumTotal;
 
+  @ApiModelProperty(value = "收货人")
+  private String consigneeId;
+
+  @ApiModelProperty(value = "单据类型")
+  private String documentType;
+
+  @ApiModelProperty(value = "收货人姓")
+    private String consigneelastName;
+
+  @ApiModelProperty(value = "收货人名")
+  private String consigneeFristName;
 
   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")

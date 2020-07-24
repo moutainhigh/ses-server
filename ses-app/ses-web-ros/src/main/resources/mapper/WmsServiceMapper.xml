@@ -124,7 +124,7 @@
     r.dr=0
     and r.`status` = 3
     <if test="enter.startTime != null and enter.endTime != null">
-      and e.updated_time between #{enter.startTime} and #{enter.endTime}
+      and r.updated_time between #{enter.startTime} and #{enter.endTime}
     </if>
     <if test="enter.keyword!=''and enter.keyword!=null">
       and (
@@ -210,8 +210,10 @@
     e.id as id,
     e.allocate_num as allocateNumber,
     e.count as qty,
-    s.full_name as consignee,
-    '2' as productType,
+    s.id as consigneeId,
+    s.first_name as consigneeFristName,
+    s.last_name as consigneelastName,
+    '2' as documentType,
     e.updated_time as inWhTime
     FROM
     ope_allocate e
@@ -222,8 +224,10 @@
     r.id as id,
     r.assembly_number as allocateNumber,
     r.in_wait_wh_total as qty,
-    s.full_name as consignee,
-    '3' as productType,
+    s.id as consigneeId,
+    s.first_name as consigneeFristName,
+    s.last_name as consigneelastName,
+    '3' as documentType,
     r.updated_time as inWhTime
     FROM
     ope_assembly_order r
@@ -250,7 +254,7 @@
     r.dr=0
     and r.`status` = 5
     <if test="enter.startTime != null and enter.endTime != null">
-      and e.created_time between #{enter.startTime} and #{enter.endTime}
+      and r.created_time between #{enter.startTime} and #{enter.endTime}
     </if>
     <if test="enter.keyword!=''and enter.keyword!=null">
       and (
@@ -282,8 +286,10 @@
     e.allocate_num as allocateNumber,
     e.count-e.pending_storage_total as qty,
     e.count as sumTotal,
-    s.full_name as consignee,
-    '2' as productType,
+    s.id as consigneeId,
+    s.first_name as consigneeFristName,
+    s.last_name as consigneelastName,
+    '2' as documentType,
     e.created_time as inWhTime
     FROM
     ope_allocate e
@@ -295,8 +301,10 @@
     r.assembly_number as allocateNumber,
     r.total_qty-r.in_wait_wh_total as qty,
     r.total_qty as sumTotal,
-    s.full_name as consignee,
-    '3' as productType,
+    s.id as consigneeId,
+    s.first_name as consigneeFristName,
+    s.last_name as consigneelastName,
+    '3' as documentType,
     r.created_time as inWhTime
     FROM
     ope_assembly_order r
@@ -308,10 +316,13 @@
     SELECT
       e.id as id,
       e.allocate_num as allocateNumber,
-      e.STATUS as status,
-      s.full_name as consignee,
+      e.STATUS as `status`,
+      s.id as consigneeId,
+      s.first_name as consigneeFristName,
+      s.last_name as consigneelastName,
       s.email as email,
-      s.tel_number as phone
+      s.tel_number as phone,
+    #{enter.documentType} as documentType
   FROM
     ope_allocate e
     JOIN ope_sys_user_profile s ON e.consignee_id = s.id and s.dr = 0
@@ -322,10 +333,13 @@
     SELECT
       r.id as id,
       r.assembly_number as allocateNumber,
-      r.status as status,
-      s.full_name as consignee,
+      r.STATUS as `status`,
+      s.id as consigneeId,
+      s.first_name as consigneeFristName,
+      s.last_name as consigneelastName,
       s.email  as email,
-      s.tel_number as phone
+      s.tel_number as phone,
+        #{enter.documentType} as documentType
     FROM
       ope_assembly_order r
       JOIN ope_sys_user_profile s ON r.consignee_id = s.id and s.dr = 0
@@ -340,7 +354,8 @@
       s.parts_number AS productNumber,
       s.parts_type AS productType,
       s.parts_qty AS qty,
-      e.price AS price
+      e.price AS price,
+    #{enter.documentType} as documentType
     FROM
       ope_allocate_b b
       JOIN ope_parts s ON b.part_id = s.id and s.dr = 0
@@ -356,7 +371,8 @@
       s.product_number AS productNumber,
       s.product_type AS productType,
       s.sum_parts_qty AS qty,
-      e.sales_price as price
+      e.sales_price as price,
+    #{enter.documentType} as documentType
   FROM
     ope_assembly_b_order b
     JOIN ope_parts_product s ON b.product_id = s.id and s.dr = 0

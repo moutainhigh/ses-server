@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.wms.cn;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,11 +28,23 @@ public class WmsInWhDetailsResult extends GeneralResult {
   @ApiModelProperty(value = "调拨/组装编号")
   private String allocateNumber;
 
-  @ApiModelProperty(value = "收获人")
-  private String consignee;
+  @ApiModelProperty(value = "电话国家代码")
+  private String telCountryCode;
+
+  @ApiModelProperty(value = "收货人")
+  private String consigneeId;
+
+  @ApiModelProperty(value = "收货人姓")
+  private String consigneelastName;
+
+  @ApiModelProperty(value = "收货人名")
+  private String consigneeFristName;
 
   @ApiModelProperty(value = "状态")
   private String status;
+
+  @ApiModelProperty(value = "单据类型")
+  private String documentType;
 
   @ApiModelProperty(value = "手机号码")
   private String phone;

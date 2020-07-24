@@ -85,7 +85,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      */
     @Override
     public WmsInWhDetailsResult details(WmsWhInDetailsEnter enter) {
-        if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getProductType())) {
+        if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getDocumentType())) {
             return wmsServiceMapper.allocateDetails(enter);
         } else {
             return wmsServiceMapper.assemblyDetails(enter);
@@ -100,7 +100,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      */
     @Override
     public List<WmsProductListResult> productList(WmsWhInDetailsEnter enter) {
-        if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getProductType())) {
+        if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getDocumentType())) {
             return wmsServiceMapper.partList(enter);
         } else {
             return wmsServiceMapper.productList(enter);
