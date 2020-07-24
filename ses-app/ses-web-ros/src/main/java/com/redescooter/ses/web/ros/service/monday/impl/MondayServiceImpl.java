@@ -71,21 +71,21 @@ public class MondayServiceImpl implements MondayService {
         //查看 板子是否存在
         List<MondayBoardResult> mondayBoardResults = queryBoard();
         if (CollectionUtil.isEmpty(mondayBoardResults)) {
-            //创建
+            //todo 创建板子
         }
         MondayBoardResult mondayBoardResult = mondayBoardResults.stream().filter(item -> StringUtils.equals(item.getName(), mondayConfig.getContactUsBoardName())).findFirst().orElse(null);
         if (mondayBoardResult == null) {
-            //创建
+            //todo 创建板子
         }
 
         //数据插入
         List<MondayGroupResult> mondayGroupResults = queryGroupByBoardId(mondayBoardResult.getId());
         if (CollectionUtils.isEmpty(mondayGroupResults)) {
-            //创建
+            //todo 创建分组
         }
         MondayGroupResult mondayGroupResult = mondayGroupResults.stream().filter(item -> StringUtils.equals(item.getTitle(), mondayConfig.getContactUsGroupName())).findFirst().orElse(null);
         if (mondayGroupResult == null) {
-            //创建
+            //todo 创建分组
         }
 
         //数据插入
@@ -109,21 +109,21 @@ public class MondayServiceImpl implements MondayService {
         //查看 板子是否存在
         List<MondayBoardResult> mondayBoardResults = queryBoard();
         if (CollectionUtil.isEmpty(mondayBoardResults)) {
-            //创建
+            //todo 创建板子
         }
         MondayBoardResult mondayBoardResult = mondayBoardResults.stream().filter(item -> StringUtils.equals(item.getName(), mondayConfig.getOrderFormBoardName())).findFirst().orElse(null);
         if (mondayBoardResult == null) {
-            //创建
+            //todo 创建板子
         }
 
         //数据插入
         List<MondayGroupResult> mondayGroupResults = queryGroupByBoardId(mondayBoardResult.getId());
         if (CollectionUtils.isEmpty(mondayGroupResults)) {
-            //创建
+            //todo 创建分组
         }
         MondayGroupResult mondayGroupResult = mondayGroupResults.stream().filter(item -> StringUtils.equals(item.getTitle(), mondayConfig.getOrderFormGroupName())).findFirst().orElse(null);
         if (mondayGroupResult == null) {
-            //创建
+            //todo 创建分组
         }
 
         //数据插入
@@ -140,9 +140,9 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public List<MondayBoardResult> queryBoard() {
 
-        System.out.println("--------------------------" + MondayQueryGqlConstant.QUERY_BOARD + "--------------------------------");
+        log.info("--------------------------" + MondayQueryGqlConstant.QUERY_BOARD + "--------------------------------");
         String mondayJson = getMondayData(MondayQueryGqlConstant.QUERY_BOARD, HttpMethod.POST);
-        System.out.println("---------------{" + mondayJson + "}---------");
+        log.info("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         MondayDataResult mondayDataResult = JSON.parseObject(mondayGeneralResult.getData(), MondayDataResult.class);
         return mondayDataResult.getBoards();
@@ -161,10 +161,10 @@ public class MondayServiceImpl implements MondayService {
         //替换语句中的id 参数
         String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayQueryGqlConstant.BOARD_PARAMETER, boardId);
 
-        System.out.println("--------------------------" + graphGql + "--------------------------------");
+        log.info("--------------------------" + graphGql + "--------------------------------");
 
         String mondayJson = getMondayData(graphGql, HttpMethod.POST);
-        System.out.println("---------------{" + mondayJson + "}---------");
+        log.info("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         MondayDataResult mondayDataResult = JSON.parseObject(mondayGeneralResult.getData(), MondayDataResult.class);
         //暂时返回0表
@@ -221,11 +221,11 @@ public class MondayServiceImpl implements MondayService {
                 .replace(MondayQueryGqlConstant.CREATE_ITEM_NAME, enter.getItemName().toString())
                 .replace(MondayQueryGqlConstant.CREATE_COLUMN_VALUES, enter.getColumnValues());
 
-        System.out.println("--------------------------" + graphGql + "--------------------------------");
+        log.info("--------------------------" + graphGql + "--------------------------------");
 
 
         String mondayJson = getMondayData(graphGql, HttpMethod.POST);
-        System.out.println("---------------{" + mondayJson + "}---------");
+        log.info("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         MondayDataResult mondayDataResult = JSON.parseObject(mondayGeneralResult.getData(), MondayDataResult.class);
 
@@ -308,7 +308,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(MondayContantUsColumnEnums.VOTRE_MESSAGE.getId(), enter.getRemarks());
         //转json 并转义
         String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
-        System.out.println("----------------------" + columnValues + "-------------------------");
+        log.info("----------------------" + columnValues + "-------------------------");
         return columnValues;
     }
 
@@ -375,7 +375,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(MondayBookOrderColumnEnums.COULEUR.getId(), ProductColorEnums.getProductColorEnumsByValue(opePartsProduct.getColor()).getMessage());
 
         String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
-        System.out.println("----------------------" + columnValues + "-------------------------");
+        log.info("----------------------" + columnValues + "-------------------------");
         return columnValues;
     }
 }
