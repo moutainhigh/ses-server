@@ -33,6 +33,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
+import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
@@ -100,6 +101,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private OpeSysUserService opeSysUserService;
+
+    @Autowired
+    private MondayService mondayService;
 
     @Value("${Request.privateKey}")
     private String privatekey;
@@ -257,6 +261,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //主订单保存
         opeCustomerInquiry.setSource("2");
         opeCustomerInquiryService.save(opeCustomerInquiry);
+
+        //Monday 同步数据
+        mondayService.websiteBookOrder(opeCustomerInquiry);
         return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
 

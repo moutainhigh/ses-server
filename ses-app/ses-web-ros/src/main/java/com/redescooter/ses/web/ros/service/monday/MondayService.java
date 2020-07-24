@@ -21,8 +21,20 @@ import java.util.List;
  */
 public interface MondayService {
 
-
+    /**
+     * 官网联系我们
+     * @param enter
+     * @return
+     */
     MondayCreateResult websiteContantUs(OpeCustomerInquiry enter);
+
+    /**
+     * 官网预订单
+     * @param enter
+     * @return
+     */
+    MondayCreateResult websiteBookOrder(OpeCustomerInquiry enter);
+
 
     /**
      * 查询板子

@@ -3,14 +3,22 @@ package com.redescooter.ses.web.ros.service.monday.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
+import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
+import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.config.MondayConfig;
 import com.redescooter.ses.web.ros.constant.MondayQueryGqlConstant;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpePartsProduct;
+import com.redescooter.ses.web.ros.enums.MondayBookOrderColumnEnums;
 import com.redescooter.ses.web.ros.enums.MondayColumnDateEnums;
-import com.redescooter.ses.web.ros.enums.MondayColumnEnums;
+import com.redescooter.ses.web.ros.enums.MondayContantUsColumnEnums;
 import com.redescooter.ses.web.ros.enums.MondayColumnPhoneEnums;
 import com.redescooter.ses.web.ros.enums.MondayCountryShortNameEnums;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.vo.monday.MondayBoardResult;
 import com.redescooter.ses.web.ros.vo.monday.MondayColumnResult;
@@ -35,6 +43,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,11 +62,14 @@ public class MondayServiceImpl implements MondayService {
     @Autowired
     private MondayConfig mondayConfig;
 
+    @Autowired
+    private OpePartsProductService opePartsProductService;
+
     @Override
     public MondayCreateResult websiteContantUs(OpeCustomerInquiry enter) {
 
         //查看 板子是否存在
-       List<MondayBoardResult> mondayBoardResults = queryBoard();
+        List<MondayBoardResult> mondayBoardResults = queryBoard();
         if (CollectionUtil.isEmpty(mondayBoardResults)) {
             //创建
         }
@@ -75,71 +87,60 @@ public class MondayServiceImpl implements MondayService {
         if (mondayGroupResult == null) {
             //创建
         }
-        //查询tag 标签
-        List<MondayTagResult> mondayTagResults = queryTagList();
-        Integer tagId = null;
-        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(mondayTagResults)) {
-            tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2())).findFirst().map(MondayTagResult::getId).orElse(null);
-        }
-
-
-        int IdCp=0;
-        for (MondayTagResult item : mondayTagResults) {
-            if (StringUtils.equals(item.getName(), enter.getDef2())) {
-                IdCp = item.getId();
-                break;
-            }
-        }
-
-        Map<String,String> phoneMap=new HashMap<>();
-
-        phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(),enter.getTelephone());
-        phoneMap.put(MondayColumnPhoneEnums.phone.getCountryShortName(), MondayCountryShortNameEnums.FRANCE.getValue());
-
-        Map<String,String> dateMap=new HashMap<>();
-        dateMap.put(MondayColumnDateEnums.DATE.getTitle(), DateUtil.getTimeStr(enter.getCreatedTime(),DateUtil.DEFAULT_DATE_FORMAT));
-        dateMap.put(MondayColumnDateEnums.TIME.getTitle(), DateUtil.getTimeStr(enter.getCreatedTime(),DateUtil.DEFAULT_TIME_FORMAT));
-
-
-
-        Map<String, Object>  columnValue= new HashMap<>();
-        columnValue.put(MondayColumnEnums.ID_CP.getId(),IdCp);
-        columnValue.put(MondayColumnEnums.RESP.getId(),null);
-        //时间
-        columnValue.put(MondayColumnEnums.FIRST_CONTACT.getId(),dateMap);
-        columnValue.put(MondayColumnEnums.LAST_CONTACTED.getId(),null);
-        columnValue.put(MondayColumnEnums.NEXT_CONTACT.getId(),null);
-        columnValue.put(MondayColumnEnums.TYPE.getId(),null);
-        columnValue.put(MondayColumnEnums.CONVERSION.getId(),null);
-        columnValue.put(MondayColumnEnums.PRENOM.getId(),enter.getFirstName());
-        columnValue.put(MondayColumnEnums.NOM.getId(),enter.getLastName());
-        //电话
-        columnValue.put(MondayColumnEnums.TEL.getId(),phoneMap);
-        columnValue.put(MondayColumnEnums.EMAIL.getId(),enter.getEmail());
-        columnValue.put(MondayColumnEnums.VILLE.getId(),null);
-        columnValue.put(MondayColumnEnums.CODE_POSTAL.getId(),enter.getDef2());
-        columnValue.put(MondayColumnEnums.VOTRE_MESSAGE.getId(),enter.getRemarks());
-
-        String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
-        System.out.println("----------------------"+columnValues+"-------------------------");
 
         //数据插入
-//        MondayMutationDataEnter build = MondayMutationDataEnter
-//                .builder()
-//                .boardId(mondayBoardResult.getId())
-//                .groupId(mondayGroupResult.getId())
-//                .itemName(new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
-//                .columnValues()
-//                .build();
-//        return mutationData(build);
-        return null;
+        return mutationData(MondayMutationDataEnter
+                .builder()
+                .boardId(mondayBoardResult.getId())
+                .groupId(mondayGroupResult.getId())
+                .itemName(new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
+                .columnValues(buildContantUsSingle(enter))
+                .build());
+    }
+
+    /**
+     * 官网预订单
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public MondayCreateResult websiteBookOrder(OpeCustomerInquiry enter) {
+        //查看 板子是否存在
+        List<MondayBoardResult> mondayBoardResults = queryBoard();
+        if (CollectionUtil.isEmpty(mondayBoardResults)) {
+            //创建
+        }
+        MondayBoardResult mondayBoardResult = mondayBoardResults.stream().filter(item -> StringUtils.equals(item.getName(), mondayConfig.getOrderFormBoardName())).findFirst().orElse(null);
+        if (mondayBoardResult == null) {
+            //创建
+        }
+
+        //数据插入
+        List<MondayGroupResult> mondayGroupResults = queryGroupByBoardId(mondayBoardResult.getId());
+        if (CollectionUtils.isEmpty(mondayGroupResults)) {
+            //创建
+        }
+        MondayGroupResult mondayGroupResult = mondayGroupResults.stream().filter(item -> StringUtils.equals(item.getTitle(), mondayConfig.getOrderFormGroupName())).findFirst().orElse(null);
+        if (mondayGroupResult == null) {
+            //创建
+        }
+
+        //数据插入
+        return mutationData(MondayMutationDataEnter
+                .builder()
+                .boardId(mondayBoardResult.getId())
+                .groupId(mondayGroupResult.getId())
+                .itemName(new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
+                .columnValues(buildBookOrderSingle(enter))
+                .build());
     }
 
     @Transactional
     @Override
     public List<MondayBoardResult> queryBoard() {
 
-        System.out.println("--------------------------"+ MondayQueryGqlConstant.QUERY_BOARD+"--------------------------------");
+        System.out.println("--------------------------" + MondayQueryGqlConstant.QUERY_BOARD + "--------------------------------");
         String mondayJson = getMondayData(MondayQueryGqlConstant.QUERY_BOARD, HttpMethod.POST);
         System.out.println("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
@@ -160,7 +161,7 @@ public class MondayServiceImpl implements MondayService {
         //替换语句中的id 参数
         String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayQueryGqlConstant.BOARD_PARAMETER, boardId);
 
-        System.out.println("--------------------------"+graphGql+"--------------------------------");
+        System.out.println("--------------------------" + graphGql + "--------------------------------");
 
         String mondayJson = getMondayData(graphGql, HttpMethod.POST);
         System.out.println("---------------{" + mondayJson + "}---------");
@@ -178,7 +179,7 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public List<MondayTagResult> queryTagList() {
 
-        log.info("--------------------------"+ MondayQueryGqlConstant.QUERY_TAGS+"--------------------------------");
+        log.info("--------------------------" + MondayQueryGqlConstant.QUERY_TAGS + "--------------------------------");
 
         String mondayJson = getMondayData(MondayQueryGqlConstant.QUERY_TAGS, HttpMethod.POST);
         log.info("---------------{" + mondayJson + "}---------");
@@ -197,7 +198,7 @@ public class MondayServiceImpl implements MondayService {
         String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayQueryGqlConstant.QUERY_COLUMN, boardId);
 
 
-        log.info("--------------------------"+ graphGql+"--------------------------------");
+        log.info("--------------------------" + graphGql + "--------------------------------");
         String mondayJson = getMondayData(graphGql, HttpMethod.POST);
         log.info("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
@@ -220,7 +221,7 @@ public class MondayServiceImpl implements MondayService {
                 .replace(MondayQueryGqlConstant.CREATE_ITEM_NAME, enter.getItemName().toString())
                 .replace(MondayQueryGqlConstant.CREATE_COLUMN_VALUES, enter.getColumnValues());
 
-        System.out.println("--------------------------"+graphGql+"--------------------------------");
+        System.out.println("--------------------------" + graphGql + "--------------------------------");
 
 
         String mondayJson = getMondayData(graphGql, HttpMethod.POST);
@@ -257,4 +258,124 @@ public class MondayServiceImpl implements MondayService {
         return response.getBody();
     }
 
+    /**
+     * 联系我们 数据封装
+     *
+     * @param enter
+     * @return
+     */
+    private String buildContantUsSingle(OpeCustomerInquiry enter) {
+
+        Map<String,Object> tagList = new HashMap();
+        Integer tagId = null;
+        if (StringUtils.isNotEmpty(enter.getDef2())){
+            //查询tag 标签
+            List<MondayTagResult> mondayTagResults = queryTagList();
+            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(mondayTagResults)) {
+                tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2())).findFirst().map(MondayTagResult::getId).orElse(null);
+            }
+            tagList.put("tag_ids",Lists.newArrayList(tagId));
+        }
+
+        //电话集合
+        Map<String, String> phoneMap = new HashMap<>();
+        if (StringUtils.isNotEmpty(enter.getTelephone())){
+            phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(), org.springframework.util.StringUtils.isEmpty( enter.getTelephone())==true? null:enter.getTelephone());
+            phoneMap.put(MondayColumnPhoneEnums.phone.getCountryShortName(), MondayCountryShortNameEnums.FRANCE.getValue());
+        }
+
+        //时间集合
+        Map<String, String> dateMap = new HashMap<>();
+        dateMap.put(MondayColumnDateEnums.DATE.getTitle(), DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_DATE_FORMAT));
+        dateMap.put(MondayColumnDateEnums.TIME.getTitle(), DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
+
+        Map<String, Object> columnValue = new HashMap<>();
+        columnValue.put(MondayContantUsColumnEnums.ID_CP.getId(), CollectionUtils.isEmpty(tagList)==true?null:tagList);
+        columnValue.put(MondayContantUsColumnEnums.RESP.getId(), null);
+        //时间
+        columnValue.put(MondayContantUsColumnEnums.FIRST_CONTACT.getId(), dateMap);
+        columnValue.put(MondayContantUsColumnEnums.LAST_CONTACTED.getId(), null);
+        columnValue.put(MondayContantUsColumnEnums.NEXT_CONTACT.getId(), null);
+        columnValue.put(MondayContantUsColumnEnums.TYPE.getId(), null);
+        columnValue.put(MondayContantUsColumnEnums.CONVERSION.getId(), null);
+        columnValue.put(MondayContantUsColumnEnums.PRENOM.getId(), enter.getFirstName());
+        columnValue.put(MondayContantUsColumnEnums.NOM.getId(), enter.getLastName());
+        //电话
+        columnValue.put(MondayContantUsColumnEnums.TEL.getId(), CollectionUtils.isEmpty(phoneMap)==true?null:phoneMap);
+        columnValue.put(MondayContantUsColumnEnums.EMAIL.getId(), enter.getEmail());
+        columnValue.put(MondayContantUsColumnEnums.VILLE.getId(), null);
+        columnValue.put(MondayContantUsColumnEnums.CODE_POSTAL.getId(), enter.getDef2());
+        columnValue.put(MondayContantUsColumnEnums.VOTRE_MESSAGE.getId(), enter.getRemarks());
+        //转json 并转义
+        String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
+        System.out.println("----------------------" + columnValues + "-------------------------");
+        return columnValues;
+    }
+
+
+    /**
+     * 联系我们 数据封装
+     *
+     * @param enter
+     * @return
+     */
+    private String buildBookOrderSingle(OpeCustomerInquiry enter) {
+
+        //查询产品信息
+        OpePartsProduct opePartsProduct = opePartsProductService.getById(enter.getProductId());
+        if (opePartsProduct == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+        Map<String,Object> tagList = new HashMap();
+        Integer tagId = null;
+       if (StringUtils.isNotEmpty(enter.getDef2())){
+           //查询tag 标签
+           List<MondayTagResult> mondayTagResults = queryTagList();
+           if (org.apache.commons.collections.CollectionUtils.isNotEmpty(mondayTagResults)) {
+               tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2())).findFirst().map(MondayTagResult::getId).orElse(null);
+           }
+           tagList.put("tag_ids",Lists.newArrayList(tagId));
+       }
+
+        //电话集合
+        Map<String, String> phoneMap = new HashMap<>();
+
+       if (StringUtils.isNotEmpty(enter.getTelephone())){
+           phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(), org.springframework.util.StringUtils.isEmpty( enter.getTelephone())==true? null:enter.getTelephone());
+           phoneMap.put(MondayColumnPhoneEnums.phone.getCountryShortName(), MondayCountryShortNameEnums.FRANCE.getValue());
+       }
+
+
+        //时间集合
+        Map<String, String> dateMap = new HashMap<>();
+        dateMap.put(MondayColumnDateEnums.DATE.getTitle(), DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_DATE_FORMAT));
+        dateMap.put(MondayColumnDateEnums.TIME.getTitle(), DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
+
+        Map<String, Object> columnValue = new HashMap<>();
+        columnValue.put(MondayBookOrderColumnEnums.ID_CP.getId(), CollectionUtils.isEmpty(tagList)==true?null:tagList);
+        columnValue.put(MondayBookOrderColumnEnums.RESP.getId(), null);
+        //时间
+        columnValue.put(MondayBookOrderColumnEnums.FIRST_CONTACT.getId(), dateMap);
+        columnValue.put(MondayBookOrderColumnEnums.LAST_CONTACTED.getId(), null);
+        columnValue.put(MondayBookOrderColumnEnums.NEXT_CONTACT.getId(), null);
+        columnValue.put(MondayBookOrderColumnEnums.TYPE.getId(), null);
+        columnValue.put(MondayBookOrderColumnEnums.CONVERSION.getId(), null);
+        columnValue.put(MondayBookOrderColumnEnums.PRENOM.getId(), enter.getFirstName());
+        columnValue.put(MondayBookOrderColumnEnums.NOM.getId(), enter.getLastName());
+        //电话
+        columnValue.put(MondayBookOrderColumnEnums.TEL.getId(), CollectionUtils.isEmpty(phoneMap)==true?null:phoneMap);
+        columnValue.put(MondayBookOrderColumnEnums.EMAIL.getId(), enter.getEmail());
+        columnValue.put(MondayBookOrderColumnEnums.VILLE.getId(), null);
+        columnValue.put(MondayBookOrderColumnEnums.CODE_POSTAL.getId(), enter.getDef2());
+        columnValue.put(MondayBookOrderColumnEnums.VOTRE_MESSAGE.getId(), enter.getRemarks());
+
+        columnValue.put(MondayBookOrderColumnEnums.NB_SCOOTERS.getId(), enter.getScooterQuantity());
+
+        columnValue.put(MondayBookOrderColumnEnums.MODEL.getId(), ProductModelEnums.getProductModelEnumsByValue(opePartsProduct.getModel()).getMessage());
+        columnValue.put(MondayBookOrderColumnEnums.COULEUR.getId(), ProductColorEnums.getProductColorEnumsByValue(opePartsProduct.getColor()).getMessage());
+
+        String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
+        System.out.println("----------------------" + columnValues + "-------------------------");
+        return columnValues;
+    }
 }

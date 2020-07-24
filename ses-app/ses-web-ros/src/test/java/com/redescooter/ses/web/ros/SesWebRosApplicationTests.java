@@ -184,12 +184,12 @@ public class SesWebRosApplicationTests {
     @Test
     public void sendRequestByRestTemplateGet() {
 
-        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getById(1016964L);
+        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getById(1023406L);
         if (opeCustomerInquiry == null) {
             System.out.println("------------------------------------------------询价单不存在-----------------");
         }
 
-        MondayCreateResult mondayCreateResult = mondayService.websiteContantUs(opeCustomerInquiry);
+        MondayCreateResult mondayCreateResult = mondayService.websiteBookOrder(opeCustomerInquiry);
 
         System.out.println(mondayCreateResult.getId()+"--------------------------------插入成功--------------------");
 
