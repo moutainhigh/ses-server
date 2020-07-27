@@ -92,7 +92,7 @@ public class ExcelReadTest {
             @Override
             public int compare(CityExcelDate o1, CityExcelDate o2) {
                 // 字符串,则按照asicc码升序排列
-                return o1.getId().compareTo(o2.getId());
+                return o1.getCityName().compareTo(o2.getCityName());
             }
         });
         set.addAll(citys);
