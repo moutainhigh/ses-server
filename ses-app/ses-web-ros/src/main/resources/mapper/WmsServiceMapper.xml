@@ -27,6 +27,13 @@
       b.product_number like concat ("%",#{enter.keyword},"%")
       )
     </if>
+    GROUP BY
+    id,
+    productType,
+    cnName,
+    enName,
+    productNumber,
+    price
   </sql>
   <sql id="where_wmsPartsList">
     WHERE
@@ -54,6 +61,76 @@
       p.parts_number like concat ("%",#{enter.keyword},"%")
       )
     </if>
+    GROUP BY
+    id,
+    productType,
+    cnName,
+    enName,
+    productNumber,
+    price
+  </sql>
+
+  <sql id="where_outWhProductList">
+    WHERE
+    orb.dr=0
+    and outwhOrder.`status`=#{status}
+    AND orb.product_type in
+    <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
+      <choose>
+        <when test="typeItem==4 or typeItem==5">
+          #{typeItem}
+        </when>
+      </choose>
+    </foreach>
+    AND sheet.currency_unit = #{amountType}
+    <if test="enter.stockType!=''and enter.stockType!=null">
+      and orb.product_type=#{enter.stockType}
+    </if>
+    <if test="enter.keyword!=''and enter.keyword!=null">
+      and (
+      part.cn_name like concat ("%",#{enter.keyword},"%") or
+      part.en_name like concat ("%",#{enter.keyword},"%") or
+      part.product_number like concat ("%",#{enter.keyword},"%")
+      )
+    </if>
+    GROUP BY
+    id,
+    productType,
+    cnName,
+    enName,
+    productNumber,
+    price
+  </sql>
+  <sql id="where_outWhPartList">
+    WHERE
+    orb.dr=0
+    and outwhOrder.`status`=#{status}
+    AND orb.product_type in
+    <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
+      <choose>
+        <when test="typeItem==1 or typeItem==2 or typeItem==3">
+          #{typeItem}
+        </when>
+      </choose>
+    </foreach>
+    AND sheet.currency_unit = #{amountType}
+    <if test="enter.stockType!=''and enter.stockType!=null">
+      and orb.product_type=#{enter.stockType}
+    </if>
+    <if test="enter.keyword!=''and enter.keyword!=null">
+      and (
+      part.cn_name like concat ("%",#{enter.keyword},"%") or
+      part.en_name like concat ("%",#{enter.keyword},"%") or
+      part.parts_number like concat ("%",#{enter.keyword},"%")
+      )
+    </if>
+    GROUP BY
+    id,
+    productType,
+    cnName,
+    enName,
+    productNumber,
+    price
   </sql>
   <sql id="where_wmsStoredStock">
     WHERE
@@ -79,6 +156,13 @@
       b.product_number like concat ("%",#{enter.keyword},"%")
       )
     </if>
+    GROUP BY
+    id,
+    productType,
+    cnName,
+    enName,
+    productNumber,
+    price
   </sql>
   <sql id="where_wmsBePredictedStock">
     WHERE
@@ -104,6 +188,13 @@
       p.parts_number like concat ("%",#{enter.keyword},"%")
       )
     </if>
+    GROUP BY
+    id,
+    productType,
+    cnName,
+    enName,
+    productNumber,
+    price
   </sql>
   <sql id="where_inHw_allocate">
     WHERE
@@ -136,9 +227,15 @@
   <select
     id="wmsUsableStockCount" resultType="int">
     SELECT
-    sum(aa.count) from (
+    count(*) from (
     select
-    count(*) AS count
+    s.id as id,
+    b.cn_name as cnName,
+    b.en_name as enName,
+    b.product_number as productNumber,
+    sum(s.int_total) as intTotal,
+    s.materiel_product_type as productType,
+    e.sales_price as price
     FROM
     ope_stock s
     JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
@@ -146,7 +243,13 @@
     <include refid="where_wmsProductList"/>
     UNION
     SELECT
-    count(*) AS count
+    s.id as id,
+    p.cn_name as cnName,
+    p.en_name as enName,
+    p.parts_number as productNumber,
+    sum(s.int_total) as intTotal,
+    s.materiel_product_type as productType,
+    e.price as price
     FROM
     ope_stock s
     JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
@@ -162,7 +265,7 @@
     b.cn_name as cnName,
     b.en_name as enName,
     b.product_number as productNumber,
-    s.int_total as intTotal,
+    sum(s.int_total) as intTotal,
     s.materiel_product_type as productType,
     e.sales_price as price
     FROM
@@ -176,7 +279,7 @@
     p.cn_name as cnName,
     p.en_name as enName,
     p.parts_number as productNumber,
-    s.int_total as intTotal,
+    sum(s.int_total) as intTotal,
     s.materiel_product_type as productType,
     e.price as price
     FROM
@@ -438,9 +541,15 @@ FROM
   </select>
   <select id="usableStockCountByType" resultType="int">
     SELECT
-    sum(aa.count) from (
+    count(*) from (
     select
-    count(*) AS count
+    s.id as id,
+    b.cn_name as cnName,
+    b.en_name as enName,
+    b.product_number as productNumber,
+    sum(s.int_total) as intTotal,
+    s.materiel_product_type as productType,
+    e.sales_price as price
     FROM
     ope_stock s
     JOIN ope_parts_product b ON s.materiel_product_id = b.id and b.dr = 0
@@ -460,9 +569,22 @@ FROM
       </choose>
     </foreach>
     AND e.currency_unit = #{amountType}
+    GROUP BY
+    id,
+    productType,
+    cnName,
+    enName,
+    productNumber,
+    price
     UNION
     SELECT
-    count(*) AS count
+    s.id as id,
+    p.cn_name as cnName,
+    p.en_name as enName,
+    p.parts_number as productNumber,
+    sum(s.int_total) as intTotal,
+    s.materiel_product_type as productType,
+    e.price as price
     FROM
     ope_stock s
     JOIN ope_parts p ON s.materiel_product_id = p.id and p.dr = 0
@@ -482,11 +604,26 @@ FROM
       </choose>
     </foreach>
     AND e.currency_unit = #{amountType}
+    GROUP BY
+    id,
+    productType,
+    cnName,
+    enName,
+    productNumber,
+    price
     ) aa
   </select>
   <select id="wmsBePredictedStockCount" resultType="int">
     SELECT
-    count(*)
+    count(*) from (
+    SELECT
+    s.id as id,
+    p.cn_name as cnName,
+    p.en_name as enName,
+    p.parts_number as productNumber,
+    sum(s.wait_product_total) as intTotal,
+    s.materiel_product_type as productType,
+    e.price as price
     FROM
     ope_stock s
     JOIN
@@ -498,6 +635,7 @@ FROM
     ON p.id = e.parts_id
     and e.dr = 0
     <include refid="where_wmsBePredictedStock"/>
+    )bePredicted
   </select>
   <select id="wmsBePredictedStockList"
           resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
@@ -506,7 +644,7 @@ FROM
     p.cn_name as cnName,
     p.en_name as enName,
     p.parts_number as productNumber,
-    s.wait_product_total as intTotal,
+    sum(s.wait_product_total) as intTotal,
     s.materiel_product_type as productType,
     e.price as price
     FROM
@@ -524,7 +662,15 @@ FROM
   </select>
   <select id="wmsStoredStockCount" resultType="int">
     SELECT
-    count(*)
+    count(*) from (
+    SELECT
+    s.id as id,
+    b.cn_name as cnName,
+    b.en_name as enName,
+    b.product_number as productNumber,
+    sum(s.wait_stored_total ) as intTotal,
+    s.materiel_product_type as productType,
+    e.sales_price as price
     FROM
     ope_stock s
     JOIN
@@ -536,6 +682,7 @@ FROM
     ON b.id = e.parts_product_id
     and e.dr = 0
     <include refid="where_wmsStoredStock"/>
+    )storedStock
   </select>
   <select id="wmsStoredStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
     SELECT
@@ -543,7 +690,7 @@ FROM
     b.cn_name as cnName,
     b.en_name as enName,
     b.product_number as productNumber,
-    s.wait_stored_total as intTotal,
+    sum(s.wait_stored_total )  as intTotal,
     s.materiel_product_type as productType,
     e.sales_price as price
     FROM
@@ -561,7 +708,15 @@ FROM
   </select>
   <select id="wmsStoredStockCountByType" resultType="int">
     SELECT
-    count(*)
+    count(*) from (
+    SELECT
+    s.id as id,
+    b.cn_name as cnName,
+    b.en_name as enName,
+    b.product_number as productNumber,
+    sum(s.wait_stored_total ) as intTotal,
+    s.materiel_product_type as productType,
+    e.sales_price as price
     FROM
     ope_stock s
     JOIN
@@ -585,10 +740,27 @@ FROM
       </choose>
     </foreach>
     AND e.currency_unit = #{amountType}
+    GROUP BY
+    id,
+    productType,
+    cnName,
+    enName,
+    productNumber,
+    price
+    )storedStock
   </select>
   <select id="wmsBePredictedStockCountByType" resultType="int">
     SELECT
     count(*)
+    from
+    ( SELECT
+    s.id as id,
+    p.cn_name as cnName,
+    p.en_name as enName,
+    p.parts_number as productNumber,
+    sum(s.wait_product_total) as intTotal,
+    s.materiel_product_type as productType,
+    e.price as price
     FROM
     ope_stock s
     JOIN
@@ -612,72 +784,14 @@ FROM
       </choose>
     </foreach>
     AND e.currency_unit = #{amountType}
+    GROUP BY
+    id,
+    productType,
+    cnName,
+    enName,
+    productNumber,
+    price)bePredicted
   </select>
-
-  <sql id="where_outWhProductList">
-    WHERE
-    orb.dr=0
-    and outwhOrder.`status`=#{status}
-    AND orb.product_type in
-    <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
-      <choose>
-        <when test="typeItem==4 or typeItem==5">
-          #{typeItem}
-        </when>
-      </choose>
-    </foreach>
-    AND sheet.currency_unit = #{amountType}
-    <if test="enter.stockType!=''and enter.stockType!=null">
-      and orb.product_type=#{enter.stockType}
-    </if>
-    <if test="enter.keyword!=''and enter.keyword!=null">
-      and (
-      part.cn_name like concat ("%",#{enter.keyword},"%") or
-      part.en_name like concat ("%",#{enter.keyword},"%") or
-      part.product_number like concat ("%",#{enter.keyword},"%")
-      )
-    </if>
-    GROUP BY
-    id,
-    productType,
-    cnName,
-    enName,
-    productNumber,
-    price
-  </sql>
-
-
-  <sql id="where_outWhPartList">
-    WHERE
-    orb.dr=0
-    and outwhOrder.`status`=#{status}
-    AND orb.product_type in
-    <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
-      <choose>
-        <when test="typeItem==1 or typeItem==2 or typeItem==3">
-          #{typeItem}
-        </when>
-      </choose>
-    </foreach>
-    AND sheet.currency_unit = #{amountType}
-    <if test="enter.stockType!=''and enter.stockType!=null">
-      and orb.product_type=#{enter.stockType}
-    </if>
-    <if test="enter.keyword!=''and enter.keyword!=null">
-      and (
-      part.cn_name like concat ("%",#{enter.keyword},"%") or
-      part.en_name like concat ("%",#{enter.keyword},"%") or
-      part.parts_number like concat ("%",#{enter.keyword},"%")
-      )
-    </if>
-    GROUP BY
-    id,
-    productType,
-    cnName,
-    enName,
-    productNumber,
-    price
-  </sql>
 
   <select id="wmsOutWhStockCount" resultType="int">
     select count(*) from(

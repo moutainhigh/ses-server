@@ -43,7 +43,7 @@ public class WmsWhInController{
   }
 
   @PostMapping(value = "/list")
-  @ApiOperation(value = "已入库", response = WmsInWhResult.class)
+  @ApiOperation(value = "入库列表", response = WmsInWhResult.class)
   public Response<PageResult<WmsInWhResult>> wmsInWhResultList(@ModelAttribute @ApiParam("请求参数") WmsWhInEnter enter) {
     return new Response<>(wmswhinservice.list(enter));
   }
