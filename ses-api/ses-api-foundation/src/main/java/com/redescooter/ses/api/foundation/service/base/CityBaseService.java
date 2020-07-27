@@ -5,9 +5,7 @@ import java.util.List;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
-import com.redescooter.ses.api.foundation.vo.common.CityEnter;
-import com.redescooter.ses.api.foundation.vo.common.CityResult;
+import com.redescooter.ses.api.foundation.vo.common.*;
 
 /**
  * description: CityBaseService
@@ -64,4 +62,23 @@ public interface CityBaseService {
      * @return
      */
     int batchSaveCity(List<CityEnter> list);
+
+    /**
+     * @Author Aleks
+     * @Description  国家和城市
+     * @Date  2020/7/27 19:54
+     * @Param
+     * @return
+     **/
+    List<CountryCityResult> countryAndCity();
+
+    /**
+     * @Author Aleks
+     * @Description  根据城市选择对应的邮编
+     * @Date  2020/7/27 18:48
+     * @Param
+     * @return
+     **/
+     List<CityPostResult> cityPostCode(String cityName);
+
 }

@@ -52,7 +52,7 @@ public class ExcelReadTest {
 
         log.info("解析数据为：{}", JSON.toJSONString(ossExcel.getList()));
         log.info("消耗时间为：{}", System.currentTimeMillis() - start);
-
+        log.info("总共条数："+ossExcel.getList().size());
         this.save(ossExcel.getList());
     }
 
@@ -92,7 +92,7 @@ public class ExcelReadTest {
             @Override
             public int compare(CityExcelDate o1, CityExcelDate o2) {
                 // 字符串,则按照asicc码升序排列
-                return o1.getCityName().compareTo(o2.getCityName());
+                return o1.getCode().compareTo(o2.getCode());
             }
         });
         set.addAll(citys);

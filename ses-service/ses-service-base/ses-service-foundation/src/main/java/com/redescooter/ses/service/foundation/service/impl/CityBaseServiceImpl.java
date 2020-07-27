@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -7,14 +8,13 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
-import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
-import com.redescooter.ses.api.foundation.vo.common.CityEnter;
-import com.redescooter.ses.api.foundation.vo.common.CityResult;
+import com.redescooter.ses.api.foundation.vo.common.*;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaCityMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaCity;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -22,7 +22,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * description: CityBaseServiceImpl
@@ -193,6 +196,46 @@ public class CityBaseServiceImpl implements CityBaseService {
             return cityMapper.batchInsert(saveList);
         }
         return 0;
+    }
+
+    @Override
+    public List<CountryCityResult> countryAndCity() {
+        List<CountryCityResult>  resultList = new ArrayList<>();
+        List<PlaCity> alls = cityMapper.countryAndCity();
+
+
+        return resultList;
+    }
+
+
+    public List<CountryCityResult> countryCity( List<CountryCityResult>  resultList,List<PlaCity> alls){
+        List<PlaCity> conuts = alls.stream().filter(all->all.getLevel() == 1).collect(Collectors.toList());
+        List<PlaCity> citys = alls.stream().filter(all->all.getLevel() == 2).collect(Collectors.toList());
+        if(CollectionUtils.isNotEmpty(conuts)){
+            for (PlaCity conut : conuts) {
+                CountryCityResult countryCityResult = new CountryCityResult();
+                BeanUtil.copyProperties(conut,countryCityResult);
+                List<CityResult> cityResults = new ArrayList<>();
+                for(PlaCity city : citys){
+                    if(city.getPId() == conut.getId()){
+                        CityResult cityResult = new CityResult();
+                        BeanUtil.copyProperties(city,cityResult);
+                        cityResults.add(cityResult);
+                    }
+                }
+                countryCityResult.setCitys(cityResults);
+                resultList.add(countryCityResult);
+            }
+        }
+        return resultList;
+    }
+
+
+    @Override
+    public List<CityPostResult> cityPostCode(String cityName) {
+        List<CityPostResult> resultList = new ArrayList<>();
+        resultList = cityMapper.cityPostCode(cityName);
+        return resultList;
     }
 
     /**

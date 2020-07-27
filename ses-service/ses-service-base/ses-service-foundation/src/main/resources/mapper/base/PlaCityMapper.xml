@@ -373,5 +373,16 @@
         def6 = #{def6},
       </if>
     </trim>
+
   </insert>
+
+  <select id="countryAndCity" resultMap="BaseResultMap">
+     select * from pla_city where dr = 0 and level in (1,2)
+  </select>
+
+  <select id="cityPostCode" resultType="com.redescooter.ses.api.foundation.vo.common.CityPostResult">
+      select name from pla_city where dr = 0 and name like concat("%",#{cityName},"%")
+   </select>
+
+
 </mapper>
