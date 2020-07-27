@@ -25,34 +25,37 @@ import java.util.Date;
 @Builder
 public class WmsInWhResult extends GeneralResult {
 
-  @ApiModelProperty(value = "调拨/组装编号")
-  private String allocateNumber;
+    @ApiModelProperty(value = "调拨/组装编号")
+    private String allocateNumber;
 
-  @ApiModelProperty(value = "id")
-  private  String id;
+    @ApiModelProperty(value = "id")
+    private String id;
 
-  @ApiModelProperty(value = "质检数")
-  private Integer qty;
+    @ApiModelProperty(value = "质检数")
+    private Integer qty;
 
-  @ApiModelProperty(value = "总数量")
-  private Integer sumTotal;
+    @ApiModelProperty(value = "总数量")
+    private Integer sumTotal;
 
-  @ApiModelProperty(value = "收货人")
-  private String consigneeId;
+    @ApiModelProperty(value = "收货人")
+    private String consigneeId;
 
-  @ApiModelProperty(value = "单据类型")
-  private String documentType;
+    @ApiModelProperty(value = "单据类型")
+    private String documentType;
 
-  @ApiModelProperty(value = "收货人姓")
+    @ApiModelProperty(value = "收货人姓")
     private String consigneelastName;
 
-  @ApiModelProperty(value = "收货人名")
-  private String consigneeFristName;
+    @ApiModelProperty(value = "收货人名")
+    private String consigneeFristName;
 
-  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-  @ApiModelProperty(value = "入库时间")
-  private Date inWhTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @ApiModelProperty(value = "入库时间")
+    private Date inWhTime;
+
+    @ApiModelProperty(value = "Tale类型")
+    private String classType;
 
 
 }
