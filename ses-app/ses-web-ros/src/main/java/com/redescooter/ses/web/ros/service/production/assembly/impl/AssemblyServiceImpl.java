@@ -1,5 +1,8 @@
 package com.redescooter.ses.web.ros.service.production.assembly.impl;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
@@ -71,29 +74,17 @@ import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
 import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoItemEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.QcItemViewResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -158,6 +149,9 @@ public class AssemblyServiceImpl implements AssemblyService {
 
     @Reference
     private IdAppService idAppService;
+
+    @Autowired
+    private HttpServletResponse response;
 
     /**
      * 状态统计
@@ -818,10 +812,36 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
     @Override
-    public GeneralResult export(IdEnter enter) {
-        return null;
+    public void export(IdEnter enter) {
+        AssemblyResult assemblyResult = assemblyServiceMapper.detail(enter);
+        if(assemblyResult == null){
+            throw new SesWebRosException(0, "");
+        }
+        AssemblyExportResult  assemblyExportResult = new AssemblyExportResult();
+        BeanUtil.copyProperties(assemblyResult,assemblyExportResult);
+        if(assemblyResult.getCreatedTime() != null){
+            assemblyExportResult.setCreatedTime(DateUtil.getYmdhm(assemblyResult.getCreatedTime()));
+        }else {
+            assemblyExportResult.setCreatedTime("--");
+        }
+        if(assemblyResult.getStatementDate() != null){
+            assemblyExportResult.setStatementDate(DateUtil.getYmdhm(assemblyResult.getStatementDate()));
+        }else {
+            assemblyExportResult.setStatementDate("--");
+        }
+        List<AssemblyExportResult> list = new ArrayList<>();
+        list.add(assemblyExportResult);
+        try{
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename="+System.currentTimeMillis()+".xls");
+            ExportParams exportParams = new ExportParams();
+            exportParams.setSheetName("组装单信息");
+            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, AssemblyExportResult.class, list);
+            workbook.write(response.getOutputStream());
+        } catch (Exception e) {
+            System.out.println("+++++++++++++++++++");
+        }
     }
 
     /**

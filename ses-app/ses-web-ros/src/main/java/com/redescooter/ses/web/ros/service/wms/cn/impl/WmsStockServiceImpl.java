@@ -88,11 +88,11 @@ public class WmsStockServiceImpl implements WmsStockService {
       return PageResult.createZeroRowResult(enter);
     }
 
-    List<String> list = new ArrayList<String>();
-    for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-      list.add(item.getValue());
-    }
-    List<OpeWhse> whselist = opewhseservice.list(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
+        List<String> list = new ArrayList<String>();
+        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
+            list.add(item.getValue());
+        }
+        List<OpeWhse> whselist = opewhseservice.list(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
 
     int totalRows = 0;
     List<WmsStockAvailableResult> stockResult = new ArrayList<WmsStockAvailableResult>();

@@ -53,7 +53,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
     return map;
   }
 
-  /**
+    /**
      * 查询入库集合
      *
      * @param enter

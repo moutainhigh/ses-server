@@ -45,8 +45,9 @@
 
     <sql id="detailProductPartList_scooter">
      where orderB.dr=0
-                and orderB.id=#{id}
-                <if test="productType != null">
+                and orderB.outwh_order_id=#{id}
+                and orderB.product_type = 4
+                <if test="productType != null and productType != ''">
                     and orderB.product_type #{productType}
                 </if>
                 <if test="keyword != null and keyword != ''">
@@ -60,8 +61,9 @@
     </sql>
     <sql id="detailProductPartList_parts">
     where orderB.dr=0
-                and orderB.id=#{id}
-                <if test="productType != null">
+                and orderB.outwh_order_id=#{id}
+                and orderB.product_type != 4
+                <if test="productType != null and productType != ''">
                     and orderB.product_type=#{productType}
                 </if>
                 <if test="keyword != null and keyword != ''">
@@ -209,15 +211,16 @@
     <select id="detailProductPartListCount" resultType="int">
         select sum(result.count)
         from (
-        select count(*) as count from ope_outwh_order_b orderB
+        select count(*) as count
+        from ope_outwh_order_b orderB
         left join ope_parts_product product
-        on orderB.part_product_id = product.id and orderB.product_type = 4 and product.dr = 0
+        on orderB.part_product_id = product.id and product.dr = 0
         <include refid="detailProductPartList_scooter"/>
         union
-        select count (*) as count
+         select count(*) as count
         from ope_outwh_order_b orderB
         left join ope_parts parts
-        on parts.id = orderB.part_product_id and orderB.product_type != 4 and parts.dr=0
+        on parts.id = orderB.part_product_id and parts.dr = 0
         <include refid="detailProductPartList_parts"/>) as result
     </select>
     <select id="detailProductPartList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailProductPartListResult">
@@ -229,7 +232,7 @@
            product.cn_name        as cnName,
            orderB.total_count     as qty
         from ope_outwh_order_b orderB
-                 left join ope_parts_product product on orderB.part_product_id = product.id and orderB.product_type = 4 and product.dr=0
+                 left join ope_parts_product product on orderB.part_product_id = product.id and product.dr=0
     <include refid="detailProductPartList_scooter"/>
     union
         select orderB.id          as id,
@@ -240,7 +243,7 @@
                parts.cn_name      as cnName,
                orderB.total_count as qty
         from ope_outwh_order_b orderB
-                 left join ope_parts parts on parts.id = orderB.part_product_id and orderB.product_type != 4n and parts.dr=0
+                 left join ope_parts parts on parts.id = orderB.part_product_id and orderB.product_type != 4 and parts.dr=0
     <include refid="detailProductPartList_parts"/>
     limit #{startRow},#{pageSize}
     </select>

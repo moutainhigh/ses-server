@@ -32,8 +32,6 @@ public class WmsStockController{
   @Autowired
   private WmsStockService wmsStockService;
 
-
-
   @PostMapping(value = "/countByType")
   @ApiOperation(value = "库存类型统计", response = Map.class)
   public Response<Map<String, Integer>> countByType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
