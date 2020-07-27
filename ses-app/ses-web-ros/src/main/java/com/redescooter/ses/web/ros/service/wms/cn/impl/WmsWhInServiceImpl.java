@@ -44,9 +44,11 @@ public class WmsWhInServiceImpl implements WmsWhInService {
   @Override
   public Map<String, Integer> countByType(GeneralEnter enter) {
     Map<String, Integer> map = new HashMap<>();
+    //已入库数据统计
     int wmsInWhCount = wmsServiceMapper.wmsInWhCountByType(enter);
-    int stockPendingCount = wmsServiceMapper.stockPendingCountByType(enter);
     map.put(String.valueOf(PushTypeEnums.TAG.getValue()),wmsInWhCount);
+    //待入库数据统计
+    int stockPendingCount = wmsServiceMapper.stockPendingCountByType(enter);
     map.put(String.valueOf(PushTypeEnums.TAG_AND.getValue()),stockPendingCount);
     return map;
   }
@@ -64,10 +66,15 @@ public class WmsWhInServiceImpl implements WmsWhInService {
       }
       int totalRows = 0;
       List<WmsInWhResult> wmsInWhResult = new ArrayList<WmsInWhResult>();
+
+      //已入库列表
       if (StringUtils.equals(enter.getClassType(), ProductionTypeEnums.TODO.getValue())) {
           totalRows = wmsServiceMapper.wmsInWhCount(enter);
           wmsInWhResult= wmsServiceMapper.wmsInWhList(enter);
-      } else if (StringUtils.equals(enter.getClassType(), ProductionTypeEnums.HISTORY.getValue())){
+      }
+
+      //待入库列表
+      if (StringUtils.equals(enter.getClassType(), ProductionTypeEnums.HISTORY.getValue())){
          totalRows = wmsServiceMapper.stockPendingCount(enter);
          wmsInWhResult= wmsServiceMapper.stockPendingList(enter);
       }

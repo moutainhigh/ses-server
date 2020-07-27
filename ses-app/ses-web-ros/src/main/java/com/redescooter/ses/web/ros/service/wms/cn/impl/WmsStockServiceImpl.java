@@ -59,12 +59,19 @@ public class WmsStockServiceImpl implements WmsStockService {
       list.add(item.getValue());
     }
     List<OpeWhse> whselist = opewhseservice.list(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
+    //可用库存数据统计
     int usableStockCount = wmsServiceMapper.usableStockCountByType(whselist, list, CurrencyUnitEnums.FR.getValue());
     map.put(String.valueOf(PushTypeEnums.TAG.getValue()), usableStockCount);
+
+    //待生产数据统计
     int predictedStockCount= wmsServiceMapper.wmsBePredictedStockCountByType(whselist.get(Constant.DR_FALSE).getId(), list, CurrencyUnitEnums.FR.getValue());
     map.put(String.valueOf(PushTypeEnums.TAG_AND.getValue()), predictedStockCount);
+
+    //待入库数据统计
     int storedStockCount= wmsServiceMapper.wmsStoredStockCountByType(whselist.get(Constant.DR_TRUE).getId(), list, CurrencyUnitEnums.FR.getValue());
     map.put(String.valueOf(PushTypeEnums.TAG_NOT.getValue()), storedStockCount);
+
+    //已出库数据统计
     int outWhStockCount= wmsServiceMapper.wmsOutWhStockCountByType(WhOutStatusEnums.OUT_WH.getValue(), list, CurrencyUnitEnums.FR.getValue());
     map.put(String.valueOf(PushTypeEnums.ALIAS.getValue()), outWhStockCount);
     return map;
@@ -89,31 +96,37 @@ public class WmsStockServiceImpl implements WmsStockService {
 
     int totalRows = 0;
     List<WmsStockAvailableResult> stockResult = new ArrayList<WmsStockAvailableResult>();
+    //可用库存数据列表
     if (StringUtils.equals(enter.getClassType(), String.valueOf(PushTypeEnums.TAG.getValue()))){
         totalRows = wmsServiceMapper.wmsUsableStockCount(enter, whselist, list, CurrencyUnitEnums.FR.getValue());
         stockResult  = wmsServiceMapper.wmsUsableStockList(enter, whselist, list, CurrencyUnitEnums.FR.getValue());
     }
+    //待生产库存数据列表
     if (StringUtils.equals(enter.getClassType(), String.valueOf(PushTypeEnums.TAG_AND.getValue()))){
       totalRows = wmsServiceMapper.wmsBePredictedStockCount(enter, whselist.get(Constant.DR_FALSE).getId(), list, CurrencyUnitEnums.FR.getValue());
       stockResult  = wmsServiceMapper.wmsBePredictedStockList(enter, whselist.get(Constant.DR_FALSE).getId(), list, CurrencyUnitEnums.FR.getValue());
     }
+    //待入库库存数据列表
     if (StringUtils.equals(enter.getClassType(),String.valueOf(PushTypeEnums.TAG_NOT.getValue()))){
       totalRows = wmsServiceMapper.wmsStoredStockCount(enter, whselist.get(Constant.DR_TRUE).getId(), list, CurrencyUnitEnums.FR.getValue());
       stockResult  = wmsServiceMapper.wmsStoredStockList(enter, whselist.get(Constant.DR_TRUE).getId(), list, CurrencyUnitEnums.FR.getValue());
     }
+    //已出库库存数据列表
     if (StringUtils.equals(enter.getClassType(),String.valueOf(PushTypeEnums.ALIAS.getValue()))){
       totalRows = wmsServiceMapper.wmsOutWhStockCount(enter,WhOutStatusEnums.OUT_WH.getValue(), list, CurrencyUnitEnums.FR.getValue());
       stockResult  = wmsServiceMapper.wmsOutWhStockList(enter,WhOutStatusEnums.OUT_WH.getValue(), list, CurrencyUnitEnums.FR.getValue());
-     stockResult.forEach(item ->
-       {
-         if (item.getPrice()!=null && item.getIntTotal()!=null){
-           item.setPrice(item.getIntTotal()*item.getPrice());
-         }
-       });
+
     }
+
     if (totalRows == 0) {
       return PageResult.createZeroRowResult(enter);
     }
+    stockResult.forEach(item ->
+    {
+      if (item.getPrice()!=null && item.getIntTotal()!=null){
+        item.setPrice(item.getIntTotal()*item.getPrice());
+      }
+    });
     return PageResult.create(enter, totalRows, stockResult);
   }
 

@@ -41,7 +41,7 @@ public class WmsStockController{
   }
 
   @PostMapping(value = "/list")
-  @ApiOperation(value = "显示可用列表", response = WmsStockAvailableResult.class)
+  @ApiOperation(value = "库存列表", response = WmsStockAvailableResult.class)
   public Response<PageResult<WmsStockAvailableResult>> stockAvailableList(@ModelAttribute @ApiParam("请求参数") WmsStockEnter enter) {
     return new Response<>(wmsStockService.list(enter));
   }
