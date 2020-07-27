@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.wms.cn;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import lombok.AllArgsConstructor;
@@ -25,6 +27,7 @@ import io.swagger.annotations.*;
 @Builder
 public class WhOutDetailProductPartListEnter extends PageEnter {
     @ApiModelProperty(value = "产品类型",required = true)
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
     private Long id;
 
     @ApiModelProperty(value = "产品编号")

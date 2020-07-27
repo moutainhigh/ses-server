@@ -536,6 +536,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         checkCustomer(opeCustomer);
         opeCustomer.setStatus(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue());
         opeCustomer.setUpdatedTime(new Date());
+        //todo 客户信息暂未更新
         return new GeneralResult();
     }
 

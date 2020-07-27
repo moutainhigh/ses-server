@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.wms.cn;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +27,7 @@ import io.swagger.annotations.*;
 public class StartWhOutOrderEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id",required = true)
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "id 不存在")
     private Long id;
 
     @ApiModelProperty(value = "空运方式")

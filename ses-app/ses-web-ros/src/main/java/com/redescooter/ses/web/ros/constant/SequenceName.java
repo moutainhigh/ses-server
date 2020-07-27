@@ -110,4 +110,10 @@ public interface SequenceName {
     String OPE_OUTWH_ORDER = "OPE_OUTWH_ORDER";
 
     String OPE_OUTWH_ORDER_B = "OPE_OUTWH_ORDER_B";
+
+    String OPE_FR_STOCK="OPE_FR_STOCK";
+
+    String OPE_FR_STOCK_BILL="OPE_FR_STOCK_BILL";
+
+    String OPE_FR_STOCK_PRODUCT="OPE_FR_STOCK_PRODUCT";
 }

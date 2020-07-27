@@ -83,4 +83,7 @@ public class WhOutDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "价格")
     private String price;
+
+    @ApiModelProperty(value = "状态")
+    private String status;
 }

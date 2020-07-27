@@ -185,7 +185,8 @@
                outOrder.consign_company   as consignCompany,
                outOrder.tracking_num      as trackingN,
                outOrder.annex             as annex,
-               outOrder.logistics_price       as price
+               outOrder.logistics_price       as price,
+               outOrder.status             as status
         from ope_outwh_order outOrder
                  inner join ope_whse whse on outOrder.in_wh_id = whse.id and whse.type = 4 and whse.dr=0
                  inner join ope_sys_user_profile profile on profile.sys_user_id = outOrder.consignee_id and profile.dr = 0
