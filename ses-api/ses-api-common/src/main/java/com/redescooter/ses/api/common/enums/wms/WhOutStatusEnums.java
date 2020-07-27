@@ -17,10 +17,11 @@ import lombok.NoArgsConstructor;
 public enum WhOutStatusEnums {
 
     PENDING("PENDING","新建","1"),
-    PREPARE_MATERIAL("PREPARE_MATERIAL","备料","2"),
-    OUT_WH("OUT_WH","出库","3"),
-    IN_WH("IN_WH","入库","4"),
-    CANCELLED("CANCELLED","取消","5");
+    START_PREPARE_MATERIAL("START_PREPARE_MATERIAL","开始备料","2"),
+    PREPARE_MATERIAL("PREPARE_MATERIAL","备料","3"),
+    OUT_WH("OUT_WH","出库","4"),
+    IN_WH("IN_WH","入库","5"),
+    CANCELLED("CANCELLED","取消","6");
 
     private String code;
 

@@ -269,7 +269,7 @@ public class WhOutServiceImpl implements WhOutService {
         }
 
         //修改主订单
-        opeOutwhOrder.setStatus(WhOutStatusEnums.PREPARE_MATERIAL.getValue());
+        opeOutwhOrder.setStatus(WhOutStatusEnums.START_PREPARE_MATERIAL.getValue());
         opeOutwhOrder.setConsignType(opeOutwhOrder.getConsignType());
         opeOutwhOrder.setConsignMethod(StringUtils.equals(opeOutwhOrder.getConsignType(), ConsignTypeEnums.AIR_PARCEL.getValue()) == true ? enter.getAirParcelType() : null);
         opeOutwhOrder.setConsignCompany(enter.getConsignCompany());
@@ -283,8 +283,8 @@ public class WhOutServiceImpl implements WhOutService {
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
         saveNodeEnter.setId(opeOutwhOrder.getId());
-        saveNodeEnter.setStatus(WhOutStatusEnums.PREPARE_MATERIAL.getValue());
-        saveNodeEnter.setEvent(WhOutEventEnums.PREPARE_MATERIAL.getValue());
+        saveNodeEnter.setStatus(WhOutStatusEnums.START_PREPARE_MATERIAL.getValue());
+        saveNodeEnter.setEvent(WhOutEventEnums.START_PREPARE_MATERIAL.getValue());
         saveNodeEnter.setMemo(null);
         saveNode(saveNodeEnter);
         return new GeneralResult(enter.getRequestId());

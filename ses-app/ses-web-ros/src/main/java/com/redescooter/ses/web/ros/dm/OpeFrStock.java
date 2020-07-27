@@ -14,9 +14,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
-    * 法国仓库库存表
-    */
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeFrStock")
+ * 法国仓库库存表
+ */
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeFrStock")
 @Data
 @Builder
 @AllArgsConstructor
@@ -27,148 +27,148 @@ public class OpeFrStock implements Serializable {
      * 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="主键")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
     @TableField(value = "dr")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     private Integer dr;
 
     @TableField(value = "user_id")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     private Long userId;
 
     /**
      * 所属仓库Id
      */
     @TableField(value = "whse_id")
-    @ApiModelProperty(value="所属仓库Id")
+    @ApiModelProperty(value = "所属仓库Id")
     private Long whseId;
 
     /**
      * 入库总数
      */
     @TableField(value = "int_total")
-    @ApiModelProperty(value="入库总数")
+    @ApiModelProperty(value = "入库总数")
     private Integer intTotal;
 
     /**
      * 出库总数
      */
     @TableField(value = "out_total")
-    @ApiModelProperty(value="出库总数")
+    @ApiModelProperty(value = "出库总数")
     private Integer outTotal;
 
     /**
      * 剩余库存
      */
     @TableField(value = "available_total")
-    @ApiModelProperty(value="剩余库存")
+    @ApiModelProperty(value = "剩余库存")
     private Integer availableTotal;
 
     /**
      * 破损总数
      */
     @TableField(value = "worn_total")
-    @ApiModelProperty(value="破损总数")
+    @ApiModelProperty(value = "破损总数")
     private Integer wornTotal;
 
     /**
      * 锁定库存
      */
     @TableField(value = "lock_total")
-    @ApiModelProperty(value="锁定库存")
+    @ApiModelProperty(value = "锁定库存")
     private Integer lockTotal;
 
     /**
      * 所属物料产品Id
      */
     @TableField(value = "materiel_product_id")
-    @ApiModelProperty(value="所属物料产品Id")
+    @ApiModelProperty(value = "所属物料产品Id")
     private Long materielProductId;
 
     /**
      * 所属物料产品类型
      */
     @TableField(value = "materiel_product_type")
-    @ApiModelProperty(value="所属物料产品类型")
+    @ApiModelProperty(value = "所属物料产品类型")
     private String materielProductType;
 
     /**
      * 所属物料名称
      */
     @TableField(value = "materiel_product_name")
-    @ApiModelProperty(value="所属物料名称")
+    @ApiModelProperty(value = "所属物料名称")
     private String materielProductName;
 
     /**
      * 乐观锁
      */
     @TableField(value = "revision")
-    @ApiModelProperty(value="乐观锁")
+    @ApiModelProperty(value = "乐观锁")
     private Integer revision;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;

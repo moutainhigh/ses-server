@@ -3,7 +3,8 @@ package com.redescooter.ses.web.ros.service.base;
 import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeFrStockBill;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface OpeFrStockBillService extends IService<OpeFrStockBill>{
+
+public interface OpeFrStockBillService extends IService<OpeFrStockBill> {
 
 
     int updateBatch(List<OpeFrStockBill> list);
@@ -15,3 +16,4 @@ public interface OpeFrStockBillService extends IService<OpeFrStockBill>{
     int insertOrUpdateSelective(OpeFrStockBill record);
 
 }
+
