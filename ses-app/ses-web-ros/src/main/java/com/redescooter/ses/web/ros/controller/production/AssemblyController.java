@@ -32,11 +32,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -168,10 +164,13 @@ public class AssemblyController {
         return new Response<>(assemblyService.viewItemTemplate(enter));
     }
 
-    @PostMapping(value = "/export")
+    @GetMapping(value = "/export")
     @ApiOperation(value = "组装单数据导出", response = GeneralResult.class)
-    public Response<GeneralResult> export(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(assemblyService.export(enter));
+    public Response<GeneralResult> export(@ApiParam("请求参数 id") Long id) {
+        IdEnter enter = new IdEnter();
+        enter.setId(id);
+        assemblyService.export(enter);
+        return new Response<>();
     }
 
     @PostMapping(value = "/setPaymentAssembly")
