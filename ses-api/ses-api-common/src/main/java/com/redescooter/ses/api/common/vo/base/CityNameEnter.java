@@ -20,6 +20,9 @@ public class CityNameEnter extends GeneralEnter{
     @ApiModelProperty("国家id，查询城市的时候必须要传这个")
     private Long id;
 
+    @ApiModelProperty("城市,查询邮编的时候必传")
+    private String city;
+
     @ApiModelProperty("城市名称")
     private String keyWord;
 
