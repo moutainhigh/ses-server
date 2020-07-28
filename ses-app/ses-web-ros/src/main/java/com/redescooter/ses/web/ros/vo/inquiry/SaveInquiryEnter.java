@@ -34,6 +34,7 @@ public class SaveInquiryEnter extends GeneralEnter {
 //    @MaximumLength(value = "50", code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "长度过长")
     private String email;
 
+
     private String distrust;
 
     @ApiModelProperty(value = "客户名字")

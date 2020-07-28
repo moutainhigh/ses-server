@@ -165,6 +165,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult signUp(SignUpEnter enter) {
 
@@ -203,7 +204,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         enter.setPassword(decryptPassword);
         //密码长度校验
-        checkString(enter.getPassword(),2,20);
+        checkString(enter.getPassword(),8,64);
         //邮箱长度校验
         checkString(enter.getEmail(),2,50);
 
