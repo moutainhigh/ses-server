@@ -171,7 +171,7 @@
                outOrder.order_no          as whOutN,
                outOrder.in_wh_id          as goalWhId,
                whse.name                  as goalWhName,
-               outOrder.address           as address,
+               whse.address           as address,
                outOrder.consignee_id      as consigneeId,
                profile.first_name         as consigneeFirstName,
                profile.last_name          as consigneeLastName,

@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,6 +30,7 @@ public class OpeStockPurchas implements Serializable {
 
     @TableField(value = "dr")
     @ApiModelProperty(value = "")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -83,6 +85,13 @@ public class OpeStockPurchas implements Serializable {
     @TableField(value = "in__wh_qty")
     @ApiModelProperty(value = "入库数量")
     private Integer inWhQty;
+
+    /**
+     * 可用数量
+     */
+    @TableField(value = "available_qty")
+    @ApiModelProperty(value = "可用数量")
+    private Integer availableQty;
 
     /**
      * 入库时间
@@ -224,6 +233,8 @@ public class OpeStockPurchas implements Serializable {
     public static final String COL_PRINCIPAL_ID = "principal_id";
 
     public static final String COL_IN__WH_QTY = "in__wh_qty";
+
+    public static final String COL_AVAILABLE_QTY = "available_qty";
 
     public static final String COL_IN_STOCK_TIME = "in_stock_time";
 

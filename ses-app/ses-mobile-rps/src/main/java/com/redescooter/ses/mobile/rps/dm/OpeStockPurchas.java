@@ -11,15 +11,14 @@ import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
+/**
+ * 采购库存
+ */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeStockPurchas")
-@Getter
-@Setter
-@ToString
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -88,6 +87,13 @@ public class OpeStockPurchas implements Serializable {
     private Integer inWhQty;
 
     /**
+     * 可用数量
+     */
+    @TableField(value = "available_qty")
+    @ApiModelProperty(value = "可用数量")
+    private Integer availableQty;
+
+    /**
      * 入库时间
      */
     @TableField(value = "in_stock_time")
@@ -107,6 +113,20 @@ public class OpeStockPurchas implements Serializable {
     @TableField(value = "out_stock_bill_id")
     @ApiModelProperty(value = "出库单Id")
     private Long outStockBillId;
+
+    /**
+     * 绑定的出库单Id
+     */
+    @TableField(value = "bind_order_id")
+    @ApiModelProperty(value = "绑定的出库单Id")
+    private Long bindOrderId;
+
+    /**
+     * 单据来源
+     */
+    @TableField(value = "source_type")
+    @ApiModelProperty(value = "单据来源")
+    private String sourceType;
 
     /**
      * 出库负责人
@@ -214,11 +234,17 @@ public class OpeStockPurchas implements Serializable {
 
     public static final String COL_IN__WH_QTY = "in__wh_qty";
 
+    public static final String COL_AVAILABLE_QTY = "available_qty";
+
     public static final String COL_IN_STOCK_TIME = "in_stock_time";
 
     public static final String COL_IN_STOCK_BILL_ID = "in_stock_bill_id";
 
     public static final String COL_OUT_STOCK_BILL_ID = "out_stock_bill_id";
+
+    public static final String COL_BIND_ORDER_ID = "bind_order_id";
+
+    public static final String COL_SOURCE_TYPE = "source_type";
 
     public static final String COL_OUT_PRINCIPAL_ID = "out_principal_id";
 
@@ -243,8 +269,4 @@ public class OpeStockPurchas implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpeStockPurchasBuilder builder() {
-        return new OpeStockPurchasBuilder();
-    }
 }

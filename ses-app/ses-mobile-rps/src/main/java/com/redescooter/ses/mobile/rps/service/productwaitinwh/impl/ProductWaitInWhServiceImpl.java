@@ -433,6 +433,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .outTotal(0)
                     .wornTotal(0)
                     .availableTotal(opeParts.getIdClass() ? 1 : enter.getInWhNum())
+                    .lockTotal(0)
                     .whseId(opeWhse.getId())
                     .revision(0)
                     .userId(enter.getUserId())
@@ -510,6 +511,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .serialNumber(opeParts.getIdClass() == true ? opeStockPurchas.getSerialNumber() : null) //序列号
                 .partsNumber(opeParts.getPartsNumber())
                 .inStockBillId(opeStockBill.getId())
+                .availableQty(opeParts.getIdClass() ? 1 : enter.getInWhNum())
                 .outStockBillId(0L)
                 .outStockTime(null)
                 .outPrincipalId(0L)
@@ -653,6 +655,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .materielProductId(opeAssemblyBOrder.getProductId())
                     .materielProductType(BomCommonTypeEnums.SCOOTER.getValue())  //类型是整车
                     .availableTotal(1)
+                    .lockTotal(0)
                     .wornTotal(0)
                     .updatedTime(new Date())
                     .createdTime(new Date())
@@ -731,6 +734,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .productNumber(opeAssemblyBOrder.getProductNumber())
                 .inStockBillId(opeStockBill.getId())
                 .principalId(enter.getUserId())
+                .availableQty(1)
                 .outPrincipalId(0L)
                 .outStockBillId(0L)
                 .outStockTime(null)
