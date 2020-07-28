@@ -226,7 +226,7 @@ public class InquiryServiceImpl implements InquiryService {
 
         opeCustomerInquiry.setDef1(enter.getCountryName());
         opeCustomerInquiry.setDef2(enter.getDistrustName());
-        opeCustomerInquiry.setDef3(enter.getCityName());
+        opeCustomerInquiry.setDef3(enter.getCity());
         return opeCustomerInquiry;
     }
 
