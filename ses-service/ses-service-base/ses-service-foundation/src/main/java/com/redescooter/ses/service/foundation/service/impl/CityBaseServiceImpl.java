@@ -265,6 +265,8 @@ public class CityBaseServiceImpl implements CityBaseService {
                 if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
                     qw.like("name",cityNameEnter.getKeyWord());
                 }
+                qw.select(" DISTINCT name");
+                qw.last(" group by name order by CHARACTER_LENGTH(name) limit 50");
                 break;
             case 3:
                 //查询邮政编码
@@ -296,15 +298,14 @@ public class CityBaseServiceImpl implements CityBaseService {
             case 2:
                 // 查询城市的,这里城市要去重
                 // 先按城市来分组
-                Map<String, List<PlaCity>> map = cityList.stream().collect(Collectors.groupingBy(PlaCity::getName));
-                for (String city : map.keySet()) {
+//                Map<String, List<PlaCity>> map = cityList.stream().collect(Collectors.groupingBy(PlaCity::getName));
+                for (PlaCity city : cityList) {
                     CountryCityResult countryCityResult = new CountryCityResult();
-                    countryCityResult.setName(city);
+                    countryCityResult.setName(city.getName());
                     list.add(countryCityResult);
                 }
                 break;
             case 3:
-                //查询邮政编码
                 //查询邮政编码  要去重
                 Set<String> sets = cityList.stream().map(PlaCity::getPostCode).collect(Collectors.toSet());
                 for (String set : sets) {
