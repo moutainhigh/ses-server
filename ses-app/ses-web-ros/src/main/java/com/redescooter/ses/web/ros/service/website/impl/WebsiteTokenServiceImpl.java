@@ -13,6 +13,9 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
+import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.vo.common.CityPostResult;
+import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -83,6 +86,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Value("${Request.privateKey}")
     private String privatekey;
+
+    @Reference
+    private CityBaseService cityBaseService;
 
     /**
      * 登录
@@ -526,9 +532,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         saveCustomer.setAssignationScooterQty(0);
         saveCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         saveCustomer.setStatus(CustomerStatusEnum.PREDESTINATE_CUSTOMER.getValue());
-        saveCustomer.setUpdatedBy(saveCustomer.getId());
+        saveCustomer.setUpdatedBy(0L);
         saveCustomer.setUpdatedTime(new Date());
-        saveCustomer.setCreatedBy(saveCustomer.getId());
+        saveCustomer.setCreatedBy(0L);
         saveCustomer.setCreatedTime(new Date());
         saveCustomer.setAccountFlag("0");
         saveCustomer.setAddress(enter.getAddress());
@@ -540,6 +546,8 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         saveCustomer.setDistrust(Long.valueOf(enter.getDistrict()));
         saveCustomer.setDef1(enter.getCustomerCountry());
+        //客户表之前def1字段存的是国家  现在def2字段存城市
+        saveCustomer.setDef2(enter.getCity());
         return saveCustomer;
     }
 
@@ -552,5 +560,21 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (str.length() < min || str.length() > max) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+    }
+
+
+    @Override
+    public List<CountryCityResult> countryAndCity() {
+        return cityBaseService.countryAndCity();
+    }
+
+    @Override
+    public List<CityPostResult> cityPostCode(String cityName) {
+        return cityBaseService.cityPostCode(cityName);
+    }
+
+    @Override
+    public List<CountryCityResult> countryCityPostCode(CityNameEnter cityNameEnter) {
+        return cityBaseService.countryCityPostCode(cityNameEnter);
     }
 }

@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.controller.website;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.vo.common.CityPostResult;
+import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
@@ -11,8 +13,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @ClassName:Website
@@ -83,4 +88,28 @@ public class WebsiteTokenController {
     public Response<GeneralResult> editCustomer(@ModelAttribute @ApiParam("请求参数") WebEditCustomerEnter enter) {
         return new Response<>(webSiteService.editCustomer(enter));
     }
+
+    @IgnoreLoginCheck
+    @PostMapping("/countryAndCity")
+    @ApiOperation(value = "获取国家和城市，这个接口前端只调一次，数据保存到本地")
+    public Response<List<CountryCityResult>> countryAndCity() {
+        return new Response<>(webSiteService.countryAndCity());
+    }
+
+
+//    @IgnoreLoginCheck
+//    @GetMapping("/cityPostCode")
+//    @ApiOperation(value = "根据城市获取区域的邮政编码")
+//    public Response<List<CityPostResult>> cityPostCode(@ModelAttribute @ApiParam("参数") CityNameEnter cityNameEnter) {
+//        return new Response<>(webSiteService.cityPostCode(cityNameEnter.getCityName()));
+//    }
+
+
+    @IgnoreLoginCheck
+    @PostMapping("/countryCityPostCode")
+    @ApiOperation(value = "获取国家城市区域的邮政编码")
+    public Response<List<CountryCityResult>> countryCityPostCode(@ModelAttribute @ApiParam("参数") CityNameEnter cityNameEnter) {
+        return new Response<>(webSiteService.countryCityPostCode(cityNameEnter));
+    }
+
 }

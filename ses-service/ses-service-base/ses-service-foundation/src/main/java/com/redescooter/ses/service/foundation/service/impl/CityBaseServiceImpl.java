@@ -3,7 +3,9 @@ package com.redescooter.ses.service.foundation.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.vo.base.CityNameEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -202,8 +205,7 @@ public class CityBaseServiceImpl implements CityBaseService {
     public List<CountryCityResult> countryAndCity() {
         List<CountryCityResult>  resultList = new ArrayList<>();
         List<PlaCity> alls = cityMapper.countryAndCity();
-
-
+        countryCity(resultList,alls);
         return resultList;
     }
 
@@ -212,20 +214,28 @@ public class CityBaseServiceImpl implements CityBaseService {
         List<PlaCity> conuts = alls.stream().filter(all->all.getLevel() == 1).collect(Collectors.toList());
         List<PlaCity> citys = alls.stream().filter(all->all.getLevel() == 2).collect(Collectors.toList());
         if(CollectionUtils.isNotEmpty(conuts)){
-            for (PlaCity conut : conuts) {
-                CountryCityResult countryCityResult = new CountryCityResult();
-                BeanUtil.copyProperties(conut,countryCityResult);
-                List<CityResult> cityResults = new ArrayList<>();
-                for(PlaCity city : citys){
-                    if(city.getPId() == conut.getId()){
-                        CityResult cityResult = new CityResult();
-                        BeanUtil.copyProperties(city,cityResult);
-                        cityResults.add(cityResult);
-                    }
-                }
-                countryCityResult.setCitys(cityResults);
-                resultList.add(countryCityResult);
-            }
+//            for (PlaCity conut : conuts) {
+//                CountryCityResult  countryCityResult = new CountryCityResult();
+//                BeanUtil.copyProperties(conut,countryCityResult);
+//                List<PlaCity> currentCitys= new ArrayList<>();
+//                for (PlaCity city : citys) {
+//                    if(conut.getId().equals(city.getPId())){
+//                        currentCitys.add(city);
+//                    }
+//                }
+//                List<CityNameResult>  cityNameResultList = new ArrayList<>();
+//                if(CollectionUtils.isNotEmpty(currentCitys)){
+//                    Map<String,List<PlaCity>> map = currentCitys.stream().collect(Collectors.groupingBy(PlaCity::getName));
+//                    for (String city : map.keySet()){
+//                        CityNameResult  cityNameResult = new CityNameResult();
+//                        cityNameResult.setCityName(city);
+//                        cityNameResult.setChildren(map.get(city).stream().map(PlaCity::getPostCode).collect(Collectors.toList()));
+//                        cityNameResultList.add(cityNameResult);
+//                    }
+//                }
+//                countryCityResult.setChildren(cityNameResultList);
+//                resultList.add(countryCityResult);
+//            }
         }
         return resultList;
     }
@@ -237,6 +247,77 @@ public class CityBaseServiceImpl implements CityBaseService {
         resultList = cityMapper.cityPostCode(cityName);
         return resultList;
     }
+
+    @Override
+    public List<CountryCityResult> countryCityPostCode(CityNameEnter cityNameEnter) {
+        Integer level = cityNameEnter.getLevel();
+        List<CountryCityResult> list = new ArrayList<>();
+        QueryWrapper<PlaCity> qw = new QueryWrapper<>();
+        switch (level){
+            case 1:
+                // 查询国家的
+                qw.eq("level",1);
+                if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
+                    qw.like("name",cityNameEnter.getKeyWord());
+                }
+                default:
+                    break;
+            case 2:
+                // 查询城市
+                qw.eq("p_id",cityNameEnter.getId());
+                if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
+                    qw.like("name",cityNameEnter.getKeyWord());
+                }
+                break;
+            case 3:
+                //查询邮政编码
+                qw.isNotNull("post_code");
+                if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
+                    qw.like("post_code",cityNameEnter.getKeyWord());
+                }
+                break;
+        }
+        List<PlaCity> all = cityMapper.selectList(qw);
+        if(CollectionUtils.isNotEmpty(all)){
+            formatData(list,level,all);
+        }
+        return list;
+    }
+
+
+    public List<CountryCityResult> formatData(List<CountryCityResult> list,Integer level, List<PlaCity> cityList){
+        switch (level){
+            case 1:
+                // 查询国家的
+                for (PlaCity city : cityList) {
+                    CountryCityResult  countryCityResult = new CountryCityResult();
+                    BeanUtil.copyProperties(city,countryCityResult);
+                    list.add(countryCityResult);
+                }
+            default:
+                break;
+            case 2:
+                // 查询城市的,这里城市要去重
+                // 先按城市来分组
+                Map<String,List<PlaCity>> map = cityList.stream().collect(Collectors.groupingBy(PlaCity::getName));
+                for (String city : map.keySet()) {
+                    CountryCityResult  countryCityResult = new CountryCityResult();
+                    countryCityResult.setName(city);
+                    list.add(countryCityResult);
+                }
+                break;
+            case 3:
+                //查询邮政编码
+                for (PlaCity city : cityList) {
+                    CountryCityResult  countryCityResult = new CountryCityResult();
+                    countryCityResult.setName(city.getPostCode());
+                    list.add(countryCityResult);
+                }
+                break;
+        }
+        return list;
+    }
+
 
     /**
      * 删除ArrayList中重复元素，保持顺序

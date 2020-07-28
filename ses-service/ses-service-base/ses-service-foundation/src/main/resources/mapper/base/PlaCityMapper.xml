@@ -381,7 +381,7 @@
   </select>
 
   <select id="cityPostCode" resultType="com.redescooter.ses.api.foundation.vo.common.CityPostResult">
-      select name from pla_city where dr = 0 and name like concat("%",#{cityName},"%")
+      select distinct post_code from pla_city where dr = 0 and name = #{cityName}
    </select>
 
 
