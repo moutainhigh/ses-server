@@ -61,4 +61,7 @@ public class CustomerInfoResult extends GeneralResult {
 
     @ApiModelProperty(value = "国家")
     private String customerCountry;
+
+    @ApiModelProperty(value = "城市")
+    private String city;
 }
