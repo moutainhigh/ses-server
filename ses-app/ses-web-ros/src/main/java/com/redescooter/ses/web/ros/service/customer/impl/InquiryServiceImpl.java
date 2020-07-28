@@ -246,18 +246,18 @@ public class InquiryServiceImpl implements InquiryService {
             return PageResult.createZeroRowResult(enter);
         }
         List<InquiryResult> inquiryResultList = inquiryServiceMapper.inquiryList(enter);
-        inquiryResultList.forEach(item -> {
-            String city = null;
-            String distrust = null;
-            if (item.getCityId() != null && item.getCityId() != 0) {
-                city = cityBaseService.queryCityDeatliById(new IdEnter(item.getCityId())).getName();
-            }
-            if (item.getDistrustId() != null && item.getDistrustId() != 0) {
-                distrust = cityBaseService.queryCityDeatliById(new IdEnter(item.getDistrustId())).getName();
-            }
-            item.setCityName(city);
-            item.setDistrustName(distrust);
-        });
+//        inquiryResultList.forEach(item -> {
+//            String city = null;
+//            String distrust = null;
+//            if (item.getCityId() != null && item.getCityId() != 0) {
+//                city = cityBaseService.queryCityDeatliById(new IdEnter(item.getCityId())).getName();
+//            }
+//            if (item.getDistrustId() != null && item.getDistrustId() != 0) {
+//                distrust = cityBaseService.queryCityDeatliById(new IdEnter(item.getDistrustId())).getName();
+//            }
+//            item.setCityName(city);
+//            item.setDistrustName(distrust);
+//        });
         return PageResult.create(enter, count, inquiryResultList);
     }
 

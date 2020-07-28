@@ -10,11 +10,11 @@
         <if test="status == null or status == ''">
             and inquiry.status in ('1','3','4','5')
         </if>
-        <if test="cityId != null">
-            and inquiry.city =#{cityId}
+        <if test="def2 != null and def2 != ''">
+            and inquiry.def2 =#{def2}
         </if>
-        <if test="distrustId != null">
-            and inquiry.district = #{distrustId}
+        <if test="def3 != null and def3 != ''">
+            and inquiry.def3 = #{def3}
         </if>
         <if test="industyType != null and industyType != ''">
             and inquiry.industry = #{industyType}
@@ -63,7 +63,9 @@
            inquiry.country_code                               as countryCode,
            inquiry.source                                     as source,
            inquiry.address                                    as address,
-           inquiry.def2                                       as def2
+           inquiry.def1                                       as def1,
+           inquiry.def2                                       as def2,
+           inquiry.def3                                       as def3
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">

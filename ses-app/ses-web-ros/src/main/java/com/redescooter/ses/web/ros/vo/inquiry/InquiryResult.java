@@ -100,6 +100,12 @@ public class InquiryResult extends GeneralResult {
     @ApiModelProperty(value = "剩余时间")
     private Long ttl;
 
-    @ApiModelProperty(value = "区域")
+    @ApiModelProperty(value = "国家")
+    private String def1;
+
+    @ApiModelProperty(value = "邮政编码")
     private String def2;
+
+    @ApiModelProperty(value = "区域")
+    private String def3;
 }

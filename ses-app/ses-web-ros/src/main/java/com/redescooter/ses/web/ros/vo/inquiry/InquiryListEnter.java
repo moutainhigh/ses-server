@@ -32,10 +32,12 @@ public class InquiryListEnter extends PageEnter {
     private String status;
 
     @ApiModelProperty(value = "城市")
-    private Long cityId;
+//    private Long cityId;
+    private String def3;
 
     @ApiModelProperty(value = "区域")
-    private Long distrustId;
+//    private Long distrustId;
+    private String def2;
 
     @ApiModelProperty(value = "行业类型")
     private String industyType;
