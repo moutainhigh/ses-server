@@ -266,21 +266,23 @@ public class MondayServiceImpl implements MondayService {
      */
     private String buildContantUsSingle(OpeCustomerInquiry enter) {
 
-        Map<String,Object> tagList = new HashMap();
+        Map<String, Object> tagList = new HashMap();
         Integer tagId = null;
-        if (StringUtils.isNotEmpty(enter.getDef2())){
+        if (StringUtils.isNotEmpty(enter.getDef2())) {
             //查询tag 标签
             List<MondayTagResult> mondayTagResults = queryTagList();
             if (org.apache.commons.collections.CollectionUtils.isNotEmpty(mondayTagResults)) {
                 tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2())).findFirst().map(MondayTagResult::getId).orElse(null);
             }
-            tagList.put("tag_ids",Lists.newArrayList(tagId));
+            if (!(tagId == null) && !(tagId == 0)) {
+                tagList.put("tag_ids", Lists.newArrayList(tagId));
+            }
         }
 
         //电话集合
         Map<String, String> phoneMap = new HashMap<>();
-        if (StringUtils.isNotEmpty(enter.getTelephone())){
-            phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(), org.springframework.util.StringUtils.isEmpty( enter.getTelephone())==true? null:enter.getTelephone());
+        if (StringUtils.isNotEmpty(enter.getTelephone())) {
+            phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(), org.springframework.util.StringUtils.isEmpty(enter.getTelephone()) == true ? null : enter.getTelephone());
             phoneMap.put(MondayColumnPhoneEnums.phone.getCountryShortName(), MondayCountryShortNameEnums.FRANCE.getValue());
         }
 
@@ -290,7 +292,7 @@ public class MondayServiceImpl implements MondayService {
         dateMap.put(MondayColumnDateEnums.TIME.getTitle(), DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
 
         Map<String, Object> columnValue = new HashMap<>();
-        columnValue.put(MondayContantUsColumnEnums.ID_CP.getId(), CollectionUtils.isEmpty(tagList)==true?null:tagList);
+        columnValue.put(MondayContantUsColumnEnums.ID_CP.getId(), CollectionUtils.isEmpty(tagList) == true ? null : tagList);
         columnValue.put(MondayContantUsColumnEnums.RESP.getId(), null);
         //时间
         columnValue.put(MondayContantUsColumnEnums.FIRST_CONTACT.getId(), dateMap);
@@ -301,7 +303,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(MondayContantUsColumnEnums.PRENOM.getId(), enter.getFirstName());
         columnValue.put(MondayContantUsColumnEnums.NOM.getId(), enter.getLastName());
         //电话
-        columnValue.put(MondayContantUsColumnEnums.TEL.getId(), CollectionUtils.isEmpty(phoneMap)==true?null:phoneMap);
+        columnValue.put(MondayContantUsColumnEnums.TEL.getId(), CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
         columnValue.put(MondayContantUsColumnEnums.EMAIL.getId(), enter.getEmail());
         columnValue.put(MondayContantUsColumnEnums.VILLE.getId(), null);
         columnValue.put(MondayContantUsColumnEnums.CODE_POSTAL.getId(), enter.getDef2());
@@ -324,26 +326,28 @@ public class MondayServiceImpl implements MondayService {
         //查询产品信息
         OpePartsProduct opePartsProduct = opePartsProductService.getById(enter.getProductId());
         if (opePartsProduct == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        Map<String,Object> tagList = new HashMap();
+        Map<String, Object> tagList = new HashMap();
         Integer tagId = null;
-       if (StringUtils.isNotEmpty(enter.getDef2())){
-           //查询tag 标签
-           List<MondayTagResult> mondayTagResults = queryTagList();
-           if (org.apache.commons.collections.CollectionUtils.isNotEmpty(mondayTagResults)) {
-               tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2())).findFirst().map(MondayTagResult::getId).orElse(null);
-           }
-           tagList.put("tag_ids",Lists.newArrayList(tagId));
-       }
+        if (StringUtils.isNotEmpty(enter.getDef2())) {
+            //查询tag 标签
+            List<MondayTagResult> mondayTagResults = queryTagList();
+            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(mondayTagResults)) {
+                tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2())).findFirst().map(MondayTagResult::getId).orElse(null);
+            }
+            if (!(tagId == null) && !(tagId == 0)) {
+                tagList.put("tag_ids", Lists.newArrayList(tagId));
+            }
+        }
 
         //电话集合
         Map<String, String> phoneMap = new HashMap<>();
 
-       if (StringUtils.isNotEmpty(enter.getTelephone())){
-           phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(), org.springframework.util.StringUtils.isEmpty( enter.getTelephone())==true? null:enter.getTelephone());
-           phoneMap.put(MondayColumnPhoneEnums.phone.getCountryShortName(), MondayCountryShortNameEnums.FRANCE.getValue());
-       }
+        if (StringUtils.isNotEmpty(enter.getTelephone())) {
+            phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(), org.springframework.util.StringUtils.isEmpty(enter.getTelephone()) == true ? null : enter.getTelephone());
+            phoneMap.put(MondayColumnPhoneEnums.phone.getCountryShortName(), MondayCountryShortNameEnums.FRANCE.getValue());
+        }
 
 
         //时间集合
@@ -352,7 +356,7 @@ public class MondayServiceImpl implements MondayService {
         dateMap.put(MondayColumnDateEnums.TIME.getTitle(), DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
 
         Map<String, Object> columnValue = new HashMap<>();
-        columnValue.put(MondayBookOrderColumnEnums.ID_CP.getId(), CollectionUtils.isEmpty(tagList)==true?null:tagList);
+        columnValue.put(MondayBookOrderColumnEnums.ID_CP.getId(), CollectionUtils.isEmpty(tagList) == true ? null : tagList);
         columnValue.put(MondayBookOrderColumnEnums.RESP.getId(), null);
         //时间
         columnValue.put(MondayBookOrderColumnEnums.FIRST_CONTACT.getId(), dateMap);
@@ -363,7 +367,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(MondayBookOrderColumnEnums.PRENOM.getId(), enter.getFirstName());
         columnValue.put(MondayBookOrderColumnEnums.NOM.getId(), enter.getLastName());
         //电话
-        columnValue.put(MondayBookOrderColumnEnums.TEL.getId(), CollectionUtils.isEmpty(phoneMap)==true?null:phoneMap);
+        columnValue.put(MondayBookOrderColumnEnums.TEL.getId(), CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
         columnValue.put(MondayBookOrderColumnEnums.EMAIL.getId(), enter.getEmail());
         columnValue.put(MondayBookOrderColumnEnums.VILLE.getId(), null);
         columnValue.put(MondayBookOrderColumnEnums.CODE_POSTAL.getId(), enter.getDef2());
