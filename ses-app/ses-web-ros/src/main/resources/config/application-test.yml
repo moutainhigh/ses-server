@@ -204,3 +204,17 @@ excel:
   folder: /root/java_service/test/projectExcel
 sendinblue:
   listIds: 119
+
+monday:
+  url: https://api.monday.com/v2
+  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
+  paramQuery: query
+  paramVariables: variables
+  httpMethod: POST
+  MediaType: application/x-www-form-urlencoded
+  #预订单业务
+  orderFormBoardName: Préco clients RED Série E
+  orderFormGroupName: Backlog
+  #联系我们
+  contactUsBoardName: (RFQ) Relation client RED Série E
+  contactUsGroupName: Backlog

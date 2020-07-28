@@ -34,6 +34,7 @@ import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
+import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
@@ -97,6 +98,9 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Value("${excel.folder}")
     private String excelFolder;
+
+    @Autowired
+    private MondayService mondayService;
 
     @Autowired
     private OssConfig ossConfig;
@@ -183,6 +187,9 @@ public class InquiryServiceImpl implements InquiryService {
         }*/
         opeCustomerInquiry.setSource("1");
         opeCustomerInquiryService.saveOrUpdate(opeCustomerInquiry);
+
+        //Monday 同步数据
+        mondayService.websiteContantUs(opeCustomerInquiry);
         return new GeneralResult(enter.getRequestId());
     }
 
