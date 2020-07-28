@@ -51,6 +51,7 @@ public class TokenController {
     public Response<GeneralResult> logout(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(tokenRosService.logout(enter));
     }
+
     @IgnoreLoginCheck
     @ApiOperation(value = "修改密码", response = GeneralResult.class)
     @PostMapping(value = "/chanage")

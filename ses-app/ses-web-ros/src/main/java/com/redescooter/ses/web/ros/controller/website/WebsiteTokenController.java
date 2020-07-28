@@ -52,7 +52,6 @@ public class WebsiteTokenController {
         return new Response<>(webSiteService.signUp(enter));
     }
 
-
     @IgnoreLoginCheck
     @ApiOperation(value = "邮件发送", response = GeneralResult.class)
     @PostMapping(value = "/sendEmail")
