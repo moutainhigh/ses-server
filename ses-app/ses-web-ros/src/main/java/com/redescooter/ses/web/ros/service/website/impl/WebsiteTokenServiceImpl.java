@@ -500,6 +500,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         customer.setDef1(enter.getCustomerCountry());
         customer.setDef2(enter.getCity());
         customer.setDistrust(Long.valueOf(enter.getDistrict()));
+        customer.setCountry(enter.getCountryId());
         customer.setAddress(enter.getAddress());
         if (!StringUtils.isAllBlank(enter.getLat(),enter.getLng(),enter.getPlaceId())){
             customer.setLatitude(new BigDecimal(enter.getLat()));
@@ -522,6 +523,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                 inquiry.setLastName(customer.getCustomerLastName());
                 inquiry.setFullName(customer.getCustomerFullName());
 //                inquiry.setTelephone(customer.getTelephone());
+                inquiry.setCountry(enter.getCountryId());
                 inquiry.setAddress(customer.getAddress());
                 inquiry.setDef1(enter.getCustomerCountry());
                 inquiry.setDef3(enter.getCity());
@@ -563,6 +565,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         saveCustomer.setDef1(enter.getCustomerCountry());
         //客户表之前def1字段存的是国家  现在def2字段存城市
         saveCustomer.setDef2(enter.getCity());
+        saveCustomer.setCountry(enter.getCountryId());
         return saveCustomer;
     }
 
