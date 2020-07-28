@@ -54,7 +54,6 @@ import redis.clients.jedis.JedisCluster;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName:InquiryServiceImpl
@@ -223,7 +222,11 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setUpdatedBy(0L);
         opeCustomerInquiry.setCreatedTime(new Date());
         opeCustomerInquiry.setUpdatedTime(new Date());
-        opeCustomerInquiry.setDef2(enter.getDistrust());
+
+
+        opeCustomerInquiry.setDef1(enter.getCountryName());
+        opeCustomerInquiry.setDef2(enter.getDistrustName());
+        opeCustomerInquiry.setDef3(enter.getCityName());
         return opeCustomerInquiry;
     }
 
@@ -277,16 +280,16 @@ public class InquiryServiceImpl implements InquiryService {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
 
-        String city = null;
-        String distrust = null;
-        if (inquiryResult.getCityId() != null && inquiryResult.getCityId() != 0) {
-            city = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getCityId())).getName();
-        }
-        if (inquiryResult.getDistrustId() != null && inquiryResult.getDistrustId() != 0) {
-            distrust = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getDistrustId())).getName();
-        }
-        inquiryResult.setCityName(city);
-        inquiryResult.setDistrustName(distrust);
+//        String city = null;
+//        String distrust = null;
+//        if (inquiryResult.getCityId() != null && inquiryResult.getCityId() != 0) {
+//            city = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getCityId())).getName();
+//        }
+//        if (inquiryResult.getDistrustId() != null && inquiryResult.getDistrustId() != 0) {
+//            distrust = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getDistrustId())).getName();
+//        }
+//        inquiryResult.setCityName(city);
+//        inquiryResult.setDistrustName(distrust);
 
         if (StringUtils.equals(inquiryResult.getStatus(), InquiryStatusEnums.UNPAY_DEPOSIT.getValue()) || StringUtils.equals(inquiryResult.getStatus(), InquiryStatusEnums.PAY_DEPOSIT.getValue())) {
             //验证是否可以再次发生邮件

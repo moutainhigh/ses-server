@@ -59,17 +59,19 @@ public class InquiryResult extends GeneralResult {
     @ApiModelProperty(value = "国家代码")
     private String countryCode;
 
-    @ApiModelProperty(value = "城市")
-    private Long cityId;
-
+    @ApiModelProperty(value = "国家")
+//    private Long cityId;
+    private String countryName;
+//
     @ApiModelProperty(value = "城市名称")
+//    private String cityName;
     private String cityName;
 
-    @ApiModelProperty(value = "区域")
-    private Long distrustId;
-
+//    @ApiModelProperty(value = "区域")
+//    private Long distrustId;
+//
     @ApiModelProperty(value = "区域名称")
-    private String distrustName;
+    private String districtName;
 
     @ApiModelProperty(value = "状态")
     private String status;

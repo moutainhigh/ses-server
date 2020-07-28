@@ -498,6 +498,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             customer.setAddress(enter.getAddress());
         }
         customer.setDef1(enter.getCustomerCountry());
+        customer.setDef2(enter.getCity());
         customer.setAddress(enter.getAddress());
         customer.setDistrust(Long.valueOf(enter.getDistrict()));
         if (!StringUtils.isAllBlank(enter.getLat(),enter.getLng(),enter.getPlaceId())){
@@ -522,7 +523,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                 inquiry.setFullName(customer.getCustomerFullName());
 //                inquiry.setTelephone(customer.getTelephone());
                 inquiry.setAddress(customer.getAddress());
-                inquiry.setDistrict(Long.valueOf(enter.getDistrict()));
+                inquiry.setDef3(enter.getDistrict());
                 update.add(inquiry);
             }
             opeCustomerInquiryMapper.updateBatch(update);
