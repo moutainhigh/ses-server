@@ -51,7 +51,7 @@ public class SignUpEnter extends GeneralEnter {
     @ApiModelProperty(value = "密码")
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.PASSWORD_IS_EMPTY,message = "密码为空")
     @MinimumLength(value = "8",code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.PASSWORD_ILLEAGE,message = "密码不合法")
-    @MaximumLength(value = "20",code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.PASSWORD_ILLEAGE,message = "密码不合法")
+    @MaximumLength(value = "64",code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.PASSWORD_ILLEAGE,message = "密码不合法")
     private String password;
 
     @ApiModelProperty(value = "地址")
