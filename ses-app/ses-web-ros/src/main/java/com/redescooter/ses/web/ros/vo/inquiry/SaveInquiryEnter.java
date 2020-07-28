@@ -38,7 +38,7 @@ public class SaveInquiryEnter extends GeneralEnter {
     private String countryName;
 
     @ApiModelProperty(value = "城市")
-    private String cityName;
+    private String city;
 
     @ApiModelProperty(value = "区域")
     private String distrustName;
