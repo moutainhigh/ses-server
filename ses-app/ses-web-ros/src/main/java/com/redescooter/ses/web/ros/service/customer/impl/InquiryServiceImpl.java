@@ -461,7 +461,7 @@ public class InquiryServiceImpl implements InquiryService {
                 dataMap.add(toMap(inquiry));
             }
             String sheetName = "询价单";
-            String[] headers = {"NAME","SURNAME","EMAIL","TELEPHONE","CODE POSTAL","VOTER MESSAGE"};
+            String[] headers = {"NAME","SURNAME","EMAIL","TELEPHONE","CODE POSTAL","VOTER MESSAGE","CITY NAME","CREATE TIME"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName,excelFolder);
@@ -500,6 +500,8 @@ public class InquiryServiceImpl implements InquiryService {
        map.put("TELEPHONE",Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone())?"--":"+33-"+opeCustomerInquiry.getTelephone());
        map.put("CODE POSTAL",Strings.isNullOrEmpty(opeCustomerInquiry.getDef2())?"--":opeCustomerInquiry.getDef2());
        map.put("VOTER MESSAGE",Strings.isNullOrEmpty(opeCustomerInquiry.getRemark())?"--":opeCustomerInquiry.getRemark());
+       map.put("CITY NAME",Strings.isNullOrEmpty(opeCustomerInquiry.getDef3())?"--":opeCustomerInquiry.getDef3());
+       map.put("CREATE TIME",opeCustomerInquiry.getAcceptanceTime()==null?"--":DateUtil.getTimeStrDefault(opeCustomerInquiry.getAcceptanceTime()));
        return map;
    }
 
