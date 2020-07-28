@@ -35,4 +35,6 @@ public interface ValidationExceptionCode {
     int LON_IS_ILLEGAL = 10014;
     //维度违法
     int LAT_IS_ILLEGAL = 10015;
+    //密码不合法
+    int PASSWORD_ILLEAGE=10016;
 }

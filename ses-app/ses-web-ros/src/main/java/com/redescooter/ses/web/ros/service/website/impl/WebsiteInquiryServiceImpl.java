@@ -275,7 +275,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //订单校验客户订单校验 一个客户只允许存在一个订单
         List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>()
                 .eq(OpeCustomerInquiry::getEmail, customerInquiry.getEmail())
-        .gt(OpeCustomerInquiry::getId,customerInquiry.getId())
+                .gt(OpeCustomerInquiry::getId, customerInquiry.getId())
         );
         if (CollectionUtils.isNotEmpty(customerInquiryList)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
@@ -390,20 +390,30 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //todo 目前暂做个人端 默认车辆数量为一
 //        opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
 
-        if (StringUtils.isNotEmpty(enter.getDistrict())){
-            opeCustomerInquiry.setDef2(enter.getDistrict());
-        }else {
+//        if (StringUtils.isNotEmpty(enter.getDistrict())){
+//            opeCustomerInquiry.setDef2(enter.getDistrict());
+//        }else {
+//            opeCustomerInquiry.setDef2(opeCustomer.getDef2());
+//        }
+//        if (StringUtils.isNotEmpty(enter.getCustomerCountry())){
+//            opeCustomerInquiry.setDef1(enter.getCustomerCountry());
+//        }else {
+//            opeCustomerInquiry.setDef1(opeCustomer.getDef1());
+//        }
+//        if (StringUtils.isNotEmpty(enter.getAddress())){
+//            opeCustomerInquiry.setAddress(enter.getAddress());
+//        }else{
+//            opeCustomerInquiry.setAddress(opeCustomer.getAddress());
+//        }
+        //def1国家、def2区域、 def3城市
+        if (StringUtils.isNotEmpty(opeCustomer.getDef2())) {
             opeCustomerInquiry.setDef2(opeCustomer.getDef2());
         }
-        if (StringUtils.isNotEmpty(enter.getCustomerCountry())){
-            opeCustomerInquiry.setDef1(enter.getCustomerCountry());
-        }else {
+        if (StringUtils.isNotEmpty(opeCustomer.getDef1())) {
             opeCustomerInquiry.setDef1(opeCustomer.getDef1());
         }
-        if (StringUtils.isNotEmpty(enter.getAddress())){
-            opeCustomerInquiry.setAddress(enter.getAddress());
-        }else{
-            opeCustomerInquiry.setAddress(opeCustomer.getAddress());
+        if (opeCustomer.getDistrust() != null) {
+            opeCustomerInquiry.setDef3(String.valueOf(opeCustomer.getDistrust()));
         }
 
         opeCustomerInquiry.setScooterQuantity(1);
@@ -601,7 +611,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .lastName(opeCustomer.getCustomerLastName())
                 .address(opeCustomer.getAddress())
                 .customerCountry(opeCustomer.getDef1())
-                .district(opeCustomer.getDistrust()==null ? null:opeCustomer.getDistrust().toString())
+                .district(opeCustomer.getDistrust() == null ? null : opeCustomer.getDistrust().toString())
                 .build();
     }
 

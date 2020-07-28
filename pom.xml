@@ -35,7 +35,7 @@
         <!--引入开源hutool工具包-->
         <hutool.version>4.6.2</hutool.version>
         <!--表格操作组件-->
-        <easypoi.version>4.1.3</easypoi.version>
+        <easypoi.version>4.2.0</easypoi.version>
         <sentinel.version>1.7.0</sentinel.version>
         <!--swagger start-->
         <springfox.version>2.8.0</springfox.version>

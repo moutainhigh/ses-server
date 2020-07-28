@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 /**
  * @author Mr.lijiating
  * @version V1.0
@@ -45,18 +43,18 @@ public class ImportExcelServiceImpl<T> implements ImportExcelService<T> {
      * @return
      */
     @Override
-    public ExcelImportResult<T> importOssExcel(String url, Class<?> pojoClass,ImportParams params) {
+    public ExcelImportResult<T> importOssExcel(String url, Class<?> pojoClass, ImportParams params) {
 
         if (iExcelVerifyHandler != null) {
             params.setVerifyHandler(getiExcelVerifyHandler());
         }
 
-        long start = new Date().getTime();
+        long start = System.currentTimeMillis();
         ExcelImportResult<T> excelImportResult = null;
         try {
             excelImportResult = ExcelImportUtil.importExcelMore(fileAppService.download(url), pojoClass, params);
-            System.out.println(new Date().getTime() - start);
-            if (excelImportResult.getFailList().size()>0) {
+            System.out.println(System.currentTimeMillis() - start);
+            if (excelImportResult.getFailList().size() > 0) {
                 log.info("解析不合法数据为{}", excelImportResult.getFailList().toString());
                 log.info("本次解析Excel不合法数据共计{}条数据", excelImportResult.getFailList().size());
             } else {

@@ -55,7 +55,6 @@ import redis.clients.jedis.JedisCluster;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName:InquiryServiceImpl
@@ -230,7 +229,11 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setUpdatedBy(0L);
         opeCustomerInquiry.setCreatedTime(new Date());
         opeCustomerInquiry.setUpdatedTime(new Date());
-        opeCustomerInquiry.setDef2(enter.getDistrust());
+
+
+        opeCustomerInquiry.setDef1(enter.getCountryName());
+        opeCustomerInquiry.setDef2(enter.getDistrustName());
+        opeCustomerInquiry.setDef3(enter.getCity());
         return opeCustomerInquiry;
     }
 
@@ -253,18 +256,18 @@ public class InquiryServiceImpl implements InquiryService {
             return PageResult.createZeroRowResult(enter);
         }
         List<InquiryResult> inquiryResultList = inquiryServiceMapper.inquiryList(enter);
-        inquiryResultList.forEach(item -> {
-            String city = null;
-            String distrust = null;
-            if (item.getCityId() != null && item.getCityId() != 0) {
-                city = cityBaseService.queryCityDeatliById(new IdEnter(item.getCityId())).getName();
-            }
-            if (item.getDistrustId() != null && item.getDistrustId() != 0) {
-                distrust = cityBaseService.queryCityDeatliById(new IdEnter(item.getDistrustId())).getName();
-            }
-            item.setCityName(city);
-            item.setDistrustName(distrust);
-        });
+//        inquiryResultList.forEach(item -> {
+//            String city = null;
+//            String distrust = null;
+//            if (item.getCityId() != null && item.getCityId() != 0) {
+//                city = cityBaseService.queryCityDeatliById(new IdEnter(item.getCityId())).getName();
+//            }
+//            if (item.getDistrustId() != null && item.getDistrustId() != 0) {
+//                distrust = cityBaseService.queryCityDeatliById(new IdEnter(item.getDistrustId())).getName();
+//            }
+//            item.setCityName(city);
+//            item.setDistrustName(distrust);
+//        });
         return PageResult.create(enter, count, inquiryResultList);
     }
 
@@ -284,16 +287,16 @@ public class InquiryServiceImpl implements InquiryService {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
 
-        String city = null;
-        String distrust = null;
-        if (inquiryResult.getCityId() != null && inquiryResult.getCityId() != 0) {
-            city = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getCityId())).getName();
-        }
-        if (inquiryResult.getDistrustId() != null && inquiryResult.getDistrustId() != 0) {
-            distrust = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getDistrustId())).getName();
-        }
-        inquiryResult.setCityName(city);
-        inquiryResult.setDistrustName(distrust);
+//        String city = null;
+//        String distrust = null;
+//        if (inquiryResult.getCityId() != null && inquiryResult.getCityId() != 0) {
+//            city = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getCityId())).getName();
+//        }
+//        if (inquiryResult.getDistrustId() != null && inquiryResult.getDistrustId() != 0) {
+//            distrust = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getDistrustId())).getName();
+//        }
+//        inquiryResult.setCityName(city);
+//        inquiryResult.setDistrustName(distrust);
 
         if (StringUtils.equals(inquiryResult.getStatus(), InquiryStatusEnums.UNPAY_DEPOSIT.getValue()) || StringUtils.equals(inquiryResult.getStatus(), InquiryStatusEnums.PAY_DEPOSIT.getValue())) {
             //验证是否可以再次发生邮件
@@ -465,7 +468,7 @@ public class InquiryServiceImpl implements InquiryService {
                 dataMap.add(toMap(inquiry));
             }
             String sheetName = "询价单";
-            String[] headers = {"NAME","SURNAME","EMAIL","TELEPHONE","CODE POSTAL","VOTER MESSAGE"};
+            String[] headers = {"NAME","SURNAME","EMAIL","TELEPHONE","CODE POSTAL","VOTER MESSAGE","CITY NAME","CREATE TIME"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName,excelFolder);
@@ -504,6 +507,8 @@ public class InquiryServiceImpl implements InquiryService {
        map.put("TELEPHONE",Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone())?"--":"+33-"+opeCustomerInquiry.getTelephone());
        map.put("CODE POSTAL",Strings.isNullOrEmpty(opeCustomerInquiry.getDef2())?"--":opeCustomerInquiry.getDef2());
        map.put("VOTER MESSAGE",Strings.isNullOrEmpty(opeCustomerInquiry.getRemark())?"--":opeCustomerInquiry.getRemark());
+       map.put("CITY NAME",Strings.isNullOrEmpty(opeCustomerInquiry.getDef3())?"--":opeCustomerInquiry.getDef3());
+       map.put("CREATE TIME",opeCustomerInquiry.getAcceptanceTime()==null?"--":DateUtil.getTimeStrDefault(opeCustomerInquiry.getAcceptanceTime()));
        return map;
    }
 

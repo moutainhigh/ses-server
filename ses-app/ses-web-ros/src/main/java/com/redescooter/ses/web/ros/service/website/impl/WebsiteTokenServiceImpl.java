@@ -13,6 +13,9 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
+import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.vo.common.CityPostResult;
+import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -83,6 +86,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Value("${Request.privateKey}")
     private String privatekey;
+
+    @Reference
+    private CityBaseService cityBaseService;
 
     /**
      * 登录
@@ -159,6 +165,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult signUp(SignUpEnter enter) {
 
@@ -197,7 +204,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         enter.setPassword(decryptPassword);
         //密码长度校验
-        checkString(enter.getPassword(),2,20);
+        checkString(enter.getPassword(),8,64);
         //邮箱长度校验
         checkString(enter.getEmail(),2,50);
 
@@ -208,6 +215,17 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         //创建账户
         OpeSysUser opeSysUser = buildOpeSysUser(decryptEamil, decryptPassword, salt);
         opeSysUserService.save(opeSysUser);
+
+        //邮件发送
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setName(enter.getFirstName()+" "+enter.getLastName());
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEBSITE_SIGN_UP.getEvent());
+        baseMailTaskEnter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        baseMailTaskEnter.setAppId(AppIDEnums.SES_ROS.getValue());
+        baseMailTaskEnter.setEmail(enter.getEmail());
+        baseMailTaskEnter.setRequestId(enter.getRequestId());
+        baseMailTaskEnter.setUserId(opeSysUser.getId());
+        mailMultiTaskService.addMultiMailTask(baseMailTaskEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -480,8 +498,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             customer.setAddress(enter.getAddress());
         }
         customer.setDef1(enter.getCustomerCountry());
-        customer.setAddress(enter.getAddress());
+        customer.setDef2(enter.getCity());
         customer.setDistrust(Long.valueOf(enter.getDistrict()));
+        customer.setAddress(enter.getAddress());
         if (!StringUtils.isAllBlank(enter.getLat(),enter.getLng(),enter.getPlaceId())){
             customer.setLatitude(new BigDecimal(enter.getLat()));
             customer.setLongitude(new BigDecimal(enter.getLng()));
@@ -504,7 +523,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                 inquiry.setFullName(customer.getCustomerFullName());
 //                inquiry.setTelephone(customer.getTelephone());
                 inquiry.setAddress(customer.getAddress());
-                inquiry.setDistrict(Long.valueOf(enter.getDistrict()));
+                inquiry.setDef1(enter.getCustomerCountry());
+                inquiry.setDef3(enter.getCity());
+                inquiry.setDef2(enter.getDistrict());
                 update.add(inquiry);
             }
             opeCustomerInquiryMapper.updateBatch(update);
@@ -526,9 +547,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         saveCustomer.setAssignationScooterQty(0);
         saveCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         saveCustomer.setStatus(CustomerStatusEnum.PREDESTINATE_CUSTOMER.getValue());
-        saveCustomer.setUpdatedBy(saveCustomer.getId());
+        saveCustomer.setUpdatedBy(0L);
         saveCustomer.setUpdatedTime(new Date());
-        saveCustomer.setCreatedBy(saveCustomer.getId());
+        saveCustomer.setCreatedBy(0L);
         saveCustomer.setCreatedTime(new Date());
         saveCustomer.setAccountFlag("0");
         saveCustomer.setAddress(enter.getAddress());
@@ -540,6 +561,8 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         saveCustomer.setDistrust(Long.valueOf(enter.getDistrict()));
         saveCustomer.setDef1(enter.getCustomerCountry());
+        //客户表之前def1字段存的是国家  现在def2字段存城市
+        saveCustomer.setDef2(enter.getCity());
         return saveCustomer;
     }
 
@@ -552,5 +575,21 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (str.length() < min || str.length() > max) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+    }
+
+
+    @Override
+    public List<CountryCityResult> countryAndCity() {
+        return cityBaseService.countryAndCity();
+    }
+
+    @Override
+    public List<CityPostResult> cityPostCode(String cityName) {
+        return cityBaseService.cityPostCode(cityName);
+    }
+
+    @Override
+    public List<CountryCityResult> countryCityPostCode(CityNameEnter cityNameEnter) {
+        return cityBaseService.countryCityPostCode(cityNameEnter);
     }
 }
