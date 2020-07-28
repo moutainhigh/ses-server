@@ -59,12 +59,12 @@ public class SignUpEnter extends GeneralEnter {
     private String address;
 
     @ApiModelProperty(value = "维度")
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.LAT_IS_EMPTY, message = "维度为空")
+//    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.LAT_IS_EMPTY, message = "维度为空")
     @Regexp(value = RegexpConstant.lat,code = ValidationExceptionCode.LAT_IS_ILLEGAL,message = "维度不合法")
     private String lat;
 
     @ApiModelProperty(value = "经度")
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.LNG_IS_EMPTY, message = "经度为空")
+//    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.LNG_IS_EMPTY, message = "经度为空")
     @Regexp(value = RegexpConstant.lat,code = ValidationExceptionCode.LNG_ILLEGAL,message = "经度不合法")
     private String lng;
 
