@@ -880,4 +880,13 @@ public class DateUtil {
         TimeZone.setDefault(tz);
         return new Date(timeStamp);
     }
+
+    // 数字月份转为英文的月份
+    public static String numMonToEngMon(String month) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM");
+        Date date = sdf.parse(month);
+        sdf = new SimpleDateFormat("MMMMM", Locale.US);
+        month = sdf.format(date);
+        return month;
+    }
 }
