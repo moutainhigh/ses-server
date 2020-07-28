@@ -56,7 +56,7 @@ public class WebEditCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "地址Id")
     private String placeId;
 
-    @ApiModelProperty(value = "区域Id")
+    @ApiModelProperty(value = "邮政编码")
     @NotNull(code = ValidationExceptionCode.COUNTRY_CITY_MSG_IS_EMPTY, message = "国家城市信息为空")
     @MaximumLength(value ="60", code = ValidationExceptionCode.COUNTRY_CITY_ILLEGAL,message = "国家城市非法")
     @MinimumLength(value = "2",code = ValidationExceptionCode.COUNTRY_CITY_ILLEGAL,message = "国家城市非法")
