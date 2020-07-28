@@ -165,6 +165,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult signUp(SignUpEnter enter) {
 
@@ -203,7 +204,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         enter.setPassword(decryptPassword);
         //密码长度校验
-        checkString(enter.getPassword(),2,20);
+        checkString(enter.getPassword(),8,64);
         //邮箱长度校验
         checkString(enter.getEmail(),2,50);
 
@@ -214,6 +215,17 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         //创建账户
         OpeSysUser opeSysUser = buildOpeSysUser(decryptEamil, decryptPassword, salt);
         opeSysUserService.save(opeSysUser);
+
+        //邮件发送
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setName(enter.getFirstName()+" "+enter.getLastName());
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEBSITE_SIGN_UP.getEvent());
+        baseMailTaskEnter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        baseMailTaskEnter.setAppId(AppIDEnums.SES_ROS.getValue());
+        baseMailTaskEnter.setEmail(enter.getEmail());
+        baseMailTaskEnter.setRequestId(enter.getRequestId());
+        baseMailTaskEnter.setUserId(opeSysUser.getId());
+        mailMultiTaskService.addMultiMailTask(baseMailTaskEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
