@@ -24,10 +24,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -285,13 +282,13 @@ public class CityBaseServiceImpl implements CityBaseService {
     }
 
 
-    public List<CountryCityResult> formatData(List<CountryCityResult> list,Integer level, List<PlaCity> cityList){
-        switch (level){
+    public List<CountryCityResult> formatData(List<CountryCityResult> list,Integer level, List<PlaCity> cityList) {
+        switch (level) {
             case 1:
                 // 查询国家的
                 for (PlaCity city : cityList) {
-                    CountryCityResult  countryCityResult = new CountryCityResult();
-                    BeanUtil.copyProperties(city,countryCityResult);
+                    CountryCityResult countryCityResult = new CountryCityResult();
+                    BeanUtil.copyProperties(city, countryCityResult);
                     list.add(countryCityResult);
                 }
             default:
@@ -299,18 +296,20 @@ public class CityBaseServiceImpl implements CityBaseService {
             case 2:
                 // 查询城市的,这里城市要去重
                 // 先按城市来分组
-                Map<String,List<PlaCity>> map = cityList.stream().collect(Collectors.groupingBy(PlaCity::getName));
+                Map<String, List<PlaCity>> map = cityList.stream().collect(Collectors.groupingBy(PlaCity::getName));
                 for (String city : map.keySet()) {
-                    CountryCityResult  countryCityResult = new CountryCityResult();
+                    CountryCityResult countryCityResult = new CountryCityResult();
                     countryCityResult.setName(city);
                     list.add(countryCityResult);
                 }
                 break;
             case 3:
                 //查询邮政编码
-                for (PlaCity city : cityList) {
-                    CountryCityResult  countryCityResult = new CountryCityResult();
-                    countryCityResult.setName(city.getPostCode());
+                //查询邮政编码  要去重
+                Set<String> sets = cityList.stream().map(PlaCity::getPostCode).collect(Collectors.toSet());
+                for (String set : sets) {
+                    CountryCityResult countryCityResult = new CountryCityResult();
+                    countryCityResult.setName(set);
                     list.add(countryCityResult);
                 }
                 break;
