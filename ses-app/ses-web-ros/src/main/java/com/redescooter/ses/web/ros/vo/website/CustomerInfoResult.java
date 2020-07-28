@@ -1,18 +1,9 @@
 package com.redescooter.ses.web.ros.vo.website;
 
-import com.redescooter.ses.api.common.annotation.MaximumLength;
-import com.redescooter.ses.api.common.annotation.MinimumLength;
-import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 /**
  * @ClassName:CustomerInfoResult
@@ -64,4 +55,7 @@ public class CustomerInfoResult extends GeneralResult {
 
     @ApiModelProperty(value = "城市")
     private String city;
+
+    @ApiModelProperty(value = "国家Id")
+    private Long countryId;
 }

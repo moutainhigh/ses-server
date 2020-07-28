@@ -85,6 +85,10 @@ public class SignUpEnter extends GeneralEnter {
     @Regexp(code = ValidationExceptionCode.COUNTRY_CITY_ILLEGAL,message = "国家城市非法")
     private String customerCountry;
 
+    @ApiModelProperty(value = "国家Id")
+    @NotNull(code = ValidationExceptionCode.COUNTRY_CITY_MSG_IS_EMPTY, message = "国家城市信息为空")
+    private Long countryId;
+
     @ApiModelProperty("城市")
     @NotNull(code = ValidationExceptionCode.COUNTRY_CITY_MSG_IS_EMPTY, message = "国家城市信息为空")
     @MaximumLength(value ="60", code = ValidationExceptionCode.COUNTRY_CITY_ILLEGAL,message = "国家城市非法")

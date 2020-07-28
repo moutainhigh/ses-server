@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.vo.website;
 
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
-import com.redescooter.ses.api.common.annotation.NotEmpty;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
@@ -70,6 +69,10 @@ public class WebEditCustomerEnter extends GeneralEnter {
     @MinimumLength(value = "2",code = ValidationExceptionCode.COUNTRY_CITY_ILLEGAL,message = "国家城市非法")
     @Regexp(code = ValidationExceptionCode.COUNTRY_CITY_ILLEGAL,message = "国家城市非法")
     private String customerCountry;
+
+    @ApiModelProperty(value = "国家Id")
+    @NotNull(code = ValidationExceptionCode.COUNTRY_CITY_MSG_IS_EMPTY, message = "国家城市信息为空")
+    private Long countryId;
 
     @ApiModelProperty(value = "城市")
     @NotNull(code = ValidationExceptionCode.COUNTRY_CITY_MSG_IS_EMPTY, message = "国家城市信息为空")
