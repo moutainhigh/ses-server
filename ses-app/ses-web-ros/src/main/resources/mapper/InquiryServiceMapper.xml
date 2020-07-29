@@ -14,10 +14,10 @@
             and inquiry.def1 =#{countryName}
         </if>
         <if test="cityName != null and cityName != ''">
-            and inquiry.def3 =#{cityName}
+            and inquiry.def2 =#{cityName}
         </if>
         <if test="districtName != null and districtName != ''">
-            and inquiry.def2 = #{districtName}
+            and inquiry.def3 = #{districtName}
         </if>
         <if test="industyType != null and industyType != ''">
             and inquiry.industry = #{industyType}
