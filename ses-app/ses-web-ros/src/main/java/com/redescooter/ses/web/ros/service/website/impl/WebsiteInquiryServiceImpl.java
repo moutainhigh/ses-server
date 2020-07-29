@@ -405,15 +405,15 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 //        }else{
 //            opeCustomerInquiry.setAddress(opeCustomer.getAddress());
 //        }
-        //def1国家、def2区域、 def3城市
-        if (StringUtils.isNotEmpty(opeCustomer.getDef2())) {
-            opeCustomerInquiry.setDef2(opeCustomer.getDef2());
-        }
+        //def1 国家 def2 城市 distrust区域
         if (StringUtils.isNotEmpty(opeCustomer.getDef1())) {
             opeCustomerInquiry.setDef1(opeCustomer.getDef1());
         }
+        if (StringUtils.isNotEmpty(opeCustomer.getDef2())) {
+            opeCustomerInquiry.setDef2(opeCustomer.getDef2());
+        }
         if (opeCustomer.getDistrust() != null) {
-            opeCustomerInquiry.setDef3(String.valueOf(opeCustomer.getDistrust()));
+            opeCustomerInquiry.setDistrict(opeCustomer.getDistrust());
         }
 
         opeCustomerInquiry.setScooterQuantity(1);
