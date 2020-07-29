@@ -105,9 +105,9 @@ public class InquiryResult extends GeneralResult {
     @ApiModelProperty(value = "国家")
     private String def1;
 
-    @ApiModelProperty(value = "邮政编码")
+    @ApiModelProperty(value = "城市")
     private String def2;
 
-    @ApiModelProperty(value = "区域")
+    @ApiModelProperty(value = "邮编")
     private String def3;
 }
