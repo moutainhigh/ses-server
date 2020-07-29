@@ -261,6 +261,9 @@ public class CityBaseServiceImpl implements CityBaseService {
                     break;
             case 2:
                 // 查询城市
+                if(Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
+                    return list;
+                }
                 qw.eq("p_id",cityNameEnter.getId());
                 if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
                     qw.like("name",cityNameEnter.getKeyWord());
