@@ -526,8 +526,8 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                 inquiry.setCountry(enter.getCountryId());
                 inquiry.setAddress(customer.getAddress());
                 inquiry.setDef1(enter.getCustomerCountry());
-                inquiry.setDef3(enter.getCity());
                 inquiry.setDef2(enter.getDistrict());
+                inquiry.setDef3(enter.getCity());
                 update.add(inquiry);
             }
             opeCustomerInquiryMapper.updateBatch(update);
