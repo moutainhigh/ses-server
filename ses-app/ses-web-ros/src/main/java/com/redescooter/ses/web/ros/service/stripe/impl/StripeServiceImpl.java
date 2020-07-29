@@ -347,7 +347,7 @@ public class StripeServiceImpl implements StripeService {
         enter.setUserRequestId("0");
         enter.setToUserId(0L);
         enter.setUserId(0L);
-        enter.setPrice(customerInquiry.getTotalPrice().toString());
+        enter.setPrice(String.valueOf(customerInquiry.getTotalPrice().intValue()));
         enter.setFullName(customerInquiry.getFirstName()+" "+customerInquiry.getLastName());
         enter.setModel(ProductModelEnums.getProductModelEnumsByValue(customerInquiry.getProductModel()).getMessage());
         mailMultiTaskService.subscriptionPaySucceedSendmail(enter);
