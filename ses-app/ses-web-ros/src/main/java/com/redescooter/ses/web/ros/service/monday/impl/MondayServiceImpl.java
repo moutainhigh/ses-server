@@ -140,9 +140,9 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public List<MondayBoardResult> queryBoard() {
 
-        log.info("--------------------------" + MondayQueryGqlConstant.QUERY_BOARD + "--------------------------------");
+        System.out.println("--------------------------" + MondayQueryGqlConstant.QUERY_BOARD + "--------------------------------");
         String mondayJson = getMondayData(MondayQueryGqlConstant.QUERY_BOARD, HttpMethod.POST);
-        log.info("---------------{" + mondayJson + "}---------");
+        System.out.println("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         MondayDataResult mondayDataResult = JSON.parseObject(mondayGeneralResult.getData(), MondayDataResult.class);
         return mondayDataResult.getBoards();
@@ -161,10 +161,10 @@ public class MondayServiceImpl implements MondayService {
         //替换语句中的id 参数
         String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayQueryGqlConstant.BOARD_PARAMETER, boardId);
 
-        log.info("--------------------------" + graphGql + "--------------------------------");
+        System.out.println("--------------------------" + graphGql + "--------------------------------");
 
         String mondayJson = getMondayData(graphGql, HttpMethod.POST);
-        log.info("---------------{" + mondayJson + "}---------");
+        System.out.println("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         MondayDataResult mondayDataResult = JSON.parseObject(mondayGeneralResult.getData(), MondayDataResult.class);
         //暂时返回0表
@@ -179,10 +179,10 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public List<MondayTagResult> queryTagList() {
 
-        log.info("--------------------------" + MondayQueryGqlConstant.QUERY_TAGS + "--------------------------------");
+        System.out.println("--------------------------" + MondayQueryGqlConstant.QUERY_TAGS + "--------------------------------");
 
         String mondayJson = getMondayData(MondayQueryGqlConstant.QUERY_TAGS, HttpMethod.POST);
-        log.info("---------------{" + mondayJson + "}---------");
+        System.out.println("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         MondayDataResult mondayDataResult = JSON.parseObject(mondayGeneralResult.getData(), MondayDataResult.class);
         return mondayDataResult.getTags();
@@ -198,9 +198,9 @@ public class MondayServiceImpl implements MondayService {
         String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayQueryGqlConstant.QUERY_COLUMN, boardId);
 
 
-        log.info("--------------------------" + graphGql + "--------------------------------");
+        System.out.println("--------------------------" + graphGql + "--------------------------------");
         String mondayJson = getMondayData(graphGql, HttpMethod.POST);
-        log.info("---------------{" + mondayJson + "}---------");
+        System.out.println("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         List<MondayBoardResult> mondayBoardResultList = JSON.parseArray(mondayGeneralResult.getData(), MondayBoardResult.class);
         return mondayBoardResultList.get(0).getColumns();
@@ -221,15 +221,14 @@ public class MondayServiceImpl implements MondayService {
                 .replace(MondayQueryGqlConstant.CREATE_ITEM_NAME, enter.getItemName().toString())
                 .replace(MondayQueryGqlConstant.CREATE_COLUMN_VALUES, enter.getColumnValues());
 
-        log.info("--------------------------" + graphGql + "--------------------------------");
-
+        System.out.println("--------------------------" + graphGql + "--------------------------------");
 
         String mondayJson = getMondayData(graphGql, HttpMethod.POST);
-        log.info("---------------{" + mondayJson + "}---------");
+        System.out.println("---------------{" + mondayJson + "}---------");
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
         MondayDataResult mondayDataResult = JSON.parseObject(mondayGeneralResult.getData(), MondayDataResult.class);
 
-        log.info("-----------------------------------数据插入成功-----------------------------------");
+        System.out.println("-----------------------------------数据插入成功-----------------------------------");
         return mondayDataResult.getCreate_item();
     }
 
@@ -310,7 +309,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(MondayContantUsColumnEnums.VOTRE_MESSAGE.getId(), enter.getRemarks());
         //转json 并转义
         String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
-        log.info("----------------------" + columnValues + "-------------------------");
+        System.out.println("----------------------" + columnValues + "-------------------------");
         return columnValues;
     }
 
@@ -379,7 +378,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(MondayBookOrderColumnEnums.COULEUR.getId(), ProductColorEnums.getProductColorEnumsByValue(opePartsProduct.getColor()).getMessage());
 
         String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
-        log.info("----------------------" + columnValues + "-------------------------");
+        System.out.println("----------------------" + columnValues + "-------------------------");
         return columnValues;
     }
 }
