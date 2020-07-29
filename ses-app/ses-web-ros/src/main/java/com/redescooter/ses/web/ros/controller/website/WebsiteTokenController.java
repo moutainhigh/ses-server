@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.common.CityPostResult;
 import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
@@ -35,6 +36,9 @@ public class WebsiteTokenController {
 
     @Autowired
     private WebSiteTokenService webSiteService;
+
+    @Autowired
+    private MondayService mondayService;
 
     @IgnoreLoginCheck
     @PostMapping(value = "/login")

@@ -270,7 +270,12 @@ public class CityBaseServiceImpl implements CityBaseService {
                 break;
             case 3:
                 //查询邮政编码
+                // 查询邮编的时候 城市必传
+                if(Strings.isNullOrEmpty(cityNameEnter.getCity())){
+                    return list;
+                }
                 qw.isNotNull("post_code");
+                qw.eq("name",cityNameEnter.getCity());
                 if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
                     qw.like("post_code",cityNameEnter.getKeyWord());
                 }
