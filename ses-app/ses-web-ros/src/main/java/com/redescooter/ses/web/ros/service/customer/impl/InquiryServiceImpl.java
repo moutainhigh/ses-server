@@ -230,10 +230,10 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setCreatedTime(new Date());
         opeCustomerInquiry.setUpdatedTime(new Date());
 
-
+        //def1 国家 def2 城市 distrust区域
         opeCustomerInquiry.setDef1(enter.getCustomerCountry());
-        opeCustomerInquiry.setDef2(enter.getDistrust());
-        opeCustomerInquiry.setDef3(enter.getCity());
+        opeCustomerInquiry.setDistrict(Long.valueOf(enter.getDistrust()));
+        opeCustomerInquiry.setDef2(enter.getCity());
         opeCustomerInquiry.setCountry(enter.getCountryId());
         return opeCustomerInquiry;
     }
