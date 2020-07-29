@@ -35,13 +35,16 @@ public class SaveInquiryEnter extends GeneralEnter {
     private String email;
 
     @ApiModelProperty(value = "国家")
-    private String countryName;
+    private String customerCountry;
+
+    @ApiModelProperty(value = "国家Id")
+    private Long countryId;
 
     @ApiModelProperty(value = "城市")
     private String city;
 
     @ApiModelProperty(value = "区域")
-    private String distrustName;
+    private String distrust;
 
     @ApiModelProperty(value = "客户名字")
     @NotNull(code = ValidationExceptionCode.FIRST_NAME_IS_EMPTY, message = "姓名为空")

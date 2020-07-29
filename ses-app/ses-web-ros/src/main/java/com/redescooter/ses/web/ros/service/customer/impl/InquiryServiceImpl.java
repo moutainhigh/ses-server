@@ -231,9 +231,10 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setUpdatedTime(new Date());
 
 
-        opeCustomerInquiry.setDef1(enter.getCountryName());
-        opeCustomerInquiry.setDef2(enter.getDistrustName());
+        opeCustomerInquiry.setDef1(enter.getCustomerCountry());
+        opeCustomerInquiry.setDef2(enter.getDistrust());
         opeCustomerInquiry.setDef3(enter.getCity());
+        opeCustomerInquiry.setCountry(enter.getCountryId());
         return opeCustomerInquiry;
     }
 
