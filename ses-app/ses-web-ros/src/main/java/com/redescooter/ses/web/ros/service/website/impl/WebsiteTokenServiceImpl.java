@@ -575,7 +575,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (StringUtils.isEmpty(str)) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        if (str.length() <= min || str.length() >= max) {
+        if (str.length() < min || str.length() > max) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
     }
