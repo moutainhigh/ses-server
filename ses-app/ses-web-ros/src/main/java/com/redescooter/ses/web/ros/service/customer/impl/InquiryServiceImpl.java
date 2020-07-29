@@ -200,9 +200,7 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setOrderNo(RandomUtil.simpleUUID());
         opeCustomerInquiry.setCustomerId(0L);
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
-        opeCustomerInquiry.setCountry(null);
         opeCustomerInquiry.setCity(null);
-        opeCustomerInquiry.setDistrict(null);
         opeCustomerInquiry.setCustomerSource("");
         opeCustomerInquiry.setSalesId(0L);
         opeCustomerInquiry.setSource(InquirySourceEnums.INQUIRY.getValue());
