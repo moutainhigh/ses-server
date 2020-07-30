@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.dm.OpeWhse;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutConsigneeResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailProductPartListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailProductPartListResult;
@@ -80,17 +81,19 @@ public interface WhOutServiceMapper {
      * 产品列表
      *
      * @param enter
+     * @param opeWhseList
      * @return
      */
-    Integer productListCount(WhOutProductListEnter enter);
+    Integer productListCount(@Param("enter") WhOutProductListEnter enter, @Param("opeWhseList") List<OpeWhse> opeWhseList);
 
     /**
      * 产品列表
      *
      * @param enter
+     * @param opeWhseList
      * @return
      */
-    List<WhOutProductListResult> productListList(WhOutProductListEnter enter);
+    List<WhOutProductListResult> productListList(WhOutProductListEnter enter, List<OpeWhse> opeWhseList);
 
     /**
      * 收件人列表

@@ -348,9 +348,6 @@ public class WhOutServiceImpl implements WhOutService {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
         }
 
-        //出库单集合
-        List<OpeStockBill> opeStockBillList = new ArrayList<>();
-
         //查询 库存
         List<OpeStock> opeStocks = new ArrayList<>(opeStockService.listByIds(orderBList.stream().map(OpeOutwhOrderB::getStockId).collect(Collectors.toList())));
 
@@ -370,12 +367,10 @@ public class WhOutServiceImpl implements WhOutService {
         });
 
         //子条目出库
-        outOrderStock(enter, orderBList, opeStockBillList);
+        outOrderStock(enter, orderBList);
 
         //库存更新
         opeStockService.updateBatch(opeStocks);
-        //出库单出库
-        opeStockBillService.saveBatch(opeStockBillList);
         //修改主订单
         opeOutwhOrder.setStatus(WhOutStatusEnums.OUT_WH.getValue());
         opeOutwhOrder.setUpdatedBy(enter.getUserId());
@@ -625,12 +620,17 @@ public class WhOutServiceImpl implements WhOutService {
      */
     @Override
     public PageResult<WhOutProductListResult> productList(WhOutProductListEnter enter) {
+        //采购仓库 成品仓库
+        List<OpeWhse> opeWhseList = opeWhseService.list(new LambdaQueryWrapper<OpeWhse>().in(OpeWhse::getType, WhseTypeEnums.ASSEMBLY.getValue(), WhseTypeEnums.PURCHAS.getValue()));
+        if (opeWhseList == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        }
         //采购仓库 成品仓库库存
-        Integer count = whOutServiceMapper.productListCount(enter);
+        Integer count = whOutServiceMapper.productListCount(enter,opeWhseList);
         if (count == null) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, count, whOutServiceMapper.productListList(enter));
+        return PageResult.create(enter, count, whOutServiceMapper.productListList(enter,opeWhseList));
     }
 
     /**
@@ -747,7 +747,8 @@ public class WhOutServiceImpl implements WhOutService {
 
                     if (StringUtils.isEmpty(opeStockPurchas.getSerialNumber())) {
                         if (opeStockPurchas.getAvailableQty() < opeOutwhOrderB.getTotalCount()) {
-                            opeStockPurchas.setBindOrderId(opeOutwhOrderB.getOutwhOrderId());
+                            opeStockPurchas.setAvailableQty(0);
+                            opeStockPurchas.setBindOrderId(opeOutwhOrderB.getId());
                             opeStockPurchas.setSourceType(SourceTypeEnums.WH_OUT.getValue());
                             opeStockPurchas.setStatus(StockProductPartStatusEnums.LOCKING.getValue());
                             opeStockPurchas.setUpdatedTime(new Date());
@@ -756,7 +757,14 @@ public class WhOutServiceImpl implements WhOutService {
                         } else {
                             opeStockPurchas.setAvailableQty(opeStockPurchas.getAvailableQty() - opeOutwhOrderB.getLastOutCount());
                         }
+                    }else {
+                        opeStockPurchas.setAvailableQty(0);
+                        opeStockPurchas.setBindOrderId(opeOutwhOrderB.getId());
+                        opeStockPurchas.setSourceType(SourceTypeEnums.WH_OUT.getValue());
+                        opeStockPurchas.setStatus(StockProductPartStatusEnums.LOCKING.getValue());
+                        opeStockPurchas.setUpdatedTime(new Date());
                     }
+
                     break;
                 }
             }
@@ -791,7 +799,7 @@ public class WhOutServiceImpl implements WhOutService {
 
                 if (opeOutwhOrderB.getStockId().equals(opeStockProdProduct.getStockId())) {
 
-                    opeStockProdProduct.setBindOrderId(opeOutwhOrderB.getOutwhOrderId());
+                    opeStockProdProduct.setBindOrderId(opeOutwhOrderB.getId());
                     opeStockProdProduct.setSourceType(SourceTypeEnums.WH_OUT.getValue());
                     opeStockProdProduct.setStatus(StockProductPartStatusEnums.LOCKING.getValue());
                     opeStockProdProduct.setUpdatedTime(new Date());
@@ -867,9 +875,10 @@ public class WhOutServiceImpl implements WhOutService {
      *
      * @param enter
      * @param orderBList
-     * @param opeStockBillList
      */
-    private void outOrderStock(IdEnter enter, List<OpeOutwhOrderB> orderBList, List<OpeStockBill> opeStockBillList) {
+    private void outOrderStock(IdEnter enter, List<OpeOutwhOrderB> orderBList) {
+        List<OpeStockBill> opeStockBillList = new ArrayList<>();
+
         //库存条目
         List<OpeOutwhOrderB> scooterOpeOutWhOrderList =
                 orderBList.stream().filter(item -> StringUtils.equals(item.getProductType(), BomCommonTypeEnums.SCOOTER.getValue())).collect(Collectors.toList());
@@ -958,6 +967,8 @@ public class WhOutServiceImpl implements WhOutService {
             });
             opeStockPurchasService.updateBatch(stockPurchasList);
         }
+        //出库单集合
+        opeStockBillService.batchInsert(opeStockBillList);
     }
 
     /**
