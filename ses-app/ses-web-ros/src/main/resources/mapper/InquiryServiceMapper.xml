@@ -67,8 +67,8 @@
            inquiry.source                                     as source,
            inquiry.address                                    as address,
            inquiry.def1                                       as countryName,
-           inquiry.def2                                       as districtName,
-           inquiry.def3                                       as cityName
+           inquiry.def2                                       as cityName,
+           inquiry.def3                                       as districtName
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
