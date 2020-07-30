@@ -9,11 +9,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -39,10 +35,10 @@ public class CreateCustomerEnter extends GeneralEnter {
     private Long countrys;
 
     @ApiModelProperty(value = "城市")
-    private Long city;
+    private String cityName;
 
-    @ApiModelProperty(value = "区域")
-    private Long distrust;
+    @ApiModelProperty(value = "区域邮编")
+    private String distrustName;
 
     @ApiModelProperty(value = "销售")
     private Long salesId;

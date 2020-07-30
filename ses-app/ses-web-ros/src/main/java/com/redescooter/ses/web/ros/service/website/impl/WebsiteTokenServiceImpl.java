@@ -566,6 +566,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         saveCustomer.setDef1(enter.getCustomerCountry());
         //客户表之前def1字段存的是国家  现在def2字段存城市
         saveCustomer.setDef2(enter.getCity());
+        saveCustomer.setDef3(enter.getDistrict());
         saveCustomer.setCountry(enter.getCountryId());
         return saveCustomer;
     }

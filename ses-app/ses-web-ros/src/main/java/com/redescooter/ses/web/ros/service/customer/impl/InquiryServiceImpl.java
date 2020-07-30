@@ -232,6 +232,7 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setDef1(enter.getCustomerCountry());
         opeCustomerInquiry.setDistrict(Long.valueOf(enter.getDistrust()));
         opeCustomerInquiry.setDef2(enter.getCity());
+        opeCustomerInquiry.setDef3(enter.getDistrust());
         opeCustomerInquiry.setCountry(enter.getCountryId());
         return opeCustomerInquiry;
     }

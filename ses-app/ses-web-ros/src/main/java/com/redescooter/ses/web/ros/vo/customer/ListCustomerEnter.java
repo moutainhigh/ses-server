@@ -29,11 +29,11 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 public class ListCustomerEnter extends PageEnter {
 
-    @ApiModelProperty(value = "区域一级id")
-    private Long oneCityiD;
+    @ApiModelProperty(value = "城市")
+    private String cityName;
 
-    @ApiModelProperty(value = "区域二级id")
-    private Long twoCityiD;
+    @ApiModelProperty(value = "邮编")
+    private String distrustName;
 
     @ApiModelProperty(value = "垃圾箱")
     private Integer dr;
