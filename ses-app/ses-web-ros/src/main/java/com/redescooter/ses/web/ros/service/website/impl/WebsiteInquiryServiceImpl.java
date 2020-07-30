@@ -610,9 +610,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .firstName(opeCustomer.getCustomerFirstName())
                 .lastName(opeCustomer.getCustomerLastName())
                 .address(opeCustomer.getAddress())
-                .countryName(opeCustomer.getDef1())
-                .distrustName(opeCustomer.getDef3())
-                .cityName(opeCustomer.getDef2())
+                .customerCountry(opeCustomer.getDef1())
+                .distrust(String.valueOf(opeCustomer.getDistrust()))
+                .city(opeCustomer.getDef2())
                 .countryId(opeCustomer.getCountry())
                 .build();
     }

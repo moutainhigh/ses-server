@@ -48,16 +48,13 @@ public class CustomerInfoResult extends GeneralResult {
     private String placeId;
 
     @ApiModelProperty(value = "区域Id")
-    private String distrustName;
+    private String distrust;
 
     @ApiModelProperty(value = "国家")
     private String customerCountry;
 
     @ApiModelProperty(value = "城市")
-    private String cityName;
-
-    @ApiModelProperty("国家")
-    private String countryName;
+    private String city;
 
     @ApiModelProperty(value = "国家Id")
     private Long countryId;
