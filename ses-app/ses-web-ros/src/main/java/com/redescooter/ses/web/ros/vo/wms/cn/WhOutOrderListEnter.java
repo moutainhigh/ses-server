@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.vo.wms.cn;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,11 +30,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Builder
 public class WhOutOrderListEnter extends PageEnter {
 
+    @ApiModelProperty(value = "类表类型",required = true)
+    @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY,message = "类型为空")
+    private String classType;
+
     @ApiModelProperty(value = "产品状态")
     private String status;
-
-    @ApiModelProperty(value = "类表类型")
-    private String classType;
 
     @ApiModelProperty(value = "物流方式")
     private String consignType;
