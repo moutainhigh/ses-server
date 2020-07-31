@@ -28,6 +28,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.wms.cn.WhOutServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeFrStock;
+import com.redescooter.ses.web.ros.dm.OpeFrStockBill;
 import com.redescooter.ses.web.ros.dm.OpeFrStockProduct;
 import com.redescooter.ses.web.ros.dm.OpeOutwhOrder;
 import com.redescooter.ses.web.ros.dm.OpeOutwhOrderB;
@@ -405,7 +406,7 @@ public class WhOutServiceImpl implements WhOutService {
         }
 
         //新建入库单
-        List<OpeStockBill> opeStockBillList = new ArrayList<>();
+        List<OpeFrStockBill> opeStockBillList = new ArrayList<>();
         //库存信息
         List<OpeFrStock> opeFrStockList = new ArrayList<>();
         //库存明细
@@ -414,7 +415,7 @@ public class WhOutServiceImpl implements WhOutService {
         //保存库存条目
         buildProductItem(enter, opeStockBillList, opeFrStockList, opeFrStockProductList);
 
-        opeStockBillService.saveOrUpdateBatch(opeStockBillList);
+        opeFrStockBillService.saveOrUpdateBatch(opeStockBillList);
         //库存累加
         opeFrStockService.saveOrUpdateBatch(opeFrStockList);
         //子条目累加
@@ -979,7 +980,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param opeFrStockList
      * @param opeFrStockProductList
      */
-    private void buildProductItem(IdEnter enter, List<OpeStockBill> opeStockBillList, List<OpeFrStock> opeFrStockList, List<OpeFrStockProduct> opeFrStockProductList) {
+    private void buildProductItem(IdEnter enter, List<OpeFrStockBill> opeStockBillList, List<OpeFrStock> opeFrStockList, List<OpeFrStockProduct> opeFrStockProductList) {
         //查询法国仓库
         OpeWhse opeWhse = opeWhseService.getOne(new LambdaQueryWrapper<OpeWhse>().eq(OpeWhse::getType, WhseTypeEnums.FR_WHSE.getValue()));
         if (opeWhse == null) {
@@ -995,7 +996,7 @@ public class WhOutServiceImpl implements WhOutService {
 
         //查询库存
         List<OpeFrStock> frStockList = opeFrStockService.list(new LambdaQueryWrapper<OpeFrStock>()
-                .in(OpeFrStock::getMaterielProductId, opeOutwhOrderBList.stream().map(OpeOutwhOrderB::getPartProductId)));
+                .in(OpeFrStock::getMaterielProductId, opeOutwhOrderBList.stream().map(OpeOutwhOrderB::getPartProductId).collect(Collectors.toList())));
 
         //查询中国仓库库存
         Collection<OpeStock> opeStocks = opeStockService.listByIds(opeOutwhOrderBList.stream().map(OpeOutwhOrderB::getStockId).collect(Collectors.toList()));
@@ -1010,14 +1011,13 @@ public class WhOutServiceImpl implements WhOutService {
                 opeOutwhOrderBList.stream().filter(item -> !StringUtils.equals(item.getProductType(), BomCommonTypeEnums.SCOOTER.getValue())).collect(Collectors.toList());
 
         List<OpeStockPurchas> opeStockPartList = null;
-        if (CollectionUtils.isNotEmpty(scooterOutWhOrderList)) {
+        if (CollectionUtils.isNotEmpty(partOutWhOrderList)) {
             opeStockPartList = opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
                     .in(OpeStockPurchas::getBindOrderId, opeOutwhOrderBList.stream().map(OpeOutwhOrderB::getId).collect(Collectors.toList())));
         }
         List<OpeStockProdProduct> opeStockScooterList = null;
         if (CollectionUtils.isNotEmpty(scooterOutWhOrderList)) {
-            opeStockScooterList = opeStockProdProductService.list(new LambdaQueryWrapper<OpeStockProdProduct>()
-                    .in(OpeStockProdProduct::getBindOrderId, opeOutwhOrderBList.stream().map(OpeOutwhOrderB::getId).collect(Collectors.toList())));
+            opeStockScooterList = opeStockProdProductService.list(new LambdaQueryWrapper<OpeStockProdProduct>().in(OpeStockProdProduct::getBindOrderId, opeOutwhOrderBList.stream().map(OpeOutwhOrderB::getId).collect(Collectors.toList())));
         }
 
         if (CollectionUtils.isEmpty(frStockList)) {
@@ -1026,6 +1026,8 @@ public class WhOutServiceImpl implements WhOutService {
                 String productName = opeStocks.stream().filter(stock -> stock.getId().equals(opeOutwhOrderB.getStockId())).findAny().map(OpeStock::getMaterielProductName).orElse(null);
 
                 OpeFrStock opeFrStock = OpeFrStock.builder()
+                        .id(idAppService.getId(SequenceName.OPE_FR_STOCK))
+                        .dr(0)
                         .whseId(opeWhse.getId())
                         .intTotal(opeOutwhOrderB.getTotalCount())
                         .outTotal(0)
@@ -1044,8 +1046,8 @@ public class WhOutServiceImpl implements WhOutService {
 
 
                 //入库单数据
-                OpeStockBill opeStockBill = buildOpeFrStockBill(enter, opeOutwhOrderB, opeFrStock.getId());
-                opeStockBillList.add(opeStockBill);
+                OpeFrStockBill opeFrStockBill = buildOpeFrStockBill(enter, opeOutwhOrderB, opeFrStock.getId());
+                opeStockBillList.add(opeFrStockBill);
                 //库存表数据
                 opeFrStockList.add(opeFrStock);
                 if (CollectionUtils.isNotEmpty(partOutWhOrderList)) {
@@ -1057,7 +1059,7 @@ public class WhOutServiceImpl implements WhOutService {
                                 item.getLot(),
                                 item.getSerialNumber(),
                                 item.getPartNumber(),
-                                opeStockBill.getStockId(),
+                                opeFrStockBill.getStockId(),
                                 opeOutwhOrderB.getTotalCount()));
                     });
                 }
@@ -1070,7 +1072,7 @@ public class WhOutServiceImpl implements WhOutService {
                                 item.getLot(),
                                 item.getSerialNumber(),
                                 item.getProductNumber(),
-                                opeStockBill.getId(),
+                                opeFrStockBill.getId(),
                                 opeOutwhOrderB.getTotalCount()));
                     });
                 }
@@ -1086,7 +1088,7 @@ public class WhOutServiceImpl implements WhOutService {
                         stock.setUpdatedTime(new Date());
 
                         //入库单信息
-                        OpeStockBill opeStockBill = buildOpeFrStockBill(enter, opeOutwhOrderB, stock.getId());
+                        OpeFrStockBill opeFrStockBill = buildOpeFrStockBill(enter, opeOutwhOrderB, stock.getId());
 
                         if (CollectionUtils.isNotEmpty(partOutWhOrderList)) {
                             opeStockPartList.forEach(stockPart -> {
@@ -1097,7 +1099,7 @@ public class WhOutServiceImpl implements WhOutService {
                                         stockPart.getLot(),
                                         stockPart.getSerialNumber(),
                                         stockPart.getPartNumber(),
-                                        opeStockBill.getStockId(),
+                                        opeFrStockBill.getStockId(),
                                         opeOutwhOrderB.getTotalCount()));
                             });
                         }
@@ -1110,11 +1112,11 @@ public class WhOutServiceImpl implements WhOutService {
                                         stockScooter.getLot(),
                                         stockScooter.getSerialNumber(),
                                         stockScooter.getProductNumber(),
-                                        opeStockBill.getId(),
+                                        opeFrStockBill.getId(),
                                         opeOutwhOrderB.getTotalCount()));
                             });
                         }
-                        opeStockBillList.add(opeStockBill);
+                        opeStockBillList.add(opeFrStockBill);
                         break;
                     }
                 }
@@ -1139,6 +1141,7 @@ public class WhOutServiceImpl implements WhOutService {
                 .principalId(enter.getUserId())
                 .inWhQty(org.springframework.util.StringUtils.isEmpty(serialNumber) == true ? inwhCount : 1)
                 .inStockTime(new Date())
+                .revision(0)
                 .createdBy(enter.getUserId())
                 .createdTime(new Date())
                 .updatedBy(enter.getUserId())
@@ -1146,8 +1149,8 @@ public class WhOutServiceImpl implements WhOutService {
                 .build();
     }
 
-    private OpeStockBill buildOpeFrStockBill(IdEnter enter, OpeOutwhOrderB item, Long stockId) {
-        return OpeStockBill.builder()
+    private OpeFrStockBill buildOpeFrStockBill(IdEnter enter, OpeOutwhOrderB item, Long stockId) {
+        return OpeFrStockBill.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
                 .dr(0)
                 .stockId(stockId)
