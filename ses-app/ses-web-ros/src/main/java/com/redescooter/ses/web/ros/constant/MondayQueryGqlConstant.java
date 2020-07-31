@@ -15,9 +15,14 @@ public interface MondayQueryGqlConstant {
             "\t\tid name board_folder_id board_kind communication description\n" +
             "\t}\n" +
             "}";
-    
+
     //板子插入
-    String MUTATION_BOARD="";
+    String MUTATION_BOARD = "mutation {\n" +
+            "\tcreate_board (board_name: " + MondayParameterName.BOARD_NAME + ", board_kind: " + MondayParameterName.BOARD_KIND + ", workspace_id:" + MondayParameterName.BOARD_WORDSPACE +
+            ", template_id:" + MondayParameterName.BOARD_TEMPLETE + ") {\n" +
+            "\t\tid\n" +
+            "\t}\n" +
+            "}\n";
 
     //查询分组
     String QUERY_GROUP = "query {\n" +
@@ -29,7 +34,12 @@ public interface MondayQueryGqlConstant {
             "\t}\n" +
             "}";
 
-    String MUTATION_GROUP="";
+    //创建分组
+    String MUTATION_GROUP = "mutation {\n" +
+            "create_group (board_id: " + MondayParameterName.GROUP_BOARD_ID + ", group_name: " + MondayParameterName.GROUP_BOARD_NAME + ") {\n" +
+            "id\n" +
+            "}\n" +
+            "}";
 
     //查询标签
     String QUERY_TAGS = "query {\n" +
@@ -45,6 +55,15 @@ public interface MondayQueryGqlConstant {
             "\t\t\tid title type archived pos settings_str width\n" +
             "\t\t}\n" +
             "\t}\n" +
+            "}";
+
+    //插入列
+    String MUTATION_COLUMN = "mutation {\n" +
+            "create_column (board_id: " + MondayParameterName.COLUMN_BOARD_ID + ", title: " + MondayParameterName.COLUMN_TITLE + ", column_type: " + MondayParameterName.COLUMN_TYPE + ",defaults:" + MondayParameterName.COLUMN_DEFAULTS +
+            ") " +
+            "{\n" +
+            "id\n" +
+            "}\n" +
             "}";
 
     //模板数据插入

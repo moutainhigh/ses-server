@@ -8,7 +8,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
-import com.redescooter.ses.web.ros.vo.monday.MondayCreateResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayCreateResult;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import lombok.extern.log4j.Log4j;

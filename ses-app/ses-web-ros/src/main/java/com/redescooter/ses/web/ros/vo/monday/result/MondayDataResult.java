@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.monday;
+package com.redescooter.ses.web.ros.vo.monday.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

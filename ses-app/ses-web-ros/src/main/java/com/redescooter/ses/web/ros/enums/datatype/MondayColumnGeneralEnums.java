@@ -29,7 +29,7 @@ public enum MondayColumnGeneralEnums {
     CLEAR_ALL("clear_all","是否清除全部"),
     ;
 
-    private String code;
+    private String title;
 
     private String message;
 
