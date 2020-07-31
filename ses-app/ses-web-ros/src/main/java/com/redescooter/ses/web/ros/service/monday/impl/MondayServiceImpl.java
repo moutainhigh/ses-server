@@ -8,14 +8,15 @@ import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.config.MondayConfig;
+import com.redescooter.ses.web.ros.constant.MondayParameterName;
 import com.redescooter.ses.web.ros.constant.MondayQueryGqlConstant;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
-import com.redescooter.ses.web.ros.enums.MondayBookOrderColumnEnums;
-import com.redescooter.ses.web.ros.enums.MondayColumnDateEnums;
-import com.redescooter.ses.web.ros.enums.MondayContantUsColumnEnums;
-import com.redescooter.ses.web.ros.enums.MondayColumnPhoneEnums;
-import com.redescooter.ses.web.ros.enums.MondayCountryShortNameEnums;
+import com.redescooter.ses.web.ros.enums.columntemplate.MondayBookOrderColumnEnums;
+import com.redescooter.ses.web.ros.enums.datatype.MondayColumnDateEnums;
+import com.redescooter.ses.web.ros.enums.columntemplate.MondayContantUsColumnEnums;
+import com.redescooter.ses.web.ros.enums.datatype.MondayColumnPhoneEnums;
+import com.redescooter.ses.web.ros.enums.datatype.MondayCountryShortNameEnums;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
@@ -158,7 +159,7 @@ public class MondayServiceImpl implements MondayService {
     public List<MondayGroupResult> queryGroupByBoardId(String boardId) {
 
         //替换语句中的id 参数
-        String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayQueryGqlConstant.BOARD_PARAMETER, boardId);
+        String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayParameterName.BOARD_PARAMETER, boardId);
 
         System.out.println("--------------------------" + graphGql + "--------------------------------");
 
@@ -214,11 +215,11 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public MondayCreateResult mutationData(MondayMutationDataEnter enter) {
         //替换语句中的id 参数
-        String graphGql = MondayQueryGqlConstant.MUTATION_DATA
-                .replace(MondayQueryGqlConstant.BOARD_PARAMETER, enter.getBoardId())
-                .replace(MondayQueryGqlConstant.CREATE_BELONG_GROUP, enter.getGroupId().toString())
-                .replace(MondayQueryGqlConstant.CREATE_ITEM_NAME, enter.getItemName().toString())
-                .replace(MondayQueryGqlConstant.CREATE_COLUMN_VALUES, enter.getColumnValues());
+        String graphGql = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
+                .replace(MondayParameterName.BOARD_PARAMETER, enter.getBoardId())
+                .replace(MondayParameterName.CREATE_BELONG_GROUP, enter.getGroupId().toString())
+                .replace(MondayParameterName.CREATE_ITEM_NAME, enter.getItemName().toString())
+                .replace(MondayParameterName.CREATE_COLUMN_VALUES, enter.getColumnValues());
 
         System.out.println("--------------------------" + graphGql + "--------------------------------");
 
