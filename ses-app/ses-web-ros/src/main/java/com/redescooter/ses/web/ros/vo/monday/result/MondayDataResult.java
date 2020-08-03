@@ -34,6 +34,9 @@ public class MondayDataResult {
     //创建 列后的返回值
     private MondayColumnResult create_column;
 
+    // 创建板子后的返回值
+    private MondayBoardResult create_board;
+
     //创建板子后返回板子id
     private String id;
 

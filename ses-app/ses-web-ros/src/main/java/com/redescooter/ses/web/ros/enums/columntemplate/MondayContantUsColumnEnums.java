@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.enums.columntemplate;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,7 +25,7 @@ public enum MondayContantUsColumnEnums {
 //    CONVERSION("type", "Conversion", "color"),
     PRENOM("text06", "Prenom", "text"),
     NOM("pr_nom", "Nom", "text"),
-    TEL("phone", "Tel", ""),
+    TEL("phone", "Tel", "phone"),
     EMAIL("text1", "Email", "text"),
     VOTRE_MESSAGE("text", "Votre Message", "text"),
     CODE_POSTAL("text7", "Code Postal", "text"),
