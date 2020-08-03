@@ -18,33 +18,35 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor
 public enum MondayBookOrderColumnEnums {
 
-    ID_CP("tags5","ID CP"),
-    RESP("dup__of_resp","Resp"),
-    FIRST_CONTACT("last_contacted","First contact"),
-    LAST_CONTACTED("due_date","Last contacted"),
-    NEXT_CONTACT("date","Next contact"),
-    TYPE_PROSPECT("status1","Type prospect"),
-    TYPE("status7","Type"),
-    CONVERSION("type","Conversion"),
-    PRENOM("text06","Prenom"),
-    NOM("pr_nom","Nom"),
-    TEL("phone","Tel"),
-    EMAIL("text1","Email"),
-    NB_SCOOTERS("chiffres","Nb scooters"),
-    MODEL("text2","Model"),
-    COULEUR("text8","Couleur"),
-    VOTRE_MESSAGE("text47","Votre Message"),
-    CODE_POSTAL("text4","Code Postal"),
-    VILLE("text8","ville");
+//    ID_CP("tags5", "ID CP","tag"),
+//    RESP("dup__of_resp", "Resp","multiple-person"),
+    FIRST_CONTACT("last_contacted", "First contact","date"),
+    LAST_CONTACTED("due_date", "Last contacted","date"),
+    NEXT_CONTACT("date", "Next contact","date"),
+//    TYPE_PROSPECT("status1", "Type prospect","text"),
+//    TYPE("status7", "Type","text"),
+//    CONVERSION("type", "Conversion","text"),
+    PRENOM("text06", "Prenom","text"),
+    NOM("pr_nom", "Nom","text"),
+    TEL("phone", "Tel","phone"),
+    EMAIL("text1", "Email","text"),
+    NB_SCOOTERS("chiffres", "Nb scooters","text"),
+    MODEL("text2", "Model","text"),
+    VOTRE_MESSAGE("text47", "Votre Message","text"),
+    CODE_POSTAL("text4", "Code Postal","text"),
+    VILLE("text8", "ville","text");
 
 
     private String id;
 
     private String title;
 
-    public static void updateEnumsIdByTitle(String title){
+    //数据类型
+    private String type;
+
+    public static void updateEnumsIdByTitle(String title) {
         for (MondayBookOrderColumnEnums item : MondayBookOrderColumnEnums.values()) {
-            if (StringUtils.equals(title,item.getTitle())){
+            if (StringUtils.equals(title, item.getTitle())) {
             }
         }
     }

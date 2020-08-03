@@ -18,7 +18,7 @@ public interface MondayQueryGqlConstant {
 
     //板子插入
     String MUTATION_BOARD = "mutation {\n" +
-            "\tcreate_board (board_name: " + MondayParameterName.BOARD_NAME + ", board_kind: " + MondayParameterName.BOARD_KIND + ", workspace_id:" + MondayParameterName.BOARD_WORDSPACE +
+            "\tcreate_board (board_name: \"" + MondayParameterName.BOARD_NAME + "\", board_kind: " + MondayParameterName.BOARD_KIND + ", workspace_id:" + MondayParameterName.BOARD_WORDSPACE +
             ", template_id:" + MondayParameterName.BOARD_TEMPLETE + ") {\n" +
             "\t\tid\n" +
             "\t}\n" +
@@ -59,12 +59,12 @@ public interface MondayQueryGqlConstant {
 
     //插入列
     String MUTATION_COLUMN = "mutation {\n" +
-            "create_column (board_id: " + MondayParameterName.COLUMN_BOARD_ID + ", title: " + MondayParameterName.COLUMN_TITLE + ", column_type: " + MondayParameterName.COLUMN_TYPE + ",defaults:" + MondayParameterName.COLUMN_DEFAULTS +
-            ") " +
+            "\t\tcreate_column (board_id: "+ MondayParameterName.COLUMN_BOARD_ID+", title: \""+ MondayParameterName.COLUMN_TITLE + "\", column_type: "+ MondayParameterName.COLUMN_TYPE +
+            ", defaults: \""+ MondayParameterName.COLUMN_DEFAULTS + "\") " +
             "{\n" +
-            "id\n" +
-            "}\n" +
-            "}";
+            "\t\t\tid title\n" +
+            "\t\t}\n" +
+            "\t}";
 
     //创建一个webhook
     String MUTATION_CREATE_WEBHOOK = "mutation {\n" +

@@ -32,7 +32,10 @@ public class MondayConfig {
     private MediaType mediaType;
 
     //工作区域Id
-    private Long workspaceId;
+    private String workspaceId;
+
+    //模板Id
+    private String templeteId;
 
     //预定单板子名称
     private String orderFormBoardName;

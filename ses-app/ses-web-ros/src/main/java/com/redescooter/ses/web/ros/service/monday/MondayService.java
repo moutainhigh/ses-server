@@ -96,14 +96,14 @@ public interface MondayService {
      * @param enter
      * @return
      */
-    void MultipleColumn(List<MondayMutationColumnEnter> enter);
+    List<MondayColumnResult> multipleColumn(List<MondayMutationColumnEnter> enter);
 
     /**
      * 创建一个钩子
      *
      * @param enter
      */
-    void MultipleWebhook(MultipleWebhookEnter enter);
+    void multipleWebhook(MultipleWebhookEnter enter);
 
     /**
      * 执行gql 语句

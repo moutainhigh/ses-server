@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class MondayDataResult{
+public class MondayDataResult {
 
     //板子列表
     private List<MondayBoardResult> boards;
@@ -30,4 +30,13 @@ public class MondayDataResult{
 
     //创建成功后返回
     private MondayCreateResult create_item;
+
+    //创建 列后的返回值
+    private MondayColumnResult create_column;
+
+    //创建板子后返回板子id
+    private String id;
+
+    //创建板子后返回板子title
+    private String title;
 }
