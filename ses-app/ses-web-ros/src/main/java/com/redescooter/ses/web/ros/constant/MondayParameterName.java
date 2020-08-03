@@ -52,4 +52,12 @@ public interface MondayParameterName {
     //列默认值
     String COLUMN_DEFAULTS="#{COLUMN_DEFAULTS}";
 
+    //钩子回调的url
+    String WEBHOOK_URL="#{WEBHOOK_URL}";
+
+    //钩子的配置
+    String WEBHOOK_CONFIG="#{WEBHOOK_CONFIG}";
+
+    //钩子监听事件
+    String WEBHOOK_EVENT="#{WEBHOOK_EVENT}";
 }

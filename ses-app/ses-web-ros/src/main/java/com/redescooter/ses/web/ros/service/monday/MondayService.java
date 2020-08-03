@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.monday;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationColumnEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationGroupEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MultipleWebhookEnter;
 import com.redescooter.ses.web.ros.vo.monday.result.MondayBoardResult;
 import com.redescooter.ses.web.ros.vo.monday.result.MondayColumnResult;
 import com.redescooter.ses.web.ros.vo.monday.result.MondayCreateResult;
@@ -21,6 +22,11 @@ import java.util.List;
  * @create: 2020/07/09 16:46
  */
 public interface MondayService {
+
+    /**
+     * 初始化单据模板
+     */
+    void initializationMondaytemplate();
 
     /**
      * 官网联系我们
@@ -86,12 +92,22 @@ public interface MondayService {
 
     /**
      * 创建列
+     *
      * @param enter
      * @return
      */
     void MultipleColumn(List<MondayMutationColumnEnter> enter);
+
+    /**
+     * 创建一个钩子
+     *
+     * @param enter
+     */
+    void MultipleWebhook(MultipleWebhookEnter enter);
+
     /**
      * 执行gql 语句
+     *
      * @param enter
      * @return
      */

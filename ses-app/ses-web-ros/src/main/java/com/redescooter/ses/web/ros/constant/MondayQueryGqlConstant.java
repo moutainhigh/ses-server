@@ -66,6 +66,15 @@ public interface MondayQueryGqlConstant {
             "}\n" +
             "}";
 
+    //创建一个webhook
+    String MUTATION_CREATE_WEBHOOK = "mutation {\n" +
+            "    create_webhook ( board_id: " + MondayParameterName.BOARD_PARAMETER + ", url: " + MondayParameterName.WEBHOOK_URL + ", event: " + MondayParameterName.WEBHOOK_EVENT + ",config: " +
+            "" + MondayParameterName.WEBHOOK_CONFIG + " ) {\n" +
+            "        id\n" +
+            "                board_id\n" +
+            "    }\n" +
+            "}";
+
     //模板数据插入
     String MUTATION_ITEM_COLUMN_DATA = "mutation {\n" +
             "\tcreate_item (board_id: " + MondayParameterName.BOARD_PARAMETER + ", group_id: \"" + MondayParameterName.CREATE_BELONG_GROUP + "\", item_name: \"" + MondayParameterName.CREATE_ITEM_NAME + "\"," +

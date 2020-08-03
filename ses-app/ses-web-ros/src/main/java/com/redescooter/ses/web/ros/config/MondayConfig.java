@@ -31,6 +31,9 @@ public class MondayConfig {
 
     private MediaType mediaType;
 
+    //工作区域Id
+    private Long workspaceId;
+
     //预定单板子名称
     private String orderFormBoardName;
 

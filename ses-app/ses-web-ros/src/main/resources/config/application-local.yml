@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.110:22181
+    address: zookeeper://39.108.92.232:22181
 #  metadata-report:
 #    address:  zookeeper://localhost:62181
 
@@ -26,7 +26,7 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://192.168.2.110/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://39.108.92.232/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
 
@@ -44,12 +44,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - 192.168.2.110:7000
-        - 192.168.2.110:7001
-        - 192.168.2.110:7002
-        - 192.168.2.110:7003
-        - 192.168.2.110:7004
-        - 192.168.2.110:7005
+        - 39.108.92.232:7000
+        - 39.108.92.232:7001
+        - 39.108.92.232:7002
+        - 39.108.92.232:7003
+        - 39.108.92.232:7004
+        - 39.108.92.232:7005
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1
@@ -213,3 +213,7 @@ monday:
   #联系我们
   contactUsBoardName: (RFQ) Relation client RED Série E
   contactUsGroupName: Backlog
+  # 工作空间
+  workspaceId: 21182
+  #模板Id
+  templeteId: 581923336

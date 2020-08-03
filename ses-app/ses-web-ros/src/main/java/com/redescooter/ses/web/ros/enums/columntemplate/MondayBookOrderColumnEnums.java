@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.enums.columntemplate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @ClassName:MondayBookOrderColumnEnums
@@ -39,4 +41,11 @@ public enum MondayBookOrderColumnEnums {
     private String id;
 
     private String title;
+
+    public static void updateEnumsIdByTitle(String title){
+        for (MondayBookOrderColumnEnums item : MondayBookOrderColumnEnums.values()) {
+            if (StringUtils.equals(title,item.getTitle())){
+            }
+        }
+    }
 }
