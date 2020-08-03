@@ -31,9 +31,10 @@ public enum MailTemplateEventEnums {
     FORGET_PSD_SEND_MAIL("官网忘记密码发送邮件", 13, "forget_psd_send_mail", "FORGET_PSD_SEND_MAIL"),
     SUBSCRIBE_TO_EMAIL_SUCCESSFULLY("官网订邮件成功后发送邮件", 14, "Subscribe_to_email_successfully", "SUBSCRIBE_TO_EMAIL_SUCCESSFULLY"),
     ROS_CREATE_EMPLOYEE("ROS员工账户开通", 15, "Ros_open_employee_account", "ROS_OPEN_EMPLOYEE_ACCOUNT"),
-    ROS_FORGET_PSD_SEND_MAIL("ROS忘记密码发送邮件", 13, "ros_forget_psd_send_mail", "ROS_FORGET_PSD_SEND_MAIL"),
+    ROS_FORGET_PSD_SEND_MAIL("ROS忘记密码发送邮件", 16, "ros_forget_psd_send_mail", "ROS_FORGET_PSD_SEND_MAIL"),
+    ROS_DISTRUST_LEAD_SEND_MAIL("ROS区域负责人发送邮箱", 18, "ros_distrust_lead_send_mail", "ROS_DISTRUST_LEAD_SEND_MAIL"),
 
-    ;
+  ;
     private String mome;
 
     private int templateNo;

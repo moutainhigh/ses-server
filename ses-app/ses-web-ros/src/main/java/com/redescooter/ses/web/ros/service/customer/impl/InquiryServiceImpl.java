@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
@@ -28,10 +29,14 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.InquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeDistrustLead;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
+import com.redescooter.ses.web.ros.service.base.OpeDistrustLeadService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
@@ -54,7 +59,6 @@ import redis.clients.jedis.JedisCluster;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName:InquiryServiceImpl
@@ -76,7 +80,10 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Autowired
     private InquiryServiceMapper inquiryServiceMapper;
-
+    @Autowired
+    private OpeDistrustLeadService opeDistrustLeadService;
+  @Autowired
+  private OpeSysUserProfileService opeSysUserProfileService;
     @Autowired
     private OpeCustomerService opeCustomerService;
 
@@ -183,9 +190,38 @@ public class InquiryServiceImpl implements InquiryService {
         }*/
         opeCustomerInquiry.setSource("1");
         opeCustomerInquiryService.saveOrUpdate(opeCustomerInquiry);
+      try {
+        //通知区域负责人
+        sendDistrustleadEmail(enter);
+      }catch (Exception e){
+
+      }
         return new GeneralResult(enter.getRequestId());
     }
+  //发送区域负责人
+    public  void  sendDistrustleadEmail(SaveInquiryEnter enter){
+      BaseMailTaskEnter mailTask = new BaseMailTaskEnter();
+      mailTask.setEvent(MailTemplateEventEnums.ROS_DISTRUST_LEAD_SEND_MAIL.getEvent());
+      mailTask.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+      mailTask.setAppId(AppIDEnums.SES_ROS.getValue());
+      mailTask.setRequestId(enter.getRequestId());
+      mailTask.setUserId(enter.getUserId());
+      mailTask.setCountry(enter.getCountry());
+      mailTask.setTimeZone(enter.getTimeZone());
+      //查询区域负责人信息
+      List<OpeDistrustLead> list = opeDistrustLeadService.list(new QueryWrapper<OpeDistrustLead>().eq(OpeDistrustLead.COL_DISTRUST_NAME, enter.getTimeZone()).eq(OpeDistrustLead.COL_CITY_NAME, enter.getTimeZone()));
 
+      if (list!=null&&!list.isEmpty()){
+       list.forEach(item -> {
+         //查询负责人完整信息
+         OpeSysUserProfile one = opeSysUserProfileService.getOne(new QueryWrapper<OpeSysUserProfile>().eq(OpeSysUserProfile.COL_ID, item.getUserId()));
+         mailTask.setName(one.getFullName());
+         mailTask.setEmail(one.getEmail());
+         mailMultiTaskService.sendForgetPasswordEmaillTask(mailTask);
+       });
+     }
+
+    }
     private OpeCustomerInquiry buildOpeCustomerInquiry(SaveInquiryEnter enter) {
 
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
@@ -260,7 +296,6 @@ public class InquiryServiceImpl implements InquiryService {
         });
         return PageResult.create(enter, count, inquiryResultList);
     }
-
     /**
      * @param enter
      * @desc: 询价单详情
