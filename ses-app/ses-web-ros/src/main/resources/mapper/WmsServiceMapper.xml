@@ -434,15 +434,18 @@
       s.en_name AS enName,
       s.parts_number AS productNumber,
       s.parts_type AS productType,
-      s.parts_qty AS qty,
-      e.price AS price,
+      b.total-b.pending_storage_qty AS qty,
+      b.total AS sumTotal,
     #{enter.classType} as classType
     FROM
       ope_allocate_b b
       JOIN ope_parts s ON b.part_id = s.id and s.dr = 0
-      JOIN ope_price_sheet e ON s.id = e.parts_id and e.dr = 0
     WHERE
       b.allocate_id = #{enter.id} and b.dr = 0
+    GROUP BY
+    id,
+    cnName,
+    enName
   </select>
   <select id="productList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult">
     SELECT
@@ -451,15 +454,18 @@
       s.en_name AS enName,
       s.product_number AS productNumber,
       s.product_type AS productType,
-      s.sum_parts_qty AS qty,
-      e.sales_price as price,
+      b.assembly_qty-b.wait_assembly_qty AS qty,
+      b.assembly_qty AS sumTotal,
     #{enter.classType} as classType
   FROM
     ope_assembly_b_order b
     JOIN ope_parts_product s ON b.product_id = s.id and s.dr = 0
-    JOIN ope_regional_price_sheet e ON s.id	= e.parts_product_id and e.dr = 0
-  WHERE
+    WHERE
     b.assembly_id = #{enter.id} and b.dr = 0
+    GROUP BY
+    id,
+    cnName,
+    enName
   </select>
   <select id="wmsInWhCountByType" resultType="int">
   SELECT
@@ -619,7 +625,7 @@ FROM
     b.cn_name as cnName,
     b.en_name as enName,
     b.product_number as productNumber,
-    sum(s.wait_stored_total ) as intTotal,
+    sum(s.wait_stored_total) as intTotal,
     s.materiel_product_type as productType,
     e.sales_price as price
     FROM
@@ -641,7 +647,7 @@ FROM
     b.cn_name as cnName,
     b.en_name as enName,
     b.product_number as productNumber,
-    sum(s.wait_stored_total )  as intTotal,
+    sum(s.wait_stored_total)  as intTotal,
     s.materiel_product_type as productType,
     e.sales_price as price
     FROM

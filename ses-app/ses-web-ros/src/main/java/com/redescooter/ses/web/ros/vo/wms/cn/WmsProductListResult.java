@@ -32,6 +32,9 @@ public class WmsProductListResult extends GeneralResult {
   @ApiModelProperty(value = "质检数")
   private Integer qty;
 
+  @ApiModelProperty(value = "总数量")
+  private Integer sumTotal;
+
   @ApiModelProperty(value = "中文名称")
   private String cnName;
 
