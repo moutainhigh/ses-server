@@ -1,0 +1,33 @@
+package com.redescooter.ses.web.ros.service.website.impl;
+
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.dao.website.ContactUsMapper;
+import com.redescooter.ses.web.ros.service.base.OpeContactUsService;
+import com.redescooter.ses.web.ros.service.website.ContactUsService;
+import com.redescooter.ses.web.ros.vo.customer.ContactUsListEnter;
+import com.redescooter.ses.web.ros.vo.customer.ContactUsListResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * @ClassNameContactUsServiceImpl
+ * @Description
+ * @Author Aleks
+ * @Date2020/8/4 20:07
+ * @Version V1.0
+ **/
+@Service
+public class ContactUsServiceImpl implements ContactUsService {
+
+    @Autowired
+    private OpeContactUsService opeContactUsService;
+
+    @Autowired
+    private ContactUsMapper contactUsMapper;
+
+
+    @Override
+    public PageResult<ContactUsListResult> list(ContactUsListEnter enter) {
+        return null;
+    }
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeContactUsTraceMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeContactUsTraceEntity">
+    <!--@mbg.generated-->
+    <!--@Table ope_contact_us_trace-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="contact_us_id" jdbcType="BIGINT" property="contactUsId" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="first_name" jdbcType="VARCHAR" property="firstName" />
+    <result column="last_name" jdbcType="VARCHAR" property="lastName" />
+    <result column="full_name" jdbcType="VARCHAR" property="fullName" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="country_name" jdbcType="VARCHAR" property="countryName" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DOUBLE" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, contact_us_id, email, first_name, last_name, full_name, telephone, country_name, 
+    city_name, district_name, address, remark, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def5, def6
+  </sql>
+</mapper>
