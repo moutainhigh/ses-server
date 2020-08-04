@@ -150,12 +150,12 @@ public class WhOutServiceImpl implements WhOutService {
         List<String> statusList = new ArrayList<>();
         if (StringUtils.equals(enter.getClassType(), WhOutTypeEnums.TODO.getValue())) {
             statusList.add(WhOutStatusEnums.PENDING.getValue());
-            statusList.add(WhOutStatusEnums.IN_WH.getValue());
             statusList.add(WhOutStatusEnums.PREPARE_MATERIAL.getValue());
+            statusList.add(WhOutStatusEnums.OUT_WH.getValue());
             statusList.add(WhOutStatusEnums.START_PREPARE_MATERIAL.getValue());
         } else {
             statusList.add(WhOutStatusEnums.CANCELLED.getValue());
-            statusList.add(WhOutStatusEnums.OUT_WH.getValue());
+            statusList.add(WhOutStatusEnums.IN_WH.getValue());
         }
 
         Integer count = whOutServiceMapper.whOrderListCount(enter, statusList);
@@ -602,8 +602,14 @@ public class WhOutServiceImpl implements WhOutService {
         List<CountByStatusResult> statusResultList = whOutServiceMapper.statusByCount(enter);
         if (CollectionUtils.isNotEmpty(statusResultList)) {
             statusResultList.forEach(item -> {
-                resultMap.put(item.getStatus(), item.getTotalCount());
+                //将查出的状态对象进行分组
+                if (resultMap.containsKey(item.getStatus())) {
+                    resultMap.put(item.getStatus(), resultMap.get(item.getStatus()) + item.getTotalCount());
+                } else {
+                    resultMap.put(item.getStatus(), item.getTotalCount());
+                }
             });
+
         }
         for (WhOutTypeEnums item : WhOutTypeEnums.values()) {
             if (!resultMap.containsKey(item.getValue())) {
@@ -624,14 +630,14 @@ public class WhOutServiceImpl implements WhOutService {
         //采购仓库 成品仓库
         List<OpeWhse> opeWhseList = opeWhseService.list(new LambdaQueryWrapper<OpeWhse>().in(OpeWhse::getType, WhseTypeEnums.ASSEMBLY.getValue(), WhseTypeEnums.PURCHAS.getValue()));
         if (opeWhseList == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
         //采购仓库 成品仓库库存
-        Integer count = whOutServiceMapper.productListCount(enter,opeWhseList);
+        Integer count = whOutServiceMapper.productListCount(enter, opeWhseList);
         if (count == null) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, count, whOutServiceMapper.productListList(enter,opeWhseList));
+        return PageResult.create(enter, count, whOutServiceMapper.productListList(enter, opeWhseList));
     }
 
     /**
@@ -758,7 +764,7 @@ public class WhOutServiceImpl implements WhOutService {
                         } else {
                             opeStockPurchas.setAvailableQty(opeStockPurchas.getAvailableQty() - opeOutwhOrderB.getLastOutCount());
                         }
-                    }else {
+                    } else {
                         opeStockPurchas.setAvailableQty(0);
                         opeStockPurchas.setBindOrderId(opeOutwhOrderB.getId());
                         opeStockPurchas.setSourceType(SourceTypeEnums.WH_OUT.getValue());
@@ -1017,7 +1023,8 @@ public class WhOutServiceImpl implements WhOutService {
         }
         List<OpeStockProdProduct> opeStockScooterList = null;
         if (CollectionUtils.isNotEmpty(scooterOutWhOrderList)) {
-            opeStockScooterList = opeStockProdProductService.list(new LambdaQueryWrapper<OpeStockProdProduct>().in(OpeStockProdProduct::getBindOrderId, opeOutwhOrderBList.stream().map(OpeOutwhOrderB::getId).collect(Collectors.toList())));
+            opeStockScooterList = opeStockProdProductService.list(new LambdaQueryWrapper<OpeStockProdProduct>().in(OpeStockProdProduct::getBindOrderId,
+                    opeOutwhOrderBList.stream().map(OpeOutwhOrderB::getId).collect(Collectors.toList())));
         }
 
         if (CollectionUtils.isEmpty(frStockList)) {

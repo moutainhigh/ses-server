@@ -262,8 +262,12 @@
     </select>
 
     <select id="statusByCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
-        select if(status = 4 or status = 5, 2, 1) as status, count(status) as totalCount
-        from ope_outwh_order
+        select case
+           when outOrder.status = 5 then 2
+           when outOrder.status = 6 then 2
+           else 1 END as status,
+               count(status)  as totalCount
+        from ope_outwh_order outOrder
         group by status
     </select>
 

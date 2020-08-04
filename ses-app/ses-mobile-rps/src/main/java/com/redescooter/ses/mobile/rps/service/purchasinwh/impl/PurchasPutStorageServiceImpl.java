@@ -133,14 +133,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
-//        //库存数据更新
-//        OpeStock opeStock = new OpeStock();
-//        //入库单数据保存
-//        OpeStockBill saveOpeStockBill = new OpeStockBill();
-//
-//        //生成入库单、库存数据更新
-//        saveStockBillSingle(enter, opeStock, saveOpeStockBill, opePurchasB);
-
 
         //生成入库单、库存数据更新
         OpeStockBill opeStockBill = saveStockBill(enter.getUserId(), opePurchasB);
@@ -158,14 +150,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
         }
 
-        QueryWrapper<OpeStock> opeStockPurchasQueryWrapper = new QueryWrapper<>();
-        opeStockPurchasQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opePurchasB.getPartId());
-        opeStockPurchasQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhsegetid.getId());
-        opeStockPurchasQueryWrapper.eq(OpeStock.COL_DR, 0);
-        OpeStock opeStockData = opeStockService.getOne(opeStockPurchasQueryWrapper);
-        if (opeStockData == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
         //校验批次号
         OpePurchasBQcItem opePurchasBQcItem = opePurchasBQcItemService.getOne(new LambdaQueryWrapper<OpePurchasBQcItem>()
                 .eq(OpePurchasBQcItem::getPurchasBId, opePurchasB.getId())
@@ -182,7 +166,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
                 .dr(0)
                 .status(StockProductPartStatusEnums.AVAILABLE.getValue())
-                .stockId(opeStockData.getId())
+                .stockId(opeStockBill.getStockId())
                 .partId(partsData.getId())
                 .lot(opePurchasBQcItem.getBatchNo())
                 .partNumber(partsData.getPartsNumber())
@@ -266,12 +250,10 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
         if (partsData.getIdClass() != false) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-
         }
 
         //生成入库单、库存数据更新
         OpeStockBill opeStockBill = saveStockBill(enter.getUserId(), opePurchasB);
-
 
         //入库单 保存
         opeStockBillService.save(opeStockBill);
@@ -283,15 +265,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
         OpeWhse opeWhsegetid = opeWhseService.getOne(opeWhse);
         if (opeWhsegetid == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
-        //库存查询
-        QueryWrapper<OpeStock> opeStockPurchasQueryWrapper = new QueryWrapper<>();
-        opeStockPurchasQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opePurchasB.getPartId());
-        opeStockPurchasQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhsegetid.getId());
-        opeStockPurchasQueryWrapper.eq(OpeStock.COL_DR, 0);
-        OpeStock opeStockData = opeStockService.getOne(opeStockPurchasQueryWrapper);
-        if (opeStockData == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         //查询批次号
@@ -309,7 +282,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
                 .dr(0)
                 .status(StockProductPartStatusEnums.AVAILABLE.getValue())
-                .stockId(opeStockData.getId())
+                .stockId(opeStockBill.getStockId())
                 .partId(partsData.getId())
                 .lot(opePurchasBQcItem.getBatchNo())
                 .partNumber(partsData.getPartsNumber())
