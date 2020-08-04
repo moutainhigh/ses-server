@@ -44,10 +44,12 @@ public enum MondayBookOrderColumnEnums {
     //数据类型
     private String type;
 
-    public static void updateEnumsIdByTitle(String title) {
+    public static String getEnumsTypeByTitle(String title) {
         for (MondayBookOrderColumnEnums item : MondayBookOrderColumnEnums.values()) {
             if (StringUtils.equals(title, item.getTitle())) {
+                return item.getType();
             }
         }
+        return null;
     }
 }

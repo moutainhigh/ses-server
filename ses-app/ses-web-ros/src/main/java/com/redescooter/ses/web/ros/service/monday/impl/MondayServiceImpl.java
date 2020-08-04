@@ -69,6 +69,7 @@ public class MondayServiceImpl implements MondayService {
     private static Map<String, String> contantUsMap = new HashMap<>();
     // 订阅的邮件板子模板
     private static Map<String, String> subscribeEmailMap = new HashMap<>();
+
     @Autowired
     private MondayConfig mondayConfig;
     @Autowired
@@ -77,7 +78,7 @@ public class MondayServiceImpl implements MondayService {
     /**
      * 初始化单据模板
      * <p>
-     * 注意：初始化模板主要逻辑如下 1、板子校验 没有就新建 2、分组校验 没有就新建 3、列 是否合法 不合法就新建 （列不可通过API 删除）
+     * 注意：初始化模板主要逻辑如下 1、板子校验 没有就新建 2、列 是否合法 不合法就新建 （列不可通过API 删除）
      */
     @PostConstruct
     @Override
@@ -104,15 +105,15 @@ public class MondayServiceImpl implements MondayService {
 
         // 校验分组是否存在
         MondayCreateResult groupResult =
-            getMondayGroupByBoardId(mondayBoardResult.getId(), mondayConfig.getContactUsGroupName());
+                getMondayGroupByBoardId(mondayBoardResult.getId(), mondayConfig.getContactUsGroupName());
 
         // 替换语句中的id 参数
         String gql = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
-            .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardResult.getId())
-            .replace(MondayParameterName.CREATE_BELONG_GROUP, groupResult.getId())
-            .replace(MondayParameterName.CREATE_ITEM_NAME,
-                new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
-            .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildContantUsSingle(enter));
+                .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardResult.getId())
+                .replace(MondayParameterName.CREATE_BELONG_GROUP, groupResult.getId())
+                .replace(MondayParameterName.CREATE_ITEM_NAME,
+                        new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
+                .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildContantUsSingle(enter));
         // 数据插入
         return mutationData(gql).getData().getCreate_item();
     }
@@ -131,15 +132,15 @@ public class MondayServiceImpl implements MondayService {
 
         // 校验分组是否存在
         MondayCreateResult groupResult =
-            getMondayGroupByBoardId(mondayBoardResult.getId(), mondayConfig.getOrderFormGroupName());
+                getMondayGroupByBoardId(mondayBoardResult.getId(), mondayConfig.getOrderFormGroupName());
 
         // 替换语句中的id 参数
         String gql = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
-            .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardResult.getId())
-            .replace(MondayParameterName.CREATE_BELONG_GROUP, groupResult.getId())
-            .replace(MondayParameterName.CREATE_ITEM_NAME,
-                new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
-            .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildContantUsSingle(enter));
+                .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardResult.getId())
+                .replace(MondayParameterName.CREATE_BELONG_GROUP, groupResult.getId())
+                .replace(MondayParameterName.CREATE_ITEM_NAME,
+                        new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
+                .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildContantUsSingle(enter));
 
         // 数据插入
         return mutationData(gql).getData().getCreate_item();
@@ -199,7 +200,7 @@ public class MondayServiceImpl implements MondayService {
      */
     @Override
     public List<MondayColumnResult> queryColumnResult(String boardId) {
-        String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayParameterName.BOARD_PARAMETER, boardId);
+        String graphGql = MondayQueryGqlConstant.QUERY_COLUMN.replace(MondayParameterName.BOARD_PARAMETER, boardId);
 
         log.info("查询指定板子下的所有列---------------{}", graphGql);
 
@@ -218,10 +219,10 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public MondayCreateResult mutationBoard(MondayMutationBoardEnter enter) {
         String graphGql =
-            MondayQueryGqlConstant.MUTATION_BOARD.replace(MondayParameterName.BOARD_NAME, enter.getBoardName())
-                .replace(MondayParameterName.BOARD_KIND, enter.getBoardKind())
-                .replace(MondayParameterName.BOARD_WORDSPACE, String.valueOf(enter.getWorkspaceId()))
-                .replace(MondayParameterName.BOARD_TEMPLETE, String.valueOf(enter.getTemplateId()));
+                MondayQueryGqlConstant.MUTATION_BOARD.replace(MondayParameterName.BOARD_NAME, enter.getBoardName())
+                        .replace(MondayParameterName.BOARD_KIND, enter.getBoardKind())
+                        .replace(MondayParameterName.BOARD_WORDSPACE, String.valueOf(enter.getWorkspaceId()))
+                        .replace(MondayParameterName.BOARD_TEMPLETE, String.valueOf(enter.getTemplateId()));
         log.info("插入板子执行gql------{}", graphGql);
         return MondayCreateResult.builder().id(mutationData(graphGql).getData().getCreate_board().getId()).build();
     }
@@ -235,8 +236,8 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public MondayCreateResult mutationGroup(MondayMutationGroupEnter enter) {
         String graphGql = MondayQueryGqlConstant.MUTATION_GROUP
-            .replace(MondayParameterName.GROUP_BOARD_ID, String.valueOf(enter.getBoardId()))
-            .replace(MondayParameterName.GROUP_BOARD_NAME, enter.getGroupName());
+                .replace(MondayParameterName.GROUP_BOARD_ID, String.valueOf(enter.getBoardId()))
+                .replace(MondayParameterName.GROUP_BOARD_NAME, enter.getGroupName());
         log.info("插入分组执行的gql----{}", graphGql);
         return mutationData(graphGql).getData().getCreate_item();
     }
@@ -253,16 +254,16 @@ public class MondayServiceImpl implements MondayService {
         if (org.apache.commons.collections.CollectionUtils.isNotEmpty(enter)) {
             enter.forEach(item -> {
                 String graphGql = MondayQueryGqlConstant.MUTATION_COLUMN
-                    .replace(MondayParameterName.COLUMN_BOARD_ID, String.valueOf(item.getBoardId()))
-                    .replace(MondayParameterName.COLUMN_TITLE, item.getTitle())
-                    .replace(MondayParameterName.COLUMN_TYPE, item.getColumnType())
-                    .replace(MondayParameterName.COLUMN_DEFAULTS,
-                        StringUtils.isEmpty(item.getDefaults()) == true ? "{}" : item.getDefaults());
+                        .replace(MondayParameterName.COLUMN_BOARD_ID, String.valueOf(item.getBoardId()))
+                        .replace(MondayParameterName.COLUMN_TITLE, item.getTitle())
+                        .replace(MondayParameterName.COLUMN_TYPE, item.getColumnType())
+                        .replace(MondayParameterName.COLUMN_DEFAULTS,
+                                StringUtils.isEmpty(item.getDefaults()) == true ? "{}" : item.getDefaults());
                 log.info("插列执行的gql----{}", graphGql);
                 MondayGeneralResult mondayGeneralResult = mutationData(graphGql);
 
                 log.info("----------------------插入成功 ----->{}------------------",
-                    mondayGeneralResult.getData().getCreate_column());
+                        mondayGeneralResult.getData().getCreate_column());
                 result.add(mondayGeneralResult.getData().getCreate_column());
             });
         }
@@ -277,10 +278,10 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public void multipleWebhook(MultipleWebhookEnter enter) {
         String graphGql = MondayQueryGqlConstant.MUTATION_CREATE_WEBHOOK
-            .replace(MondayParameterName.BOARD_PARAMETER, String.valueOf(enter.getBoardId()))
-            .replace(MondayParameterName.WEBHOOK_URL, enter.getUrl())
-            .replace(MondayParameterName.WEBHOOK_CONFIG, enter.getConfig())
-            .replace(MondayParameterName.WEBHOOK_EVENT, enter.getEventType().toString());
+                .replace(MondayParameterName.BOARD_PARAMETER, String.valueOf(enter.getBoardId()))
+                .replace(MondayParameterName.WEBHOOK_URL, enter.getUrl())
+                .replace(MondayParameterName.WEBHOOK_CONFIG, enter.getConfig())
+                .replace(MondayParameterName.WEBHOOK_EVENT, enter.getEventType().toString());
         log.info("插入分组执行的gql----{}", graphGql);
         mutationData(graphGql);
     }
@@ -323,7 +324,7 @@ public class MondayServiceImpl implements MondayService {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, httpHeaders);
         // 执行HTTP请求，将返回的结构使用ResultVO类格式化
         ResponseEntity<String> response =
-            restTemplate.exchange(mondayConfig.getUrl(), method, requestEntity, String.class);
+                restTemplate.exchange(mondayConfig.getUrl(), method, requestEntity, String.class);
         return response.getBody();
     }
 
@@ -342,7 +343,7 @@ public class MondayServiceImpl implements MondayService {
             List<MondayTagResult> mondayTagResults = queryTagList();
             if (org.apache.commons.collections.CollectionUtils.isNotEmpty(mondayTagResults)) {
                 tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2()))
-                    .findFirst().map(MondayTagResult::getId).orElse(null);
+                        .findFirst().map(MondayTagResult::getId).orElse(null);
             }
             if (!(tagId == null) && !(tagId == 0)) {
                 tagList.put(MondayColumnGeneralEnums.TAG_IDS.getTitle(), Lists.newArrayList(tagId));
@@ -353,18 +354,18 @@ public class MondayServiceImpl implements MondayService {
         Map<String, String> phoneMap = new HashMap<>();
         if (StringUtils.isNotEmpty(enter.getTelephone())) {
             phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(),
-                org.springframework.util.StringUtils.isEmpty(enter.getTelephone()) == true ? null
-                    : enter.getTelephone());
+                    org.springframework.util.StringUtils.isEmpty(enter.getTelephone()) == true ? null
+                            : enter.getTelephone());
             phoneMap.put(MondayColumnPhoneEnums.phone.getCountryShortName(),
-                MondayCountryShortNameEnums.FRANCE.getValue());
+                    MondayCountryShortNameEnums.FRANCE.getValue());
         }
 
         // 时间集合
         Map<String, String> dateMap = new HashMap<>();
         dateMap.put(MondayColumnDateEnums.DATE.getTitle(),
-            DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_DATE_FORMAT));
+                DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_DATE_FORMAT));
         dateMap.put(MondayColumnDateEnums.TIME.getTitle(),
-            DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
+                DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
 
         Map<String, Object> columnValue = new HashMap<>();
         // columnValue.put(MondayContantUsColumnEnums.ID_CP.getId(), CollectionUtils.isEmpty(tagList) == true ? null :
@@ -380,7 +381,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(MondayContantUsColumnEnums.NOM.getId(), enter.getLastName());
         // 电话
         columnValue.put(MondayContantUsColumnEnums.TEL.getId(),
-            CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
+                CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
         columnValue.put(MondayContantUsColumnEnums.EMAIL.getId(), enter.getEmail());
         columnValue.put(MondayContantUsColumnEnums.VILLE.getId(), null);
         columnValue.put(MondayContantUsColumnEnums.CODE_POSTAL.getId(), enter.getDef2());
@@ -404,7 +405,7 @@ public class MondayServiceImpl implements MondayService {
         OpePartsProduct opePartsProduct = opePartsProductService.getById(enter.getProductId());
         if (opePartsProduct == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+                    ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         Map<String, Object> tagList = new HashMap();
         Integer tagId = null;
@@ -413,7 +414,7 @@ public class MondayServiceImpl implements MondayService {
             List<MondayTagResult> mondayTagResults = queryTagList();
             if (org.apache.commons.collections.CollectionUtils.isNotEmpty(mondayTagResults)) {
                 tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2()))
-                    .findFirst().map(MondayTagResult::getId).orElse(null);
+                        .findFirst().map(MondayTagResult::getId).orElse(null);
             }
             if (!(tagId == null) && !(tagId == 0)) {
                 tagList.put("tag_ids", Lists.newArrayList(tagId));
@@ -425,18 +426,18 @@ public class MondayServiceImpl implements MondayService {
 
         if (StringUtils.isNotEmpty(enter.getTelephone())) {
             phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(),
-                org.springframework.util.StringUtils.isEmpty(enter.getTelephone()) == true ? null
-                    : enter.getTelephone());
+                    org.springframework.util.StringUtils.isEmpty(enter.getTelephone()) == true ? null
+                            : enter.getTelephone());
             phoneMap.put(MondayColumnPhoneEnums.phone.getCountryShortName(),
-                MondayCountryShortNameEnums.FRANCE.getValue());
+                    MondayCountryShortNameEnums.FRANCE.getValue());
         }
 
         // 时间集合
         Map<String, String> dateMap = new HashMap<>();
         dateMap.put(MondayColumnDateEnums.DATE.getTitle(),
-            DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_DATE_FORMAT));
+                DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_DATE_FORMAT));
         dateMap.put(MondayColumnDateEnums.TIME.getTitle(),
-            DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
+                DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
 
         Map<String, Object> columnValue = new HashMap<>();
         // columnValue.put(MondayBookOrderColumnEnums.ID_CP.getId(), CollectionUtils.isEmpty(tagList) == true ? null :
@@ -452,7 +453,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(MondayBookOrderColumnEnums.NOM.getId(), enter.getLastName());
         // 电话
         columnValue.put(MondayBookOrderColumnEnums.TEL.getId(),
-            CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
+                CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
         columnValue.put(MondayBookOrderColumnEnums.EMAIL.getId(), enter.getEmail());
         columnValue.put(MondayBookOrderColumnEnums.VILLE.getId(), null);
         columnValue.put(MondayBookOrderColumnEnums.CODE_POSTAL.getId(), enter.getDef2());
@@ -461,7 +462,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(MondayBookOrderColumnEnums.NB_SCOOTERS.getId(), enter.getScooterQuantity());
 
         columnValue.put(MondayBookOrderColumnEnums.MODEL.getId(),
-            ProductModelEnums.getProductModelEnumsByValue(opePartsProduct.getModel()).getMessage());
+                ProductModelEnums.getProductModelEnumsByValue(opePartsProduct.getModel()).getMessage());
         // columnValue.put(MondayBookOrderColumnEnums.COULEUR.getId(),
         // ProductColorEnums.getProductColorEnumsByValue(opePartsProduct.getColor()).getMessage());
 
@@ -483,18 +484,18 @@ public class MondayServiceImpl implements MondayService {
         if (CollectionUtil.isEmpty(mondayBoardResults)) {
             // 创建板子
             mutationBoardEnter = MondayMutationBoardEnter.builder().boardName(boardName)
-                .workspaceId(Integer.valueOf(mondayConfig.getWorkspaceId()))
-                .templateId(Integer.valueOf(mondayConfig.getTempleteId())).boardKind(BoardKindEnums.PUBLIC.getCode())
-                .build();
+                    .workspaceId(Integer.valueOf(mondayConfig.getWorkspaceId()))
+                    .templateId(Integer.valueOf(mondayConfig.getTempleteId())).boardKind(BoardKindEnums.PUBLIC.getCode())
+                    .build();
         }
         MondayBoardResult mondayBoardResult = mondayBoardResults.stream()
-            .filter(item -> StringUtils.equals(item.getName(), boardName)).findFirst().orElse(null);
+                .filter(item -> StringUtils.equals(item.getName(), boardName)).findFirst().orElse(null);
         if (mondayBoardResult == null) {
             // 创建板子
             mutationBoardEnter = MondayMutationBoardEnter.builder().boardName(boardName)
-                .workspaceId(Integer.valueOf(mondayConfig.getWorkspaceId()))
-                .templateId(Integer.valueOf(mondayConfig.getTempleteId())).boardKind(BoardKindEnums.PUBLIC.getCode())
-                .build();
+                    .workspaceId(Integer.valueOf(mondayConfig.getWorkspaceId()))
+                    .templateId(Integer.valueOf(mondayConfig.getTempleteId())).boardKind(BoardKindEnums.PUBLIC.getCode())
+                    .build();
         }
         if (mutationBoardEnter != null) {
             MondayCreateResult mondayCreateResult = mutationBoard(mutationBoardEnter);
@@ -522,7 +523,7 @@ public class MondayServiceImpl implements MondayService {
             mondayMutationGroupEnter.setGroupName(groupName);
         }
         MondayGroupResult mondayGroupResult = mondayGroupResults.stream()
-            .filter(item -> StringUtils.equals(item.getTitle(), groupName)).findFirst().orElse(null);
+                .filter(item -> StringUtils.equals(item.getTitle(), groupName)).findFirst().orElse(null);
         if (mondayGroupResult == null) {
             // 板子下村子分组 但是没有我们需要的指定分组
             mondayMutationGroupEnter = new MondayMutationGroupEnter();
@@ -550,52 +551,50 @@ public class MondayServiceImpl implements MondayService {
         // 放入插入的列集合
         List<MondayMutationColumnEnter> contantUsColumnList = new ArrayList<>();
 
-        // 列无需校验时 更新模版集合
-        if (!CollectionUtils.isEmpty(contantUsColumnList)) {
+        //过滤更新
+        if (!CollectionUtils.isEmpty(mondayColumnResults)) {
+            //覆盖map中的初始Id
             mondayColumnResults.forEach(item -> {
                 if (contantUsMap.containsKey(item.getTitle())) {
                     contantUsMap.put(item.getTitle(), item.getId());
                 }
             });
+
+            contantUsMap.keySet().forEach(map -> {
+                MondayColumnResult mondayColumnResult = mondayColumnResults.stream().filter(item -> StringUtils.equals(item.getTitle(), map)).findFirst().orElse(null);
+                if (mondayColumnResult == null || !mondayColumnResult.getId().equals(contantUsMap.get(map))) {
+                    contantUsColumnList.add(MondayMutationColumnEnter
+                            .builder()
+                            .boardId(Integer.valueOf(mondayBoardResult.getId()))
+                            .title(map)
+                            .columnType(MondayContantUsColumnEnums.getEnumsTypeByTitle(map))
+                            .defaults(null)
+                            .build());
+                }
+
+            });
         }
 
-        if (!CollectionUtils.isEmpty(mondayColumnResults)) {
-            for (MondayContantUsColumnEnums item : MondayContantUsColumnEnums.values()) {
-                // 列有并且Id 一样 跳出循环
-                if (contantUsMap.containsKey(item.getTitle())
-                    && StringUtils.equals(contantUsMap.get(item.getTitle()), item.getId())) {
-                    continue;
-                }
+        // 列插入 并更新模版集合
+        if (!CollectionUtils.isEmpty(contantUsColumnList)) {
+            // 对Map 重新赋值
+            List<MondayColumnResult> contantUsColumnResultList = multipleColumn(contantUsColumnList);
 
-                if (!contantUsMap.containsKey(item.getTitle())
-                    || !StringUtils.equals(contantUsMap.get(item.getTitle()), item.getId())) {
-                    contantUsColumnList
-                        .add(MondayMutationColumnEnter.builder().boardId(Integer.valueOf(mondayBoardResult.getId()))
-                            .title(item.getTitle()).columnType(item.getType()).defaults(null).build());
-                }
-            }
-
-            // 列插入 并更新模版集合
-            if (!CollectionUtils.isEmpty(contantUsColumnList)) {
-                // 对Map 重新赋值
-                List<MondayColumnResult> contantUsColumnResultList = multipleColumn(contantUsColumnList);
-
-                if (!CollectionUtils.isEmpty(contantUsColumnResultList)) {
-                    // 校验 列 是否符合标准 不符合新建
-                    for (MondayColumnResult item : contantUsColumnResultList) {
-                        if (contantUsMap.containsKey(item.getTitle())) {
-                            if (!StringUtils.equals(contantUsMap.get(item.getTitle()), item.getId())) {
-                                // 更新模板Map
-                                contantUsMap.put(item.getTitle(), item.getId());
-                            }
+            if (!CollectionUtils.isEmpty(contantUsColumnResultList)) {
+                // 校验 列 是否符合标准 不符合新建
+                for (MondayColumnResult item : contantUsColumnResultList) {
+                    if (contantUsMap.containsKey(item.getTitle())) {
+                        if (!StringUtils.equals(contantUsMap.get(item.getTitle()), item.getId())) {
+                            // 更新模板Map
+                            contantUsMap.put(item.getTitle(), item.getId());
                         }
                     }
-
                 }
+
             }
         }
-
     }
+
 
     /**
      * 校验模板列表名
@@ -612,30 +611,28 @@ public class MondayServiceImpl implements MondayService {
         // 放入插入的列集合
         List<MondayMutationColumnEnter> bookOrderColumnList = new ArrayList<>();
 
-        // 列无需更新时 更新模版集合
+        //过滤更新
         if (!CollectionUtils.isEmpty(mondayColumnResults)) {
+            //覆盖map中的初始Id
             mondayColumnResults.forEach(item -> {
                 if (bookOrderMap.containsKey(item.getTitle())) {
                     bookOrderMap.put(item.getTitle(), item.getId());
                 }
             });
-        }
 
-        if (!CollectionUtils.isEmpty(bookOrderColumnList)) {
-            for (MondayBookOrderColumnEnums item : MondayBookOrderColumnEnums.values()) {
-                // 列有并且Id 一样 跳出循环
-                if (bookOrderMap.containsKey(item.getTitle())
-                    && StringUtils.equals(bookOrderMap.get(item.getTitle()), item.getId())) {
-                    continue;
-                }
-                if (!bookOrderMap.containsKey(item.getTitle())
-                    || !StringUtils.equals(bookOrderMap.get(item.getTitle()), item.getId())) {
-                    bookOrderColumnList
-                        .add(MondayMutationColumnEnter.builder().boardId(Integer.valueOf(mondayBoardResult.getId()))
-                            .title(item.getTitle()).columnType(item.getType()).defaults(null).build());
+            bookOrderMap.keySet().forEach(map -> {
+                MondayColumnResult mondayColumnResult = mondayColumnResults.stream().filter(item -> StringUtils.equals(item.getTitle(), map)).findFirst().orElse(null);
+                if (mondayColumnResult == null || !mondayColumnResult.getId().equals(bookOrderMap.get(map))) {
+                    bookOrderColumnList.add(MondayMutationColumnEnter
+                            .builder()
+                            .boardId(Integer.valueOf(mondayBoardResult.getId()))
+                            .title(map)
+                            .columnType(MondayBookOrderColumnEnums.getEnumsTypeByTitle(map))
+                            .defaults(null)
+                            .build());
                 }
 
-            }
+            });
         }
 
         // 更新模版集合

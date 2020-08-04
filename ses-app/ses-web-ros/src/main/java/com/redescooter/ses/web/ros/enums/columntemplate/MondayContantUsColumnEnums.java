@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.enums.columntemplate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @ClassName:MondayColumnEnums
@@ -37,5 +38,14 @@ public enum MondayContantUsColumnEnums {
     private String title;
 
     private String type;
+
+    public static String getEnumsTypeByTitle(String title) {
+        for (MondayContantUsColumnEnums item : MondayContantUsColumnEnums.values()) {
+            if (StringUtils.equals(title, item.getTitle())) {
+                return item.getType();
+            }
+        }
+        return null;
+    }
 
 }
