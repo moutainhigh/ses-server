@@ -184,23 +184,22 @@ public class SesWebRosApplicationTests {
     @Test
     public void sendRequestByRestTemplateGet() {
 
-        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getById(1023406L);
+        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getById(1020895L);
         if (opeCustomerInquiry == null) {
             System.out.println("------------------------------------------------询价单不存在-----------------");
         }
 
         MondayCreateResult mondayCreateResult = mondayService.websiteBookOrder(opeCustomerInquiry);
 
-        System.out.println(mondayCreateResult.getId()+"--------------------------------插入成功--------------------");
+        System.out.println(mondayCreateResult.getId()+"--------------------------------预订单插入成功--------------------");
+
+        MondayCreateResult websiteContantUs = mondayService.websiteContantUs(opeCustomerInquiry);
+
+        System.out.println(websiteContantUs.getId()+"--------------------------------联系我们插入成功--------------------");
+
+        MondayCreateResult subscriptionEmail = mondayService.websiteSubscriptionEmail("alex@redescooter.com");
+
+        System.out.println(subscriptionEmail.getId()+"--------------------------------订阅邮件插入成功--------------------");
 
     }
-
-    @Test
-    public void dateTest(){
-        Date date= new Date();
-        SimpleDateFormat sdf= new SimpleDateFormat(DateUtil.DEFAULT_TIME_FORMAT);
-        String datestr=sdf.format(date);// format  为格式化方法
-        System.out.println(datestr);
-    }
-
 }

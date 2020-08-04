@@ -17,13 +17,9 @@ import org.apache.commons.lang3.StringUtils;
 @Getter
 public enum MondayContantUsColumnEnums {
 
-//    ID_CP("tags5", "ID CP", "tag"),
-//    RESP("dup__of_resp", "Resp", "multiple-person"),
     FIRST_CONTACT("last_contacted", "First contact", "date"),
     LAST_CONTACTED("due_date", "Last contacted", "date"),
     NEXT_CONTACT("date", "Next contact", "date"),
-//    TYPE("status7", "Type", "color"),
-//    CONVERSION("type", "Conversion", "color"),
     PRENOM("text06", "Prenom", "text"),
     NOM("pr_nom", "Nom", "text"),
     TEL("phone", "Tel", "phone"),

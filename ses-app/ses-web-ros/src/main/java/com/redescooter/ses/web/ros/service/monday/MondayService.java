@@ -44,6 +44,14 @@ public interface MondayService {
      */
     MondayCreateResult websiteBookOrder(OpeCustomerInquiry enter);
 
+    /**
+     * 官网订阅邮件
+     *
+     * @param email
+     * @return
+     */
+    MondayCreateResult websiteSubscriptionEmail(String email);
+
 
     /**
      * 查询板子

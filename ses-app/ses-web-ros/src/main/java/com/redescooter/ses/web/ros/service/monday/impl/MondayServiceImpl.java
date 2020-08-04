@@ -13,6 +13,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayBookOrderColumnEnums;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayContantUsColumnEnums;
+import com.redescooter.ses.web.ros.enums.columntemplate.MondayWebsiteSubscriptionEmailEnums;
 import com.redescooter.ses.web.ros.enums.datatype.BoardKindEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayColumnDateEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayColumnGeneralEnums;
@@ -93,6 +94,11 @@ public class MondayServiceImpl implements MondayService {
             contantUsMap.put(item.getTitle(), item.getId());
         }
         checkCountantUsBoardColumn(mondayConfig.getContactUsBoardName());
+        //订阅邮件 模板初始化
+        for (MondayWebsiteSubscriptionEmailEnums item : MondayWebsiteSubscriptionEmailEnums.values()) {
+            subscribeEmailMap.put(item.getTitle(), item.getId());
+        }
+        checkSubscribeEmailoardColumn(mondayConfig.getSubEmailBoardName());
 
     }
 
@@ -142,6 +148,30 @@ public class MondayServiceImpl implements MondayService {
                         new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
                 .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildContantUsSingle(enter));
 
+        // 数据插入
+        return mutationData(gql).getData().getCreate_item();
+    }
+
+    /**
+     * 官网订阅邮件
+     *
+     * @param email
+     * @return
+     */
+    @Override
+    public MondayCreateResult websiteSubscriptionEmail(String email) {
+        // 查看 板子是否存在
+        MondayBoardResult mondayBoardResult = getBoardByBoardName(mondayConfig.getSubEmailBoardName());
+
+        // 校验分组是否存在
+        MondayCreateResult groupResult =
+                getMondayGroupByBoardId(mondayBoardResult.getId(), mondayConfig.getSubEmailGroupName());
+        // 替换语句中的id 参数
+        String gql = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
+                .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardResult.getId())
+                .replace(MondayParameterName.CREATE_BELONG_GROUP, groupResult.getId())
+                .replace(MondayParameterName.CREATE_ITEM_NAME, email.split("@")[0])
+                .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildSubEmailSingle(email));
         // 数据插入
         return mutationData(gql).getData().getCreate_item();
     }
@@ -239,7 +269,7 @@ public class MondayServiceImpl implements MondayService {
                 .replace(MondayParameterName.GROUP_BOARD_ID, String.valueOf(enter.getBoardId()))
                 .replace(MondayParameterName.GROUP_BOARD_NAME, enter.getGroupName());
         log.info("插入分组执行的gql----{}", graphGql);
-        return mutationData(graphGql).getData().getCreate_item();
+        return MondayCreateResult.builder().id(mutationData(graphGql).getData().getCreate_group().getId()).build();
     }
 
     /**
@@ -336,20 +366,6 @@ public class MondayServiceImpl implements MondayService {
      */
     private String buildContantUsSingle(OpeCustomerInquiry enter) {
 
-        Map<String, Object> tagList = new HashMap();
-        Integer tagId = null;
-        if (StringUtils.isNotEmpty(enter.getDef2())) {
-            // 查询tag 标签
-            List<MondayTagResult> mondayTagResults = queryTagList();
-            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(mondayTagResults)) {
-                tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2()))
-                        .findFirst().map(MondayTagResult::getId).orElse(null);
-            }
-            if (!(tagId == null) && !(tagId == 0)) {
-                tagList.put(MondayColumnGeneralEnums.TAG_IDS.getTitle(), Lists.newArrayList(tagId));
-            }
-        }
-
         // 电话集合
         Map<String, String> phoneMap = new HashMap<>();
         if (StringUtils.isNotEmpty(enter.getTelephone())) {
@@ -368,24 +384,19 @@ public class MondayServiceImpl implements MondayService {
                 DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
 
         Map<String, Object> columnValue = new HashMap<>();
-        // columnValue.put(MondayContantUsColumnEnums.ID_CP.getId(), CollectionUtils.isEmpty(tagList) == true ? null :
-        // tagList);
-        // columnValue.put(MondayContantUsColumnEnums.RESP.getId(), null);
         // 时间
-        columnValue.put(MondayContantUsColumnEnums.FIRST_CONTACT.getId(), dateMap);
-        columnValue.put(MondayContantUsColumnEnums.LAST_CONTACTED.getId(), null);
-        columnValue.put(MondayContantUsColumnEnums.NEXT_CONTACT.getId(), null);
-        // columnValue.put(MondayContantUsColumnEnums.TYPE.getId(), null);
-        // columnValue.put(MondayContantUsColumnEnums.CONVERSION.getId(), null);
-        columnValue.put(MondayContantUsColumnEnums.PRENOM.getId(), enter.getFirstName());
-        columnValue.put(MondayContantUsColumnEnums.NOM.getId(), enter.getLastName());
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.FIRST_CONTACT.getTitle()), dateMap);
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.LAST_CONTACTED.getTitle()), null);
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.NEXT_CONTACT.getTitle()), null);
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.PRENOM.getTitle()), enter.getFirstName());
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.NOM.getTitle()), enter.getLastName());
         // 电话
-        columnValue.put(MondayContantUsColumnEnums.TEL.getId(),
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.TEL.getTitle()),
                 CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
-        columnValue.put(MondayContantUsColumnEnums.EMAIL.getId(), enter.getEmail());
-        columnValue.put(MondayContantUsColumnEnums.VILLE.getId(), null);
-        columnValue.put(MondayContantUsColumnEnums.CODE_POSTAL.getId(), enter.getDef2());
-        columnValue.put(MondayContantUsColumnEnums.VOTRE_MESSAGE.getId(), enter.getRemarks());
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.EMAIL.getTitle()), enter.getEmail());
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.VILLE.getTitle()), null);
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.CODE_POSTAL.getTitle()), enter.getDef2());
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.VOTRE_MESSAGE.getTitle()), enter.getRemarks());
         // 转json 并转义
         String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
         log.info("----------------------" + columnValues + "-------------------------");
@@ -407,19 +418,6 @@ public class MondayServiceImpl implements MondayService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        Map<String, Object> tagList = new HashMap();
-        Integer tagId = null;
-        if (StringUtils.isNotEmpty(enter.getDef2())) {
-            // 查询tag 标签
-            List<MondayTagResult> mondayTagResults = queryTagList();
-            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(mondayTagResults)) {
-                tagId = mondayTagResults.stream().filter(item -> StringUtils.equals(item.getName(), enter.getDef2()))
-                        .findFirst().map(MondayTagResult::getId).orElse(null);
-            }
-            if (!(tagId == null) && !(tagId == 0)) {
-                tagList.put("tag_ids", Lists.newArrayList(tagId));
-            }
-        }
 
         // 电话集合
         Map<String, String> phoneMap = new HashMap<>();
@@ -440,32 +438,40 @@ public class MondayServiceImpl implements MondayService {
                 DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
 
         Map<String, Object> columnValue = new HashMap<>();
-        // columnValue.put(MondayBookOrderColumnEnums.ID_CP.getId(), CollectionUtils.isEmpty(tagList) == true ? null :
-        // tagList);
-        // columnValue.put(MondayBookOrderColumnEnums.RESP.getId(), null);
         // 时间
-        columnValue.put(MondayBookOrderColumnEnums.FIRST_CONTACT.getId(), dateMap);
-        columnValue.put(MondayBookOrderColumnEnums.LAST_CONTACTED.getId(), null);
-        columnValue.put(MondayBookOrderColumnEnums.NEXT_CONTACT.getId(), null);
-        // columnValue.put(MondayBookOrderColumnEnums.TYPE.getId(), null);
-        // columnValue.put(MondayBookOrderColumnEnums.CONVERSION.getId(), null);
-        columnValue.put(MondayBookOrderColumnEnums.PRENOM.getId(), enter.getFirstName());
-        columnValue.put(MondayBookOrderColumnEnums.NOM.getId(), enter.getLastName());
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.FIRST_CONTACT.getTitle()), dateMap);
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.LAST_CONTACTED.getTitle()), null);
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.LAST_CONTACTED.getTitle()), null);
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.PRENOM.getTitle()), enter.getFirstName());
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.NOM.getTitle()), enter.getLastName());
         // 电话
-        columnValue.put(MondayBookOrderColumnEnums.TEL.getId(),
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.TEL.getTitle()),
                 CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
-        columnValue.put(MondayBookOrderColumnEnums.EMAIL.getId(), enter.getEmail());
-        columnValue.put(MondayBookOrderColumnEnums.VILLE.getId(), null);
-        columnValue.put(MondayBookOrderColumnEnums.CODE_POSTAL.getId(), enter.getDef2());
-        columnValue.put(MondayBookOrderColumnEnums.VOTRE_MESSAGE.getId(), enter.getRemarks());
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.EMAIL.getTitle()), enter.getEmail());
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.VILLE.getTitle()), null);
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.CODE_POSTAL.getTitle()), enter.getDef2());
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.VOTRE_MESSAGE.getTitle()), enter.getRemarks());
 
-        columnValue.put(MondayBookOrderColumnEnums.NB_SCOOTERS.getId(), enter.getScooterQuantity());
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getTitle()), enter.getScooterQuantity());
 
-        columnValue.put(MondayBookOrderColumnEnums.MODEL.getId(),
+        columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.MODEL.getTitle()),
                 ProductModelEnums.getProductModelEnumsByValue(opePartsProduct.getModel()).getMessage());
-        // columnValue.put(MondayBookOrderColumnEnums.COULEUR.getId(),
-        // ProductColorEnums.getProductColorEnumsByValue(opePartsProduct.getColor()).getMessage());
 
+        String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
+        log.info("----------------------" + columnValues + "-------------------------");
+        return columnValues;
+    }
+
+    /**
+     * 订阅邮件 模板参数封装
+     *
+     * @param email
+     * @return
+     */
+    private String buildSubEmailSingle(String email) {
+        Map<String, Object> columnValue = new HashMap<>();
+
+        columnValue.put(subscribeEmailMap.get(MondayWebsiteSubscriptionEmailEnums.COURRIER.getTitle()), email);
         String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
         log.info("----------------------" + columnValues + "-------------------------");
         return columnValues;
@@ -647,6 +653,62 @@ public class MondayServiceImpl implements MondayService {
                         if (!StringUtils.equals(bookOrderMap.get(item.getTitle()), item.getId())) {
                             // 更新模板Map
                             bookOrderMap.put(item.getTitle(), item.getId());
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    /**
+     * 订阅邮件 模板更新
+     * @param boardName
+     */
+    private void checkSubscribeEmailoardColumn(String boardName) {
+        MondayBoardResult mondayBoardResult = getBoardByBoardName(boardName);
+
+        List<MondayColumnResult> mondayColumnResults = queryColumnResult(mondayBoardResult.getId());
+
+        // 放入插入的列集合
+        List<MondayMutationColumnEnter> subEmailColumnList = new ArrayList<>();
+
+        //过滤更新
+        if (!CollectionUtils.isEmpty(mondayColumnResults)) {
+            //覆盖map中的初始Id
+            mondayColumnResults.forEach(item -> {
+                if (subscribeEmailMap.containsKey(item.getTitle())) {
+                    subscribeEmailMap.put(item.getTitle(), item.getId());
+                }
+            });
+
+            subscribeEmailMap.keySet().forEach(map -> {
+                MondayColumnResult mondayColumnResult = mondayColumnResults.stream().filter(item -> StringUtils.equals(item.getTitle(), map)).findFirst().orElse(null);
+                if (mondayColumnResult == null || !mondayColumnResult.getId().equals(subscribeEmailMap.get(map))) {
+                    subEmailColumnList.add(MondayMutationColumnEnter
+                            .builder()
+                            .boardId(Integer.valueOf(mondayBoardResult.getId()))
+                            .title(map)
+                            .columnType(MondayWebsiteSubscriptionEmailEnums.getEnumsTypeByTitle(map))
+                            .defaults(null)
+                            .build());
+                }
+
+            });
+        }
+
+        // 列插入 并更新模版集合
+        if (!CollectionUtils.isEmpty(subEmailColumnList)) {
+            // 对Map 重新赋值
+            List<MondayColumnResult> subEmailColumnResultList = multipleColumn(subEmailColumnList);
+
+            if (!CollectionUtils.isEmpty(subEmailColumnResultList)) {
+                // 校验 列 是否符合标准 不符合新建
+                for (MondayColumnResult item : subEmailColumnResultList) {
+                    if (subscribeEmailMap.containsKey(item.getTitle())) {
+                        if (!StringUtils.equals(subscribeEmailMap.get(item.getTitle()), item.getId())) {
+                            // 更新模板Map
+                            subscribeEmailMap.put(item.getTitle(), item.getId());
                         }
                     }
                 }

@@ -37,6 +37,9 @@ public class MondayDataResult {
     // 创建板子后的返回值
     private MondayBoardResult create_board;
 
+    // 创建分组后的返回值
+    private MondayGroupResult create_group;
+
     //创建板子后返回板子id
     private String id;
 

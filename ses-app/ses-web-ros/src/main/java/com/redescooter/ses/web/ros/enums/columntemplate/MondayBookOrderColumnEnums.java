@@ -18,14 +18,9 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor
 public enum MondayBookOrderColumnEnums {
 
-//    ID_CP("tags5", "ID CP","tag"),
-//    RESP("dup__of_resp", "Resp","multiple-person"),
     FIRST_CONTACT("last_contacted", "First contact","date"),
     LAST_CONTACTED("due_date", "Last contacted","date"),
     NEXT_CONTACT("date", "Next contact","date"),
-//    TYPE_PROSPECT("status1", "Type prospect","text"),
-//    TYPE("status7", "Type","text"),
-//    CONVERSION("type", "Conversion","text"),
     PRENOM("text06", "Prenom","text"),
     NOM("pr_nom", "Nom","text"),
     TEL("phone", "Tel","phone"),
