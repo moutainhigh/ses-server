@@ -67,6 +67,7 @@ public class WhOutController {
         return new Response<>(whOutService.detailProductPartList(enter));
     }
 
+    @PostMapping(value = "/cancel")
     @ApiOperation(value = "取消", response = GeneralResult.class)
     public Response<GeneralResult> cancel(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(whOutService.cancel(enter));
