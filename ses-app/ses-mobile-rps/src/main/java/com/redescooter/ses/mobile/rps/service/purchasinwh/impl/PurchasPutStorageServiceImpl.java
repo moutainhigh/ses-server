@@ -150,14 +150,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
         }
 
-        QueryWrapper<OpeStock> opeStockPurchasQueryWrapper = new QueryWrapper<>();
-        opeStockPurchasQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opePurchasB.getPartId());
-        opeStockPurchasQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhsegetid.getId());
-        opeStockPurchasQueryWrapper.eq(OpeStock.COL_DR, 0);
-        OpeStock opeStockData = opeStockService.getOne(opeStockPurchasQueryWrapper);
-        if (opeStockData == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-        }
         //校验批次号
         OpePurchasBQcItem opePurchasBQcItem = opePurchasBQcItemService.getOne(new LambdaQueryWrapper<OpePurchasBQcItem>()
                 .eq(OpePurchasBQcItem::getPurchasBId, opePurchasB.getId())
