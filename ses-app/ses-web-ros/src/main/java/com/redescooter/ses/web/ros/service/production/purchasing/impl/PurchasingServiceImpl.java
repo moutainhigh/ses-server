@@ -1649,12 +1649,14 @@ public class PurchasingServiceImpl implements PurchasingService {
                         BomCommonTypeEnums.PARTS.getValue(),
                         BomCommonTypeEnums.BATTERY.getValue()));
 
+        List<OpeStock> saveOpeStockList=new ArrayList<>();
+
         if (CollectionUtils.isEmpty(opeStockList)) {
             OpeParts parts = null;
             for (OpePurchasB item : purchasBList) {
                 parts = partsList.stream().filter(part -> item.getPartId().equals(part.getId())).findFirst().orElse(null);
                 //创建库存
-                opeStockList.add(buildStock(whse, parts, item));
+                saveOpeStockList.add(buildStock(whse, parts, item));
             }
         }
         if (CollectionUtils.isNotEmpty(opeStockList)) {
@@ -1664,12 +1666,14 @@ public class PurchasingServiceImpl implements PurchasingService {
                 //更新库存
                 opeStock.setWaitProductTotal(item.getInWaitWhQty()+opeStock.getWaitProductTotal());
                 opeStock.setUpdatedTime(new Date());
+
+                saveOpeStockList.add(opeStock);
             }
         }
 
         //更新库存
-        if (CollectionUtils.isNotEmpty(opeStockList)){
-            opeStockService.saveOrUpdateBatch(opeStockList);
+        if (CollectionUtils.isNotEmpty(saveOpeStockList)){
+            opeStockService.saveOrUpdateBatch(saveOpeStockList);
         }
     }
 
@@ -1692,7 +1696,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .outTotal(0)
                 .wornTotal(0)
                 .lockTotal(0)
-                .waitProductTotal(item.getInWaitWhQty())
+                .waitProductTotal(item.getTotalCount())
                 .waitStoredTotal(0)
                 .materielProductId(item.getPartId())
                 .materielProductName(parts.getCnName())

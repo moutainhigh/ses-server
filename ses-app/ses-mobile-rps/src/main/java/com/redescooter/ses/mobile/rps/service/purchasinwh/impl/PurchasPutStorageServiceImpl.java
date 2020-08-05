@@ -182,6 +182,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .outPrincipalId(0L)
                 .outStockBillId(0L)
                 .outStockTime(null)
+                .availableQty(1)
                 .inWhQty(1)
                 .build();
         //增加仓库数据
@@ -218,11 +219,32 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             receiptTraceService.savePurchasingNode(saveNodeEnter);
         }
 
+        //释放待入库库存
+        freedStockToBeStored(partsData,1);
+
         return HaveIdPartsResult.builder()
                 .id(opePurchasB.getId())
                 .inWaitWhQty(opePurchasB.getInWaitWhQty())
                 .build()
                 ;
+    }
+
+    /**
+     * 待入库 锚点
+     *
+     * @param qty
+     * @param parts
+     */
+    private void freedStockToBeStored(OpeParts parts, int qty) {
+        //查询 库存
+        OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>().eq(OpeStock::getMaterielProductId, parts.getId()).eq(OpeStock::getMaterielProductType,
+                BomCommonTypeEnums.getValueByCode(parts.getPartsType())));
+        if (opeStock == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+        }
+        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - qty);
+        opeStock.setUpdatedTime(new Date());
+        opeStockService.updateById(opeStock);
     }
 
     /**
@@ -298,6 +320,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .outStockBillId(0L)
                 .outStockTime(null)
                 .inWhQty(opePurchasB.getInWaitWhQty())
+                .availableQty(opePurchasB.getInWaitWhQty())
                 .build();
         //增加仓库数据
         opeStockPurchasService.save(opeStockPurchas);
@@ -334,6 +357,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             receiptTraceService.savePurchasingNode(saveNodeEnter);
         }
 
+        //释放待入库库存
+        freedStockToBeStored(partsData,enter.getInWaitWhQty());
 
         return NotIdPartsSucceedResult.builder()
                 .id(opePurchasB.getId())
@@ -385,7 +410,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         opeStockQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opePurchasB.getPartId());
-       OpeStock opeStock = opeStockService.getOne(opeStockQueryWrapper);
+        OpeStock opeStock = opeStockService.getOne(opeStockQueryWrapper);
 
         if (opeStock != null) {
             if (opePurchasB.getPartId().equals(opeStock.getMaterielProductId())) {
