@@ -69,4 +69,7 @@ public class SaveInquiryEnter extends GeneralEnter {
     @ApiModelProperty(value = "备注")
     @MaximumLength(value = "200", code = ValidationExceptionCode.REMARK_ILLEGAL, message = "备注非法")
     private String remark;
+
+    @ApiModelProperty("地址")
+    private String address;
 }

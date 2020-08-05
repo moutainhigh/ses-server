@@ -211,28 +211,6 @@ public class CityBaseServiceImpl implements CityBaseService {
         List<PlaCity> conuts = alls.stream().filter(all->all.getLevel() == 1).collect(Collectors.toList());
         List<PlaCity> citys = alls.stream().filter(all->all.getLevel() == 2).collect(Collectors.toList());
         if(CollectionUtils.isNotEmpty(conuts)){
-//            for (PlaCity conut : conuts) {
-//                CountryCityResult  countryCityResult = new CountryCityResult();
-//                BeanUtil.copyProperties(conut,countryCityResult);
-//                List<PlaCity> currentCitys= new ArrayList<>();
-//                for (PlaCity city : citys) {
-//                    if(conut.getId().equals(city.getPId())){
-//                        currentCitys.add(city);
-//                    }
-//                }
-//                List<CityNameResult>  cityNameResultList = new ArrayList<>();
-//                if(CollectionUtils.isNotEmpty(currentCitys)){
-//                    Map<String,List<PlaCity>> map = currentCitys.stream().collect(Collectors.groupingBy(PlaCity::getName));
-//                    for (String city : map.keySet()){
-//                        CityNameResult  cityNameResult = new CityNameResult();
-//                        cityNameResult.setCityName(city);
-//                        cityNameResult.setChildren(map.get(city).stream().map(PlaCity::getPostCode).collect(Collectors.toList()));
-//                        cityNameResultList.add(cityNameResult);
-//                    }
-//                }
-//                countryCityResult.setChildren(cityNameResultList);
-//                resultList.add(countryCityResult);
-//            }
         }
         return resultList;
     }
@@ -253,9 +231,9 @@ public class CityBaseServiceImpl implements CityBaseService {
         switch (level){
             case 1:
                 // 查询国家的
-                qw.eq("level",1);
+                qw.eq(PlaCity.COL_LEVEL,1);
                 if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
-                    qw.like("name",cityNameEnter.getKeyWord());
+                    qw.like(PlaCity.COL_NAME,cityNameEnter.getKeyWord());
                 }
                 default:
                     break;
@@ -264,9 +242,9 @@ public class CityBaseServiceImpl implements CityBaseService {
                 if(Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
                     return list;
                 }
-                qw.eq("p_id",cityNameEnter.getId());
+                qw.eq(PlaCity.COL_P_ID,cityNameEnter.getId());
                 if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
-                    qw.like("name",cityNameEnter.getKeyWord());
+                    qw.like(PlaCity.COL_NAME,cityNameEnter.getKeyWord());
                 }
                 qw.select(" DISTINCT name");
                 qw.last(" group by name order by CHARACTER_LENGTH(name) limit 50");
@@ -277,10 +255,10 @@ public class CityBaseServiceImpl implements CityBaseService {
                 if(Strings.isNullOrEmpty(cityNameEnter.getCity())){
                     return list;
                 }
-                qw.isNotNull("post_code");
-                qw.eq("name",cityNameEnter.getCity());
+                qw.isNotNull(PlaCity.COL_POST_CODE);
+                qw.eq(PlaCity.COL_NAME,cityNameEnter.getCity());
                 if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
-                    qw.like("post_code",cityNameEnter.getKeyWord());
+                    qw.like(PlaCity.COL_POST_CODE,cityNameEnter.getKeyWord());
                 }
                 break;
         }
@@ -330,7 +308,7 @@ public class CityBaseServiceImpl implements CityBaseService {
     /**
      * 删除ArrayList中重复元素，保持顺序
      *
-     * @param list
+//     * @param list
      */
 //    private List<CityEnter> removeDuplicateWithOrder(List<CityEnter> list) {
 //        Set set = new HashSet();
@@ -347,4 +325,17 @@ public class CityBaseServiceImpl implements CityBaseService {
 //
 //        return newList;
 //    }
+
+    @Override
+    public Long getDistrictId(String cityName, String districtPost) {
+        QueryWrapper<PlaCity> qw = new QueryWrapper<>();
+        qw.eq(PlaCity.COL_NAME,cityName);
+        qw.eq(PlaCity.COL_POST_CODE,districtPost);
+        qw.last("limit 1");
+        PlaCity plaCity = cityMapper.selectOne(qw);
+        if(plaCity == null){
+            return 0L;
+        }
+        return plaCity.getId();
+    }
 }

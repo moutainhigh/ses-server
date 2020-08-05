@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.service.website;
 
+import com.redescooter.ses.web.ros.dm.OpeContactUsEntity;
+
 /**
  * @ClassNameContactUsTraceService
  * @Description
@@ -9,5 +11,13 @@ package com.redescooter.ses.web.ros.service.website;
  **/
 public interface ContactUsTraceService {
 
+    /**
+     * @Author Aleks
+     * @Description  创建联系我们的历史记录
+     * @Date  2020/8/5 14:44
+     * @Param
+     * @return
+     **/
+     void createContactUsTrace(OpeContactUsEntity contactUsEntity);
 
 }

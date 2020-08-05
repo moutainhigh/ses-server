@@ -104,4 +104,8 @@ public interface SequenceName {
     String OPE_CUSTOMER_INQUIRY_B = "OPE_CUSTOMER_INQUIRY_B";
 
     String OPE_PAY_ORDER = "OPE_PAY_ORDER";
+
+    String OPE_CONTACT_US = "OPE_CONTACT_US";
+
+    String OPE_CONTACT_US_TRACE = "OPE_CONTACT_US_TRACE";
 }
