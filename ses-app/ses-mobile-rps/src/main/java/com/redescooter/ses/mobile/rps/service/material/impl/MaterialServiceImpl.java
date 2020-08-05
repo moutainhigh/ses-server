@@ -7,11 +7,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.QcTypeEnums;
+import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
@@ -91,6 +93,12 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     private OpePurchasLotTraceService opePurchasLotTraceService;
+
+    @Autowired
+    private OpeWhseService opeWhseService;
+
+    @Autowired
+    private OpeStockService opeStockService;
 
     @Reference
     private IdAppService idAppService;
@@ -410,7 +418,7 @@ public class MaterialServiceImpl implements MaterialService {
         if (opePurchas == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue()) &&  !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.QC_AGAIN.getValue())) {
+        if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue()) && !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.QC_AGAIN.getValue())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
 
@@ -815,12 +823,12 @@ public class MaterialServiceImpl implements MaterialService {
                     }
                 }
             }
-            if (passTotal==opePurchas.getTotalQty()){
+            if (passTotal == opePurchas.getTotalQty()) {
                 break;
             }
         }
-        if (passTotal!=opePurchas.getTotalQty()){
-            updatePuchasStatus=Boolean.FALSE;
+        if (passTotal != opePurchas.getTotalQty()) {
+            updatePuchasStatus = Boolean.FALSE;
         }
 
         //更新采购单状态以及采购单记录
@@ -850,6 +858,19 @@ public class MaterialServiceImpl implements MaterialService {
                 .qcResult(qcResult)
                 .laveQcTotal(opePurchas.getLaveWaitQcTotal())
                 .build();
+    }
+
+    private void stockToBeStoredFillingPoint(int qty, OpeParts parts) {
+        //查询 库存
+        OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>().eq(OpeStock::getMaterielProductId, parts.getId()).eq(OpeStock::getMaterielProductType,
+                BomCommonTypeEnums.getValueByCode(parts.getPartsType())));
+        if (opeStock == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+        }
+        opeStock.setWaitProductTotal(opeStock.getWaitProductTotal() - qty);
+        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() + qty);
+        opeStock.setUpdatedTime(new Date());
+        opeStockService.updateById(opeStock);
     }
 
     /**
