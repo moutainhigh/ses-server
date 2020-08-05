@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.website;
 
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.customer.*;
+import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 
 import java.util.List;
 
@@ -40,4 +41,13 @@ public interface ContactUsService {
    * @return
    **/
   List<ContactUsHistoryResult> trace(ContactUsEnter enter);
+
+  /*
+   * @Author Aleks
+   * @Description  官网上联系我们的操作
+   * @Date  2020/8/5 12:02
+   * @Param [enter]
+   * @return
+   **/
+  void websiteContactUs(SaveInquiryEnter enter);
 }

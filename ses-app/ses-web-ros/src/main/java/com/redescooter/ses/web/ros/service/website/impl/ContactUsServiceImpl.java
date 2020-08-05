@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.dao.website.ContactUsMapper;
 import com.redescooter.ses.web.ros.service.base.OpeContactUsService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.vo.customer.*;
+import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
 import com.redescooter.ses.web.ros.vo.wms.WmsStockAvailableResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,34 +22,39 @@ import java.util.List;
 @Service
 public class ContactUsServiceImpl implements ContactUsService {
 
-  @Autowired
-  private OpeContactUsService opeContactUsService;
+    @Autowired
+    private OpeContactUsService opeContactUsService;
 
-  @Autowired
-  private ContactUsMapper contactUsMapper;
+    @Autowired
+    private ContactUsMapper contactUsMapper;
 
 
-  @Override
-  public PageResult<ContactUsListResult> list(ContactUsListEnter enter) {
-    ;
-    if (enter.getKeyWord() != null && enter.getKeyWord().length() > 50) {
-      return PageResult.createZeroRowResult(enter);
+    @Override
+    public PageResult<ContactUsListResult> list(ContactUsListEnter enter) {
+        ;
+        if (enter.getKeyWord() != null && enter.getKeyWord().length() > 50) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        int totalRows = contactUsMapper.totalRows(enter);
+        if (totalRows == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<ContactUsListResult> list = contactUsMapper.list(enter);
+        return PageResult.create(enter, totalRows, list);
     }
-    int totalRows = contactUsMapper.totalRows(enter);
-    if (totalRows == 0) {
-      return PageResult.createZeroRowResult(enter);
+
+    @Override
+    public List<ContactUsDetailResult> detail(ContactUsEnter enter) {
+        return contactUsMapper.detailList(enter);
     }
-    List<ContactUsListResult> list = contactUsMapper.list(enter);
-    return PageResult.create(enter, totalRows, list);
-  }
 
-  @Override
-  public List<ContactUsDetailResult> detail(ContactUsEnter enter) {
-    return contactUsMapper.detailList(enter);
-  }
+    @Override
+    public List<ContactUsHistoryResult> trace(ContactUsEnter enter) {
+        return contactUsMapper.historyList(enter);
+    }
 
-  @Override
-  public List<ContactUsHistoryResult> trace(ContactUsEnter enter) {
-    return contactUsMapper.historyList(enter);
-  }
+    @Override
+    public void websiteContactUs(SaveInquiryEnter enter) {
+
+    }
 }

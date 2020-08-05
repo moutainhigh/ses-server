@@ -35,6 +35,7 @@ import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
+import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
@@ -104,6 +105,9 @@ public class InquiryServiceImpl implements InquiryService {
     @Autowired
     private OssConfig ossConfig;
 
+    @Autowired
+    private ContactUsService contactUsService;
+
     @Override
     public Map<String, Integer> countStatus(GeneralEnter enter) {
         List<CountByStatusResult> statusResultList = inquiryServiceMapper.countStatus();
@@ -167,28 +171,31 @@ public class InquiryServiceImpl implements InquiryService {
             return new GeneralResult(enter.getRequestId());
         }
 
-        //查询客户是否有询价单 存在的话数量累计
-        List<OpeCustomerInquiry> customerInquiryList =
-                opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, enter.getEmail()).ne(OpeCustomerInquiry::getStatus,
-                        InquiryStatusEnums.DECLINE.getValue()));
+//        //查询客户是否有询价单 存在的话数量累计
+//        List<OpeCustomerInquiry> customerInquiryList =
+//                opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, enter.getEmail()).ne(OpeCustomerInquiry::getStatus,
+//                        InquiryStatusEnums.DECLINE.getValue()));
+//
+//        OpeCustomerInquiry opeCustomerInquiry = null;
+//        if (CollectionUtils.isEmpty(customerInquiryList)) {
+//            opeCustomerInquiry = buildOpeCustomerInquiry(enter);
+//        } else {
+//            opeCustomerInquiry = customerInquiryList.get(0);
+//            opeCustomerInquiry.setScooterQuantity(opeCustomerInquiry.getScooterQuantity() + 1);
+//        }
+//
+//       /* CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
+//        if (cityResult == null) {
+//            throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
+//        }*/
+//        opeCustomerInquiry.setSource("1");
+//        opeCustomerInquiryService.saveOrUpdate(opeCustomerInquiry);
+//
+//        //Monday 同步数据
+//        mondayService.websiteContantUs(opeCustomerInquiry);
 
-        OpeCustomerInquiry opeCustomerInquiry = null;
-        if (CollectionUtils.isEmpty(customerInquiryList)) {
-            opeCustomerInquiry = buildOpeCustomerInquiry(enter);
-        } else {
-            opeCustomerInquiry = customerInquiryList.get(0);
-            opeCustomerInquiry.setScooterQuantity(opeCustomerInquiry.getScooterQuantity() + 1);
-        }
-
-       /* CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
-        if (cityResult == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
-        }*/
-        opeCustomerInquiry.setSource("1");
-        opeCustomerInquiryService.saveOrUpdate(opeCustomerInquiry);
-
-        //Monday 同步数据
-        mondayService.websiteContantUs(opeCustomerInquiry);
+        // 官网联系我们
+        contactUsService.websiteContactUs(enter);
         return new GeneralResult(enter.getRequestId());
     }
 
